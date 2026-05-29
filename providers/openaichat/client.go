@@ -474,6 +474,10 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 		return func(yield func(genai.Reply) bool) {
 				pendingToolCall := ToolCall{}
 				for pkt := range chunks {
+				if pkt.Error != nil {
+					finalErr = fmt.Errorf("stream error: %s", pkt.Error.Message)
+					return
+				}
 				if pkt.Usage.PromptTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens

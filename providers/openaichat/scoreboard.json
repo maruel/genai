@@ -265,14 +265,13 @@
       },
       "GenStream": {
         "reportRateLimits": true,
-        "reportTokenUsage": "flaky",
+        "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
-        "maxTokens": true,
-        "stopSequence": true
+        "maxTokens": true
       }
     },
     {

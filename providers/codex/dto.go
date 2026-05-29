@@ -344,9 +344,11 @@ type TurnPlanUpdatedNotification struct {
 // ItemNotification holds the params for item/started, item/completed, and
 // item/updated notifications. Item is raw JSON dispatched by ItemHeader.Type.
 type ItemNotification struct {
-	Item     json.RawMessage `json:"item"`
-	ThreadID string          `json:"threadId"`
-	TurnID   string          `json:"turnId"`
+	Item         json.RawMessage `json:"item"`
+	ThreadID     string          `json:"threadId"`
+	TurnID       string          `json:"turnId"`
+	StartedAtMs  float64         `json:"startedAtMs,omitzero"`
+	CompletedAtMs float64        `json:"completedAtMs,omitzero"`
 }
 
 // ItemHeader extracts the discriminant fields from a raw item for dispatch.

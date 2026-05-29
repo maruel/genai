@@ -8,6 +8,7 @@ require (
 	github.com/klauspost/compress v1.18.4
 	github.com/maruel/httpjson v0.5.0
 	github.com/maruel/roundtrippers v0.5.0
+	golang.org/x/net v0.55.0
 	golang.org/x/sync v0.20.0
 	gopkg.in/dnaeon/go-vcr.v4 v4.0.6
 )

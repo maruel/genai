@@ -15,6 +15,7 @@ package openairesponses
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"mime"
@@ -1030,6 +1031,38 @@ type ResponseStreamChunkResponse struct {
 	ResponseWebSearchCallInProgress
 	ResponseWebSearchCallSearching
 	*/
+}
+
+//
+// WebSocket types.
+//
+
+// WSRequest is a WebSocket message to create a response.
+//
+// It adds the "type" field required by the WebSocket protocol.
+// The Stream and Background fields are excluded as they are not used in WebSocket mode.
+// Response-only fields (ID, Status, Output, etc.) are naturally omitted by
+// omitzero since they are zero-valued on outbound requests.
+//
+// https://developers.openai.com/api/docs/guides/websocket-mode
+type WSRequest struct {
+	Type string `json:"type"` // Always "response.create"
+	Response
+}
+
+// MarshalJSON implements json.Marshaler to exclude Stream and Background.
+func (r *WSRequest) MarshalJSON() ([]byte, error) {
+	// Use an alias to avoid infinite recursion.
+	type alias Response
+	return json.Marshal(struct {
+		Type string `json:"type"`
+		alias
+		Stream     bool `json:"-"`
+		Background bool `json:"-"`
+	}{
+		Type:  r.Type,
+		alias: alias(r.Response),
+	})
 }
 
 //

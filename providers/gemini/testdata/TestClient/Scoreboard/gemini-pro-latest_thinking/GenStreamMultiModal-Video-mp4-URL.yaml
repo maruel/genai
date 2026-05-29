@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 358
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"video/mp4\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 200
-    body: "{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting\",\n    \"status\": \"INTERNAL\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Length:
-      - "200"
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1307
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 500 Internal Server Error
-    code: 500
-    duration: 1.318s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"BANANA\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 2,\"totalTokenCount\": 63,\"thoughtsTokenCount\": 61,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"XtcZaobRLdK2jrEPt_fN2AQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvUCCvICAQw51scz9Qehdiu3xdNTDo9sjUPcRiHxvcw+V2fPdp44BfvpkxgAY2mAixIgq2TJOwVWyCKqtMZDDX64xrWq0Ls4S4UBEJrwF2qcylyZak8ybBBv2RXl2RRIJBtZQIXhwMoQ82YN7mTnalnX9u/XO3l77gWCLrFudvleAw6zOHneCLuv35fkBNQgfvnE0+OofjBqGL4JaTXi2lCh1TFdd5Bl8BMgH8BrWKOl6q9GaA28hJAz5jAe/uOUHAzZ9hBayoqXotIuU8N8eiVvXzrzG88vKbsAHZ1NNSe2JBxCxm9s7xcLWVDmmH9Bnoqqvy/U4/37bJD6Bgy0gqW5wRAl/5hgsfNOhtqQwUm+C1WfsmZjq1ghVfyGvjMceFfZMjpW4kVwr7RUMus+CflZbiMv7ly+STC3ecplKJa8QIbKdXyGKWoqrShA5alzq5jSKN2G44YT4p2ivl7DWQ/HI0o5reH4fAAz0f8bzfFaXPjE5aH9SQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 2,\"totalTokenCount\": 359,\"thoughtsTokenCount\": 61,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"XtcZaobRLdK2jrEPt_fN2AQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5254
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.262s

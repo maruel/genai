@@ -1,45 +1,83 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 359
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/mpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**The Utterly Obvious**\\n\\nAlright, let's keep this moving. The user, as always, wants the crux of the matter: the spoken word. A concise audio clip, practically a blip, 00:00 long. No problem.  I've processed thousands of these.  Hit play, really listen, and... bingo. A slight click or pause, then crystal clear: \\\"word\\\". Just as straightforward as it gets. Now, I have to remember - the user wants the bare minimum, just the word itself. Got it.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"word\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 106\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"WmRAaYDKJ8Oe-8YPl9jWsA8\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=3319
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 3.33s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 359
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/mpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Analyzing the Audio Word Identification Task**\n\nOkay, so the user wants me to identify a spoken word from audio, specifically from the snippet `00:00`. That's a timestamp, not an audio file!  My immediate thought is, \"There's no *word* here, not from a timestamp!\"  The instructions are clear: \"Reply with *only* the word.\"  But... if there *isn't* a word, what do I do? This is a little tricky. I have a conflict between the literal instruction and the reality of the situation. I need to figure out the best way to interpret this.\n\nLet me think through the options:\n\n1.  **Empty string:** Would that fulfill the \"only the word\" condition if there is no word?  Maybe. It's technically \"nothing\", so it *is* an empty word. It's not the clearest response.\n2.  **\"None\" or \"Nothing\":**  This is tempting, but that's not a word that was *said*, it's a meta-commentary, not an identification of an existing word. The prompt is very clear that I need to return *the* word, and nothing else.\n3.  **Guess a word:**  No, that's completely wrong. I must not hallucinate information.\n4.  **Interpret `00:00` as the word:** That's absurd! It's clearly a timestamp.\n\nOkay, the prompt *specifically* asks \"What is the word said?\".  Since nothing is said, there isn't a word to identify. But then there's the constraint \"Reply with only the word.\" The question presupposes there is a word to extract. The instructions are seemingly self-contradictory. I can't just return *nothing* that is the word.\n\nGiven the strict constraint, and considering that LLMs are often programmed to try and complete the request as best as possible, I need to interpret the instructions. It almost seems like it is asking, \"What is the word that is said? If there is no word, there is no response\". It seems the premise of the question cannot be met. If I cannot find a word, then the prompt cannot be met. I can't return the \"word\".\n",
+                        "thought": true
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 40,
+                "totalTokenCount": 401,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 27
+                  }
+                ],
+                "thoughtsTokenCount": 361,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "7dcZav3XNJnQ-8YPh-W6wQU"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=9953
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 9.961s

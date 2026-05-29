@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 247
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"generationConfig\":{\"stopSequences\":[\"is\"],\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Examining Canada's Nuances**\\n\\nI'm currently breaking down the request to truly grasp what constitutes \\\"great detail\\\" about Canada. I've pinpointed \\\"Canada\\\" as the core topic, but the directive for high detail necessitates a broad, multi-faceted response. My focus \",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 81,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 68},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing Content Structure**\\n\\nI've establ\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 333,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 320},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Formulating a Response Framework**\\n\\nI've establ\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 388,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 375},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Canada \"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 388,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 375},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=2183
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 2.194s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining the Framework**\\n\\nI'm currently structuring the response, focusing on a detailed overview of Canada. My approach begins with an introduction covering key aspects like its geographical location, vast size, capital city, and major metropolitan centers. I'm aiming for a comprehensive and organized foundation.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"19YZateLOaKssOIPxYbnSQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Outlining the Sections**\\n\\nI've moved on to fleshing out each section individually. I'm starting with geography and climate, then history. Currently I am outlining the Government & Politics section. I am making sure to organize the information chronologically. The plan includes the natural resources, industries, and Canada's vital trade relationship with the United States. I'm aiming for a comprehensive overview!\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"19YZateLOaKssOIPxYbnSQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Detailing Key Features**\\n\\nNow I'm diving deeper into Canada's core characteristics. I'm noting the geographical diversity, from the Rockies to the Arctic, and its varying climates. The historical thread is taking shape with Indigenous roots, Confederation, and independence. My work highlights the government's structure, the economic drivers, and Canada's unique societal aspects.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"19YZateLOaKssOIPxYbnSQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Canada \"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 704,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 690,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"19YZateLOaKssOIPxYbnSQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 704,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 690,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"19YZateLOaKssOIPxYbnSQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2974
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.98s

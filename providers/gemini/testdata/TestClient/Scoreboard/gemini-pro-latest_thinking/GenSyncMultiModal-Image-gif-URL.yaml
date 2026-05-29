@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 353
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/gif\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Unsupported MIME type: image/gif\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=113
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 400 Bad Request
-    code: 400
-    duration: 124ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/gif","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analytical Process**\n\nOkay, let's break this down. A user's given me an image and a direct, one-word answer constraint: identify the fruit. No problem, that's straightforward. First, I analyzed the request: it's a simple identification task with a strict format restriction. Next, I took a look at the image. Hmm, long, yellow, curved, definite stem... ridge patterns... little brown freckles... yep, that's a banana. Obvious. Now, to make sure I'm following the explicit instructions. The user *demands* a one-word answer. Got it. So, how to phrase it, without adding anything extra... the correct answer is, unequivocally, \"Banana.\" Case closed.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EuwFCukFAQw51seRnHAZgeH0PGXsk7rM5gt6OqFh5jQoz+tan0j2YWrKjLCErEgP6fbnsfT1uf/H4vNhic07vPFT9bLg2Wk92XZRcE81zjHcFA/7afm/upDXihK+dfT0yVU4CmSsC/YPlykaHj1ARMEm0v+ZYLawfXinwAgxxZhqMKawflRIfwaOiGzwbmTUlNk6x4z6GllEwh8sC9c5qUMKPiNjJBFpGor1a0oBYFNf5bQqsoOPePkofPBqszJm/LVq6HmrOdPZ69OpqZ0c4TDY7Hte8W2kRKA6U9zK5tanNIgcd85MmCWp0z121laHW1Q9+vTTgkdf5yScoeWbh+xW9getGyxWq78v1xgKe8qwanS8TW8NiAQOd2CZMUeJ5NEA6DbC4W+zKn/OMua14OiQTurHsj3VgQ5f+lY9fvE5od41X1ATJMoA/3Z1+cVsICSJuJfbUqB8crwzPKM1nV4/yVrA+fWsF46ci6oWnA6T/3t1+mWbU7Dt/8yHxzlwCF9wJIQxDVBFZ5ynlIh4Jdb0k1eaqV56Q38RRDnYL+I3jHLCXcykklwgH1HrGa9L307D1n0PUBJtsgRtYkfywi76HyHsmM7hZmLqdXTlIk7V8vlfhPwBO3H99Jurvy0TbtXxdSxuhuhxbzsUXX8qQSP+6Gs1/JE0t6fUC1nY9VtL/PytJStxQqjD3/OXgE7Z4TvV9UwACQsablXwOw/DIgAnbxHRPsz/nSoq1PCnP5Ta15z3ZPzbQUfcbf+YJIEC1NzcR5aMx2cYoIVBJBZgeb8qR5VyKPW3D76WrKn2eRffESpUiZgNUwxFhAcsgRfA7HgDwdS3bhoFlvRjf4cDQrn1YZijV6K1P5Enh19tt1n2xm0k75jrgG6cq5pM0inyuvOasJkYCM39TJFSuzPVP624u6eHku8i8Xx2bvY3eNYoEFQTzs2PjQBKY8PWH/K+k4rSxU+P552CYypUqvpWcEI5BTfqn9m+EktXW8Eoeg=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1260,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  },
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  }
+                ],
+                "thoughtsTokenCount": 162,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "PtcZas37OZK5sOIPzqTH8Ao"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6031
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.038s

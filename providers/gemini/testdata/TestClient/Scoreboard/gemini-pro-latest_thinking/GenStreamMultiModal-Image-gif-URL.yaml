@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 353
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/gif\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 122
-    body: "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Unsupported MIME type: image/gif\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Length:
-      - "122"
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=72
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 400 Bad Request
-    code: 400
-    duration: 83ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/gif","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Identifying the Fruit**\\n\\nI've analyzed the request; it's a straightforward single-word fruit identification task. My image analysis indicates the fruit is long, yellow, and curved, with a dark stem and tip. Based on this, I'm confident in what it is.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 12,\"totalTokenCount\": 12,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"FNcZaqnLLdW9jrEPgaqSgQQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 12,\"candidatesTokenCount\": 1,\"totalTokenCount\": 144,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 131,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"FNcZaqnLLdW9jrEPgaqSgQQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"ErEFCq4FAQw51seVKWpRUuSaBvsX5gismJTUc+h78OpQdjU2T2I7qe2cJz4VVwPyss2tIWWcQgb7Tfy/yoZzQv3sAdruHJhn7XPROS0fD8Z726TdBuCgvsmV4PEjNh2P8RC2xL5Rxg5n9gahhDnDs0VV1XdrmPZf82Ytip3hfqdFNPpwXyJbDRWHuw/6VH+XFikGKQasNJBV8ytIAJpypZ3gywNGN01Mc4m+jdPn49mJ9wrdRA6kAE2xzJ0Gx0uDtYowsY72etE9v+D/73m2w9cMcq9zeUeB+zwq13zcR3684IxxmY9TVlI4iBMgA6Pn0NHV2MBY/yqD9VkNmXYK6RgxvF10EoqYZ6h7b4ofBxHpD6gRGriS+xz7vnfbR8oLIebY67GFTKlZfgkh3GStjQcqvLolre14cUsFvnsLZrPDHrD0qxvl7IvCzIgBCoEFmF7uJnGFaW6KEE8Ip3SmtgwT62qvxJF5FN/+QNldF1uOdLFW2BeBjnP8NWXIuBm4QLDRCCCJO595gH5CW3Axu0prD31MyiB3jsHkOXi71b/jytVUFR0Mg3FdrhB0QkJdJUf4Ey8CRD9uY5qipqd3jbM0r1H7dYRVNLqsrSPVTry7EbmtKofzX1txfSW/B4Iy44e8+CVySmhFUoPq7GkHyP6EhPWRmz8To//NubHYpTv2G5mBcjn39b3uJEBvQ7hdY7WQiwb6yy6S4TnyP40mGkLrou8zBHkklln4yXA+sT30BmcM+Vslnx6LRZJcyxFTYsF3I64EinWj/10hK+7vRD6L3h13ZRcE4C4B9eJcom4v9WLpiHMaGayOk+t08zCbVICNLpcBJ9gIQwLAIHx3lokaG7mX8W/7j2aw5pQicsdjBSSpJ+VDHMd0EpelUSpBu25l9fW3Un+eJ11T/5SIqEqhgMg=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 1097,\"candidatesTokenCount\": 1,\"totalTokenCount\": 1229,\"promptTokensDetails\": [{\"modality\": \"IMAGE\",\"tokenCount\": 1085},{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 131,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"FNcZaqnLLdW9jrEPgaqSgQQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4267
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.274s

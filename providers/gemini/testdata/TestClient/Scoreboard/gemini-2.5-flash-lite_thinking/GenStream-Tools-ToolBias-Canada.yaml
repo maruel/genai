@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 672
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"properties\":{\"country\":{\"enum\":[\"Canada\",\"USA\"],\"type\":\"STRING\"}},\"required\":[\"country\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Evaluating National Merit**\\n\\nI'm currently focused on determining which country, Canada or the USA, is better. The user's query necessitates the use of the `best_country` tool, which accepts 'Canada' or 'USA' as inputs. I'm exploring the data and criteria that `best_country` will consider to render a judgment.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 183,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 68},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"MWRAabGwBPSyjrEPsdqf0AI\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Refining Tool Usage**\\n\\nI'm grappling with the tool's intended function. It takes one country as input, yet the user wants a comparative \\\"best\\\" determination. This is a crucial inconsistency I'm working to resolve. The tool's description is ambiguous and needs clarification. The user's query calls for a *comparison*, while the tool seems designed for *single-country* evaluation. I'm exploring how to bridge this gap effectively.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 406,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 291},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"MWRAabGwBPSyjrEPsdqf0AI\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}},\"thoughtSignature\": \"CiQBcsjafHuV51nLUcSgBqACeC9DuESvH9NWNqvwJv15Bn4eUooKdAFyyNp8+HwM/P+3YgqeU0YktyshxmubhqqZ9s+jR92dry0VUtl9NKqkBhkepdRYP4bWnhZaDFvvBT2Vao2KNzkKXjSfVP1d9i4P2pBy2q3zQZhBOsO4Bx5Y0fmuBd2EfCzh/shNwFC4odnnqCdmg/rGheBsCuoBAXLI2nyZtzjKodHx4L8BLcaAetwtFZTTnBTjJZNapgEDk3bxsvCHfbw2HE7UYgkPS56rKajb7n6hr7Qn4XKfVGueY8AK4B0AP6c/RRMqh3JbKRfuIuaCAaEPNfefQgdWl89IZIxKabbQ1z1Sn0/43knK+OZzFFBTamFBkUUfrrytOKBV3to25VPjK6SVtIsnJAugvgSbKobnIF7p61s95/zpv//bQPXnBCid6b1zxxcTwhaTkCCjOJfQONEBFtzXvdShgGUEIxR/t84d6uVmbg72V5n4TdH3CmeNNVsyF3kBu0WdiAxiSZXYCvgBAXLI2nxB1V4326RzXxSxAE9X+woWf/smhOKorZry62aINfBzYEJwWdKYN2A8ejXfgALNJYMiw9Ryh13b8XRE6HCs7cDY7z78LLRdRgQjkbXPFqiF4nQs4JluICamkWR1JSn9caAMYqnOQTBsXsh72+t5N0+3NvhMGQasFsVhEs822vRuk61wEuxfw7fnTlzA8RDPQf7O1psh97gXUtuve/MbknPcQB+5n84+BDkYzm5mB0LTS3SNZA68ltECXKftUxJjGikpk0sEzZdNndgYmkgvyzwpG1xdKG1+EFu4gewD0Lg1zvNjY2iC7/drZbSDxwe0pKP3te0K5AEBcsjafARCydYmJ0KNysxkKT6RSBUDz+/h7qhr8hySanQn4ttF1mdNPiLKFlpHgqCjhGbCgqRIvv/a+wrb7AzDsKxJmaKnBhdrgHZqhQwf7xXGPnR2D+K07IkyIAYwUq/bOUQxmDbEDBODI0PAdaCG+l915nW820izdhRGSmg2m4I2qlcowBmszuUeppnPXs6dhQnIErtUSAj3opQjqPhK8a66avP4cIfz7XLwHdjY24h7sdVj+OhWiEb0L8njuJxzG7NPYabvs9P2OXw61w55FGJaMYH2vc20qCpnYXWoFFlp39wK9gEBcsjafB+k5jWiMCqN3SfVgovwVPNT2folmFhx7gcx4vjZjhVfbXywt1X9e6oiudHzgpnWga1Fy7G1ygqJXY0iQhAaBE7RF/4XVSyyro/XxolQql5d+xzrEOlnZ4evJF51AcNFjXXZYVmh6TuQI14nHtcAm0oHyBsucpV2GxzEs5Vs7u/APLL8F3Td8SM0bZ24QEeZJXr+uFH/QaNUMMUf6KPLEwM+7CKtxjGU6kKPYHV+rtGFcOMbUw1XQ6ZM722rEooW9cl5MGu96AY5zjF47b/v6p2P/+k8G/YoNzWA1PO8QeGpcrWNfunLFCh7EFp7iXQiu7oK8QEBcsjafGiHqm3qRAkB80dDSVMyuuRZvWMHPZ/MPHhflxfquX2U+OPNWhTl2LAtMHkDqAnwDezrOSl6LsEWRfP3Ee/d4eWzl+GhD0BVyrp8Z0RmGTjq7FCjnJDJ3ITihGEI/nh3JXjRRBlk5YGfdINOnuCJJlRVC5s/oG9+Y8z+Uk/qp05QxQ14nnrX6LtuqetUuDyVGMQwlf01/C2yyxV7+LzugUKqgnQygCzFy2bX4RlkLtVtDYBdjRedQ2c5jvCLEtFea4TBOEh2Q8RbgA+WfYk0MleZ2Eq0T06gEhQLHMupsbBdDtOosl3O/hFVmFZGCnkBcsjafNO5EvadvE3+NyVRgQ9BRAf/rOZF9aGvf4Xwv4Yvq92jpi0WPt/j0Jow2E7XXPPaN41ftpYQBeuAOVVJ+R8zDNUTOdsrVXKgWiSIVBXVOA8NFaMrbmKZ8uZdCbx5gVg6ogxVnH0aYEPa4Bs8tU7zzjpeP77V\"},{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0,\"finishMessage\": \"Model generated function call(s).\"}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 434,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 291},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"MWRAabGwBPSyjrEPsdqf0AI\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1456
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 1.467s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Considering Country Comparison**\\n\\nI'm currently focused on determining how to utilize the \\\"best_country\\\" tool. It seems this tool is relevant to compare Canada and the USA. I have identified a parameter requirement: \\\"country\\\".\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 185,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 70,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"u9cZaoriM7iZ-8YPopuuiAg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Assessing Tool Limitations**\\n\\nI realize the `best_country` tool, while seemingly relevant, doesn't directly support the user's need for a side-by-side comparison. It only accepts one country at a time, making a direct \\\"better than\\\" analysis impossible. I'm focusing on how to communicate this limitation effectively to the user, perhaps suggesting alternative strategies to achieve the desired comparison if possible.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 408,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 293,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"u9cZaoriM7iZ-8YPopuuiAg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}},\"thoughtSignature\": \"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\"},{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0,\"finishMessage\": \"Model generated function call(s).\"}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 436,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 293,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"u9cZaoriM7iZ-8YPopuuiAg\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1346
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.357s

@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 358
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/ogg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Deciphering the Audio**\\n\\nI've listened to the audio file and am fairly certain I've discerned the spoken word. The file quality is pretty clear, making the analysis straightforward. My next step will be to verify this using some of my internal tools and cross-reference with known vocabulary. I'm aiming for absolute certainty before providing the response, ensuring I meet the user's explicit requirement.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 71},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"82NAaYy8LoSf-8YPz8yAsQ8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Verifying the Transcription**\\n\\nMy preliminary analysis pointed to \\\"word\\\". Now, I've confirmed that with my analysis tools, solidifying my confidence. The vocabulary check further supports this. The focus is now on ensuring the response rigidly adheres to the precise instruction, delivering only the single word.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 194},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"82NAaYy8LoSf-8YPz8yAsQ8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"word\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 194},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"82NAaYy8LoSf-8YPz8yAsQ8\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4027
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.038s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/ogg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Interpreting the Input**\\n\\nI've carefully dissected the user's request, recognizing the need to extract a single word from a timestamped transcript. My focus is now on precisely extracting the word \\\"Orange\\\" from the provided input, disregarding the timestamp.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"TNcZavKtB83qjrEPmeyE-Ag\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 173,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 159,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"TNcZavKtB83qjrEPmeyE-Ag\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EroGCrcGAQw51scfP3inRUpW0pTJCAV0ESk3TDd63J0lChQxj0tcNjc8WAqgNNF2euZr2adkM3Kz8P3KqIBpJGrUByofP6/EbTZCJr7u16xt0VWgcbiQnCu2fAQh4lPgarkDeixUkG9ERSJnxnQbrGu/goiyBBAIa7/Sn3qTztc2Ruqi8xGwwB6dy4zcQuUFba1M4Ry6Y1o1hGSQORqzo5g8y/vH6p3vhrUd6aBOQr5Z4EBgUux23Vr4zZcMBy1D8bhrUEiT1P6QR++hhVxfeiJUUkit+nXpewmeAQzwUCRRwGnDdIHO1sOSZhKgWjQD1HFpcq5XnoG8/CQBC/kJiIamq0qweN2CMtga6qWHgOGE7fV10rQLDhnMbT2W4ztwje+Z/oRslNSo5usk3oNaOfC2943MsYhuha5ptQC8I2ZqJRQv28PibxePNbJCvqoZaZHLpATGaY+F9FIQrOj/72Xp901NKz3qyjMTNl2XrMqjwvUQ3E611WZFy7ZwQN3eM72iVbEuYTTHRv1jVXasEGXBBX+gOXKJedg81COZqob6jlTLeF1fg/DYvdZdtGmQWyDQ9LgGzOiYxdBmGWa/+rvumXBgiP4p9l9UlrqjIY39T+J6MTqjLaYQmYgY+2llgnM7eJQ0FFPKe5o84e+MpVOXquqA9j5BKVfMpSrxoP6Un3gRoyKidKEDeBXgqBaLYNIqISlwaGnTSaVfab3Lpe9p9x7l4oXL3tlbxmTZAsNKgk4ESZRxcCm+2D5Mvom58hbCbJhTzjvI7pKzKiNCJbv5VQxeA0JMWSpccIx2lqRfI4VmM4mdRl4rOPbhIFkuqxVyRVpffClbv9lPrbGzuswKACreShOywHYkyMwSDZti41yXmWnukukctZ8ko70+Um2o8Xu5vwiL+5VhAYgsMCBKz/XIRgk7DYN5s3XwumM7GOytVwm+VHtvTBuvMEUzZWZycwLNCX05vmtis5IjJImfsuxHPVP59XvCVzG3sM/jkmtF+hZ89trQIDOhn9JhpnlL5EsHARKGzCTdVYc4O9BjxV5TuGB3lpjlWDo/2jyxgvd4pQm2oD/IyUo9Bw3A40HtIu437fqYtvl7SA==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 32,\"candidatesTokenCount\": 1,\"totalTokenCount\": 192,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 159,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"TNcZavKtB83qjrEPmeyE-Ag\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3625
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.633s

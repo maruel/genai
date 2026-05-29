@@ -1,45 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 206
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"seed\":42,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**One-Word Greeting Analysis**\\n\\nOkay, here's what I'm thinking. The user wants me to say \\\"hello,\\\" but with a catch: it has to be just one word. Right, one word only.  The core request is a greeting.  \\\"Say hello\\\" implies a friendly acknowledgment.\\n\\nNow, let's dissect the constraint.  \\\"Only one word\\\" – that's the tricky part.  Let's brainstorm a few one-word greetings: \\\"Hello,\\\" \\\"Hi,\\\" \\\"Hey,\\\" \\\"Greetings,\\\" maybe even \\\"Yo\\\" or \\\"Howdy.\\\"\\n\\nNow, let's evaluate them. The user *specifically* asked for \\\"hello\\\". \\\"Hello\\\" is the most direct and least ambiguous answer. It satisfies both the greeting function and the single-word limitation. \\\"Hi\\\" or \\\"Hey\\\" work, but \\\"Hello\\\" nails it. The others, \\\"Greetings,\\\" \\\"Salutations,\\\" feel a bit overblown for this simple request.  \\\"Yo\\\" and \\\"Howdy\\\" seem too casual, maybe even inappropriate depending on the context.\\n\\nSo, the optimal choice is clearly \\\"Hello\\\".  It hits the target, it's just one word.\\n\\nLet's double-check: Does it say hello? Yes. Is it just one word? Yes.\\n\\nOkay, I'm ready. The response is simply: Hello\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Hello\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 9,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 309,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 9\n      }\n    ],\n    \"thoughtsTokenCount\": 299\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"f2NAaZKkA8uZ-8YP4NbFqQ8\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=5863
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 5.874s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Response to the Prompt**\n\nOkay, here's what I'm thinking. The request is straightforward: I need to produce a greeting, a salutation. But there's a critical constraint: it has to be *exactly* one word. No more, no less. So, let's break this down.\n\nFirst, I need to come up with some possibilities. I could go with \"Hello,\" that's pretty standard, right? \"Hi\" is also a perfectly acceptable greeting, it's concise. Then there's \"Greetings,\" a little more formal, but still fits the bill.\n\nNow, for formatting, I'll stick with a simple one-word response; however, I'm going to include the punctuation, like a period, because this helps ensure strict one-word compliance. If I simply used \"Hello,\" without any punctuation, it may be possible for someone to interpret the response as a fragment. Therefore, the safest bet is to include the punctuation.\n\nFinally, I need to verify, double-check, and triple-check, that I am adhering to the one-word rule. \"Hello.\" That's one word. It satisfies the constraint perfectly. I am certain that my response, the word \"Hello.\", is accurate and appropriate.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "EpkECpYEAQw51sf1x+m87ntT4R+tq6hk4KbqLDpILJqBuOgSGHy5PVVUGmpXwBpJ0bpHUriaUeV/xgf2O9TvRHu9BGeXI5+93vtmD8JtrTeKh6RyamicE6PGiTrAwTblyeXaJXOeWpvYp3Zv7eDAwZ4uxrTH3oVOYwRrkV9nVPzh+3KeQ5t628A+3ub4FaE12ANKACMtTB2PDORScCD/Riz9NSk9anNc7YCihKxL+uVMw2iarnbx0ZGAi2GRi66LZIAFzOmxcAVZSWSTv/L1xfM2Q2W7TIJBGs4thhoaapQbUDI6nDuM54t+cBo55p9vzf+NjB2HMZgwkI+IUjLyI/JZptwCrT/qAWZWc7+HDx94qVPNiZ4jr55/OXe0r93Y/s8kSzl82p7HGT3Cqs/F0wekzdQ0mtxI9ZTZpKc6yoZ2IF6QLi/TQTlTNBZIv2+Etj+5rTxsQA/1j51bRr86yOT+2Fiqa1yREfFl0vjIK39Yy5BCB23M3FnqDPTsFpIFpBjONboFwHgwl2pveq07VROpsHkhAobZbpt1oALXetibnQ8OSC+sHSVopG0+W7UU15iRZGY5NslWGUy5LMWt46G0ZePw9PqYk7HNQxJSuHXSN9JCZTQpe31W9UiY37tvi6vHi7IVEz+SPP7iXAcM+rXy6RYJWmoBfFgW/Jn/2jdM7wvMw/57W9Sbnk5gzJz8zsNAbiklXqmyO2SI"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 152,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 142,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "1NYZarr_Cby8jrEPvOOP4AE"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4255
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.265s

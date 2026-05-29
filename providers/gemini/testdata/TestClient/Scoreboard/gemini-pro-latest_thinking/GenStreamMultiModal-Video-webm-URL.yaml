@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 360
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"video/webm\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 200
-    body: "{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting\",\n    \"status\": \"INTERNAL\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Length:
-      - "200"
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4293
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 500 Internal Server Error
-    code: 500
-    duration: 4.304s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Isolating the Key Word**\\n\\nI'm focusing on the core request: identifying \\\"said\\\" from the video frames. I'm starting by analyzing frame 00:00, aiming to pinpoint the specific word the user is after. My goal is a precise extraction, and only the word itself.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"Z9cZapfHLYHbjrEP4IGRwQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 355,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 341,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"Z9cZapfHLYHbjrEP4IGRwQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 277,\"candidatesTokenCount\": 1,\"totalTokenCount\": 619,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"VIDEO\",\"tokenCount\": 264}],\"thoughtsTokenCount\": 341,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"Z9cZapfHLYHbjrEP4IGRwQM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6193
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.2s

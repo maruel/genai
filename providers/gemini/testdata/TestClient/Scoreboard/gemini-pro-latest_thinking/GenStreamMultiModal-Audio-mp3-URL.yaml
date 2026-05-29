@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 359
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/mpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Deciphering the Audio**\\n\\nI've successfully identified the user's need: they want the single word spoken in the audio. My analysis of `what-is-the-word-said.mp3` has just begun. I'm focusing on isolating the spoken word amidst any background noise or potential artifacts in the recording.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"12NAad_JFL_-jrEPjemaMQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Pinpointing the Utterance**\\n\\nI've determined that the user's focus is singular - they want the spoken word. The audio file, thankfully, is quite straightforward. The analysis of `what-is-the-word-said.mp3` revealed a clear enunciation of \\\"horrors\\\". My response will adhere strictly to the user's explicit instruction: provide only the isolated word. No extraneous text is necessary.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 136},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"12NAad_JFL_-jrEPjemaMQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"horrors\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 136},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"12NAad_JFL_-jrEPjemaMQ\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=3934
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 3.945s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 359
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/mpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 134,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 120,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"KtcZat-dD-zD-8YPtKGB-AQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EtAECs0EAQw51sfhZHMSFFGGY1YFCYvHH77GmMQrEIglMVI/wooniULiy4dlJSn3l9OWkSyZD5Y3/1zYvwZfO7t/OEGmD0uFtyn8hwFpJIO3oq8SHI4D0tLfPPcmbSmpB00v69uREK3fr6jyQV35jPNmwD7ImcVyo8Vy2/o5LdGBhZvo4A6aQ8BSk2PUPQHcy7Z+tWl1P0nMA5+aNmaWojztGQX2vy2w9Ei3UePV1Fwf583qb2P7JZkQxyn0V32zWbS3YrezgfeVlsuMqAh/UGogu+k0W8+OyXIeVQOZO8UJYJnB4NOzT+urlyamlYjB+RIv337NtDejQDd8Jt9W/wqWGqEtMtTd03e2aP9NCZEoA2zZGJuKa0258S3UWRclqTRhIp+EFErhsmdEqlsAht8lorlLnJoqOfpkdeHYwi2oDuUB00RB/bR81ugwa0AoNgVG/POdG608IFIR0M25ray4lVDbz+epxRBfmsxP7FRsInhmm4tmTpu4kHw/+D9LMT4VEmrdN/ld/IBIpSuepEZci9aeXHAg3s7oHBkmwwQyh7FlUMdgtYVMRsRoC22uxQHpBjV+7qxyhaDnuxv/G7FzNZ3z4NalFhasWyZkfV2JGSlIZtJCpACF2VnrgvsCzXP/o6MV9IKY2f3yY2z4U05UGMptIH3WTeRQqpFtUkQPIQfZtlvRKiwtII74NXFUE9S2CVDcXyW0XSiDS1AOe0A6a4psK36NXvBMqf6YsK/DiOteH2To+JMFDnkG7rgNyi8Y8oEJX0TkC83ypJI96ZHHCw==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 32,\"candidatesTokenCount\": 1,\"totalTokenCount\": 153,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 120,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"KtcZat-dD-zD-8YPtKGB-AQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3563
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.569s

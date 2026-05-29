@@ -28,7 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "The website https://perdu.com displays the text: \"Vous Etes Perdu ?:\" followed by \"Vous Etes Perdu ? Perdu sur l'Internet ? Pas de panique, on va vous aider * \u003c----- vous êtes ici\". This translates to \"Are You Lost?: Are You Lost? Lost on the Internet? Don't panic, we'll help you * \u003c----- you are here\"."
+                        "text": "The website **perdu.com** is a simple, humorous page. In French, it displays the following text:\n\n*   **\"Vous Etes Perdu ?\"** (Are you lost?)\n*   **\"Perdu sur l'Internet ?\"** (Lost on the Internet?)\n*   **\"Pas de panique, on va vous aider\"** (Don't panic, we will help you)\n*   **\"vous êtes ici\"** (You are here) — accompanied by an arrow pointing to the text.",
+                        "thoughtSignature": "EjQKMgEMOdbHLh5E6RpjIAmP92tGspAHiWDzQLLGtLV1zfqLmQV1I1EjdTFKzhpLbBmr+hmY"
                       }
                     ],
                     "role": "model"
@@ -47,19 +48,9 @@ interactions:
                     "groundingSupports": [
                       {
                         "segment": {
-                          "startIndex": 124,
-                          "endIndex": 181,
-                          "text": "Pas de panique, on va vous aider * \u003c----- vous êtes ici\""
-                        },
-                        "groundingChunkIndices": [
-                          0
-                        ]
-                      },
-                      {
-                        "segment": {
-                          "startIndex": 254,
-                          "endIndex": 304,
-                          "text": "Don't panic, we'll help you * \u003c----- you are here\""
+                          "startIndex": 199,
+                          "endIndex": 362,
+                          "text": "*   **\"Pas de panique, on va vous aider\"** (Don't panic, we will help you)\n*   **\"vous êtes ici\"** (You are here) — accompanied by an arrow pointing to the text"
                         },
                         "groundingChunkIndices": [
                           0
@@ -78,25 +69,26 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 13,
-                "candidatesTokenCount": 106,
-                "totalTokenCount": 170,
+                "promptTokenCount": 46,
+                "candidatesTokenCount": 133,
+                "totalTokenCount": 305,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 13
+                    "tokenCount": 46
                   }
                 ],
-                "toolUsePromptTokenCount": 51,
+                "toolUsePromptTokenCount": 126,
                 "toolUsePromptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 51
+                    "tokenCount": 126
                   }
-                ]
+                ],
+                "serviceTier": "standard"
               },
-              "modelVersion": "gemini-2.5-flash-lite-preview-09-2025",
-              "responseId": "CLCIaYqdJKCT-8YPx7uhiQQ"
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "h9YZau7dLMOR-8YPqK3g-QE"
             }
         headers:
             Alt-Svc:
@@ -106,7 +98,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=996
+                - gfet4t7; dur=1523
             Vary:
                 - Origin
                 - X-Origin
@@ -115,8 +107,10 @@ interactions:
                 - nosniff
             X-Frame-Options:
                 - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.009s
+        duration: 1.534s

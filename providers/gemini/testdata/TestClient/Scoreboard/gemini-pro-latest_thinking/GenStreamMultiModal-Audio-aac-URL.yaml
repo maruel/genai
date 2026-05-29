@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 358
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/aac\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Deciphering the Audio**\\n\\nI've listened to the audio file and confirmed the user's request: they're after the spoken word. The audio analysis is complete, and the transcription is straightforward. The word is definitively \\\"Orange\\\". It's a simple, direct request and a simple, direct answer. \\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"4GNAae6JJb2SjrEPnpXloA0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Finalizing the Response**\\n\\nI've finalized my response. The user's directive to reply with only the spoken word, no extra text, is clear. The audio analysis confirmed the simple word, \\\"Orange\\\".  I've formatted the reply to match the user's specific instruction; just the word will be returned. The complete process is ready.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 138},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"4GNAae6JJb2SjrEPnpXloA0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Orange\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 138},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"4GNAae6JJb2SjrEPnpXloA0\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4119
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.131s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/aac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating the Analysis**\\n\\nI'm focusing now on dissecting this user's audio request. The primary goal is clear: to identify a single, specific word. The challenge lies in extracting the word accurately. I'm focusing on parsing the input, understanding the constraints, and setting the stage for audio analysis.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"NtcZatKCObL1jrEP4rnukAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 153,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 139,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"NtcZatKCObL1jrEP4rnukAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EsgFCsUFAQw51sepPN8qrjzwS45G4SCSOETY9mytO353sq9kB82aLQyqLSudDxQ7vyPyvoioB8gE5Q9rxkTyM9/KekuS0eNBwol+LpAQuXN0kqWgbbLOGm0GNthhKfHr+aMQf3ToXMsWGUMjaYyAnm9noz8Eq6bjOBNbpZ8Rner0ufFoM20bHueyIIdcrjo2HgCgbWH8EMfwP7V+VB4REci7y3DUWULe3tcP+LLGYRQPGnSvk+yvLal+A5VXTPNxdMUqqiQ7JnXGgEcoy/wmk0XqWZFjRK1pvBwh2Kh7XxNwfQDSVlS9cR6kDUoMNeF4+6A6DH/FrH+495JVNxAX+Oj9WWms4jO8pwMGWVexN5BXUXJRDx4GVncBoCAIcCdJHN0NFNL0eAdgSa5zvu89ZbvAZNdHS9B+lwUenEsVfMhQhLDg05he3Xt0siHCEyv7DtuhSEcaYrGkpzD8aBTD3sprjbxSixScIycsFEJm42rqqCbMpfBzQHqIqXC8jF/TbCipZUi03B2B6zXNkX9xBaH7Wie17ip4LOyuBzW0p4pTu6Qo8kDmGAuTnZ8MXz6VZfOzx6LfNkMTjGMA29DSzGBcE8k6VNDGlF5w47q/+hWS9GVhidNEmTThnVyDaJiVvZElnzu/tZdigs32HuoCd3/6Yb7kGRZ7DGy/7Hnc3KPm53BK6BTjytcv7S+NCZvnE93N+43Jng7ldxcDul1MkkJO3/T4NRKvMtEi3CWPo//sXzfJJzUXzeqI1nB5I5JrPk5lE/TXArzkXiIhF69IVyB2bWSCp/RpTGsYvaZg029aqb9uh+KJzJr9bOHiB4MB5o9Y+2YgMCs/V4/G+ylPjpaT5IQO7wWZQNaSwAbvHHmOmFY+QoYqXzgJT5X1qRagaHL6etF18Sgn4bsy27I3jApYY4GbM09xqIOsHeB60rJuWXNVFgEFaq48Rg==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 34,\"candidatesTokenCount\": 1,\"totalTokenCount\": 174,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 21}],\"thoughtsTokenCount\": 139,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"NtcZatKCObL1jrEP4rnukAQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4379
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.386s

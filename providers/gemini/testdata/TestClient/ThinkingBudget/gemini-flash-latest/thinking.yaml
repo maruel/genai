@@ -1,45 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 202
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing the Utterly Simple Request**\\n\\nOkay, so I'm presented with a seemingly straightforward task: the user, bless their heart, wants me to utter the word \\\"hello.\\\" It's almost comical in its simplicity, isn't it? As an expert in my field, I could delve into the nuances of greeting customs across cultures, discuss the subtle power dynamics embedded in a simple salutation, or even analyze the linguistic structure of \\\"hello\\\" itself. But the request is clear. They simply want a greeting.  No hidden agendas here, just a direct need for acknowledgement.  This is a refreshingly uncomplicated start to the interaction.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"hello\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 30,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 19\n  },\n  \"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\n  \"responseId\": \"tzNAabaFO-uV_uMPsc2x6QM\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1653
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 1.717s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Processing of the \"Hello\" Request**\n\nOkay, here's how I'm approaching this. First, I need to meticulously dissect the request. The core prompt is to \"Say hello\" – that's the primary directive. However, the critical constraint is \"Do not emit other words.\" This is paramount; a deviation would be a failure.\n\nEssentially, I'm being asked to produce the word \"Hello\" (or a case-insensitive variant) and *nothing* else. I can't add any qualifying phrases, explanations, or even punctuation that isn't part of the direct word. The instruction is absolute.\n\nTherefore, the output must be the word itself. Anything beyond \"Hello\" (or \"hello\") breaks the condition. It's a clean, straightforward mapping: input \"Say hello,\" output \"Hello\" (or \"hello\"). My draft output, based on that analysis, will be: \"Hello.\" (or \"hello\") - as per the directions I am provided.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "EvYDCvMDAQw51sdFIjGqcbL37PLDwJwvgFOmcaIRtNsUx5vbxV2ByBHF7kcw4IBbMaaDSUAHh10QHYZGvJ68aa6KqZIjquELfwtetDX1Wvh03l/izYnxPIE0eEJAZ6dwJ22YvtQBA2n5wEpTXIDyLNkm0btJmXQ1LP/u0IsWLftdVnHFHV4p7OpCVrDS/qoziriNPHDXM6EN3d10cr86VKV2MlevoLP4ynbGnXubaU4WOku66HHQTobx8fuE/AvzIa8T851kb0UsdQltwvMgXoz9bclEiBu5HmL+P2snb6Wsmy0KWVMZ4Vz5UGZ7GXjhwbSg2FfvgZVU2g8kUmv0YzLZ9SZd7s817/a3xPhdBfUnHRozvDbKlBZGXcsWssAew5k5G+a+6rpnKyHa5R5GaRTGO41Qb51X5HBNJgpPLtDz8CGCLVafwSupOTwIMiGftNNr3inTSku2FuUdTDn3sHNRCrO9YWUkJikgFJcFyozU+2ZB0w/EQosCE1X6CRK8xjeckV1zy+usKiVwn1hA0E3IjubJMVP2vYgKkJieadV5ezLECiq7hurQjOWusMNTcszLl/O9PXf15jg5tqggPXpx2N4sTtCloJIoGO3OzekBMYNz3ipIwJl1/xkbR6XIY+5i4YLE0ji5BCRU+AyLguuvMAhXzdEdYg=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 142,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 130,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "DtYZaqDZOdT5jrEPztWlgAg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2771
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.78s

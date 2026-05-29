@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 307
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Determining Quack's Capital**\\n\\nI've identified the core query: determining Quackiland's capital. I quickly scanned for keywords, specifically \\\"capital\\\" and \\\"Quackiland.\\\" My search swiftly pinpointed the relevant sentence: \\\"The capital of Quackiland is Quack.\\\" This provides the straightforward, definitive answer.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 106,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"OmRAadzQNeuc-8YPtLHcCA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining the Answer's Basis**\\n\\nI'm focused on solidifying the reasoning. My approach centers on a precise identification of the source, then confirming its validity. I've narrowed it down to extracting the answer directly.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 140,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 104},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"OmRAadzQNeuc-8YPtLHcCA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is **Quack**.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 9,\"totalTokenCount\": 149,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 104},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"OmRAadzQNeuc-8YPtLHcCA\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1468
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 1.479s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 307
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Pinpointing the Answer**\\n\\nI've identified the central question: the capital of Quackiland. I then quickly scanned the input text for \\\"capital\\\" and \\\"Quackiland\\\". The very first sentence immediately holds the answer. It states the capital of Quackiland.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 104,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 68,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"yNcZaujNJOHpjrEP86v64A4\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Extracting the Solution**\\n\\nThe objective is clear: determining the capital. Following my established process, I've narrowed it down to \\\"Quack\\\" via quick keyword scanning and sentence analysis. I've now formulated the response based on the directly extracted sentence. This straightforward approach allows for a concise and accurate reply.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 138,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 102,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"yNcZaujNJOHpjrEP86v64A4\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is **Quack**.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 9,\"totalTokenCount\": 147,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 102,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"yNcZaujNJOHpjrEP86v64A4\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1282
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.289s

@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 292
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/webp\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 127
-    body: "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Request contains an invalid argument.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Length:
-      - "127"
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1453
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 400 Bad Request
-    code: 400
-    duration: 1.465s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/webp","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 12,\"candidatesTokenCount\": 1,\"totalTokenCount\": 109,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 96,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"RNYZapyUIKS4sOIPgcnmyQI\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EokECoYEAQw51sdSWZkaOfDuYxhSsMWriZBjlt8JjxtFDayKvAlf9NNZehqVH5ZqCCJ7gCK+WK3Y0nytMIJEZZaVngXRSZySiY3cIrcALYkHnovr2uoVoIwYliopKUR9mQfolZyPi+xISaeibC/X7FT2GHA1WDcCtNaPQDmtErpCJclss0WCtKHANOlKaQFw8Q3u9kT65LZ7MVjuYB9pA1BmHlE4LRZd+Ya/1/dZsJza8FC+1zrUHm9vhY7igLZROmFlpFBfvzIQmBydlZD1nnXegTQXevtqrKoa4P+3ml+b2sf3lyBswfoibOBt5pSDgGxQgJ+nv6ajCiQw3PqbSpPWAGTulHRUANKMwMdheFb1rLOgergcn9FLFDSofbPzzojmzN6UCCURxU1XPNU59UTPVz4KQ5aMsSxHw6uPIArDiXYLsCKmRXpY5cGl4aCzjJPwL4SIrwB+py4lzPX7HZY57DH1oGDhvpq1fEkkbYskDnd4ymG6JnwUtMwOIciNCTAlY5PSzhTAUmoSPW6ZfctGicbZtoK5aUNpjlN6xN95yg42uinOmBNbakqV6YHNFk9llhQ723XCYbMu3ly562Sibu0ARmcuiJYoAJk2e/FA37t+dX76X6wVGz5RYwRAGZ6BBvhg0vBZpUQN78nIpw0+pjUuO/PP/sPI1GmycZa7KrVIY08cXjK21fc=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 1097,\"candidatesTokenCount\": 1,\"totalTokenCount\": 1194,\"promptTokensDetails\": [{\"modality\": \"IMAGE\",\"tokenCount\": 1085},{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 96,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"RNYZapyUIKS4sOIPgcnmyQI\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2253
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.26s

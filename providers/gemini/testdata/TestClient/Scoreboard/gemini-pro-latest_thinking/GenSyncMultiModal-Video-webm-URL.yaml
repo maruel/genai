@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 360
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"video/webm\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting\",\n    \"status\": \"INTERNAL\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4414
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 500 Internal Server Error
-    code: 500
-    duration: 4.425s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process on Identifying the Spoken Word**\n\nOkay, the user needs me to identify a \"word.\" It seems straightforward: the prompt says, \"What is the word said?\" so I'm to extract it from the video. My only job is to provide *just* the word, nothing else. The request is very specific.\n\nFirst, let's analyze the video. It's a 3D yellow text on black background, rotating. I need to figure out what that text *says*.\n\nI check the first frame, and it's crystal clear: \"BANANA.\" The rotation doesn't change the word; it remains \"BANANA.\" So that's the word displayed. It's written on screen; there's no audio to interpret. The implied \"spoken\" word is the visual text, period.\n\nMy response must be *only* the word. I'm not adding any context or explanation. I am given visual input, and I am instructed to write \"the word.\"\n\nThe word is \"BANANA.\" Now, to present it in the simplest possible form, I *must* ensure it meets the criteria of only giving the word. Capitalization is irrelevant. \"Banana\", \"BANANA\", or even \"banana\" would all be correct, but let's just write the word exactly as it's written. Given the constraints, I will respond with *only* \"BANANA.\"\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "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"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 277,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 715,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "VIDEO",
+                    "tokenCount": 264
+                  }
+                ],
+                "thoughtsTokenCount": 437,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "o9cZasXbGeSt-8YP4vq3gQg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=10980
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 10.989s

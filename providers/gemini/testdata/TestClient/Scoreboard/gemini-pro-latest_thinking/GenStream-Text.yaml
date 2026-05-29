@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 196
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Refining the Approach**\\n\\nI'm now zeroing in on the critical element: fulfilling the user's \\\"hello\\\" request with utmost precision. The task is clear: a one-word greeting. I've begun exploring potential candidates like \\\"Hello\\\" and \\\"Hi,\\\" aiming for the most suitable choice within the given boundaries. This constraint is driving the thought process towards direct and impactful options.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 84,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 75},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"dWNAacCNLILPjrEP34CdEA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Pinpointing the Response**\\n\\nI've narrowed down the field to the core requirement. \\\"Hello\\\" seems to be the optimal selection for the \\\"say hello\\\" request due to its simplicity and directness. Exploring other greetings felt unnecessary, given the clear user intent. The thought process is now complete, leaning toward the most universally understood option.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 389,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 380},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"dWNAacCNLILPjrEP34CdEA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Determining the Ideal Word**\\n\\nI've rigorously analyzed the options, weighing each against the \\\"one word\\\" constraint. While all fit technically, I've eliminated contextually inappropriate options. \\\"Hello\\\" emerges as the optimal choice, fulfilling the greeting request with maximum clarity and neutrality. The thought process is now complete, culminating in this direct response.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 442,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 433},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"dWNAacCNLILPjrEP34CdEA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 442,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 433},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"dWNAacCNLILPjrEP34CdEA\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=2229
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 2.241s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 125,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 114,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"0dYZapvGDemE-8YPhpaRIQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EpgECpUEAQw51sfHfyVEPn/1mussYGuRVdJQ6IjceOPnbxPoFmhq/W2+7rC6pWJXmmYVgQLVmPB970B4wRwnkf2xHKq4VjqokAvPPStQWwDPhl4Rt+LoOeSv1FfXvPGAKp+IQtBwsnL9wgnZdf0gDuxLy/WwtZZE7cZSgVHrYjdvea2cDBhJTAt92mbGOolK2fpy96BqNrQ33/RPbmq2ubMlMwxtFlyqyjfeCaVu0Q31oHlmSxoe1NZpFg9E/9gEjwhBrQbCCEVrq5hO32XtJILX3s1S/7xzBWiJ9TA4Tc2A5LJSXK/oZ0bJZF3LQcEeILxo9yebgdpTMDhiT9McquhtMQdL3/+Zg5g9EWpTq7rnAGOICbJL4P4XUd7ECd7DFS2ajHzH8tZn0yLHlWgAkUeacl1mCPAIGdLFviQ3KzqOKz/9qqG30EQD/u+WR20OTVpDDHs6GKodI45FAounv8z2IzuFLw6TQA6IBJOG54dDVues6q88dTynv2sGNyo+EKQvzQXp7QW2sEA74qZhkhLJ8/4z11lUhi9mSa20Q928GQ9yGYrXczN20HRFt6fLOJJYlqpZb1y6x07+YmsZD+WoY91fP2Aqlmg5uXCeV8OOF91LrVzB+oylcrQaHtrHCmAvEQA9zJWGxPyjsYSbo+omFyuSlk86c9YcP5RIfH5r+1lRw3WjHKuxLttt0ciC/2iyFhdLVzIzkew=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 125,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 114,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"0dYZapvGDemE-8YPhpaRIQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2101
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.108s

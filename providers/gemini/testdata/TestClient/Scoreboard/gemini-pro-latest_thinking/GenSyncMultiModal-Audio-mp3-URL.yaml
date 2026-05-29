@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 359
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/mpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing and Responding to the User's Query**\\n\\nOkay, first things first, the user wants me to identify a single word from an audio file. They've been very clear: \\\"Reply with only the word.\\\" Alright, got it. Let's listen to this audio clip.\\n\\nHmm, sounds like they're saying... \\\"horizons.\\\" Let me rewind that and double-check, just to be absolutely certain. Yep, definitely \\\"horizons.\\\" The pronunciation is very distinct.\\n\\nNow, according to the instructions, the response should consist *only* of the identified word. No extra fluff, no introductions, no punctuation – just the word itself. So, that means my response will be simply \\\"horizons\\\". \\n\\nLet's do a quick final check: Did I identify the correct word? Yes. Did I adhere to the formatting constraints? Yes.\\n\\nOkay, I'm confident. The answer is:\\nhorizons\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"horizons\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 209\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"5WNAaeH_Me-a-8YPiPfEkQE\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=5458
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 5.469s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 359
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/mpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the User's Request**\n\nOkay, so the user needs the word spoken in the audio identified. The key here is the *only* the word requirement – brevity is crucial. I've got to be laser-focused on extracting the core information and nothing else.\n\nNow, let's look at the input. It's cleverly represented as text, likely simulating the audio itself or a transcription. I see \"00:00 orange\". I can ignore the timing information; it's the actual *word* that's key.\n\nThe extraction is simple: \"orange\". No ambiguity.\n\nThe formatting is equally clear: the user wants just the word. That’s it. No introduction, explanation, or context, just the word. So the final output *must* be \"orange\" or \"Orange\" depending on the situation.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Orange",
+                        "thoughtSignature": "ErwECrkEAQw51sdIY4WJYmgXFdC34GPPApIBc8+wCFbkWwyd5Eor27l48MjhbAd/k0dceRdUTIi/49BoZwDsInq5c6pk6nGqpN5+jt4EgtDzG5jftLewmtRTZrdVR/QhfrRgmqz1y0Ba37Cz2paNscCWI7xMSKGOXRWrzQhbrY4GPHtfqZMK8pVipqFi/SeNX9SVXy6fIbLPU0P5D8xqVS6Xg5CyOn/l43I5miCrZq812xeP+pL9W1tAnso1HaDdvU3pvSWzACDKVY4AGHTQeWJ1CWPj4YGUUf6GY/Urldvvm5uiS6eHhqcxaK5EuHhvtAPDyAnFnPq1nk2/qKcXc+/jA35gaIkkM5uybSmnua+43A4nwsdoVN3CiZ6neo3H7f74gwDH5faIxAHMzt+jsmkeQZg1beW2EGUPab81yHdQBiFf3hRaO6tzb2M4jxQW8CxAHnZn/3IbiWD0DK+IYolqTtXy2zmHJ9D0h6q1hzChqbHuSSQOaqb3KI0LZTQfKMZbp6t0GQSrSfYkhYfDD7DmQXn5XBlNVAhkEHVtosmPUKdbBM0BIf1LQkICmr6M/nqSGjtNJGtOhiNOX9bxfe+nMiKI31wHIse6lA1osyEnbbw8TOw2/mtq1j1Aieh33ZOgDpt5uq0MsPGWNSBpRtYntsDpa95B55olcSXiAi0mZbvm74ZaVcMHOYQXHwwmiCwBknjligfFWbR5E1F2pAvcqrpwoceTroVKXpVEd8uZ6jZ+msIkH/h+2W5b+io="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 162,
+                "promptTokensDetails": [
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 129,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "XNcZavq0NOSc-8YPteagIQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5810
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.819s

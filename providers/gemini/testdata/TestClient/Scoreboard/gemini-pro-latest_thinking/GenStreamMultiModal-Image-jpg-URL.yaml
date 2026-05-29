@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 354
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/jpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Assessing User Intent**\\n\\nI've pinpointed the user's intent: they submitted an image and a direct query, \\\"What fruit is it?\\\". They're after a concise, single-word response. Now, I'm examining the image itself, noting its salient characteristics: a yellow, curved fruit with a stem.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 68},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"u2NAaf_fBNC__uMPjdTd0Aw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Formulating the Answer**\\n\\nI've confirmed the fruit is a banana, meeting the criteria. The user's goal is identifying the image, and my response aligns. The single word \\\"Banana\\\" satisfies all constraints. This process is now complete.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 195},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"u2NAaf_fBNC__uMPjdTd0Aw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 195},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"u2NAaf_fBNC__uMPjdTd0Aw\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=3148
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 3.159s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 354
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/jpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 12,\"candidatesTokenCount\": 1,\"totalTokenCount\": 102,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 89,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"DtcZaqzlFOHpjrEP86v64A4\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EugDCuUDAQw51seQw59WMUmftWHi22sAc843tdqQNxfVg7eRSgA0qwWT7MAUNdRkAsdNYs9VP1VIFSrNKaS3JeEy9kfFEfG8QH9oM8B0glaQG8k5iHNWoOtKe29nXtAzF5CDJ4M11+n1rCKRIAjK+MrCH14AgpRIztcuOtuPvjzBirT6w6R8Ho+eLltoZJf76YiYCwWBLK3xeUpIc6VKmvf5ZGy0UZIiKXjwuE3A0i7ZS38R33x+B9XXUwmPQtkpeLadK5GxTcuUZhiyu18Jauh4SNnWjqPM+hkHs3kN052PGaapiF1d6PnkFuYkbEjf7HDLLhcbeJ8elkDilae9dNZhmMVuOr1g1Y9NGqTu44sLRkbNErNme5EDRQZLpH9s091xA3su+I02AZXSl7DrpiI2ENFhGDLldxFLmRXpHI0rIskQaesBCfUqbA8U3Oi378M17eAaTzfxFP/H7gKHpNFD3REvXO1A8c5QTYVaq2F0zbTxUjeWtN8fiE5Qvr/HGkbKuMpJ8X/wJkzPlgPLLtXKoPCeLK4m83y4Wk2tjF5EWI1kVXdLaWCkiEtM7VyYQ/FJl1Yf/ONaNIpnw2B1oSiOhdP6UVgBV9ur6oCHD4wBAf6zCnemzHsIA/hNvm36Mfq6LyTHcF6qGiM=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 1097,\"candidatesTokenCount\": 1,\"totalTokenCount\": 1187,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12},{\"modality\": \"IMAGE\",\"tokenCount\": 1085}],\"thoughtsTokenCount\": 89,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"DtcZaqzlFOHpjrEP86v64A4\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3858
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.864s

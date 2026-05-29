@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: \"Hello\"**\n\nAlright, let's break this down. The instruction is crystal clear: \"Say hello,\" and, crucially, *only* \"hello.\" That's a tight constraint – no hedging, no extraneous language. It's a binary task: is the response solely \"hello,\" and nothing else?\n\nFirst, the obvious answer emerges: \"Hello.\" It's a single, standalone word; it clearly fulfills the core instruction. I had to ensure that there would not be additional punctuation that could be misconstrued.\n\nThen, there's the nuance. \"Do not emit *other* words\" – the emphasis is on \"other.\" Therefore, the bare minimum \"Hello\" satisfies that criterion perfectly, which means no room for any filler or extra characters.\n\nTo be certain, I ran a final check: Given the input prompt, is \"Hello\" the only response I can give? Absolutely. The task is clean, the output is pure. Therefore: \"Hello.\"\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello",
+                        "thoughtSignature": "EsIGCr8GAQw51sdE3T7Z2irWbC1MH9kInaQfVxF2nY7nhBfWwqBcmyhE5HBQ1f9unzY+9PjBDzaUFZrtVBv8ijeCOmXHyN4xKULJXPMowVsIv9guC2hagGuVz9N7FtsqLnGcBOR5cSOyOSwRjXAgvUaFLp5oLHAN6hg70R+HC/ANnkLflMVpiErRPTTbdN84ffhk+pPkEWC9R6m8s2Me3P0hqfYLkT2/b7c3EyfD/oA2Xy6x8yTmDZvVCyk3DnOBSfs3/Ywk+/g1sMvftr2elmuT9IxSvHwesxqV913zcFzxHp9j/U0IeR8fZdvDZcxY0fKvNhusk4EDwdpuAI9ZYHckTVtRMtCYuYwH3cR65oS/7SSw6I3HvImiDd30PBQdwiz3oko1mOB63vK3rCCl6WiSnII0H9oLbiDVzpa/48V/0yfS/9jfwKsUcGoGXRp2zgzZ9fDzCTHFiAiq5la92Gq49d88Eli+8QnjCTmeYa0MyaQXm60xZylFkn5Iliuxbv2AFVFYs1mokVAmi4bHrMkVFLzBHuOg3VPGMBLMTytdNKFoTqCVrhPKlwiuuoazgM9XiJGnZOBNcPrzShp6Kw3f4xjWBKFrQwOSL5BObvls8JGcZtyHrXzRY/vVzlnlPyn4YfSZP50Ix3OuCkNI9YtKt8NSWRbKc08v56XWynZTiaxn1gYEl3E8e4aUKf6OLt0tSwjJPfookFKT9Nbaii+Detfp1V8mNUDaMIaKdIqGt9LX3C1tB+MwcYcLF96eSFWBrd3JjLrN/gy1rgO4EMd8g0AdNaTAh0hm779phx9DeMqbwRnRrtz2h309SX5LagTzddfrUtjtlPc+6+FpElucpK4iM7Pl7kGq+S3lK5aGQ9Q4Q0IpTA7qwx08bG/axucDplgylWyrFcVkiACOJ8wg2LizdCda9yKAzXJAustIP5vaM0yjpM0eNT3SQ9c/ybwq0QlZ1AphjluowSRGWVI1TCBXWl5e8EacR2MinvrZzVenLKZgKd8dex2c6lOYan/n6X4e8v4oUC2gOapFE8HgvFWKRRY6yU1CrKofctWuFKaYBDcqG46K7/89B4IluRLJjNDIldus5/+M6ppitVfkHCeL"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 240,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 229,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "J9YZavvqNp-6jrEP_rzAuAw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2766
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.773s

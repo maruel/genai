@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 353
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/png\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing the Image and Responding to the User's Concise Request**\\n\\nOkay, so the user sent an image and a straightforward question: \\\"What fruit is it?\\\".  They want a single-word answer, that much is clear.  The image itself is critical. Let's see...  Yep, it's pretty obvious. It's that long, curved, yellow fruit with the stem and the black tip.  Classic banana shape.  The answer's right there: \\\"banana\\\".\\n\\nNow, I need to make sure I followed their instructions *precisely*.  One word.  \\\"Banana\\\" is just one word, so that's good.  I could give more information, but I was specifically instructed to only use one word. Okay, time to generate the reply!\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Banana\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 210\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"12NAaZL-DKvg_uMP14PvqAg\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=8702
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 8.713s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/png","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analytical Process**\n\nOkay, the user wants a quick one-word answer about what's in the image. Straightforward. First, I need to look at the image. Right, a yellow, curved fruit. It has a stem and a dark tip. And those subtle ridges. Easy. That's a banana. Now, the instructions are clear: *one* word. Therefore, I'll format the response with the single word that correctly identifies the object. Done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "ErwECrkEAQw51scRlfFTw72J1kqw+ODe64e0FupmyuSm3PVokVJI3uM0kCrpM9pgUGEVRr4uV63cQpSTT6MD0VT74W3B97J/7qYlXsfu8zhP0AElRJFeFcaCweUGlB6ZzNL48DXGtBGno90AaM5FRs/451gmp4dwtroX9eQVGig/x0FINJJ05zTsm1zglAqrGgkhWrwksi0d0eOKSRGqEoHB6tqTbq4WwE0/8PS7TeSVp8D5hQjrPL2x9wlKqk1J8SQ09dwfneOGols9ZgyjxLzRcuBivtNyfR7AK1vffqk7ZGg/lkmApn7qYIw30vtNOfjb2q3OYDm0uazLTJhuOKxeS2h05WAs3Z4i317QU/6rrGgcU6fkv85dCZGc3kbq4y6hkFke4t5whIozroY2+TbN5D6ccMJ9sx5EpO/YCE1dFudDMnFtgwSVsVFCud1XdXuZJ/y8yIfQLDY++1bpJji+hF+Qdq8YC+Em/UEzLXmnGZK1OslVyV7xAEcO/tiX4GyKL2J5Eo7Bft3gakmUvCRrh5mgkvJ1dVAKEM1ERv9nWOv873RXVUbfvXgZwZD1jU8F4lrKr0QVsFr7rkMiWX45g8KOR6zVnxfMnuGP81MJ1AmUyoE8dgjwKuvo27hb1dbb2UfFIwBnrHIjLJ9V1Ci1nFQ5chefp8UseNJIB1LNEKJX9UOYl0urlHgRyt0v+tM2TGg8KmyJ1/FT0JOhM5QkwXbpZ0OudpwAmzyD6cTK55zu+4clRereyB3JSKw="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1228,
+                "promptTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  }
+                ],
+                "thoughtsTokenCount": 130,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "SNcZap7TG8L3jrEPqoXEoAQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6574
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.581s

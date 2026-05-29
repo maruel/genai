@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 362
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"application/pdf\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Unveiling the Answer**\\n\\nI've successfully identified the user's explicit request: they're seeking a single word as a response. Analyzing the image, I've confirmed it's a single page, which is helpful.  My focus is now on the content within that page, and I'm examining that meticulously.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"smNAaaLIEuK6_uMP1LmOiAs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Refining the Response**\\n\\nI've honed in on the specific word within the image: \\\"orange\\\".  I've double-checked my interpretation of the user's instructions and confirmed I must provide the word *only*.  The number \\\"1\\\" is most likely a page number, and therefore does not hold the answer.  My response is finalized.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 217},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"smNAaaLIEuK6_uMP1LmOiAs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 217},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"smNAaaLIEuK6_uMP1LmOiAs\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4894
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.905s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 362
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 118,\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"B9cZaqrtM7yW-8YPsM7fwQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Ep4ECpsEAQw51sf3G0sAqUU4C1JDrb+rIMWz7iV4Aocv+9W2GtSmMsr1u13yHXIsVHR6dg1yH+gESXQvojZa4kNPxhRHfqmptHqvixhpy4wA4CNnEUva+OEgCzepNYK3hjtbB/kVzswMpnT6iCBe00aho+I/djkjjPSt+U/GbB4gJSYafRXrhT7+CUE9F8nH8/SiqNUC3uCRabAf8uRWrNsd8Qk0e6GP30ZOWCoqXq1UTk4LFNAC5whOxA1pAgmW83OJkkFK3vr8DwxDJ8ducaFmWxDnBQ2kqHA4olSXusA36gYj4kmlY5BfdXqz/vc/YWCzblcJpGiqj4esDwFc0UsF6ypmPAn0AcfA6zwWViyDfqj8DYgkJJ4hsfaB59BwUehUyUWH7By6hEAWSt4Whm4U2XD01IyM9UsIkYKoj6ieQ5hQeSo3Kl0m10gfLcerg5wVx4+oeSzKtqVnkVf/1f32UgsYgDkujNWEhpZ5x5IGm7l4Sv9JG1OnGrzkrzqAkXS1uc3P4HcwCIahxTwKRh5cEaMO9Lv8PUYXXw18muqKSAVvBI3Fo+oQuIcBWUOd+dwcz6tcuwnZyzogH5kM8qSNPgOa/AKzeTZ4/QKgVwkJGx+rP5F7OjOKYCWB01Mzm8G+ezfOxnie69PO2px2keZ8XVRQTlT7JmHrq7czEM+j/tv6/AyEd8bn2XlUHDuB6tBOu/naTIhNxzW7CZiliFk=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 693,\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"B9cZaqrtM7yW-8YPsM7fwQM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3752
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.759s

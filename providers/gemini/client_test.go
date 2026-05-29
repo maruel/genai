@@ -324,7 +324,8 @@ func TestClient(t *testing.T) {
 				strings.Contains(id, "image") ||
 				strings.Contains(id, "computer-use") ||
 				strings.Contains(id, "tts") ||
-				strings.Contains(id, "robotics") {
+				strings.Contains(id, "robotics") ||
+				strings.Contains(id, "preview") {
 				continue
 			}
 			// Make sure models work with default settings. It was not as obvious as it may seem.
@@ -353,7 +354,7 @@ func TestClient(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					if strings.Contains(id, "pro") || (strings.HasPrefix(id, "gemini-3") && !strings.Contains(id, "lite")) {
+					if strings.Contains(id, "pro") || id == "gemini-flash-latest" || (strings.HasPrefix(id, "gemini-3") && !strings.Contains(id, "lite")) {
 						// Pro and gemini-3+ non-lite models always think.
 						if res.Usage.ReasoningTokens == 0 {
 							t.Fatal("Expected reasoning tokens")

@@ -1,45 +1,83 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 291
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Solving for Quackiland's Capital**\\n\\nOkay, so the user needs to know the capital of Quackiland. Straightforward enough. My first instinct, as always, is to pinpoint the core query: \\\"capital of Quackiland\\\". Now, I'll quickly scan the provided text for those keywords. Ah, there it is! \\\"The capital of Quackiland is Quack.\\\" Simple and direct. The answer is staring me in the face: \\\"Quack.\\\" No need to overthink it. That's the solution. Now, to formulate the response clearly and concisely for the user.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"The capital of Quackiland is **Quack**.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 31,\n    \"candidatesTokenCount\": 11,\n    \"totalTokenCount\": 143,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 31\n      }\n    ],\n    \"thoughtsTokenCount\": 101\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"QWRAadzBDO35jrEPl5-TYA\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1911
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 1.923s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Process for Determining the Capital of Quackiland**\n\nOkay, so the user wants to know the capital of Quackiland. Let me get right to it. First, I need to identify the core question, which is straightforward – the capital. Then, I'll scan the text provided for the important keywords: \"capital\" and, of course, \"Quackiland.\" Now, I need to pinpoint the relevant part of the text. Aha! Right at the beginning: \"The capital of Quackiland is Quack.\" Excellent. The answer is staring me in the face.\n\nLet's do a quick verification, though, just to be thorough. Does any other information in the text conflict with that statement? No, the second sentence just mentions a landmark is in the same place. It's safe to say this confirms Quack as the capital.\n\nAlright, time to formulate a clear and concise response. I've got it. That's that.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "The capital of Quackiland is **Quack**."
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 31,
+                "candidatesTokenCount": 11,
+                "totalTokenCount": 181,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 31
+                  }
+                ],
+                "thoughtsTokenCount": 139,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "ytcZapm7KrfBsOIPv_3cwQg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2325
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.333s

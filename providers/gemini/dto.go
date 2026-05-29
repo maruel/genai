@@ -579,6 +579,7 @@ type UsageMetadata struct {
 	CacheTokensDetails         []ModalityTokenCount `json:"cacheTokensDetails"`
 	CandidatesTokensDetails    []ModalityTokenCount `json:"candidatesTokensDetails"`
 	ToolUsePromptTokensDetails []ModalityTokenCount `json:"toolUsePromptTokensDetails"`
+	ServiceTier                string               `json:"serviceTier,omitzero"`
 }
 
 // ModalityTokenCount is documented at
@@ -797,6 +798,7 @@ type FileSearchStore struct {
 	State                FileSearchStoreState `json:"state,omitzero"`
 	ActiveDocumentsCount int64                `json:"activeDocumentsCount,omitzero,string"`
 	SizeBytes            int64                `json:"sizeBytes,omitzero,string"`
+	EmbeddingModel       string               `json:"embeddingModel,omitzero"`
 }
 
 // FileSearchStoreListResponse is the response from listing file search stores.

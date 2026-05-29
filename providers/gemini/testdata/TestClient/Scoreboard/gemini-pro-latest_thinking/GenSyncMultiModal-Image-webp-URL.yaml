@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 355
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/webp\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting\",\n    \"status\": \"INTERNAL\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1346
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 500 Internal Server Error
-    code: 500
-    duration: 1.357s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 355
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/webp","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process on Identifying the Fruit**\n\nOkay, here's the deal. I've got this image, and the user wants to know what fruit it is, but with a specific constraint: just one word as an answer. Right, got it. My process is pretty straightforward: first, I carefully look at the image. I see a long, yellow, curved fruit, a little stem at one end, and a darker tip at the other. It's pretty clear to me that this is a banana. Given the tight constraints, and knowing the user is likely an expert who just needs this simplified answer, I'll go with \"Banana\". It's accurate, and it's one word. I just need to verify that I'm not overthinking it, and that the word \"Banana\" absolutely reflects the image provided. Yes, absolutely. Done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EpIFCo8FAQw51sdFqHskVFhipctp/6+ySwYIm9WkNSbE9/M8gVXetf5wWRWBZkUcb789OhasNjDvQ0Tr+WmGn1WE4r006Z1ZVynnIqEYve2Ok9sw4wPbtn2L8i6Ngfy4ePvxkvjTV5LnlcdsliWmL7EuMfhjDpJSX0vkrVWhydKfdEf++kWROHNwtSCWuGUd4fja8tfn1Q9OhiVvAedb7gF7WQLrER2DZltr2Etw6A408zBtlpYA54gSgizjZCQ7IR0l+g1IR/FPcRHVFDapWa6guKeNJOPfnOwTEnXC37lHU7nfXMevM2Vwe6+YxxqA+T1jnv/sLnu0LUegVfbKHprP+maP8cvz2WkGHvHxsSPctXMDkhBi5NvrdtgDIt/DsN1OWRVhuSgi2SRnqXmh3bNDVuVTxprnglgTwkavHSYGuQkavvMNypdLt7M8obAd4sW4gLUZReI9vxivvbzEJ+KmLYcQz7tOgDAE582L3XHCKFkdSXf2gA3tjM4SWN+ewNGVzn5xukvFvfx0SKejaCz+5CFtsYBsJCoqbE0VOxrwf8knGdEoKmNMpPUH6PREQs/rsnSOxmEIrYUTq/DxwWjBE7bFkQphf+7MmzeKiduzGgGFf7EnQmFUDzSvgZBzjXA8W8i9slQ/QjbMK12XFUjAX4i2f00eAYIEhj0KWXLNdRX3mYOFoV+h6xJmf9JuXl9uyYdURl0ez+Tq9B0dhiChpB0ZgCNYUMxUK5ba7M/0GnFsORPJzFPg4eFNIzv+pZYPAAj8RBSQ4JCg8jgX0hsPlHDjEWZdcGVc1zqnMHqG7Gb3SkMLL+cymggULx1lXbJDXZtno7WJ4TnFMlerMjWoAxiDRDEPqZ90YJfsQC0+yXaVjA=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1244,
+                "promptTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  }
+                ],
+                "thoughtsTokenCount": 146,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "U9cZav3dA9aUjrEPhdT28Ac"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4672
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.68s

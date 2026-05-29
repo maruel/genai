@@ -28,11 +28,16 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**Analyzing Website Content**\n\nI've initiated the process to analyze the content of the specified website. My next step will be to use the `browse` tool with the provided URL, ensuring I only access the intended site. Once I retrieve the content, I plan to thoroughly review the output to accurately summarize what's presented on the page, and then share the findings. I'm taking the necessary precautions to only use the URL provided.\n\n\n",
+                        "text": "**My Approach to Fetching the Perdu.com Content**\n\nOkay, so the user wants the text content from `https://perdu.com`. Classic. My process is pretty straightforward. First, I need to understand the task precisely: they want the *text content*. Got it. No problem.\n\nNext, I need to select the appropriate tool. Given that it's a website and I need to retrieve its text, the `google:browse` tool is the obvious choice. It's designed specifically for this kind of interaction.\n\nNow, for execution. I'll call the `google:browse` tool. My parameters will be simple – a single URL to retrieve: `urls: [\"https://perdu.com\"]`. That should do the trick.\n\nFinally, I just wait for the response from the tool. Once I have the content, I'll analyze it, extract the necessary text, and then provide it back to the user in a usable format. Simple as that.\n\n\n",
                         "thought": true
                       },
                       {
-                        "text": "\nThe website at https://perdu.com is a simple page with a title \"Vous Etes Perdu ?\" which translates to \"Are you lost?\". The content says \"Lost on the Internet? Don't panic, we will help you * \u003c----- you are here\"."
+                        "text": "Okay, here's my interpretation of this information, framed as my own thought process:\n\n**Decoding the Perdu.com Response**\n\nAlright, let's break this down. My first instinct is to recognize this as a French language site, \"perdu.com.\" The content itself is pretty straightforward, it's a simple welcome screen. The headline translates to \"You Are Lost?\" and the next line expands on that, \"Lost on the Internet?\". The next line says, \"Don't panic, we're going to help you\". The * \u003c----- vous êtes ici* line, that is \"You are here,\" strongly suggests a navigation element. It means this is the starting point on the site, a sort of breadcrumb or a current-location indicator. My initial thought is that it's a rather whimsical, self-referential design, playing on the word \"perdu\" which in French means lost. I get the sense it's aiming for a friendly, perhaps even slightly humorous, tone, guiding the user to the starting point. It's a classic \"you're in the right place, now let's get started\" type of introductory message.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "The website https://perdu.com has the following text written on it:\n\n\"Vous Etes Perdu ?\nPerdu sur l'Internet ?\nPas de panique, on va vous aider\n* \u003c----- vous êtes ici\"\n\nTranslated to English, this means:\n\"Are you lost?\nLost on the Internet?\nDon't panic, we will help you\n* \u003c----- you are here\"",
+                        "thoughtSignature": "EuABCt0BAQw51sfnYiv/U+vd5gtKi99EM+wEal00MXfiRkGTD3lCKdnTrD1BNlPopoqbBnbfiZJrpSo7QMy2AXkWp6xnX1RkAWRYpAdMECckqGjBG0N1ia+KPT+UQgPFXPXG94XAOO8F+0rVC8jeCpV88A6bSe/oKhjDQqwZxDzJ0IailWX4VAdsPZzpJVT7K2MKBubaBf9NpRenR/DJJvNO20UvPvxwHV9hAxnzee1ywwhrDYv0LhXr7Y5fXuqXOLhmzGvtnYl8xPc/5Z1Bmft9QtyVSzRQuafYJb7UD1mGiOg="
                       }
                     ],
                     "role": "model"
@@ -43,7 +48,7 @@ interactions:
                     "groundingChunks": [
                       {
                         "web": {
-                          "uri": "https://perdu.com",
+                          "uri": "http://www.perdu.com/",
                           "title": "Vous Etes Perdu ?"
                         }
                       }
@@ -51,9 +56,9 @@ interactions:
                     "groundingSupports": [
                       {
                         "segment": {
-                          "startIndex": 161,
-                          "endIndex": 214,
-                          "text": "Don't panic, we will help you * \u003c----- you are here\"."
+                          "startIndex": 111,
+                          "endIndex": 168,
+                          "text": "Pas de panique, on va vous aider\n* \u003c----- vous êtes ici\""
                         },
                         "groundingChunkIndices": [
                           0
@@ -64,7 +69,7 @@ interactions:
                   "urlContextMetadata": {
                     "urlMetadata": [
                       {
-                        "retrievedUrl": "https://perdu.com",
+                        "retrievedUrl": "http://www.perdu.com/",
                         "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
                       }
                     ]
@@ -73,25 +78,26 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 68,
-                "totalTokenCount": 353,
+                "candidatesTokenCount": 110,
+                "totalTokenCount": 521,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
                 ],
-                "toolUsePromptTokenCount": 168,
+                "toolUsePromptTokenCount": 228,
                 "toolUsePromptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 168
+                    "tokenCount": 228
                   }
                 ],
-                "thoughtsTokenCount": 104
+                "thoughtsTokenCount": 170,
+                "serviceTier": "standard"
               },
-              "modelVersion": "gemini-2.5-pro",
-              "responseId": "DrCIaaakG7KgjrEPzpK5kA8"
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "G9cZatCyBcO9jrEP0qap-AU"
             }
         headers:
             Alt-Svc:
@@ -101,7 +107,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=5812
+                - gfet4t7; dur=8009
             Vary:
                 - Origin
                 - X-Origin
@@ -110,8 +116,10 @@ interactions:
                 - nosniff
             X-Frame-Options:
                 - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 5.824s
+        duration: 8.017s

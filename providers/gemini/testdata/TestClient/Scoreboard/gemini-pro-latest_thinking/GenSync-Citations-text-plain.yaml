@@ -1,45 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 291
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Here's how I'm approaching this:**\\n\\nOkay, so the user wants to know the capital of Quackiland.  Easy enough. First, I need to pinpoint the question's core: \\\"capital\\\" and \\\"Quackiland\\\".  Let's see...  A quick scan of the text... boom! The first sentence hits the jackpot: \\\"The capital of Quackiland is Quack.\\\"  Right there!  The text is handing me the answer on a silver platter.  \\\"Quack\\\" is the capital.  Perfect.  Direct, no need to overthink it, and it precisely addresses the user's question, and is based on the provided data. That will do!\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Based on the information you provided, the capital of Quackiland is **Quack**.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 31,\n    \"candidatesTokenCount\": 18,\n    \"totalTokenCount\": 220,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 31\n      }\n    ],\n    \"thoughtsTokenCount\": 171\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"sWNAab2gEPHn_uMPq4mx2AQ\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=3504
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 3.515s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the \"Quackiland\" Query**\n\nOkay, let's break this down. First, I need to understand what's being presented and what's being asked. It's a classic logic puzzle, essentially. I'm given two statements: the capital of Quackiland *is* Quack, and that there's a statue in Quack. That's just setup – a little bit of information.\n\nThe actual question is deceptively simple: \"What is the capital of Quackiland?\" The beauty, from my perspective as an expert in information processing, is that the answer is explicitly stated *within* the provided information. This isn't a trick question; it's a straightforward query and the first statement is the answer. It's a direct mapping. It's almost too easy, but the lack of complexity is key, there is nothing that muddies the water. The second statement is essentially irrelevant.\n\nTherefore, the answer is, without a doubt: Quack.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "The capital of Quackiland is Quack.",
+                        "thoughtSignature": "EoUECoIEAQw51sfEXaVYMnK/EigMFvIdkmMcZ5arRwmVgwj2eu04d5xPMX650nClv/1k0ZEFYNDkEKCB1v97M+cpkrX3uLK2WTq/ZLAOfOVm+8tQzaUeVADdRiw7leD0H78c58AlgnfUtolEL4OBUigZy/iqVt32lNFJU8K3lI6ZP3BqgN+nE1bLT5hu8DEGMnzp9bfebM6/a2RwuznHMGvrdT19tGAQlkZmS5n2YgeQNd7YiTv3Dnnez+GWik4VXC3SMWARC8zVYV9v/f7KZINnTl6RZpaPY+zS6tQrM3poIH36UXAShRmuxrSkKmQ/AqASZgYeYYYBMt6EwfPbTdLZm9aqveExovY3QJzBfVDzvNYAWIfqC2uLcKOwtkZK7xEFHl47CNOWdKo3gUsA67rd9TBsUI3Z2hdIOzTcsljXZA15hhCPweKwXrTAg0codyO3fgjGQokZNeGFcwZ/uK6sSKrPTOVDDtHKkyZIS2WG5QhYAFh052oAJyfWxNwmmmIz/i9+3l6o3OwYgQRRffmkOm+D/FP47IQZqqUOXCrAYwRzLe5wZ9Fab+CTr/UfGyY+SRH1yhrnysISb+RwSn1ClKZBx2Ur+tAgEl+h3fOTSisJSg5wFDHuS0g6uWmjndXBhr+lQbsEWzJ+XtLfeVOarRxFB/1B2tLX1k/lc6Y9PJm7HkefTg=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 31,
+                "candidatesTokenCount": 10,
+                "totalTokenCount": 170,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 31
+                  }
+                ],
+                "thoughtsTokenCount": 129,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "I9cZavfgBc-D-8YP8diQiQQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3733
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.74s

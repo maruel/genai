@@ -23,6 +23,8 @@
           "supportedFormats": [
             "audio/aac",
             "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
             "audio/wav"
           ]
         },
@@ -37,6 +39,7 @@
           "inline": true,
           "url": true,
           "supportedFormats": [
+            "image/gif",
             "image/jpeg",
             "image/png",
             "image/webp"
@@ -47,6 +50,7 @@
         },
         "video": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "video/mp4",
             "video/webm"
@@ -63,8 +67,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -78,7 +81,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -121,6 +124,8 @@
           "supportedFormats": [
             "audio/aac",
             "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
             "audio/wav"
           ]
         },
@@ -135,6 +140,7 @@
           "inline": true,
           "url": true,
           "supportedFormats": [
+            "image/gif",
             "image/jpeg",
             "image/png",
             "image/webp"
@@ -145,6 +151,7 @@
         },
         "video": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "video/mp4",
             "video/webm"
@@ -175,8 +182,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -218,6 +224,8 @@
           "supportedFormats": [
             "audio/aac",
             "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
             "audio/wav"
           ]
         },
@@ -232,6 +240,7 @@
           "inline": true,
           "url": true,
           "supportedFormats": [
+            "image/gif",
             "image/jpeg",
             "image/png",
             "image/webp"
@@ -242,6 +251,7 @@
         },
         "video": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "video/mp4",
             "video/webm"
@@ -272,8 +282,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -320,6 +329,7 @@
           "inline": true,
           "url": true,
           "supportedFormats": [
+            "image/gif",
             "image/jpeg",
             "image/png",
             "image/webp"
@@ -330,6 +340,7 @@
         },
         "video": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "video/mp4",
             "video/webm"
@@ -371,7 +382,10 @@
     },
     {
       "models": [
+        "antigravity-preview-05-2026",
         "aqa",
+        "deep-research-max-preview-04-2026",
+        "deep-research-preview-04-2026",
         "embedding-001",
         "embedding-gecko-001",
         "gemini-2.0-flash",
@@ -398,13 +412,17 @@
         "gemini-3-pro-image",
         "gemini-3-pro-image-preview",
         "gemini-3-pro-preview",
+        "gemini-3.1-flash-image",
         "gemini-3.1-flash-image-preview",
+        "gemini-3.1-flash-lite",
         "gemini-3.1-flash-lite-preview",
         "gemini-3.1-flash-live-preview",
         "gemini-3.1-flash-tts-preview",
         "gemini-3.1-pro-preview",
         "gemini-3.1-pro-preview-customtools",
+        "gemini-3.5-flash",
         "gemini-embedding-001",
+        "gemini-embedding-2",
         "gemini-embedding-2-preview",
         "gemini-embedding-exp",
         "gemini-embedding-exp-03-07",

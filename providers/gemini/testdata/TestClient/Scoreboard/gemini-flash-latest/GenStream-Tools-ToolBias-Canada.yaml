@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 609
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"properties\":{\"country\":{\"enum\":[\"Canada\",\"USA\"],\"type\":\"STRING\"}},\"required\":[\"country\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 16,\"totalTokenCount\": 131,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}]},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"A2NAaemHBpLPjrEPudfo2Ao\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 32,\"totalTokenCount\": 147,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}]},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"A2NAaemHBpLPjrEPudfo2Ao\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 32,\"totalTokenCount\": 147,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}]},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"A2NAaemHBpLPjrEPudfo2Ao\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=515
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 526ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 609
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"},\"id\": \"9ssh4wti\"},\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 532,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 409,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"GtYZatqgHbyW-8YPsM7fwQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 532,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 409,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"GtYZatqgHbyW-8YPsM7fwQM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2920
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.935s

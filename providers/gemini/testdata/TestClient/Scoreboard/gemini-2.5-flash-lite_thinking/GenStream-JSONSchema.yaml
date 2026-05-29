@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 380
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"properties\":{\"is_fruit\":{\"type\":\"BOOLEAN\"}},\"required\":[\"is_fruit\"],\"type\":\"OBJECT\"},\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Considering Fruit Status**\\n\\nI've determined the answer to the user's inquiry: the response must be JSON, and the schema dictates either \\\"true\\\" or \\\"false\\\". Considering the definition and classification, I've concluded on the appropriate boolean value. I'm now structuring the output accordingly.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 90,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 72},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LWRAaf3LIoDL-8YP4cawYQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Finalizing the JSON Output**\\n\\nI've confirmed the banana's botanical status and, as a result, the required \\\"true\\\" value for `is_fruit`. Now, I'm generating the precise JSON object to mirror the provided schema, thus completing the requested response.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 124,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 106},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LWRAaf3LIoDL-8YP4cawYQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_fruit\\\": true\\n}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 9,\"totalTokenCount\": 133,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 106},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LWRAaf3LIoDL-8YP4cawYQ\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1444
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 1.455s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining Fruit Status**\\n\\nI've determined the user needs a JSON response indicating if a banana is a fruit. The schema demands a boolean `is_fruit` field. My botanical understanding confirms: a banana *is* a fruit, specifically a berry. Thus, I'm setting `is_fruit` to `true`.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 89,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 71,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"ttcZaqW8EZ2s-8YPr4668AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Validating JSON Output**\\n\\nNow, I'm verifying the output strictly adheres to the JSON format to meet the user's explicit requirement. I want to prevent any extraneous characters or information, as this could impede proper data parsing and usage. The user's expectation is a clean, simple JSON response, and I am aiming to ensure it is perfect.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 109,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 91,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"ttcZaqW8EZ2s-8YPr4668AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_fruit\\\": true\\n}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 9,\"totalTokenCount\": 118,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 91,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"ttcZaqW8EZ2s-8YPr4668AM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2647
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.653s

@@ -1,45 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 196
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**One-Word Greeting Analysis**\\n\\nOkay, here's what I'm thinking. The user wants me to say \\\"hello,\\\" but there's a constraint: I can only use one word. \\\"Say hello\\\" is the core instruction, and \\\"one word\\\" is the rule. Simple enough.\\n\\nLet's brainstorm some single-word greetings that are common. I'm thinking: \\\"Hello,\\\" \\\"Hi,\\\" \\\"Hey,\\\" \\\"Greetings,\\\" \\\"Salutations,\\\" \\\"Howdy,\\\" and \\\"Yo.\\\"\\n\\nAlright, now to evaluate them. \\\"Hello\\\" is the most direct and perfectly fits the request and rule. \\\"Hi\\\" would also work, it's very common. \\\"Hey\\\" is a little informal, and \\\"Greetings\\\" is a bit formal. \\\"Salutations\\\" is way too old-fashioned. \\\"Howdy\\\" and \\\"Yo\\\" are both a bit too regional or informal.\\n\\nSo, \\\"Hello\\\" is the best fit. It's direct, it literally answers the question, and it's just one word. No need to overthink it. It's safe and accurate. My final answer will be just \\\"Hello.\\\"\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Hello\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 9,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 335,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 9\n      }\n    ],\n    \"thoughtsTokenCount\": 325\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"eWNAaYzAC9fajrEPuKGF0Qk\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4562
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.574s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Concise Greeting**\n\nOkay, so the task is simple: say hello, but with the tightest constraint possible – a single word. Alright, let's break this down. My mind immediately jumps to the obvious contenders: \"Hello,\" \"Hi,\" or \"Greetings.\" Now, I need to be absolutely certain I comply with the constraint, so let's use the word \"Hello.\"\n\nI'll double check my work. I have the single word. It conveys a greeting. Excellent. This should be straightforward.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "EsgDCsUDAQw51sc4t+4xLbdJw4jWFFgsoOBK4mvfNIgCDCyZtQvSS/UQU8q3reIXskdh7j04AE6eCi+zNYgE+0KiJsSn1yBVk5DWE803Uqs/waMlxvtSwcdK6vKsSF1XGSw4PMo6SQ/UYqCtNBkL35fm1WHlrWtZCwg/PF7bQt3OAbzZF1d+xqqecMP7r1CQHm10X/k4Fu+iJ7WKhfjHw0Lrpk+s/0m9U91qVpO+kjm+Qv6Cz+NI0xqMVM+cNnao0fi8zsgFc9yhMcMkI2AWUSojoNwQO60eVji0BfeQf4MHbX6NMqKTRjXZFpgqzb3yQil/dDDCL7HXMX6yQnNyn7GzUSmS9+SpKmCehLtc4KVA11PM7t2e26SAXkaDjvw+aoFzFWm2KDQY8Umb6nLbyqxl73ErETyumJhvXIkFMXNfX7RuomjzXo+ISoYHjvA6G4E8GekHH4oLEzxO2uSWYEWc1h8WdC2Rvu5tAAGCcKB2mTJ26a8kW6+k4yClm2VY1kW1LRwHwKDddFXi5BdorOnU2omDVcerf4TJongfqn0k5OCTFx21JGIXRuV8zDnMMS4sZOP1MbZynUGD8IXAH7Y1KiFfbHKGV7qr"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 135,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 124,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "0dYZapO_C5-6jrEP_rzAuAw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2967
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.974s

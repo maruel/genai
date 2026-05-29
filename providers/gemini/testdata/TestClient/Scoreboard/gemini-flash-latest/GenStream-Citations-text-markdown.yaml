@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 244
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Quack\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 2,\"totalTokenCount\": 38,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}]},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"CGNAaZukCcLvjrEPo6auoQM\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=393
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 404ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 244
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quack\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 5,\"totalTokenCount\": 175,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 134,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"K9YZapGaLKGb-8YPw7H0QA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"iland is **Quack**.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 181,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 134,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"K9YZapGaLKGb-8YPw7H0QA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvwECvkEAQw51sdmbq3/D3sjoRz2eLZPd05SEzonxwHJZkuSabbS3TGdfY47M+1IoYTpMxp1AUEUatQC0Nr50oG5cwyl2Ya3a+nKfWka4vccHsU2hy11/9ZCgmNVpD36Qzzlglk49qUlJsNAjNX+GojNCBgQxC2+Ppz6TgF8qpw0KDa+NftgvVwPFQt6Sz/mPUOAbNNrKJ+iO2Le/97w3pdiulZ+iXKDyZjezRlZtn7Dpn5fH9azfz06zt9U70gllZ2vF3VMckG2NK+6dYYgAZ5EGNGBs4w86SlcTkHLuL+BzUe4bDnYtXpFIyYKMOfKYSFwGGFn55wqyO+YvUUFzBOrzj2qwKblrSjzRVBdLHZzCcIDpxtSfffq0x3KK+n5F2PqyEGyyoFVQS/4e4xJUn34pfbLBW+jgJkBtNbFPgBpdvl2pw5od4XJABozipn/ejFkyYM4NOIuRCnVddnyfjC3zOoPtcTMIf3BBMApIm7YskRj++zyzKj9lRA9vp4fpNWG+v5s7b11D6nbboy0DVr3ccbd/tuIV+pTAlEr0HFAmNsz3M9kHHua4kXE77FwbDVDn+scqRNdyA0/e34UY/r496DVSmo2iCa50HmZL7kQzpNejva/NLMijIwf5bRje5h2YWWT1pyM36rKQGiXZl2eUjdzzOSWNl7qBwKhpHxYMMqvpeEbOoH3mOmQFQ8+EAMfaT41RuxWGwR7TFrmdfF7IgkM4+IAlIngiZjlwg1XbhfmQ3TzzFc0xpxNdC5B7T3zlaz7lX0gRk2OjpffdrLxKuD0b5R4DJDgxucMR/Sc2kN+ePDzrofxFWn0wFppMFUgLm04VqHgyPSOtjB6\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 181,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 134,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"K9YZapGaLKGb-8YPw7H0QA\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1268
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.275s

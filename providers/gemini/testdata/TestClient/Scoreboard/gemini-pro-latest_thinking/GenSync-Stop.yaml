@@ -1,45 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 247
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"generationConfig\":{\"stopSequences\":[\"is\"],\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Thinking Through the Canadian Overview**\\n\\nOkay, here's what I'm thinking as I prepare to tackle this request about Canada.  The user wants \\\"great details,\\\" so this is going to be more than just a quick surface-level rundown. First, I need to break down the request itself.\\n\\nThe core is obviously Canada, but the instruction to start with \\\"Canada is\\\" is important; it shapes my opening. The phrase \\\"in great details\\\" means I'll need to hit the key aspects: geography, history, government, culture, the economy, demographics, and so on.\\n\\nNow, let's brainstorm. I need to structure this.\\n\\n*   **Introduction/Identity:** I need to nail down the core identity of Canada right away. Vast, diverse, bilingual, multicultural, constitutional monarchy, and known for its nature all feel right.\\n*   **Geography:** This is a big one. Its sheer size as the second-largest country is a crucial starting point. Mentioning the U.S. border (the longest non-militarized one), and the three oceans that border Canada is important. I'll need to break it down into regions: The Atlantic Provinces, Central Canada (Quebec and Ontario), the Prairies, the West Coast (BC), and the North. A quick description of each region should be included. Then there are those essential natural features: the Rocky Mountains, the Great Lakes, the Canadian Shield, the St. Lawrence River, all those forests, the tundra, and, of course, the thousands of lakes and rivers. I should definitely mention Niagara Falls.\\n*   **History:** A timeline approach seems logical. I'll need to start with the Indigenous Peoples: First Nations, Inuit, and Métis, and their long history before any European contact. Then the European influence, from the Vikings (brief mention) to the French (New France, Quebec City, Montreal) and the British (Hudson's Bay Company, impact of the 13 colonies). The Seven Years' War, the Battle of the Plains of Abraham, and the British conquest of New France. I must mention the Treaty of Paris, and the formation of Canada with Confederation in 1867.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Canada \"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 13,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 447,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 13\n      }\n    ],\n    \"thoughtsTokenCount\": 433\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"imNAaa2fB4_h_uMPgJPH4Qw\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=7227
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 7.238s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Canada Summary: A Deep Dive**\n\nOkay, so the prompt is clear: it *has* to start with \"Canada is,\" and I need to cover Canada in significant detail. That's a broad scope, demanding a well-structured approach. I need to make sure I cover Geography, History, Government, Economy, Demographics, and Culture – that's the outline.\n\nFirst, the opening. It *has* to start with \"Canada is...\" so I'll lead with the basics – location, size (second largest!), capital, and maybe a few major cities to anchor the reader. From there, I'll dive into geography: the provinces and territories, the sheer diversity of landscapes – mountains, prairies, the Arctic tundra, the vast forests. Climate zones are crucial, too, to understand the country's character.\n\nHistory demands a careful touch. Indigenous peoples are the foundation; I need to acknowledge them first. Then, the European colonization by the French and British, the road to Confederation in 1867, and the milestones toward modern independence. The history sections must be factual, balanced, and reflect the diverse perspectives.\n\nNext up, the government. I’ll address the constitutional monarchy and parliamentary democracy, the federal system, and key figures like the Prime Minister and, of course, the Monarch. The structure of government is critical to understanding how the country functions.\n\nFor the economy, I'll highlight that it's resource-rich and a mixed economy. The importance of trade (USMCA/CUSMA), key industries like tech, natural resources, and manufacturing will be crucial. I'll need to demonstrate how the Canadian economy works in this current global market.\n\nDemographics and society will be interesting. Multiculturalism is a cornerstone, and bilingualism (English/French) must be emphasized. Immigration plays a huge role. I'll have to delve into the Indigenous populations, and present this section with sensitivity.\n\nFinally, culture and identity. The arts, sports like hockey and lacrosse, key values like universal healthcare and peacekeeping, and the \"polite stereotype\" (yes, it's a thing) will make this a rich section. I can't forget cultural exports, either. I want to convey the breadth of Canadian cultural identity without resorting to clichés.\n\nNow, for drafting: I'll start with something strong and factual – \"Canada is the second-largest country...\" and build from there. I will move to the provinces and territories, and the Rockies, the Shield, the Arctic. The history will cover Indigenous roots (First Nations, Inuit, Métis), and key dates (1534 Jacques Cartier, 1867 British North America Act, 1982 Charter of Rights). Ottawa is the capital and Charles III is the King. The economy section will note the G7 membership, the oil sands in Alberta, timber, and minerals. Strong services and tech sectors in Toronto, Vancouver, and Montreal will also be critical. Society will be about official languages and the high immigration rate. Culture will be hockey, and I'll touch on Tim Hortons/maple syrup (briefly, but professionally). I'll also add literature (Margaret Atwood), and music, but I will stay serious.\n\nOnce the draft is done, I'll go back and verify against the requirements and constraints – ensure I started with the proper phrase, and that I covered everything in sufficient detail. Finally, it's all about smooth transitions and a clear, informative, yet readable tone. Avoid being overly encyclopedic, but ensure the depth of information a reader would expect. This needs to be a comprehensive overview.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Canada ",
+                        "thoughtSignature": "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"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 604,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 590,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "3NYZaq3bA5jqjrEP9oTD6Qo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=25275
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 25.287s

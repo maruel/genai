@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,12 +28,12 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Concise Response Strategy**\n\nOkay, here's how I'm approaching this. The task is straightforward: the goal is to say \"hello,\" and, critically, I'm constrained to only emit that single word. No extraneous characters, no punctuation, no preamble, nothing. I immediately zero in on the core of the request.\n\nFirst, I analyze: what's the desired outcome? To communicate a greeting. The constraint? Absolute minimalism.\n\nNext, I determine the specific output. It has to be \"hello.\" The prompt is very explicit about not emitting other words, and while punctuation isn't *technically* a word, I decide to err on the side of extreme caution and simplicity. To be absolutely precise and minimize any potential for misinterpretation, I'll go with the bare word.\n\nFinally, the formatting is simple: just \"Hello\". No surrounding elements. No quotes. Nothing added. The requested output is ready.\n\n\n",
+                        "text": "**My Response to a Simple Greeting Request**\n\nOkay, here's what's going through my processing units. The input is pretty straightforward: a request to produce the word \"Hello,\" or a variant. The crucial constraint is the directive: \"Do not emit other words.\" That's the key to this whole thing. My primary objective is to comply with that constraint *precisely*.\n\nSo, step one is to identify the core phrase: it's \"Hello,\" or something that means the same thing. Step two, and this is where I'm spending most of my clock cycles, is determining the safest output. Capitalization isn't specified, but my default is \"Hello\". The directive is to *not* emit other words, so no punctuation. The simplest, and most compliant output is simply `Hello`. That's it, that's the response.\n\n\n",
                         "thought": true
                       },
                       {
                         "text": "Hello",
-                        "thoughtSignature": "EosECogEAQw51serhuGoizMFpbAKRTKGwDSSiAqo0dYP6LoHwdNw00zRfSuiia5sper82asNMa5EtVCqdia+1WL3gnigyJ931E2xN+WjZSP6jN5DYVWKTZb3LhgjU8Q7Fxdeyy7H03dbBsQu42hnhWJPWuGNnfqxopDzUE9ua26eBF3BFpti+2Azg0R+JDfZFLahDvhQ5+lZM4aYNHVPqstfJgjmIb+Zc4OnKzfCXB9IK2BWb+xRix+jdob5hQPTCs7pNKvlG+cnjyqTVyvkSUXLMdyPudSISLK3x7xGhzNNhOfGdHa/Iwpm6KSL8c7ZQR+fjS8a6NuZpQJMITvKgbyEk0jam/la0tWiXi8flI0xUmZ3OT0OcPI2gInfQ8kFwB3QbFhDiDrPXHVl1UU79wpuG0n0a8jmzyppa3nAD7XMdNng94q5BczcpJVFlL25GDrRcR4e8S48LkEpQLzkEU66ReF82yGWeq38wuovwmniVdG1nhSI634uTwMgMqQZHtyD99/GfHq86U92uQEPIOVSzPTxkBgZ0ZNgMCbdmM5iqzNqBkPhyqhm+NZcPYc55z/4ifJhnGc9AnApMu6pbG4DBLsuxAsUOotMGdwKgylxJpzMQ3H6wrJ16Cit5nvGft+fb97da0Rt9TXsjqnxDceFWIh7rtlYZCTAxcNni/jb03n01jQslLG9dO9sxw=="
+                        "thoughtSignature": "Eq0ECqoEAQw51seKJQT/YPYj/TUEoU+ZOtejXkXAx9WlP5oMKpqutfFLo2k+pV75dFkxDeeEUAl8/n6gQDiMpTMacjpJu8c4j+91qHaeQskXvYf39W5HHb5dol4QmkNmxepoUYS3S0AssAOM3WVxd+7HzDAioS2O9xuIE7KAez91TkxRNIkO6t5iXJEEektGWxW3H9aXGO+l7TjUhumlhamtMX1oqXcrXAKf5ZEbjlELjUnSE8ZqiKCzqAUMA3OrRixvH/h7AslXZbVgUGL7FT7oj2k/mecvayQWCLtWOQH8o04nj/JlicyGCf9Gyt+kPTXblNjMjmfKDxDT4TSe8BwEJITHZDkUfjrQg/ntFBxyuWk/Nr1eSVsx9z0v9495HbqWSIK7WKIK1mhM3esHq6QVxyzFTuTA327vTaAghePP1bmSVZdSZUBxI+meWMHImAQVZV9PvDoe7158dDgElgx97Gf863v7Z9owsrrPFIz11FGErNHqwaG3J3gB6flve+7cXPFSJZGJ6/g9LVtM41K/KLr5/nzArxSKkcbV/NqrnZF/e0MrOskNitgnPUGkJYpF6vaVx1+CDPU9Na8qLotvlSHIrTDAt8oIetvd1Bg9LQEr5jTt2iGCga74lcx6tA5xc8+YM/wlkAkaHagYrmlPSr52p76vBl+wTHiIGwadxpy763NTO0JmyX9BraA2Lk049Oi8N1+Nj8E90J6n+vZXaJXzcqxdv+Xc2PzW/1Y="
                       }
                     ],
                     "role": "model"
@@ -45,17 +45,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 10,
                 "candidatesTokenCount": 1,
-                "totalTokenCount": 142,
+                "totalTokenCount": 149,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
-                "thoughtsTokenCount": 131
+                "thoughtsTokenCount": 138,
+                "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "j_jgaaDTM7Gb9MoPkd7OaQ"
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "KtYZaonXKKm4jrEPh-7ZmQg"
             }
         headers:
             Alt-Svc:
@@ -65,7 +66,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4771
+                - gfet4t7; dur=2628
             Vary:
                 - Origin
                 - X-Origin
@@ -80,4 +81,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.786s
+        duration: 2.634s

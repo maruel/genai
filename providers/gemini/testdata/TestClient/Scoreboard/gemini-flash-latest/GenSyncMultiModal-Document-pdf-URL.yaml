@@ -1,45 +1,73 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 299
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"application/pdf\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"orange\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1\n  },\n  \"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\n  \"responseId\": \"HGNAaa6fIOaajrEP1uSasQE\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=3092
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 3.103s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 299
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "EuUDCuIDAQw51sfFMNhB7c447ago+ePdyC0oXWX6MLF9YjI3JqRn0+ATzorGsysUMfh677V/cY7C4PvP9SZKujoMoLJb43kh6QF+PpI/QkQm1hvv826o/KvH07T3zYe7ynmbLOzJNck+f/80/xKjXZD4iDut13XSb+Pi1j+NxsSIZKUGCO7Wc7vwIgdslsTZxmFB83ql4CN6RlxTRcwe2+Le3Xh/fvbMHWtIrGou0AmruDYKD9z04ULYNBzfgylUr8rJWaxR0D/M4sz5fdUeqnZJ8+lYq+aDGpOtBbLrxAUG998eG+ufStlWllD5u2GIAAAOZ43ec/lPaGv4tBUv4wTZSOAAmo1u0Oy8mh1EV8GoSaa5HQJNzMjtR/aXdN+AUAoJfAHCUbkU+eYXaSVgk0r0qWqKHV0Y8fk5ZWHuCqsJodihtZiwOvlB1G8DlrCiGXGXbwPzsLCIA1T+a8JNey1y16NPa0vTu3iG/jrQStXnJrplGh11dBQ2SBjqIyKuW00tX6wmJ0BJdfw/fc5z5ef6OBvmYudbso6pWHf3wxJGxRPRLnTS8q+xnmCUXXl8SX4or9U4ynNlB35zhwmYeg7A15zNg/zBfvBpy7jUyO4YsYZ6QjlFEazk/u/Fb4LBcJVpxE2Xga0="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 695,
+                "thoughtsTokenCount": 119,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "ONYZasq6GeHpjrEP86v64A4"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3017
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.029s

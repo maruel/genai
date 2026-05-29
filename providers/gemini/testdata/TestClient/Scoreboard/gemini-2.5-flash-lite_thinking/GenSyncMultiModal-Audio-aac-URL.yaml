@@ -1,45 +1,87 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 358
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/aac\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**My Analysis of the Audio Transcription Request**\\n\\nOkay, so I'm being asked to determine the word spoken at a specific timestamp within an audio recording. The instructions are very clear: \\\"What is the word said? Reply with only the word.\\\"  The given text is the audio, which I am to assume. I need to focus on the content associated with \\\"00:00\\\".\\n\\nThe transcript provided has a timestamp \\\"00:00\\\" immediately followed by the word \\\"zero\\\". That's a direct correlation. Given the requirement to isolate the single word at that time, and the clear correspondence between timestamp and word, the answer is undoubtedly \\\"zero\\\". My output must strictly adhere to the prompt: only the identified word.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"zero\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 211\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"YmRAad6NGems-8YPrI3FqQ8\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4261
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.272s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/aac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the Audio Snippet**\n\nOkay, so the user wants the word spoken at the 00:00 timestamp in this audio. Straightforward enough. I need to get the audio file, listen intently, and then transcribe what I hear at that precise point.\n\nThe audio starts with some kind of sound – I think it's a click or a beep. Then, it states \"zero zero\". That's the timestamp being explicitly stated. There's a slight pause. And then... \"Oh, oh\". That's what I perceive.\n\nI should double-check that, just to make absolutely sure I'm precise. Let me replay that segment. Yes, again, it's \"zero zero\", silence, then \"Oh, oh\". The user wants *the word* said at the 00:00 timestamp. The audio is clearly marking the time, then the content starts. \"Oh, oh\" is what's at the beginning of the content.\n\nNow, here's where it gets slightly nuanced. Is \"Oh, oh\" one word or two? The request is for *the word*. Given the context of a timestamp (00:00) suggesting a single unit of information, that implies a single word or a phrase. \"Oh, oh\" are two distinct utterances of the same interjection. The prompt's focus on \"the word\" makes me lean towards this being a phrase. However, even though two \"oh\" utterances is technically two words, the instruction, \"reply with only the word\" implies, in this context, that the entire phrase is to be taken as a single response.\n\nLet's break it down one more time from the beginning: [Background sound] [click/beep] \"zero zero\" (timestamp) [silence] \"Oh, oh\". The important content, the speech content, begins at the beginning of \"Oh, oh\".\n\nThe user just wants the answer. Based on the prompt and the context of the audio, I believe the response is the entire phrase. The goal is to isolate the *actual* spoken word(s) within that specific timestamp.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Oh"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 40,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 385,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 27
+                  }
+                ],
+                "thoughtsTokenCount": 344,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "_NcZauCjBNK2jrEPt_fN2AQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5502
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.51s

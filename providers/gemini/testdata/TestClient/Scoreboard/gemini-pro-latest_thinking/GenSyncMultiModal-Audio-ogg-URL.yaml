@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 358
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/ogg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing and Responding to the User's Query**\\n\\nOkay, the user wants the single word from the audio file, and they've explicitly said, \\\"Reply with only the word.\\\" That's the primary constraint. Let's get to work.\\n\\nFirst, I need to really *listen* to this audio. Alright, got it. It's a clear, single word. Seems like \\\"once\\\" to me. Let's analyze it phonetically to be absolutely sure. Okay, the sound is /wʌns/. That breaks down perfectly: a /w/, a short 'uh' sound like in \\\"cup,\\\" and then the /ns/ cluster. That *is* \\\"once.\\\"\\n\\nNow, let's go back and make sure I've addressed the prompt. Yup, \\\"Reply with only the word.\\\" Nothing more. Nothing less.\\n\\nTherefore, the final answer is simply \\\"once\\\".\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"once\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 219\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"CGRAaefaCO2S_uMP_ePg4Aw\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=6757
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 6.767s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/ogg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Response to the User's Query**\n\nOkay, let's break this down. The user gave me a straightforward audio transcription, basically just \"Orange\" at the beginning, and they've asked for the spoken word, with the explicit instruction to \"Reply with only the word.\" Alright, got it. It's a simple lookup task: I see \"Orange\" clearly indicated. The important thing is following the instructions. The user wants the bare word, no frills. The prompt doesn't specify capitalization, so either is fine, but I'll make sure it's clear and unambiguous for them. The answer is *orange* or *Orange*!\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Orange",
+                        "thoughtSignature": "EuUDCuIDAQw51sciTWHP4u46dREvrbLse/JReJEN/uFshlsocB62PbyL8P/yFtybDqD1x1wPktfRyrpHciyTWQQnZTIznBnNVT6/iz4pCdeJzBI92AWD52KTBzba4VL1yt5514d7gLn4BKibvRm/1NldYgyuwAVOqyFYZJiKXVsvrBFkYK9TYO3Zt2ItsIj7+g9HJjbO5X+70NbSOZUoXS6XTpv0JhuC0sSSopVCruIVWKQj7WHMfQqrFYkeA9JOH3hSuJfOrus922ofvc4TpcZu+fObfbyp9uUNcYi9WVXPw08F7DP2FQyPiAvOAAvEKYo6dCIsvjLOx1nbYMDJq2cYTK3GjjbkgkXAMZ4MfwCTBC3PAq91PcD/u1m9Hq4cWkaDq+gAR63lQ4/88AYiyq52TLb6/lU9YheoqPia0WN9VA3TWWHC1MOU68WzvVq5MzMVowK/df/cdWF5JK1u72A8za1hThwuN/Dw3Gipf0/oEfWoLJWoYoRTNW6ENR7ziYs1ypKNMZOlSKDtC3Are0fIja8ibcjWpl+swEchvnIM5gZrcPLXyTMoRx8iZ2kHQBgLVxQt8DAgcwQZfx3Lms7TRlpWcHV5nzf/Ytfg2Peu7dZBEeOyn6Ld+SqSuhpzlQjW/F0v8V4="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 146,
+                "promptTokensDetails": [
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 113,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "f9cZaqSII-2Z-8YPqeOA-A4"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4726
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.734s

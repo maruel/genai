@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 295
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/ogg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"ones\",\"thoughtSignature\": \"CsgEAXLI2nwPLhsMOHogPLjqwF6sfg0Yk72nGF9Oduxo8SrdwU0jAX6VVBZSlUIDPGQ9QXNz693FjCjQ2CI2QPjxk+yOh4t++QUBFZJ3bCfvyDeesdm4MJADqRgMOJTIw4sLyg4+cwiJ8QIZ1I2KgHPWsdId2oFy1D1b4PAyjVS4pk5OiUE2WQiebxPqGOpTgQ5aYhx8uQbB8FS87HtssGnX2tQNUjIuVTxm87OEsxtyX37Sg3znNegqtXewtX1HAgggHA4gWqSlzcyxYY4J5Hd3LijhPu8gxxV+XTPYXORugc/iJnKzkjHc8SaTRIXBlRVHQZTjxT8EQX4nQQj4f3axynDolFywIvx2PSTPKhURug4tG8Qm4uSlx3Lm520bAK3uim7puiblNQukTI5c4UQw3B7HLYEXuKBtKSifSqnKyWFvgmEFqbZo4w3HRG4Iw7VrU3hsYZOLOyAtE6Eb7OEQpmZ9+xFKFgNPuQ9ANcs5w86G+KEjNAMCq2YntNYI6XCbStN+G/ji3972Znh5+vWDMU8swcTL69bLfxWZHDxh868sD2sCnGzESdECkUsCwAs3dVbahNvsHAlnOU1jAWuoG5NtOnJnuStnDTT+Anu5qaToSt3NpLcDbcZKIRybaskMfVH+ppmfuAZKZT4NJbCjbSfEV/LUwmpKlw02DZwHDU2sW3Qk1WWC940OGpCqzVFPBsXfZvcNYg6m3TlSKSFjSe85XrZHViMBFrvZGCm+jNtxf4wSpoYOjEcFRxM8Ho3pi6ZQAFEdXQk=\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 108,\"thoughtsTokenCount\": 107},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"L2NAacCSGPOZ-8YPhv-NMA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 108,\"thoughtsTokenCount\": 107},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"L2NAacCSGPOZ-8YPhv-NMA\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=2933
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 2.944s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 295
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/ogg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 128,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 114,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"W9YZapER3K77xg_p_fKpAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EoAECv0DAQw51scMEA5GvkLODp10mr9mT4Gi6jqFTC1cRad64VYOY3/sRD3sHfvqOb8C2BzIIChjARSGf+P4OdJcsOQyBCIDG8/E4y0Zg2zylkqENq+yFp9c9bibgBTEG499EkVIiyj5b4D/ITpM64jO57776FfMhLJKzpubgPrdx+gEwV8KdPZHBux8QpaeISC5uAa3uEQgVUhzJMgPQIxsqRgyDWCaBZXULXwbuK7OPr1qyDZRHj4Auo5bpxGzCQTNn0oUHR3Jk0wgCRjxUFVPc1yRq7b6N0IAI9r9tcnlbR4sMxi7temAbciQjKSqe1H2dU2/cE+VTb90rkNi2ncxUASFDmRbHUD3FeRyNaxxZ3tUf6dQ0yiqFUnDr2MxBn7U7Sdqpj9GUhjYETxXAULGrC+T6LuIek+FqlW73EZCgRC32KzI0S/QT9moYWxeX9M0MyEn4pUpPES/czdmr49RklSOYZLNgVyYOxZ3VU0jl0tlbvgE1PC8pyPooSr6qP+WwOcLnFP+UhiV0I1bIdsv46Lt7xaJQ6snuMDU8XEsGq8JzMuw96GfdwgB386gZln3opAVlTl6C2XVBiwrhNpDEVDyvfWN20hkd65urfL+6O4S9ZDFcPVbmCXUBJepsWBQFAyMh3LqKey6NZ7Xeh8WKWxJlbunnm8OPj8sYhltkV4=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 32,\"candidatesTokenCount\": 1,\"totalTokenCount\": 147,\"promptTokensDetails\": [{\"modality\": \"AUDIO\",\"tokenCount\": 19},{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 114,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"W9YZapER3K77xg_p_fKpAQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3052
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.061s

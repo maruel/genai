@@ -38,7 +38,7 @@ interactions:
             X-Goog-Upload-Chunk-Granularity:
                 - "8388608"
             X-Goog-Upload-Control-Url:
-                - https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw&upload_protocol=resumable
+                - https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AAVLpEgyxw5hT2GXrjvgiokd8gNRZq_7Nb2weHWHiZF8zb5kDUD660rl1QNvo3ajvCmLFHEID3ftAcsY1C-GnrdZfy_vZAmeRJiSzELLpvaWSg&upload_protocol=resumable
             X-Goog-Upload-Header-Content-Type:
                 - application/json; charset=UTF-8
             X-Goog-Upload-Header-Vary:
@@ -46,11 +46,11 @@ interactions:
                 - X-Origin
                 - Referer
             X-Goog-Upload-Header-X-Google-Backends:
-                - unix:/tmp/esfbackend.1770382237.812167.3972696
+                - unix:/tmp/esfbackend.1780020476.342926.3837924
             X-Goog-Upload-Header-X-Google-Esf-Cloud-Client-Params:
                 - 'backend_service_name: "generativelanguage.googleapis.com" backend_fully_qualified_method: "google.ai.generativelanguage.v1beta.FileService.CreateFile"'
             X-Goog-Upload-Header-X-Google-Gfe-Backend-Request-Cost:
-                - "6.9077"
+                - "15.2848"
             X-Goog-Upload-Header-X-Google-Security-Signals:
                 - FRAMEWORK=ONE_PLATFORM,ENV=borg,ENV_DEBUG=borg_user:genai-api;borg_job:prod.genai-api
             X-Goog-Upload-Header-X-Google-Session-Info:
@@ -58,12 +58,12 @@ interactions:
             X-Goog-Upload-Status:
                 - active
             X-Goog-Upload-Url:
-                - https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw&upload_protocol=resumable
+                - https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AAVLpEgyxw5hT2GXrjvgiokd8gNRZq_7Nb2weHWHiZF8zb5kDUD660rl1QNvo3ajvCmLFHEID3ftAcsY1C-GnrdZfy_vZAmeRJiSzELLpvaWSg&upload_protocol=resumable
             X-Guploader-Uploadid:
-                - AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw
+                - AAVLpEgyxw5hT2GXrjvgiokd8gNRZq_7Nb2weHWHiZF8zb5kDUD660rl1QNvo3ajvCmLFHEID3ftAcsY1C-GnrdZfy_vZAmeRJiSzELLpvaWSg
         status: 200 OK
         code: 200
-        duration: 249ms
+        duration: 170ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -74,7 +74,7 @@ interactions:
         body: Hello from genai file upload test.
         form:
             upload_id:
-                - AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw
+                - AAVLpEgyxw5hT2GXrjvgiokd8gNRZq_7Nb2weHWHiZF8zb5kDUD660rl1QNvo3ajvCmLFHEID3ftAcsY1C-GnrdZfy_vZAmeRJiSzELLpvaWSg
             upload_protocol:
                 - resumable
         headers:
@@ -84,7 +84,7 @@ interactions:
                 - upload, finalize
             X-Goog-Upload-Offset:
                 - "0"
-        url: https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw&upload_protocol=resumable
+        url: https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AAVLpEgyxw5hT2GXrjvgiokd8gNRZq_7Nb2weHWHiZF8zb5kDUD660rl1QNvo3ajvCmLFHEID3ftAcsY1C-GnrdZfy_vZAmeRJiSzELLpvaWSg&upload_protocol=resumable
         method: PUT
       response:
         proto: HTTP/2.0
@@ -94,15 +94,15 @@ interactions:
         body: |
             {
               "file": {
-                "name": "files/vvxxaeg0c8dw",
+                "name": "files/qi1b6ynxmps4",
                 "displayName": "test.txt",
                 "mimeType": "text/plain",
                 "sizeBytes": "34",
-                "createTime": "2026-02-07T23:17:06.866519Z",
-                "updateTime": "2026-02-07T23:17:06.866519Z",
-                "expirationTime": "2026-02-09T23:17:06.636822926Z",
+                "createTime": "2026-05-29T18:08:10.139755Z",
+                "updateTime": "2026-05-29T18:08:10.139755Z",
+                "expirationTime": "2026-05-31T18:08:09.916833159Z",
                 "sha256Hash": "NGE1ODM2N2U1ZDYwODNhMzk5OGU2MzNkYmI5ZmZhZGQ3ODkxM2Q2YWQzNzE4YmNmZDA2ZWFiNDUzYzcwZGRmYQ==",
-                "uri": "https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw",
+                "uri": "https://generativelanguage.googleapis.com/v1beta/files/qi1b6ynxmps4",
                 "state": "ACTIVE",
                 "source": "UPLOADED"
               }
@@ -123,10 +123,10 @@ interactions:
             X-Goog-Upload-Status:
                 - final
             X-Guploader-Uploadid:
-                - AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw
+                - AAVLpEgyxw5hT2GXrjvgiokd8gNRZq_7Nb2weHWHiZF8zb5kDUD660rl1QNvo3ajvCmLFHEID3ftAcsY1C-GnrdZfy_vZAmeRJiSzELLpvaWSg
         status: 200 OK
         code: 200
-        duration: 500ms
+        duration: 592ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -137,7 +137,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw
+        url: https://generativelanguage.googleapis.com/v1beta/files/qi1b6ynxmps4
         method: GET
       response:
         proto: HTTP/2.0
@@ -147,15 +147,15 @@ interactions:
         uncompressed: true
         body: |
             {
-              "name": "files/vvxxaeg0c8dw",
+              "name": "files/qi1b6ynxmps4",
               "displayName": "test.txt",
               "mimeType": "text/plain",
               "sizeBytes": "34",
-              "createTime": "2026-02-07T23:17:06.866519Z",
-              "updateTime": "2026-02-07T23:17:06.866519Z",
-              "expirationTime": "2026-02-09T23:17:06.636822926Z",
+              "createTime": "2026-05-29T18:08:10.139755Z",
+              "updateTime": "2026-05-29T18:08:10.139755Z",
+              "expirationTime": "2026-05-31T18:08:09.916833159Z",
               "sha256Hash": "NGE1ODM2N2U1ZDYwODNhMzk5OGU2MzNkYmI5ZmZhZGQ3ODkxM2Q2YWQzNzE4YmNmZDA2ZWFiNDUzYzcwZGRmYQ==",
-              "uri": "https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw",
+              "uri": "https://generativelanguage.googleapis.com/v1beta/files/qi1b6ynxmps4",
               "state": "ACTIVE",
               "source": "UPLOADED"
             }
@@ -167,7 +167,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=71
+                - gfet4t7; dur=91
             Vary:
                 - Origin
                 - X-Origin
@@ -180,7 +180,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 83ms
+        duration: 98ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -206,15 +206,15 @@ interactions:
             {
               "files": [
                 {
-                  "name": "files/vvxxaeg0c8dw",
+                  "name": "files/qi1b6ynxmps4",
                   "displayName": "test.txt",
                   "mimeType": "text/plain",
                   "sizeBytes": "34",
-                  "createTime": "2026-02-07T23:17:06.866519Z",
-                  "updateTime": "2026-02-07T23:17:06.866519Z",
-                  "expirationTime": "2026-02-09T23:17:06.636822926Z",
+                  "createTime": "2026-05-29T18:08:10.139755Z",
+                  "updateTime": "2026-05-29T18:08:10.139755Z",
+                  "expirationTime": "2026-05-31T18:08:09.916833159Z",
                   "sha256Hash": "NGE1ODM2N2U1ZDYwODNhMzk5OGU2MzNkYmI5ZmZhZGQ3ODkxM2Q2YWQzNzE4YmNmZDA2ZWFiNDUzYzcwZGRmYQ==",
-                  "uri": "https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw",
+                  "uri": "https://generativelanguage.googleapis.com/v1beta/files/qi1b6ynxmps4",
                   "state": "ACTIVE",
                   "source": "UPLOADED"
                 }
@@ -228,7 +228,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=78
+                - gfet4t7; dur=129
             Vary:
                 - Origin
                 - X-Origin
@@ -241,7 +241,7 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 91ms
+        duration: 136ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -252,7 +252,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw
+        url: https://generativelanguage.googleapis.com/v1beta/files/qi1b6ynxmps4
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -270,7 +270,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=497
+                - gfet4t7; dur=653
             Vary:
                 - Origin
                 - X-Origin
@@ -283,4 +283,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 508ms
+        duration: 659ms

@@ -1,49 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 297
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/flac\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.flac\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    form:
-      alt:
-      - sse
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Orange\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"KWNAacLwM_eZ-8YPjeyKuA8\"}\r\n\r\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Disposition:
-      - attachment
-      Content-Type:
-      - text/event-stream
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=2681
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 2.692s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 297
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/flac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.flac"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 186,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 172,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"VdYZasmoFJvOjrEPivujWQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EqMGCqAGAQw51scM+UKoLomTteHjrdYctNmd17pEbGREyBb6rwnwinZQM51SsHA0pVZogbItVltNOp30JXwVsrBqgbz1nI4K3z/TzOi7LguACK276+yq0fCDcOKVvDUVzMwVF80/+/6bftiLHzC66UstACL3bfsQiYoJSUa3vgY74pSAAQjsM3SkCPxjlFZwrl9R26DdokQoh0gPM15+DMXvae+RDBZzuOY4fCaSpEVFBjH/sF0uKnOBBPQC+nlhLZRymUp1d/ir/p868x3XpreaRmSLmVzOgscmO/nmaD6wIhEgrxKHNv7qgiBmUmrTBjije7bW10oX/UKoLYUnzVNJ179Wgz2lnNICEV8OlaC6BJZ8pQpLMa4JZ8/swk0f0yHR/Gk7ovCttF2kidF0woXbBVOMQyvR4RzoFHR4SWU0YdL08FA4bf4KZHnX8hkHojNNGxbpuwIbqIqtWkorRjFkmRaEJdDs2Z43AiUadP81gIx6pQI62/kWIwef+bvDo9CaiRWuXc3j10YV8m3P28KRjl0E0xCDipKL6mG4gJWqto+beZCcIZ6ObYLH9qw8x3Eh55yd+YTo1XZvga1/jwhYWq5jTJctXazrUbiXWw3U//HjfIfgaw5v9KZCojfNLoOqiGDZ3m1FVpOq6b0OrQP6iR3ZZVSp2Dnc//WyEKqi0oEjzIBea43O5VPArGzYnGrrZIl+eme23kjxJF4J82OtC3bpbpFW+yTwu56Cuph8+tUuBaZ5rId6CiPumHIOjVmQj1haEZXroovZgUjO4p7+jqV1P4HzFrC1f7KVf1MvjfcgtJEQgkq0UrQssqQxVh5kaD9SKW1Ljr2Hmwa2+daVCN5Z5EZSmy7+vigHwsZohezQjlvZo3duu24FRgNylQnGsq75dt9wn7DZMDCs3/sVDFXS2hhOZYPq8wzwbQ62l6Li+Bgr/l2wb3ruSRNJoD+truB71jXs7L/32yXXjKTc/n8G64vb0ityF2bMyk33vvKWCQG/daIi9JbaFBz9/xX5GdxluB4u8MgNQ0FTp+OygQIQQ54KX0JAHAzPLoU8dXGdAdU=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 32,\"candidatesTokenCount\": 1,\"totalTokenCount\": 205,\"promptTokensDetails\": [{\"modality\": \"AUDIO\",\"tokenCount\": 19},{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 172,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"VdYZasmoFJvOjrEPivujWQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3884
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.894s

@@ -28,7 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "The website https://perdu.com has very little on it. The text you'll see says:\n\n**Vous Etes Perdu ?**\n**Perdu sur l'Internet ?**\n**Pas de panique, on va vous aider**\n**\u003c----- vous êtes ici**\n\nIn English, this roughly translates to:\n\n**Are You Lost?**\n**Lost on the Internet?**\n**Don't panic, we are going to help you**\n**\u003c----- you are here**"
+                        "text": "The website [perdu.com](https://perdu.com) is a famously simple French webpage that contains only a few lines of text on a white background. \n\nHere is what is written on it:\n\n\u003e **Vous Etes Perdu ?**\n\u003e \n\u003e Perdu sur l'Internet ?\n\u003e \n\u003e Pas de panique, on va vous aider\n\u003e \n\u003e \\* \u003c----- vous êtes ici\n\n### Translation:\n\u003e **Are You Lost?**\n\u003e \n\u003e Lost on the Internet?\n\u003e \n\u003e Don't panic, we are going to help you\n\u003e \n\u003e \\* \u003c----- you are here",
+                        "thoughtSignature": "EpUECpIEAQw51sfupCox43oTrFzv2d6KlBGwwV+7lN/+wlVwVYrElGlo91w5va0jSZ5p6Q3722IgoXu7a+f34FwMFl2FeJ87xV7YfZkUZvDXse81bDOBx3NQGVzYaQng6XzypVCmNL6AMx3+97O3bgyJhgr/db/0yMkFWCG/bkQ78Y9bXdvH51zoeNpPL8qWFIFyFDTY0rSR43xXfAeBk8Q2SB+vn4jV3HM9ClKRSWdKVqzeptoB4TzGJug9jDMUvYiXsIlJ7qTMNQvCjHZ8c8FR8ycHh+Utr7oCASpxUgdVlgf18spKL6xKW4YUJk0nSUFe+A8EPV37k88oM2TVPbaihtW20XXA8a1GM62fdDMbtC2eCL8ChnHFzsl7tWeop177KrCX00zH60jZNmt7LNlIKE3DP3Z9vzGH68TSzZDivefiGCOXmguwZMcmrMR7mrnduyCCQRWEwL1+TwqJAX5m6IXCrR4FYuAPCi6XUirWgCdQDdoV8oGaA3wcCHUGFWv820ixcI0j5lOEGDgY64J0VQk9SGAhLpcFz8Xkb/5ECftP8kDzEBQLo3P35AHzPWQXVvwbiNDGKS1MQIwgE7JcBKtVhjx/9My6HS7DAOFZnDkxrkCdZqH/NRF81uTf6Nrx1tkpPHsOiIceRhCCdfue2IgIRZHc8TPOSIHJYII9Aws4jHZ9fi3U8lfaCEBekVoJHzoCdYs="
                       }
                     ],
                     "role": "model"
@@ -39,7 +40,7 @@ interactions:
                     "groundingChunks": [
                       {
                         "web": {
-                          "uri": "https://perdu.com",
+                          "uri": "http://www.perdu.com/",
                           "title": "Vous Etes Perdu ?"
                         }
                       }
@@ -47,9 +48,8 @@ interactions:
                     "groundingSupports": [
                       {
                         "segment": {
-                          "startIndex": 275,
-                          "endIndex": 343,
-                          "text": "**\n**Don't panic, we are going to help you**\n**\u003c----- you are here**"
+                          "endIndex": 139,
+                          "text": "The website [perdu.com](https://perdu.com) is a famously simple French webpage that contains only a few lines of text on a white background"
                         },
                         "groundingChunkIndices": [
                           0
@@ -60,7 +60,7 @@ interactions:
                   "urlContextMetadata": {
                     "urlMetadata": [
                       {
-                        "retrievedUrl": "https://perdu.com",
+                        "retrievedUrl": "http://www.perdu.com/",
                         "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
                       }
                     ]
@@ -69,24 +69,26 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 115,
-                "totalTokenCount": 318,
+                "candidatesTokenCount": 161,
+                "totalTokenCount": 738,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
                 ],
-                "toolUsePromptTokenCount": 190,
+                "toolUsePromptTokenCount": 271,
                 "toolUsePromptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 190
+                    "tokenCount": 271
                   }
-                ]
+                ],
+                "thoughtsTokenCount": 293,
+                "serviceTier": "standard"
               },
-              "modelVersion": "gemini-2.5-flash-preview-09-2025",
-              "responseId": "BrCIaZuuJJ-Z-8YPsKHUoAY"
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "MNYZavHpGa6W-8YPxp-a8QM"
             }
         headers:
             Alt-Svc:
@@ -96,7 +98,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1059
+                - gfet4t7; dur=3457
             Vary:
                 - Origin
                 - X-Origin
@@ -105,8 +107,10 @@ interactions:
                 - nosniff
             X-Frame-Options:
                 - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
             X-Xss-Protection:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.125s
+        duration: 3.463s

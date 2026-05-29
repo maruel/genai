@@ -1,45 +1,90 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 662
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"properties\":{\"number\":{\"type\":\"NUMBER\"}},\"required\":[\"number\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Calculating a Square Root - Efficiency is Key**\\n\\nOkay, I've got a number: 132413. Time to get that square root. No need for a drawn-out process here; the user just wants the result, plain and simple. Thankfully, I have the `square_root` tool at my disposal. It's expecting a float, which is no problem. I'll call it with `number=132413.0`. Once the tool's done its job, I'll grab the `response` field and output that directly. No need to over-complicate things, the user's intent is clear. Let's get that answer and keep things moving.\\n\",\n            \"thought\": true\n          },\n          {\n            \"functionCall\": {\n              \"name\": \"square_root\",\n              \"args\": {\n                \"number\": 132413\n              }\n            },\n            \"thoughtSignature\": \"CqgDAXLI2nxY7gK8bnAUhM8mV07BGdZXe6WMSjYjkDbSOqxWE68EGE8LOQm5YBDqqeqEZdWLj0MCrtpOyVLRtWbScliLhW7+zuUkW+GMavsieaA1osAv+jFNpzCrxzDLGS+9oJqSYhE6Kx5zvF+XmBQsTgkP3L8I3nXiDbgxmnU3PgSL+L19/B+cUuH/EpdQrHiJ+Ecv7Ai+15kwQTKaezUCYgEaqfmRUXdTDcHUWHphTYjM7pEF6+SM/kBtsSMova82t2g+9hlEIUcwSXK0YgLGE9L3Wd9EgtnkXYz8heBCzWsvuGmJWvZcX7sf/m4L68AX/9m6R4/CldKu5aPC8NwqhSLT5c3e+alomcr8Kp092pz4MYW7fLj75KOv0i7DU3xWJB6U3dOm3jsM2ToVxPP6jDVvmjP5VtQQ9n0ivLUxTmKpeLUgyg1WnRl2OVZlnYM3fHad9ZNgDUBsjnbzh8cM6aoXvF0Db5LuxsDnl64P4vdcjfCPo19W4CBHjGcbATuc2S2lsH+dzTJOMwctIG+Q0C2rvAN8z0JvYCHqfdcIeWQ3gBMVaK4gqQ==\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0,\n      \"finishMessage\": \"Model generated function call(s).\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 117,\n    \"candidatesTokenCount\": 20,\n    \"totalTokenCount\": 247,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 117\n      }\n    ],\n    \"thoughtsTokenCount\": 110\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"NGRAadazDIee-8YP47CksA8\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=2037
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 2.047s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Calculating the Square Root**\n\nOkay, so the user wants me to find the square root of 132413. They are very precise in their instructions - they want just the result, no extra fluff or explanations. This means I'm going to use the `square_root` tool. I'll need to feed the number 132413 to the tool as the `number` argument. Once I have the result, I'll output *only* that value. Simplicity is key here; the user knows what they're doing, so my role is just to provide the requested data. No need to overthink it. Let's get this done.\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "square_root",
+                          "args": {
+                            "number": 132413
+                          }
+                        },
+                        "thoughtSignature": "CuUCAQw51sfoolwx4NN/PkvPlitqekCtiIQXGKEU9YiEdkL23KjaDfDxPLF4MsztiTTwEG+5IFtEMp/yx8EjO2i+6vatpX5TRuxa+2868OZ/Pr7kk4Apw2XHK20xdUUEsCdoo7QYjAv+Gkb95J2u6/fveYBJWJIiobLus88mPwMN9giB/5VCH76w469LzsOjNFgtVcOhR1gu5Rvm+tMadgBOJ/9Z5iLG/V2sq6K+lmpbRhj9KmmrPLVaVjTP3Phong+KgnLPQgld1qq5O0lZElUhKrRliwrHmQ4muDPAs+wV98y3dw4dalmUQQzczE3HW5w489IqHhNrueyo/+sreFQ37zdUbnf9fJjOQ+/vsyIqJ/cB97IU+9SuHAlQAN2At+qR5Y2SDuRf17G4ObdLsRcGZ0NMT4P2zIhe8hbATFiL3lxTgAAjaPPnlESTzpmI9otd3HDQ7emAxquBcLuDXxYliIVAfLH2"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 117,
+                "candidatesTokenCount": 20,
+                "totalTokenCount": 226,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 117
+                  }
+                ],
+                "thoughtsTokenCount": 89,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "vtcZau6RAaKssOIPk9fuwQQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1807
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.813s

@@ -1,45 +1,73 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 295
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"video/mp4\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Request contains an invalid argument.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=1449
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 400 Bad Request
-    code: 400
-    duration: 1.46s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 295
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "banana",
+                        "thoughtSignature": "EoQGCoEGAQw51sddySQfsFobqbAtZ60YrqdE/JRbLp3LEMBBJ01ogD/RX6RVBxGtitFs+hHzu4jaNCxPhvO37zgXC2T+Wwd+G+zLZkiELIKiDTjiEe01GjFkP1M0amWSDquBxMkgIVZ4Dj799V+viL3yfj4sAiWrNUDrrvacS3y1XhQeXmVxUmuLrSFpp2m15ZSFhfdzAD4YMP2+k2VTuQlp1GhUXvy0pOj8TNouj7xCr1ytprl/nquDW35OO5qjrlAQOxKea0WbZse9h2o0O8kAogwHcJasUtBNrDcCrF78jYLgqii4qsA37DzJyNug0t/IVIx4yz5tlwBtXRTK+VISNbG/9C8DSjv5/s/p+maZCYr/9LySGdidjDu39Aju6eHZvIIKs5oNzwzMw75FPYNMsaEUsTl5jAceXZw+lreWJvmd7cL8NVwZ7mIi3PLqrEOfcGy+AbUZjvQd0hNy0XnGEDXNMaCWPKrFFz9HhO7XHuLItAdd44APWauQfMYL6LZRASTHM/5PTpOxm6+S1q6nqOVoWqfKqdX1tTSSmsdrSoyQKulg19tf20H+SmVLxCExbUVjwOcCwZJ9ulM+OhhjDmipkpg9F0woeE9nwzfnteiyyh5ly0ho3sjID06rWg2YjqNtqhyAVguSNWhMFaOjMjyHjSWoBr8GXyNNq2dS69P6YOfbqIK9HMoQSLei+NzXEsdQ9LHbIRGybGtbv74XdH+mZkNXZ6O0c9PC3rRdAo55WHfiwbjPa8blFhRN+rccOYToBEI3oLubodWxTOc59vI7gVYmA+crRpR5OeAVZBu9z0jx07OHR4Yzyk/ycKxc8J7V2vjZPlJg6pr+hNyvmxhichJlq9NF3ykNMc0F/eZNj5qY3BP8dFz0Wpp4JRoDW/V8F7DRs3U9OLrZuL+stcTwd7JGH/nLoOWDR3VtQM3PPgY65K0ywDqbm8fpovniw30icdafrNRKoaPxn+KUdnTfHdAImF8wdqpZakMdCdRvlZ2d7hMJAmzIX9d4sRnOdpelQA=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 482,
+                "thoughtsTokenCount": 185,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "cNYZauTOHoHbjrEP4IGRwQM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4474
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.481s

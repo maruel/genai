@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 358
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/aac\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Here's the Breakdown**\\n\\nOkay, so the user wants the word from the audio, and they made it clear: *just* the word. No fluff, no extra commentary. Got it. Let's dig in. I need to listen to the audio carefully. Alright, got it. Based on the pronunciation, the word is clearly \\\"orange\\\". Now, I've got to make sure I deliver precisely what the user expects. The prompt explicitly requested *only* the word. My analysis checks out - the word is \\\"orange\\\", and that fulfills the requirement of being *only* the word. Therefore, \\\"orange\\\" is the correct response. No need for any extra details. I've got this.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"orange\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 231\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"8WNAaaWmONfajrEPt6GF0Qk\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=6316
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 6.326s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/aac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the \"Audio\" Prompt**\n\nOkay, the user wants me to identify a word from what they're presenting as audio. This seems straightforward enough, but I need to be precise. I'm being asked to provide *only* the word, nothing else. The prompt includes \"00:00\" followed by the word \"Orange,\" which *looks* like a timestamp from a media player or a transcription. However, there's no actual audio file, just this textual representation.\n\nRereading the prompt to be absolutely sure, it states: \"What is the word said? Reply with only the word.00:00Orange\". There is literally no audio, just text, \"00:00Orange\". It looks like \"Orange\" is the only thing provided.\n\nTherefore, the only thing to reply with is \"Orange\" (or potentially \"orange\", as I can accommodate for case insensitivity when the user requested *only* the word). No need for any extra phrases or explanations. That's the only word presented and the user wants only the word. I should check again... No other punctuation or extra information to consider. I'm ready to output \"Orange\".\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Orange",
+                        "thoughtSignature": "EtAICs0IAQw51sdRLeFt0XQp++2mDrh9IKmKCy0GfVgSH7T7NxW3hgZKi4Sj5u/2efsNFv+A9HSgAR2H7V8FATYBsk4iRIgPPCuFlnm8QrmxrFvttN8E7mMn4B8ypioxeC99eG3S2z1ebICdAtqgRT+XdqHzlAPD1HkEEcTQAb2UxvSGkGt/R+F1pSXlU/6v2eJRCUVG6yjMny8bF1Mm9PDE0cQyLrNjCpzqbI469HD5N6zpzr6hXp96fH4sP/iNLeLSZZYdJm2UE79IchrQh4zNbrGyYPLpLeDGPlF+L1N12kni2DXMPNVPDkaj/fOU6NILsPC1bczhYbiYZAvSj5od9+oADNhW8tXvK/HDicwUBOmKRfL2ntuSil6I3hiZ7sl5FIrw8zDgv2vhDnK7dmo4Ewk6srvCGSAKT54kapXINIWiPvIkgduUPhd8Ewr14zjc0XbIgvLEGHhzuZ0SRfSulcrRMFGw1LGf1fJYy78IEiSIOngwQUTh8+IWtvlt+UbCj/OnHHO+aiBmOCatgN5wEdHG1dpCE49n1TpdUiVK41DvCeUF61QiTZV9oAXMUP94fZuU5yxC3NNUc/EQOVi/MYHNoV22kgfKLOmzpQMdvwCBzJ2l0lIXafLA6eTtvoKWnQDf0QdRdZNbd4QVoShykadKohaXVAhOVAj9kvOxNjWki0jjZlbHHuM1wL3zDAKuDMdGktbvzzbZHCu0NhVbHsaTNEuJsofd114VVqD01SG+DORVxxDq7mk7OwWMzaaRDLu7QFVRAiJ+b3b5h/Iwo+A7W70NHbgxu0+Frsj8W/u2xxXAuMJXzEVujbluWZCSupBZ11YLJzd30wYClNVHPcK5cOJUnc7+iCiE2X+j0WRg3ROn62IDa1SuQ5hUoE3Wi2Z6Q7JvfJRjpg9T1HL3VolMESlyP/FqbT6xUHEaUqY8hR9XRCkBSo0D2zB49kI6Ue0KdLc/ec0llbxu+IxYg2UrZcS9oIU1UYYiuFT2n1LVGeV04xF/oPcYargKJV0zQOKIE2EkyKF7I/MC/g+JIcePDzplKWzdO8knjXNxwdZOnGErX9vAWGKVbZmirQWYaITc2pZWdL15gx1Z1jY1MF2LQpfr3e/mpXugPWOwSR0Wt73MguE1rhyiz2e+z09P8wyUoa7ivBMu6JaOqS1VCb9GfIKW9zx4Ie9/bkmqszDbODQl6Ag+dr2rhD4dy2/KgULZuMFohFJVKL2pg5AWCRk00E3gbZUPr2v4eBmk7Ifje2SQWNpWRBy/bVQuWHmMDPkL6avZ9o13W9GUu2CRIkXW8Esp8+Z++8Egvzn35UhI2V2di4dNH0WGR21gcI5j0/dkTqxdAS8SE2KLiNDOzonRM7C57P9B4P7uUGj/E0TcS4PFcUQqGq1R68tGriLdd+Unc34C24LYZXGg1JHyup2FFZlq6sRh5matP+spOH/jT2y79yP8Cx5hmiZOD5HA"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 34,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 322,
+                "promptTokensDetails": [
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 21
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 287,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "Z9cZapq1D_mBjrEPv_7F6QQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6783
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.789s

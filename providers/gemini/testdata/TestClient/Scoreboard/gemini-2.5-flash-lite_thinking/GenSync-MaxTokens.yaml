@@ -1,45 +1,83 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 238
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Explain the theory of relativity in great details.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"maxOutputTokens\":16,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Deconstructing a Complex Problem**\\n\\nAlright, let's break this down. My initial instinct is to go straight for a solution, but that's a recipe for overlooking crucial nuances. Instead, I need to methodically dissect this problem, understand its components, and then formulate a strategy. First, I need to identify the core challenge. What's the *real* problem we're trying to solve here? Is it a symptom of a larger issue, or is it a standalone obstacle?\\n\\nNext, I need to map out the contributing factors. What elements are influencing this situation? Are they internal or external? Are they controllable or beyond our reach? Identifying these variables is crucial for understanding the landscape we're operating in.\\n\\nThen, I'll need to consider the constraints. What limitations do we have in terms of resources, time, or expertise? Understanding these limitations will help me prioritize and tailor my approach accordingly. I also need to think about the stakeholders involved. Who are the key players, and what are their perspectives? Considering their needs and expectations will be vital for developing a successful and sustainable solution.\\n\\nFinally, with all this information, I can start exploring potential solutions. I won't just leap at the first idea that comes to mind, though. I'll need to weigh the pros and cons of each option, considering their feasibility, effectiveness, and long-term impact. This analytical process is the only way to come up with a truly robust answer.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"The\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"MAX_TOKENS\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 24,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 13\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"KmRAaZ84tMb7xg_h_5OAAw\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=2218
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 2.229s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Okay, I'm ready. Let's see what we're working with. I'll approach this as if these are my own internal thoughts, distilled for a fellow expert. Here we go:\n\n**Analyzing the Potential Path**\n\nAlright, I'm focusing in on this process. It seems like we're mapping out a trajectory, a line of reasoning, a series of steps that could result in... something. My immediate task is to understand the core elements. What are the key variables? Where are the potential branching points? Are there any implicit assumptions baked in here that I need to flush out and dissect?\n\nI'm mentally outlining the process, looking for the underlying principles. What's the fundamental logic at play? Is it a deductive process? Inductive? A hybrid? Are there any obvious biases creeping in that need to be addressed? Are we dealing with probabilities, certainties, or something more nuanced? \n\nI need to scrutinize each stage. What are the inputs, the transformations, and the outputs? Can I break this down into smaller, more manageable components? Do the pieces fit together logically, or are there gaps or inconsistencies I need to fill? I'm already anticipating areas where I might disagree with the methodology - I'm also hoping to look for areas where there might be great potential to learn something new.\n\nI'm ready to dive deeper and see where this leads.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "The"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "MAX_TOKENS",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 22,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 11,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "sdcZaqjIBam4jrEPh-7ZmQg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2252
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.259s

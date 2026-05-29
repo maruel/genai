@@ -169,90 +169,6 @@ interactions:
                   "maxTemperature": 2
                 },
                 {
-                  "name": "models/gemma-3-1b-it",
-                  "version": "001",
-                  "displayName": "Gemma 3 1B",
-                  "inputTokenLimit": 32768,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64
-                },
-                {
-                  "name": "models/gemma-3-4b-it",
-                  "version": "001",
-                  "displayName": "Gemma 3 4B",
-                  "inputTokenLimit": 32768,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64
-                },
-                {
-                  "name": "models/gemma-3-12b-it",
-                  "version": "001",
-                  "displayName": "Gemma 3 12B",
-                  "inputTokenLimit": 32768,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64
-                },
-                {
-                  "name": "models/gemma-3-27b-it",
-                  "version": "001",
-                  "displayName": "Gemma 3 27B",
-                  "inputTokenLimit": 131072,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64
-                },
-                {
-                  "name": "models/gemma-3n-e4b-it",
-                  "version": "001",
-                  "displayName": "Gemma 3n E4B",
-                  "inputTokenLimit": 8192,
-                  "outputTokenLimit": 2048,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64
-                },
-                {
-                  "name": "models/gemma-3n-e2b-it",
-                  "version": "001",
-                  "displayName": "Gemma 3n E2B",
-                  "inputTokenLimit": 8192,
-                  "outputTokenLimit": 2048,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64
-                },
-                {
                   "name": "models/gemma-4-26b-a4b-it",
                   "version": "001",
                   "displayName": "Gemma 4 26B A4B IT",
@@ -475,10 +391,47 @@ interactions:
                   "thinking": true
                 },
                 {
+                  "name": "models/gemini-3.1-flash-lite",
+                  "version": "3.1-flash-lite-05-2026",
+                  "displayName": "Gemini 3.1 Flash Lite",
+                  "description": "Gemini 3.1 Flash Lite",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
                   "name": "models/gemini-3-pro-image-preview",
                   "version": "3.0",
                   "displayName": "Nano Banana Pro",
                   "description": "Gemini 3 Pro Image Preview",
+                  "inputTokenLimit": 131072,
+                  "outputTokenLimit": 32768,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 1,
+                  "thinking": true
+                },
+                {
+                  "name": "models/gemini-3-pro-image",
+                  "version": "3.0",
+                  "displayName": "Nano Banana Pro",
+                  "description": "Gemini 3 Pro Image",
                   "inputTokenLimit": 131072,
                   "outputTokenLimit": 32768,
                   "supportedGenerationMethods": [
@@ -526,6 +479,43 @@ interactions:
                   "topP": 0.95,
                   "topK": 64,
                   "maxTemperature": 1,
+                  "thinking": true
+                },
+                {
+                  "name": "models/gemini-3.1-flash-image",
+                  "version": "3.0",
+                  "displayName": "Nano Banana 2",
+                  "description": "Gemini 3.1 Flash Image.",
+                  "inputTokenLimit": 65536,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 1,
+                  "thinking": true
+                },
+                {
+                  "name": "models/gemini-3.5-flash",
+                  "version": "3.5-flash-05-2026",
+                  "displayName": "Gemini 3.5 Flash",
+                  "description": "Gemini 3.5 Flash",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
                   "thinking": true
                 },
                 {
@@ -632,6 +622,52 @@ interactions:
                   "thinking": true
                 },
                 {
+                  "name": "models/antigravity-preview-05-2026",
+                  "version": "0.1",
+                  "displayName": "Antigravity Agent Preview",
+                  "description": "Preview release of Antigravity Agent (05-2026)",
+                  "inputTokenLimit": 131072,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens"
+                  ]
+                },
+                {
+                  "name": "models/deep-research-max-preview-04-2026",
+                  "version": "deepthink-exp-05-20",
+                  "displayName": "Deep Research Max Preview (Apr-21-2026)",
+                  "description": "Preview release (April 21st, 2026) of Deep Research Max",
+                  "inputTokenLimit": 131072,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
+                  "name": "models/deep-research-preview-04-2026",
+                  "version": "deepthink-exp-05-20",
+                  "displayName": "Deep Research Preview (Apr-21-2026)",
+                  "description": "Preview release (April 21th, 2026) of Deep Research",
+                  "inputTokenLimit": 131072,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
                   "name": "models/deep-research-pro-preview-12-2025",
                   "version": "deepthink-exp-05-20",
                   "displayName": "Deep Research Pro Preview (Dec-12-2025)",
@@ -666,6 +702,20 @@ interactions:
                   "name": "models/gemini-embedding-2-preview",
                   "version": "2",
                   "displayName": "Gemini Embedding 2 Preview",
+                  "description": "Obtain a distributed representation of multimodal content.",
+                  "inputTokenLimit": 8192,
+                  "outputTokenLimit": 1,
+                  "supportedGenerationMethods": [
+                    "embedContent",
+                    "countTextTokens",
+                    "countTokens",
+                    "asyncBatchEmbedContent"
+                  ]
+                },
+                {
+                  "name": "models/gemini-embedding-2",
+                  "version": "2",
+                  "displayName": "Gemini Embedding 2",
                   "description": "Obtain a distributed representation of multimodal content.",
                   "inputTokenLimit": 8192,
                   "outputTokenLimit": 1,
@@ -865,7 +915,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=180
+                - gfet4t7; dur=77
             Vary:
                 - Origin
                 - X-Origin
@@ -878,4 +928,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 245ms
+        duration: 140ms

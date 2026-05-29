@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,7 +29,7 @@ interactions:
                     "parts": [
                       {
                         "text": "Hello.",
-                        "thoughtSignature": "EjQKMgEMOdbHar5U3tbcITfisCCZM4xGKFRHXoLldJq+qgKrm70ngqsodGrRxmvaiJ1pwr6m"
+                        "thoughtSignature": "EjQKMgEMOdbHPlmRPfcLOrE1Fub29JFxVlFah3uXQdcvvKare2vHiOfkhYg6Agbj7l7Nd0zx"
                       }
                     ],
                     "role": "model"
@@ -47,10 +47,11 @@ interactions:
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
-                ]
+                ],
+                "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite-preview",
-              "responseId": "m_jgaZCqAZia9MoPoMG-sA0"
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "J9YZauzvNumE-8YPhpaRIQ"
             }
         headers:
             Alt-Svc:
@@ -60,7 +61,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=691
+                - gfet4t7; dur=409
             Vary:
                 - Origin
                 - X-Origin
@@ -75,4 +76,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 703ms
+        duration: 416ms

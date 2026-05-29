@@ -1,45 +1,83 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 247
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"generationConfig\":{\"stopSequences\":[\"is\"],\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Thinking About a Comprehensive Overview of Canada**\\n\\nOkay, so I'm being asked to delve into Canada, and the request specifies starting with \\\"Canada is.\\\" Alright, no problem. I need to paint a really complete picture, touching on a wide range of aspects. I'm thinking I'll structure it like this:\\n\\nFirst, a quick introduction - location, size, who lives there, official languages, and its political setup as a constitutional monarchy with a parliamentary democracy. That's the baseline.\\n\\nThen, a deep dive into the geography and environment. I really need to highlight just how vast and diverse Canada is, from the Rockies to the Arctic, the prairies to the coasts. Climate diversity is a huge factor too. And of course, the natural resources – minerals, forests, water, and those increasingly important fossil fuels. I'll also have to address the environmental issues they face and any conservation efforts underway.\\n\\nNext, the history. This is vital. I'll start with the Indigenous peoples - First Nations, Inuit, and Métis - and their long history before European contact. Then, the European exploration and colonization by the French and British, leading to Confederation in 1867 and the creation of Canada. I'll need to cover westward expansion, Canada's involvement in both World Wars, and key social and political developments like the Charter of Rights and Freedoms and the multiculturalism policy. Finishing with how they got to the modern day.\\n\\nFinally, the government and politics. It's a parliamentary democracy, a constitutional monarchy. How do they work? The Head of State (the Monarch, represented by the Governor General) versus the Head of Government (the Prime Minister). Then the federal structure with federal, provincial, and territorial governments. And the legislative branch: Parliament (House of Commons and Senate). I want to explain how all of that functions.\\n\\nYeah, that's it. It will give a complete perspective.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Canada \"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 13,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 390,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 13\n      }\n    ],\n    \"thoughtsTokenCount\": 376\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"LmRAabrpB8LvjrEPo6auoQM\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4114
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.125s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Comprehensive Understanding of Canada**\n\nOkay, so I need to construct a really thorough overview of Canada, starting with the phrase \"Canada is\". This needs to be more than just a surface-level description; I have to really dig deep and showcase my expert-level understanding. My thought process is to present a multifaceted perspective, covering all the crucial elements.\n\nFirst, the introductory definition: Canada is a geographically immense nation, characterized by a relatively sparse population, and structured under a parliamentary democracy within a constitutional monarchy.\n\nMy next step is to address the sheer scale and variety of the country. I'll need to emphasize the diversity of its landscapes, from the towering Rocky Mountains and expansive Prairies to the dense forests and the stark beauty of the Arctic. Major geographical features, such as the Great Lakes, Hudson Bay, and the Arctic Archipelago, are vital, of course. I can’t forget the drastic climate shifts across the nation, and I will be sure to mention the wealth of natural resources and Canada's ongoing efforts to balance resource extraction with environmental conservation.\n\nNext, I have to provide a clear historical context. I'll begin with the rich history of Indigenous peoples, highlighting their pre-colonial societies and cultures. The narrative needs to transition to European exploration and colonization, focusing on the influence of both the French and the British. Of course, the Confederation of 1867 is essential, as is the subsequent westward expansion and nation-building. The impact of the World Wars and Canada's evolving international role will be key. I have to make sure to cover modern Canada, with its embrace of multiculturalism and ongoing development of a distinct national identity.\n\nDelving into the political landscape, I'll emphasize the constitutional monarchy and parliamentary democracy that forms the basis of the government. The federal system, with its provinces and territories, needs a careful examination, and the roles of the monarch (represented by the Governor General) and the Prime Minister as head of state and head of government, respectively, must be clearly defined. The structure of Parliament, including the House of Commons and the Senate, is fundamental, along with the significance of the key political parties. Finally, I should explain the importance of the rule of law and the Charter of Rights and Freedoms.\n\nFinally, I will tackle the economy. Canada's developed, mixed economy will require an analysis of its major sectors: the strong natural resources sector (oil, gas, minerals, timber, and agriculture), its manufacturing base, and the significant services sector (finance, technology, tourism, etc). The importance of trade, particularly with the United States, is significant. I will mention economic strengths and challenges, and the vital importance of the social safety net to the Canadian people.\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Canada "
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 397,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 383,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-2.5-flash-lite",
+              "responseId": "s9cZatywFaic-8YPnMzQkAo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4750
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.757s

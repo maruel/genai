@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview-customtools:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,7 +29,7 @@ interactions:
                     "parts": [
                       {
                         "text": "Hello",
-                        "thoughtSignature": "ErUHCrIHAQw51sdRTBwZre7YMCUpnroVx+kxxkrEUvzV3JlQeEMFtDqtSjL7EIs5SktiXvJTxl0Q57aKtOTV/VlBn6JEl7Ebxztcx6nVbu0d4PtzK4O1UK5fDVi0yDlBHLiWvZyqLHEXZUCNX47d51wbof9+DQrDWRm0NrHB5+4uINurly941TFjQ84NqZtslshTW/yPUPTqZHGSM2janLvF6+f7fuebYy+7lTKxk796X/ArlW/u20MrJc80orUDSBaxGm+nRkIfp6Ic5oDFgpwtEHxWhxt3XeI7Yhz+a1GTgkf2aval15fQUJDmXcKnzPESrh8siCRKwy1NzgqiQ6wbG/1iQrVNEYuJW+IrjWVOlQdlQU97g/vkToYNk2kx7zTjM+HNC2o0q945ETj07Le3NohL+mrTaSffoR2JfAvL9oL/+Ng3RFd9w/paTW6ptzdoQZYDRwd1aDUzduMiSFGYj3XUrA2hR9IIPYgX3bf7QKe9EnXLetHZvx/BQXTV+nKmz7FgFRDcZVheEbtUCMvjtXMXMy2oPqBMSRu6FhsfSb/Z1gIrB8Dvto9EwFQbgIvyDrvsVo8UnDpclw2TVXTdtgJ6ZpDcKcOEmbbRlud6/u9LnwkS0/TtAnQMEACV4TmsJPwMwGPwo/KYeMk96dNQIqB/Ij9VOO/CY6oB0OsI0a8BiyMO5T6Aobhmm1wlo8I+CCm9Q638VgjgDZ8VDS7yg73ytOSS9HVqq47WVXqGY/7Bm8odUtOpxMO+3uVjZfdXYt58APhORuzFEPLBUea+46gKBGspITtzUCaT6PpTG5CNqQu7KQ2eXvzCMkAEtkypueldGCmakMz9cRW6gpj9XWPfz1sFllwY9jmw1F0zbmmMyAr4zd2Hs/xc3Cxg5VR8iTTtLkglUi0IfUJn5f11ugvZCZeSnpn54SLMy3qVWJMXCy0qeJiL8wnbHPddPDnZcyqXNoL7hif0oUwCzJrD/Fo0zqJKGduUyGfcKTWcTG40UEU1sroZAUawwusfQ2RNerstg0XOw6zDLpfZSA2JaSTJ57q1djnG0oXuM8B6F/Ar3c5v08Hrc6yzC4k8icy+IfPqiLQIO06kE7NcPokPqsQeZOkmO7+E5LFMFBGZoc9WAQ5n5BjB/G31XJkVea3IVQCQ8tO5aA785f48FD7yibpoYt/PJwX7+QeK7HxuNa5qTz8lT+jtdHXws09qFHb8fc3QcQjz6fGUXpdMKpmYG7Q7n1aNHjUWbj9NA6jFdFv94Sekng=="
+                        "thoughtSignature": "EssFCsgFAQw51sdruidILXOqZ0Y1pbDEJhquNNY11cNMTV3isas/P/2CZbFOwE6mxjPphBL4B/4uBVd7Sa5E9WLkdEBIrEYECGNjQfnGflr1pf6YOkR/b9s5Rk9wmERwZZE/fBXKPYBj2Ha1EnPzFC5VBuBxkqS7LSdiRdFggvLFeHnC2jtawiVqH2TQauo5psAVFpVH4hWwlm1uBUQUcrlAogJ73WQBCDQ1SKm8FLYrP6LqHO0vT3CQ4Qd2X8wX1C7KXAUpXvxH5+TC2u9nEDM29WScZwhtS1Um7z3wOsQEFk8Iz20pMk/tDD0wNbpeLklSZEBRZgQS6To4mkl7HIbXja8TTfHCdRTqrgKbnQBXn2xjfMtMomi9wXEO8LpfDxm9N77WCenha4nWlK/T2YXs9fBNHhUreTPgu5sXExdNuSB9XqObLOsz+005C5qMSKetXEWLn2BFTOT3Ts/zVVYwCgILKG5Cbv8T26alMFXDnOkomP31YNlrCJK+MxwISvy5nessFElCPsVnAW1Hr9jfug1kQY/LCUt/w4YKtxCnIO6WZK+OjZSP05khUls+jZo/emBhl1qOHT5cr3GD7wi8dh2PJZcY9831wKOGVEY8hydgRgZtrUVy2AhqDEB6mBXbStkLDVnT+xT0mJB3UBO/JCCiBsHA6GQ/r2TibWva8gPRd6KS4LlKqFk10wzw40YCFIlToOV4ODLIeXe102M4uPfvPOWopGjDmNtFLPfzslracslulFSqUviliWwt10Ayu5hRMGqpCrQmThosXUP5YptUyfAjkiUASsbU8RS6+umwaW37k4kr7QrSNoLBlSpHMus6SoJbyBbvNJ2CUZ3euem3VFM65QOxIvTLMsU+RsbGPBVgitRtlFNtSnPb9LdvuyJoFWNmPZIbGOhPy7eNuQHWrXe0xXpP3l6E37ZWX+B7CroQqOItJNwFaw=="
                       }
                     ],
                     "role": "model"
@@ -41,17 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 10,
                 "candidatesTokenCount": 1,
-                "totalTokenCount": 254,
+                "totalTokenCount": 201,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
-                "thoughtsTokenCount": 243
+                "thoughtsTokenCount": 190,
+                "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-pro-preview-customtools",
-              "responseId": "mvjgaYnKE6Ch1MkP3b6koAU"
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "KtYZaon1KZjqjrEP9oTD6Qo"
             }
         headers:
             Alt-Svc:
@@ -61,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=5434
+                - gfet4t7; dur=1629
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 5.447s
+        duration: 1.638s

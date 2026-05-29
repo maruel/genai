@@ -1,45 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 354
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What fruit is it? Reply with only one word.\"},{\"fileData\":{\"mimeType\":\"image/jpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Breaking Down the Inquiry**\\n\\nOkay, here's the situation. Someone's sent an image and asked a straightforward question: \\\"What fruit is it?\\\". They've also thrown in a constraint, \\\"Reply with only one word.\\\" My immediate task is to identify the fruit in the image and adhere to that single-word requirement.\\n\\nThe image itself is crystal clear. It's a single, yellow, curved fruit, complete with a stem and a dark tip. Honestly, it's about as easy as it gets. Clearly, this is a banana.\\n\\nThe user's asking for the fruit's identity, and the image confirms the answer. \\\"Banana\\\" is the correct response.\\n\\nAnd here's the critical check: does my answer satisfy the constraint? Yes! \\\"Banana\\\" is indeed a single word. Perfect.\\n\\nTherefore, the final answer is simply \\\"Banana\\\".\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Banana\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 174\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"ymNAadTYLYC3_uMP_OKP0Qw\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=4567
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 4.577s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 354
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/jpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the Image Identification Task**\n\nOkay, so the user's looking for the fruit in the image – that's the core question. Simple enough. Now, let's break down the visual data. The image shows a long, curved, yellow fruit. It's got that characteristic brown stem at one end and a darker tip at the other. Hmm, that's not exactly obscure; the curvature, the colour, the details... that's a *banana*.\n\nAlright, I remember now, I need to check for constraints. Just one word, huh? No elaborate descriptions allowed. This makes things easier.\n\nSo, taking the image analysis and the constraint into account, the answer is undeniably: \"Banana\". Done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "Ep0DCpoDAQw51seUrKmWspiPft+KWDgpc3Wxg8C+XRoKc5VgNt5IPnNA7CZxpxQRNOSfMuQbPWKr2NiibUg1mXGdHr1y/RT+tqtvkFe4/aVPFGvNoyUIF1bnBRfIwLkB+rBfkO8XpGZ9OlBf5kgkkuNE5a3b6pzZo8xqc1mC6rAKObAGnqpmxypgtR6zUqnPgicGZstlTbgGQJJn+c4hozOSH4UWk+of4SJsk1AcI8Gazx4HQmJebUdJ6366KCBlYRA0ZD5TjzVyyDgbc8yavWqPRCAddpkvOwc4e8hVMf7DEnG77jJDy/UMEwY1CIe/nOTVaBu9luITpXPhGGhjZmSy2rUtvZTljMbCJ/HoiLvXPtog5iRD9nGdEWgkz93aLG1RjI2//+oMHwyt+zrNRDhaO/b0qMQh9YAde0phOpDuVfzgnvFBualhSuoIgwJ7BXydR5l6m06mhRukqEzEKldAYs6Jw6eqr5Gih/4jGr2nmY4SJo3hpEFTniH7pDWt8nS6MmEKnHPIjJywj0Ejkl2MQ2mQHV4D0POWvyf5jsk="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1191,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  },
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  }
+                ],
+                "thoughtsTokenCount": 93,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "N9cZasrDCfSgjrEP2vufyQM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3992
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.999s

@@ -1,45 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 380
-    host: generativelanguage.googleapis.com
-    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"properties\":{\"is_fruit\":{\"type\":\"BOOLEAN\"}},\"required\":[\"is_fruit\"],\"type\":\"OBJECT\"},\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Here's how I'm thinking about this task:**\\n\\nOkay, the user wants to know if a banana is a fruit. Simple enough, but they're *very* specific about the output. They want *only* JSON, and they've given me a schema. Let's break it down:\\n\\nFirst, I need to get the answer. Is a banana a fruit? Yes, scientifically, it's a berry, and berries are fruits. Got it. Now, how do I translate that into their format?\\n\\nThe schema says there's one key, `is_fruit`, and it needs a boolean value. So, `is_fruit` will be `true` because, yes, a banana is a fruit.\\n\\nNow, let's build the JSON: open brace, key `\\\"is_fruit\\\"`, colon, the boolean value `true`, and close brace. That should be `{\\\"is_fruit\\\": true}`.\\n\\nI have to make sure it's valid JSON, no comments, no extra characters, double quotes around the keys. This looks good. It follows all the rules.  I'm confident this is the correct response.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"{\\\"is_fruit\\\": true}\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 18,\n    \"candidatesTokenCount\": 7,\n    \"totalTokenCount\": 466,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 18\n      }\n    ],\n    \"thoughtsTokenCount\": 441\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"lmNAabbLHMTQjrEPx-7EqQg\"\n}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Content-Type:
-      - application/json; charset=UTF-8
-      Server:
-      - scaffolding on HTTPServer2
-      Server-Timing:
-      - gfet4t7; dur=6771
-      Vary:
-      - Origin
-      - X-Origin
-      - Referer
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - "0"
-    status: 200 OK
-    code: 200
-    duration: 6.782s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: Is a Banana a Fruit?**\n\nOkay, the user wants a simple JSON response: is a banana a fruit? Strict JSON, boolean `is_fruit` property, no extra fluff. First things first: understand the request. It's a binary question. Let's see... a schema dictates a single boolean field, named `is_fruit`. Got it.\n\nNext, I need to determine the answer. Botanically, yes, a banana *is* a fruit. Case closed.\n\nNow for the output. It needs to be precise JSON: `{\"is_fruit\":true}`. No explanations, no extra characters, especially no newlines or tabs. The directive is crystal clear. I need a single line of JSON. Let me double-check... Yes. `{\"is_fruit\":true}` it is. Perfect.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "{\"is_fruit\":true}",
+                        "thoughtSignature": "EoQGCoEGAQw51sfBkRSPoHv97JNB3+mlX5UiVD2dvwC5yTgI1bkhe5mMPeyZU3cnYP+pjUa/VPHnB3d1OUvNp3+4e9pGbZNqRZeAqziWpvuVBQr0pnFhgxGDeOtBTk8nqppeqt4MamkdsMN4d730RCp1SspI07eN0if0fW/+J88bIoILTj2rKfUdtfCFtQP9clyX8ZD809ZclW+H7DNQ16yhcqnST7qBk0CFzH5OtXkFt5KYb25vi5RnQKSeBu0N2wlJo0AUfu6rzReYs5DlmWRgi0Gg4Mik/BgUBZiqnTdoYJBrYqgSjw1lyNiaYoZB8yD/evkwttbbEw54IcqIh94bWhn0Pcz5LcqHB3n+7qKGbglbOZ5R/cLiPxdQV0JFZ2atVnYuIl7aEmKhmJ04wtqYlBxj2YZwqIFtgpWECiJkkt4MiZPavmAZA4bappztVYCJvBDeCk8hFwIBVfBw8AkMo9NkeIwSZw2NIWMeaFuFYFCa7qIwCV0T9YEh0m5BCvqLoHeRLK006H72NnEVWb258a3E8hpipiCQWyNlKIIsCWzmCnwoRc5zVndKHQR5Ujez9pAQ4s1XSVPKgd763IEXNyzEZRenLqT1pA7N1bdWymf3RBcvQ8fW2MvPeYkJ6WPpcCMqY1i+IA03H1dplZQev/5SGmTlQqMz0tYYCCM3GLLZZdI2gmOuzLOPf+XSbsM/U08cE0nH2MNLax9u6RTRDO+iQZqgzIZNuiQHy6jqNvHMyCys6yDEhxSHGlgtrhg9gEep20MdLPHZIIKLab4/d11fAHO9U616PojQJuNAsAkYkrB4sBajDbKmyF+MZC43R4b4LkNPDpAxWcseUca6N3a2BTa6EI6AbP5pXNhEGJVI+zEe3yvj5ORGUlZ0rYty/f7XcUCZiDDmo6oX2bP8D3p/mBP5Tm9q3M/FqOViwxD+N1D2KHBsL8ULTzCiYJ3/OFo0AAYCs+Phcpjz8Fp2hXC9xma09vY4AT8uHwPwh9TpEnBVVQepe0QijaP180z3RYZznw=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 18,
+                "candidatesTokenCount": 7,
+                "totalTokenCount": 222,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 18
+                  }
+                ],
+                "thoughtsTokenCount": 197,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "-dYZav7QJbiZ-8YPopuuiAg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4073
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.08s

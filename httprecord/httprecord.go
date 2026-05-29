@@ -83,6 +83,11 @@ func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
 		// Do not save files without an interaction.
 		return nil
 	}
+	// Skip write if content is unchanged to avoid unnecessary file touches
+	// (important for ModeReplayWithNewEpisodes which always calls persistCassette).
+	if existing, err := c.FS.ReadFile(name); err == nil && bytes.Equal(existing, data) {
+		return nil
+	}
 	if d := filepath.Dir(name); d != "." {
 		if err := os.MkdirAll(d, 0o755); err != nil {
 			return err

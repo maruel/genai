@@ -80,9 +80,9 @@ func (r *Records) Signal(name string) error {
 //
 // When the environment variable RECORD is set, it controls recording behavior:
 //   - "all": forcibly re-record all cassettes into <root>/<testname>.yaml.
-//   - "failure_only": use ModeRecordOnce (same as default); the caller is
-//     expected to delete cassettes for failed tests so the next run re-records
-//     only those.
+//   - "failure_only": replay existing interactions; missing ones are
+//     recorded as new episodes (ModeReplayWithNewEpisodes). The cassette is
+//     only saved when interactions were added or changed.
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
@@ -91,15 +91,20 @@ func (r *Records) Signal(name string) error {
 func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (*Recorder, error) {
 	name = strings.ReplaceAll(strings.ReplaceAll(name, "/", string(os.PathSeparator)), ":", "-")
 	mode := recorder.ModeRecordOnce
+	isRecording := false
 	if v := os.Getenv("RECORD"); v == "all" {
 		mode = recorder.ModeRecordOnly
-	} else if v != "" && v != "failure_only" {
+		isRecording = true
+	} else if v == "failure_only" {
+		mode = recorder.ModeReplayWithNewEpisodes
+		isRecording = true
+	} else if v != "" {
 		return nil, fmt.Errorf("invalid RECORD value %q; expected \"all\" or \"failure_only\"", v)
 	}
 	// Wrap the transport with retry logic during recording to prevent
 	// rate-limited responses from being persisted in cassettes.
 	inner := h
-	if mode == recorder.ModeRecordOnly || mode == recorder.ModeRecordOnce {
+	if isRecording {
 		inner = &roundtrippers.Retry{
 			Transport: h,
 			Policy: &roundtrippers.ExponentialBackoff{

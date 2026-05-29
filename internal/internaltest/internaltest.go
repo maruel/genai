@@ -94,8 +94,9 @@ func (r *Records) Close() error {
 //
 // When the environment variable RECORD is set, it controls recording behavior:
 //   - "all": forcibly re-record all cassettes into testdata/<testname>.yaml.
-//   - "failure_only": replay existing cassettes; for failed tests, delete the
-//     cassette and re-run the test to re-record it.
+//   - "failure_only": replay existing interactions; missing ones are
+//     recorded as new episodes (ModeReplayWithNewEpisodes). If the test fails
+//     for any other reason, the cassette is deleted and re-recorded via rerun.
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.

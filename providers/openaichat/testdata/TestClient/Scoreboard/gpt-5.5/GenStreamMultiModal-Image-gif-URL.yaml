@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 355
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.5","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"store":true,"service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-DkfMN0wH84iWKSumjfnXRXTZ4dvBX","object":"chat.completion.chunk","created":1780014447,"model":"gpt-5.5-2026-04-23","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"UxgWjvluPTV"}
+
+            data: {"id":"chatcmpl-DkfMN0wH84iWKSumjfnXRXTZ4dvBX","object":"chat.completion.chunk","created":1780014447,"model":"gpt-5.5-2026-04-23","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":"V5LrWb3Z0k"}
+
+            data: {"id":"chatcmpl-DkfMN0wH84iWKSumjfnXRXTZ4dvBX","object":"chat.completion.chunk","created":1780014447,"model":"gpt-5.5-2026-04-23","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":"mlAPviOtTs"}
+
+            data: {"id":"chatcmpl-DkfMN0wH84iWKSumjfnXRXTZ4dvBX","object":"chat.completion.chunk","created":1780014447,"model":"gpt-5.5-2026-04-23","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"oiUTjWK"}
+
+            data: {"id":"chatcmpl-DkfMN0wH84iWKSumjfnXRXTZ4dvBX","object":"chat.completion.chunk","created":1780014447,"model":"gpt-5.5-2026-04-23","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":150,"completion_tokens":21,"total_tokens":171,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":10,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"dOWf5Jy2B"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a0315f91fe35a2c7-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "1815"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Input-Images:
+                - "50000"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Input-Images:
+                - "49999"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "499222"
+            X-Ratelimit-Reset-Input-Images:
+                - 1ms
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 93ms
+        status: 200 OK
+        code: 200
+        duration: 1.965s

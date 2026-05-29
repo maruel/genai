@@ -149,6 +149,7 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
+	c.Store = true
 	var errs []error
 	var unsupported []string
 	if err := msgs.Validate(); err != nil {

@@ -198,3 +198,207 @@ interactions:
         status: 200 OK
         code: 200
         duration: 606ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 554
+        host: api.openai.com
+        body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"batch.json\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"TODO\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-4.1\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}],\"store\":true}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
+        headers:
+            Content-Type:
+                - multipart/form-data; boundary=80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1
+        url: https://api.openai.com/v1/files
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "object": "file",
+              "id": "file-22AaQALe9cEJb2VGWonw1s",
+              "purpose": "batch",
+              "filename": "batch.json",
+              "bytes": 191,
+              "created_at": 1780014126,
+              "expires_at": 1782606126,
+              "status": "processed",
+              "status_details": null
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a03157bb4bc8aacd-YYZ
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "220"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+        status: 200 OK
+        code: 200
+        duration: 1.256s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 108
+        host: api.openai.com
+        body: |
+            {"completion_window":"24h","endpoint":"/v1/chat/completions","input_file_id":"file-22AaQALe9cEJb2VGWonw1s"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/batches
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "batch_6a18dc2edc488190a598915dcc2be453",
+              "object": "batch",
+              "endpoint": "/v1/chat/completions",
+              "model": null,
+              "errors": null,
+              "input_file_id": "file-22AaQALe9cEJb2VGWonw1s",
+              "completion_window": "24h",
+              "status": "validating",
+              "output_file_id": null,
+              "error_file_id": null,
+              "created_at": 1780014126,
+              "in_progress_at": null,
+              "expires_at": 1780100526,
+              "finalizing_at": null,
+              "completed_at": null,
+              "failed_at": null,
+              "expired_at": null,
+              "cancelling_at": null,
+              "cancelled_at": null,
+              "request_counts": {
+                "total": 0,
+                "completed": 0,
+                "failed": 0
+              },
+              "usage": {
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                }
+              },
+              "metadata": null
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a03157c31bb5aacd-YYZ
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "1014"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+        status: 200 OK
+        code: 200
+        duration: 1.118s
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 548
+        host: api.openai.com
+        body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"test\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-4.1\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}],\"store\":true}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
+        headers:
+            Content-Type:
+                - multipart/form-data; boundary=80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1
+        url: https://api.openai.com/v1/files
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "object": "file",
+              "id": "file-SyqPqigT8z8zBCVyLzLT2M",
+              "purpose": "batch",
+              "filename": "test",
+              "bytes": 191,
+              "created_at": 1780014127,
+              "expires_at": 1782606127,
+              "status": "processed",
+              "status_details": null
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a03157ca18f9aacd-YYZ
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "214"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+        status: 200 OK
+        code: 200
+        duration: 309ms

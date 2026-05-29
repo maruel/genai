@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 335
+        host: api.openai.com
+        body: |
+            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"store":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 186
+        body: |-
+            {
+              "error": {
+                "message": "This model does not support image_url content.",
+                "type": "invalid_request_error",
+                "param": "messages[0].content",
+                "code": "invalid_value"
+              }
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a0356e024a034d63-YYZ
+            Content-Length:
+                - "186"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "21294"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "40000"
+            X-Ratelimit-Remaining-Requests:
+                - "993"
+            X-Ratelimit-Remaining-Tokens:
+                - "37015"
+            X-Ratelimit-Reset-Requests:
+                - 10m3.139s
+            X-Ratelimit-Reset-Tokens:
+                - 4.477s
+        status: 400 Bad Request
+        code: 400
+        duration: 21.626s

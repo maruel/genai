@@ -128,9 +128,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 					if result.GenSync == nil {
 						result.GenSync = outDoc.GenSync
 					} else if outDoc.GenSync != nil {
-						// This is tricky, we need to merge the results. The only case where this is known to happen is
-						// gemini-2.5-flash-image-preview. Keep the panic so I don't forget about it.
-						panic("implement support for multi-modal output")
+						mergeFunctionality(result.GenSync, outDoc.GenSync)
 					}
 					mu.Unlock()
 					if err != nil {
@@ -1096,6 +1094,36 @@ func isBadError(ctx context.Context, err error) bool {
 		return true
 	}
 	return false
+}
+
+func mergeFunctionality(dst, src *scoreboard.Functionality) {
+	dst.ReportRateLimits = dst.ReportRateLimits || src.ReportRateLimits
+	dst.ReportTokenUsage = mergeTriState(dst.ReportTokenUsage, src.ReportTokenUsage)
+	dst.ReportFinishReason = mergeTriState(dst.ReportFinishReason, src.ReportFinishReason)
+	dst.Seed = dst.Seed || src.Seed
+	dst.Tools = mergeTriState(dst.Tools, src.Tools)
+	dst.ToolsBiased = mergeTriState(dst.ToolsBiased, src.ToolsBiased)
+	dst.ToolsIndecisive = mergeTriState(dst.ToolsIndecisive, src.ToolsIndecisive)
+	dst.ToolCallRequired = dst.ToolCallRequired || src.ToolCallRequired
+	dst.WebSearch = dst.WebSearch || src.WebSearch
+	dst.WebFetch = dst.WebFetch || src.WebFetch
+	dst.JSON = dst.JSON || src.JSON
+	dst.JSONSchema = dst.JSONSchema || src.JSONSchema
+	dst.Citations = dst.Citations || src.Citations
+	dst.TopLogprobs = dst.TopLogprobs || src.TopLogprobs
+	dst.MaxTokens = dst.MaxTokens || src.MaxTokens
+	dst.StopSequence = dst.StopSequence || src.StopSequence
+}
+
+func mergeTriState(a, b scoreboard.TriState) scoreboard.TriState {
+	// True (1) > Flaky (-1) > False (0)
+	if a == scoreboard.True || b == scoreboard.True {
+		return scoreboard.True
+	}
+	if a == scoreboard.Flaky || b == scoreboard.Flaky {
+		return scoreboard.Flaky
+	}
+	return scoreboard.False
 }
 
 func mergeModalities(m1, m2 map[genai.Modality]scoreboard.ModalCapability) map[genai.Modality]scoreboard.ModalCapability {

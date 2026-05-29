@@ -220,7 +220,7 @@
       }
     },
     {
-      "comments": "Investigate lack of token usage report",
+      "comments": "gpt-audio supports audio output via modalities parameter",
       "models": [
         "gpt-audio"
       ],
@@ -231,18 +231,27 @@
             "audio/mp3",
             "audio/wav"
           ]
+        },
+        "text": {
+          "inline": true
         }
       },
       "out": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/mpeg"
+          ]
+        },
         "text": {
           "inline": true
         }
       },
       "GenSync": {
-        "reportRateLimits": true
-      },
-      "GenStream": {
-        "reportRateLimits": true
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true
       }
     },
     {

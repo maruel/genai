@@ -181,8 +181,8 @@ func (c *Client) DetectModelModalities(ctx context.Context, model string) (genai
 	// author's feature request.
 	if strings.HasPrefix(model, "dall") || strings.Contains(model, "image") {
 		return genai.Modalities{genai.ModalityImage}, nil
-		// TODO } else if strings.Contains(model, "audio") {
-		//	return genai.Modalities{genai.ModalityAudio, genai.ModalityText}, nil
+	} else if strings.Contains(model, "audio") {
+		return genai.Modalities{genai.ModalityAudio, genai.ModalityText}, nil
 	}
 	return genai.Modalities{genai.ModalityText}, nil
 }

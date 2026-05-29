@@ -64,6 +64,27 @@ func (o *GenOptionText) Validate() error {
 	return o.ServiceTier.Validate()
 }
 
+// GenOptionAudio specifies audio generation options for audio models like gpt-audio.
+//
+// See https://platform.openai.com/docs/guides/audio
+type GenOptionAudio struct {
+	// Voice is the voice to use for speech synthesis.
+	//
+	// Supported voices: "alloy", "ash", "ballad", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer".
+	// When empty, defaults to "alloy".
+	Voice string
+	// Format is the output audio format.
+	//
+	// Supported formats: "mp3", "wav", "flac", "opus", "pcm16", "aac".
+	// When empty, defaults to "mp3".
+	Format string
+}
+
+// Validate implements genai.Validatable.
+func (o *GenOptionAudio) Validate() error {
+	return nil
+}
+
 //
 
 // In May 2025, OpenAI started pushing for Response API. They say it's the only way to keep reasoning items.
@@ -282,6 +303,7 @@ func (c *Client) Name() string {
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
+	out.audioFormat = in.Audio.Format
 	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
@@ -567,18 +589,37 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	if c.shared.IsAudio() || c.shared.IsImage() || c.shared.IsVideo() {
+	if c.shared.IsImage() || c.shared.IsVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
 		return c.shared.GenDoc(ctx, &msgs[0], opts...)
 	}
-	return c.impl.GenSync(ctx, msgs, opts...)
+	// Build the request ourselves so GenSyncRaw can track audioFormat on the response.
+	in := &ChatRequest{}
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+		return genai.Result{}, err
+	}
+	out := &ChatResponse{}
+	if err := c.GenSyncRaw(ctx, in, out); err != nil {
+		return genai.Result{}, err
+	}
+	res, err := out.ToResult()
+	if err != nil {
+		return res, err
+	}
+	if err := res.Validate(); err != nil {
+		return res, &internal.BadError{Err: err}
+	}
+	if lastResp := c.impl.LastResponseHeaders(); lastResp != nil {
+		res.Usage.Limits = openaibase.ProcessHeaders(lastResp)
+	}
+	return res, nil
 }
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if c.shared.IsAudio() || c.shared.IsImage() || c.shared.IsVideo() {
+	if c.shared.IsImage() || c.shared.IsVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
 	return c.impl.GenStream(ctx, msgs, opts...)

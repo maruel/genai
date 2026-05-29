@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/providers/openaibase"
 )
 
@@ -178,6 +179,20 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.Fetch {
 				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
 			}
+		case *GenOptionAudio:
+			c.Modalities = []string{"text", "audio"}
+			c.Audio.Voice = v.Voice
+			if c.Audio.Voice == "" {
+				c.Audio.Voice = "alloy"
+			}
+			c.Audio.Format = v.Format
+			if c.Audio.Format == "" {
+				c.Audio.Format = "mp3"
+			}
+		case *genai.GenOptionAudio:
+			c.Modalities = []string{"text", "audio"}
+			c.Audio.Voice = "alloy"
+			c.Audio.Format = "mp3"
 		case genai.GenOptionSeed:
 			if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
 				unsupported = append(unsupported, "GenOptionSeed")
@@ -319,7 +334,10 @@ type Message struct {
 	Content Contents `json:"content,omitzero"`
 	Refusal string   `json:"refusal,omitzero"` // The refusal message by the assistant.
 	Audio   struct {
-		ID string `json:"id,omitzero"`
+		ID         string `json:"id,omitzero"`
+		Data       string `json:"data,omitzero"`       // base64-encoded audio bytes (output)
+		ExpiresAt  int64  `json:"expires_at,omitzero"` // Unix timestamp (output)
+		Transcript string `json:"transcript,omitzero"` // Transcript of generated audio (output)
 	} `json:"audio,omitzero"`
 	ToolCalls   []ToolCall   `json:"tool_calls,omitzero"`
 	ToolCallID  string       `json:"tool_call_id,omitzero"` // TODO: Document the role of this field.
@@ -386,6 +404,20 @@ func (m *Message) To(out *genai.Message) error {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
+	}
+	// Handle audio output at the message level (gpt-audio models).
+	// The text transcript is already present in m.Content as a text reply.
+	if m.Audio.Data != "" {
+		audioData, err := base64.StdEncoding.DecodeString(m.Audio.Data)
+		if err != nil {
+			return fmt.Errorf("failed to decode message audio data: %w", err)
+		}
+		out.Replies = append(out.Replies, genai.Reply{
+			Doc: genai.Doc{
+				Filename: "audio.bin",
+				Src:      &bb.BytesBuffer{D: audioData},
+			},
+		})
 	}
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
@@ -466,6 +498,15 @@ type Content struct {
 		// https://platform.openai.com/docs/guides/speech-to-text
 		Format string `json:"format,omitzero"` // "mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"
 	} `json:"input_audio,omitzero"`
+
+	// Type == "audio" (output from audio generation)
+	// https://platform.openai.com/docs/guides/audio
+	Audio struct {
+		ID         string `json:"id,omitzero"`
+		Data       string `json:"data,omitzero"`       // base64-encoded audio bytes
+		ExpiresAt  int64  `json:"expires_at,omitzero"` // Unix timestamp
+		Transcript string `json:"transcript,omitzero"` // Transcript of the generated audio
+	} `json:"audio,omitzero"`
 
 	// Type == "file"
 	File struct {
@@ -629,7 +670,16 @@ func (c *Content) To(out *genai.Reply) error {
 		if c.Text == "" {
 			return errors.New("received empty text")
 		}
-	case ContentImageURL, ContentInputAudio, ContentRefusal, ContentAudio, ContentFile:
+	case ContentAudio:
+		audioData, err := base64.StdEncoding.DecodeString(c.Audio.Data)
+		if err != nil {
+			return fmt.Errorf("failed to decode audio data: %w", err)
+		}
+		out.Doc = genai.Doc{
+			Filename: "audio.bin",
+			Src:      &bb.BytesBuffer{D: audioData},
+		}
+	case ContentImageURL, ContentInputAudio, ContentRefusal, ContentFile:
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
@@ -715,6 +765,8 @@ type ChatResponse struct {
 	Usage             Usage     `json:"usage"`
 	ServiceTier       string    `json:"service_tier"`
 	SystemFingerprint string    `json:"system_fingerprint"`
+
+	audioFormat string // Set by GenSyncRaw after Init; used by ToResult for Doc filenames.
 }
 
 // ToResult converts the response to a genai.Result.
@@ -734,6 +786,14 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
+	// Fix audio Doc filenames to match the requested format.
+	if c.audioFormat != "" {
+		for i := range out.Replies {
+			if out.Replies[i].Doc.Filename == "audio.bin" {
+				out.Replies[i].Doc.Filename = "audio." + c.audioFormat
+			}
+		}
+	}
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
 }

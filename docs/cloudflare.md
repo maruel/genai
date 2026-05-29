@@ -7,9 +7,9 @@
 | @cf/meta/llama-3.3-70b-instruct-fp8-fast🥈     | Sync    | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | 💨    | 💨     |
 | @cf/meta/llama-3.3-70b-instruct-fp8-fast🥈     | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-1b-instruct🥉               | Sync    | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| @cf/meta/llama-3.2-1b-instruct🥉               | Stream  | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| @cf/meta/llama-3.2-1b-instruct🥉               | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-3b-instruct                | Sync    | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| @cf/meta/llama-3.2-3b-instruct                | Stream  | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| @cf/meta/llama-3.2-3b-instruct                | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-4-scout-17b-16e-instruct       | Sync    | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-4-scout-17b-16e-instruct       | Stream  | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/baai/bge-base-en-v1.5                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -100,7 +100,7 @@
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
-- 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
+- 💨: Feature is flaky (Tool calling) or inconsistent (Usage or Finish reason is not always reported)
 - 🌐: Country where the company is located
 - Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.

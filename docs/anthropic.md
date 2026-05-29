@@ -44,7 +44,7 @@
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
-- 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
+- 💨: Feature is flaky (Tool calling) or inconsistent (Usage or Finish reason is not always reported)
 - 🌐: Country where the company is located
 - Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.

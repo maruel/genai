@@ -39,7 +39,7 @@ const legend = `<details>
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
-- 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
+- 💨: Feature is flaky (Tool calling) or inconsistent (Usage or Finish reason is not always reported)
 - 🌐: Country where the company is located
 - Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
@@ -193,7 +193,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	switch {
 	case f.Tools == scoreboard.True && !strings.Contains(t.Tools, "✅"):
 		t.Tools = "✅"
-	case s.GenSync.Tools == scoreboard.Flaky && !strings.Contains(t.Tools, "✅"):
+	case f.Tools == scoreboard.Flaky && !strings.Contains(t.Tools, "✅"):
 		t.Tools = "💨"
 	}
 	if f.ToolCallRequired && !strings.Contains(t.Tools, "🪨") {
@@ -225,12 +225,12 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	}
 	if f.ReportTokenUsage == scoreboard.True {
 		t.Usage = "✅"
-	} else if s.GenSync.ReportTokenUsage == scoreboard.Flaky && !strings.Contains(t.Usage, "✅") {
+	} else if f.ReportTokenUsage == scoreboard.Flaky && !strings.Contains(t.Usage, "✅") {
 		t.Usage = "💨"
 	}
 	if f.ReportFinishReason == scoreboard.True {
 		t.Finish = "✅"
-	} else if s.GenSync.ReportFinishReason == scoreboard.Flaky && !strings.Contains(t.Finish, "✅") {
+	} else if f.ReportFinishReason == scoreboard.Flaky && !strings.Contains(t.Finish, "✅") {
 		t.Finish = "💨"
 	}
 }
@@ -507,7 +507,7 @@ func visibleWidth(s string) int {
 
 func runeWidth(r rune) int {
 	switch r {
-	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏', '📡', '🌱', '🪨':
+	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏', '📡', '🌱', '🪨':
 		return 2
 	case '🖼', '🎞', '⚖': // '🕰️'
 		return 0

@@ -114,10 +114,14 @@ func functionality(f *scoreboard.Functionality) string {
 		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}
-	if f.ReportTokenUsage != scoreboard.True {
+	if f.ReportTokenUsage == scoreboard.Flaky {
+		items = append(items, "💨usage")
+	} else if f.ReportTokenUsage != scoreboard.True {
 		items = append(items, "💔usage")
 	}
-	if f.ReportFinishReason != scoreboard.True {
+	if f.ReportFinishReason == scoreboard.Flaky {
+		items = append(items, "💨finishreason")
+	} else if f.ReportFinishReason != scoreboard.True {
 		items = append(items, "💔finishreason")
 	}
 	if !f.StopSequence {

@@ -927,7 +927,7 @@ type ChatStreamChunkResponse struct {
 			Annotations []Annotation `json:"annotations"`
 			Audio       struct {
 				ID         string `json:"id,omitzero"`
-				Data       string `json:"data,omitzero"`       // base64-encoded audio bytes
+				Data       string `json:"data,omitzero"` // base64-encoded audio bytes
 				ExpiresAt  int64  `json:"expires_at,omitzero"`
 				Transcript string `json:"transcript,omitzero"`
 			} `json:"audio,omitzero"`
@@ -936,14 +936,14 @@ type ChatStreamChunkResponse struct {
 		Index        int64        `json:"index"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Created           base.Time `json:"created"`
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	Object            string    `json:"object"` // "chat.completion.chunk"
-	ServiceTier       string    `json:"service_tier"`
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Usage             Usage     `json:"usage"`
-	Obfuscation       string    `json:"obfuscation"`
+	Created           base.Time           `json:"created"`
+	ID                string              `json:"id"`
+	Model             string              `json:"model"`
+	Object            string              `json:"object"` // "chat.completion.chunk"
+	ServiceTier       string              `json:"service_tier"`
+	SystemFingerprint string              `json:"system_fingerprint"`
+	Usage             Usage               `json:"usage"`
+	Obfuscation       string              `json:"obfuscation"`
 	Error             *ErrorResponseError `json:"error,omitzero"`
 	Detail            json.RawMessage     `json:"detail,omitzero"`
 }

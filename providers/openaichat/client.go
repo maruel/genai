@@ -474,157 +474,157 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 		return func(yield func(genai.Reply) bool) {
 				pendingToolCall := ToolCall{}
 				for pkt := range chunks {
-				if pkt.Error != nil {
-					finalErr = fmt.Errorf("stream error: %s", pkt.Error.Message)
-					return
-				}
-				if pkt.Usage.PromptTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.ServiceTier = pkt.ServiceTier
-				}
-				if len(pkt.Choices) != 1 {
-					continue
-				}
-				l = append(l, pkt.Choices[0].Logprobs.To()...)
-				if fr := pkt.Choices[0].FinishReason; fr != "" {
-					u.FinishReason = fr.ToFinishReason()
-				}
-				switch role := pkt.Choices[0].Delta.Role; role {
-				case "", "assistant":
-				default:
-					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-					return
-				}
-				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
-					return
-				}
-				if r := pkt.Choices[0].Delta.Refusal; r != "" {
-					finalErr = &internal.BadError{Err: fmt.Errorf("refused: %q", r)}
-					return
-				}
-
-				f := genai.Reply{}
-				for _, a := range pkt.Choices[0].Delta.Annotations {
-					f.Citation.StartIndex = a.URLCitation.StartIndex
-					f.Citation.EndIndex = a.URLCitation.EndIndex
-					f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}
-					if !yield(f) {
+					if pkt.Error != nil {
+						finalErr = fmt.Errorf("stream error: %s", pkt.Error.Message)
 						return
 					}
-					f = genai.Reply{}
-				}
-
-				f.Text = pkt.Choices[0].Delta.Content
-				// gpt-audio streams transcript in delta.audio.transcript, not delta.content.
-				if tr := pkt.Choices[0].Delta.Audio.Transcript; tr != "" {
-					if f.Text == "" {
-						f.Text = tr
-					} else {
-						f.Text += tr
+					if pkt.Usage.PromptTokens != 0 {
+						u.InputTokens = pkt.Usage.PromptTokens
+						u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+						u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+						u.OutputTokens = pkt.Usage.CompletionTokens
+						u.ServiceTier = pkt.ServiceTier
 					}
-				}
-				// Accumulate streaming audio data; yield when complete.
-				if d := pkt.Choices[0].Delta.Audio.Data; d != "" {
-					audioBuf += d
-				}
-				if audioBuf != "" && pkt.Choices[0].FinishReason != "" {
-					audioData, err := base64.StdEncoding.DecodeString(audioBuf)
-					if err != nil {
-						finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode streamed audio: %w", err)}
+					if len(pkt.Choices) != 1 {
+						continue
+					}
+					l = append(l, pkt.Choices[0].Logprobs.To()...)
+					if fr := pkt.Choices[0].FinishReason; fr != "" {
+						u.FinishReason = fr.ToFinishReason()
+					}
+					switch role := pkt.Choices[0].Delta.Role; role {
+					case "", "assistant":
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 						return
 					}
-					audioBuf = ""
-					fn := "audio.bin"
-					if audioFormat != "" {
-						fn = "audio." + audioFormat
+					if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
+						return
 					}
-					// Yield the audio Doc; reset f so tool call processing can continue.
+					if r := pkt.Choices[0].Delta.Refusal; r != "" {
+						finalErr = &internal.BadError{Err: fmt.Errorf("refused: %q", r)}
+						return
+					}
+
+					f := genai.Reply{}
+					for _, a := range pkt.Choices[0].Delta.Annotations {
+						f.Citation.StartIndex = a.URLCitation.StartIndex
+						f.Citation.EndIndex = a.URLCitation.EndIndex
+						f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}
+						if !yield(f) {
+							return
+						}
+						f = genai.Reply{}
+					}
+
+					f.Text = pkt.Choices[0].Delta.Content
+					// gpt-audio streams transcript in delta.audio.transcript, not delta.content.
 					if tr := pkt.Choices[0].Delta.Audio.Transcript; tr != "" {
+						if f.Text == "" {
+							f.Text = tr
+						} else {
+							f.Text += tr
+						}
+					}
+					// Accumulate streaming audio data; yield when complete.
+					if d := pkt.Choices[0].Delta.Audio.Data; d != "" {
+						audioBuf += d
+					}
+					if audioBuf != "" && pkt.Choices[0].FinishReason != "" {
+						audioData, err := base64.StdEncoding.DecodeString(audioBuf)
+						if err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode streamed audio: %w", err)}
+							return
+						}
+						audioBuf = ""
+						fn := "audio.bin"
+						if audioFormat != "" {
+							fn = "audio." + audioFormat
+						}
+						// Yield the audio Doc; reset f so tool call processing can continue.
+						if tr := pkt.Choices[0].Delta.Audio.Transcript; tr != "" {
+							if !f.IsZero() {
+								if !yield(f) {
+									return
+								}
+								f = genai.Reply{}
+							}
+							if !yield(genai.Reply{Text: tr}) {
+								return
+							}
+						}
+						af := genai.Reply{Doc: genai.Doc{Filename: fn, Src: &bb.BytesBuffer{D: audioData}}}
 						if !f.IsZero() {
 							if !yield(f) {
 								return
 							}
-							f = genai.Reply{}
 						}
-						if !yield(genai.Reply{Text: tr}) {
+						if !yield(af) {
 							return
 						}
+						f = genai.Reply{}
 					}
-					af := genai.Reply{Doc: genai.Doc{Filename: fn, Src: &bb.BytesBuffer{D: audioData}}}
-					if !f.IsZero() {
-						if !yield(f) {
-							return
-						}
-					}
-					if !yield(af) {
-						return
-					}
-					f = genai.Reply{}
-				}
-				// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
-				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
-						// A new call.
-						if pendingToolCall.ID == "" {
+					// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+					if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+						if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+							// A new call.
+							if pendingToolCall.ID == "" {
+								pendingToolCall = t
+								if !f.IsZero() {
+									finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+									return
+								}
+								continue
+							}
+							// Flush.
+							pendingToolCall.To(&f.ToolCall)
 							pendingToolCall = t
+						} else if pendingToolCall.ID != "" {
+							// Continuation.
+							pendingToolCall.Function.Arguments += t.Function.Arguments
 							if !f.IsZero() {
 								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 								return
 							}
 							continue
 						}
+					} else if pendingToolCall.ID != "" {
 						// Flush.
 						pendingToolCall.To(&f.ToolCall)
-						pendingToolCall = t
-					} else if pendingToolCall.ID != "" {
-						// Continuation.
-						pendingToolCall.Function.Arguments += t.Function.Arguments
-						if !f.IsZero() {
-							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-							return
-						}
-						continue
+						pendingToolCall = ToolCall{}
 					}
-				} else if pendingToolCall.ID != "" {
-					// Flush.
-					pendingToolCall.To(&f.ToolCall)
-					pendingToolCall = ToolCall{}
+					if !yield(f) {
+						return
+					}
 				}
-				if !yield(f) {
-					return
+				// Flush pending tool call at end of stream.
+				if pendingToolCall.ID != "" {
+					tf := genai.Reply{}
+					pendingToolCall.To(&tf.ToolCall)
+					if !yield(tf) {
+						return
+					}
 				}
+				// Flush accumulated audio at end of stream (gpt-audio doesn't set finish_reason).
+				if audioBuf != "" {
+					audioData, err := base64.StdEncoding.DecodeString(audioBuf)
+					if err != nil {
+						finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode streamed audio: %w", err)}
+						return
+					}
+					fn := "audio.bin"
+					if audioFormat != "" {
+						fn = "audio." + audioFormat
+					}
+					af := genai.Reply{Doc: genai.Doc{Filename: fn, Src: &bb.BytesBuffer{D: audioData}}}
+					if !yield(af) {
+						return
+					}
+				}
+			}, func() (genai.Usage, [][]genai.Logprob, error) {
+				return u, l, finalErr
 			}
-			// Flush pending tool call at end of stream.
-			if pendingToolCall.ID != "" {
-				tf := genai.Reply{}
-				pendingToolCall.To(&tf.ToolCall)
-				if !yield(tf) {
-					return
-				}
-			}
-			// Flush accumulated audio at end of stream (gpt-audio doesn't set finish_reason).
-			if audioBuf != "" {
-				audioData, err := base64.StdEncoding.DecodeString(audioBuf)
-				if err != nil {
-					finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode streamed audio: %w", err)}
-					return
-				}
-				fn := "audio.bin"
-				if audioFormat != "" {
-					fn = "audio." + audioFormat
-				}
-				af := genai.Reply{Doc: genai.Doc{Filename: fn, Src: &bb.BytesBuffer{D: audioData}}}
-				if !yield(af) {
-					return
-				}
-			}
-		}, func() (genai.Usage, [][]genai.Logprob, error) {
-			return u, l, finalErr
-		}
 	}
 }
 

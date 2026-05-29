@@ -494,6 +494,15 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		result = append(result, oldSc)
 	}
 
+	// Collect all model names from tested scenarios to avoid including them
+	// in untested scenarios (a model should only appear once in the doc).
+	testedModels := map[string]struct{}{}
+	for i := range result {
+		for _, m := range result[i].Models {
+			testedModels[m] = struct{}{}
+		}
+	}
+
 	// Third pass: consolidate untested scenarios by comments/reason
 	// Include both newly added untested scenarios and old ones
 	allUntested := make([]scoreboard.Scenario, 0)
@@ -502,7 +511,8 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	// to avoid adding the same scenario twice
 	newScenarioModels := make(map[scoreboard.Model]struct{})
 
-	// First, collect all untested scenarios from new results, removing stale models
+	// First, collect all untested scenarios from new results, removing stale
+	// models and models already present in tested scenarios.
 	for _, sc := range scenarios {
 		if len(sc.Models) > 0 && sc.Untested() {
 			// Remove stale models
@@ -510,8 +520,10 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 			for _, m := range sc.Models {
 				modelKey := scoreboard.Model{Model: m, Reason: sc.Reason}
 				if _, isStale := staleSet[modelKey]; !isStale {
-					remainingModels = append(remainingModels, m)
-					newScenarioModels[modelKey] = struct{}{}
+					if _, isTested := testedModels[m]; !isTested {
+						remainingModels = append(remainingModels, m)
+						newScenarioModels[modelKey] = struct{}{}
+					}
 				}
 			}
 			if len(remainingModels) > 0 {
@@ -530,13 +542,16 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 			continue
 		}
 
-		// Remove stale models and models already in new scenarios
+		// Remove stale models, models already in new scenarios, and
+		// models already present in tested scenarios.
 		remainingModels := make([]string, 0, len(oldSc.Models))
 		for _, m := range oldSc.Models {
 			modelKey := scoreboard.Model{Model: m, Reason: oldSc.Reason}
 			if _, isStale := staleSet[modelKey]; !isStale {
 				if _, inNew := newScenarioModels[modelKey]; !inNew {
-					remainingModels = append(remainingModels, m)
+					if _, isTested := testedModels[m]; !isTested {
+						remainingModels = append(remainingModels, m)
+					}
 				}
 			}
 		}
@@ -549,7 +564,44 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		}
 	}
 
-	// Consolidate untested by comments/reason
+	// Deduplicate models across untested scenarios: a model should only
+	// appear in one untested scenario. Prefer the non-reasoning scenario
+	// first to avoid speculative 🧠 markers.
+	seenUntestedModels := map[string]struct{}{}
+	for i := range allUntested {
+		if !allUntested[i].Reason {
+			deduped := make([]string, 0, len(allUntested[i].Models))
+			for _, m := range allUntested[i].Models {
+				if _, seen := seenUntestedModels[m]; !seen {
+					seenUntestedModels[m] = struct{}{}
+					deduped = append(deduped, m)
+				}
+			}
+			allUntested[i].Models = deduped
+		}
+	}
+	for i := range allUntested {
+		if allUntested[i].Reason {
+			deduped := make([]string, 0, len(allUntested[i].Models))
+			for _, m := range allUntested[i].Models {
+				if _, seen := seenUntestedModels[m]; !seen {
+					seenUntestedModels[m] = struct{}{}
+					deduped = append(deduped, m)
+				}
+			}
+			allUntested[i].Models = deduped
+		}
+	}
+
+	// Consolidate untested by comments/reason. Filter out empty scenarios
+	// (all models were deduplicated into another scenario).
+	nonEmpty := make([]scoreboard.Scenario, 0, len(allUntested))
+	for _, sc := range allUntested {
+		if len(sc.Models) > 0 {
+			nonEmpty = append(nonEmpty, sc)
+		}
+	}
+	allUntested = nonEmpty
 	untestedConsolidated := scoreboard.ConsolidateUntestedScenarios(allUntested)
 	result = append(result, untestedConsolidated...)
 

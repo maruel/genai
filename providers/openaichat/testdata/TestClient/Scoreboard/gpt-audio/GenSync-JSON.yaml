@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 408
+        content_length: 355
         host: api.openai.com
         body: |
-            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"pcm16"},"stream_options":{"include_usage":true}}
+            {"model":"gpt-audio","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"mp3"},"response_format":{"type":"json_object"}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,14 +19,14 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 186
+        content_length: 217
         body: |-
             {
               "error": {
-                "message": "This model does not support image_url content.",
+                "message": "Invalid parameter: 'response_format' of type 'json_object' is not supported with this model.",
                 "type": "invalid_request_error",
-                "param": "messages[0].content",
-                "code": "invalid_value"
+                "param": "response_format",
+                "code": null
               }
             }
         headers:
@@ -39,13 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0365707cc2957af-YYZ
+                - a03639ec7dd436ab-YYZ
             Content-Length:
-                - "186"
+                - "217"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "970"
+                - "52"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,13 +61,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "961"
+                - "969"
             X-Ratelimit-Remaining-Tokens:
-                - "39222"
+                - "37153"
             X-Ratelimit-Reset-Requests:
-                - 55m13.819s
+                - 43m25.417s
             X-Ratelimit-Reset-Tokens:
-                - 1.167s
+                - 4.269s
         status: 400 Bad Request
         code: 400
-        duration: 1.252s
+        duration: 135ms

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-DkqQROygpzsFcjImOSvu901duzK4v",
+              "id": "chatcmpl-DksbIHYHikH2F3K0TugAZ8qXzGeM0",
               "object": "chat.completion",
-              "created": 1780056983,
+              "created": 1780065344,
               "model": "gpt-audio-2025-08-28",
               "choices": [
                 {
@@ -70,11 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0356e09afff4d63-YYZ
+                - a0363a2fdf0636ab-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "537"
+                - "701"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -90,13 +90,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "991"
+                - "956"
             X-Ratelimit-Remaining-Tokens:
-                - "37485"
+                - "39631"
             X-Ratelimit-Reset-Requests:
-                - 12m54.046s
+                - 1h1m57.836s
             X-Ratelimit-Reset-Tokens:
-                - 3.772s
+                - 552ms
         status: 200 OK
         code: 200
-        duration: 1.589s
+        duration: 784ms

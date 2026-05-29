@@ -232,6 +232,12 @@
             "audio/wav"
           ]
         },
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -251,7 +257,22 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "seed": true
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "flaky",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "maxTokens": true,
+        "stopSequence": true
       }
     },
     {

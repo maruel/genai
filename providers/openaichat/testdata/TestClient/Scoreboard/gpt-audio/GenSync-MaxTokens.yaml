@@ -1,0 +1,108 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 265
+        host: api.openai.com
+        body: |
+            {"model":"gpt-audio","max_completion_tokens":16,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"mp3"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "id": "chatcmpl-Dksb5m9kubfDlCma7lPMrUWD9wht1",
+              "object": "chat.completion",
+              "created": 1780065331,
+              "model": "gpt-audio-2025-08-28",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "refusal": null,
+                    "audio": {
+                      "id": "audio_6a19a434531881919c0442c32bec1acd",
+                      "data": "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",
+                      "expires_at": 1780068932,
+                      "transcript": "Sure, let"
+                    },
+                    "annotations": []
+                  },
+                  "finish_reason": "length"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 17,
+                "completion_tokens": 16,
+                "total_tokens": 33,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "audio_tokens": 0,
+                  "text_tokens": 17,
+                  "image_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 0,
+                  "audio_tokens": 10,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0,
+                  "text_tokens": 6
+                }
+              },
+              "service_tier": "default",
+              "system_fingerprint": "fp_f116be6bc4"
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a03639e2096a36ab-YYZ
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "1048"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "40000"
+            X-Ratelimit-Remaining-Requests:
+                - "972"
+            X-Ratelimit-Remaining-Tokens:
+                - "36959"
+            X-Ratelimit-Reset-Requests:
+                - 39m7.886s
+            X-Ratelimit-Reset-Tokens:
+                - 4.56s
+        status: 200 OK
+        code: 200
+        duration: 1.126s

@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"mime"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -238,7 +239,31 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	if len(unsupported) > 0 && len(errs) == 0 {
 		return &base.ErrNotSupported{Options: unsupported}
 	}
+	// Audio models require audio in either input or output. If no audio input was provided
+	// and no output modality was set, default to text+audio output with minimal config.
+	if len(c.Modalities) == 0 && strings.Contains(model, "audio") && !hasAudioInput(msgs) {
+		c.Modalities = []string{"text", "audio"}
+		if c.Audio.Voice == "" {
+			c.Audio.Voice = "alloy"
+		}
+		if c.Audio.Format == "" {
+			c.Audio.Format = "mp3"
+		}
+	}
 	return errors.Join(errs...)
+}
+
+func hasAudioInput(msgs genai.Messages) bool {
+	for i := range msgs {
+		for j := range msgs[i].Requests {
+			if !msgs[i].Requests[j].Doc.IsZero() {
+				if strings.HasPrefix(internal.MimeByExt(filepath.Ext(msgs[i].Requests[j].Doc.GetFilename())), "audio/") {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 // SetStream sets the streaming mode.
@@ -397,16 +422,8 @@ func (m *Message) From(in *genai.Message) error {
 
 // To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
-	if len(m.Content) != 0 {
-		out.Replies = make([]genai.Reply, len(m.Content))
-		for i := range m.Content {
-			if err := m.Content[i].To(&out.Replies[i]); err != nil {
-				return fmt.Errorf("reply #%d: %w", i, err)
-			}
-		}
-	}
 	// Handle audio output at the message level (gpt-audio models).
-	// The text transcript is already present in m.Content as a text reply.
+	// Emit the audio Doc first so callers looking for Replies[0].Doc find it.
 	if m.Audio.Data != "" {
 		audioData, err := base64.StdEncoding.DecodeString(m.Audio.Data)
 		if err != nil {
@@ -418,6 +435,19 @@ func (m *Message) To(out *genai.Message) error {
 				Src:      &bb.BytesBuffer{D: audioData},
 			},
 		})
+	}
+	if len(m.Content) != 0 {
+		base := len(out.Replies)
+		out.Replies = append(out.Replies, make([]genai.Reply, len(m.Content))...)
+		for i := range m.Content {
+			if err := m.Content[i].To(&out.Replies[base+i]); err != nil {
+				return fmt.Errorf("reply #%d: %w", i, err)
+			}
+		}
+	}
+	// The text may be only in the audio transcript, not in m.Content.
+	if m.Audio.Transcript != "" && len(m.Content) == 0 {
+		out.Replies = append(out.Replies, genai.Reply{Text: m.Audio.Transcript})
 	}
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
@@ -895,6 +925,12 @@ type ChatStreamChunkResponse struct {
 			Refusal     string       `json:"refusal"`
 			ToolCalls   []ToolCall   `json:"tool_calls"`
 			Annotations []Annotation `json:"annotations"`
+			Audio       struct {
+				ID         string `json:"id,omitzero"`
+				Data       string `json:"data,omitzero"`       // base64-encoded audio bytes
+				ExpiresAt  int64  `json:"expires_at,omitzero"`
+				Transcript string `json:"transcript,omitzero"`
+			} `json:"audio,omitzero"`
 		} `json:"delta"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
@@ -908,6 +944,8 @@ type ChatStreamChunkResponse struct {
 	SystemFingerprint string    `json:"system_fingerprint"`
 	Usage             Usage     `json:"usage"`
 	Obfuscation       string    `json:"obfuscation"`
+	Error             *ErrorResponseError `json:"error,omitzero"`
+	Detail            json.RawMessage     `json:"detail,omitzero"`
 }
 
 // ============================================================

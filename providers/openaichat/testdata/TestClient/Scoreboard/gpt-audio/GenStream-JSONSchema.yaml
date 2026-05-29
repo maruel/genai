@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 408
+        content_length: 571
         host: api.openai.com
         body: |
-            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"pcm16"},"stream_options":{"include_usage":true}}
+            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"pcm16"},"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,14 +19,14 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 186
+        content_length: 330
         body: |-
             {
               "error": {
-                "message": "This model does not support image_url content.",
+                "message": "Invalid parameter: 'response_format' of type 'json_schema' is not supported with this model. Learn more about supported models at the Structured Outputs guide: https://platform.openai.com/docs/guides/structured-outputs",
                 "type": "invalid_request_error",
-                "param": "messages[0].content",
-                "code": "invalid_value"
+                "param": null,
+                "code": null
               }
             }
         headers:
@@ -39,13 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0365707cc2957af-YYZ
+                - a036aaf0e8ff36a6-YYZ
             Content-Length:
-                - "186"
+                - "330"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "970"
+                - "54"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,13 +61,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "961"
+                - "984"
             X-Ratelimit-Remaining-Tokens:
-                - "39222"
+                - "39980"
             X-Ratelimit-Reset-Requests:
-                - 55m13.819s
+                - 22m25.591s
             X-Ratelimit-Reset-Tokens:
-                - 1.167s
+                - 30ms
         status: 400 Bad Request
         code: 400
-        duration: 1.252s
+        duration: 391ms

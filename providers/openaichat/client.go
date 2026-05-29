@@ -13,6 +13,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -27,6 +28,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
@@ -462,14 +464,16 @@ func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
-	var finalErr error
-	u := genai.Usage{}
-	var l [][]genai.Logprob
+func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+	return func(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+		var finalErr error
+		u := genai.Usage{}
+		var l [][]genai.Logprob
+		var audioBuf string
 
-	return func(yield func(genai.Reply) bool) {
-			pendingToolCall := ToolCall{}
-			for pkt := range chunks {
+		return func(yield func(genai.Reply) bool) {
+				pendingToolCall := ToolCall{}
+				for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
@@ -511,6 +515,52 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 
 				f.Text = pkt.Choices[0].Delta.Content
+				// gpt-audio streams transcript in delta.audio.transcript, not delta.content.
+				if tr := pkt.Choices[0].Delta.Audio.Transcript; tr != "" {
+					if f.Text == "" {
+						f.Text = tr
+					} else {
+						f.Text += tr
+					}
+				}
+				// Accumulate streaming audio data; yield when complete.
+				if d := pkt.Choices[0].Delta.Audio.Data; d != "" {
+					audioBuf += d
+				}
+				if audioBuf != "" && pkt.Choices[0].FinishReason != "" {
+					audioData, err := base64.StdEncoding.DecodeString(audioBuf)
+					if err != nil {
+						finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode streamed audio: %w", err)}
+						return
+					}
+					audioBuf = ""
+					fn := "audio.bin"
+					if audioFormat != "" {
+						fn = "audio." + audioFormat
+					}
+					// Yield the audio Doc; reset f so tool call processing can continue.
+					if tr := pkt.Choices[0].Delta.Audio.Transcript; tr != "" {
+						if !f.IsZero() {
+							if !yield(f) {
+								return
+							}
+							f = genai.Reply{}
+						}
+						if !yield(genai.Reply{Text: tr}) {
+							return
+						}
+					}
+					af := genai.Reply{Doc: genai.Doc{Filename: fn, Src: &bb.BytesBuffer{D: audioData}}}
+					if !f.IsZero() {
+						if !yield(f) {
+							return
+						}
+					}
+					if !yield(af) {
+						return
+					}
+					f = genai.Reply{}
+				}
 				// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
@@ -544,9 +594,39 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 			}
+			// Flush pending tool call at end of stream.
+			if pendingToolCall.ID != "" {
+				tf := genai.Reply{}
+				pendingToolCall.To(&tf.ToolCall)
+				if !yield(tf) {
+					return
+				}
+			}
+			// Flush accumulated audio at end of stream (gpt-audio doesn't set finish_reason).
+			if audioBuf != "" {
+				audioData, err := base64.StdEncoding.DecodeString(audioBuf)
+				if err != nil {
+					finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode streamed audio: %w", err)}
+					return
+				}
+				fn := "audio.bin"
+				if audioFormat != "" {
+					fn = "audio." + audioFormat
+				}
+				af := genai.Reply{Doc: genai.Doc{Filename: fn, Src: &bb.BytesBuffer{D: audioData}}}
+				if !yield(af) {
+					return
+				}
+			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr
 		}
+	}
+}
+
+// ProcessStream is the default stream processor (no audio format).
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+	return makeProcessStream("")(chunks)
 }
 
 // Capabilities implements genai.Provider.
@@ -622,7 +702,59 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if c.shared.IsImage() || c.shared.IsVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
-	return c.impl.GenStream(ctx, msgs, opts...)
+	// Build the request ourselves so makeProcessStream can use the audio format.
+	in := &ChatRequest{}
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
+	// Streaming only supports pcm16 audio format.
+	if in.Audio.Format == "mp3" {
+		in.Audio.Format = "pcm16"
+	}
+
+	res := genai.Result{}
+	var finalErr error
+	fnFragments := func(yield func(genai.Reply) bool) {
+		chunks, finish := c.GenStreamRaw(ctx, in)
+		// Capture headers immediately after the HTTP call, before iterating.
+		lastResp := c.impl.LastResponseHeaders()
+		fragments, finish2 := makeProcessStream(in.Audio.Format)(chunks)
+		sent := false
+		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
+			if err := f.Validate(); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			if err := res.Accumulate(&f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			sent = true
+			if !yield(f) {
+				break
+			}
+		}
+		if err := finish(); finalErr == nil {
+			finalErr = err
+		}
+		var err error
+		res.Usage, res.Logprobs, err = finish2()
+		if finalErr == nil {
+			finalErr = err
+		}
+		if !sent && finalErr == nil {
+			finalErr = errors.New("model sent no reply")
+		}
+		if lastResp != nil {
+			res.Usage.Limits = openaibase.ProcessHeaders(lastResp)
+		}
+	}
+	return fnFragments, func() (genai.Result, error) {
+		return res, finalErr
+	}
 }
 
 var _ genai.Provider = &Client{}

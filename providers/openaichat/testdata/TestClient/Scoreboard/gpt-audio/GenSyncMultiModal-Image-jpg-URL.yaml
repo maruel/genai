@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 296
+        content_length: 367
         host: api.openai.com
         body: |
-            {"model":"gpt-audio","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"store":true}
+            {"model":"gpt-audio","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"mp3"}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -39,13 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0356e032c914d63-YYZ
+                - a0363a2a88e736ab-YYZ
             Content-Length:
                 - "186"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "975"
+                - "771"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,13 +61,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "993"
+                - "957"
             X-Ratelimit-Remaining-Tokens:
-                - "36932"
+                - "39222"
             X-Ratelimit-Reset-Requests:
-                - 10m3.234s
+                - 1h0m32.292s
             X-Ratelimit-Reset-Tokens:
-                - 4.601s
+                - 1.167s
         status: 400 Bad Request
         code: 400
-        duration: 1.042s
+        duration: 850ms

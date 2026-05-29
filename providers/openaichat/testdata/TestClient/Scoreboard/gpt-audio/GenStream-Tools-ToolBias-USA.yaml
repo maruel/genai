@@ -1,0 +1,95 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 725
+        host: api.openai.com
+        body: |
+            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"pcm16"},"stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_lcxKoLjebWGO4gu3OBuigpZ2","type":"function","function":{"name":"best_country","arguments":""}}],"refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"1Iclv"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{"}}]},"finish_reason":null}],"usage":null,"obfuscation":"h9"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"  \n"}}]},"finish_reason":null}],"usage":null,"obfuscation":"Fow6qDhgarXr4P4"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":" "}}]},"finish_reason":null}],"usage":null,"obfuscation":"M5"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":" \""}}]},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"country"}}]},"finish_reason":null}],"usage":null,"obfuscation":"FG65btySC0ec"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\":"}}]},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":" \""}}]},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"USA"}}]},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\""}}]},"finish_reason":null}],"usage":null,"obfuscation":"i"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":" \n"}}]},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]},"finish_reason":null}],"usage":null,"obfuscation":"WC"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":" \n"}}]},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","usage":null,"obfuscation":"s"}
+
+            data: {"id":"chatcmpl-DkttwSUibsGnYfJxnC30pBhJ1ilYB","object":"chat.completion.chunk","created":1780070344,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[],"usage":{"prompt_tokens":80,"completion_tokens":19,"total_tokens":99,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0,"text_tokens":80,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"text_tokens":19}},"obfuscation":"HAwkLnrz2"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a036b43b7940ab4c-YYZ
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "314"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "40000"
+            X-Ratelimit-Remaining-Requests:
+                - "980"
+            X-Ratelimit-Remaining-Tokens:
+                - "39967"
+            X-Ratelimit-Reset-Requests:
+                - 27m35.501s
+            X-Ratelimit-Reset-Tokens:
+                - 49ms
+        status: 200 OK
+        code: 200
+        duration: 1.354s

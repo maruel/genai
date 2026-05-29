@@ -57,7 +57,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 
 	// Make it easy to skip parts of the tests.
 	doSyncText := slices.Contains(mods, genai.ModalityText)
-	doStream := mods[0] == genai.ModalityText
+	doStream := slices.Contains(mods, genai.ModalityText)
 	doSyncNonText := !slices.Equal(mods, genai.Modalities{genai.ModalityText})
 
 	eg := errgroup.Group{}

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 408
+        content_length: 291
         host: api.openai.com
         body: |
-            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"pcm16"},"stream_options":{"include_usage":true}}
+            {"model":"gpt-audio","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"store":true,"logprobs":true,"top_logprobs":2,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"pcm16"},"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,14 +19,14 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 186
+        content_length: 171
         body: |-
             {
               "error": {
-                "message": "This model does not support image_url content.",
+                "message": "This model does not support the 'logprobs' parameter.",
                 "type": "invalid_request_error",
-                "param": "messages[0].content",
-                "code": "invalid_value"
+                "param": "logprobs",
+                "code": null
               }
             }
         headers:
@@ -39,13 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0365707cc2957af-YYZ
+                - a03661316fd4de04-YYZ
             Content-Length:
-                - "186"
+                - "171"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "970"
+                - "60"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,13 +61,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "961"
+                - "953"
             X-Ratelimit-Remaining-Tokens:
-                - "39222"
+                - "39990"
             X-Ratelimit-Reset-Requests:
-                - 55m13.819s
+                - 1h7m0.928s
             X-Ratelimit-Reset-Tokens:
-                - 1.167s
+                - 15ms
         status: 400 Bad Request
         code: 400
-        duration: 1.252s
+        duration: 188ms

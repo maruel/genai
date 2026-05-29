@@ -644,6 +644,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 }
 
 // GenSync implements genai.Provider.
+//
+// It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
+// only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	if c.shared.IsAudio() {
 		return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
@@ -654,10 +657,37 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		}
 		return c.shared.GenDoc(ctx, &msgs[0], opts...)
 	}
-	return c.impl.GenSync(ctx, msgs, opts...)
+	cleaned, prevRespID := c.prepareDelta(msgs, opts)
+	in := &Response{}
+	if err := in.Init(cleaned, c.impl.Model, opts...); err != nil {
+		return genai.Result{}, err
+	}
+	in.PreviousResponseID = prevRespID
+	out := &Response{}
+	if err := c.GenSyncRaw(ctx, in, out); err != nil {
+		return genai.Result{}, err
+	}
+	lastResp := c.impl.LastResponseHeaders()
+	res, err := out.ToResult()
+	if err != nil {
+		return res, err
+	}
+	if err := res.Validate(); err != nil {
+		return res, &internal.BadError{Err: err}
+	}
+	if c.impl.ProcessHeaders != nil && lastResp != nil {
+		res.Usage.Limits = c.impl.ProcessHeaders(lastResp)
+	}
+	if out.ID != "" {
+		res.Replies = append(res.Replies, emitMeta(out.ID, len(msgs)))
+	}
+	return res, nil
 }
 
 // GenStream implements genai.Provider.
+//
+// It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
+// only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.shared.IsAudio() {
 		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
@@ -667,7 +697,187 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if c.shared.IsImage() || c.shared.IsVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
-	return c.impl.GenStream(ctx, msgs, opts...)
+	cleaned, prevRespID := c.prepareDelta(msgs, opts)
+	in := &Response{}
+	if err := in.Init(cleaned, c.impl.Model, opts...); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
+			return genai.Result{}, err
+		}
+	}
+	in.PreviousResponseID = prevRespID
+	chunks, finish := c.GenStreamRaw(ctx, in)
+	// Capture headers immediately after the HTTP call, before iterating.
+	lastResp := c.impl.LastResponseHeaders()
+	var respID string
+	filtered := streamWithRespID(chunks, &respID)
+	fragments, finish2 := ProcessStream(filtered)
+	res := genai.Result{}
+	var finalErr error
+	msgCount := len(msgs)
+
+	fnFragments := func(yield func(genai.Reply) bool) {
+		sent := false
+		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
+			if err := f.Validate(); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			if err := res.Accumulate(&f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			sent = true
+			if !yield(f) {
+				break
+			}
+		}
+		if err := finish(); finalErr == nil {
+			finalErr = err
+		}
+		usage, _, err := finish2()
+		res.Usage = usage
+		if finalErr == nil {
+			finalErr = err
+		}
+		if !sent && finalErr == nil {
+			finalErr = errors.New("model sent no reply")
+		}
+	}
+	fnFinish := func() (genai.Result, error) {
+		if finalErr != nil {
+			return res, finalErr
+		}
+		if err := res.Validate(); err != nil {
+			return res, &internal.BadError{Err: err}
+		}
+		if c.impl.ProcessHeaders != nil && lastResp != nil {
+			res.Usage.Limits = c.impl.ProcessHeaders(lastResp)
+		}
+		if respID != "" {
+			res.Replies = append(res.Replies, emitMeta(respID, msgCount))
+		}
+		return res, nil
+	}
+	return fnFragments, fnFinish
+}
+
+// Opaque keys for session metadata stored in Reply.Opaque between calls.
+const (
+	opaqueResponseID = "response_id"
+	opaqueSentMsgs   = "sent_msgs"
+)
+
+// prepareDelta resolves the delta messages and previous_response_id for GenSync/GenStream.
+//
+// It inspects msgs for session metadata (via Reply.Opaque) and GenOptionText for an explicit
+// PreviousResponseID (which takes precedence). When metadata is found, only unsent messages are
+// returned and Opaque-only bookkeeping replies are stripped.
+func (c *Client) prepareDelta(msgs genai.Messages, opts []genai.GenOption) (cleaned genai.Messages, prevRespID string) {
+	sentMsgs, respID := findPrevMeta(msgs)
+	// An explicit PreviousResponseID in opts takes precedence over Opaque metadata.
+	if explicitID := getExplicitPrevID(opts); explicitID != "" {
+		respID = explicitID
+	}
+	if respID != "" {
+		cleaned = deltaMessages(msgs, sentMsgs)
+		return cleaned, respID
+	}
+	return msgs, ""
+}
+
+// getExplicitPrevID extracts an explicit PreviousResponseID from GenOptionText options.
+func getExplicitPrevID(opts []genai.GenOption) string {
+	for _, opt := range opts {
+		if t, ok := opt.(*GenOptionText); ok && t.PreviousResponseID != "" {
+			return t.PreviousResponseID
+		}
+	}
+	return ""
+}
+
+// findPrevMeta searches msgs for session metadata stored directly in Reply.Opaque.
+func findPrevMeta(msgs genai.Messages) (sentMsgs int, respID string) {
+	for i := len(msgs) - 1; i >= 0; i-- {
+		for _, r := range msgs[i].Replies {
+			if r.Opaque != nil {
+				if id, ok := r.Opaque[opaqueResponseID].(string); ok && id != "" {
+					respID = id
+				}
+				if n, ok := r.Opaque[opaqueSentMsgs].(float64); ok {
+					sentMsgs = int(n)
+				}
+				if respID != "" {
+					return
+				}
+			}
+		}
+	}
+	return
+}
+
+// deltaMessages computes the delta from msgs based on sentMsgs, and strips
+// Opaque-only replies that Init/From rejects.
+func deltaMessages(msgs genai.Messages, sentMsgs int) genai.Messages {
+	var delta genai.Messages
+	if sentMsgs <= len(msgs) {
+		delta = msgs[sentMsgs:]
+	} else {
+		delta = msgs
+	}
+	cleaned := make(genai.Messages, 0, len(delta))
+	for i := range delta {
+		m := delta[i]
+		if len(m.Replies) > 0 {
+			filtered := make([]genai.Reply, 0, len(m.Replies))
+			for _, r := range m.Replies {
+				if len(r.Opaque) > 0 {
+					if r.Text == "" && r.ToolCall.IsZero() && r.Reasoning == "" && r.Doc.IsZero() && r.Citation.IsZero() {
+						// Drop Opaque-only bookkeeping replies.
+						continue
+					}
+					// Strip Opaque metadata so FromReply does not reject it.
+					r.Opaque = nil
+				}
+				filtered = append(filtered, r)
+			}
+			if len(filtered) == 0 && len(m.Requests) == 0 && len(m.ToolCallResults) == 0 {
+				continue
+			}
+			m.Replies = filtered
+		}
+		cleaned = append(cleaned, m)
+	}
+	return cleaned
+}
+
+// emitMeta returns a Reply carrying session metadata for delta tracking.
+func emitMeta(respID string, msgCount int) genai.Reply {
+	return genai.Reply{Opaque: map[string]any{
+		opaqueResponseID: respID,
+		opaqueSentMsgs:   float64(msgCount),
+	}}
+}
+
+// streamWithRespID returns a filtered iterator that passes through all events from src
+// while capturing the response ID from terminal events (ResponseCompleted, ResponseFailed,
+// ResponseIncomplete).
+func streamWithRespID(src iter.Seq[ResponseStreamChunkResponse], respID *string) iter.Seq[ResponseStreamChunkResponse] {
+	return func(yield func(ResponseStreamChunkResponse) bool) {
+		for pkt := range src {
+			switch pkt.Type {
+			case ResponseCompleted, ResponseFailed, ResponseIncomplete:
+				if pkt.Response.ID != "" {
+					*respID = pkt.Response.ID
+				}
+			}
+			if !yield(pkt) {
+				return
+			}
+		}
+	}
 }
 
 var _ genai.Provider = &Client{}

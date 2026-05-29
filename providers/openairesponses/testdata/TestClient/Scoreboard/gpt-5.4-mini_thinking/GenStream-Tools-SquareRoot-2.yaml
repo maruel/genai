@@ -98,3 +98,382 @@ interactions:
         status: 200 OK
         code: 200
         duration: 215ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 774
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4-mini","parallel_tool_calls":true,"previous_response_id":"resp_0ebbedb490ee8103006a18c8dee0f88192b510e8fa53a618a0","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call","arguments":"{\"number\":132413}","name":"square_root","call_id":"call_gckHp7Sxv6Ocp8gNKBIka3HW"},{"type":"function_call_output","call_id":"call_gckHp7Sxv6Ocp8gNKBIka3HW","output":"363.89"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0ebbedb490ee8103006a18d85a978c8192bd656d2beea8cb33","object":"response","created_at":1780013146,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-mini-2026-03-17","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":"resp_0ebbedb490ee8103006a18c8dee0f88192b510e8fa53a618a0","prompt_cache_key":null,"prompt_cache_retention":"in_memory","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0ebbedb490ee8103006a18d85a978c8192bd656d2beea8cb33","object":"response","created_at":1780013146,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-mini-2026-03-17","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":"resp_0ebbedb490ee8103006a18c8dee0f88192b510e8fa53a618a0","prompt_cache_key":null,"prompt_cache_retention":"in_memory","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","type":"reasoning","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.reasoning_summary_part.added
+            data: {"type":"response.reasoning_summary_part.added","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","output_index":0,"part":{"type":"summary_text","text":""},"sequence_number":3,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"**Calculating a square root**\n\nI","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"","output_index":0,"sequence_number":4,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" realize","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"YyzHH5ae","output_index":0,"sequence_number":5,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"gCCCKEZwJd3xuI","output_index":0,"sequence_number":6,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" need","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"xPmuj0AfFHJ","output_index":0,"sequence_number":7,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" to","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"eyzE6gylmcSB3","output_index":0,"sequence_number":8,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" follow","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"cHAr5RS0N","output_index":0,"sequence_number":9,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"nZS33VS3807F","output_index":0,"sequence_number":10,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" developer","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"s1aI8Q","output_index":0,"sequence_number":11,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"'s","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"0EzRhGP3aN0maF","output_index":0,"sequence_number":12,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" instructions","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"5dd","output_index":0,"sequence_number":13,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" about","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"yuk70VUnXa","output_index":0,"sequence_number":14,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" not","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"TC2XNBt2oOHE","output_index":0,"sequence_number":15,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" calling","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"ULfujW8f","output_index":0,"sequence_number":16,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" functions","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"XKufJe","output_index":0,"sequence_number":17,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" this","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"xvj1KD1lOGp","output_index":0,"sequence_number":18,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" turn","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"4uFF77SuPKe","output_index":0,"sequence_number":19,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"CEzhTFf8rJidNjg","output_index":0,"sequence_number":20,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Since","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"27ukEM7KbQ","output_index":0,"sequence_number":21,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"O5WoQZ7On3OiGg","output_index":0,"sequence_number":22,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" can't","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"jr1kt1WJIb","output_index":0,"sequence_number":23,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" use","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"9dBlHXZ6zMf5","output_index":0,"sequence_number":24,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"fgZsaYLqtTK7","output_index":0,"sequence_number":25,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" tool","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"yv4xqYXvCSS","output_index":0,"sequence_number":26,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"Pw6Eerl6eLSZPpf","output_index":0,"sequence_number":27,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"bQPuEgnoD2pGXP","output_index":0,"sequence_number":28,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" guess","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"0ViN5bswEa","output_index":0,"sequence_number":29,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"ajb42wjvUihpC4","output_index":0,"sequence_number":30,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" can","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"eJaWZryeXHdh","output_index":0,"sequence_number":31,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" compute","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"n9gJH0R7","output_index":0,"sequence_number":32,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"sfyYgYeI8eHq","output_index":0,"sequence_number":33,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" square","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"UsrIc3ltH","output_index":0,"sequence_number":34,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" root","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"RhF1bVoKfOK","output_index":0,"sequence_number":35,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" of","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"x7TclBAmnQzAS","output_index":0,"sequence_number":36,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" 132","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"uKYwPgUxXt3J","output_index":0,"sequence_number":37,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"5cvG6p9ciiwt2yr","output_index":0,"sequence_number":38,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"413","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"VkDvkl1gmsDDG","output_index":0,"sequence_number":39,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" myself","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"BD9Qtm7p1","output_index":0,"sequence_number":40,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"63m96e7uCEjDlsR","output_index":0,"sequence_number":41,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" It","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"vRYE9SMUmvOnI","output_index":0,"sequence_number":42,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" seems","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"AhIiK4qgeT","output_index":0,"sequence_number":43,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" to","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"DncWrlgawVEjI","output_index":0,"sequence_number":44,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" be","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"GicUGlPBw44Tn","output_index":0,"sequence_number":45,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" approximately","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"1B","output_index":0,"sequence_number":46,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" 363","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"jIquNEtYGqaK","output_index":0,"sequence_number":47,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"kaGm7k4LIJqMxjw","output_index":0,"sequence_number":48,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"885","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"tJHHct6x5BWwf","output_index":0,"sequence_number":49,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"...","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"N97ZnLCQUezxg","output_index":0,"sequence_number":50,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" and","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"gs2TZQsO9RoG","output_index":0,"sequence_number":51,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"WVwYhIpl7PIC","output_index":0,"sequence_number":52,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" tool","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"uU4sLOKe50y","output_index":0,"sequence_number":53,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" shows","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"XHDAOBfbii","output_index":0,"sequence_number":54,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" 363","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"2YJGgHXIGUJN","output_index":0,"sequence_number":55,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"o8cfppPyf9lC0Yh","output_index":0,"sequence_number":56,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"89","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"NrKKhGoHtPjSX2","output_index":0,"sequence_number":57,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"zX6RquLHhShxSA1","output_index":0,"sequence_number":58,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Since","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"1Hrh1CXprq","output_index":0,"sequence_number":59,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"bHuFv4tk6cIV","output_index":0,"sequence_number":60,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" user","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"7lrcFegu0Tc","output_index":0,"sequence_number":61,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" only","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"fzMQgHlxWUO","output_index":0,"sequence_number":62,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" wants","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"UDzEUyD2tO","output_index":0,"sequence_number":63,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"KhSY2N0xVgI4","output_index":0,"sequence_number":64,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" result","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"WXX0fCyJx","output_index":0,"sequence_number":65,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"Zj3qsrfcaQDBL9g","output_index":0,"sequence_number":66,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"VxnVdb2rZkmytH","output_index":0,"sequence_number":67,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" should","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"e7sPFZN8t","output_index":0,"sequence_number":68,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" just","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"ZhPSXabsT4S","output_index":0,"sequence_number":69,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" provide","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"HGrIT8Fa","output_index":0,"sequence_number":70,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" that","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"v1Fu5KkECxf","output_index":0,"sequence_number":71,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"6ucsNoAI1ZKAgld","output_index":0,"sequence_number":72,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I'll","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"nn1leI1OTwa","output_index":0,"sequence_number":73,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" ensure","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"roCfIZE5D","output_index":0,"sequence_number":74,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" there's","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"Htt0DhrN","output_index":0,"sequence_number":75,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" no","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"NCPGe3RJ0vlc4","output_index":0,"sequence_number":76,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" explanation","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"UGbf","output_index":0,"sequence_number":77,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" and","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"GynxCPzdpRGM","output_index":0,"sequence_number":78,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" keep","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"5Ai0GayMPKd","output_index":0,"sequence_number":79,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" it","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"I1WYDaNSnRchv","output_index":0,"sequence_number":80,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" straightforward","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"","output_index":0,"sequence_number":81,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"!","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"qVNKN71OL3i4N6y","output_index":0,"sequence_number":82,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" So","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"TJqtpGvjBkxln","output_index":0,"sequence_number":83,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"LBmtu6mhF95UvJF","output_index":0,"sequence_number":84,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I'll","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"aEWANGqFxiB","output_index":0,"sequence_number":85,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" go","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"BNtdHsx2F4oFp","output_index":0,"sequence_number":86,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" with","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"nUclvc2u9SS","output_index":0,"sequence_number":87,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" 363","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"DQjVfYj9t9wx","output_index":0,"sequence_number":88,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"0uJVIVE0rlWwmSE","output_index":0,"sequence_number":89,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"89","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"uREJ4XHYOdIMYm","output_index":0,"sequence_number":90,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" as","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"O7iooYBvRWaU9","output_index":0,"sequence_number":91,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" my","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"0xvCmWi56qUmn","output_index":0,"sequence_number":92,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" output","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"eGOxNaTiO","output_index":0,"sequence_number":93,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","obfuscation":"WL6TvEg7yfHI2eA","output_index":0,"sequence_number":94,"summary_index":0}
+
+            event: response.reasoning_summary_text.done
+            data: {"type":"response.reasoning_summary_text.done","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","output_index":0,"sequence_number":95,"summary_index":0,"text":"**Calculating a square root**\n\nI realize I need to follow the developer's instructions about not calling functions this turn. Since I can't use the tool, I guess I can compute the square root of 132,413 myself. It seems to be approximately 363.885... and the tool shows 363.89. Since the user only wants the result, I should just provide that. I'll ensure there's no explanation and keep it straightforward! So, I'll go with 363.89 as my output."}
+
+            event: response.reasoning_summary_part.done
+            data: {"type":"response.reasoning_summary_part.done","item_id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","output_index":0,"part":{"type":"summary_text","text":"**Calculating a square root**\n\nI realize I need to follow the developer's instructions about not calling functions this turn. Since I can't use the tool, I guess I can compute the square root of 132,413 myself. It seems to be approximately 363.885... and the tool shows 363.89. Since the user only wants the result, I should just provide that. I'll ensure there's no explanation and keep it straightforward! So, I'll go with 363.89 as my output."},"sequence_number":96,"summary_index":0}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","type":"reasoning","summary":[{"type":"summary_text","text":"**Calculating a square root**\n\nI realize I need to follow the developer's instructions about not calling functions this turn. Since I can't use the tool, I guess I can compute the square root of 132,413 myself. It seems to be approximately 363.885... and the tool shows 363.89. Since the user only wants the result, I should just provide that. I'll ensure there's no explanation and keep it straightforward! So, I'll go with 363.89 as my output."}]},"output_index":0,"sequence_number":97}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":98}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":99}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"363","item_id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","logprobs":[],"obfuscation":"JObzJTjp3jutb","output_index":1,"sequence_number":100}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","logprobs":[],"obfuscation":"cRXi1hnwS2PJ94c","output_index":1,"sequence_number":101}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"89","item_id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","logprobs":[],"obfuscation":"Wrq7i3nWltX71R","output_index":1,"sequence_number":102}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","logprobs":[],"output_index":1,"sequence_number":103,"text":"363.89"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"},"sequence_number":104}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":105}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_0ebbedb490ee8103006a18d85a978c8192bd656d2beea8cb33","object":"response","created_at":1780013146,"status":"completed","background":false,"completed_at":1780013148,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-mini-2026-03-17","moderation":null,"output":[{"id":"rs_0ebbedb490ee8103006a18d85b32388192979c48930b54608f","type":"reasoning","summary":[{"type":"summary_text","text":"**Calculating a square root**\n\nI realize I need to follow the developer's instructions about not calling functions this turn. Since I can't use the tool, I guess I can compute the square root of 132,413 myself. It seems to be approximately 363.885... and the tool shows 363.89. Since the user only wants the result, I should just provide that. I'll ensure there's no explanation and keep it straightforward! So, I'll go with 363.89 as my output."}]},{"id":"msg_0ebbedb490ee8103006a18d85cb60c8192a3fc667d7620d76f","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":"resp_0ebbedb490ee8103006a18c8dee0f88192b510e8fa53a618a0","prompt_cache_key":null,"prompt_cache_retention":"in_memory","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":137,"input_tokens_details":{"cached_tokens":0},"output_tokens":119,"output_tokens_details":{"reasoning_tokens":110},"total_tokens":256},"user":null,"metadata":{}},"sequence_number":106}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a0313fd5be7ca267-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "460"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199342"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 197ms
+        status: 200 OK
+        code: 200
+        duration: 569ms

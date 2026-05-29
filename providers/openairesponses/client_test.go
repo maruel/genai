@@ -309,6 +309,28 @@ func TestPreviousResponseID(t *testing.T) {
 			t.Errorf("JSON should omit empty previous_response_id: %s", got)
 		}
 	})
+	t.Run("empty_messages_with_prev_id", func(t *testing.T) {
+		var req openairesponses.Response
+		if err := req.Init(nil, "gpt-4.1-nano", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
+			t.Fatal(err)
+		}
+		if req.PreviousResponseID != "resp_abc123" {
+			t.Errorf("PreviousResponseID = %q, want %q", req.PreviousResponseID, "resp_abc123")
+		}
+		if len(req.Input) != 0 {
+			t.Errorf("Input should be empty, got %d", len(req.Input))
+		}
+	})
+	t.Run("empty_messages_without_prev_id", func(t *testing.T) {
+		var req openairesponses.Response
+		err := req.Init(nil, "gpt-4.1-nano")
+		if err == nil {
+			t.Fatal("expected error for empty messages without PreviousResponseID")
+		}
+		if !strings.Contains(err.Error(), "no messages provided") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
 }
 
 func init() {

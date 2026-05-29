@@ -153,3 +153,160 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.442s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 755
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.5","parallel_tool_calls":true,"previous_response_id":"resp_053da82d30498396006a18c943c65081979e0e3e135869cc69","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call","arguments":"{\"number\":132413}","name":"square_root","call_id":"call_3GIrjDuakVXkQf0uBzPx9hEU"},{"type":"function_call_output","call_id":"call_3GIrjDuakVXkQf0uBzPx9hEU","output":"363.89"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_053da82d30498396006a18d85d764c8197ac30745c2b5664e2",
+              "object": "response",
+              "created_at": 1780013149,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1780013151,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.5-2026-04-23",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_053da82d30498396006a18d85ef01881978fd92ef45b5f7e27",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "msg_053da82d30498396006a18d85f552c8197acd2b583211fb4ac",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "363.89"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": "resp_053da82d30498396006a18c943c65081979e0e3e135869cc69",
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "current_turn",
+                "effort": "medium",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Calculates and return the square root of a number",
+                  "name": "square_root",
+                  "parameters": {
+                    "properties": {
+                      "number": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "number"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 137,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 38,
+                "output_tokens_details": {
+                  "reasoning_tokens": 29
+                },
+                "total_tokens": 175
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a0313fe7ac58a267-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "2152"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 2.24s

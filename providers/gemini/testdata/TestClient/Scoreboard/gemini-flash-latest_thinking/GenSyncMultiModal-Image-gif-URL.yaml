@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/gif","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analytical Approach to the User's Query**\n\nOkay, here's how I'm breaking this down. First, I'm taking a look at the user's request: they're asking me to identify a fruit in an image and, critically, to give them a single-word answer. The constraint is important; it suggests a need for conciseness and speed.\n\nNext, I have to actually *see* the image. Alright, I've got it. It's a yellow, curved fruit. The shape and color are pretty unambiguous, which is helpful.\n\nNow, putting it all together. Considering the request for a simple, one-word response, and based on my visual analysis of the image, the answer is clear.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EsYCCsMCAQw51sdpiRnVD6wDxkS7bIe1i3mgXl41G/mTjo+HQZUtW5Kpnh+ECCreKCG3A5kvPHxjP9/3Gqe1w8dsvzXdZvFXibkJ4vZpAA7HYSF/64Qrq3w5YPZebYkVmUp768+HID5EVmrF6WyL0hX3E+U67c86LVEJ0KhBHN9+P2zKpGeMO0bGpC4KMu1CGnFZMnvCwsB5z9XqH1QahHzMx9GmtezGJMHszu1yd/zLP1cRdlS7K2jjU2mxw5c8KOo6fFZRHA+7jc4dHIFJuER3RqicZhZDeiBwPmAP2Nc7D915/BHCbZE7yD2mVW/xVUK4MbRKaC9Oc6gTGb+6g5ODGzHPbIurF8OEDHj73VBu4wpmcRkBk9TydIKuqil7h43Uic0lMowOD+I0bj/UWP7YGujNyEMpMir2VEEfni9jY4KoWaWeFsw="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1169,
+                "promptTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  }
+                ],
+                "thoughtsTokenCount": 71,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "aCYaat2DEsHg_uMPzvSGwQc"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3832
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.843s

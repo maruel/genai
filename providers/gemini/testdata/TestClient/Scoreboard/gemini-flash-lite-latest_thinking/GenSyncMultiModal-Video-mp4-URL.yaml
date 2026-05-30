@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Analyzing the Video's Audio**\n\nOkay, so the user wants me to identify the word *spoken* in this video. My initial thought is to break it down. First, I need to analyze the video itself. It seems to be displaying the text \"BANANA\" rotating against a dark background, nothing too complex. But that doesn't necessarily tell me anything about the spoken word, so my next step is to examine the audio. The prompt is very specific; it is asking what word is *said*. So, I need to listen very, very closely to the audio. There's a strong chance the answer is in the auditory data and that the visual is supplementary.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EpgDCpUDAQw51seQf57Uj+FodQIlhWbToI0JNGl3Pujo8alkXVh3bQayBIgzotwhJrbDiFt7f8bXsth0zFwzkGwH1IcY5NFV55sCZjrg3U54Q800t1asN/dqZWPYaKacI/tZ+cgNAUWUdmQOj+L8yj5ybC4WRNcCYAM5CTH7Ef/jcZjiQBtN84AwD7AZ5z4LQfuTC2pVdNa3O6PMhfKsmSHX9S82Gajd64AUeXNAFFMGzy/jrrDFWW4bGqCvBkgm+15BvE6iq4Sdld/CiMtYvGydnzPpVt7zet1p1vPFWskM+h/DgEpjgTqQ5E6iF3Ztz27NKxKl0IwQQy1N3bQL9hau1/XxdDuFdH1XLQQyb20zgc7VccxgUZr2LvZZu5K06SxuSsWLY8uCm1D+ftWrUZkmm2O2Ur+Y5p7wQkza5ZFVqpm2slzEeSMsJkWpIXpGV6dlXb4LMAIJAf7E/p6Bl9Pc0ir31stpi6lHH2CJvb+ZilvTrQIdamTaonfztksikoj1gNTjhM8chAHO0tgEJUdftfihGvR/ghxc"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "totalTokenCount": 390,
+                "thoughtsTokenCount": 94,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "EicaatGJHOKl_PUPkMmJoQw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4276
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.287s

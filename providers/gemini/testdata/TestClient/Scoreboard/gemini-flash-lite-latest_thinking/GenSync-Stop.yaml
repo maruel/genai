@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Okay, here's my process:\n\n**Structuring a Comprehensive Essay on Canada**\n\nAlright, let me break this down. First, I need to really understand what's being asked. So, \"Canada\" is the topic, but it's not just a surface-level overview. The request specifically demands *great* detail. That means I need to touch on pretty much everything – geography, history, culture, economy, and politics. Got it.\n\nThen, there's the constraint: the response *must* begin with \"Canada is...\" Okay, that sets the stage. Now, how do I actually structure something this complex in a way that feels cohesive and logical? Thinking about it, the best approach is to build it layer by layer, almost like a pyramid. We start with a foundation, an introduction to frame the country itself: its basic definition, its sheer geographical scale, and its basic national ethos. This starting point also addresses the \"Canada is...\" prompt to meet the constraints set. From there, I can build into all the different aspects in a logical order to explore the detailed topics.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Canada ",
+                        "thoughtSignature": "Eq4ECqsEAQw51sfIVV2Wj51Ysnuf3I8L+zLpp7yyOaupSWaACKsLRNJd3SPGOGTB4qnMdtwLbAaDdfvkZgUJAgbEHUnR6G8a//64Nquhv++vtbi0pTP0jEW2Izl6/0wySvgsL42yV2LZnkPJ0do2M8PmDhcBEZdUWvFddeon3KjqsXzsGViAGYCPteW4DewahPQLemRq0tKMO4cjbQPXROBGoi1ZHK+W8yjI9T/0STEbZiMJdyyogarEg1DsH+w0CTYF8JTnqQw84yhoXsKuSQhtjQQP1fI1xuI3eu8DodJwunt64gxoNEOzFzQ8HoSY/NHOXoWOEBRwYwYkJMGLZvMAekm71R7Q8WQkC4GfwJL/J5JRBrx06HMhtmE0Q7BbA81k4LZPw7P1Evq2DCnp7vdgRirtYF8HwqBjNagnJk3aZv4wHDLZOE5pRcq2AaRZ6a8II6se6E1Mk6Oz2XwxY4B4XrAiG+gLMDepY1brwNWocIbLSJLPxHuYkyvg2WjnbS1LgsbP2Gkv9bdzqwD/Jz0pOl/2kqGLwNs/OleLF1AG16zmU7r67Rev4LMWAHeu4Gm/qCzS5+uSByDb8swt3J/k9SCtJPr+2HmMv3KB9MQOxLBFgnLmuuqNoHur1XzU6GKBqatR7fUBOrIDRPwNis7DN7fbmFMUR/f7RLlTvJqr8vYdIikpTYPMICYUBQ1LFw5yjmuQ9V5L1gAGyP9l+J0JmNToXUj5p8XoNJbGOix7"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 135,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 121,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "sCYaat-bCaS4sOIPgcnmyQI"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6916
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.928s

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 331
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_fruit\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 7,\"totalTokenCount\": 209,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 172,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"KiYaapnIGqPO_uMP5OaV2QU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\\": true\\n}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 11,\"totalTokenCount\": 213,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 172,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"KiYaapnIGqPO_uMP5OaV2QU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvYFCvMFAQw51sey0dtyo9Q1/MDyjXbv3sqhSxoEUXbPgmJ65TxYQGVAlBZ0sD5NnFwBVLhK63lZuZFXi+wwOq08M2BbXGdG22faf/NHh45uRbk9z6roVC3XTMdje3UmnuLT4ww4rV8GxM1YVJDewSnSZO45P9SeKo9/W7CteTJ8EAMb1Xuga1+9tzT9sCJChOE3KgwnVjqU5O82WeUUFNpOeJoi8ZPW6OGRIdB7A2NnD9xc8Q/UO7CIQT0iQgLy0iqr2y5HM2mOS6KJ7dUyIDRNTh36Qgh87P7IhgA2rI+3cQEr2Lh5FMOraxy5Ct/s/6Ev73hKx31Gb8YpYnReQq0mvgy6Tis56r7lB0nV3m4Fqz07aBKxQDeQ2rN7CM+wSuknjGMh4TnsrENP3DWEwuOzzy6cPcYn+qfSoKW/K4bvp1lOYbKsv0OtCfuUYnoQISrDWv8vOn+GGexN8ihNYzmreIkuQ+iPEmuayCcr7GzzpryP2GTiKSrR/fMxGE3wMIzp2VCxm+swBkMKwIWrkUa5zRWl7VbPRx6AXxSjdhIo4MulfHrEfoEmOSOHBLZJgjTj3arh/D9Z6VEbPbw/JftWg4mWZhmc9sQVLXLPJBb4DGISLUjUT6NkD1yi9sGspAR9pMuuuoPdohS7lx2/tTChH6qVhDUFm6qnEmY4jZ2rad8biXtMJ/A09XN7aj0K9zX/6TvZO+8hzGrZpVzw6q69hD4E7o//g8kOh8E1CVpDL/I2g30o+vtCzXpX6aUucWbEZPaQ56Ej/YvQelabfeCy4qjSKecv+6JouqdxTS3IVj/lq1ThYEWxf0ot3wPLIP5pek1VuNwHIjCeld02gsSFHI65PnDjFD/32al29GHatCV23Xnu//MX8YSFkaVsgOtjYAGwM6ogRGAMIGxk6rW8ns7O6Oh7+gsDQ+n6XVRcmTY16a8Kf2YzbdeemcyatUHTKiVKc4vqr+B3yQoX3jH+ccVw5x5bvbMMamI4f6jpD2JHGkAnB6M=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 11,\"totalTokenCount\": 213,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 172,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"KiYaapnIGqPO_uMP5OaV2QU\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1331
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.343s

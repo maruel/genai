@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 139
+        content_length: 201
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -29,7 +29,7 @@ interactions:
                     "parts": [
                       {
                         "text": "Hello.",
-                        "thoughtSignature": "EjQKMgEMOdbHw9k9P90GSglnhEZ3mZzMe6phuwV3KBX1lSKo7lgrutGnZeIwK6+BY7HB2oOp"
+                        "thoughtSignature": "EjQKMgEMOdbHQDTjRl+RgNbfNxRlREJUiGtcJsc3f0CHNARX+3Pi/uZLI2ml5GUv77KgE+hv"
                       }
                     ],
                     "role": "model"
@@ -51,7 +51,7 @@ interactions:
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "EdYZapXZNLy8jrEPvOOP4AE"
+              "responseId": "1CwaatfFA7CY9MoP4d6FgQ8"
             }
         headers:
             Alt-Svc:
@@ -61,7 +61,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4686
+                - gfet4t7; dur=600
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +76,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.694s
+        duration: 611ms

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Assessing the Constraints**\\n\\nI'm currently focused on dissecting the request parameters. I've pinpointed the key constraint: the response *must* be solely JSON, following a predefined schema. I'm carefully analyzing the input question and its implications for the structure of my JSON output, considering that no additional explanation is permitted.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 18,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"KyYaavTfL7_g_uMP_JiW6AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"is_fruit\\\":true}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 336,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 311,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"KyYaavTfL7_g_uMP_JiW6AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EqwLCqkLAQw51sdObS0ZK2yj2t/zIv96dhjZma7IgQ3BVFUNwv/Yn0FrLpx3YsaLhn8rC27+two7aOpE2Q8k4P1LcNlwctXT/Tx18iXqe8xwC/4VD9rDTfvPw4hyB9WZo+Yrz2G0uaEC8QfwNFJ58zSI9ISrV0edEygDZFmzpBm+fS25ZnSuZ5FR83iT6qBmFAwlhmy2k0lO8ngnPkysCEiBHiEK/iEuaO9CMLyrRGS1/aKYaVIZr0SEMopCUDyykdPNNQyUj+rCPi3pL6XQv+omqQCqdICedfdu/Wus3JDvmK2E1gLbq54HMXC7OGpQ/S9Cn/Gb2u8csYH5st1JP349AhV8F2GlSdhZakmjq7jjC73Y/k1C4OwWuSMSj+EzIDeYT0vqVSar2/7f1tcFis5dm8vEUnAmVlR84xxZtToldpfOf5kj91/NcdZeMHRVe0wqjsQQg2ifqWQvVFA1ja4i23KRQakq28YjK8rd5hl27WURE+CpSfJGicbdK0I5cF8FvnAUwqM0UcmQHwUhyPUVW1MsjaWi2vd6g+tmZOg/i88CJUYN1Uhxa+VleqDCapeZ0HIkSHkQOHKqR/cDC+s7iY30qrlY+haUBNQ/jrUYSrjHlYTBvsgqWrKgMc8aAbJ270Ewh+XXNLVYRQS8CI6MWmVuvR78PoqEtH0i1zS1tZiCho73GVlpI/2kwlDr80/lL40h8sAIldjVF135ZsTn5NuI7A/UURSpfbO7hyfJBOZmKVgA5ki3ZzbBzLCjx1pxyO6tDX3ghqdMalebYr/PKTManYxbhwiPyIEUsI1xDBR8fALZp7dCwgSIW7Ru2v4H6xYn5CofeqMsQRiCC0vnjMloWJ9XoFOEpJl6zuRPHNHYrdPSLdb74DE0uKJlp02ng6PyWET5dJEINewe7S7+krBrbIsfw9VJOVfhbDk80duJa/OyK3dGMS+kF/nzis3dkYF08O7Z1nUqgh5D7rwrLCwcBr3A/JOqvO9j7w3i0dYsIiNv92wLcyDslQuWVeNDK22jjnsf7seVDP3BKzD1+nLAV1zREqk5HQqFMCDAnyLzFRpgQ30FNrLY28H7b4CflrwTrHvPtydinO9YrCoKATIadUlrquc62qDvQK9Sgqkebfv6hkXmtKklTYrKLoad1i0u3a/poETV2lrYjVDkU1EH48KZZMXdRBw728CdK8huUZlqDP7tS2Yf6SpPtdvTuk8H2NIScNXa8KqVZbUJ5lAB2+DBTkmdvlIiVpCHT73bbbhZhvF6yJhK+ly4AgC20XFb0eh+uGhSppmwmQNmv17nOHAPerzUH19Db69qHIDOclJe4/pGlUwKHM6754AY0WSbULnwltzmLOk4+FTSw0BuGA1HK/CSRPdEjvAOTYXJyayviPBPM5i32S0rEMzR7VcVm+xg6JA2JoHMVdZOrVHABBhQbj3zE6FMeo2y6J58W1ZPp94/vGVEVd+EXxQ4quqlAebKiEpO/KzyNus+Be6Qm6IllZRKbpUzGjqnA87heggp6bWTWVULdUDctoeOP/MG/QAETdNv3r9at2XIVzOxKsFv/mnEiGSQqnMi4/xqmvujBMaQxtLu84eA1yJChwq3WHsglGXdcCkhQcx60MeKp7syhyr9lxBDRzKEE2xCxVRBngHl/zaFq+1LQcojqxc7lAiZfOYvoiOieYG/XsRBq950bGlyIU9Jcjo0suWpp5tRe/Dnv4CaQXAwHg6nBgf/aCsqLzw0Lcf5lxpsRyp/n7KdkPRwHPyzVa6YOydLxy/zaQe88VemuKnVLK8D8hxu+33fjwfq2bVHuETD/vNgZa8/GJQZ+ar8FvMYZhIWAcYIS3rVsj8XzgwYqYgKAWaL+cA1PKP6KrDQtR+GnjuMqlpRAXBHO9uMrVyddcEuJeSqO7Xia4n+6Ht20zhVgfmTJi4cjuYYm/b0\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 336,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 311,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"KyYaavTfL7_g_uMP_JiW6AM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1348
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.359s

@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/ogg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the \"Audio\" Question**\n\nOkay, so I've received a request with an audio snippet labelled \"00:00\" and the word \"orange\" alongside it. The user wants me to identify the word that was *said*.\n\nMy initial instinct is to \"listen\" to the audio. But, of course, I am a text-based AI. I can't directly process audio unless there's a specific tool in place. Wait a second, the user provided \"orange\" in the same prompt. Aha! The user is setting up a sort of test, or more likely, they've included the answer within the request. Let me look closely. Ah ha! \"What is the word said? Reply with only the word.00:00 orange\". It's a bit of a trick, or perhaps a simplified presentation, but the provided text \"orange\" is almost certainly the *intended* response.\n\nThe prompt specifically wants *only the word*. Therefore, based on the provided input, the word they're looking for is clearly \"orange\". I should respond with that.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "Ev0HCvoHAQw51sdPO3xppO259fqgIxvpgJQttd0epJXhiivyIudUgylfygcCtNNwCJxjkmNGuG4q8NtAdPupMIZlU6y44oMPLk9EZKSR4AkhTl1kQPVGDMP1gFcbWcDSgIwQ8wnogc8oy+AHmxnSbjU2GAfrxBxLBSmm8yHf8x/f5f2qf/8tVb/XaudkWa9oxlzRMMyjCwhBHsrI5cdwiS1Oe+2rIJV/3Lh54W5oKWRJn3w81PwUCXvpN2ayikdjFtDYn6wMXrQRpMIJjf5wMUoUWbgF2UZlEsocDVIwR8jSH+Vn91W0K5udcXgLpbXWkH3xVDweCRwGanoki7s06mSf+fLKGfHgCNPKBs1QealAhntDucYAafxaOGNrvB/bwlYkua0Y3dMzObspUOkhK2+NGrubg6Ve8AZsYp9YsSFq0rb7Iaoq5LDv5j2Txfikjfd1X6FJUGlbHEtkoSq+SZrRYlpEz20/wYLUuxthKCep/vJSKUAKz0JULWfNy8Y2csmFuDc5vsB0odAJh0qOwdrpeabM/KzGM/4qscmkHs9/7X4afTcG9KzsmMswEWOTc7cwdNpxMViwufo7g8HZVr4ywM+KAlfttd3IblQ8V3b0j7xX7/pT9WxDria7cpKVI6qCBrlDGmoT47qkg0zlER+/9Alk2M8ULaHjzkxQnycBbmyl7lKealS7dWrvSGNGfduw8cYbTIKTOcWfT3WKM9UlqoNTZJB2pyZbcPxNdERvWxQfo/OAQFZjtcpAozp9Pu58pnc+2P/ZkPtuviiZeEzPvgZI/oAAdZAsSh2szjDjkyF8Xf8GASXeIHAUgRUiTOoBEpXc1bUSi3i05BqKJPZwQm97NDc1kOOcuS4gmz5jCVzIX49A+JYnCemRb01PVV0tp7JjLTmMRUXQ11PyKj3StXhMdun18Eb19do1KRUTaE85PI8ebdAhed/glBjpcN8Oaup6vG8/X7z4IyU5c0pCDQVqbO6BZZhlXGnhqJuZiqYFuMcLGq0X118XDYKNjYcXH1E6x4Ry3WLKiD/osqshk4J27iJ7rhBNkJNOAl+e3gVkqTv3kcmUoe0hdprzl/fEsMbBE6HsgJezDQ6DrIfWX94ndZAiPd+uaL7XfsZdRtmbixxEILvVpanUiWC6CjzGE1y8IQaP0nY9VcohXCO+3KzoFSYjNtLUFZeKOg46CoOIfNzIE5xZj9Rh7qEm3EaXKuEXoXuKBwrzA16ky8XAMRLW5g9TpBNlTamwoHKmpEfF1ZVfOVQvO2+l6dMMF5xSr4qTWnwqN1W7OMveBxt1fiWUx4oT0iUx+o8BjtHd/O414NfRUBPUPRpUiFIzD9FwQ3A7dXH9e3zGlEkSSg=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 280,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  }
+                ],
+                "thoughtsTokenCount": 247,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "BCcaau2SFc6a_uMPq_6eqQw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3393
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.405s

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 355
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/webp","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 12,\"candidatesTokenCount\": 1,\"totalTokenCount\": 103,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 90,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"zCYaavyXOa6W-8YPuJ-a8QM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Eu4DCusDAQw51sf/zhOVre8jms6OCQylYb50yq2tXxdRg+2GCcfD/Jrr/bXrLknB2tO9TSmiKig3HEs0H+jDO5P+loUYIjE1aKcl2uUXk4afzKyA9yh95g7i4ZuA3zqlAWGSAQjwQ33K+XaGSCEfS7WDt2RE0DXjVGjQiuYcpQGavGb3PNN3L065mRiSf2z+mAXgj788DIaryjsve1yxsGUJEFMbLaozolD9mRzGC2qywugtLSHKhtj6eP3yorONy8PIb4mnzbVt3n6d1yYvth0LTHw3ih8BpHmikLmXN0dShx+27cY2UixhIVZzHg/iz37lqMGc3ey9wAO0ydPtplJPgbEk9J3piGJnRyLubHD3JSmzx7pv+rHQiqhZCVfx59+w4ECFj+4pL81MgUm/DaqZr8VkXFa7e+zx3VcwzVjbUWdLsX3SXa3rEwTwe5k5mE3R/Pum4TogfzSkcOUHqS/XhJyKCqo1aEsiy/eR9l9GpJcpnKpPHwijl27koQVwvjFeKli1u8nRWwAntVTma4U5ybR9moAfnPFRlOUmanUXyh99m14yy4N5pPmZuvP4Wkpvp/XZzWiMID9KhDkx2boUra7tm+PqM2gM0VNgec7TSeJh69Xc2ntiPjcTzOb0Nzk1HQ455WbJP/8x1/yJCu0=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 1097,\"candidatesTokenCount\": 1,\"totalTokenCount\": 1188,\"promptTokensDetails\": [{\"modality\": \"IMAGE\",\"tokenCount\": 1085},{\"modality\": \"TEXT\",\"tokenCount\": 12}],\"thoughtsTokenCount\": 90,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"zCYaavyXOa6W-8YPuJ-a8QM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1292
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.303s

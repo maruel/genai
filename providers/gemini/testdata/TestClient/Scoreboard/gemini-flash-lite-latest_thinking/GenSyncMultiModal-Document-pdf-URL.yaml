@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 362
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the Task**\n\nOkay, so the user wants me to do something pretty straightforward: they've given me a PDF screenshot, and they want a very specific response. My job is to extract a single word from it and provide *only* that word. No fluff, no explanations, just the word itself. The instructions are crystal clear on that point: \"Reply with only the word.\" It's a constrained output scenario, which I appreciate. My response has to be precise.\n\nI need to make sure I understand the image and any additional information provided. In this case, there's a white page with the word \"orange\" written on it. I also know that OCR has confirmed that word, and that there is a \"1\" indicating the page number.\n\nSo I need to make sure I am giving the correct response.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "EukDCuYDAQw51scasZEPrj6nSXhCzCXqbGSxnvcH7XPdztX95S3EK71xGkFcfNdbJT7t4R3SnkiUGfxLZhc2MpfMK/aj81SuywOULva7Jh1HzPiMni6X5RG0qrF6i4y2sJsXhj/K/8zxXtP2sU3+7YoACZgW1SkcCZzifZe2dMjJ6BtXNnZwc/Cc+3cDO2l9gHmE9Ijjct1GpaJnBv8BLc38JJwlVOHSCiNGhVU7oJLho2fcnXcxaGGvM+hnHQsd5bF5v7oRIMshkzZikS6CvsE2J/DjDyt1ITU2lDrhvO1ShHXUhqmiOdO3LyVLe+xnbispbsGJEur+GTXbtfAhC2uFg+OtGukTAZn4Z/RFLrVFF50J1cBAel2lDxTPQqAAxghwN75eOm3QQ5tfPo9Woh3XR5q+2U/PTrPlOAH99OIUJdInLzm3cdm6VIreP3HLc2YGMsJ95PR/xnBdBQap4CmpBhHV4Djp7M1DEuYzNCc7K31v2KAtPYw3pVpKDmxEt7y0kICjzP6rKKBEnthxW/Y6FJQR66uccjamVX7LnXxFmBO6wDiK4lCWF01S4xaaw+A41jeNJKF94Y5Aiqo0EkOKVRJIsPiBe+jVRIfEM9mQvrzvNIeNWZ6YtnBfe3ETWLsRO1TN1DLG/xNE"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 680,
+                "thoughtsTokenCount": 104,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "0SYaapH-OqKssOIPxYbnSQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3389
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.401s

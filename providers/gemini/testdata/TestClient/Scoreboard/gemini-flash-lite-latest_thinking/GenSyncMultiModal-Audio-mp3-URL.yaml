@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 359
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/mpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: Identifying and Responding to the User's Request**\n\nOkay, here's the breakdown of my thinking. First, I need to understand the user's core request. They are asking me to identify the word that was spoken in an audio segment. Simple enough, but then there's a crucial constraint: *only* the word is permitted as the reply. So, my focus is immediately on the audio content. I've analyzed the audio, and the word I heard was \"Orange\". Therefore, to fulfill the request accurately, and *critically*, adhering to that 'word only' constraint, my response can only be \"Orange\". My final output is ready.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Orange",
+                        "thoughtSignature": "Ep4DCpsDAQw51sfxo6Sm1cU0bpQpDhU+eZvDpydpAMudVSqsARbm/p2Ps0+D5rVKsskjb6BoobmOI0UjINX5XbnA4SyKFon2aRAJj7vk559Pd6jl4nU+sx6TDhNysgZrbiX14QP71en4mFl2AHXaerMMEdFblQywNmDbXV5oGgS1zE2FpSCFtUlUGdKMnOe0251d98nL74XGmMDHBDajP8x9Na9u4GOLhHb0xtV4oFpA75sboVPsWrbUkuRkR3Ez+LgSR9CVb0uri5Kl8xpI4LNJFxIQiHRdxEgfvuB/Ft8wgcdAJoVEps3BcvhKmntrzkiyjy5TSlhQwg70eCwhbLt1eb3kTmlcmIRXry/OWr917s5uVqRPRJ6R6Ma9ebW2IildN53sW1QVekdfGSLdfhbaUXLaSdngOh9VKCV9/mv50/XFD+8xmVdYyIVw9rOVu2gSz8SDO3kJ0LqjO3QOTToX9Fsa9d4DV7vh+bpkE/bY42akAzAK4lczALnO1FEaCZwrp53d1uqvZ6+q+NFtiz9dQ1iG8kpG801aMhrPw4ly"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 134,
+                "promptTokensDetails": [
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 101,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "7iYaasLEHv-c_uMP5erD2Aw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3438
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.449s

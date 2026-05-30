@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Concise Response Generation Process**\n\nOkay, so the task is simple: respond with a single word that essentially means \"say hello.\" Let's break this down systematically. First, I need to analyze the prompt: I must say hello, and the only rule is that it has to be a single word. Now, let's explore my options. \"Hello,\" \"Hi,\" \"Greetings,\" and \"Hey\" all spring to mind. Each adheres to the core requirement of conveying a greeting. However, I need to select the *best* option. I'm going with \"Hello.\" It's direct, universally understood, and efficiently covers the required instruction. Finally, before I finalize, I'll quickly double-check: is it one word? Yes. Does it effectively say hello? Yes. Therefore, the definitive, accurate, and concise response is \"Hello.\"\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "Ep8FCpwFAQw51seVXn60aUrS36HyX4Pi2Mor9UzhTM0DhRKUcQdjmJg1ZJM7MDW99PNazqJ6O4JLe//WyDl9b31Ug61BgvDvD+9Uf8xYPpXAtMqoI9W57Qq6sFfYVEN/Y/1b0+durX9pq4av7J0+D8k4S/fmfW3Q65vjAjWt436GC/km9jjIkJdbo9bTlGVdQpiXa5aG+VWT2S4QG8ndVasov+AeXQ2gLf4mKgQeWSHy/aKjOqJf/MPSNhBW64b8KlzXGfsQYahQ2eCMNAm0jisK+elgEYrS0j6FiEaDMcZfCMAMUZjsY6VawE/ZKnkYxHl8SBvWQ2pKt6/mm5dhT/pX3q01qSYubbDgdNCwuchJVcbaAlh5Mwt8PXfxEj9mfUoInNe9tFNZP1kVgMKLHc50+njzkWwS3V25lq7/ivm0lnKIbSfGJrsYMe51LmVHrnLpirE6yr04mLt/AXZ3m2nG6/YVBsPLerbkgMkNBOOCWqKjl6YvIkJp8OYPkCyJG5xJJWr6UMMseaFUjVQ2p70ADOn+khczkv3CR7mxY90X+9Q8t9MS7YBKukzUVQB0+WH3uuGtV3P+zl4EnH7quYgzfHA7zw/xobwYZR4fizByI28NhfX8gcALRHv7c2E6Ozq/G790DblLrV81L+BiyOAbsgX4cT0ooC9rGISBiT7fT36L461g0bsq9As/MbRV29HDkVD6ojjliDbKCkAgYMEB7UBnWWdGEYztZZiLj19HcZv2+IUDI9vIgC9HjDjSdcCOMw+hGkjfGoVIPJ6TKszgiJqZn/hjxt+VoVBAutKPpfRi7AoFTUDICyKldnmwvGTSJy6MdJS6wLZlr6rHQv+WisMlgpo5L8gFPZVCe0cEZfpEFjRbFPeZ7w73T8I4Hq8="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 182,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 171,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "qyYaau_xOemE-8YPhpaRIQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2117
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.129s

@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2054
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**Calculating the Square Root**\n\nOkay, the user wants the square root of 132413. That's straightforward enough. My plan is to utilize the `square_root` tool. I'll execute the tool call immediately, specifying the number they provided: 132413. The user specifically requested only the result, no explanation. Therefore, I'll keep it simple: I will await the response from the tool call, and then, once I have the number, I will output *only* that number. This aligns perfectly with the user's explicit instructions and their clear understanding of the process – they are likely expert users and require efficiency.\n\n\n"},{"thoughtSignature":"Eu4CCusCAQw51sdIpiRhG5x8vTdQvYSZXbDLRGC/fP1b1VApYviilU5nE9EgjYxr3PpvGlZkVmzMXTmZORSUYY8Lcr6hZVtMFVKkW6fng6NmxIBu0GH8xzmaRiQDmzwNYJWTOrzu9nLQ28DRF1I13fpfGO7MZuTjCWbgBIJ0sclYIT2b+L8nIdGFyhtY0zCzz9qq4iBncATCqEOMj2pk+pr62jEFWMO1RSGPhQqbhS9rSSv9yXNpMNbIqd3dTwciO43f76dnvU6x/4XhYUBTG17kTbAMIkXZTX2Mt9ybJ8mNVoFFUt0VsF8xU0z3ysiYMr1I3cSGH93ngwxZzS11INJfJJoZXdnYtUSoMN+yJBB6b9G37L9863EOL1sZ/vlGVUYyjz/4TNdE++ag/2M2/4DBBIoaYOxRRsn0dKJ0uV3vtme/gtx79XxM1H2LY3E0dpPH9AzEkth6mChWjdqDyK6i+Hi3qrMpCLGjo4rzxBs+","functionCall":{"id":"e9n7w531","name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"id":"e9n7w531","name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "363.89",
+                        "thoughtSignature": "EjQKMgEMOdbHo2kIPvER+GeNG6gKwnQz70s7crZj13vjJMiB3q1YOCXRoBLAjtC0uzxZQiZ2"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 371,
+                "candidatesTokenCount": 6,
+                "totalTokenCount": 377,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 371
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "QiYaatLQDqTh_uMPq5uHuQw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=616
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 627ms

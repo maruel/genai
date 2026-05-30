@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Considering Country Comparisons**\\n\\nI'm evaluating how to best approach the user's request for a \\\"best country\\\" comparison using the `best_country` tool with its limited `USA` and `Canada` options. I'm focusing on the ethical implications of declaring one nation superior to another, given the inherent subjectivity.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"totalTokenCount\": 107,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"MSYaarHOO_-3_uMP_fmtoQU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"},\"id\": \"6bdiqroz\"},\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 440,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 317,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"MSYaarHOO_-3_uMP_fmtoQU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 440,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 317,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"MSYaarHOO_-3_uMP_fmtoQU\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1563
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.574s

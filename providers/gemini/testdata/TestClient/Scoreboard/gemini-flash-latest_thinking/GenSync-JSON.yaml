@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 331
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Response to the Banana Question**\n\nOkay, let's break this down. First, the prompt is straightforward: \"Is a banana a fruit?\" But I need to be precise, and I'm dealing with several constraints. No explanation, just JSON. The output has to strictly adhere to the provided schema: `{\"is_fruit\": bool}`. And critically, it must be valid JSON, no extras.\n\nThe answer itself is simple: yes, a banana is botanically a fruit. Now, the trick is generating *exactly* the prescribed JSON. Based on that, I'll construct the JSON: `{\"is_fruit\": true}`.\n\nNow, a quick verification. Is it valid JSON? Yes. Does it fit the schema? Absolutely. No extraneous comments, filler, or anything else. Perfect.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "{\n  \"is_fruit\": true\n}",
+                        "thoughtSignature": "EvsECvgEAQw51sfd3LbKhxGw17roDd0qMitGfxgR1qvwSaN4XVgITgnsRfzLk62qVkydgqxllV6KSa6jqLGJCxsydPa1wRtNDjLUzyZZMTx2lKaEtOQTDiznYa7FTavOzfU679CWX1wGg5ev0pwKlUenvvXT18l3PT3EhjiinrqxBVW2WhyGL+oIk5SPRXiMCJpt0plbNMfSbu1hR9GC6rhL1y2qoglhv/WFHnj72SGRBNEvkJsPd8zZsGMeMgUr9PWoyaFpXoFHElPsQtrP7d/FbaMGNrWLSo/JN7OxaDhazTo8jTzTmjqWkturfSR3f+A+LLgqKKONkjtVSSGPTxifPJZOTC3MCs3QOzhlHDEQb4Ndua/VrikjSNZ6yTV5TriabzeRGo3Z9dInj8LvFwrTIi4CA9M5L8LfjQ2LpFsJbTnIbyR/1AOgelibb2URGCkZNslwxsUyupvq3TWxMc0aA4pISOsWdyPg/GWdXxJsMIXNv8lp3JIgDN0DE+rJ2ulutfX8f26OhnpkA0ntYUmVibGtVY9CXzEjhn/cuH2FgXmjfIz3kHPatUGr6u8uYk4eUOMXJ3WbT39ySDpYnImlITCKI0QuS2tMf49U6OHVl4J8fWvlXc4OioWpKr9A1awHHtAzRZ20NXaZYs7QU1A5Z/u9GUqnF66GzrjzFiJyv20t2Rian7fXZRhVMIbMCjIIX4C50lpnZyL0naL1UNSBD5WSaV5uogngrNZ+/RCrLq/9pO0yGwkqFFpTrJZRZD0EPntpw88L3AMWI1EfY9PSOy2X1sE5suMH+IifPijizxMyHE+zUYlUGnG8PlF1NWkAn4I04BXPNn5CDzc="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 30,
+                "candidatesTokenCount": 11,
+                "totalTokenCount": 217,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 30
+                  }
+                ],
+                "thoughtsTokenCount": 176,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "OiYaasfrPOK0_uMPopTO-QM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2568
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.579s

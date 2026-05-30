@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 354
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/jpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the Image Identification Task**\n\nOkay, here's the situation: the user needs a concise, one-word answer about the image. My goal is clear: identify the fruit in the image and provide the appropriate response. The instructions explicitly state \"exactly one word\" so I need to stick to that constraint.\n\nFirst, I examine the image itself. I see a solitary yellow banana, very clearly presented. The plain white background eliminates any ambiguity. The shape, color, and form are all characteristic of a banana, there's no question about it.\n\nWith that information, the answer is already formulated. So my output will be \"Banana\". Simple, direct, and meets all the user's requirements.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EtoCCtcCAQw51sd40TR33qRYjAxDOQoPrJ4pN+ffhU91nV1mj6HVwDY4vzNdeZpJbMLf2GPTA0L6Sq1lgU1+vFvS77o3/rLkjgqQaEhV6690T1LfDti/IQxiDWkpYrJwo29L915L0pvVSOBT7DNZBHXErD/Cxp9ZZnMsiWaNlAa9rrO8rJBVyQmV0JnbMdbpCSQqkevr5d7uIjiV9GQvKbNs2kgi7x1mw7RJRJ51amzxQ4+w/tzk7IeMsH+X+SNgShZySmAZz2bdhtZ0shfpXjnIYEN5sL0uVTKP2+aR4maKgah+d9RodOPUbzDIRCwX1Z9Xa2pz3SBya8+P1coyZcn6IMlnNxl41+qxIEpZ6B8OB6N3VvZEJNrzyW98J+v6lvoPimMOxHz7TO/UJ5XYJQ7hcyAS9v7Y89bgsDKUleQkE4SJ3MGoPsVn6NB/7n/mK1keXPIxXUAIkejwTA=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1169,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  },
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  }
+                ],
+                "thoughtsTokenCount": 71,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "YyYaav_iMeC8_uMP1oqQ8AU"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2669
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.681s

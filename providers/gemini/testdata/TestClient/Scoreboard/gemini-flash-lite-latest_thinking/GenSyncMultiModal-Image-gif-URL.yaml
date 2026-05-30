@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/gif","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the Image Identification Task**\n\nOkay, so the user wants me to identify the fruit in an image and, crucially, to keep the response concise—just one word. Right, let's break this down. First, I need to analyze the image itself. *Hmm, simple white background, and a single, unmistakably yellow banana.* Now, to formulate the answer. I'm looking at a banana. The image shows a banana. The constraint from the prompt is to provide a single word answer. Therefore the appropriate response is \"Banana\". Easy.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "ErEDCq4DAQw51sdI25g3GyKKjDs4ZAcXdVi8505IuTZ6+T6tfDN1uEZ4bpw/qiCvLeOBK44cEn+n0cdL9G7HxtW/zFxDG1vPDQjKjCVlppXQi+HQFHG6DRLv3OB7c6uUI4MznW7re/cTlFqqO5XF26k1iym3z1NaLGpce43Fau8NllIFtUXicL9cl6YSQmnFtmF94bHQPwFBJJ9mNI2qvUIlMaid0ifw4gXwOQHnp3bJorm00YHht9gYvkiuxA4pT2tpoCJ+IkGQ8vTmXtH3HLEGbc6W21AdLcLU61YIPgeNu0JbZqdk8dIK3zEMMoG1uvvJ1Q/8kTdnuTrg5xBX9pnvhZ+cUVBURPZlFSozGFKrmpj3BFWAisic9s6tu7Szl6YXNPy2TmnGeGlPU9RKX66D+zvimZi1RiQsYXjzZN2sd3aBSLQxAGg6dVHYwsq3+hVT7FDPI8wbzNvomH3aKQAnmqNHcyTUKyNNE+HdbGtbEtAd0Iuu9CsQSZ8CoS3Jj6ujxnW3F4gCBhvPxRBRJP6dbZEVufFJO/LMAOy68QpQsgCdR94Jo9ULwVCMxtwhfyA2Tw=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1195,
+                "promptTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  }
+                ],
+                "thoughtsTokenCount": 97,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "3CYaarB5_Zn-4w-q7ZeYDA"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4461
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.473s

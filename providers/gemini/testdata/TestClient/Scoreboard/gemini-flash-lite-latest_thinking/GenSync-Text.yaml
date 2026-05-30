@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Response to a Simple Request**\n\nOkay, so the task is pretty straightforward. First, I need to break down the request. The action is clear: say hello. The key constraint is the single-word limit. Alright, that’s manageable. Now, let's generate a few possibilities, keeping that one-word rule in mind. \"Hello,\" \"Hi,\" \"Greetings,\" and \"Hey\" all seem perfectly valid. They all accomplish the \"say hello\" part while adhering to the constraint. Now, given all of those options, I am going to select the most efficient and direct: \"Hello\". It is succinct and immediately responsive to the prompt.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "EvUDCvIDAQw51sdGwC/4qrImr8FxySpWPFnGODkmJu0g9oXHH/2SRID270Srf0rzGmhA2BeXa5py497r94028FNBNBboDKkpXSEOVgPu8MljmtKFTb9hZFMHMsfGYwGsCZ7hTsHvEhLHgdrszmsHB0MMk1ZyQbdmCW6CA4d+bO2oupaiUp8yTEfn54ybfSWYgWSSQALCDdKe4NHp+LJknmlbCiks0DvP0UJiX/roH0B8S1yLlGsfMkNoL3MBCzFPO6IHSC3VERhEtitzPW++lTYTYnh9UqGL/GoYl9nb5hi3Nqsfn0mw67tZO6sqPGuj94TzFBz8BH70xXus9lllE5Zml5+7dBDliHCVhG/+U6e21K+slsxhWnys42m/J6bwnRicPh6GZfIvG5sqcm92i6VsMb63YHRUZ9IsKh12apuyD2xDg68PZPRyWcqv1UF076rP2XBF1MTUMScwZFLtlX89yrD4aRYHrFnbcOL7nF+85bv59z7lRewlnmLsb3jJNivUYRlBigZN/FgmkQVoh9zmf/ArNpsJ9Q7kLmwezKPpsLmdPpfPB50+Q9pc5ZBo63ejszsR8Gxjpgcaj+OIKI3CEnU1e5RFgaME6yNJrsJS8+H8aPnktOWuyUxqqIkEnEaYtBe0jm67vIFY2Y+h4dsROnEMvRIx"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 135,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 124,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "qSYaauXqO5nQ-8YPh-W6wQU"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2069
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.081s

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 362
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 117,\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"uyYaapDQAuSt-8YP4vq3gQg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EsEECr4EAQw51seytp5qvkkwcpaijgUj3XM6Hr7k6nO8Fsb0/S1u6n8X+ESUruoASWcYT32ikgNPErJOZjZN28grr3x/x3pdqryQgaUvMnsCNCzLF+veFO7BilYiezHAci2eKO0SBH8BefzPFc3FfHygZEEVQ4zGTeiwA2XZKRr9hW1asXpSyRXUqdEXP5QxPtr7uhvAP3meL2Z9xKkC47gZpwljZWEi7dPB3zcB4nM/rxZdHSRo5XXy0rZcjWP71D+b7AhVxrK5g99KyaRJPq4pkj89SxdCdYr0+K997egbqEwR8ig4jEMjDBao1SCtdH6h0h5GGzVe9TR/vhH2TajvjmZ8NFdJoQUIK4Td4ba/IqU3aNbmpf60tnRuTDkSqVFkZYM4dYWNtctjdeA35PaA0OsbJYZhS34/lKuYO8kJ0n++7GQfTvqRjlYk9PkX9ud6OgAn06lfXScld/oc0fEwFbjm65N1Gi7jNpGV4woKIjsmvpRqpolfxc7oakEx+f1oytWkvw0UiX5tiBYDO9fNkCSw8gtnopT99pdNF4knfm6iZlTdv31akE9G1Ijb1erEdaxQ54gMXAPYiGDbaX8lmj14FygkDTfuDPJ1zOsYp3GzqLulvQFjK6p0b3RUq2bqWwhcgCHHFDXRvCJaHNvsLnWTEgjDHLCTpdRYjLP3MMienH74dJdpmdrdAJyRCX0Ac1Cn0ZarzVN1UD0b8H886ZnIXtRFIN0g8gHD5NksfR+74eVhr430wXKyrw0pIOE1Zw==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 692,\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"uyYaapDQAuSt-8YP4vq3gQg\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3589
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.6s

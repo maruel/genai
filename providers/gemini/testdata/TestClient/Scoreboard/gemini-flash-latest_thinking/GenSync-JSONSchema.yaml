@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Approach to Answering \"Is a Banana a Fruit?\"**\n\nOkay, here's how I'm tackling this. The user wants a very specific JSON response: nothing more, nothing less. First, I need to nail down the goal: a definitive answer to \"Is a banana a fruit?\" expressed as valid JSON that adheres to that precise schema. No room for ambiguity, formatting quirks, or extra fluff.\n\nSecond, I need to establish the core truth: yes, a banana is botanically classified as a fruit. That means the `is_fruit` key will be `true`.\n\nThird, I'll construct the JSON itself. It has to be *exactly* `{\"is_fruit\": true}`. No extra spaces, no comments, no arrays, no anything except that single key-value pair.\n\nFinally, the constraints are paramount. I’m focusing on delivering *only* the JSON and ensuring its validity, with nothing else. It has to be valid JSON, no mistakes. Let's get it right and keep it clean and minimal.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "{\"is_fruit\": true}",
+                        "thoughtSignature": "Eo0ECooEAQw51seBu2sNxAjItA0+FwDMzFIHtuy0wAjIRCQCNhi0Nkv3pkLjA+ZMsW09P4YhFCrdsd1Ot+s01zPWwCqq8MK1JUv3KUi22tDwYI87EmveAx3b7q8G4kBwwofyB5nsPsOKUvfCAkzVQy45wnf9e7AKS3Wznh8goXSTD/AbZWlehSZe2eTCnS3Gw2fMl0PNgHU6yqIoD/UXDFt8P3NUnXCCPLOcOFiDO9wnOYrm2NBhW4WoStLh6az93c0/TEXa7wQryyTAnvKaEvkPqC3bOARmt4Oy4+KxRV8TbFiuyY4r5bVqYwVcnYsguMuRpp6Xrc8kmCRisCtM9lgyez+dUOGEcGbKsXQHPFqvg5h8wv6WHMguXXNJa22Lh2QfuWn5FsL99UXmukOr8dmnPL45dHJvjlDJ6aG0qBhZ/ql1vvRL4AVJ1wcPTWHX/mtkpGDOOAP30Dl+KWB1x0H5D5vvA9r+nheeqP28O9sqgUpVIwK/2bxKHItusnd/kZVfu6p23zWDWLcdxgrFR876K1NRXXjPqfG5+wLic5q0Bvh9CO/8sQsFLHBojsQunHQGh6d0HeQ7yyD4+2Wxk5+6/9sEu/zsu3/KGJ07dpMXhNqxaMyoeDh+h5QNszBSQtTn48fkPqPRD5v1WPOPnN3AjQ9zs6CrncF+svVcfB8dJp/x9mKjlADweU/5Ql6r"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 18,
+                "candidatesTokenCount": 7,
+                "totalTokenCount": 156,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 18
+                  }
+                ],
+                "thoughtsTokenCount": 131,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "PSYaap3IIoXP_uMPgOvJ4QM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2569
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.581s

@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the Task**\n\nOkay, here's what I'm dealing with. The request is straightforward, at least at first glance. It wants me to execute a simple action: say hello. However, there's a critical constraint: I can only use a single word. This instantly narrows my options. I'm not here to be verbose; I'm here to meet the criteria precisely.\n\nI need to quickly analyze the possible greetings that fit this format. I need a single-word greeting. I can generate the simplest response that will fulfill both aspects.\n\nIt's clear, \"Hello\" is the optimal solution. It directly fulfills the greeting requirement and adheres to the single-word limit. This is almost too simple. So the next step is just output that word.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "Eq4CCqsCAQw51sfT0BXU+hZcr70cNKiNoRUyAY9RZDQ7iYFUm9Hs9nxSBvDjvLoBlcJRrRGDZOGogmdZNGNQIRiPF7AEfVZXcPCImQknK51cazw32Zi1OvLbTkEt9ewSutug9Xun8QYY8MonJTsxHeFlfT5lxzNPgq5jUOqw2Wlwrq1XiF9al/kKSK7iWLBQZBF/TZBbKnv4pahi0HnLFVZ126tLQHn9mJJsH5uCGEJKTJG1x6YAUYXANDjuJdE3G4V+qDwF9WwUZbWKUCCjMp9scl8ARIH7dTuBESnny6X2OfpLzt2Q9tzgz+NEGh+SMR33B55E2od89baIlgaxrxSsYNo1Fr5Hq9YYN0WUWxfhTWvKfYbyZR4bu6EvU1itML4an9XMZab9tmeDI2+3TLE="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 84,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "thoughtsTokenCount": 73,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "JCYaaoKhOaae-8YPrpGL6AI"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1983
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.996s

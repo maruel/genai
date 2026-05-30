@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 354
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/jpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Immediate Assessment**\n\nOkay, here's the drill. A one-word answer, identifying the fruit in the image. Straightforward. The image itself... alright, single fruit, yellow, curved, stem, darker tip... no ambiguity. This is *textbook* banana. Minimal processing required, it's immediately obvious. Let's get this done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "Ep0DCpoDAQw51seHgAX2Q8ZZ8LyU1N1bv5w3LNbumnTcfnYglfkhCMhzBDd7PJ6wDnwRunAa8qxWSSHG/uJgzTC6/15W2dHqm6u6P2CYXXwOud8LPm4PZsODxBUdGRqmHeeczPEX80VK2GATXiJXhJ0Ru8EHruTRa8ZvFHNsiiWTA/raSDElV3bEUxF+ycFXc+THk0IWhtCeWnoR/xFQfQ+T5vGM2YqHsWcM3X+biQ2lwJJgaA/55uOliHsbe9+LDy5xrQux62/Zjd2CnhsbJ88pY64WpJ13L4d67IOL4SdMg5vtuMZT311XbjhNvoTDdsyqV7LNEooGmn51jkGIQlxXCwos8/oGFZb8tcgjC5Cc0b2CS/n8pO5mgAuQ9qFB1LPVVoVy2hHqRRxgpkOjE4ItQ6xDMWpu8yZdnekRljEDfEMlOqMRg7L0m1EmqQxnveG8p3IyqntOogfGKIyOFom++GI5v5P0BOGtzUjZ8dTtT4gGFOZbLQmLRp7xUm+qOchmpMKR/GsxmoT3kmfRAqCyizBB9uuJVa17rJDMMss="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "totalTokenCount": 1191,
+                "promptTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  }
+                ],
+                "thoughtsTokenCount": 94,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "1yYaarWIJMetjrEP8vaKsAw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2360
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.371s

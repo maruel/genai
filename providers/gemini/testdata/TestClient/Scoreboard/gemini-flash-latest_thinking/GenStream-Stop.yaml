@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Canada's Overview**\\n\\nI've initiated the Canada overview, focusing on analyzing the request and determining key sections. The topic is Canada, starting with \\\"Canada is,\\\" and I'm aiming for a detailed, comprehensive response. Currently, I'm structuring the response with sections. First is an introduction, with geography as the initial theme.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JiYaavyLAdyu-8YP6f3yqQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Outlining Canada's Structure**\\n\\nI'm now outlining Canada's structure, breaking it into focused categories. I'm prioritizing geography, history and governance, demographics, economy, and international standing. I'm focusing on \\\"Canada is...\\\" to start each section of the introduction. I'm aiming for \\\"great details\\\" in the section drafts. This phase has begun, with geography being the immediate theme.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JiYaavyLAdyu-8YP6f3yqQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Detailing Canada's Attributes**\\n\\nI'm delving into the specifics now, starting with key cities like Vancouver, Calgary, and Ottawa. I've covered climate variations, from temperate zones to harsh northern winters. History includes Indigenous peoples, European exploration, and key legislative acts. I am drafting details on the parliamentary democracy, government structure and demographics, along with Canada's economy, including the G7, G20, and OECD membership.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 13,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JiYaavyLAdyu-8YP6f3yqQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Canada \"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 736,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 722,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JiYaavyLAdyu-8YP6f3yqQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 736,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 722,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JiYaavyLAdyu-8YP6f3yqQE\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1620
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.631s

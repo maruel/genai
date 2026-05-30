@@ -131,14 +131,6 @@ func TestClient(t *testing.T) {
 					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingBudget: 512}},
 				}
 			}
-			if model.Model == "gemini-2.5-flash" {
-				// Explicitly disable thinking for flash to save time and money. It is explicitly tested in Thinking
-				// subtest.
-				return &internaltest.InjectOptions{
-					Provider: c,
-					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingBudget: 0}},
-				}
-			}
 			return c
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
@@ -316,11 +308,12 @@ func TestClient(t *testing.T) {
 				continue
 			}
 			id := m.GetID()
-			// Don't test the non-gemini models and older (2.0 and earlier) models.
+			// Don't test the non-gemini models and older (2.5 and earlier) models.
 			if !strings.HasPrefix(id, "gemini-") ||
 				strings.HasPrefix(id, "gemini-exp-") ||
 				strings.HasPrefix(id, "gemini-1") ||
 				strings.HasPrefix(id, "gemini-2.0-") ||
+				strings.HasPrefix(id, "gemini-2.5-") ||
 				strings.Contains(id, "image") ||
 				strings.Contains(id, "computer-use") ||
 				strings.Contains(id, "tts") ||
@@ -354,7 +347,7 @@ func TestClient(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					if strings.Contains(id, "pro") || id == "gemini-flash-latest" || (strings.HasPrefix(id, "gemini-3") && !strings.Contains(id, "lite")) {
+					if strings.Contains(id, "pro") || (strings.HasPrefix(id, "gemini-3") && !strings.Contains(id, "lite")) {
 						// Pro and gemini-3+ non-lite models always think.
 						if res.Usage.ReasoningTokens == 0 {
 							t.Fatal("Expected reasoning tokens")

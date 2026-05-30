@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 307
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the \"Quackiland\" Question**\n\nOkay, here's how I'd approach this. First, I have to *carefully* analyze the provided input. I see the text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" And the question: \"What is the capital of Quackiland?\"\n\nIt's a straightforward data retrieval problem. The key is to be precise. I scan the text, looking for a direct match between the question’s subject, \"capital of Quackiland,\" and information within the text. The answer is *directly* stated within that very first sentence: \"The capital of Quackiland is Quack.\" No tricky inferences, no hidden layers. The answer is right there.\n\nTherefore, the output is simply \"Quack\". Simple, direct, and unambiguous. No further processing is required. It's a textbook example of a direct question, direct answer scenario. This is child's play!\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "The capital of Quackiland is **Quack**.",
+                        "thoughtSignature": "ErADCq0DAQw51scmGkOTMciFztpaF+l0aESapDkc9UvNNFDgjWIJWRRoJFUQhFRGLEceQ8lhb0XKt+QRADUEZ1eaFcYnK8JJdGSNRX9KRwhK/CsP6NdK8tC2pGx4yFF0JrmX1/vuIrSjqnOJpIQhLQQdKfrvxqGtSt3kedTZGNw0SETYL7D+zpyTqXD6Vws8S8byTflpa2evUo6P/jZ91jM02r9kBKhb66RDUEkpETyMUxzQdfRwTRgHzF+NPSM5p50/n8+xOQrvKFSuTey/2fGXrc5bebj/VVl5pUetXKQHDHSd38iWFZiqEYP9CGeYyn3auStfN0xv5HOiXNCLDfbFt7hMcmIXTiH8Djm0VhuXRhhEtXmaqO3rs+x9JHa8ohtRIPB55ugRy3IbRdKzWe1fAm6Iacgz8fjed2iILJIOTtRYE4YwSMLfvEennj0B8AOWO/L8VYeYKrAWK6EDiFEa7DVzGglLlK9TNA2hpX+ogPqzG68FhJ7Bwn6BL1EVAyDSy2dmENSeyp8vBb0BMnOW0x+4C/xqZxbSl4LveLjIuZ8Lf8dPpmSUj9bpl7qVoyHF"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 36,
+                "candidatesTokenCount": 11,
+                "totalTokenCount": 154,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 36
+                  }
+                ],
+                "thoughtsTokenCount": 107,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "WCYaaveVGeKX_uMP44_B4Aw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2453
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.464s

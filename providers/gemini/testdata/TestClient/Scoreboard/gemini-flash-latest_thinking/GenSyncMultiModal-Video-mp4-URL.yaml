@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Immediate Deduction: Identifying the Spoken Word**\n\nOkay, so the task is straightforward: I need to pinpoint the *exact* word spoken in this video and provide *only* that word as my response. The visual element is a rotating \"BANANA,\" which, of course, is case-sensitive, though contextually it's irrelevant. There's also the audio, which I'm assuming is the key here. The instructions are very clear about responding with just the word, which tells me the spoken word, not necessarily the visual word, is the focus.\n\nInitially, I considered some possibility that it was \"Rotat e\", because that word sometimes appears associated with banana memes. But, as I'm thinking, I am reminded that there is no directly playable audio, which, in a real scenario, would affect the certainty of my conclusion.\n\nHowever, the key is the text on screen. This likely represents the word to identify.\n\nGiven the visual is \"BANANA,\" and assuming this corresponds with the audio, which I am further assuming, based on the prompt's structure, will have stated the word, the response is clear. The task is to identify and respond with the word. So the word is \"Banana\".\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "banana",
+                        "thoughtSignature": "EoEFCv4EAQw51sdN4YiHJAm/p789jZTJBTourjT4UWKLRKo/CkKW85E4D420Vh3ebK/B6jjkeExdXe4Sq09/9hHXo3DEp+YfAkja+EkyFPk6n1V+MrK+ahUT0zwvDmNLcyX5+lql6YZfhCLNoBqYzLxaUgKD7yxOyJYtq/7hcK9QPglGu8mFr45Z7Eub+k4P0mqYArOKIt1O9ZjmiUqzb49UwmN1YsvMf+4ag6Vtlrx504ItNxHhPDYG7hLXNHeEHqpA/tfbIdRqWjQDBYUybdyE6lEjuTrsKHIBGWuF9odprBE4xxQsfSWE1eQn8tAvd/0Pc6NgDBQg+4TqvI7CrnmaIgwINJW9UEkzLEPEgWvtMjbrWshK82XNvuja7YECKnzDjWIz0NmKvJIP+JUJk8Kco5YqMbU73gPIR/c9E9HS4DG5nFl2ZS+Lp5bKnUOFcUlyGryb7p1Z4nm7wNGUmFacGvGwCcJtjcH9rUgvHCxu03sldDQbZC6hxa+cHNF+vBZ/jHFZ1Ap4qjC9pQjVQDRsinxflMh356fR5W20EfUbHXbPYL2z915WsZrrgIve2/lKKHe9ghZjJiqOjVG7IK5d8iBrqvWok9DzAkXtWaCMf4KaJLFEV6wTbu+tn7steMqOwk9pE+3a+ElSRN2b4nadnIGVMULhPPj2GTp4AQMGJ2LO3MWLEZLU3d8SbJvxliZwhlicpdt7LN/wEaoFhrlORYT5A1O3XdnMHWAeZ7CHRmzYFD2/5X5/cEVp1P7lfY/FdKACmUVNsZPoPvENj/yLEH1wABphKLi79JeKcxjz5N2abTJ3RTrZQGJCr/G696F6nAkuAl237pq6sIBmGFdAny0="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 450,
+                "thoughtsTokenCount": 153,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "nCYaavWRCdS3_uMPx96D-Q8"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5593
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.604s

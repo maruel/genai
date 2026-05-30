@@ -1,0 +1,134 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Assessment of the User's Query**\n\nOkay, the user wants me to tell them what's on `https://perdu.com`. Classic. I know this one; it's a staple of the early internet. It's a single-page gag site – a playful \"lost.com\" in French. I anticipate it'll be something along the lines of \"Vous êtes perdu ? Pas de panique, on va vous aider.\" or maybe just \"vous êtes ici\". Either way, it's a quick and easy retrieval. My next action is to use the `google:browse` tool to grab the website's content. Let's see what it says.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Okay, let's break this down. Here's what I'm seeing and what it means:\n\n**Analysis of Simple Website Content**\n\nAlright, so the content on this website is about as minimal as it gets. It's essentially a landing page. The title, \"Vous Êtes Perdu?\" which translates to \"Are You Lost?\" is incredibly direct. It immediately establishes a problem, a potential user feeling disoriented, and presents the site as a solution. Then, the body copy reinforces that: \"Perdu sur l'Internet? Pas de panique, on va vous aider\" - \"Lost on the Internet? Don't panic, we're going to help you\". The use of \"on va vous aider\" is nicely informal, creating a sense of immediate assistance. Finally, the bullet point, \"* \u003c----- vous êtes ici\" - \"* \u003c----- you are here\" - that's the key. It's a simple, visual cue – a literal \"you are here\" marker. This is a very basic \"breadcrumb\" indicator. It tells the user that they are in the right place, or provides an anchor point in an otherwise potentially chaotic digital space. It's an obvious but effective element in this context, given the introductory phrasing of being \"lost\".\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "On the website **https://perdu.com**, the following text is written (in French):\n\n\u003e **Vous Etes Perdu ?** (Are you lost?)\n\u003e \n\u003e **Perdu sur l'Internet ?** (Lost on the Internet?)\n\u003e **Pas de panique, on va vous aider** (No panic, we are going to help you)\n\u003e \n\u003e **\\* \u003c----- vous êtes ici** (\\* \u003c----- you are here)\n\nIt is a famous, minimalist website that has existed for many years, serving as a humorous placeholder page.",
+                        "thoughtSignature": "EvwBCvkBAQw51sdt4h6TlyZKn0526qX2v35VYUhSoOuB6HFH1Yo+J86AzzvPNU3Wy5FBg7uyCAKHfKIcaNWQ6uZyPUzRTd8EWb9Ceds1gL43/CoFDVZ8QNSRxxpFIoFNMBc/eY9wLZkjuDvMZYDq9K3yPAXMooMWkaCd7mUeMhsKImkwDyYdNCQrPQa4IUDSkh0XpDOUlzPkJfT/mvizFJNOTrrNPyOXzZFQCfXpiKN12GRZBS7JiFD1mKs6ES0+yFtlPz9dVLFL1EfjMSNQBtNWscfyz4lAdj+Ee3jXC/w6II2oy9GJADhAsR2HHUaicacjDnfqnPuPqaYMO1NJ"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "groundingMetadata": {
+                    "groundingChunks": [
+                      {
+                        "web": {
+                          "uri": "http://www.perdu.com/",
+                          "title": "Vous Etes Perdu ?"
+                        }
+                      }
+                    ],
+                    "groundingSupports": [
+                      {
+                        "segment": {
+                          "endIndex": 79,
+                          "text": "On the website **https://perdu.com**, the following text is written (in French)"
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      },
+                      {
+                        "segment": {
+                          "startIndex": 314,
+                          "endIndex": 420,
+                          "text": "It is a famous, minimalist website that has existed for many years, serving as a humorous placeholder page"
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "urlContextMetadata": {
+                    "urlMetadata": [
+                      {
+                        "retrievedUrl": "http://www.perdu.com/",
+                        "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 13,
+                "candidatesTokenCount": 148,
+                "totalTokenCount": 614,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "toolUsePromptTokenCount": 253,
+                "toolUsePromptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 253
+                  }
+                ],
+                "thoughtsTokenCount": 200,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "UCYaaoLlIIvn_uMPyq-jqAk"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5382
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.393s

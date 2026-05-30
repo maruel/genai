@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 96,\"thoughtsTokenCount\": 95,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"6CYaavHjG56M_PUPpLuoqQo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EuoDCucDAQw51secX1ZxK30Sn2NSuewN0kvDkalzh1PPy/Y/uK7BE17Wlkyv0ZrVJB1GTHFQbyvK9vZ5yRWT6534tneO1DAeuwXV0DaL/VPw2Us09mg2VaTBD15N7l4d+IcEK4J9xaa3btqkC0dyMr+H4tkzXVm2oFZFUbCA9LsTelxxO+cneItbLkWJsfl7secDD60mxDVzidL64Z2nw4tPm/QRWnG8ZwbsdiPdjI3WXnQxX7YoZTqSM+fgOzMlcgyg3Da47KnJgTVZwuXCG/5TpPkgfR1Wqejwmtudc++Fv+ScxUZGX9FIQV0rtT7zbUZ4SEvA1osrtOYQosa/NOX/AUHZW6g0bYC3l38pUL2CW1ra/YMANNgMzzWFraTr5GstyB8Q/NRAw8T9w5mSrcWRaxE4su59brdnEkLCBNjDdaS6+tVZUt+7CYB384NhdEYjPbT+nwIMAB+32dyAFrqk1zlWwPXDPU8W/fuDNrLGuXwGz09aav/uSdPZQazTIkm2sXM/Buba9AeEZoVEFdcFjyCOCpGv5Xh2ssuCHwL0W1c47LidEY2TY+eoHWBzZOeAvG4Vy5HO3Hzjrw6DStTArirQwr2eNb9fqB3FqoS/QW1D9oaNb65XgRPPGTSb9wxYaLrfKv0Ebg7V2w==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 392,\"thoughtsTokenCount\": 95,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"6CYaavHjG56M_PUPpLuoqQo\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3376
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.388s

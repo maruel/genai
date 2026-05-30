@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analytical Framework**\n\nAlright, let's break this down. My core function is to facilitate information exchange and problem-solving, so I need to translate this user's query into an actionable plan. The user seems to be asking a comparative question, a classic one at that, \"Is the USA better than Canada?\". This sets the stage for how I will approach this.\n\nFirst, I need to recognize the implicit directive. It's not just a question; it's a call for *action*. The user wants a judgment, even if it's based on some underlying criteria I might need to extrapolate. They are asking me to use a defined tool, specifically, the `best_country` tool. This is excellent; it provides structure.\n\nMy next step is to examine the constraints imposed by this tool. The `best_country` tool requires a `country` argument. I need to ensure that argument is correctly formatted - it must be either \"USA\" or \"Canada\", no room for ambiguity there. The user wants the response to flow from my thought process, so I can only use these two arguments. This also allows me to respond back to the user with confidence.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "USA"
+                          },
+                          "id": "sznFBVRe"
+                        },
+                        "thoughtSignature": "EuwDCukDAQw51sfuB+4MdrwelwsFk7h40g2fmdqfxdr4VO67s6jCs+4Agj2IXn7WLuuV/YRRmzHx/nrmz/1kfJycw36J4Wtzu73sSTUJPmN08M3OlM/Z/gZrh0KInfMIPyeHU+NWiOwNGtAjjVEVTaOtput7F57755OE1WifrVj7FyercMOUxlqSRIT3CYvokId/RPIcdh3JcxZ835Wc8g0APuZe1dbXSImYzK7U3U65wau92IPk8LHy4SAwLedPdMStRhtQblVeqPmBUAMt5Qv+shjTP2sBl2A7K3SBnet/+TOjsglCz7HNPd+JkFxZXQr18V8hMI0F4MGaD7bg3BhOjRiSoe03oPOnKxoRAnzVqEtR0nqH6YgT/IOCUFu9VLZR2cY03pGBREw3HlY17rPKe2B6Y0f4lENmI0tg+oUnFqNBykwKVz/ukG7LFzzyGonNSmdeo/5rV+hCFNH7qUImwjj/tWD82Jv4Ki9hms4Tl1cbfAaRCmau6YsIck3nrV8nfBn2YNu44zVyUTvixiIDg3g7YzCHJCWx6c34PbzGS3esLeF34TilXnM/vgE9IOJGXhs2+wPgLjk1L481O1PJmnjAC5FMneFxVMwA72Z4e3tFEeXATXYGEFngWJFkfWvzeViEIL7ZndlNCtM4"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 107,
+                "candidatesTokenCount": 16,
+                "totalTokenCount": 245,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 107
+                  }
+                ],
+                "thoughtsTokenCount": 122,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "wCYaauOaLYidjrEP3cS5wAE"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2304
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.315s

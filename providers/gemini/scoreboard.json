@@ -117,6 +117,7 @@
         "gemini-flash-latest"
       ],
       "good": true,
+      "reason": true,
       "in": {
         "audio": {
           "inline": true,
@@ -168,7 +169,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -182,7 +183,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -217,6 +218,7 @@
         "gemini-flash-lite-latest"
       ],
       "cheap": true,
+      "reason": true,
       "in": {
         "audio": {
           "inline": true,
@@ -314,10 +316,20 @@
     },
     {
       "models": [
-        "gemini-2.5-flash-lite"
+        "gemini-flash-latest"
       ],
-      "reason": true,
       "in": {
+        "audio": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "audio/aac",
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
         "document": {
           "inline": true,
           "url": true,
@@ -357,7 +369,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -371,6 +383,86 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "webFetch": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "gemini-flash-lite-latest"
+      ],
+      "in": {
+        "audio": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "audio/aac",
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        },
+        "video": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "video/mp4",
+            "video/webm"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "webFetch": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -400,6 +492,7 @@
         "gemini-2.5-flash",
         "gemini-2.5-flash-image",
         "gemini-2.5-flash-image-preview",
+        "gemini-2.5-flash-lite",
         "gemini-2.5-flash-lite-preview-09-2025",
         "gemini-2.5-flash-native-audio-latest",
         "gemini-2.5-flash-native-audio-preview-09-2025",

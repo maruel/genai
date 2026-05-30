@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 17,\"totalTokenCount\": 144,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 114,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The website\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 3,\"totalTokenCount\": 115,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" [perdu.com](https://perdu.com) is a minimalist site with a humorous purpose. It displays the following text\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 29,\"totalTokenCount\": 141,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" in French:\\n\\n*   **Vous Etes Perdu ?** (Are you lost?)\\n*   **Perdu\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 58,\"totalTokenCount\": 170,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" sur l'Internet ?** (Lost on the Internet?)\\n*   **Pas de panique, on va vous\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 82,\"totalTokenCount\": 194,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" aider** (Don't panic, we will help you)\\n*   **\\u003c----- vous êtes ici** (\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 106,\"totalTokenCount\": 218,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"you are here)\\n\\nThe arrow points to the text itself, indicating that if you are reading the page, you have found what\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 132,\"totalTokenCount\": 244,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" you were looking for (or, jokingly, that you are indeed \\\"lost\\\").\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 148,\"totalTokenCount\": 260,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvMDCvADAQw51scDmTcwUQewoROiPnmATrt1+kN6EdxSD4DtwO1yPZBBE+pN/deQ0VrpYvsvCEzbzcNXNAIrnetsLqwuZdXRjqLcF0bEeIWfOH6IDL5mQwIbF1nVcW8nxVAZuPis3SXc9hVMOnys9HQliUWSJ471umtjvxxNWC5jW2mBmhO35jEZo8mjS4n/3CSQOyPY7xR1h/AaGsnHzvTd0UodLZD57VwMZZ+/Ni8/3zK0DXYfAw+n/XZBmLqABsdXFZykPCprHQ+d7zKyO27JDBPWfECYo0Bm8DS8Pl8xL95qmuxdjbasa2NCaaYXlOLB+EGurPo1uN465ydsLQA4sAyCOkFFJpMmFRukUR1LpCCL/zhlNX0IjintwpV/wKnPjpjGj9nQ+WHWHhOYjDWQBUuvl/CnTTrNvwnEZHvQDjJBnch5k2+Bys2lzWg1PQHsOTcB2sqwh4t4QFjGpEZcBQVjAUkik3E2mSWhiNJi9q875Rnx/VVO0x+9HGvx17W2KbeS6CPjwI7/hEsXwxAMvbBb3qX57iU5YV+c5jqbbcSjCgiYte6Qh238D4bMKBvCkoQMbaQqDbLX2kU1qwSUxwJjb090+HdpH0n/1+zP3tgprg/N4Mu9GZdDUx4989izCTPp5dsNhTLbMBVBf/e9HrP+vQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0,\"groundingMetadata\": {\"groundingChunks\": [{\"web\": {\"uri\": \"https://perdu.com\",\"title\": \"Vous Etes Perdu ?\"}}],\"groundingSupports\": [{\"segment\": {\"startIndex\": 89,\"endIndex\": 129,\"text\": \"It displays the following text in French\"},\"groundingChunkIndices\": [0]}]},\"urlContextMetadata\": {\"urlMetadata\": [{\"retrievedUrl\": \"https://perdu.com\",\"urlRetrievalStatus\": \"URL_RETRIEVAL_STATUS_SUCCESS\"}]}}],\"usageMetadata\": {\"promptTokenCount\": 127,\"candidatesTokenCount\": 165,\"totalTokenCount\": 746,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 127}],\"toolUsePromptTokenCount\": 241,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 241}],\"thoughtsTokenCount\": 213,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"tSYaava0Lp-6jrEP_rzAuAw\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1010
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.022s

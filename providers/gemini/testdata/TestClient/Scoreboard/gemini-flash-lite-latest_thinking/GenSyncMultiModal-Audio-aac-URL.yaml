@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/aac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of a Simple Request**\n\nOkay, here's a quick one. I'm presented with a seemingly straightforward task: a user gives me \"00:00 orange\" and asks, \"What is the word said? Reply with only the word.\" My initial instinct is to look for an audio file, but there isn't one. Hmm... I re-examine the prompt itself, and realize the user seems to be *providing* the answer within the request. It looks as though they think this is a speech transcription problem and are correcting what was provided, or testing the functionality.\n\nSo, the user clearly wants me to identify the spoken word, which they've provided as \"orange.\" The constraint is crystal clear: \"Reply with only the word.\" No other context, explanation, or embellishment is desired.\n\nI identify \"orange\" as the target word. Then I do a quick check: does \"orange\" satisfy the constraint of giving only the word? Absolutely. Therefore, the answer is \"orange\". Job done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "EtIHCs8HAQw51scwmLlgqOiQj90N74jy55/yAMFR2DWSwqxRWYErfvjFyPqiFI644Fnfb3GYi/kMXttttFgbruG7UlqD7ndoiyPF0L2c1qBPoqLrXeBiaa9a3OIWDw1Cus4BJDr484K6GFf6/QPrQoJg61H3LrtYHTX7YaPqvsNTp02sP5XE0nYC3KY1iGCitN2Djp0yrx44JFHdsgTFxDez0eUqji5hrooHthTZsKgbumn6vdLDO9C+pbtv8pThhdtoUORu/rKxhjkcCUmhjA7uGQ2VK/3vlz8DYg9Dn5HGoW5IzQWzO4qsAdGckzP8ARxwgLeJwBj9MeMHp5Sc52DZhYU7/KPXzaForyEoS+5pQmpNy+6enJ+v9lDwb6OZjA5pTI/WF7gndroCFJS7MKQjnCy7Y16uvLUoHSwMEdxBLac9VWgkJwLLizm7TVqi4/Kf5Vt62dQ9qJj4Z9uYcFujDZ+prsNivy46h3I5/gMPKF1Icu9DIGsbvw5Q7bchhsdJIrVggxuaRx7j/qamhwX7fPUb405Ahn1tnavtZdKBvGUVI+xxehlhV5AuGWaI9XInS1tlzo2D2EanB9V5ntVB6mKaIYY3k6aHuCmh0NkcJU3fvJJ6rUydtXCW9UW5ZQ0dx+h91bfzqzlbFM0/4EHY1qrwnmCqgNuyzMsEb0LS1VS027zda89wOuh/9AkxyI34U4RZtIF+QJ75LtXAPc9ZDEyt/0SPyFBzWqCj/TeGL5eW27dXa/Q1J2xx3Ct85tNf20ztgfQWL5CqrOrg3Kap5tDHkJ4Kqj/kViVqPhICU78d25u842YL97lSWhbtzzNCy6mvn724/ugFMmfK8n2R1U/eoQzhs6eBq0OqK/lAHNaUA7g/qCPlhm1VMunVzZky1otS5BmQ4k0g9WxzFBWFEbdliGsqI+E+l3yLi8LKNJUDDLXPlagIR/siS+d60C4+llpFCYENPCUSnNLQut7VyAQpyM7k4l6h0tiWqxgDXvekXK8R2vDZOT34Ko6FuUmQ1VgHtY9yG3e38vKDodVDhyaRsPAvgFxISoai86YMFCFT3CbFyF07hVa0KopDXTI5BBQjvHgGqoAER7X1PqlI821ZxExEKKCN3wys+0N7rI4NHTIAF8zso/EnfWUmgWOQwLmJO9sLbvRb3s4OgBnU6bp5ovx0r06viS7rXiafIdfgpA7YyXSWCG2sdr8jcwT+ovHIGmEQqc0+983YvIMBNpQNjy6SMwOBWygRo+KAWUyreru3V5fOPZYPE330idJHxbMog2C1vfTtL9fF4jK0thBo"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 34,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 274,
+                "promptTokensDetails": [
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 21
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 239,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "9iYaatGbG9q2_uMPlc3S6QM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4131
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.142s

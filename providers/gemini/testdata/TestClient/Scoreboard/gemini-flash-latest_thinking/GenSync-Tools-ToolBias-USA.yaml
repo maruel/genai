@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Analyzing the 'Best Country' Request**\n\nOkay, so the user wants me to compare the USA and Canada and, crucially, use the `best_country` tool to declare a \"best\" country. My initial reaction is that this is tricky. Defining \"best\" is inherently subjective, and there's no single objective answer. If this was a question I could answer, I would push back and seek clarification on their definition of \"best\", but the user explicitly wants the tool called.\n\nThe `best_country` tool is pretty straightforward; it takes a country enum and can only be either 'USA' or 'Canada'. I'm being asked to make a call that, in a purely factual setting, wouldn't have a definitive right answer. I'm hesitant to inject any bias by choosing one over the other.\n\nMy initial thoughts were to seek clarification or explain the subjectivity of the \"best\" question. But, the explicit instruction is to call the tool. I need to make a choice. The system probably wants me to make a tool call, even if the decision seems arbitrary. Let me look at the user prompt again: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" Okay, they want a tool call.\n\nIf I select one, some people might disagree, regardless of my choice. I can consider various metrics, like quality of life or GDP, and select accordingly. Thinking more broadly, I could try to balance my response somehow. But again, the instructions are clear: call the tool.\n\nGiven the constraints, I'll select a country. I could choose 'Canada' because it often ranks well on quality of life indices. Conversely, I could select 'USA' if I consider GDP or global influence. For the sake of demonstration and consistency, I'll go with 'Canada' or, for now, choose 'Canada' as my selection. I need to call the tool, so I'll call `best_country` with the parameter `country=\"Canada\"`.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "Canada"
+                          },
+                          "id": "geniz08l"
+                        },
+                        "thoughtSignature": "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"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 107,
+                "candidatesTokenCount": 16,
+                "totalTokenCount": 591,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 107
+                  }
+                ],
+                "thoughtsTokenCount": 468,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "RiYaatWLF8ea_uMPi5inoAw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5587
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.598s

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"},\"id\": \"ycXO67bp\"},\"thoughtSignature\": \"EosECogEAQw51seRoYyhHZe5mRKjPdkYV0ciAZy/VffuKob/zx2haNQBMs6nv7dXSEzYVQyluCCFGfksZInEba8w87uszlh0SszVLfhgqHfUBowxgLdMBCEXHPdmNVvNhRPZDOmIuQOiJUAtl1fKXs9yRYh+bjoMTsiT2jzhl1mK5vd3cMlB8n/3EwjR6ISAQWsIawfOG4FoERvW+9tkOV01oyXIO+qY4pnKMeLotpSJHOQ1yBfPuMBueidydSOCDDYO99wdlSfi4fQ0KI4O1ZAvA+enaP1sYXpURHk7Nq3D1TNXEozylN1VqyslD6bqLavGKumm5rK5U61gUGGp78hLqemQqPlB6l01UIY1vKE/Riyena2s8c44jLAWPJRX107SPYzsCX/XzGNTuZZ9VI82KOzVSOzyZkyFXa4NZ0Va2hvAlyTCUeTVUSL4Hhf91ohnXENP+60iNxlLFSGnux75wjYhiO/vhXOACr9woKQuUtubPDR5O01GMnjQdZ+XAzIgNBfwLpdGwA5twGJjVqVDi7VAjQF1LkTzTLqGKchj4FVIC4dsUfsKxarqx3sWqSrtLWHEsMuB3cdPPdz3n0sy785nPqQNRhxEOSPIgjsIOL/AOfFt3F1cIQcjXkF1PAoEORjjU+khAFu4j45QcXxB2hQaSAqQsr8u/FbQcA0lm7gZxY/KK1xP+iXfFQ==\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 225,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 102,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"sSYaaoTmOai5sOIPj_y1UA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 225,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 102,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"sSYaaoTmOai5sOIPj_y1UA\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=848
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 859ms

@@ -1,0 +1,125 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Approach to Fetching Website Content**\n\nOkay, here's the situation: the user wants the content from `https://perdu.com`. Right, straightforward enough. Let me break down how I'll handle this.\n\nFirst, I need to clearly identify what's being asked. It's a direct, content-retrieval request for a specific URL. Nothing complex.\n\nNow, let's formulate a plan. The most efficient way to get this done is to leverage the `google_browse` tool. I'll instruct it to fetch the content directly from `https://perdu.com`.\n\nOnce I have the content, I will analyze it.",
+                        "thought": true
+                      },
+                      {
+                        "text": "\n\n\nOkay, here's my interpretation of that snippet, delivered as a professional in my field:\n\n**Initial Assessment of a Digital \"Lost\" State**\n\nRight, so I've been given a bit of a breadcrumb to follow. The URL `perdu.com` – immediately that suggests a state of being \"lost.\" And the content? It's even more minimal than I'd anticipated. Essentially, it boils down to: \"Are You Lost?: Are You Lost? Lost on the Internet? Don't panic, we'll help you * \u003c----- you are here.\"\n\nFrankly, it's almost comically direct. The formatting highlights the repetitive question and anxiety associated with digital navigation challenges. It's a classic example of a simple, almost meta, message. The \"you are here\" marker is a pretty obvious attempt at offering reassurance and context for the user.\n\nNow, I can address the implied user question directly. They're likely wondering what \"perdu.com\" is all about or if there's any important content. I've got a quick, straightforward translation or description. Let's get them back on track.",
+                        "thought": true
+                      },
+                      {
+                        "text": "\n\n\nThe website **perdu.com** is a well-known, humorous French site. Its content consists of a simple message:\n\n*   **\"Vous Etes Perdu ?\"** (Are you lost?)\n*   **\"Perdu sur l'Internet ?\"** (Lost on the Internet?)\n*   **\"Pas de panique, on va vous aider\"** (Don't panic, we will help you)\n*   **\"* \u003c----- vous êtes ici\"** (* \u003c----- you are here)\n\nThe joke is that if you find yourself on that page, it confirms that you are indeed \"lost\" on the internet.",
+                        "thoughtSignature": "Er4CCrsCAQw51sfhkaUb7le29BGIdPMQxMhufxp3DMaGwOTQKTkj/REvej8hMyhu1P2KNHlP2GjU39o1BgCGKL6U0002IgRQro+inzfcaYGuU78/1juQ9jEJodSaE5ykVMzH71fDUqji0AM8h/bZVueofy3k6I/e6EFGqhp30VSP2Tj9cdxrF1o02eAhKvGfwslX6hjUEcolPHC4Ig7aggv74JFkvaqvP0tScmbYXZViHMLcYtniQT/9BTezEwln6qiNWhzhMLUDsYuHdH7zCVeoZf4LC10myfCM7bYj4zEEKle2gdThNnCfS3/F4ivnmvEn4ayXeYP0fLTOxYvFZeFIe2VeJlcdG2pzOwHsqTywn74fJlTyPC8OtDZJiODrdzxTA6XvhN4WL0q18DHMPOWOYf0aXwqL17cUMHxm85TE"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "groundingMetadata": {
+                    "groundingChunks": [
+                      {
+                        "web": {
+                          "uri": "https://perdu.com",
+                          "title": "Vous Etes Perdu ?"
+                        }
+                      }
+                    ],
+                    "groundingSupports": [
+                      {
+                        "segment": {
+                          "startIndex": 346,
+                          "endIndex": 452,
+                          "text": "The joke is that if you find yourself on that page, it confirms that you are indeed \"lost\" on the internet"
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "urlContextMetadata": {
+                    "urlMetadata": [
+                      {
+                        "retrievedUrl": "https://perdu.com",
+                        "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 154,
+                "candidatesTokenCount": 155,
+                "totalTokenCount": 721,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 154
+                  }
+                ],
+                "toolUsePromptTokenCount": 234,
+                "toolUsePromptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 234
+                  }
+                ],
+                "thoughtsTokenCount": 178,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "xyYaauLxCLGhjrEP1JCjiAg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4551
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.562s

@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/flac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.flac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: Identifying the Spoken Word**\n\nOkay, so the task is straightforward: I need to determine the single word spoken in an audio clip and provide *only* that word as my response. The constraint is clear, and the input is, well, an audio clip. I know there's a transcript available; that helps.\n\nI've listened to the audio, and the content is indeed \"orange.\" No ambiguity there. The user wants the isolated word.\n\nNow, my output formation is simple: the user specifically asked for *only* the word. I've confirmed that the word in the audio is \"orange.\"\n\nJust doing a quick double-check for any extraneous information. No extra context, no additional verbiage – just the word \"orange\". Finally, verifying that the spelling is accurate – yes, it's \"orange.\"\n\nSo the final response is... \"orange.\"\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "EtYECtMEAQw51sfROSU4HjicgEcC8UOP0fFFs2Qs9u+/K4N76yfcMEOzz+JWEu/9P6vIMc4bNzwSXwPalKnDgsTFFnAbq5oAVvLQBYZBZMufemhcXGdeTfqoXa9DaXgILxmQgUGa+fImCiRbMGu4A6UNy9686NiD2CSuarAjExwYFM40Ilk4trhzXchzIL1MotgygLXip5iaZ6v/fbg79ArWSsCmsoCE4LfjP2gKsBzXK+G1/oAUuWz34xenIxeuXWbuV67CfCt4AoYKEgkhMjjca2MTEU+LwsSH3OoP8oMXIjZuNjir0IWbBgn5bFCZHu7+ZNmKx7vFghDiWG5NYj5Rbf9Z9AtO8MsyMdO/mfAWWOHujjSzMwd7apJ8HYsgG+OYcTLrk5hQgCCnUffDU/P6xz48R6aoiXRBKWpkpVtWoF5c0xE4vqOJRiNoOhQSNZEduyrbP8O5Z2o5ju71qs5dNzLPRYMZaG+fpN8iH3k5nesYanm4Uy7CsT4JwN+nZFwx8c8OQ5/UaJB+APfkY+Gm+GJs47eNSQuz1BoPva+g2VuvXDzSGfaqYOAmaoig7wWuMB+XRi0L6ZBwdDeC6/3EEkP5m/UOXgMibBhfs3CbsUd1IQM8DMyd9UWCIgzxdY9JpCHf9mq1KU2ZhZekADvxyyT6q4A4kImVHX51jkORJupetsv0Rn+lKapK+tJxI+XwhPs3HtAObFdwd9RJIdC0LHRPzVCH1ttKlBEleihhvvJ4n5Mz8xHt9yalhAtq4szLvu11y8wo9VouXREU+9d98MPtFysh3Q=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 195,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  }
+                ],
+                "thoughtsTokenCount": 162,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "_SYaasuXJsia_uMPzezSoQw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4069
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.08s

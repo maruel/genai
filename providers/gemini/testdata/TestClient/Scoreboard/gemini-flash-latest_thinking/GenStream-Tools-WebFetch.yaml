@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 17,\"totalTokenCount\": 128,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 98,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"On the website **https://perdu.com**, the following text is written in French\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 22,\"totalTokenCount\": 134,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \":\\n\\n\\u003e **Vous Etes Perdu ?**\\n\\u003e \\n\\u003e Perdu sur l'Internet ?\\n\\u003e \"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 22,\"totalTokenCount\": 134,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\\u003e Pas de panique, on va vous aider\\n\\u003e \\n\\u003e \\\\* \\u003c----- vous êtes ici\\n\\n###\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 46,\"totalTokenCount\": 158,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" English Translation:\\n\\u003e **Are you lost?**\\n\\u003e \\n\\u003e Lost on the Internet?\\n\\u003e \"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 70,\"totalTokenCount\": 182,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\\u003e Don't panic, we are going to help you\\n\\u003e \\n\\u003e \\\\* \\u003c----- you are here\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 94,\"totalTokenCount\": 206,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 99,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Et4DCtsDAQw51sfGN++E2l06rp7qpbypbgNyjWCLSkrDVva2aeXXpX3ZuFcpcYmm3WyzS3+IC4mN61bGEWBamQKg3dT+MLTvjt275UHZB2FAClWM+9Mi1oosOHvNaCoA1mPYB5tq5YxQbpNlqTXbtJYmfWtEaQQDaUZAOhdsC96vume076Jbod8zHFpPqusUc6hh4wyBTS63tRg3Pwt3SCrPOF2J+hUEuklh0M7CKUWAGDGdkxoIQUgrmONykuTANlCFHfNnqBuBKTg7cqBJa/a6XS9YOMfVMUILd6vH2q9KrXNM1lhBsScDho7qk1ad/Mlm5uWaoWFtKZ0Ha+fw3eIxpmjyiETbZbO7vNIk9R9Gp920JBNnAGwTby/k3zcdhVCW7MyLB2IBVVJgxldSxamN4MYnX86bbBH+HV7nOIvpaKB8+iqhOoNiDDLfKbyfE07hpgSPGUzMDe5ZiOChWJM0jGyQ1m5y4/kOH236j5wBHDJGET8+gcNtKWvf45ElIQcdtrFgWZ7eJ2IxKujydsIFeOQuaPE7+gOlMEGyUFEda+RXzomFXJ6fhYsD8P9ssuOfp7ppvZPeeZ5A1v6pgo0mc+mOiGOumNk7rgdwvnvBsBRH0RlYcuJBVPNtTpPAWA==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0,\"groundingMetadata\": {\"groundingChunks\": [{\"web\": {\"uri\": \"http://www.perdu.com/\",\"title\": \"Vous Etes Perdu ?\"}}],\"groundingSupports\": [{\"segment\": {\"endIndex\": 77,\"text\": \"On the website **https://perdu.com**, the following text is written in French\"},\"groundingChunkIndices\": [0]}]},\"urlContextMetadata\": {\"urlMetadata\": [{\"retrievedUrl\": \"http://www.perdu.com/\",\"urlRetrievalStatus\": \"URL_RETRIEVAL_STATUS_SUCCESS\"}]}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 137,\"totalTokenCount\": 554,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 207,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 207}],\"thoughtsTokenCount\": 197,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"NiYaapi-L767_uMPsvHuuAQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1193
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.204s

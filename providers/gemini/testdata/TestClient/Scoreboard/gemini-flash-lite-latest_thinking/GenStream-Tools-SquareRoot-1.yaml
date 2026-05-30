@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"uwFCN0ep\"},\"thoughtSignature\": \"EoUECoIEAQw51sdejYe4NTvEGmzbPmjjXtZnJd3Xwi0sxjO0Hu8daHE6any58xmMkbKJqEqtWCzzuPITVNjdI7na2sd9F7H5IamD6g0kiraplAIxQ29mNAGG4ewdZhJ4ZM/eHOq+434WxOdlmMhu6PSszRcLqc+0ckt4wHxFqV40p9wwYkfNVF5XS76z2eb0bE9C1P3tVwgr/+3ChDEwKHkMdRTkzsk6xBZECBcYTgCXJXQv/+h2qup87vKKq492YmiTIUNdNAjyYBUSgzAGgeLMrMWEPmPQkcP6H1yYrm9e2DTGLZSu3VdNyE4BQ0vqaVsBLZqWJK1kTUM7d18mJxSGRGDxGGAoueqTDa4uctg2Ot/A/+PqgWvUt4UiWDKBq1GDQNEocfC3+3QuUw7QVslgQvjwmI8rDfvk90JHeZk9yzSM2rqM9RpuBioQ9LRrowvixXnY6XO3CBHdBFzgOpUXLC1UBDceQKknZ9peQ/I59kMXAWmRqA/4R4G5KoZXJJ/i/wJxtTeixevwt/V+yp2W+D3BwbyuF/GIEXefM/i1nZFlKwsmfC5fZqBNhHnLapg3UGz4f2xEc1IbOFj0zb0Gf0ne8zg5YFb2zE8r1KmQFPkZqTcpNMYDpD7WoUvlULF5o9jjlq8l8Qh7+LS2ci+7Vi+EtxnaiZvFCc6ICGJUWvEsscasCQ==\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 239,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"sCYaatLxD96BjrEPwLzpsAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 239,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"sCYaatLxD96BjrEPwLzpsAQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1004
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.015s

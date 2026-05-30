@@ -128,11 +128,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					IncludeThoughts: true,
 					ThinkingBudget:  v.ThinkingBudget,
 				}
-			} else if strings.HasPrefix(model, "gemini-2.5-flash") &&
+			} else if strings.HasPrefix(model, "gemini-flash") &&
+				!strings.Contains(model, "-pro") &&
 				!strings.Contains(model, "image") &&
 				!strings.Contains(model, "live") &&
 				!strings.Contains(model, "tts") {
-				// We need to set it to disable thinking on gemini-2.5-flash.
+				// We need to set it to disable thinking on recent gemini models.
 				//
 				// Most models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview. Setting the
 				// struct to empty will fail the RPC. :(

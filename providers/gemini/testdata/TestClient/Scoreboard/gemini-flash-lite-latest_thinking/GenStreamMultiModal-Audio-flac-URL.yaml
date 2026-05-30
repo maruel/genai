@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/flac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.flac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 167,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 153,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"2SYaauLlIqGb-8YPw7H0QA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvUECvIEAQw51sddQSUz2IhMibq4YJgBp1MiGcJRQnDb8vaToFwwWtkjyyv2or4XsOGCmbt+tdJ4W+2nJlVw7PgSDmds9etGrq3sRRFkRNn88tr0gXeMZLw4k8XFsLAbpHs8uh81QlVLnnRDaBR37zxValhNV6BNMIH0T5WVgfhDPpFBfAkGcgl3MiBfKk7x1lRnZvUsDcsgncRXgK5UAAQdhbnd58MSMkwVVp7dBoqjUHmVSfpZ5W98p/TzcEMhpG9nVx9gy53ehH6v+fxMEcpFcKRzn/5A8g91Y8OTOdeeZ7mARr6rjHHeTub2PYBM133oTBJMx+csaqneqT0daUDYPYAP6cwCVZUXXg8s23XvpKTctSuZ7VhYyuCx2pZry7Y/E/ICS36yQOnoYV2hWuHYTilf1mVa8qds7DOUHFdT8qS0aq1vMH7sqF1aFkUIk210pCpfSFqFvDIZ30x9OgAwcpd29lpPnn1lr1NX35jF7+5CKIg4JJQJ5toTjWr8CSJbbS22YYEyh42u/V9C59/Z0hTCiqZbgW1zLsGyrXKQOlH40PMRPJqxAbHh0EwgHk62zqDn6aqyGYKXMCuriZzfl/NTpBoOnjowhiI5dlXei+6hkaaTe3Fq+TgvHf7YBiq/Ii52YdYqtJ+vVKe9bxkuFYXbKKjUS9nGD3KD2rAuetdEqwjT/HBS0NrpF9ksSkhmpOk3EPep199+nAysci9EpUvBBbLcW8NsxrapEU9EPQsRaxZ5MW8UcDGVlIcfIcSpzvFN0X+Ez1vgNqtop2xN55Sp9b3lZRmD6Dy7mIhe5dCBXFA0KqdLwBmi6RYocv+qcnIkQl4=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 32,\"candidatesTokenCount\": 1,\"totalTokenCount\": 186,\"promptTokensDetails\": [{\"modality\": \"AUDIO\",\"tokenCount\": 19},{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 153,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"2SYaauLlIqGb-8YPw7H0QA\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2934
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.945s

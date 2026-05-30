@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Processing of the Banana Question**\n\nOkay, so the user wants a definitive \"yes\" or \"no\" answer on whether a banana is a fruit. Simple enough, but with some very specific constraints. I need to be precise. The user *doesn't* want an explanation, just the answer formatted as JSON. I'm provided with the exact schema I need to use for the JSON output: `{ \"type\": \"object\", \"properties\": { \"is_fruit\": { \"type\": \"boolean\" } }, \"required\": [ \"is_fruit\" ] }`. That's critical, because I can't just throw out any old JSON; it has to be perfectly structured or the whole process fails. I have to deliver valid and parseable JSON. My primary task is clearly to determine the correct boolean value and package it in the required format. Let's get this right.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "{\n  \"is_fruit\": true\n}",
+                        "thoughtSignature": "Er0DCroDAQw51scRmK3+O/fUnEFPNlv1Fvm7DWezRRflPUVBVnJ7jESrd0eoNMvq1TUM3vI/hww/g86M05vgNCNvTacstSH4q6GnEvms9Uafm6rPUlBh5hrUgopQvBtnYUUPjBGJWPZyCTfbRUSrTZ0YBFGAgJP1w+guQIIvxQuAHa5n64HbEqP2LWgdlEn/ufmCNBwOdsMjXIZCgzJyjJ4wok0D206PaveEuRRkg0BYkpfRYkWvGxM16O55Em2UNZ8QPKWqQwKQZJSnb3t/UfO5TJPOh4kFc0y6pk8ZEITglfoR8PfZdsVV7H1oY6MebVsMpQUtHKJsj+MASoCqJejRMNvXRoohcPjvy8hfceRYIEuo1QEWP2V4HKbatQ+IOoNXseA7w61vKWMI7Pj7OCtEUDwsHr1fvWozJXKuJqf1aOqA/jFggHc2l2sXe0l9kWrmrXwo90jEF1Nz/cYgi/4AmaPniQqGxKDsxfGv+fUPUImc/xmXtVJFNF738MtdF/z8pUa8C3YU0nRjYPK/xeXAROu6XZTuEg1uJucNNrYs8oSC8z8DKj0xNohHx89wZPZ7aA6b3RdDCkMtSoRBHQ=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 18,
+                "candidatesTokenCount": 11,
+                "totalTokenCount": 143,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 18
+                  }
+                ],
+                "thoughtsTokenCount": 114,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "uCYaav-PPO2Z-8YPqeOA-A4"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2384
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.396s

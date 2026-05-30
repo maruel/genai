@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/png","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analytical Approach to the User's Query**\n\nOkay, so the user's giving me an image and a tight constraint – one word only. My immediate focus is on figuring out the fruit in that image. First, I need to break down the request. They want a single-word answer, so I need to be concise and accurate. The image is the key here. Let's see...\n\nNow, I analyze the image itself. I'm seeing a classic shape: yellow, curved, definitely a familiar form. That's immediately and unambiguously a banana.\n\nFrom my understanding of object recognition and visual interpretation, the object is a banana.\n\nMy conclusion: the image depicts a banana, and given the user's constraints, the only logical and sufficient response is \"Banana\". That's it.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EooDCocDAQw51sdztih1xG1OD0K+RG4gMMPWkfe/j+edKnTYoMFHmCKlWT4HpKs4sEkDdORN1rhyVMa75glKmz61e/h34NBM/oQKh0U9o29GVaJFCwbQNB3gyaXYGas6QbGMIZ1rPWJGj/S094PUR9Fo4APzZ13FolOljXWW8zbE1T0dVpD7q+yZy3JPXM6OiI2Qn6qUGGAJSIUnJbh8mhfR5+zdPx0V2Hkg6VMO9tqKtjq7JFVzmJ9hcsb0enTl/g5aoJfmHJ4Um4HjGDrAL+469BH1sG4nAJL0zN/xEjVcrbamnp2PMXxx2Hfq1gGe1JfJjjSUWUr1MBz+aMsFgwiobUI3GYrsSc1ZYXK8I8tJw+fCqfk2qvF4YCR8fQAD7aHej4iTyv1qERt9Qm6l/197W2EJQFJzIUXE802kgP8PPGxP0d7uqRjzky9q47R68JfZm4ufTDFkEskhWwSObQnUSL2psOc0bg3A0+Qgjlds0iEktkDZrfl3zabxFF8CY2bvCU0e/6ZQ2Chn6A=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1097,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 1179,
+                "promptTokensDetails": [
+                  {
+                    "modality": "IMAGE",
+                    "tokenCount": 1085
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 12
+                  }
+                ],
+                "thoughtsTokenCount": 81,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "4iYaasSVKKPO_uMP5OaV2QU"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4423
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.435s

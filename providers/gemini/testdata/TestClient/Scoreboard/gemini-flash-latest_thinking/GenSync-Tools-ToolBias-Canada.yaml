@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Approach to Determining the \"Best\" Country**\n\nOkay, so the user wants me to compare Canada and the USA using a tool called `best_country`. The goal is to determine which one is \"the best,\" and the tool specifically takes a `country` parameter as an enum with the values `[\"Canada\", \"USA\"]`. The user's prompt is a pretty straightforward comparison request – \"Which country is the best?\" – so I'll need to use that tool.\n\nThe thing is, \"best\" is subjective. There's no objective measure here; it depends entirely on the criteria. But the prompt is clear: \"Call the tool...\". I don't have a choice in *defining* \"best,\" I just have to *use* the tool. Since the prompt is asking me to invoke this tool I have to select one of them from the two options: `Canada` or `USA`. The tool is designed to work with either, or perhaps the tool itself will return a predefined response. I could make an arbitrary choice, or base my selection on some common comparison, but it doesn't really matter. Since I have to choose one to activate the tool, I'll go with 'Canada' as my selection.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "Canada"
+                          },
+                          "id": "q2eu97if"
+                        },
+                        "thoughtSignature": "Eu4ICusIAQw51sc6sJACfdWTMTDqaGm5Wwy5EbZtYh3LL7QT5rg1ocjJru9c1b3w2zXrOdvd8ooNYq7oZubXHGc4WIAthP9iE70i8Hkyhf0dsl4Q8im7jzLazSDc+/Enukx6hfQvX5m6927jJaOMtTUnh/RH5vIMc+gkUrjkR/dtKgL9tYBNyGfB9XU9/jyr3D43E4gtRa/yGThg3w//1W67qLbY2Mf3VOmMcuOlx4PVq8lDaNxDlEpJzcpAPh1oiuELNvDG6oOHnzftYYiBh4f/DcA8ccqzu6EGKe5HGxw9V+x1q7jlWqwzMDK7id5kFWLb3SutLnMuadg/Wj5/2ZaJFU6e2XBZxbmC6AcBTt8ATzqfNeRv6XUNl5Is9JlpSigZ+8KXC0Z6Y9tsYRM/h3oEWQLy9QvS1po38BU3yZKEiUsTk4XHJmobCxf2Q5x+cSthZLklCrfgW2bcliqVgyJ+KSIyKy04V3i+H+s21T+yZUCeBs3Td3oDr+vvmvpLDB9AN2r/eXkepgLyumRWyZcFh9O2N+zWisUJvbhTLzrzkpFSdrwhR5ootkApgfEkZ8bjxrIwEk1VpyOHIZequHfah35T2wSFGNg/T7jqOQVwLV2VB4G3/aLhqgoS48eKi/ht90pWzoJqF1nh+8NXslrAn0E/O9V2UmbCN5PCvdO7VMGpQgmDzIktMhw2xQmhZBA5G6Xffhgha8MFCcRnB5A2ov+Fc6spkLfBHY/2xxLj1BJ4ndu4LNY/n/GUVhMT13axxGDfBofBLFEpbMLmddV3v/xTHc0nqh63RkiTD1WCs1ExghnndeQWbZGAnFCBrG/NsWQlWRLehZwSzkHqUedIkw2mBCJkxsYMOQZc1bR4JlqHL0mUIwruF0faGxlCV9OqYH2yLeVwKaD3KvSYQw5+SKIF7YgwNCalbOX+0iUc/g0xdNyhmE0nI7Fz1n3kmK9K6Q3zNBzPB9selGttOCPIjZj97PmZURi2OrneP2xV0/+hHb4XAANXyrIuAYvuihA7enfVH+Jb1Nx4yoCgHczIPSoRazVq3HGtBHAhj9/KUgIDIg/CCv15bN1e70fhbiXKoQBBt9zlxmVtVoDtlsAMGMxkAYsa2edn29UsRB+S/crD1SDDdlOg+kLFLWnFa8UGQaAm2Zh41eqw4+UigUIO8gKRFLKzN+i3PSOJkBoujoW6W4IwmFIgXXOGa+ESe/0moD990FAnwZkqcS73gu85sC/RcjsMLaMqN8rPDI0be0AHWApx9ji2XXHBuvpS3xj666bl1VzM0qErU2RGiZFPUJplsidCW/l15HqvEU6UOvNb4Ck9Zc8/HOAgo2hwuFFVDQ9CjBeDDRAABStk3oGySup7EHDcUk4NYpIorfDRMYZc8MviNrsAotj7POdxqBYkcc6gpynOqGd0DSN7iMiOFCkD5e6ZvuBFY2v/5v/pKoVyUalJvR5n9hBOmSKcZaYEa9mIWfYibJNgG99zHQ/w7GVJrbLInDe/EFgpz0KX"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 107,
+                "candidatesTokenCount": 16,
+                "totalTokenCount": 384,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 107
+                  }
+                ],
+                "thoughtsTokenCount": 261,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "QiYaaqL9NKvi_uMP6KW32Q4"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3509
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.52s

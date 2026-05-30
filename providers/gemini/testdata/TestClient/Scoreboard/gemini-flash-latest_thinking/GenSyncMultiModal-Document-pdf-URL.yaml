@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 362
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: Identifying the Target Word**\n\nOkay, so the user wants the word from an image. Easy enough, I can handle this. First, I need to break down the request. The user wants the answer to be *just* the word from the image, nothing else. \"Reply with only the word,\" they said. Got it.\n\nNext, I need to examine the input data. Looking at the image and the OCR output, it appears the word \"orange\" is displayed. It looks like the OCR also picked up the number \"1,\" but the target word is clearly \"orange.\"\n\nNow, I can identify the word the user is looking for: it's \"orange.\" Simple as that.\n\nFinally, I remember the instruction: they only want the word itself. No extraneous information, no explanations, just \"orange.\" Good to go. I am ready to give the user their answer.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "EvEDCu4DAQw51sdhmvC8qN2qpx+xzoin1XoLKBVuEU+LdvDG9nKTikHgycoLpDWw0h/qGqoTynMij8QfBhZwKdm26uT4z1LfYdCXPbJCDrvXcNVjFRPPlaWZjYtiKozDPU8M1SH311a0b4UpnyJWrbl0xYm9G2tTNbsdns7Gu7gGHGmXMgE54ktHTPX+5Jz3Lb9PmVDa4cT3PDQdVzWzfKpFCCXS4Xs6AlsDZYFd71DlpOr9qHCpuCARPGIL87O9vUCbow6ZsOw4CWLlv2jwl9wZFw6aJ7z7vpkLe9hN8oeBzOwLrIBPDD9fQHSD+4tn2+ytA24bMBhl2M7J67mrJmFnrtvnX4psSvdiIHEh/fnlkB8OCZcCsSPuP3j9MWB7uJ/d4aotkpC7O4dFssUXtNjRzz6vXiWn00lv8V/uHllWwFXKOAspVYPvRG21g+MU8a/AXOuAxrsyfOwz6/TM827FKblzd3avZB2kp3aFVS4ra9eEPu6jIz1IXWpZEcpNui5KLCQ7ASQ3mpTlFRWd/vfFOhaaCIm0HzJl5BVkSe6BM+j54xhesSyUu4UPA2H47fYQ6rBXgZnykWY/5apnXHqPSdjDx11BkuzG7nOxJamHTeavrES/xP+fSxFU4lr3TWag9cFSooav/GRsIlHt7CUt3K4="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 701,
+                "thoughtsTokenCount": 125,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "XSYaasKMHuOe_uMP0MKxsQw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3578
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.589s

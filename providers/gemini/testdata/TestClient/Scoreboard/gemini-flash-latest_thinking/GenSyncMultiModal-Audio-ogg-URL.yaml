@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/ogg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.ogg"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: Analyzing a Simple Query**\n\nOkay, so I've got a straightforward request here: identify a word, with the user specifying an audio timestamp (00:00). I need to figure out what kind of input I'm actually dealing with. Is this just a text-based query where the word is already given (\"Orange\") on the next line? Or, is there an associated audio file that I'm not seeing here? I need to be sure before I move forward, because if there's audio, I have to process that.\n\nGiven the instructions \"Reply with only the word,\" my task boils down to identifying the word, which, from the text, appears to be \"Orange\" if it's a text-based query. If there is audio I need to make sure to transcribe it correctly. This feels like a simple one – I'll confirm that the word is indeed \"Orange\" (assuming text-based, no audio processing needed in this case), and deliver the answer in the required format.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Orange",
+                        "thoughtSignature": "EocFCoQFAQw51sdPbPsXIfjxAM5kpXt8Wr9TUnFFTPuS8g8LwQf9p/pcIFl0vriXnZDZllh5UZvo04+6nkvsKh08J4Cs0mZKMLKG+mjJQXMse8qZJjeah0cFWYdiDa/OsWzsO5kJM+LWiI60rT7Ro1tXr+59/4fhLvNVO1PjHSUQJK4VjVnYCnuzqaz9hab/eZKLKIc4x2i268yGLZzvtBQxc559L9BCphCNCTyekjG9m44ftlJ4q2PJ9MhoPft7siCLjpicqp9JnCR/HCqVxbANj1wKwKyGTu3e0B3TJn4KD9aw92AE/V293dylPOOrRz5YyNGzrRhcb59kl6kLBiqy7JfzHzTRSw6OVQ5SrCWv3V+m4p12rJ55LuVDlLuDHP4z+ZyyO6zkZ2UYjoPS03xUiu7oVNNoHyXFHQhtL0yl1ECcLPtfVXau/SRdtYa0cwLXFjhapdUHjvL4O7jrBUf2FmA2NFf+koymgfZj04zcwG2DqIRvDqLCbI+x4UtzCR+JcMjPXEWE02tm8PBJJjK/MGqOY1MJll+X0oODEOljEJBMM7RW8rblOUZnzR35+FVotuv7bMj7eg9cATPk+WHHl+H4ubwOl3zIBHvb667eFNbuMM+ygWFpl8Gi/f/NRjndGueZponoP6A0NPVUuUMgaJSMc1VA7e7+/08RezMlCAWL6E/XDLD2yKZJRz4rMyHTNbaP3h1qrH68vLcJ9c+Cq6PsCoeTIAIkyVZu9al6Br02c3hQHYyAwE/V4AKeBiGjbkh4dWDGy5G8P+CMVex23g5kNxhFfyauAV6DldTl2zc/XPTaid+Rih2r5p6KeHgjkOHC/p1V7x1UAicg+tC4aMoDuIqYnnc="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 182,
+                "promptTokensDetails": [
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  },
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  }
+                ],
+                "thoughtsTokenCount": 149,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "jSYaatyFBIKb_uMPg9fF6Qc"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3896
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.907s

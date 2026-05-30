@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analytical Process for the Canada vs. USA Question**\n\nOkay, here's how I'm approaching this request. First, I need to understand exactly what's being asked. It's a direct comparison: is Canada better than the USA? Not a vague \"which is nicer\" but a comparative judgement. The user is also specifically telling me to leverage the `best_country` tool. That's a key piece of information. I need to ensure I use that tool properly.\n\nTherefore, I need to evaluate this `best_country` tool and what it's capable of. The prompt clearly states it exists and that it takes the name of a country. Good. Looks like I just need to plug \"Canada\" and \"USA\" into that tool and then look at the output from there to give the user the information they have requested.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "functionCall": {
+                          "name": "best_country",
+                          "args": {
+                            "country": "Canada"
+                          },
+                          "id": "DJoZthUG"
+                        },
+                        "thoughtSignature": "EoAECv0DAQw51sdHfEdLzq3hkxY41E63iA/nfoOI3FcZitZCfoJ28q5FHPHC34zX9yH5oB+p3MQmJdBAi9WX7OYxYMoPaPTX95jSCBncg4tFMv/Fvdorz4jPAj2mxbiwTEYr7fJK4OqhAm7IU6m9L1Ku3vj6wtETG3dqajXT4QlTm7rYT9kYIGjM9fj20lpCyhaxzGCubmUA2eyBJdcnkl3c982I7RrfrCsA2hVrXAzRy/inQ4wChK8xAcwX5o/kDt+F0Df3W/NIydg1Jq89vhsUj2MWlaFholON1EFTVNTsPPreZmyjjfArdKuhPGFu2QVI/X+m1D5FkRVfIggUakxZTkQhQpDG4WV9J6Uh31I6XmesPpfEfLjIDSLAM/Vx+EaK/pks3tBkhW8FsOo4GKA8uwdex/6LxfAKRZrSprqsOOKkOYElLEY57u/Ys91T7iBsdXueBuePRoGpu7mZ//5ItzEPYR3cWcX0uSOotkrdgeG0W8hJouNvGGlXkcC/vsSBjKcVITBIJoH+0B3zMda/9NAToD4F4N+eQjcsTdul/4Esckx8/k5S4jxBVvw4wk2aRfjxFZ6hszmJBE7RSEv6y7Y6l+isukuvVPRlIY2Q8ZbOu6e3Sf2PRjKJ6O1eHNlyZ9N2UGygAaXUu7Tl588VnpKegFz+VSFVCt+fmDxwXJ8="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 107,
+                "candidatesTokenCount": 16,
+                "totalTokenCount": 238,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 107
+                  }
+                ],
+                "thoughtsTokenCount": 115,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "viYaatT4J5KD-8YPsbSZmQU"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2070
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.082s

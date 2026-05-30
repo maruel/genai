@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Comparing Nations**\\n\\nI'm working on a function called `best_country` to compare Canada and the USA. It takes the country as input. I'm setting it up to consider only those two options. I'm focusing on crafting the function to determine the \\\"best\\\" country.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"totalTokenCount\": 107,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"LyYaaqq8Jp6M_PUPpLuoqQo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"},\"id\": \"b64ub8u9\"},\"thoughtSignature\": \"EsIMCr8MAQw51sd7TuBXW0q5vslJ2AvHHA3sG+eZfFUjmuMJ5BMQjQ3Ou1FtzEzlpTjnWvrd78QSJOF3F2yACUS39mBt29eIfsHevI+ClwzA7uDuf8LPmkU9neInWrqMQj5AmWQGerXUEFLCC0PWAw/JqnyPzxr3doDBO4aMibQxtnk7OTzgmJNtnXNDiudyde2ICKMGL3brVwF1xEqdDr0l9cW7K7vxMFMjWEA8Y6QjUcOpZhjMHUW5+OH+uMjkVbIzYZhsVZKfDn0xautJYdPFSoEOrM1l48QWTL7ema/FPvnB39TRO0x8iIZyGjbUTKdNhC6plVGBJL/9eWk5H/RLalivTfw8HLPiF3Yarg6g6iO7Y2Mh+NUjimuE9jMY0do7Z9UVqIdBSXWy8MYS+S3ZHh2hHL9chsyvnsZQUAWRvnrSLbvgh6c21UODBYGcQ77Y243lsQrRpAX1gdRV4wAnOIRcDFGyHcNBWyhH4U9qP2h8ivtdYEIymG0ZmojY/eSmW5IoJMrcuDRcgCj9YSzRxwVtDIMDTLy7g7nv/LLkYcIBTPPEP0K84vdJxaiqo5bf2/25CCg70o8dbK0t9mNGg9za5WOhq5peMEsIqW5E7rj7E2vuNMcPzL7yJwB7kOCneaHXGLy+uwJ2ywJ625n/C0QrS/LWl99U/JMtnuIBjkly2Q3gzDk7hntIDM4JHqwVI/NQeomUartsW6RdrYsjnP5gcUKP7kHTzxnC4WTC49K0Sf/VsT8n+cV4IaMLp1kKgzob686qS3lfNsvQrlR44vo1AJxgi86fCgcOPOEqSuOSaQ0N7aqKesjVauZ0/kXQBsg4GlrOMNlaMLIXUcdm4JMYINDARdM65DIfJJiRjLtx6F04N0yDGiriaOnFKLa37LV3Rj0rKuOa45EeNbUmR8byU9xFV3byArBjpU8OsUOgHGLXIGZgl02ebB1lr9/p6dflUGvxCJ1V3B8LnX6j0QAvi5GyX8p3APgHc94/rcYWV9dx0Ys87Y47B+rm9f+G3xvYuVesS30bKTaW/ZYSNXpl/yDo8SkQIOxWEhJNM5GH1EXTK2pzWY1ASOrK84VQn2Dt0uxn4C9gaBYLPCEp86j+KGyxrcI0WT/BCQHlCHvTVAUZLBvB625l4jqSH03sJ9tgkKkHLKuBOa7DCu6OFUXakv2O/W1bA2X20J6i9Duap9G8ekBWxR6P0Dr+KEyE7WQMKWc3gS+QW41UPt3IhpKaZrRr03OpqhggqrXj+VTA46TPRvFdsRjSKNQwY+e87vNaXgETtiBWm6QPjcW3PWGENPozowAn8GxjEmW5+PBgay2DDx1aHpPmx+lLnDjvjJ4dFlJCikFZvjhy5vthLr+furnXqQIW8U4kLM/o0s/aSXFj2euuq4Y2g9/Lhz979PhrJ1kb4dO3qR9XHA1t6nyEgJyVGmuAtYKSonGYZh4qu42q3oxhpGroV3/Ctj6gs19pNOxBStQaKllcBqe3j6dDMN+Mujlw0k4AXo39by+a4oNsbil1BQUej0Y+2qcGZon3D2Lw1ujxmlE+jwR2nA1u55wCK/oTo6yDq0R0/ptLXSd2ve5LhQiEurv9JgZ2tzCgTrd6TaIqJXR3e4oHZOHDa5TDX+tHvZBahYcxDBrhpkLKBdWi5VsschHKFuuDSHcQTmZS97lmS0Yhr6Yf6ULWOnzqZXK0tRNSATflkkkB0eSgsK9dmUi801vANAlL/QPnMDaNUNV5kQX4VB+ajv+R6yRiQQFQLnRXwLvK+qvNR5fCXDh5il2neh0sdVLUoA4XKrmBEuNu+XH48cL8zQhBwVB4KuTA1uwGIjEhYasYJFc0IW9sr6I1w9hbWalki5pgC2n9YbQSsWS+fvmrGFgXBNdkuXOfUfnjLc4urXPuBTDdV3dtqHef+jJaY1rnwEz6Eymd5Xuhpc35uSA6qhi0xGThSwumY/13DTecOYwgV0UYW29zCOpf0TzaTU0+71mmEsdgvgN0hM2q0JFDn7ZuuiOZ0J5vyILH1bt6fy+96gwjfteEOeGPo52+ZGpQGv8xiV7FW7LOlOvJDiR1bQD7FEwFQCIdPvA6KIT0rZOEAa5d/LXPz5ipl2Zn0cV24qjpDbtj7g9Cm92fCsJ1QH0W\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 434,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 311,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"LyYaaqq8Jp6M_PUPpLuoqQo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 107,\"candidatesTokenCount\": 16,\"totalTokenCount\": 434,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 107}],\"thoughtsTokenCount\": 311,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"LyYaaqq8Jp6M_PUPpLuoqQo\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1508
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.519s

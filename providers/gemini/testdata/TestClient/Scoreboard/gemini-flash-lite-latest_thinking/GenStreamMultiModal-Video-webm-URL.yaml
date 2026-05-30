@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 123,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 109,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"7iYaauSPI5Wj_uMP9eGlsQw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EqwECqkEAQw51sdrWABVrfhKg041D2Tz2c4Hl3GuyTnDvOapuZ3DXG7yIzBaC/4T6tZ6Kiz+SHEw2GGH9W1j23SlQgSqi3wL3cbHs8djhXzh4TnVPnl66pv98n2vsz/GawWKW+4CDkCXwZhLjfTh4v4C0ESQfz3ozubHt8wmfOJrt81rx+aLIsrDdO1Je+wWKlL0+lFH6vfa/gv0Fw6WM7Jgj08unhmIeOlTKhio4seve3Gw1K9mksPLfY+JqFEBuTjBQtQWUfrdChBMHGlARj3BtYoc9WktwFH2u+paf7u2d+o8lpV9rLxhxGaCm9KdDsG3UQexxPjGXUQDaJqNrWLyxjtS3YQkdk2kRsf/DWNdrKC8VfcI/1mBX6csdxx/p3qL/If2QyiUcLljQO5nFSdDPsoiHkVmiRbF8d22kEMGITTdS5LwYcqip/HsaG6tHJ7twzSc5u0luBRJaFfT0EXsOFyS9FlOFs0YuJHXgbbtzOdKN/oLOHG5riIHqsVe578p6qZhceQkZagUlhtkVCoZzdNSMUctUWCoCIG7D5gkUbSLNcUr/6liV6s0SLKbhIJuF+dIZaMRLPm0msMAjhqFS+YlA/R1WcPwc6foOUjZUn+JB/pJLTZ+yGUP7uHryEtIHGf84IwHrz0nzFax8BSlOxTw7iygtUsbkinZ76qE9/pivWDrGep4u/VYxa5zBU0uQkm7hCbJMrKpwiH+b2kiir9LBQlSDSICMK8ldA==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 277,\"candidatesTokenCount\": 1,\"totalTokenCount\": 387,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"VIDEO\",\"tokenCount\": 264}],\"thoughtsTokenCount\": 109,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"7iYaauSPI5Wj_uMP9eGlsQw\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6289
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.3s

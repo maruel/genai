@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Immediate Response**\n\nOkay, the goal here is crystal clear. I need to identify *the* word spoken in this video and reply with just that single word. No embellishment, no explanation, just the word itself. The visual cue, that rotating \"BANANA\" text, is interesting, but secondary. The *audio* is the key. I hear the word \"Banana\". Therefore, my response is, and can only be, \"Banana\".\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Banana",
+                        "thoughtSignature": "EvgBCvUBAQw51sfnXWcgJrBfwMkAldY0evuRwsEnNm+wLUpOyMPW/G+9ZoW6mDpFMecXd5kxzjorni5fx8+KntszcJey5Tc5CpLTamcVr273cmoCxrjJ8zYR3w7iLfKpozKHHWZv9j3Hgep0XclWGAoJPDojIVND1YzGUHZFBrFILmCNhtfhvMaXwUVkGYb7iUEXO5NlNoZtdncdzD3q0Yx2Z4zCdBczC0oM1EY3E3puHZ8VEBZfibOhYABAGqgj0kUHaGKVrqDykhqbCWJIAyihtjHwZ9dSMWE6a6rq95B0OoOCYYly83yMJuShxmdMebxTfqUWbGWpI30="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 277,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 325,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "VIDEO",
+                    "tokenCount": 264
+                  }
+                ],
+                "thoughtsTokenCount": 47,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "pCYaaqWlLuO2_uMPzveOyQw"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=5047
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 5.059s

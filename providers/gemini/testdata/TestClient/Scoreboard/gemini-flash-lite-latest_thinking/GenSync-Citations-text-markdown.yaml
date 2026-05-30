@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 307
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the User's Query**\n\nOkay, let's break this down. A user has given me a simple text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" And then the user wants to know \"What is the capital of Quackiland?\" This is straightforward. I need to focus on extracting the pertinent information from the provided text to fulfill the user's information request. The task is to accurately and succinctly answer the user's question, given the limited context. I'll need to go through the text provided and ascertain whether it directly answers the user's query.\n\nNow, let's assess the text. Sentence one: \"The capital of Quackiland is Quack.\" Aha! This sentence directly addresses the question. There is no need to dig any deeper.\n\nOkay, let's formulate the answer from the analysis I just undertook.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "The capital of Quackiland is Quack.",
+                        "thoughtSignature": "EoMECoAEAQw51seRtGlZGYVhfdN++qjd6SgKEYv0nO6XX8MduAXPVyQmEpaWIJXUbXJX5gco0n120EPiS6/TCYN/JYZzQJ+rgtO/gLbOW8FTK7qL9j0N3E+UWbaMwLd7tLer17Mlv2btEJF1fHwY/wCYMC7xVeOAsKLc++ZN5wn19c2T6Bwold9b10+WA9S9KS235a1nkeBeL528NUBMM1JZfQXf+LG9bjF8VVsqo5cXoHAbMQJiNaAaRclGXyGliRZAsRuGsjNuOO8M7YYTlyDlUCUsKmsLjbyP2HRpTIp11dLQJ0KLzQl9aT2tMSiXT/92ZvAu9KKUg5kR1Jv0VJRQCbqkHW8tjJuIAYcu4BtnCAKJ7o/8V8jwdULumrobwkIJzBEXrs6kQz7VFuR3EaRMTpsxLtyTL9AqM5+ze8WFH6lah32tLDyIeJMKSyiWDpE//mc59jexNeP+ymxFIInoh7hR3JNqrwMLXQ6nUJcujIWgYJXLLwaCD62OGqUooIO3NPG2d5sIy5R+E+tK5M25X90UW4M7WoZc3mOt17xDeRN2QCeAxECni+KeE9VdPphkdr5B57rZF51Zf5i7YJEEHOW+cPWVZDPT+XHQN0zxxHWaet2p2EQ5A4GiBr2VZfJo7P/y2q9fpdrbniap3aUaZBmvOt1bEfsTdC+5hTjP0PHqDFk="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 36,
+                "candidatesTokenCount": 10,
+                "totalTokenCount": 168,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 36
+                  }
+                ],
+                "thoughtsTokenCount": 122,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "zSYaapaFMcHO-8YP0cnrqAQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2053
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.064s

@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/aac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Processing of the User's Request**\n\nOkay, the user wants me to identify a word from an audio file. The transcript they provided gives me the word: \"Orange\". I'm good at parsing instructions, and the user specifically requested I \"Reply with only the word.\" So, there's no need for any preamble, explanation, or context, even if I was able to assess the implications of a user's intent. My job is to be precise and efficient. Therefore, I will respond with the word \"Orange,\" and nothing else. Done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Orange",
+                        "thoughtSignature": "EtYBCtMBAQw51sff3Ybc57dZhBMHKH+rc9pPuvJAo1bVyqDmUhwQCydJpQ99LTp3o/R2xTio9sF4UnjQlrcg8vavGuVTW8Kcg6AvwqttDJtJ8Fx+SV9jDhH9HMPpXcQsPuaxqBi4z/F6qiSVh8K4fdBB9ZDhnLHuW/PPbtiaoPTNvlctY6rLFaaXnRZZoHihwPOCgnWpRv2Rnfu+527McToucMqb1FGRGhfHaw3BtMjNSj6X3+3BqxrS4hFerNed2J2COOHMMOhHH9GcgT1araqbLLbnjrrFlg=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 34,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 72,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 21
+                  }
+                ],
+                "thoughtsTokenCount": 37,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash",
+              "responseId": "gCYaapGWNeG8_uMPrryK4AM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3081
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.093s

@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 331
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Response to the Banana Question**\n\nOkay, let's break this down. First, I have to analyze the request. They're asking, essentially, \"Is a banana a fruit?\" Straightforward enough. But I see the constraints. No explanation, just a JSON response. The schema is specified: `{\"is_fruit\": bool}`. And critically, no extraneous text, just the JSON, and ensure it is parseable. Alright, got it.\n\nNow for the *actual* answer. Is a banana a fruit? Yes, of course. So now I assemble the JSON object according to the schema. That should be a simple matter of returning `{\"is_fruit\": true}`. The request is simple and the constraints are clear.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "{\"is_fruit\": true}",
+                        "thoughtSignature": "Eq8ECqwEAQw51sfc/JtLv3TdkR+uiDjSoVKsJus5kmsz01OF8RqWZ4z0c204YKJskgVo3i4VFvwFCczJI1m6GQinYJBdF/Q6kCBAKpM6kUW5/Sr5xYMFcOGYmJE50FdyoGQgbmJNtFZH7Agvc9VxJXjGckj1LhY/JGuVDEXBpSw0Oq5FZi6NhdtBCDNdjhzHncJl70G/kIDa2EcB92VTJHYOSr+d6Qnf2ev6tLFG8vhygMKf0pGjqxtDrzSKGoFOeC0W9nb9VUeeLVor5VZM23B9ot8sn4wiwNmvAZUPD7VpZIcfL/Mep3QCv5EmjGe68w9mgoPtrzEFcc+yKRxDNyHUvBzGszbWP73rOg156hUZbZ1GtmBOtdJxD5Af5+IE+7r73XLwUQzQVWCccxKbxwsWf4ihMkFzcO/Uma63cHcJisNYaV03GHefsVIl68uGGJfeEuXEao/t22Ncp/dY2e7z98Zue/z0bCuGgCZo+o4a30Xnttn0VdS2rXqWU2sXrsjvnH2KQI3+bX0nXT2tTIiAu81LYMr3tX/YX0VGwoz1+gybxkGwyk6aHUUVzvyGqvSaZgqPQpGa3ASZOqZ5YkZtJJBHK/AT7yEEo8vvUddh2oUihffo/3hCai6bN3gmULaPM/IG4qVD60Jlq2XYv9lKves+B4IGhFLkm46wuj1CKFgrcukztVSFoukLMxJz3n+IlGStfgbKczao/z/UCMTX6Rw62AFGmcLI1OqHxTr4DA=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 30,
+                "candidatesTokenCount": 7,
+                "totalTokenCount": 179,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 30
+                  }
+                ],
+                "thoughtsTokenCount": 142,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "tyYaapfyBM-D-8YP8diQiQQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1788
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.799s

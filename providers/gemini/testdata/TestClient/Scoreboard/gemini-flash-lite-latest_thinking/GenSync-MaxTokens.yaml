@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Okay, I'm ready to dive into that text and synthesize its core ideas as if they're my own thoughts. I'll focus on providing a comprehensive, expert-level summary, highlighting the key thought processes involved.\n\n**My Thinking on the Text's Core Idea**\n\nAlright, I'm looking at this text, and my mind immediately starts dissecting the implied process. What it's pointing towards, from my perspective, is a structured, likely multi-faceted, process of explanation. Based on the phrasing, it's driving toward a *comprehensive* explanation, meaning we're not just dealing with surface-level points.\n\nI'm interpreting that there's a specific, multi-layered framework being used. It seems as though there may be distinct approaches needed, to be brought together. There may be distinct areas of approach, to be integrated. The process begins with the initial question or concept, but quickly branches to cover many sub-topics to bring the concept into a wider context.\n\nI see that we're talking about a process that likely involved breaking down the issue into its core components, examining the relationships between those components, and then synthesizing that information into a coherent, in-depth explanation. A \"comprehensive\" explanation implies rigorous methodology, maybe iterative refinement, and ultimately, a solid understanding that can be conveyed clearly.\n\n\n",
+                        "thought": true
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "MAX_TOKENS",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "totalTokenCount": 23,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 13,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "riYaarf8DpjqjrEP9oTD6Qo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1893
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.904s

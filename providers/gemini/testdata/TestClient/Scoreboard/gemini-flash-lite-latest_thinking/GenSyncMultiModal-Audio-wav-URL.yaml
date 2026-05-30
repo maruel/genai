@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/wav","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.wav"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Analysis of the User's Direct Request**\n\nOkay, let's break this down. The user gave me a starting timestamp (\"00:00\"), the word \"orange\", and asked me to identify \"what is the word said\". The instruction is crystal clear: \"Reply with only the word.\" It's a straightforward transcription task. I don't need to overthink it. The input *is* the word \"orange\". Therefore, the output *must* be \"orange.\" No need for elaborate processing here, just direct response. The user wants the bare minimum, and that's exactly what I'll give them.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "orange",
+                        "thoughtSignature": "EqUECqIEAQw51seNsN09+GFSx0+mTku/nV5OgyciSkMHVgseNE0lkcDrLsLngbh+qrudvf36M0/57RNFLKD3Mrsm/QsBNjku2Ns7fV9cqg89d8BBr6U71yiZnMA0/tjYzqiwQAKxM9M9crlRy/Bt3b6klzO5pNY2EGOxKyKcHcRGg7kUUwSpDLXPmujB57w235K+ta635dDjgqaeAX5lrECNOVJbkhRFzSB/TZij4MyY3roDCaZjtgoJO6dqdGL38LRsAaWwRqH9eXMn/PVFp8AKkLx4a9rMhh4ofpCFuGZdNFNcv8EcgTDEK7GUb7bZxesjcSHM7ofyLvo0O0uVvfBMb9o14YvVXN5jkPi3jWJir/rK84yha3EkhU+0w9wBnU8eBOX7z9AiGHQxSqIutnM2Ras3lkpEEc4v4t7tzIt+Y5UH4Tr7SRJGi7BC4bLsuyGGSBnkDIjSh8JDxfN0+B2/wDss1USr+tp9KsuIPsuWEt3AXxDZjmim/l+OrRLixQFBEjKjXDyW99fPNJJ2kg1RS8l5FCh3Fj68yYyAGexeYrmyGy/a2baIxxDrogMmOuOv6tiDBnggkojgqjXK4/bxJpnQAmkYDSj+OHKAY1ZtnQEugECFLZ0HhRtMIkUreD9SUWPsvJUsLAKiTEoOiGLEoMDyhnLfagFUTTI29VLXqUJvmF1fHJB2fT7qnkJ7Y6XgXk9PmIIlkn0eMLGpHUdMOlA+t/yB"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 32,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 156,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 13
+                  },
+                  {
+                    "modality": "AUDIO",
+                    "tokenCount": 19
+                  }
+                ],
+                "thoughtsTokenCount": 123,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-flash-lite",
+              "responseId": "CicaauujM6y6_uMPn86eoAQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4509
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.521s

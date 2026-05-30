@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 270
+        content_length: 347
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+            {"model":"claude-sonnet-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
         headers:
             Anthropic-Beta:
                 - web-fetch-2025-09-10
@@ -25,52 +25,50 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: "{\"model\":\"claude-sonnet-4-6\",\"id\":\"msg_01QzthAzfDspWR4DN8awiifN\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Let me fetch the content of that URL.\",\"signature\":\"Es0BCkYICxgCKkBJhexFtXpYMZuoVJd31wzSf09/Uh/18x+7EU3wATTx8D8y6Aff0znfm4nRImLBhf16nJE4EnvPqT14I9bZMqd4EgwRPm80K0RBc92szMEaDM+IWF4WFfYs2/aFlCIwrHtQHWwsNaMOXZrS2RED58QsxRM5/iTxG75gt3TfA4jAVNnqGzC+BclLc7ULCy5QKjVtdvH5Pz+YsHWsL8BM/zefkWEVte+UJdOFuP3LgDEmiSVIj0F1vwP3Iu+O86XA7d+BBIV07hgB\"},{\"type\":\"server_tool_use\",\"id\":\"srvtoolu_011Xz1879RqaEN5AWuN3PL9P\",\"name\":\"web_fetch\",\"input\":{\"url\":\"https://perdu.com\"},\"caller\":{\"type\":\"direct\"}},{\"type\":\"web_fetch_tool_result\",\"tool_use_id\":\"srvtoolu_011Xz1879RqaEN5AWuN3PL9P\",\"content\":{\"type\":\"web_fetch_result\",\"url\":\"https://perdu.com\",\"retrieved_at\":\"2026-03-21T00:19:00.298000+00:00\",\"content\":{\"type\":\"document\",\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"Vous Etes Perdu ?\\n\\n# Perdu sur l'Internet ?\\n\\n## Pas de panique, on va vous aider\\n\\n**```\\n    * <----- vous êtes ici\\n```**\"},\"title\":\"Perdu sur l'Internet ?\"}},\"caller\":{\"type\":\"direct\"}},{\"type\":\"text\",\"text\":\"Here is what is written on **perdu.com**:\\n\\n> **Vous Etes Perdu ?**\\n> *(Are you lost?)*\\n\\n> # Perdu sur l'Internet ?\\n> *(Lost on the Internet?)*\\n\\n> ## Pas de panique, on va vous aider\\n> *(Don't panic, we'll help you)*\\n\\nAnd there's a small ASCII art pointer:\\n```\\n* <----- vous êtes ici\\n```\\n*(you are here)*\\n\\nIt's a humorous French website with a simple joke: it tells you that you're lost on the Internet, points to a star (`*`) and says \\\"you are here\\\" — a nod to the classic \\\"you are here\\\" markers on maps. \U0001F604\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":2334,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":248,\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":1}}}"
+        body: "{\"model\":\"claude-sonnet-4-6\",\"id\":\"msg_01HhCXRA2HVDrDQ4QYkmYzjo\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user wants to know what's written on https://perdu.com. Let me fetch that page.\",\"signature\":\"EpoCCmUIDhgCKkC/GetiJ3TfFwCmOEzv/zxP9YWeL5itlPiqOHOXh7hpL0uUcou7pcY0MOTTqyjXinxMninIRPgTm8tXlozvQ0ZYMhFjbGF1ZGUtc29ubmV0LTQtNjgAQgh0aGlua2luZxIMpWkejioZAu3ZMyWhGgw84dk/S0ovnYqjj7siMCu1PfUKuMeyiiIhVMbfvok/FmM53eoAf5XPnnOM9+txyPhSTR9r3n6lnSMAgNdKeipjDHCTPsd17sA6gdg7sbpksibpZ6BevsQ7M6+3aZ2XXzewGyyW32i7gLtTjIyMr/mCw7W0spPCVJx6IsVY8D16+pIPmfKemr5Dof28MwbI2KlJSn61vFkKWK7SkqvBo5t6FUKeGAE=\"},{\"type\":\"text\",\"text\":\"Sure! Let me fetch that page for you.\"},{\"type\":\"server_tool_use\",\"id\":\"srvtoolu_016v47HB1VSb5d53H3ByayQB\",\"name\":\"web_fetch\",\"input\":{\"url\":\"https://perdu.com\"}},{\"type\":\"web_fetch_tool_result\",\"tool_use_id\":\"srvtoolu_016v47HB1VSb5d53H3ByayQB\",\"content\":{\"type\":\"web_fetch_result\",\"url\":\"https://perdu.com\",\"retrieved_at\":\"2026-05-29T22:26:52.805000+00:00\",\"content\":{\"type\":\"document\",\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"---\\ntitle: Vous Etes Perdu ?\\n---\\n\\n\\n# Perdu sur l'Internet ?\\n\\n## Pas de panique, on va vous aider\\n\\n**```\\n* <----- vous êtes ici\\n```**\"},\"title\":\"Vous Etes Perdu ?\"}},\"caller\":{\"type\":\"direct\"}},{\"type\":\"text\",\"text\":\"Here is what is written on **perdu.com**:\\n\\n- **Page title:** *Vous Etes Perdu ?* (meaning \\\"Are You Lost?\\\" in French)\\n- **Heading:** *Perdu sur l'Internet ?* (\\\"Lost on the Internet?\\\")\\n- **Subheading:** *Pas de panique, on va vous aider* (\\\"Don't panic, we'll help you\\\")\\n- **A small ASCII-art joke:** An arrow pointing left with the label `* <----- vous êtes ici`, meaning **\\\"you are here\\\"** — a humorous reference to the \\\"You Are Here\\\" marker found on maps. \U0001F604\\n\\nIt's a well-known, minimalist French humor website that has been around for decades, jokingly \\\"helping\\\" lost internet users by... simply telling them where they are!\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":2331,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":297,\"output_tokens_details\":{\"thinking_tokens\":34},\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":1}}}"
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "1999000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-03-21T00:19:02Z"
+                - "2026-05-30T00:52:30Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-03-21T00:19:09Z"
+                - "2026-05-30T00:52:34Z"
             Anthropic-Ratelimit-Requests-Limit:
-                - "4000"
+                - "20000"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "3999"
+                - "19999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-03-21T00:18:54Z"
+                - "2026-05-30T00:52:27Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2399000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-03-21T00:19:02Z"
+                - "2026-05-30T00:52:30Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9df8c832cf30a2da-YUL
+                - a039c1985c4ea28f-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
-            Server-Timing:
-                - x-originResponse;dur=15036
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-bbb32cf2a57410cc5943913e07dac505-7bb593aad1963a90-01
             Vary:
                 - Accept-Encoding
-            X-Envoy-Upstream-Service-Time:
-                - "15036"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 15.076s
+        duration: 6.66s

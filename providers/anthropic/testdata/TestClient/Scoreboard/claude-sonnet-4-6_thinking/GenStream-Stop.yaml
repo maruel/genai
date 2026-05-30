@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 262
+        content_length: 315
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop_sequences":["is"],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"}}
+            {"model":"claude-sonnet-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -25,40 +25,2107 @@ interactions:
         uncompressed: true
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_01E5gotKk74XQmtKsqGAY7Tu","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":48,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":3,"service_tier":"standard","inference_geo":"global"}}   }
+            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_017DzTyDzyMiuMxNmPQrthoS","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":28,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":8,"service_tier":"standard","inference_geo":"global"}}             }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}              }
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""} }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user wants"}             }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The"}           }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" me to talk"} }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user wants me to talk about Canada in great detail, starting with \"Canada is\". Let me provide a comprehensive overview of Canada covering its geography, history, government, economy, culture, demographics, and more"}             }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" about Canada in great detail, starting"}             }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"."} }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" with \""}     }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Canada is"}       }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EvgBCkYICxgCKkBpvpW4a4SQ5L4Bqe5AH2M8BszVvkmBKZwkt4dljOI/SjCF5ZwS5blhAPN01aDpcNoVqLZFFGJaG77oIwSmMQe7EgzGgkc0xz6jSbBEUmsaDAcz8W+VuqG4XkSRYCIwP0td7tvOxE8AVDokX4lT7M9QS+2Amz3FIaQNTf9Jg84qZadTBKPVVuMF9jfe0wajKmCbZE4qvfA8g8lQlFE3jFAyjhQxk21Dc8X/RG/QnSgPXC7YftYnIfvuKWn95RkvLn3MdXQC2SRntYiTTdSAcF9Bpp8wBh/6e2vvuAMNCouyX5fxdjgV+SyRj6pYBg90L5kYAQ=="}    }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EqQDCmUIDhgCKkBb7vMvNOvW/2kfjCcMxsHvD7dPcarrxddz4mwFOdlImOax2mZKP1+Dnll+DyNriFdRT2RVLpzi6gAz6n4jCqDVMhFjbGF1ZGUtc29ubmV0LTQtNjgAQgh0aGlua2luZxIMHfAel2gK2CEoiTpNGgxPefAbynzlbAa4uksiMH2qktQ9Jwb6Re8BiBhIUQWdsTtXSln6Tawisxenhl8mxo3nEV4wb9xjEaQ3wm/iDirsARGg936kG/ndwvdIAr7XpvwdbErqEzgp+U4IyD+/zS0sBTm0sCKHiu8GSerpO6gFdNVklS2ZbqFiBTj31CJWx6698a3wC9t/fQxdl+PikcSZMyYEJK0Hl4kzHAcO3fqAIkKyW4dcqP0p88jIcR05ERBhxrOGAmsyblRDyL59ivC2AhPTwH0Vp/AfaLeT6KB8agCIyMNP6foJVFXy+p7G+08kObB30coVzrcjbNXg6yGzY223GgL9aNrZfeib+RsDBSYKeaFDo803vNfR+yjCtPfka5tN+36cEUnd2GQYN6He1nDwvptEYB5e3j07GAE="} }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0              }
+            data: {"type":"content_block_stop","index":0               }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"# Canada: A Comprehensive Overview\n\nCanada is the second-largest country in the world by total area, spanning"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" approximately 9.98 million square kilometres (3.85 million square miles) across the northern"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" portion of North America. It is a vast, diverse, and remarkably complex"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" nation that stretches from the Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Ocean,"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" sharing its southern border — the longest undefended international border on"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Earth — with the United States of America. Despite its enormous size, Canada is home to a relatively modest"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" population of approximately 40 million people, making it one of the most sparsely populated countries in the world. Yet within that"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" population lies one of the most multicultural, educated, and prosperous societies ever"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" assembled in human history.\n\n---\n\n## Geography and Natural Environment\n\n### Physical Landscape"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\nCanada's physical geography is extraordinarily varied and dramatic. The country is divided into several distinct geographic"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" regions, each with its own climate, terrain, and ecological character.\n\n**The Canadian Shield** is"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" perhaps the most defining geological feature of the country. This ancient expanse of Precambrian rock covers"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" roughly half of Canada's total land area, sweeping around Hudson"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Bay in a great arc from the Northwest Territories through northern Quebec"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", Ontario, Manitoba, Saskatchewan, and into Labrador. Formed over "} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"570 million years ago, it is one of the oldest geological formations on the planet. The Shield is characterized by rocky"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" outcroppings, thin soils, countless lakes and rivers, and vast boreal forests. It is rich"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in mineral resources, including gold, silver, nickel, copper, uranium, and iron ore, which have historically driven much"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of Canada's mining industry.\n\n**The Appalachian Region** covers Atlantic Canada — Nova"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Scotia, New Brunswick, Prince Edward Island, and Newfoundland and Labrador — as well as parts of southern Quebec. This region consists"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of ancient, heavily eroded mountains, rolling hills, fertile river valleys, and dramatic coastlines. The Bay"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of Fundy, located between New Brunswick and Nova Scotia, is famous for having the highest tidal range in the world, with t"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ides rising and falling as much as 16 metres (53 feet) twice daily.\n\n**The St"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Lawrence Lowlands** are a relatively small but critically important region in southern Quebec and"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Ontario. Situated along the St. Lawrence River and the Great Lakes, this region contains Canada"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s most fertile agricultural land and is home to the majority of the country's population. The cities of Toronto, Montreal, Ottawa, and Quebec City are all"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" located within or adjacent to this region. The Great Lakes — Superior, Michigan ("}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"shared with the United States), Huron, Erie, and Ontario — represent the largest system of freshwater lakes in the world by surface area.\n\n**The Interior Plains"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"** (also called the Canadian Prairies) stretch across Manitoba, Saskatchewan, and much of Alberta,"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" continuing southward into the American Midwest. This largely flat to"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" gently rolling landscape is one of the most agriculturally productive areas in the world. The prairies are covered primarily by grasslands and are"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" known for their sweeping fields of wheat, canola, barley, and other grains. The region also sits"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" atop enormous reserves of oil and natural gas, particularly in Alberta's oil"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" sands — one of the largest petroleum deposits on Earth.\n\n**The Cord"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"illera** encompasses the mountain ranges of western Canada, primarily in British Columbia and the Yukon."}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" The Rocky Mountains form the most iconic part of this region, featuring some of North"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" America's most spectacular scenery — towering peaks, glaciers, alpine lakes, deep river valleys, and dense"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" coniferous forests. The highest point in Canada is Mount Logan in the Yukon, which stands at 5,959"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" metres (19,551 feet) above sea level, making it not only the tallest mountain in Canada but the second"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-highest peak in North America after Denali in Alaska. Other notable ranges include the Coast"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Mountains, the Cascade Range, and the Columbia Mountains.\n\n**The Arctic and Subarctic Regions** cover an enormous portion of Canada"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s north, including the territories of Yukon, Northwest Territories, and Nunavut, as well as the northern parts of several provinces. This"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" region is characterized by permafrost (permanently frozen ground), tundra, treeless landscapes, Arctic islands, and extreme cold."}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" The Canadian Arctic Archipelago is the world's largest archipelago by area, comprising over 36,000 islands"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Nunavut alone — Canada's newest and largest territory — covers over 2"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" million square kilometres and is home to only about 40,000 people, making it the least densely populated jurisdiction of"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" its size on Earth.\n\n### Water Systems\n\nCanada contains approximately"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 20% of the world's total freshwater supply and more lakes than any other country on"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Earth — an estimated two million lakes. The Mack"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"enzie River system in the Northwest Territories is Canada's longest river, flowing approximately 4,241 kilometres (2,635 miles) from its head"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"waters in the Rocky Mountains northward to the Arctic Ocean. Other major rivers include the St. Lawrence, the Fraser, the Saskatchewan"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", the Churchill, the Peace, and the Yukon.\n\nThe Great Lakes, shared"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with the United States, represent the world's largest system of freshwater lakes and contain roughly 21% of the"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" world's surface fresh water. They drain into the Atlantic Ocean via the St. Lawrence River, forming one of the world's most"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" important commercial waterways.\n\n### Climate\n\nGiven its enormous size and geographic"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" diversity, Canada experiences an equally wide range of climates. The southern populated areas enjoy a relatively"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" temperate climate with warm summers and cold winters. Vancouver and Victoria on the Pacific coast benefit from a marine climate, with"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" mild, rainy winters and warm, dry summers — the mildest winters of any major"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canadian city. Toronto and Montreal experience a humid continental climate with hot, humid summers and cold, snowy winters. The"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Prairie provinces see more extreme temperatures, with hot summers and bitterly cold winters, and lower"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" precipitation.\n\nAs one moves northward, the climate becomes progressively more severe. The boreal forest"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" zone experiences short, cool summers and very long, cold winters. The Arctic"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" regions see temperatures that can plunge to -50°C (-"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"58°F) or lower in winter, with 24 hours of darkness during the winter months"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and 24 hours of daylight during summer — the phenomenon of the \"midnight sun.\"\n\nCanada's climate is changing"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The country is warming at roughly twice the global average rate, with the most pronounced"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" changes occurring in the Arctic, where permafrost is thawing, sea ice is diminishing, and ecosystems are being dramatically"}          }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" altered.\n\n---\n\n## History\n\n### Indigenous Peoples\n\nLong before European arrival, the land"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" now known as Canada was inhabited by diverse Indigenous peoples for thousands of years — perhaps as many as 15,000 to"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 20,000 years or more. These nations were remarkably varied in their cultures, languages, spiritual"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" traditions, economies, and social structures. Archaeologists and Indigenous oral"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" traditions suggest that the first peoples arrived in North America by crossing a"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" land bridge from Siberia during the last Ice Age, though some theories also suggest coastal migration"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" routes.\n\nThe First Nations of Canada comprise hundreds of distinct groups, broadly"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" organized into cultural regions. The peoples of the Pacific Northwest Coast — including the Haida, T"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"lingit, Tsimshian, and Coast Salish nations — developed sophisticated societies based on maritime resources, elaborate"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" ceremonial traditions, and remarkable artistic expression, most famously in the car"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ving of totem poles. The Plains peoples — Blackfoot, Cree, Nakoda (Stoney"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"), and others — built their lives around the seasonal migration"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of vast bison herds. The Haudenosaunee (Iroquois)"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Confederacy of the eastern woodlands was a sophisticated political union of six"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" nations — the Mohawk, Oneida, Onondaga, Cayuga, Seneca, and later Tuscarora — whose democratic principles are"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" said to have influenced the framers of American democracy. The Algonq"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"uin, Ojibwe, Anishinaabe, and Mi'kmaq peoples populated much of the eastern and"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" central regions. In the north, the Dene, Gwich'in, and other"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Athabaskan-speaking peoples were skilled hunters and traders.\n\nThe Métis people are"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a distinct Indigenous nation arising from the intermarriage of First Nations women ("}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"primarily Cree, Ojibwe, and Saulteaux) with French and Scottish fur traders. They developed"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a unique culture, language (Michif), and identity, and played a crucial role in the early"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" economy and history of western Canada.\n\nThe Inuit are the Indigenous peoples of Arctic"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canada, Alaska, Greenland, and Siberia. They developed sophisticated survival strategies"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" perfectly adapted to one of the harshest environments on Earth, including the construction of snow shelters ("}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"igloos), the use of dogsleds, and the hunting of marine mammals such as seals, walruses, and beluga whales. The Inuit"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of Canada are represented by four regional groups: the Inuvialuit (western"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Arctic), Nunavut Inuit, Nunavik Inuit ("}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"northern Quebec), and Nunatsiavut Inuit (Labrador).\n\nAt the time of European contact, the Indigenous population"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of what is now Canada is estimated to have been between 500,000 and several million, though precise"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" figures are debated. European contact brought catastrophic consequences: epidemic"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" diseases such as smallpox, measles, and influenza, to which Indigenous peoples had no immunity, killed enormous"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" numbers — some estimates suggest that up to 90% of some populations died from disease in the first centuries"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" after contact. Beyond disease, colonialism brought military conflict"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", dispossession of land, destruction of traditional economies, and systematic cultural suppression.\n\n### European"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Exploration and Early Colonization\n\nThe first Europeans to reach the shores of what"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" is now Canada were Norse explorers. Around 1000 CE, Leif Eriksson and other Norse voy"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"agers established a short-lived settlement at L'Anse aux Meadows on the northern tip of Newfoundland — the"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" first confirmed European presence in North America, predating Columbus by nearly 500 years."}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\nThe era of sustained European contact began with John Cabot, an Italian"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" explorer sailing under the English flag, who reached the coast of Newfoundland or Cape Breton Island"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in 1497. His voyages established England's early claim to much of North America. Italian"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" explorer Giovanni da Verrazzano, sailing for France in 1524, explored the Atlantic coast,"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and French explorer Jacques Cartier made three voyages to the St. Lawrence region between 1534"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and 1542, claiming the territory for France and establishing the French presence that would shape"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the country's identity for centuries.\n\nThe early European interest in Canada was driven primarily by the lucrative fishing"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" grounds of the Grand Banks off Newfoundland — arguably the richest fishing waters"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in the world at the time — and by the fur trade. Beaver pelts were particularly pr"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ized in Europe for the fashionable felt hats of the era,"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and Indigenous peoples were skilled and willing trading partners. The fur trade would become the economic"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" foundation of early European Canada.\n\n**New France** was formally established as"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a French colony in the early seventeenth century. Samuel de Champlain founded Quebec City in 1608 — a"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" settlement that would become the capital and cultural heart of French Canada. Champlain is often"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" called the \"Father of New France.\" The colony grew slowly, hampered by harsh winters, conflicts"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with the powerful Haudenosaunee Confederacy (who allied with the Dutch"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and English), and chronic underfunding from France. The arrival of the Jesuit missionaries marked a concerted effort to convert Indigenous peoples to Christianity"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".\n\nThe fur trade gave rise to the voyageurs and coureurs des"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" bois — French-Canadian fur traders and explorers who ventured deep into the interior of the continent,"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" establishing trade networks with Indigenous peoples and mapping vast territories. The Company of One Hundred Associates and"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" later the Compagnie du Nord were key commercial enterprises in the"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" French fur trade.\n\n**Acadia** was a separate French colonial region"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" covering what is now Nova Scotia, New Brunswick, Prince Edward Island, and parts of Maine. The Acadians developed"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a distinctive culture and society, building productive agricultural communities through the engineering of dykes that"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" reclaimed coastal marshlands. Their story took a tragic turn in 1755,"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" during the Seven Years' War, when British authorities forcibly expelled approximately 10,000 to"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 18,000 Acadians from their homeland — an event known as the Grand Dérangement (Great"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Expulsion). Acadians were dispersed across the Atlantic world; many of those who ended"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" up in Louisiana became the ancestors of the Cajun people.\n\n**The Hudson"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s Bay Company**, one of the oldest and most storied commercial enterprises"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in North American history, was chartered by the English Crown in 1670. Its territory"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" — known as Rupert's Land — encompassed the vast drainage basin of Hudson"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Bay, covering over 3.9 million square kilometres of what is now central and northern Canada. The company established a"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" series of trading posts (called \"factories\") around Hudson Bay and conducted"}    }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the fur trade with Cree, Assiniboine, and other Indigenous peoples. The HBC's influence over"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" much of Canada's interior would persist for nearly two centuries, until it"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" transferred Rupert's Land to the newly formed Dominion of Canada in 1870.\n\n### The British Conquest and the Road"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to Confederation\n\nThe competition between Britain and France for dominance in North America came to a decisive head during the Seven Years' War (1756"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"–1763), known in North America as the French and Indian War. The pivotal moment came on the"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Plains of Abraham outside Quebec City on September 13, 1759, when British forces under General James Wolfe defeated French"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" forces under the Marquis de Montcalm in a battle lasting less than an hour. Both commanders"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" were mortally wounded. The fall of Quebec was followed by the fall of Montreal in"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 1760, and the Treaty of Paris in 1763 formally transferred New France to Britain.\n\nBritain now found"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" itself governing a large French-speaking, Roman Catholic population. Rather"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" than attempting forcible assimilation, the British Parliament passed the Quebec"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Act of 1774, which recognized French civil law, the Catholic Church, and French language rights"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in Quebec. This pragmatic measure was deeply resented by the American colonies"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", who saw it as threatening, and it became one of the Intol"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"erable Acts that helped spark the American Revolution.\n\nThe American Revolution (1775–1783) had profound consequences for Canada. The colonies that"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" remained loyal to the British Crown — the Loyalists — numbered in"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the tens of thousands and many of them fled northward into Nova Scotia and"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Quebec after the Revolution. Their arrival fundamentally reshaped the demographic"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and political landscape of British North America. In 1784, the new province of New Brunswick was created to"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" accommodate the Loyalist influx. The Constitutional Act of 1791 divided Quebec into Upper"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canada (largely Loyalist and English-speaking, roughly present-day Ontario)"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and Lower Canada (largely French-speaking, roughly present-day Quebec).\n\nThe War of 1812, fought between the United States and Britain (with"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canada as the primary theater of conflict), is often remembered in Canada"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" as a defining moment in the development of a distinct Canadian"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" identity. American forces invaded Upper and Lower Canada multiple times, but Canadian militia, British"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" regular troops, and Indigenous allies — most notably the great Sh"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"awnee leader Tecumseh — repelled the invasions. Key battles included the defense of Queens"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ton Heights (where British General Isaac Brock, a Canadian hero, was killed), the burning of York"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (present-day Toronto), and the British burning of Washington D.C. in retaliation. The Treaty of Gh"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ent in 1814 restored the pre-war boundaries.\n\nThroughout the early"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" nineteenth century, the separate British colonies of North America were troubled by political"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" tensions between elected assemblies and appointed governors, economic"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" stagnation, and resentment among reformers. In 1837, simultaneous rebell"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ions broke out in Upper Canada (led by William Lyon Mackenzie) and Lower Canada (led by Louis"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-Joseph Papineau). Though both rebellions were suppressed, they prompted Britain to commission"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Lord Durham to investigate the causes. His famous Report recommended the"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" union of the two Canadas and the granting of responsible government. The Act of Union in 1841"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" merged Upper and Lower Canada into the Province of Canada.\n\nResponsible government — the principle that the executive branch"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" must maintain the confidence of the elected legislature — was gradually granted to the British North"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" American colonies in the late 1840s. Nova Scotia became the first colony"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in the British Empire to achieve responsible government in 1848, followed by the Province of Canada.\n\n**"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Confederation** — the political union of Britain's North American colonies into a single nation — was the"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" product of a series of conferences held in the early 1860s. The driving motivations were several"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":": the desire for greater economic integration and trade, the need for a unified defense (especially given"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the aftermath of the American Civil War and fears of American expansionism), and the political dead"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"lock in the Province of Canada between English and French sections. The Charlottetown Conference ("}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"1864), the Quebec Conference (1864), and the London Conference (1866–67) hamm"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ered out the terms of union.\n\nOn July 1, 1867, the British North America Act came into force, creating the Dominion of Canada —"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a self-governing confederation of four provinces: Ontario, Quebec, Nova Scotia, and New Brunswick. John A. Macdonald became Canada"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s first Prime Minister. The date, July 1, is celebrated as Canada Day"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The new nation was a constitutional monarchy under Queen Victoria, with a federal system of government modeled on elements"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of both the British parliamentary system and the American federal structure.\n\n### Building a Nation (1867–1914"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":")\n\nThe decades following Confederation were characterized by westward expansion, nation-building, and enormous social and economic transformation. The federal"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" government acquired Rupert's Land and the North-Western Territory from"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the Hudson's Bay Company in 1870, and the province of Manitoba was created in the same year —"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" partly in response to the Red River Resistance led by Louis Riel, the"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" charismatic leader of the Métis people who sought to protect their land rights"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and political autonomy.\n\nBritish Columbia joined Confederation in 1871, on the condition that a"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" transcontinental railway would be built. Prince Edward Island joined in 1873. The construction of the Canadian Pacific Railway (CPR) became the great national"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" project of the era, completed in 1885. The driving of the last spike at Craigellachie,"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" British Columbia, on November 7, 1885, was a moment of enormous national"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" symbolism. The railway opened the prairies to mass settlement"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", connected the country from coast to coast, and cemented Canada's claim to its vast interior territories"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The construction relied heavily on Chinese immigrant laborers — estimated"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" at over 15,000 men — who did the most dangerous work and were paid less than their white counterparts."}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" After the railway's completion, the Canadian government imposed the Chinese"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Head Tax (1885), a discriminatory measure designed to limit Chinese immigration.\n\nThe second R"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iel Rebellion (the North-West Resistance) occurred in 1885 in Saskatchewan, where the Métis again"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" rose in defense of their land rights. The rebellion was suppressed by federal troops transported rapidly"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" across the country by the new railway. Louis Riel was"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" tried for treason and hanged on November 16, 1885 — an event that"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" created deep and lasting political divisions between English Protestants ("}              }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"who largely supported the execution) and French Catholics (who largely opposed it). Riel is today"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" regarded as one of Canada's most complex and important historical figures, and in 1992"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", the Canadian Parliament recognized him as a Father of Manitoba.\n\nThe late"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" nineteenth century also saw the great wave of immigration to the Canadian prairies. Prime"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Minister Wilfrid Laurier's government, elected in 1896, pursued aggressive immigration"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" policies under the direction of Interior Minister Clifford Sifton. Immigrants were recruited"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" from Britain, the United States, and especially from Eastern Europe — Ukraine"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", Poland, Russia, Germany, and the Austro-Hungarian Empire. Ukrainian immigrants in particular came in enormous"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" numbers, establishing farming communities across Manitoba, Saskatchewan, and Alberta that gave those provinces much"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of their distinctive cultural character. The prairie population exploded, and the provinces"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of Saskatchewan and Alberta were created in 1905.\n\n### The World Wars and"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the Interwar Period\n\nCanada entered the First World War in 1914 automatically upon Britain"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s declaration of war, as it was still a dominion subject to British foreign"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" policy. Canada's contribution to the war effort was enormous — over 600,000 Canadians served, out of a total population of less than eight"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" million. The war brought tremendous suffering: over 60,000 Canadians were killed and"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" more than 170,000 were wounded. Canada's military performance, particularly at the"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Battle of Vimy Ridge in April 1917, where Canadian Corps captured a German-held ridge that"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" British and French forces had repeatedly failed to take, became a defining moment of national pride and identity"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Vimy Ridge is often cited as the battle where Canada truly emerged"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" as a nation in its own right.\n\nThe war also brought severe domestic tensions. Prime Minister Robert Borden's"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" government introduced conscription in 1917, a decision that tore the country apart along"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" ethnic, regional, and linguistic lines. French Canadians, who felt little attachment"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to the British Empire and were underrepresented in the officer corps, overwhelmingly opposed conscription. The Conscription Crisis"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of 1917 remains one of the most divisive events in Canadian history.\n\nThe post-war period saw Canada assert its growing independence from"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Britain. The Statute of Westminster (1931) formally recognized the legislative independence of the Dominions"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", including Canada, confirming that the British Parliament could no longer pass laws for Canada without Canada"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s consent.\n\nCanada was severely affected by the Great Depression of the 1930s. The combination of the"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" global economic collapse and a prolonged drought that devastated the"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Prairie provinces (creating the \"Dust Bowl\" and leading to widespread"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" crop failures) caused immense suffering. Unemployment reached as high as 27% nationally"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and in some areas of the prairies, conditions were catastrophic. The relief"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" camps established by the Conservative government of R.B. Bennett became notorious for their poor"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" conditions, and tens of thousands of unemployed men rode freight trains across the country looking"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" for work. The On-to-Ottawa Trek of 1935, in which unemploy"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ed men marched on Ottawa to demand government action, was broken up by the Royal"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canadian Mounted Police (RCMP) in the Regina Riot.\n\nCanada"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" entered the Second World War in September 1939, one week after Britain — a"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" deliberate assertion of Canadian sovereignty and parliamentary independence. Again, Canada's contribution was remarkable"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Over one million Canadians served in the armed forces out of a population of about eleven"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" million. Canadian forces played crucial roles in the Battle of Britain (RCAF), the Battle of the Atlantic,"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the disastrous Dieppe Raid of 1942, the Italian"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Campaign, the D-Day landings at Juno Beach on June 6, 1944,"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and the subsequent liberation of the Netherlands. The liberation of the Netherlands is still"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" remembered with extraordinary gratitude by the Dutch people"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and Canada and the Netherlands maintain a special bond to this"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" day. Canada supplied the Allied forces with enormous quantities of food, munitions, aircraft, and other"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" war materials, and served as the training ground for Allied aircrews under"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the British Commonwealth Air Training Plan.\n\nA deeply shameful episode of this period was the intern"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ment of Japanese Canadians following Japan's attack on Pearl Harbor and the fall of Hong Kong (where Canadian"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" troops were captured). In 1942, the federal government forcibly removed approximately 22"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":",000 Japanese Canadians — including Canadian-born citizens — from the British Columbia coast, confisc"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ated their property, and sent them to internment camps in the interior. This policy was driven by racial prejudice rather"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" than genuine security concerns. In 1988, Prime Minister Brian Mulroney formally apologized and provided"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" redress payments to survivors and their families.\n\n### Post-War Canada\n\nThe post-war decades"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" saw Canada transformed into a modern welfare state and a prosperous, urbanized society"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The baby boom of the late 1940s through 1960s produced a generation that would reshape Canadian society in the"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" coming decades. Immigration from Europe rebuilt the population and workforce. The welfare state expanded"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with the creation of universal health care, old age security, employment insurance, and other"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" social programs.\n\nThe era of Prime Minister Lester B. Pearson (1963–1968) was particularly"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" consequential. Pearson — who won the Nobel Peace Prize in 1957 for his role in resolving the Suez Crisis and"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" helping to create the concept of United Nations peacekeeping — oversaw the creation of Canada"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s national health care system, the Canada Pension Plan, the new Canadian flag"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (the iconic maple leaf design, adopted in 1965), and the Official"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Languages Act. The Pearson era also saw the beginnings of Canada's modern multicultural identity.\n\nPierre Elliott"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Trudeau's long tenure as Prime Minister (1968–1979 and 1980–1984) left an indelible mark on Canada"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Trudeau — charismatic, intellectual, and controversial — implemented the Official Languages Act (making Canada"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" officially bilingual), invoked the War Measures Act during the October Crisis of 1970 (when the terrorist Front"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" de libération du Québec kidnapped a British diplomat and a Quebec cabinet"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" minister, killing the latter), pursued the National Energy Program ("}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"which bitterly alienated Alberta), and most enduringly, re"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"patriated the Canadian Constitution from Britain and enshrined the Canadian"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Charter of Rights and Freedoms in 1982. The Charter — guarant"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"eeing fundamental freedoms, democratic rights, legal rights, equality rights, and language"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" rights — has become one of the most important documents in Canadian history and has profoundly shaped"}          }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canadian society and law.\n\nThe question of Quebec's place in Canada has been the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" most persistent and difficult challenge in Canadian political life"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The Quiet Revolution of the 1960s was a period of rapid social, cultural, and political change in Quebec, in"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" which the Catholic Church's dominance over education, health care, and social services was replaced"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" by a modern secular provincial state. A powerful independence movement grew"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" throughout the 1960s and 1970s, championed by the Parti Québécois under René Lévesque. In 1980"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", Quebec held its first referendum on sovereignty-association;"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the \"No\" side won with about 60% of the vote. The failure to include Quebec in the"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 1982 constitutional agreement deepened resentment. The Me"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ech Lake Accord (1987) and the Charlottetown Accord (1992) — both attempts to bring"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Quebec into the constitutional fold — failed. A second Quebec referendum on sovereignty in 1995"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" came breathtakingly close: the \"No\" side won by only"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 50.58% to 49.42% — a margin of"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" fewer than 50,000 votes. The possibility of Quebec independence, while"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" it has receded from the political foreground in recent decades, has never been fully"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" resolved.\n\n---\n\n## Government and Politics\n\n### Constitutional Framework\n\nCanada is a constitutional monarchy and a federal"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" parliamentary democracy. The head of state is the Canadian monarch — currently King Charles III — represented in Canada"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" by the Governor General at the federal level and by lieutenant governors in each province. In practice, the role of the monarch and the Governor General is"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" largely ceremonial; executive power is exercised by the Prime Minister and Cabinet.\n\nThe Parliament of Canada consists of three"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" elements: the Crown, the Senate (the upper house), and the House of Commons (the lower house). The House of Commons has 338"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" elected members (Members of Parliament, or MPs) representing individual"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" constituencies (called ridings) across the country. Elections must be held at least every"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" five years, and the party that commands the confidence of the House of Commons forms the government. The leader"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of that party becomes Prime Minister.\n\nThe Senate consists of 105 appointed members who represent the provinces and territories. Senators were"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" traditionally appointed by the Prime Minister along partisan lines, but recent reforms"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" have moved toward a more independent, non-partisan appointment process. The Senate reviews legislation passed by the House of Commons and can suggest"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" amendments, but by convention does not block the will of the elected House"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" indefinitely. The Senate has sometimes been called the \"chamber of sober second thought.\"\n\nCanada"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s federal system divides powers between the federal government and the ten provincial governments. The federal government has jurisdiction over matters"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of national concern: defense, foreign policy, criminal law, immigration, banking, interprovincial trade"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and communications, and Indigenous peoples. Provinces have jurisdiction over education, health care, natural"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" resources (within their boundaries), property and civil rights, and municipalities. There is significant"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" overlap in many areas, and federal-provincial relations — often"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" characterized by negotiation, conflict, and the search for compromise — are a constant"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" feature of Canadian political life.\n\nThe three northern territories — Yukon, Northwest Territories, and"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Nunavut — are governed differently from provinces. Territories have powers delegated from the federal government rather"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" than constitutionally protected powers, and the federal government has greater authority over territorial"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" affairs, particularly in areas of special concern such as Indigenous governance"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and resource management.\n\n### The Charter of Rights and Freedoms\n\nThe Canadian Charter of Rights and Freedoms, entrenched in the"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Constitution Act, 1982, is the cornerstone of Canadian human rights law. It guarantees:\n\n- **Fundamental freedoms**: freedom of conscience"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and religion, freedom of thought and expression (including freedom of the press), freedom of peaceful assembly, and freedom of association."}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n- **Democratic rights**: the right to vote, the right to run for office, and the requirement for elections at least every five years.\n- **"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Mobility rights**: the right to enter, remain in, and leave Canada, and the right to move between provinces.\n- **Legal"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" rights**: the right to life, liberty, and security of the person; the right to be secure against unreasonable search and seizure; the right to be"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" tried within a reasonable time; the right to be presumed innocent; and many other protections in"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the criminal justice process.\n- **Equality rights**: the right to equal protection and"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" benefit of the law without discrimination based on race, national or ethnic origin, colour, religion, sex, age, or mental"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" or physical disability.\n- **Language rights**: the right to use English or French in federal institutions.\n\nThe Charter includes the"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" \"notwithstanding clause\" (Section 33), which allows Parliament or provincial"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" legislatures to override certain Charter protections for a renewable five"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-year period. This clause is controversial and has been invoked most notably by Quebec in matters of language policy"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".\n\n### Major Political Parties\n\nCanada has a multi-party political system. The major federal parties are:\n\n-"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" **The Liberal Party of Canada**: One of the two traditional \"governing parties\" of"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canada, the Liberals have historically occupied the centre of the political spectrum,"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" associated with bilingualism, multiculturalism, federalism, and the welfare state. Major Liberal prime"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" ministers include Wilfrid Laurier, Mackenzie King, Lester Pearson, Pierre Trudeau, Jean Chrétien, Paul"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Martin, and Justin Trudeau (Pierre's son, who served from 2"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"015 to 2025).\n- **The Conservative Party of Canada**: The centre-right party, currently led by Pierre Poilievre."}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Its predecessors, the Progressive Conservative Party and the Canadian Alliance, merged in 2003"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Conservatives have emphasized fiscal responsibility, lower taxes, and a different vision of feder"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"alism. Major Conservative prime ministers include John A. Macdonald, John Diefenbaker, Brian Mulroney, and Stephen Harper.\n- **The New Democratic Party (NDP)**: The social democratic party, representing"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the political left. Founded in 1961, the NDP has been a major force in Canadian politics, pushing for expanded social programs, labour rights, and environmental"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" protection. While never forming a federal government, the NDP has held power in several provinces, including"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" British Columbia, Saskatchewan (where the CCF, its predecessor, introduced"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" North America's first public health care system in 1962), Manitoba, Ontario"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", Nova Scotia, and Alberta.\n- **The Bloc Québécois**: A federal party that runs candidates only in Quebec and"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" advocates for Quebec's interests and sovereignty. Founded in 1991 "}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"by Lucien Bouchard, it regularly wins a significant"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" block of Quebec seats in the House of Commons.\n- **The Green Party of Canada**: A smaller party focused"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" on environmental issues and social justice.\n- **The People's Party of Canada**: A right-wing populist party founded by Max"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ime Bernier in 2018.\n\n### Indigenous Governance and Reconciliation\n\nOne"}             }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of the most important and unfinished chapters in Canadian governance is the relationship between the"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canadian state and Indigenous peoples. For most of Canadian history, federal Indigenous policy was characterized"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" by paternalism, cultural suppression, and land dispossession.\n\nThe residential school system — a network"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of government-funded, church-operated schools that forcibly removed Indigenous children from their families and communities — operated from the"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 1870s to 1996 (the last school"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" closed in 1996). Children were forbidden from speaking their languages or practicing their cultures, and many were subjected to physical, emotional, and sexual abuse. The Truth and Reconciliation Commission of Canada"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", which operated from 2008 to 2015, documented the history"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and legacy of residential schools and concluded that the system amounted to cultural genocide"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The discovery of unmarked graves and burial sites near former residential schools,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" beginning in 2021, brought renewed national attention and grief"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".\n\nThe Truth and Reconciliation Commission issued 94 Calls to Action, calling"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" on governments, institutions, churches, and Canadians to take"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" specific steps toward reconciliation. Progress has been uneven. The UN"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Declaration on the Rights of Indigenous Peoples was adopted into Canadian law in 2021.\n\n---\n\n## Economy"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\nCanada has one of the world's largest and most developed economies, with a GDP of approximately $2.1 trillion USD"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (as of recent estimates), ranking it among the top ten"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" economies globally. Canada is a member of the G7 group of major"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" industrialized democracies.\n\n### Natural Resources\n\nCanada's economy"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" has historically been built on the abundance of its natural resources — a"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" heritage often captured in the concept of the \"staples thesis"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":",\" developed by economist Harold Innis, which argues that Canadian economic"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" development has been driven by the successive exploitation of staple commod"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ities: fish, fur, timber, wheat, and minerals.\n\n**Energy"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"**: Canada is one of the world's leading energy producers. Alberta's oil sands (also"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" called tar sands) contain the third-largest proven oil reserves in the world, after Saudi Arabia and Venezuela,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with an estimated 165 billion barrels of recoverable bitumen. Conventional oil and"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" natural gas are produced across western Canada and offshore in"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Newfoundland (where the Hibernia, Terra Nova, and White Rose fields operate"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in the North Atlantic). Canada is a major exporter of petroleum,"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" primarily to the United States. The construction and expansion of oil pipelines — particularly"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Enbridge Line 5, Trans Mountain, and the"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" now-cancelled Keystone XL — have been subjects of fierce political and"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" environmental debate.\n\n**Forestry**: Canada has approximately 347 million hectares of forest,"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" covering about 9% of the world's total forested land. The forestry industry"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" — producing lumber, pulp, paper, and other wood products — is a major employer"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and export earner, particularly in British Columbia, Quebec, Ontario"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and New Brunswick.\n\n**Mining**: Canada is among the world's leading producers of many minerals and"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" metals. It is a top global producer of uranium (mined in Saskatchewan"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s Athabasca Basin), potash (also Saskatchewan — Canada has"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" about 40% of the world's known reserves), nickel (Sudbury, Ontario has one"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of the world's richest nickel deposits), cobalt, gold, diamonds (primarily from"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the Northwest Territories and Nunavut), copper, zinc, and many others. Canada"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s mining industry is globally important not just for production but also for finance — the Toronto"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Stock Exchange's TSX Venture Exchange is the leading exchange in"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the world for junior mining companies.\n\n**Agriculture**: Despite having a relatively small percentage of a"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"rable land relative to its total area, Canada is one of the world's leading agricultural exporters. The Prairie provinces are among"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the world's most productive areas for wheat, canola (Canada developed and"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" named the crop), barley, lentils, peas, and other grains and oilseeds. Canada"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" is the world's largest producer and exporter of canola and the world"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s largest exporter of lentils and durum wheat. The Okanagan Valley in British Columbia and the Niagara Peninsula in Ontario are known for fruit"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" production and wine. Quebec's maple syrup production accounts for roughly 70% of the"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" world's total supply.\n\n**Fisheries**: Canada has the world's longest coastline and"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" its fisheries — Atlantic, Pacific, and freshwater — have been historically"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" among the most important in the world. The Grand Banks cod fishery, once the most productive"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in the world, was devastated by overfishing and collapsed in 1992, leading to the largest industrial"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" layoff in Canadian history. Canadian fisheries today produce lobster (a major export from"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the Maritimes), salmon (particularly Pacific species from British Columbia), sh"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"rimp, crab, scallops, halibut, and many other species.\n\n### Manufacturing and Industry\n\nOntario and"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Quebec are the industrial heartland of Canada. Ontario's \"Golden Horseshoe\" — the dens"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ely urbanized region stretching from Oshawa through Toronto, Hamilton"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and Niagara Falls — is one of the most productive manufacturing regions in North America. The automotive"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" industry has been particularly important: Canada's auto sector is deeply integrated with that"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of the United States under free trade agreements, and Ontario's assembly plants produce vehicles for both the Canadian and American markets. Major"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" manufacturers including General Motors, Ford, Fiat Chrysler (Stellantis), Toyota"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and Honda have major Canadian operations.\n\nAerospace is another major industry,"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" centered in Montreal (home to Bombardier, Pratt & Whitney Canada"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", CAE, and Bell Helicopter's Canadian operations) and the Toronto area"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Bombardier is one of the world's leading manufacturers of regional aircraft, business jets, and rail transportation"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" equipment.\n\n### Services and Technology\n\nLike most advanced economies, Canada's largest"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" economic sector is services. Financial services are particularly prominent: Canada's big"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" five banks — Royal Bank of Canada, TD Bank, Bank of Nova Scotia, Bank of Montreal, and CIBC — are among the most stable and profitable"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" financial institutions in the world, a fact demonstrated by Canada's relative resil"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ience during the 2008 global financial crisis (no Canadian bank required a government bail"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"out).\n\nTechnology has become an increasingly important sector. The \"tech triangle\" of Waterloo-"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Kitchener-Cambridge in Ontario is home to a vibrant technology"}       }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" ecosystem, including companies spun out of the University of Waterloo and Wilfrid Laurier University. Toronto"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" has become one of North America's fastest-growing technology hubs, earning the nickname \"Silicon North"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".\" Companies like Shopify (Ottawa), BlackBerry (Waterloo), and Open Text"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (also Waterloo) have global reach. Canada has been a leader in artificial"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" intelligence research, with a cluster of world-class AI researchers at the University of Toronto, the Vector"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Institute, the Montreal Institute for Learning Algorithms (M"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ila), and the Alberta Machine Intelligence Institute (Amii).\n\n### Trade"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\nCanada is one of the world's most trade-dependent major economies. The United States is by far Canada's largest trading partner, accounting for roughly"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 75% of Canadian exports and 50% of imports. The Canada-United States-"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Mexico Agreement (CUSMA, known in the United States as U"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"SMCA), which replaced the original Canada-United States Free Trade Agreement (CUSF"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"TA, 1988) and NAFTA (1994), gov"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"erns trade relations among the three countries.\n\nCanada is also a member of the Comprehensive"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and Progressive Agreement for Trans-Pacific Partnership (CPTPP) and has negotiated free trade agreements with the"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" European Union (CETA), South Korea, Chile, Colombia"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and many other nations.\n\n---\n\n## Demographics and Society\n\n### Population"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\nCanada's population of approximately 40 million is very unevenly distributed across its vast territory. The majority"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of Canadians — roughly 90% — live within 200 kilometres of the Canada-United"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" States border, largely because the climate, agricultural land, and historical patterns"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of settlement concentrated development in the south. The most densely populated region is the \"Main"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Street corridor\" (also called the \"Windsor-Quebec City"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" corridor\"), running from Windsor, Ontario, along the north shores of Lake Erie, Lake Ontario"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and the St. Lawrence River to Quebec City. This region, containing roughly one-third of Canada's land area within the"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" two central provinces, is home to about two-thirds of Canada's total population.\n\nThe ten most populous cities in"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canada (by census metropolitan area) are: Toronto (~6.2 million), Montreal (~4.3"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" million), Vancouver (~2.6 million), Calgary (~1.6 million), Edmonton (~1.5 million), Ottawa-Gatineau (~1.4 "}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"million, the national capital), Winnipeg (~900,000), Quebec City (~870,000), Hamilton"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (~800,000), and Kitchener-Cambridge-Waterloo (~600,000).\n\n### Immigration and Mult"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iculturalism\n\nCanada is one of the world's foremost immigration destinations, taking in more immigrants"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" per capita than almost any other developed nation. Canada accepts roughly 400,000–"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"500,000 permanent residents per year, drawn from virtually every country in the world. Immigration has been the primary"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" driver of Canadian population growth, and this is expected to continue as Canada's aging population and low"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" birth rate would otherwise lead to demographic decline.\n\nCanada has three major categories of immigration"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":":\n- **Economic class**: Skilled workers, entrepreneurs, and investors selected on the"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" basis of their ability to contribute to the Canadian economy. The points-based Express Entry system ranks"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" candidates on factors such as education, language ability, work experience, and age.\n- **Family class"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"**: Spouses, dependent children, parents, and grandparents of Canadian citizens and permanent residents.\n- **Refugee class**:"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Individuals granted protection in Canada on humanitarian grounds, including government-assisted refugees,"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" privately sponsored refugees, and asylum claimants.\n\nCanada was the first country in the world to adopt mult"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iculturalism as an official government policy, doing so under Prime Minister Pierre"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Trudeau in 1971. The Canadian Multiculturalism Act of 1988 formalized this commitment. Canadian mult"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iculturalism rests on the principle that immigrants should be encouraged to maintain their cultural heritage while integ"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"rating into Canadian society — a \"mosaic\" model that contrasts with the American \"melting pot\" metaphor.\n\nThe largest source"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" regions for recent immigration have been South Asia (particularly India),"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the Philippines, China, Africa (various countries), the Middle East, and Latin America. Canada has also welcomed"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" large numbers of refugees from Syria, Afghanistan, Ukraine, and elsewhere.\n\nAs a result of immigration and demographic"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" change, Canada is one of the most ethnically and culturally diverse countries on Earth. Toronto is sometimes described"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" as the most diverse city in the world — nearly half of its population was born outside Canada. Vancouver, Calgary"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and Montreal are similarly diverse.\n\n### Languages\n\nCanada has two official languages at the federal level: English and French. The linguistic"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" divide is not simply geographic but is woven into the very fabric of national"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" identity.\n\nFrench is the first language of approximately 22% of Canadians, concentrated primarily in Quebec ("}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"where approximately 80% of the population has French as their mother tongue), New Brunswick (which is"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" officially bilingual and has a significant Acadian French-speaking population), and scattered communities across the country. Quebec's"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" provincial language law (Bill 101, the Charter of the French Language, enacted"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in 1977) has been crucial in maintaining French as the dominant language of public life in Quebec,"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and it continues to be a subject of ongoing political debate and legal challenge.\n\nEnglish is the first language of approximately 56"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"% of Canadians. A significant and growing portion of Canadians — roughly 22% — have neither English nor French as their mother"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" tongue. The most common non-official mother tongues include Mandarin, Cantonese,"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Punjabi, Tagalog, Hindi, Spanish, Arabic, Italian, Portuguese, and many others.\n\nIndigenous"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" languages represent a critically endangered heritage. There are over 70 distinct"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Indigenous languages in Canada, belonging to about 11 language families. Many are"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" severely endangered, with only small numbers of fluent speakers remaining, mostly elderly"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The federal government has committed to supporting Indigenous language revitalization through the Indigenous Languages Act (2"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"019).\n\nCanadian English and Canadian French are distinct from their"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" American and European counterparts. Canadian English combines features of British and American English with unique"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Canadian elements (including distinctive vocabulary, pronunciation patterns such as \"Canadian raising"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":",\" and spelling conventions that blend British and American styles). Québécois French has"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" preserved archaic features of seventeenth-century French while developing its"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" own vocabulary and expressions.\n\n### Religion\n\nCanada has undergone a dramatic religious transformation over the past several decades. While the country"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" was historically dominated by Christianity (both Protestant and Catholic traditions), sec"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ularization has proceeded rapidly. According to recent censuses, roughly 34% of Canadians identify as having no religious affiliation —"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a proportion that has been rising steadily. Roman Catholicism remains the single largest denomination (about 29% of the population), followed by various"}       }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Protestant denominations. Immigration has also brought significant Muslim, Hindu, Sikh, Buddhist"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and Jewish communities. Canada has the second-largest Sikh population outside India, concentrated"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" primarily in the Greater Toronto Area and Metro Vancouver.\n\n### Education\n\nCanada has a highly educated population and"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" world-class educational institutions. Education is a provincial responsibility in Canada, so"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" there is no single national education system; each province runs its own system. Most provinces have publicly"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" funded separate school systems for Catholics in addition to the public ("}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"non-denominational) system, a legacy of the constitutional compromises of"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Confederation.\n\nCanada consistently ranks among the top nations in international education assessments such as PISA (Programme for International"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Student Assessment). The adult literacy rate is among the highest in the world.\n\nCanada's universities are highly regarded"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" internationally. The University of Toronto, McGill University, the University of British Columbia, and several others regularly feature in"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" global university rankings. Canada is a world leader in research in fields"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" including artificial intelligence, stem cell research, immunology, physics, and environmental"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" science.\n\nPost-secondary education — universities, colleges, CEGEPs (in Quebec), and technical institutions"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" — is funded partly by government and partly by tuition. International students are a major and"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" growing part of the post-secondary landscape, with Canadian institutions attracting hundreds of thousands of international students annually.\n\n### Health"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Care\n\nCanada's universal health care system — Medicare —"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" is one of the defining features of Canadian identity and the subject of enormous"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" national pride. Under the Canada Health Act (1984), all med"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ically necessary hospital and physician services must be provided to all Canadian residents free of charge (no"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" direct fees at the point of service). The system is administered provincially but funded through"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a combination of federal transfers and provincial taxation.\n\nCanada's health care"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" system is frequently compared with those of other developed nations. While it performs well on many"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" measures (universality, outcomes for serious conditions, financial"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" protection) and is strongly supported by the public, it has faced persistent challenges: long"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" wait times for elective procedures and specialist care, shortages of family physicians, underfunding of mental health services, inadequ"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ate home care, and the challenge of providing services to remote and Indigenous communities. Debate"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" over how to reform and improve the system — while maintaining its public"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" character — is a perennial feature of Canadian politics.\n\nCanada has made significant contributions to medicine and health science"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Notable discoveries with Canadian origins include insulin (discovered"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" by Frederick Banting and Charles Best at the University of Toronto in 1921, one of the most important medical discoveries"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in history), the pacemaker (invented by John Hopps at the National Research Council in"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 1950), the cobalt-60 cancer therapy machine (Harold Johns"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", 1951), and stem cell research (James Till and Ernest"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" McCulloch, 1960s). More recently, Canadian scientists contributed significantly to the development of m"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"RNA vaccine technology.\n\n---\n\n## Culture\n\n### Literature\n\nCanadian literature, in"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" both English and French, has produced writers of world renown. Alice Munro, the"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" \"master of the contemporary short story,\" received the Nobel Prize in Literature in 2013, the"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" first Canadian to do so. Other celebrated English-Canadian writers include Margaret Atwood (whose"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" dystopian novel *The Handmaid's Tale* has become a global phenomenon), Michael"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Ondaatje (*The English Patient*), Robertson Davies, Carol Shields,"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Mordecai Richler, Farley Mowat, Lucy Maud Montgomery (whose *"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Anne of Green Gables*, set on Prince Edward Island, is among the most beloved works of children"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s literature in the world), and Lawrence Hill. Quebec's literary tradition is equally rich, with writers such as Gabri"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"elle Roy, Réjean Ducharme, Marie-Claire Blais, Michel Tremblay, and Anton"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ine Maillet.\n\n### Music\n\nCanada has produced musicians of remarkable talent and global impact. In"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" popular music, Canada is perhaps most famous for its extraordinarily disproportionate contribution"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to global popular culture. Celine Dion (Quebec), Neil Young (Ontario,"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" later embracing American folk-rock), Joni Mitchell (Alberta), Leonard"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Cohen (Montreal — poet, novelist, and songwriter of unmat"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ched depth and lyricism), Gordon Lightfoot, Bryan Adams, Shania Twain, k"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".d. lang, Arcade Fire (Montreal), Drake, Justin Bi"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"eber, The Weeknd, Grimes, Michael Bublé, Nelly Furtado, Barenaked Ladies, Rush, Nic"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"kelback, Lights, and many others have achieved international acclaim. Canada has also produced distinguished classical musicians, including pian"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ists Glenn Gould (whose interpretation of Bach's Goldberg Variations is considered legendary)"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and Oscar Peterson (jazz pianist).\n\nCanadian content regulations"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (CanCon), administered by the Canadian Radio-television and Telecommunications Commission (CRTC), have long required that a"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" certain percentage of music played on Canadian radio stations be of Canadian origin, a policy"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" designed to protect and promote Canadian culture in the face of the dominant American cultural"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" industry.\n\n### Visual Arts and Film\n\nThe Group of Seven (active primarily"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in the 1920s) — including Tom Thomson ("}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"who died before the group formed but whose work was central to its inspiration), Law"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ren Harris, A.Y. Jackson, Arthur Lismer, J.E.H. MacD"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"onald, Frederick Varley, Frank Johnston, and Franklin Carmichael — transformed Canadian painting by"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" depicting the Canadian landscape in bold, expressionist strokes, creating a distinct"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ly Canadian visual identity. Emily Carr, a British Columbia artist whose"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" work captured the landscapes and cultures of the Pacific Northwest, is equally iconic"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".\n\nCanada has a robust film industry, centered primarily in Toronto and Montreal. The National Film Board of Canada (NFB),"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" established in 1939, has produced hundreds of acclaimed documentaries and animated films. The Toronto"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" International Film Festival (TIFF) is one of the most important film festivals in the world, serving as a major launch pad for Oscar"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-season films. Internationally acclaimed Canadian directors include David"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Cronenberg, Atom Egoyan, Denis Villeneuve (*Arrival*, *"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Blade Runner 2049*, *Dune*), Jean-Marc Vall"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ée, and Xavier Dolan.\n\n### Sports\n\nSports are central"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to Canadian identity, and no sport is more central than hockey. Ice hockey is Canada's most popular sport and"}}
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" its game of national passion. The National Hockey League (NHL), which began in Canada"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in 1917, is the premier professional hockey league in the world. The Montreal Canadiens (with 24"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Stanley Cup championships, the most in NHL history) and the Toronto Maple Leafs are the most storied franchises"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Wayne Gretzky, \"The Great One,\" is widely considered the greatest hockey player in history. The Canada Cup and"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" World Junior Championship are followed with intense national interest"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". The women's game is equally passionately followed, with the Canadian women's national team being one of the dominant"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" forces in international hockey.\n\nCanada's other great national sport is lacrosse, which has Indigenous"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" origins and was declared one of Canada's official sports in 1"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"994 (alongside hockey). The Canadian Football League (CFL) plays a distinctive"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" variant of football on a 110-yard field with slightly"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" different rules from the NFL. The CFL's championship, the Grey Cup, is one of Canada"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s oldest sporting events, dating to 1909.\n\nBaseball has a significant"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" following, particularly through the Toronto Blue Jays, who won"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" back-to-back World Series titles in 1992 and 1993. Basketball — invented"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" by Canadian James Naismith in 1891 — has grown enormously in popularity, spurred by the Toronto"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Raptors winning the NBA Championship in 2019. Soccer, curling, skiing"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (alpine and Nordic), speed skating, figure skating, and many other sports have strong Canadian traditions. Canada"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" has excelled at the Olympic Games, particularly in Winter Olympics disciplines, with speed"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" skating, short-track speed skating, skiing, hockey, figure skating, freestyle skiing, and snow"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"boarding producing many medals.\n\n### Cuisine\n\nCanadian cuisine reflects the country's geographic and cultural diversity. While"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" there is no single \"Canadian\" cuisine in the way that French or Italian cuisines are cod"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ified traditions, there are several distinctly Canadian culinary traditions and iconic dishes.\n\nP"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"outine — French fries topped with cheese curds and hot"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" gravy — originated in Quebec in the late 1950s and has become perhaps the most recognized Canadian dish internationally"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":". Butter tarts, Nanaimo bars, and BeaverTails (deep"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-fried pastry) are distinctly Canadian sweet treats. Montreal smoked meat ("} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"a cured, smoked brisket) and Montreal-style bagels (smaller"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", denser, and sweeter than New York bagels, baked in wood"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-fired ovens) are proud Montreal specialties. The Maritime provinces are celebrated for their lobster,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Digby scallops, and dulse (edible seaweed). British Columbia salmon —"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" particularly wild Pacific salmon such as chinook, sockeye, and coho — is"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" world-renowned. Indigenous food traditions, including bannock (a type of bread), wild"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" game, fiddlehead ferns, and various traditional preparations, are an important part of Canada's culinary heritage.\n\nCanada"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" is also a significant wine producer, particularly in British Columbia (the Okanagan and Simil"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"kameen Valleys) and Ontario (the Niagara Peninsula and Prince Edward County). Canadian ice wine"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" — produced from grapes that have frozen on the vine — is internationally"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" acclaimed and commands premium prices.\n\n---\n\n## Canada's Place in the World\n\n###"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Foreign Policy and International Relations\n\nCanada is an active and influential participant in international affairs. It"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" is a founding member of the United Nations (1945), NATO (1949), and many other international institutions. Canada has been a consistent"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" advocate for multilateralism, international law, human rights, and peacekeeping. Lester"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Pearson's invention of the modern concept of UN peacekeeping in 1956 established"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a tradition of Canadian involvement in international conflict resolution that has become a point of national pride.\n\nCanada is"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a member of the G7 (the group of major industrialized democracies),"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the G20, the Commonwealth of Nations (which connects Canada to the United Kingdom and other former"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" British territories), La Francophonie (which connects Canada, Quebec, and New Brunswick to French-speaking nations worldwide), the"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Organisation for Economic Co-operation and Development (OECD), the World Trade Organization (WTO), and many other international bodies.\n\nCanada's relationship"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with the United States is the most important bilateral relationship in the world by some measures — the two countries share"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the world's largest bilateral trading relationship, with over $2 billion"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in goods and services crossing the border every day. The relationship is generally close"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and cooperative, though it has been periodically strained by disputes over trade (softwood lumber, dairy"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and steel have been recurring flashpoints), energy policy, and political"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" differences. Canada's proximity to and deep integration with the United States is both its"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" greatest economic asset and a persistent challenge to its cultural sovereignty"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and political independence.\n\nCanada has significant bilateral relationships with many other countries, including the United Kingdom, France, Germany, Japan, Australia, India"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and China. Canada-China relations have been particularly fraught following the arrest"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of Huawei CFO Meng Wanzhou in Vancouver in 2018 "}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"at the request of U.S. authorities, and China's subsequent retaliatory detention"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of two Canadian citizens (Michael Kovrig and Michael Spavor) in what"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" became known as the \"two Michaels\" affair.\n\n### Environmental Issues and"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Climate Change\n\nCanada is one of the highest per capita greenhouse gas emitters among developed nations,"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" largely due to its cold climate, large distances requiring transportation, resource extraction industries"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and energy-intensive lifestyles. The oil sands in particular are a major source of emissions.\n\nCanada has committed"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to reducing its greenhouse gas emissions under the Paris Agreement, setting a target of 40–45% reduction below 2005 levels by 2"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"030. Key policy instruments include a federal carbon pricing system ("}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"a carbon tax applied to fossil fuels), regulations on methane emissions, investments"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in clean energy, and the phaseout of coal-fired electricity. The federal carbon tax has"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" been one of the most politically contentious policies in recent Canadian history, with strong opposition from some provinces and the Conservative"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" opposition.\n\nCanada is home to an enormous portion of the world's boreal forest, which serves"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" as a major carbon sink. The conservation of these forests, along with the protection of marine environments, wetlands, and the Arctic"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", is of global environmental significance.\n\n---\n\n## Symbols and Identity"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\nCanada's national symbols include:\n\n- **The Maple Leaf**:"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" The red maple leaf is the central emblem of the Canadian flag (adopted"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in 1965) and one of the most recognized national symbols in the world. The sugar maple, which produces the most prized maple"}       }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" syrup, is native to eastern Canada.\n- **The Beaver**: The beaver is the national animal of Canada, a nod to the fur"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" trade that played such a central role in Canadian history.\n- **The Loon**: The common loon,"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" whose haunting call is one of the most evocative sounds of the Canadian wilderness,"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" graces the one-dollar coin — the \"loonie.\"\n- **The Moose**: The moose, the"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" largest member of the deer family, is an iconic Canadian wildlife symbol.\n- **The RCMP**: The Royal Canadian Mounted Police"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" — the \"Mounties\" — in their iconic red serge uniforms are"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" one of the most recognized symbols of Canada internationally.\n- **\"O Canada"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\"**: The national anthem, originally written in French by Calixa Lavall"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ée and Adolphe-Basile Routhier in 1880, was translated into English and officially"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" adopted as Canada's national anthem in 1980. The lyrics were amended in"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 2018 to make them gender-neutral (\"True patri"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ot love in all of us command\" replacing"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" \"in all thy sons command\").\n\n---\n\n## Conclusion\n\nCanada is, in summary"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", a nation of extraordinary contrasts and complexity: vast in territory yet intimate in community"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", physically magnificent yet often humble in self-expression, deeply ro"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"oted in history yet perpetually reinventing itself through immigration and cultural exchange. It is a country that continues to g"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"rapple honestly and often painfully with its past — particularly the legacy"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of colonialism and its treatment of Indigenous peoples — while striving to build a more"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" just and equitable society. It is a democracy that values peace, order, and good"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" government (the original words of the British North America Act) while also champ"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ioning the rights and freedoms of individuals.\n\nCanada's great ongoing"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" project is the management of diversity: linguistic, cultural, regional, ethnic"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", and spiritual. This project is imperfect and sometimes fractious, but it represents one of humanity"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s most ambitious social experiments. The Canadian experiment in pluralism, tolerance, and peaceful"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" coexistence — though challenged and never complete — stands as one"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" of the most hopeful and instructive models in the modern world. Canada is, ultimately"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", not so much a nation as it is an aspiration: the asp"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iration to build, on the northern edge of the world, a society worthy of the magnific"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ence of its land."}              }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1}
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"stop_sequence","stop_sequence":"is"},"usage":{"input_tokens":48,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":17}  }
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":28,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":13399,"output_tokens_details":{"thinking_tokens":55}}  }
 
             event: message_stop
-            data: {"type":"message_stop"}
+            data: {"type":"message_stop"     }
 
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
@@ -66,47 +2133,45 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-03-21T00:18:02Z"
+                - "2026-05-30T00:48:08Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-03-21T00:18:02Z"
+                - "2026-05-30T00:48:08Z"
             Anthropic-Ratelimit-Requests-Limit:
-                - "4000"
+                - "20000"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "3999"
+                - "19999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-03-21T00:18:02Z"
+                - "2026-05-30T00:48:08Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-03-21T00:18:02Z"
+                - "2026-05-30T00:48:08Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9df8c6ec9cd8a2da-YUL
+                - a039bb44e812a28f-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
                 - cloudflare
-            Server-Timing:
-                - x-originResponse;dur=830
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-db29fa29d38544a9472981e9e75499a6-b8d8c8f3fb4c82a1-01
             Vary:
                 - Accept-Encoding
-            X-Envoy-Upstream-Service-Time:
-                - "830"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 870ms
+        duration: 1.244s

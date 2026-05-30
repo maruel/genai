@@ -16,6 +16,7 @@ package anthropic
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -80,10 +81,21 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	var errs []error
 	var unsupported []string
 	msgToCache := 0
-	// Default to disabled thinking.
-	c.Thinking.Type = "disabled"
-	// Anthropic requires max_tokens and the models listing API doesn't expose the limit.
-	c.MaxTokens = modelsMaxTokens(model)
+	// Default thinking: adaptive for models that support it, disabled otherwise.
+	if _, ok := modelsAdaptiveBlocked.Load(model); ok {
+		c.Thinking.Type = "disabled"
+	} else {
+		c.Thinking.Type = "adaptive"
+		c.Thinking.Display = "summarized"
+	}
+	// Anthropic requires a non-zero max_tokens.
+	if v, ok := modelsMaxTokens.Load(model); ok {
+		if i, ok := v.(int); ok {
+			c.MaxTokens = int64(i)
+		} else {
+			return fmt.Errorf("internal error: invalid cached MaxTokens %v", v)
+		}
+	}
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return err
@@ -100,8 +112,12 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			switch v.Thinking {
 			case ThinkingAdaptive:
 				c.Thinking.Type = string(ThinkingAdaptive)
+				// Default to summarized so reasoning text is returned.
+				// opus-4-8/4-7 default to "omitted" which hides thinking text.
+				c.Thinking.Display = "summarized"
 			case ThinkingDisabled:
-				// Already set above.
+				c.Thinking.Type = "disabled"
+				c.Thinking.Display = ""
 			case ThinkingEnabled:
 				if v.ThinkingBudget >= c.MaxTokens {
 					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
@@ -120,6 +136,9 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 					c.Thinking.Type = string(ThinkingEnabled)
 				}
 			}
+			if v.ThinkingDisplay != "" {
+				c.Thinking.Display = v.ThinkingDisplay
+			}
 		case *genai.GenOptionText:
 			unsupported = append(unsupported, c.initOptionsText(v)...)
 		case *genai.GenOptionTools:
@@ -132,7 +151,9 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	}
 
 	// Post process to take into account limitations by the provider.
-	if c.Model == "claude-sonnet-4-20250514" && c.Thinking.Type != "disabled" && c.ToolChoice.Type == ToolChoiceAny {
+	// Forced tool use is incompatible with thinking.
+	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+	if c.Thinking.Type != "disabled" && c.ToolChoice.Type == ToolChoiceAny {
 		unsupported = append(unsupported, "GenOptionTools.Force")
 		c.ToolChoice.Type = ToolChoiceAuto
 	}
@@ -235,36 +256,6 @@ func (c *ChatRequest) initOptionsWeb(v *genai.GenOptionWeb) {
 			Name: "web_fetch",
 		})
 	}
-}
-
-func modelsMaxTokens(model string) int64 {
-	// Returns the model's max output tokens. Anthropic requires max_tokens and the
-	// models listing API doesn't expose the limit.
-	// https://platform.claude.com/docs/en/about-claude/models/overview
-	switch {
-	case strings.HasPrefix(model, "claude-3-opus-"),
-		strings.HasPrefix(model, "claude-3-haiku-"):
-		return 4096
-	case strings.HasPrefix(model, "claude-3-5-"):
-		return 8192
-	case
-		strings.HasPrefix(model, "claude-4-opus-"),
-		strings.HasPrefix(model, "claude-opus-4-0"),
-		strings.HasPrefix(model, "claude-opus-4-2"),
-		strings.HasPrefix(model, "claude-opus-4-1"):
-		// Opus 4 (claude-opus-4-20250514) and Opus 4.1.
-		return 32000
-	case strings.HasPrefix(model, "claude-3-7-"),
-		strings.HasPrefix(model, "claude-sonnet-4-"),
-		strings.HasPrefix(model, "claude-4-sonnet-"),
-		strings.HasPrefix(model, "claude-opus-4-5"),
-		strings.HasPrefix(model, "claude-haiku-4-5"):
-		return 64000
-	case strings.HasPrefix(model, "claude-opus-4-6"):
-		return 128000
-	}
-	// Default for future models.
-	return 64000
 }
 
 // MCPServer is documented at https://docs.anthropic.com/en/api/messages#body-mcp-servers
@@ -1157,8 +1148,7 @@ func (c *Citation) To(dst *genai.Citation) error {
 			EndBlockIndex:   c.EndBlockIndex,
 		}}
 	case CitationWebSearchResultLocation:
-		// This is only emitted by claude-sonnet-4-20250514 and claude-opus-4-1-20250805 and not
-		// claude-3-5-haiku-20241022.
+		// To confirm.
 		dst.Sources = []genai.CitationSource{{
 			Type:    genai.CitationWeb,
 			URL:     c.URL,
@@ -1174,6 +1164,7 @@ func (c *Citation) To(dst *genai.Citation) error {
 // Thinking is a provider-specific thinking block.
 type Thinking struct {
 	BudgetTokens int64  `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens; unused for adaptive
+	Display      string `json:"display,omitzero"`       // "summarized", "omitted"; omitted is default on opus-4-8/4-7
 	Type         string `json:"type,omitzero"`          // "enabled", "disabled", "adaptive"
 }
 
@@ -1247,13 +1238,14 @@ type Tool struct {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	Message                 // Role is always "assistant"
-	ID           string     `json:"id"`
-	Model        string     `json:"model"`
-	StopReason   StopReason `json:"stop_reason"`
-	StopSequence string     `json:"stop_sequence"`
-	Type         string     `json:"type"` // "message"
-	Usage        Usage      `json:"usage"`
+	Message                         // Role is always "assistant"
+	ID           string             `json:"id"`
+	Model        string             `json:"model"`
+	StopReason   StopReason         `json:"stop_reason"`
+	StopSequence string             `json:"stop_sequence"`
+	StopDetails  RefusalStopDetails `json:"stop_details"`
+	Type         string             `json:"type"` // "message"
+	Usage        Usage              `json:"usage"`
 	Container    struct {
 		ExpiresAt time.Time `json:"expires_at"`
 		ID        string    `json:"id"`
@@ -1311,6 +1303,22 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// RefusalStopDetails is documented at https://docs.anthropic.com/en/docs/build-with-claude/handling-stop-reasons
+type RefusalStopDetails struct {
+	Type        string `json:"type"`        // Always "refusal"
+	Category    string `json:"category"`    // "cyber", "bio", or null
+	Explanation string `json:"explanation"` // Human-readable or null
+}
+
+// UnmarshalJSON implements json.Unmarshaler to handle null stop_details.
+func (r *RefusalStopDetails) UnmarshalJSON(b []byte) error {
+	if string(b) == "null" {
+		return nil
+	}
+	type alias RefusalStopDetails
+	return json.Unmarshal(b, (*alias)(r))
+}
+
 // ChatStreamChunkResponse is documented at https://docs.anthropic.com/en/api/messages-streaming
 //
 // Each stream uses the following event flow:
@@ -1327,14 +1335,15 @@ type ChatStreamChunkResponse struct {
 
 	// Type == "message_start"
 	Message struct {
-		ID           string     `json:"id"`
-		Type         string     `json:"type"` // "message", "thinking"
-		Role         string     `json:"role"`
-		Model        string     `json:"model"`
-		Content      []string   `json:"content"`
-		StopReason   StopReason `json:"stop_reason"`
-		StopSequence string     `json:"stop_sequence"`
-		Usage        Usage      `json:"usage"`
+		ID           string             `json:"id"`
+		Type         string             `json:"type"` // "message", "thinking"
+		Role         string             `json:"role"`
+		Model        string             `json:"model"`
+		Content      []string           `json:"content"`
+		StopReason   StopReason         `json:"stop_reason"`
+		StopSequence string             `json:"stop_sequence"`
+		StopDetails  RefusalStopDetails `json:"stop_details"`
+		Usage        Usage              `json:"usage"`
 	} `json:"message"`
 
 	Index int64 `json:"index"`
@@ -1387,8 +1396,9 @@ type ChatStreamChunkResponse struct {
 		Citation Citation `json:"citation"`
 
 		// Type == ""
-		StopReason   StopReason `json:"stop_reason"`
-		StopSequence string     `json:"stop_sequence"`
+		StopReason   StopReason         `json:"stop_reason"`
+		StopSequence string             `json:"stop_sequence"`
+		StopDetails  RefusalStopDetails `json:"stop_details"`
 	} `json:"delta"`
 
 	Usage Usage `json:"usage"`
@@ -1437,6 +1447,9 @@ type Usage struct {
 		WebSearchRequests int64 `json:"web_search_requests"`
 		WebFetchRequests  int64 `json:"web_fetch_requests"`
 	} `json:"server_tool_use"`
+	OutputTokensDetails struct {
+		ThinkingTokens int64 `json:"thinking_tokens"`
+	} `json:"output_tokens_details"`
 }
 
 //

@@ -1,0 +1,163 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 263
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-8","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"stream":true,"thinking":{"type":"disabled"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-4-8","id":"msg_01XuZ8i7ruSsrf5HCP1gPHEZ","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":1071,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":4,"service_tier":"standard","inference_geo":"global"}}          }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}              }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"I'll f"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"etch the contents of that page for you."}          }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0            }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"server_tool_use","id":"srvtoolu_01BsFqXhhcdgY9eV7egWujkk","name":"web_fetch","input":{}}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"url\""}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":": \"https"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"://"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"perdu"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":".com\"}"}               }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1          }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_01BsFqXhhcdgY9eV7egWujkk","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-05-29T22:26:52.805000+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"---\ntitle: Vous Etes Perdu ?\n---\n\n\n# Perdu sur l'Internet ?\n\n## Pas de panique, on va vous aider\n\n**```\n* <----- vous êtes ici\n```**"},"title":"Vous Etes Perdu ?"}},"caller":{"type":"direct"}}        }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2   }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"The"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" page at https://perdu.com is a famous, minimalist French website. Here's what it says:\n\n**Title:** \"Vous Etes Per"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"du ?\" (Are you lost?)\n\n**Main heading:** \"Perdu sur l'Internet ?\" (Lost on the Internet?)\n\n**Subheading:** \"Pas de"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" panique, on va vous aider\" (Don't panic, we're going to help you)\n\n**Then it shows a little ASCII di"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"agram:**\n```\n* <----- vous êtes ici\n```\nWhich translates to \"* ← you are here\"\n\nSo the whole jo"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ke is that it's a deliberately barebones, humorous page that essentially tells visitors \"L"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ost on the Internet? Don't panic, we'll help you... you are *here*\" — pointing to a dot on an"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" otherwise empty page. It's a well-known piece of French internet culture and has existed virtually unchanged for many"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" years."}       }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":3               }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":2348,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":357,"output_tokens_details":{"thinking_tokens":0},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}}       }
+
+            event: message_stop
+            data: {"type":"message_stop"               }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-05-29T23:18:18Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-05-29T23:18:18Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-05-29T23:18:18Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "10799000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-05-29T23:18:18Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a03937aedc6ea29f-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-5e9364170c2040424e90edc9d79fb6f6-36a1d2021c1ff7c1-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.014s

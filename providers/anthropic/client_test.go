@@ -10,6 +10,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -45,6 +46,17 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	return anthropic.New(t.Context(), opts...)
 }
 
+// modelsMeta is the same as in client.go
+type modelsData struct {
+	Models map[string]modelData `json:"models"`
+}
+
+type modelData struct {
+	MaxInputTokens               int64 `json:"max_input_tokens"`
+	MaxOutputTokens              int64 `json:"max_output_tokens"`
+	AdaptiveThinkingNotSupported bool  `json:"adaptive_thinking_not_supported,omitempty"`
+}
+
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -62,6 +74,46 @@ func TestClient(t *testing.T) {
 	if err2 != nil {
 		t.Fatal(err2)
 	}
+
+	// Verify that the embedded models.json is up to date with the live model list.
+	t.Run("EmbeddedModels", func(t *testing.T) {
+		want := modelsData{Models: make(map[string]modelData)}
+		for _, m := range cachedModels {
+			am, ok := m.(*anthropic.Model)
+			if !ok {
+				t.Fatalf("unexpected model type %T", m)
+			}
+			if am.MaxTokens == 0 {
+				t.Fatalf("model %s has no MaxTokens", am.ID)
+			}
+			want.Models[am.ID] = modelData{
+				MaxInputTokens:               am.MaxInputTokens,
+				MaxOutputTokens:              am.MaxTokens,
+				AdaptiveThinkingNotSupported: !am.Capabilities.Thinking.Types.Adaptive.Supported,
+			}
+		}
+		b, err := json.MarshalIndent(want, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		b = append(b, '\n')
+		const path = "models.json"
+		actual, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(b, actual) {
+			if *updateModels {
+				if err := os.WriteFile(path, b, 0o644); err != nil {
+					t.Fatal(err)
+				}
+				t.Logf("Updated %s with %d models", path, len(want.Models))
+			} else {
+				t.Fatalf("%s is out of date, run with -update-models to regenerate it", path)
+			}
+		}
+	})
+
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
 		opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
@@ -117,6 +169,21 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if model.Reason {
+				// Prefer ThinkingAdaptive with a system prompt to cue thinking for models that support it.
+				// Without the system prompt, trivial smoke test prompts don't trigger adaptive thinking.
+				supportsAdaptive := false
+				for _, m := range cachedModels {
+					if am, ok := m.(*anthropic.Model); ok && am.ID == model.Model && am.Capabilities.Thinking.Types.Adaptive.Supported {
+						supportsAdaptive = true
+						break
+					}
+				}
+				if supportsAdaptive {
+					return &internaltest.InjectOptions{
+						Provider: c,
+						Opts:     []genai.GenOption{&genai.GenOptionText{SystemPrompt: "Think step by step before answering."}},
+					}
+				}
 				return &internaltest.InjectOptions{
 					Provider: c,
 					Opts:     []genai.GenOption{&anthropic.GenOptionText{ThinkingBudget: 1024}},
@@ -124,7 +191,7 @@ func TestClient(t *testing.T) {
 			}
 			return &internaltest.InjectOptions{
 				Provider: c,
-				Opts:     []genai.GenOption{&anthropic.GenOptionText{ThinkingBudget: 0}},
+				Opts:     []genai.GenOption{&anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled}},
 			}
 		}
 
@@ -134,9 +201,8 @@ func TestClient(t *testing.T) {
 	// This is a tricky test since batch operations can take up to 24h to complete.
 	t.Run("Batch", func(t *testing.T) {
 		ctx := t.Context()
-		// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
-		// within a few minutes.
-		c := getClient(t, "claude-3-haiku-20240307").(*anthropic.Client)
+		// Using a cheap model.
+		c := getClient(t, "claude-haiku-4-5-20251001").(*anthropic.Client)
 		msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
@@ -171,7 +237,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("BatchCRUD", func(t *testing.T) {
 		ctx := t.Context()
-		c := getClient(t, "claude-3-haiku-20240307").(*anthropic.Client)
+		c := getClient(t, "claude-haiku-4-5-20251001").(*anthropic.Client)
 		msgs := genai.Messages{genai.NewTextMessage("Say hello")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
@@ -479,7 +545,7 @@ func TestClient(t *testing.T) {
 				Name: "bad apiKey",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("bad apiKey"),
-					genai.ProviderOptionModel("claude-3-haiku-20240307"),
+					genai.ProviderOptionModel("claude-haiku-4-5-20251001"),
 				},
 				ErrGenSync:   "http 401\nauthentication_error: invalid x-api-key\nget a new API key at https://console.anthropic.com/settings/keys",
 				ErrGenStream: "http 401\nauthentication_error: invalid x-api-key\nget a new API key at https://console.anthropic.com/settings/keys",
@@ -620,6 +686,9 @@ func TestThinking(t *testing.T) {
 			if req.Thinking.BudgetTokens != 0 {
 				t.Errorf("Thinking.BudgetTokens = %d, want 0", req.Thinking.BudgetTokens)
 			}
+			if req.Thinking.Display != "summarized" {
+				t.Errorf("Thinking.Display = %q, want %q", req.Thinking.Display, "summarized")
+			}
 		})
 		t.Run("enabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
@@ -695,6 +764,26 @@ func TestThinking(t *testing.T) {
 				t.Errorf("unexpected error: %v", err)
 			}
 		})
+		t.Run("display_without_adaptive", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048, ThinkingDisplay: "summarized"})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "ThinkingDisplay is only valid with ThinkingAdaptive") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("invalid_display", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingDisplay: "bogus"})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "invalid ThinkingDisplay") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
 	})
 }
 
@@ -743,6 +832,8 @@ func getSmitheryServiceToken(apiKey, namespace string) (string, error) {
 	}
 	return result.Token, nil
 }
+
+var updateModels = flag.Bool("update-models", false, "update models.json from ListModels data")
 
 func init() {
 	internal.BeLenient = false

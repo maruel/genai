@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 403
+        content_length: 480
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"}}
+            {"model":"claude-sonnet-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -25,40 +25,25 @@ interactions:
         uncompressed: true
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_01PAMrTph95Vmy564XeLz1x4","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":182,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":2,"service_tier":"standard","inference_geo":"global"}}  }
+            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_01FFnjsG2C3zBUbDYn1R7smP","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":162,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":2,"service_tier":"standard","inference_geo":"global"}}        }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}}
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}               }
 
             event: ping
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Banana"}    }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":""}            }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"Eq4BCkYICxgCKkCYVXbRLYdGfa/qimlRoxq/5fSLwjJ6EdrjJfVUfVX5+wHujx/1tW3ajlZKYrtYX39cPjZoyaeOpJKV3U6MpUpWEgwrl9Z3Bk7VM+ulfIYaDE1Yu4+/h4KZmzhRACIwThEE8bbx19FbGky81MrsuOti96/HGSg7x4X+HhWNYlQiMUHpe8zu/aJbMbG6oDzcKhaMYTXZ4UMxP9sLh/nuTIxm0jShjUdyGAE="}        }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Banana"}    }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0     }
-
-            event: content_block_start
-            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""} }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Banana"}            }
-
-            event: content_block_stop
-            data: {"type":"content_block_stop","index":1  }
+            data: {"type":"content_block_stop","index":0    }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"input_tokens":182,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":15}    }
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":162,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5,"output_tokens_details":{"thinking_tokens":0}}  }
 
             event: message_stop
-            data: {"type":"message_stop" }
+            data: {"type":"message_stop"            }
 
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
@@ -66,47 +51,45 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "1999000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-03-21T00:19:46Z"
+                - "2026-05-30T00:53:21Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-03-21T00:19:46Z"
+                - "2026-05-30T00:53:21Z"
             Anthropic-Ratelimit-Requests-Limit:
-                - "4000"
+                - "20000"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "3999"
+                - "19999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-03-21T00:19:46Z"
+                - "2026-05-30T00:53:21Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2399000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-03-21T00:19:46Z"
+                - "2026-05-30T00:53:21Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9df8c9782f0ca2da-YUL
+                - a039c2e7eb3fa28f-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
                 - cloudflare
-            Server-Timing:
-                - x-originResponse;dur=2202
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-7fc7142ea491deb1470a20a372635e34-09148f2304610c6a-01
             Vary:
                 - Accept-Encoding
-            X-Envoy-Upstream-Service-Time:
-                - "2202"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 2.257s
+        duration: 1.095s

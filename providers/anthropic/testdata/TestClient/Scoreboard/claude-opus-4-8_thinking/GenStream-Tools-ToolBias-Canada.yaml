@@ -1,0 +1,134 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 701
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-8","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-4-8","id":"msg_01R7T4uxWxN6qwmRFLu4kYfT","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":463,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":7,"service_tier":"standard","inference_geo":"global"}}         }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}      }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" The"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user wants me to make a tool call for something subjective, so"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'll go ahead and invoke it."}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"Er4CCmMIDhgCKkCwEGtTsSZE3D2ebo52336ZFsGg/LQkiVfpk7V+tDO5Ve+Nt780kqNKz4jCvzUNbKXjlEbTxCQo4pjh50AumB4FMg9jbGF1ZGUtb3B1cy00LTg4AEIIdGhpbmtpbmcSDOFS2jsDNbwmvsjcShoMRLpCMzNdVC+bkmpKIjBmw/0CwPkR2orXJYAnuip0NNi3QdScOJYj0sMdBFhTGyWCCTHpWRSPiV+8qF6fMrkqiAEB3dfRjqlsoGGt+6B+b01DlkESLZTBOPWOAsbbUmhkOhHmS4l+mDM9ojE/ZffmD57OFfWRMXgBRXaQi5R271fSc+KlJXc7d2u2berG7uCv4gezvZLygFjXh4/7X2t7k6YYkyak/9mHSY6Fk28eooN9xvEmxc+HQOBZmHzYRhmqJx4fJq6w3NIMGAE="}   }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0              }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"I'll call the tool to prov"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ide an answer to your question."}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1             }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_01BcpHdkZrBuZXPR4ejb92rj","name":"best_country","input":{},"caller":{"type":"direct"}} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"{\""}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"country\": \"C"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"anada\"}"}       }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2      }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":463,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":107,"output_tokens_details":{"thinking_tokens":40}}               }
+
+            event: message_stop
+            data: {"type":"message_stop"          }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-05-30T00:47:32Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-05-30T00:47:32Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-05-30T00:47:32Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-05-30T00:47:32Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a039ba65de2da28f-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-52a1f5535db3c70b7e242463badb8af1-f96c04902bb83742-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 768ms

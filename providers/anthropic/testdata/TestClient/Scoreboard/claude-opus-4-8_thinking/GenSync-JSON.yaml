@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 445
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-8","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"output_config":{"format":{"type":"json_schema","schema":{"type":"object"}}}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"invalid_request_error","message":"output_config.format.schema: For ''object'' type, ''additionalProperties'' must be explicitly set to false"},"request_id":"req_011CbXqCNnBXtNDuJT2RuGyZ"}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a039ba3b8f42a28f-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-af864419f6480442663df096e41d7740-1ccdb1ada19a82ad-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 400 Bad Request
+        code: 400
+        duration: 114ms

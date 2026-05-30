@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 206
+        content_length: 209
         host: api.anthropic.com
         body: |
-            {"requests":[{"custom_id":"TODO","params":{"model":"claude-3-haiku-20240307","max_tokens":4096,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello"}]}],"thinking":{"type":"disabled"}}}]}
+            {"requests":[{"custom_id":"TODO","params":{"model":"claude-haiku-4-5-20251001","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello"}]}],"thinking":{"type":"disabled"}}}]}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -23,27 +23,29 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"msgbatch_0198i1KCgBP7fHfmbV2EdG6a","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T17:23:32.471948+00:00","expires_at":"2026-02-08T17:23:32.471948+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
+        body: '{"id":"msgbatch_01SZRUqCEC5tRmz7RiVUN5xF","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-05-29T22:06:31.935363+00:00","expires_at":"2026-05-30T22:06:31.935363+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ca4935deebba2ba-YUL
+                - a038ce86aa89a2ec-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=503
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
-            X-Envoy-Upstream-Service-Time:
-                - "405"
+            Vary:
+                - Accept-Encoding
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 442ms
+        duration: 559ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -56,7 +58,7 @@ interactions:
                 - "2023-06-01"
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.anthropic.com/v1/messages/batches/msgbatch_0198i1KCgBP7fHfmbV2EdG6a
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01SZRUqCEC5tRmz7RiVUN5xF
         method: GET
       response:
         proto: HTTP/2.0
@@ -64,12 +66,12 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"msgbatch_0198i1KCgBP7fHfmbV2EdG6a","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T17:23:32.471948+00:00","expires_at":"2026-02-08T17:23:32.471948+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
+        body: '{"id":"msgbatch_01SZRUqCEC5tRmz7RiVUN5xF","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-05-29T22:06:31.935363+00:00","expires_at":"2026-05-30T22:06:31.935363+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ca49360ab1fa2ba-YUL
+                - a038ce8a28cda2ec-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
@@ -78,15 +80,17 @@ interactions:
                 - "10"
             Server:
                 - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=76
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
-            X-Envoy-Upstream-Service-Time:
-                - "58"
+            Vary:
+                - Accept-Encoding
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 94ms
+        duration: 126ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -110,27 +114,29 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"msgbatch_0198i1KCgBP7fHfmbV2EdG6a","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T17:23:32.471948+00:00","expires_at":"2026-02-08T17:23:32.471948+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01D6RMCgdaSbX6UfMmVYCx92","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T17:12:47.807241+00:00","expires_at":"2026-02-08T17:12:47.807241+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01FUjPuXT4jQEtuG2ng2Z5T3","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T16:15:54.019506+00:00","created_at":"2026-02-07T14:21:44.243082+00:00","expires_at":"2026-02-08T14:21:44.243082+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01FUjPuXT4jQEtuG2ng2Z5T3/results"},{"id":"msgbatch_01Wpf4uccqjKafHitVdYFjc6","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T16:18:58.198102+00:00","created_at":"2026-02-07T14:21:44.242118+00:00","expires_at":"2026-02-08T14:21:44.242118+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01Wpf4uccqjKafHitVdYFjc6/results"},{"id":"msgbatch_01ACkHQGvFj6itwemaEJYeoP","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T15:43:39.070024+00:00","created_at":"2026-02-07T14:13:07.327966+00:00","expires_at":"2026-02-08T14:13:07.327966+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01ACkHQGvFj6itwemaEJYeoP/results"},{"id":"msgbatch_01MX4tvx1bFQNHEakki3Vnai","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-12-17T02:00:46.390678+00:00","created_at":"2025-12-17T02:00:04.072942+00:00","expires_at":"2025-12-18T02:00:04.072942+00:00","archived_at":"2026-01-15T02:00:04.072942+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01FoS6KcHcpqyvW27ss6gfyM","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-14T14:06:41.967642+00:00","created_at":"2025-06-14T14:06:02.373027+00:00","expires_at":"2025-06-15T14:06:02.373027+00:00","archived_at":"2025-07-13T14:06:02.373027+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_014q1b2cLiNct5XTtX2XFv2Q","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:37:44.625207+00:00","created_at":"2025-06-05T19:36:23.864281+00:00","expires_at":"2025-06-06T19:36:23.864281+00:00","archived_at":"2025-07-04T19:36:23.864281+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01GKkdUxMTb6sjm19UiHfyFX","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:33:25.357599+00:00","created_at":"2025-06-05T19:33:08.688511+00:00","expires_at":"2025-06-06T19:33:08.688511+00:00","archived_at":"2025-07-04T19:33:08.688511+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01UNjoMqYnDU3gf8B1dQhnF8","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:17:56.915251+00:00","created_at":"2025-06-05T19:17:00.395634+00:00","expires_at":"2025-06-06T19:17:00.395634+00:00","archived_at":"2025-07-04T19:17:00.395634+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01G2EB7HtMjgNjsLaESETFvj","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:06:22.266452+00:00","created_at":"2025-06-05T19:05:58.900821+00:00","expires_at":"2025-06-06T19:05:58.900821+00:00","archived_at":"2025-07-04T19:05:58.900821+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_016vPsjvrWGtT41Ki8781ARG","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:57:11.559032+00:00","created_at":"2025-06-05T18:57:04.175795+00:00","expires_at":"2025-06-06T18:57:04.175795+00:00","archived_at":"2025-07-04T18:57:04.175795+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_013ysJrngD3ToovgWGZwCH6T","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:38:44.109126+00:00","created_at":"2025-06-05T18:38:38.067344+00:00","expires_at":"2025-06-06T18:38:38.067344+00:00","archived_at":"2025-07-04T18:38:38.067344+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01J84HCHqboygZaXDVQT6ttm","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:31:47.769600+00:00","created_at":"2025-06-05T18:31:46.571378+00:00","expires_at":"2025-06-06T18:31:46.571378+00:00","archived_at":"2025-07-04T18:31:46.571378+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:13:08.389716+00:00","created_at":"2025-06-05T18:13:06.669045+00:00","expires_at":"2025-06-06T18:13:06.669045+00:00","archived_at":"2025-07-04T18:13:06.669045+00:00","cancel_initiated_at":null,"results_url":null}],"has_more":false,"first_id":"msgbatch_0198i1KCgBP7fHfmbV2EdG6a","last_id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L"}'
+        body: '{"data":[{"id":"msgbatch_01WuMXKjnNAS9GYb5Jye7gh9","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-05-29T22:06:31.968394+00:00","expires_at":"2026-05-30T22:06:31.968394+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01SZRUqCEC5tRmz7RiVUN5xF","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-05-29T22:06:31.935363+00:00","expires_at":"2026-05-30T22:06:31.935363+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_0163hFZwCJeePNYaZmSRv9NU","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2026-05-29T22:02:32.623691+00:00","created_at":"2026-05-29T22:02:16.048782+00:00","expires_at":"2026-05-30T22:02:16.048782+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_0163hFZwCJeePNYaZmSRv9NU/results"},{"id":"msgbatch_01Jb85nc9zzd8YbCabmMQfPy","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-05-29T22:04:18.987004+00:00","created_at":"2026-05-29T22:00:22.412220+00:00","expires_at":"2026-05-30T22:00:22.412220+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01Jb85nc9zzd8YbCabmMQfPy/results"},{"id":"msgbatch_01PySd5va6zG6SYBqm8vQpHv","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-05-29T22:03:43.453075+00:00","created_at":"2026-05-29T22:00:22.334603+00:00","expires_at":"2026-05-30T22:00:22.334603+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01PySd5va6zG6SYBqm8vQpHv/results"},{"id":"msgbatch_01D6RMCgdaSbX6UfMmVYCx92","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T19:49:54.603287+00:00","created_at":"2026-02-07T17:12:47.807241+00:00","expires_at":"2026-02-08T17:12:47.807241+00:00","archived_at":"2026-03-08T17:12:47.807241+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01Wpf4uccqjKafHitVdYFjc6","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T16:18:58.198102+00:00","created_at":"2026-02-07T14:21:44.242118+00:00","expires_at":"2026-02-08T14:21:44.242118+00:00","archived_at":"2026-03-08T14:21:44.242118+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01ACkHQGvFj6itwemaEJYeoP","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T15:43:39.070024+00:00","created_at":"2026-02-07T14:13:07.327966+00:00","expires_at":"2026-02-08T14:13:07.327966+00:00","archived_at":"2026-03-08T14:13:07.327966+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01MX4tvx1bFQNHEakki3Vnai","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-12-17T02:00:46.390678+00:00","created_at":"2025-12-17T02:00:04.072942+00:00","expires_at":"2025-12-18T02:00:04.072942+00:00","archived_at":"2026-01-15T02:00:04.072942+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01FoS6KcHcpqyvW27ss6gfyM","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-14T14:06:41.967642+00:00","created_at":"2025-06-14T14:06:02.373027+00:00","expires_at":"2025-06-15T14:06:02.373027+00:00","archived_at":"2025-07-13T14:06:02.373027+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_014q1b2cLiNct5XTtX2XFv2Q","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:37:44.625207+00:00","created_at":"2025-06-05T19:36:23.864281+00:00","expires_at":"2025-06-06T19:36:23.864281+00:00","archived_at":"2025-07-04T19:36:23.864281+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01GKkdUxMTb6sjm19UiHfyFX","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:33:25.357599+00:00","created_at":"2025-06-05T19:33:08.688511+00:00","expires_at":"2025-06-06T19:33:08.688511+00:00","archived_at":"2025-07-04T19:33:08.688511+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01UNjoMqYnDU3gf8B1dQhnF8","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:17:56.915251+00:00","created_at":"2025-06-05T19:17:00.395634+00:00","expires_at":"2025-06-06T19:17:00.395634+00:00","archived_at":"2025-07-04T19:17:00.395634+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01G2EB7HtMjgNjsLaESETFvj","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:06:22.266452+00:00","created_at":"2025-06-05T19:05:58.900821+00:00","expires_at":"2025-06-06T19:05:58.900821+00:00","archived_at":"2025-07-04T19:05:58.900821+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_016vPsjvrWGtT41Ki8781ARG","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:57:11.559032+00:00","created_at":"2025-06-05T18:57:04.175795+00:00","expires_at":"2025-06-06T18:57:04.175795+00:00","archived_at":"2025-07-04T18:57:04.175795+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_013ysJrngD3ToovgWGZwCH6T","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:38:44.109126+00:00","created_at":"2025-06-05T18:38:38.067344+00:00","expires_at":"2025-06-06T18:38:38.067344+00:00","archived_at":"2025-07-04T18:38:38.067344+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01J84HCHqboygZaXDVQT6ttm","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:31:47.769600+00:00","created_at":"2025-06-05T18:31:46.571378+00:00","expires_at":"2025-06-06T18:31:46.571378+00:00","archived_at":"2025-07-04T18:31:46.571378+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:13:08.389716+00:00","created_at":"2025-06-05T18:13:06.669045+00:00","expires_at":"2025-06-06T18:13:06.669045+00:00","archived_at":"2025-07-04T18:13:06.669045+00:00","cancel_initiated_at":null,"results_url":null}],"has_more":false,"first_id":"msgbatch_01WuMXKjnNAS9GYb5Jye7gh9","last_id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L"}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ca493614c3ba2ba-YUL
+                - a038ce8afa0fa2ec-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=100
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
-            X-Envoy-Upstream-Service-Time:
-                - "63"
+            Vary:
+                - Accept-Encoding
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 97ms
+        duration: 146ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -154,27 +160,29 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"msgbatch_0198i1KCgBP7fHfmbV2EdG6a","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T17:23:32.471948+00:00","expires_at":"2026-02-08T17:23:32.471948+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01D6RMCgdaSbX6UfMmVYCx92","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T17:12:47.807241+00:00","expires_at":"2026-02-08T17:12:47.807241+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01FUjPuXT4jQEtuG2ng2Z5T3","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T16:15:54.019506+00:00","created_at":"2026-02-07T14:21:44.243082+00:00","expires_at":"2026-02-08T14:21:44.243082+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01FUjPuXT4jQEtuG2ng2Z5T3/results"},{"id":"msgbatch_01Wpf4uccqjKafHitVdYFjc6","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T16:18:58.198102+00:00","created_at":"2026-02-07T14:21:44.242118+00:00","expires_at":"2026-02-08T14:21:44.242118+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01Wpf4uccqjKafHitVdYFjc6/results"},{"id":"msgbatch_01ACkHQGvFj6itwemaEJYeoP","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T15:43:39.070024+00:00","created_at":"2026-02-07T14:13:07.327966+00:00","expires_at":"2026-02-08T14:13:07.327966+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01ACkHQGvFj6itwemaEJYeoP/results"},{"id":"msgbatch_01MX4tvx1bFQNHEakki3Vnai","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-12-17T02:00:46.390678+00:00","created_at":"2025-12-17T02:00:04.072942+00:00","expires_at":"2025-12-18T02:00:04.072942+00:00","archived_at":"2026-01-15T02:00:04.072942+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01FoS6KcHcpqyvW27ss6gfyM","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-14T14:06:41.967642+00:00","created_at":"2025-06-14T14:06:02.373027+00:00","expires_at":"2025-06-15T14:06:02.373027+00:00","archived_at":"2025-07-13T14:06:02.373027+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_014q1b2cLiNct5XTtX2XFv2Q","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:37:44.625207+00:00","created_at":"2025-06-05T19:36:23.864281+00:00","expires_at":"2025-06-06T19:36:23.864281+00:00","archived_at":"2025-07-04T19:36:23.864281+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01GKkdUxMTb6sjm19UiHfyFX","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:33:25.357599+00:00","created_at":"2025-06-05T19:33:08.688511+00:00","expires_at":"2025-06-06T19:33:08.688511+00:00","archived_at":"2025-07-04T19:33:08.688511+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01UNjoMqYnDU3gf8B1dQhnF8","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:17:56.915251+00:00","created_at":"2025-06-05T19:17:00.395634+00:00","expires_at":"2025-06-06T19:17:00.395634+00:00","archived_at":"2025-07-04T19:17:00.395634+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01G2EB7HtMjgNjsLaESETFvj","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:06:22.266452+00:00","created_at":"2025-06-05T19:05:58.900821+00:00","expires_at":"2025-06-06T19:05:58.900821+00:00","archived_at":"2025-07-04T19:05:58.900821+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_016vPsjvrWGtT41Ki8781ARG","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:57:11.559032+00:00","created_at":"2025-06-05T18:57:04.175795+00:00","expires_at":"2025-06-06T18:57:04.175795+00:00","archived_at":"2025-07-04T18:57:04.175795+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_013ysJrngD3ToovgWGZwCH6T","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:38:44.109126+00:00","created_at":"2025-06-05T18:38:38.067344+00:00","expires_at":"2025-06-06T18:38:38.067344+00:00","archived_at":"2025-07-04T18:38:38.067344+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01J84HCHqboygZaXDVQT6ttm","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:31:47.769600+00:00","created_at":"2025-06-05T18:31:46.571378+00:00","expires_at":"2025-06-06T18:31:46.571378+00:00","archived_at":"2025-07-04T18:31:46.571378+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:13:08.389716+00:00","created_at":"2025-06-05T18:13:06.669045+00:00","expires_at":"2025-06-06T18:13:06.669045+00:00","archived_at":"2025-07-04T18:13:06.669045+00:00","cancel_initiated_at":null,"results_url":null}],"has_more":false,"first_id":"msgbatch_0198i1KCgBP7fHfmbV2EdG6a","last_id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L"}'
+        body: '{"data":[{"id":"msgbatch_01WuMXKjnNAS9GYb5Jye7gh9","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-05-29T22:06:31.968394+00:00","expires_at":"2026-05-30T22:06:31.968394+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01SZRUqCEC5tRmz7RiVUN5xF","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-05-29T22:06:31.935363+00:00","expires_at":"2026-05-30T22:06:31.935363+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_0163hFZwCJeePNYaZmSRv9NU","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2026-05-29T22:02:32.623691+00:00","created_at":"2026-05-29T22:02:16.048782+00:00","expires_at":"2026-05-30T22:02:16.048782+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_0163hFZwCJeePNYaZmSRv9NU/results"},{"id":"msgbatch_01Jb85nc9zzd8YbCabmMQfPy","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-05-29T22:04:18.987004+00:00","created_at":"2026-05-29T22:00:22.412220+00:00","expires_at":"2026-05-30T22:00:22.412220+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01Jb85nc9zzd8YbCabmMQfPy/results"},{"id":"msgbatch_01PySd5va6zG6SYBqm8vQpHv","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-05-29T22:03:43.453075+00:00","created_at":"2026-05-29T22:00:22.334603+00:00","expires_at":"2026-05-30T22:00:22.334603+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":"https://api.anthropic.com/v1/messages/batches/msgbatch_01PySd5va6zG6SYBqm8vQpHv/results"},{"id":"msgbatch_01D6RMCgdaSbX6UfMmVYCx92","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T19:49:54.603287+00:00","created_at":"2026-02-07T17:12:47.807241+00:00","expires_at":"2026-02-08T17:12:47.807241+00:00","archived_at":"2026-03-08T17:12:47.807241+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01Wpf4uccqjKafHitVdYFjc6","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T16:18:58.198102+00:00","created_at":"2026-02-07T14:21:44.242118+00:00","expires_at":"2026-02-08T14:21:44.242118+00:00","archived_at":"2026-03-08T14:21:44.242118+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01ACkHQGvFj6itwemaEJYeoP","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2026-02-07T15:43:39.070024+00:00","created_at":"2026-02-07T14:13:07.327966+00:00","expires_at":"2026-02-08T14:13:07.327966+00:00","archived_at":"2026-03-08T14:13:07.327966+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01MX4tvx1bFQNHEakki3Vnai","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-12-17T02:00:46.390678+00:00","created_at":"2025-12-17T02:00:04.072942+00:00","expires_at":"2025-12-18T02:00:04.072942+00:00","archived_at":"2026-01-15T02:00:04.072942+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01FoS6KcHcpqyvW27ss6gfyM","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-14T14:06:41.967642+00:00","created_at":"2025-06-14T14:06:02.373027+00:00","expires_at":"2025-06-15T14:06:02.373027+00:00","archived_at":"2025-07-13T14:06:02.373027+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_014q1b2cLiNct5XTtX2XFv2Q","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:37:44.625207+00:00","created_at":"2025-06-05T19:36:23.864281+00:00","expires_at":"2025-06-06T19:36:23.864281+00:00","archived_at":"2025-07-04T19:36:23.864281+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01GKkdUxMTb6sjm19UiHfyFX","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:33:25.357599+00:00","created_at":"2025-06-05T19:33:08.688511+00:00","expires_at":"2025-06-06T19:33:08.688511+00:00","archived_at":"2025-07-04T19:33:08.688511+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01UNjoMqYnDU3gf8B1dQhnF8","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:17:56.915251+00:00","created_at":"2025-06-05T19:17:00.395634+00:00","expires_at":"2025-06-06T19:17:00.395634+00:00","archived_at":"2025-07-04T19:17:00.395634+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01G2EB7HtMjgNjsLaESETFvj","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":1,"errored":0,"canceled":0,"expired":0},"ended_at":"2025-06-05T19:06:22.266452+00:00","created_at":"2025-06-05T19:05:58.900821+00:00","expires_at":"2025-06-06T19:05:58.900821+00:00","archived_at":"2025-07-04T19:05:58.900821+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_016vPsjvrWGtT41Ki8781ARG","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:57:11.559032+00:00","created_at":"2025-06-05T18:57:04.175795+00:00","expires_at":"2025-06-06T18:57:04.175795+00:00","archived_at":"2025-07-04T18:57:04.175795+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_013ysJrngD3ToovgWGZwCH6T","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:38:44.109126+00:00","created_at":"2025-06-05T18:38:38.067344+00:00","expires_at":"2025-06-06T18:38:38.067344+00:00","archived_at":"2025-07-04T18:38:38.067344+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_01J84HCHqboygZaXDVQT6ttm","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:31:47.769600+00:00","created_at":"2025-06-05T18:31:46.571378+00:00","expires_at":"2025-06-06T18:31:46.571378+00:00","archived_at":"2025-07-04T18:31:46.571378+00:00","cancel_initiated_at":null,"results_url":null},{"id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L","type":"message_batch","processing_status":"ended","request_counts":{"processing":0,"succeeded":0,"errored":1,"canceled":0,"expired":0},"ended_at":"2025-06-05T18:13:08.389716+00:00","created_at":"2025-06-05T18:13:06.669045+00:00","expires_at":"2025-06-06T18:13:06.669045+00:00","archived_at":"2025-07-04T18:13:06.669045+00:00","cancel_initiated_at":null,"results_url":null}],"has_more":false,"first_id":"msgbatch_01WuMXKjnNAS9GYb5Jye7gh9","last_id":"msgbatch_011LHLRL63brjXBC2tTCuJ4L"}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ca49361ed3ea2ba-YUL
+                - a038ce8beb77a2ec-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=222
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
-            X-Envoy-Upstream-Service-Time:
-                - "72"
+            Vary:
+                - Accept-Encoding
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 107ms
+        duration: 268ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -187,7 +195,7 @@ interactions:
                 - "2023-06-01"
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://api.anthropic.com/v1/messages/batches/msgbatch_01FUjPuXT4jQEtuG2ng2Z5T3
+        url: https://api.anthropic.com/v1/messages/batches/msgbatch_0163hFZwCJeePNYaZmSRv9NU
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -195,24 +203,26 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"msgbatch_01FUjPuXT4jQEtuG2ng2Z5T3","type":"message_batch_deleted"}'
+        body: '{"id":"msgbatch_0163hFZwCJeePNYaZmSRv9NU","type":"message_batch_deleted"}'
         headers:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ca493628e6ba2ba-YUL
+                - a038ce8d9e26a2ec-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=166
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
-            X-Envoy-Upstream-Service-Time:
-                - "143"
+            Vary:
+                - Accept-Encoding
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 185ms
+        duration: 209ms

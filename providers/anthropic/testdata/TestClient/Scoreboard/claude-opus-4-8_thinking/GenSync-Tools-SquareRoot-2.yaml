@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1411
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-8","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"thinking","thinking":" The user is asking me to find the square root of 132413.","signature":"Ev4BCmMIDhgCKkDcLc1wxIIKEuPD/WzbmmCRueG73c7uD0GF2NuPflvXrCIiFwXavCDKW1Cr9KiPbHR7tSlRJDR3B/sfmKWT95CTMg9jbGF1ZGUtb3B1cy00LTg4AEIIdGhpbmtpbmcSDEjQcQ6P/CjsuYz3XxoMkNzA8XcDWim7uZV6IjCd80SAxPQJ4Uvaj88TybCwpSPpOAPbAOhQGCBvmZenj0R2FlnrxcjSvC9QpmCGX9IqSb7ze26BYWOFlZ61QFHcnyzbx3R9lKDxnCJp7yvHM3hXjpghpeLDjVeZZ3jWMYctRQTpqt3cqvctJ2mCme56SLasIrIszmLjd80YAQ=="},{"type":"tool_use","id":"toolu_01B5bcQkCp12VHjP282PvfKx","input":{"number":132413},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01B5bcQkCp12VHjP282PvfKx","content":[{"type":"text","text":"363.89"}]}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"none"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-4-8","id":"msg_01GkDgsYFiwT1xPFQHvCtocG","type":"message","role":"assistant","content":[{"type":"text","text":"363.89"}],"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":528,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":5,"output_tokens_details":{"thinking_tokens":0},"service_tier":"standard","inference_geo":"global"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-05-30T00:47:30Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-05-30T00:47:30Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-05-30T00:47:30Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-05-30T00:47:30Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a039ba556cf6a28f-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-1f7ccee4ef5062e6cd8674099ab401fd-b84a1549c35c84c3-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 759ms

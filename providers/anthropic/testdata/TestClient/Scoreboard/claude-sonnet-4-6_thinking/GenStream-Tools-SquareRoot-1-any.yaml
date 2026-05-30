@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 616
+        content_length: 693
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+            {"model":"claude-sonnet-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -25,7 +25,7 @@ interactions:
         uncompressed: true
         body: |+
             event: message_start
-            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_01Aw7754CPnd3FESUqoS8QwK","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":650,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":7,"service_tier":"standard","inference_geo":"global"}}       }
+            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_01Qg7AV1zxXg6bGqmmSvgkwY","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":630,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"service_tier":"standard","inference_geo":"global"}}      }
 
             event: content_block_start
             data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}  }
@@ -34,43 +34,34 @@ interactions:
             data: {"type": "ping"}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user wants me to calculate the"}             }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user wants me to calculate the square root of 132413 using the square_root tool."}      }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" square root of 132413."}       }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":""}             }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EuEBCkYICxgCKkDcLc1wxIIKEuPD/WzbmmCRueG73c7uD0GF2NuPflvXrCIiFwXavCDKW1Cr9KiPbHR7tSlRJDR3B/sfmKWT95CTEgxhorDbmMbdKScP/IoaDPNbp8OOrNvx16sM9SIw8Y02Is+EXQdHndyODhv8TE+2LTrcPaSTteYZjhrd3o0ky7UcZGq9OT9wQNKHVwMqKkmbFR1CZTKZUDfACj/ojt32W8jGaln/dGRlMthi8p3EdWcNvBdWWatG+YyaIqrOkdRNT+J33F03diPuqUJOi9JaT0IewKJryp4fGAE="}      }
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EpwCCmUIDhgCKkDC6SilOwA0npDx5A5sW8tTo3cD8/xPl9QhQHsI9m1+b8cDKUrgfle6pQ3Y9plZYRf0riMZjiHnCwmledsQ/uF7MhFjbGF1ZGUtc29ubmV0LTQtNjgAQgh0aGlua2luZxIM15Ngdzc911/UyAi1GgwySlqX486LbwQW/LYiMLTkUENXx1PZE+DiW33eWxVV6K59cvD9EbTMYDRh97kstOtdgatesplHquIraPUruipl5VrU2GDT92oGiWfFOiPIbTQN9sCdM+IGtD/CqCDOUeYczrXqwMuOlbm8QUg/LjaJCSZwFZvH6YPzzz0yoxdeir+85Xw7jOVyNKh9gBAqraHuZi0XkWXpdncrz20/nArnBag3IC4YAQ=="}   }
 
             event: content_block_stop
-            data: {"type":"content_block_stop","index":0    }
+            data: {"type":"content_block_stop","index":0               }
 
             event: content_block_start
-            data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_01P6b9BxNvVKNsjSypZTz6Y9","name":"square_root","input":{},"caller":{"type":"direct"}}    }
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_01VjGqb1nYwpzv46FydYME9N","name":"square_root","input":{},"caller":{"type":"direct"}}}
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}   }
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}          }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"num"}             }
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"number\": 1"}           }
 
             event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ber\": 13241"}             }
-
-            event: content_block_delta
-            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"3}"}  }
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"32413}"}   }
 
             event: content_block_stop
             data: {"type":"content_block_stop","index":1      }
 
             event: message_delta
-            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"input_tokens":650,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":76}              }
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":630,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":90,"output_tokens_details":{"thinking_tokens":33}}       }
 
             event: message_stop
-            data: {"type":"message_stop"        }
+            data: {"type":"message_stop"               }
 
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
@@ -78,47 +69,45 @@ interactions:
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-03-21T00:18:14Z"
+                - "2026-05-30T00:52:52Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-03-21T00:18:14Z"
+                - "2026-05-30T00:52:52Z"
             Anthropic-Ratelimit-Requests-Limit:
-                - "4000"
+                - "20000"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "3999"
+                - "19999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-03-21T00:18:14Z"
+                - "2026-05-30T00:52:52Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-03-21T00:18:14Z"
+                - "2026-05-30T00:52:52Z"
             Cache-Control:
                 - no-cache
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9df8c73a4c55a2da-YUL
+                - a039c2315d51a28f-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - text/event-stream; charset=utf-8
             Server:
                 - cloudflare
-            Server-Timing:
-                - x-originResponse;dur=537
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-341cc13e293b587cb6432ea579146e4b-77ef71c53c65583f-01
             Vary:
                 - Accept-Encoding
-            X-Envoy-Upstream-Service-Time:
-                - "537"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 577ms
+        duration: 786ms

@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 313
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-8","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-4-8","id":"msg_01UkaWj9Kfe62qcSHLnRL2zX","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":9,"service_tier":"standard","inference_geo":"global"}}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}        }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" The"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user is asking for information about Canada, so I'll put together a comprehensive overview covering the key aspects they'd"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" likely want to know about."}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EpICCmMIDhgCKkAunU2fCk6tcuq+vRZQRQMIKFFnffB1DC5K3dMhi7/O/L8wAPy4bE6Cs39fyh8zMCC6RlgNl/uniIv5gl7oVESOMg9jbGF1ZGUtb3B1cy00LTg4AEIIdGhpbmtpbmcSDL583ib7jAcPlufGpxoMS4RHV+WBiYfh6+C/IjDisqSsXuTrC3H4xkCEDsARfQL41TcPheGvU3TyyKFAbCmB7jFZvcEoU6ThIbBNCg4qXUXwSOpgX2AC2Fxud4jQ/wAjNM+aQc1e52gfeH1BKzTyct7mpTfj8DCEzkQ1AxI05qanFDspQ6MlknepXfanbqt1pKvJmIE40IBkjP1kKFq8ORDpRUnSoTkT1TvPhxgB"}          }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0             }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Canada is the second-largest country in the world by total area, sp"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"anning approximately 9.98 million square kilometers. Located in the northern part of North America, it stretches from the"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Ocean. Here's a detail"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ed look at this remarkable nation:\n\n## Geography and Climate\n\nCanada shares the world's longest international"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" border with the United States to the south, spanning about 8,891 kilometers. The country features inc"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"redibly diverse landscapes:\n\n- **The Rocky Mountains** in the west, including stunning national"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" parks like Banff and Jasper\n- **The Canadian Shield**, a vast region of ancient rock covering much of central"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" and eastern Canada\n- **The Prairies**, fertile flatlands in provinces like Saskatchewan and Manitoba"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n- **The Arctic regions**, characterized by tundra and permafrost\n- **Coastal regions** with"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" dramatic shorelines on three oceans\n\nCanada experiences significant clim"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ate variation, from the cold Arctic north to the relatively mild Pacific coast. Win"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ters can be harsh, particularly in central and northern regions, while summers are generally warm.\n\n## Political Structure\n\nCanada is a **"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"parliamentary democracy** and a **constitutional monarchy**. Key features include:\n\n- **Head of State**: The British monarch ("}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"currently King Charles III), represented in Canada by the Governor General\n- **Head of Government**: The Prime Minister\n- **Federal system**: Power is divided between"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the federal government and 10 provinces and 3 territories\n- **Capital city**: Ottawa, located in Ontario\n\nThe provinces are Ontario, Qu"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ebec, British Columbia, Alberta, Manitoba, Saskatchewan, Nova Scotia, New Brunswick, Newfoundland and Labr"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ador, and Prince Edward Island. The territories are Yukon, Northwest Territories, and Nunavut.\n\n## Population and Demographics\n\nCanada has a population of approximately"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 40 million people, making it relatively sparsely populated given its enormous size. Most Canadians live within 160"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" kilometers of the U.S. border. Major cities include:\n\n- **Toronto** (largest city)\n- **Montreal**\n- **Vancouver**\n- **"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Calgary**\n- **Edmonton**\n- **Ottawa**\n\nCanada is renowned for its multiculturalism and is"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" officially bilingual, with **English and French** as its two official languages. Quebec is predominantly French-speaking.\n\n##"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Economy\n\nCanada has one of the world's largest economies, driven by:\n\n- **Natural resources**: Oil, natural gas, minerals, and timber\n- **Manufacturing**: Partic"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ularly automobiles and aerospace\n- **Agriculture**: Wheat, canola, and other crops\n- **Services**: Finance, techn"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ology, and tourism\n\nThe country is rich in natural resources, including significant oil reserves in Alber"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ta's oil sands.\n\n## History\n\nCanada's history includes:\n\n- **Indigenous peoples**: First Nations, Inuit, and Métis pe"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"oples who inhabited the land for thousands of years\n- **European colonization**: French and British settlement beginning in the 16"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"th and 17th centuries\n- **Confederation**: Canada became a country on July 1, 1867\n- **Independence**: Gradual development of full"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" sovereignty, with the Constitution Act of 1982 patriating the constitution\n\n## Culture and Society\n\nCanada is known for:\n\n- **Heal"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"thcare**: A publicly funded universal healthcare system\n- **Politeness**: Canadians have a reputation for being fri"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"endly and courteous\n- **Sports**: Ice hockey is the national winter sport; lacrosse is the national summer sport\n- **Ar"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ts**: A vibrant cultural scene with notable contributions to music, film, and literature"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\n\n## Notable Features\n\n- **Niagara Falls**: One of the world's most famous waterfalls\n- **CN Tower**: An"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" iconic landmark in Toronto\n- **Maple syrup**: Canada produces most of the world's supply\n- **Wildlife**: Home"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" to moose, bears, beavers (the national animal), and many other species\n\nWould you like me to elaborate on any particular aspect of Canada?"}  }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1        }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":1401,"output_tokens_details":{"thinking_tokens":26}}    }
+
+            event: message_stop
+            data: {"type":"message_stop" }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-05-30T00:47:10Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-05-30T00:47:10Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-05-30T00:47:10Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-05-30T00:47:10Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a039b9d77951a28f-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-96cb341ca1a9419e6a72688ef1505a7f-d251e298d4476587-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.398s

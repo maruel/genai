@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 299
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-8","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-4-8","id":"msg_018nDjN3ypvCF8NTS4fnvLk5","type":"message","role":"assistant","content":[{"type":"thinking","thinking":" The user is asking for detailed information about Canada, so I should provide comprehensive and accurate coverage of the country.","signature":"EqoCCmMIDhgCKkBrjupXJtl0xQnwucISW5z8bFkblnAt87yvTcM8fWmVYkHELDZtOdtwvDSi4sCQf1BOrKSyHLa8MQRmmJBA+joZMg9jbGF1ZGUtb3B1cy00LTg4AEIIdGhpbmtpbmcSDJ3HdpnXNrolcUzSpBoM1M/YN3QWB4ykD8qxIjAznccBPbXEAmTr0HMN3iV6h1mXdnnKzKd5pLxPM4kRtyTSvGend6YNP9E8xrMnhtwqdeODwCRcAGT8LLtbexYrrtuY39yA785ZNtRtnul1+G9rfLEgt3cQtdAB958dSObmEQxBNrAB1zT7ifzloSJJXNnFzCgQoXjJ9F2RkaUzVenwcsXkWOiKUHzQ/fGLPGJqTLzuufFXGpXuRDF7HzHCR4b+MtW1phgB"},{"type":"text","text":"Canada is the second-largest country in the world by total area, spanning approximately 9.98 million square kilometers. Located in the northern part of North America, it stretches from the Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Ocean. Despite its vast size, Canada has a relatively small population of around 40 million people, most of whom live within 160 kilometers of the southern border with the United States.\n\n## Geography and Climate\n\nCanada is renowned for its stunning and diverse landscapes:\n\n- **Mountains:** The Rocky Mountains in the west, along with the Coast Mountains and the Appalachians in the east.\n- **Prairies:** Vast grasslands in provinces like Saskatchewan, Manitoba, and Alberta.\n- **Forests:** Enormous boreal forests cover much of the country.\n- **Lakes and Rivers:** Canada contains roughly 20% of the world''s freshwater and millions of lakes, including the Great Lakes shared with the U.S.\n- **Arctic Regions:** The northern territories feature tundra, permafrost, and Arctic islands.\n\nThe climate varies dramatically, from temperate conditions on the west coast to harsh, frigid winters in the interior and far north.\n\n## Political Structure\n\nCanada is a **federal parliamentary democracy** and a **constitutional monarchy**:\n\n- **Head of State:** King Charles III, represented in Canada by the Governor General.\n- **Head of Government:** The Prime Minister.\n- **Parliament:** Consists of the House of Commons (elected) and the Senate (appointed).\n- **Divisions:** 10 provinces (Ontario, Quebec, British Columbia, Alberta, Manitoba, Saskatchewan, Nova Scotia, New Brunswick, Newfoundland and Labrador, Prince Edward Island) and 3 territories (Yukon, Northwest Territories, Nunavut).\n\nThe capital city is **Ottawa**, located in Ontario.\n\n## Languages and Culture\n\nCanada is officially **bilingual**, recognizing both English and French. Quebec is predominantly French-speaking, reflecting the country''s colonial history. Canada is also celebrated for its **multiculturalism**, with significant immigrant communities contributing to a rich cultural mosaic.\n\n## Indigenous Peoples\n\nCanada''s Indigenous populations include **First Nations, Inuit, and Métis** peoples, who have inhabited the land for thousands of years. Reconciliation with Indigenous communities and addressing historical injustices remain important contemporary issues.\n\n## Economy\n\nCanada has a highly developed, mixed-market economy and is a member of the G7. Key sectors include:\n\n- **Natural resources:** Oil (especially Alberta''s oil sands), natural gas, minerals, and timber.\n- **Agriculture:** Wheat and other grains, particularly in the Prairies.\n- **Manufacturing and services:** Automotive, technology, and finance.\n- **Trade:** The United States is its largest trading partner.\n\n## History\n\n- Originally inhabited by Indigenous peoples.\n- Explored and colonized by the French and British starting in the 16th–17th centuries.\n- The British North America Act of 1867 united several colonies into the Dominion of Canada.\n- Gradually gained full independence, with the Constitution Act of 1982 transferring full legal authority from the United Kingdom.\n\n## Notable Features\n\n- **Major Cities:** Toronto (largest city), Montreal, Vancouver, Calgary, Edmonton, Ottawa.\n- **Symbols:** The maple leaf, the beaver, hockey, and the national anthem \"O Canada.\"\n- **Sports:** Ice hockey is the national winter sport; lacrosse is the national summer sport.\n- **Quality of Life:** Canada consistently ranks high in global measures of education, healthcare (universal public healthcare system), and overall living standards.\n\nWould you like me to expand on any particular aspect, such as its history, economy, or cultural life?"}],"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1372,"output_tokens_details":{"thinking_tokens":31},"service_tier":"standard","inference_geo":"global"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-05-30T00:47:10Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-05-30T00:47:25Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-05-30T00:47:09Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "10800000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-05-30T00:47:10Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a039b9d118c2a28f-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-fb82a9637d719c046ba94855c94becd2-2d400cbfdeb7f574-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 17.034s

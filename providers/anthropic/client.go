@@ -26,6 +26,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/maruel/genai"
@@ -77,6 +78,12 @@ type GenOptionText struct {
 	//
 	// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
 	Thinking ThinkingType
+	// ThinkingDisplay controls whether the thinking text is returned. Valid values are "summarized"
+	// and "omitted". Defaults to "summarized" in adaptive mode since opus-4-8/4-7 default to
+	// "omitted" which hides the thinking text.
+	//
+	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#controlling-thinking-display
+	ThinkingDisplay string
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
@@ -145,6 +152,14 @@ func (o *GenOptionText) Validate() error {
 	}
 	if o.Thinking == ThinkingEnabled && o.ThinkingBudget == 0 {
 		return fmt.Errorf("ThinkingBudget must be set when Thinking is %q", ThinkingEnabled)
+	}
+	if o.ThinkingDisplay != "" && o.Thinking != ThinkingAdaptive {
+		return fmt.Errorf("ThinkingDisplay is only valid with ThinkingAdaptive")
+	}
+	switch o.ThinkingDisplay {
+	case "", "summarized", "omitted":
+	default:
+		return fmt.Errorf("invalid ThinkingDisplay %q", o.ThinkingDisplay)
 	}
 	switch o.Effort {
 	case "", EffortLow, EffortMedium, EffortHigh, EffortMax:
@@ -301,6 +316,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
+	c.ensureMaxTokens(ctx, opts)
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
 	// https://docs.anthropic.com/en/api/creating-message-batches
 	// Anthropic supports creating multiple processing requests as part on one HTTP post. I'm not sure the value
@@ -573,6 +589,7 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	c.ensureMaxTokens(ctx, opts)
 	return c.impl.GenSync(ctxWithBeta(ctx, opts), msgs, opts...)
 }
 
@@ -583,6 +600,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	c.ensureMaxTokens(ctx, opts)
 	return c.impl.GenStream(ctxWithBeta(ctx, opts), msgs, opts...)
 }
 
@@ -599,6 +617,35 @@ func ctxWithBeta(ctx context.Context, opts []genai.GenOption) context.Context {
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
 	return c.impl.GenStreamRaw(ctx, in)
+}
+
+// ensureMaxTokens ensures the max_tokens is cached for the model.
+// Falls back to ListModels for (new) unknown models.
+func (c *Client) ensureMaxTokens(ctx context.Context, opts []genai.GenOption) {
+	if c.impl.Model == "" {
+		return
+	}
+	// Check if user already provided MaxTokens.
+	for _, o := range opts {
+		if v, ok := o.(*genai.GenOptionText); ok && v.MaxTokens != 0 {
+			return
+		}
+	}
+	// Check out cache.
+	if _, ok := modelsMaxTokens.Load(c.impl.Model); ok {
+		return
+	}
+	// Check upstream.
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return
+	}
+	for _, m := range mdls {
+		if am, ok := m.(*Model); ok && am.ID == c.impl.Model && am.MaxTokens != 0 {
+			modelsMaxTokens.Store(c.impl.Model, int(am.MaxTokens))
+			return
+		}
+	}
 }
 
 // ListModels implements genai.Provider.
@@ -630,6 +677,7 @@ func (c *Client) GetModel(ctx context.Context, id string) (*Model, error) {
 //
 // https://docs.anthropic.com/en/api/counting-tokens
 func (c *Client) CountTokens(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (*CountTokensResponse, error) {
+	c.ensureMaxTokens(ctx, opts)
 	var chat ChatRequest
 	if err := chat.Init(msgs, c.impl.Model, opts...); err != nil {
 		return nil, err
@@ -915,6 +963,40 @@ func processHeaders(h http.Header) []genai.RateLimit {
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{
 		GenAsync: true,
+	}
+}
+
+//go:embed models.json
+var modelsJSON []byte
+
+// modelsMeta holds embedded model metadata from models.json, keyed by model ID.
+type modelsData struct {
+	Models map[string]modelData `json:"models"`
+}
+
+type modelData struct {
+	MaxInputTokens               int64 `json:"max_input_tokens"`
+	MaxOutputTokens              int64 `json:"max_output_tokens"`
+	AdaptiveThinkingNotSupported bool  `json:"adaptive_thinking_not_supported,omitempty"`
+}
+
+var (
+	// modelsMaxTokens caches max output tokens per model from models.json.
+	modelsMaxTokens sync.Map
+	// modelsAdaptiveBlocked is true for models that don't support adaptive thinking.
+	modelsAdaptiveBlocked sync.Map
+)
+
+func init() {
+	data := modelsData{}
+	if err := json.Unmarshal(modelsJSON, &data); err != nil {
+		panic(fmt.Sprintf("failed to parse embedded models.json: %v", err))
+	}
+	for k, v := range data.Models {
+		modelsMaxTokens.Store(k, int(v.MaxOutputTokens))
+		if v.AdaptiveThinkingNotSupported {
+			modelsAdaptiveBlocked.Store(k, true)
+		}
 	}
 }
 

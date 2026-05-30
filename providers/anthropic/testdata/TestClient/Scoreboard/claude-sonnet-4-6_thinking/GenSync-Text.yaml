@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 196
+        content_length: 273
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+            {"model":"claude-sonnet-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -23,52 +23,50 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"model":"claude-sonnet-4-6","id":"msg_01CKxbNVB14WdRGuw2z2paWZ","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"Hello","signature":"Eq0BCkYICxgCKkDvFer5LV4zU0Wj4dl3vH2Hl8PSdXF8wbEK95yTzaAa6yoMWbwC4r35OA/RtU654WaQJpMMzCS9SXSOZfmmsu5oEgwTU3BnWGbn4lS+EMUaDGj3uwl6RuWNQKI9hiIwetc2S6kcz35QzGtMX/hcpv21JlWsyfDykd4YMOCxSF60JU5XmiQhAzmO+KCqTk/OKhWqDEVvTFpU0GPifh/7fTzmtloP8D0YAQ=="},{"type":"text","text":"Hello!"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":44,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":14,"service_tier":"standard","inference_geo":"global"}}'
+        body: '{"model":"claude-sonnet-4-6","id":"msg_019EykzbqKHJxXTHeJoeciDh","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user wants me to say hello using only one word.","signature":"EvoBCmUIDhgCKkDu6u9dq6u0y31gr7r+8RFHjqap+3sPll3RqZS+Okl/G93X/bL9YeH/QRaTYz33Dl19OaH9zMg9Ozc41KivhNkTMhFjbGF1ZGUtc29ubmV0LTQtNjgAQgh0aGlua2luZxIMFBLNQrtCYGV0d8BNGgz87A51xzUF4czSHTsiMLDzGG5TSLZPk3IXIwX+attzxtS9Y9xJMweI9tozNK61KKgdHxLNaozOjGGAypPFrSpD3S3A8HeG3afD7utzaOnAN8ji7hzNjlloPa62JcAnlGgyqxN7Q3ynbGDjsoC0oPRdXgn56iS5bCo5VjY+pm7nWiM7KRgB"},{"type":"text","text":"Hello!"}],"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":24,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":32,"output_tokens_details":{"thinking_tokens":24},"service_tier":"standard","inference_geo":"global"}}'
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-03-21T00:17:57Z"
+                - "2026-05-30T00:48:06Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-03-21T00:18:02Z"
+                - "2026-05-30T00:48:06Z"
             Anthropic-Ratelimit-Requests-Limit:
-                - "4000"
+                - "20000"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "3999"
+                - "19998"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-03-21T00:17:56Z"
+                - "2026-05-30T00:48:05Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-03-21T00:17:57Z"
+                - "2026-05-30T00:48:06Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9df8c6c90b0ca2da-YUL
+                - a039bb33ff19a28f-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
-            Server-Timing:
-                - x-originResponse;dur=5693
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-83ce63627502f19294d2320850927ac3-7aea50fa8f0c9a80-01
             Vary:
                 - Accept-Encoding
-            X-Envoy-Upstream-Service-Time:
-                - "5692"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 5.727s
+        duration: 1.233s

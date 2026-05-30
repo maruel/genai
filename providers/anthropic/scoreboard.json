@@ -9,7 +9,7 @@
   "scenarios": [
     {
       "models": [
-        "claude-opus-4-6"
+        "claude-opus-4-8"
       ],
       "sota": true,
       "reason": true,
@@ -44,23 +44,25 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": true,
         "citations": true,
-        "stopSequence": true
+        "maxTokens": true
       },
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": true,
         "citations": true,
-        "stopSequence": true
+        "maxTokens": true
       }
     },
     {
@@ -106,7 +108,7 @@
         "webFetch": true,
         "jsonSchema": true,
         "citations": true,
-        "stopSequence": true
+        "maxTokens": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -118,14 +120,13 @@
         "webFetch": true,
         "jsonSchema": true,
         "citations": true,
-        "stopSequence": true
+        "maxTokens": true
       }
     },
     {
       "models": [
         "claude-haiku-4-5-20251001"
       ],
-      "cheap": true,
       "in": {
         "document": {
           "inline": true,
@@ -183,7 +184,7 @@
     },
     {
       "models": [
-        "claude-opus-4-6"
+        "claude-opus-4-8"
       ],
       "in": {
         "document": {
@@ -217,7 +218,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -231,7 +232,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -243,7 +244,7 @@
     },
     {
       "models": [
-        "claude-sonnet-4-5-20250929"
+        "claude-sonnet-4-6"
       ],
       "in": {
         "document": {
@@ -277,7 +278,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -291,26 +292,26 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": true,
         "citations": true,
-        "maxTokens": true
+        "maxTokens": true,
+        "stopSequence": true
       }
     },
     {
       "comments": "Old models",
       "models": [
-        "claude-3-5-haiku-20241022",
-        "claude-3-7-sonnet-20250219",
-        "claude-3-haiku-20240307",
-        "claude-3-opus-20240229",
         "claude-opus-4-1-20250805",
         "claude-opus-4-20250514",
         "claude-opus-4-5-20251101",
-        "claude-sonnet-4-20250514"
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-sonnet-4-20250514",
+        "claude-sonnet-4-5-20250929"
       ]
     }
   ]

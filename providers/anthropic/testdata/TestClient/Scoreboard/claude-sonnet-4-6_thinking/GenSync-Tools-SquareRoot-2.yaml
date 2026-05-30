@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1331
+        content_length: 1476
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"thinking","thinking":"The user wants me to calculate the square root of 132413 using the tool.","signature":"EvABCkYICxgCKkBgBHg5NYB85o2U1acCelgJ6m5C+y7jktntdztHqh8JyvAczJQNERo2drNRxUfVEvIcNe/hE8qkiuilhaQyc2KXEgxKYKf/+bxr9GJi+JcaDDpkxjZadRKy+wakIyIwA91yv3KeNpSRl3rsfNfM2T9NRq8U514Sr+zMXM1pGAFblzBF/9VwQBYgH0FZTDWXKlhqTPfh5ql9hgynNJVUVktYJEF2pJ8GBlwM1eNt1YnQOewRuWsieK1LihYJFRBvIx1xyAyTc/8lR2CU97Ynpb/8uos+JIjzJ4I3TsMWgCwFmwbBNsY31ffqGAE="},{"type":"tool_use","id":"toolu_01EutwmAAZBVnHnnEsYhaCPi","input":{"number":132413},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01EutwmAAZBVnHnnEsYhaCPi","content":[{"type":"text","text":"363.89"}]}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"none"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+            {"model":"claude-sonnet-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"thinking","thinking":"The user wants me to calculate the square root of 132413 using the square_root tool.","signature":"EpsCCmUIDhgCKkDC6SilOwA0npDx5A5sW8tTo3cD8/xPl9QhQHsI9m1+b8cDKUrgfle6pQ3Y9plZYRf0riMZjiHnCwmledsQ/uF7MhFjbGF1ZGUtc29ubmV0LTQtNjgAQgh0aGlua2luZxIMVKwHzc5FkihKpKG+GgwfIFW2/NZVL5Fs/LgiMJzK41SvbcoqXGlVuwWjV6/rt43rzyMBrFEtb5y9v/N/FEONR6IY1FQtCUmMGypQDypka6mtFuRKXrP6eFUaPnAb4xEv2gekqGeVPJkV58HyaN7oFNJ2ZxAia/n5uslqYiu/nLlRk8H4wIg4SlCL4rZyhgB76UcnB4veGmtOOAMqUBLsMbmgjQsMhSO4JGRC+IoGUauvmRgB"},{"type":"tool_use","id":"toolu_01DaRXHtUM5egFhTP4LwujRq","input":{"number":132413},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01DaRXHtUM5egFhTP4LwujRq","content":[{"type":"text","text":"363.89"}]}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"none"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -23,52 +23,50 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"model":"claude-sonnet-4-6","id":"msg_013V1dH8fa6u3nTWeNdocZKV","type":"message","role":"assistant","content":[{"type":"text","text":"363.89"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":745,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"service_tier":"standard","inference_geo":"global"}}'
+        body: '{"model":"claude-sonnet-4-6","id":"msg_01ABwt2ziF3Z9D3TSrAbjo2M","type":"message","role":"assistant","content":[{"type":"text","text":"363.89"}],"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":735,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"output_tokens_details":{"thinking_tokens":0},"service_tier":"standard","inference_geo":"global"}}'
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-03-21T00:18:23Z"
+                - "2026-05-30T00:52:17Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-03-21T00:18:23Z"
+                - "2026-05-30T00:52:17Z"
             Anthropic-Ratelimit-Requests-Limit:
-                - "4000"
+                - "20000"
             Anthropic-Ratelimit-Requests-Remaining:
-                - "3999"
+                - "19999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-03-21T00:18:22Z"
+                - "2026-05-30T00:52:16Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-03-21T00:18:23Z"
+                - "2026-05-30T00:52:17Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9df8c76aeedea2da-YUL
+                - a039c1546f07a28f-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
-            Server-Timing:
-                - x-originResponse;dur=5590
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-2cde0411f5f4b45189934a9bf874e6e4-fc36563ad8c3d531-01
             Vary:
                 - Accept-Encoding
-            X-Envoy-Upstream-Service-Time:
-                - "5590"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 5.626s
+        duration: 1.03s

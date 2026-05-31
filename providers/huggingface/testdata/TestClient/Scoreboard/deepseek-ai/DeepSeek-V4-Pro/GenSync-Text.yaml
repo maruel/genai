@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 126
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 638
+        body: '{"id":"qo3ruIugg8u83nu9-chatcmpl-1fbe884","object":"chat.completion","created":1780256279,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"We are asked: \"Say hello. Use only one word.\" So I need to respond with a single word that is a greeting, like \"Hello\" or \"Hi\". The instruction says \"Say hello.\" so the word should be \"Hello\". But it must be only one word. So I''ll just output \"Hello\"."},"finish_reason":"stop"}],"usage":{"prompt_tokens":12,"total_tokens":81,"completion_tokens":69,"prompt_tokens_details":{"cached_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "638"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Fireworks-Cached-Prompt-Tokens:
+                - "0"
+            Fireworks-Prompt-Tokens:
+                - "12"
+            Fireworks-Sampling-Options:
+                - '{"max_tokens": 32768, "temperature": 1.0, "top_k": 0, "top_p": 1.0, "min_p": 0.0, "typical_p": 1.0, "frequency_penalty": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0, "mirostat_target": null, "mirostat_lr": 0.1, "cycle_multiplier": 0.0, "cycle_base": 0.0, "cycle_allowed_length": 0, "cycle_sequence_breakers": []}'
+            Fireworks-Server-Processing-Time:
+                - "7.175"
+            Fireworks-Server-Time-To-First-Token:
+                - "7.142"
+            Fireworks-Speculation-Prompt-Matched-Tokens:
+                - "0"
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 792fd72f7da1e5732d6b6173dea66aa8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 5HPI0-obJegqHgwwaAEPCg-6aX952rpLIBlGu6qJqMGNb51noC_BuQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - fireworks-ai
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Over-Limit:
+                - "no"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 7.53s

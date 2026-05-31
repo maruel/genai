@@ -12,7 +12,7 @@
     {
       "comments": "Untested",
       "models": [
-        "deepseek-ai/DeepSeek-V3.2"
+        "deepseek-ai/DeepSeek-V4-Pro"
       ],
       "sota": true,
       "in": {
@@ -30,6 +30,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -38,8 +39,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
-        "maxTokens": true,
-        "stopSequence": true
+        "topLogprobs": true
       }
     },
     {

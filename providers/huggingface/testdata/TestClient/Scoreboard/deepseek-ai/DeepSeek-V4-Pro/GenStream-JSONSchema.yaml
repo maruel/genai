@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 453
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1208
+        body: '{"error":{"object":"error","type":"invalid_request_error","code":"invalid_request_error","message":"Invalid json_schema format: 5 validation errors for OpenAIJsonSchemaFormat\n$schema\n  Extra inputs are not permitted [type=extra_forbidden, input_value=''https://json-schema.org/draft/2020-12/schema'', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden\nproperties\n  Extra inputs are not permitted [type=extra_forbidden, input_value={''is_fruit'': {''type'': ''boolean''}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden\nadditionalProperties\n  Extra inputs are not permitted [type=extra_forbidden, input_value=False, input_type=bool]\n    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden\ntype\n  Extra inputs are not permitted [type=extra_forbidden, input_value=''object'', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden\nrequired\n  Extra inputs are not permitted [type=extra_forbidden, input_value=[''is_fruit''], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden"}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Length:
+                - "1208"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 792fd72f7da1e5732d6b6173dea66aa8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - E0uSjHEjiHY8Qp9GGuFW7JUkwM8JY4MBeWZfqy2X2V88NiwEm3Ztdg==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Error from cloudfront
+            X-Inference-Provider:
+                - fireworks-ai
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Over-Limit:
+                - "no"
+            X-Robots-Tag:
+                - none
+        status: 400 Bad Request
+        code: 400
+        duration: 321ms

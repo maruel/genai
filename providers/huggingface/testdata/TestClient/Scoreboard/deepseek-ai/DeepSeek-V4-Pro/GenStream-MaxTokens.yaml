@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":true,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":"We"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" need"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" to"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" explain"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" the"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" theory"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" of"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" relativity"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" in"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" great"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" detail"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":"."},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" The"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" user"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" asked"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":":"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{},"finish_reason":"length","raw_output":null}],"usage":null}
+
+            data: {"id":"9aZ-rX0iduzeXE6i-chatcmpl-1cac380","object":"chat.completion.chunk","created":1780256293,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[],"usage":{"prompt_tokens":13,"total_tokens":29,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Fireworks-Cached-Prompt-Tokens:
+                - "0"
+            Fireworks-Prompt-Tokens:
+                - "13"
+            Fireworks-Sampling-Options:
+                - '{"max_tokens": 16, "temperature": 1.0, "top_k": 0, "top_p": 1.0, "min_p": 0.0, "typical_p": 1.0, "frequency_penalty": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0, "mirostat_target": null, "mirostat_lr": 0.1, "cycle_multiplier": 0.0, "cycle_base": 0.0, "cycle_allowed_length": 0, "cycle_sequence_breakers": []}'
+            Fireworks-Server-Time-To-First-Token:
+                - "1.269"
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 792fd72f7da1e5732d6b6173dea66aa8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - eCq_HSkMSwFE3HRF6etYjWqfUmUFEK8otGi-amcTRG9YPQljSPGxfQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - fireworks-ai
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Over-Limit:
+                - "no"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.411s

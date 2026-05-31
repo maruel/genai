@@ -388,13 +388,22 @@ type ChatResponse struct {
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
-		Token       string  `json:"token"`
-		Bytes       []byte  `json:"bytes"`
-		Logprob     float64 `json:"logprob"`
-		TopLogprobs []struct {
-			Token   string  `json:"token"`
-			Bytes   []byte  `json:"bytes"`
-			Logprob float64 `json:"logprob"`
+		Token                 string      `json:"token"`
+		Bytes                 []byte      `json:"bytes"`
+		Logprob               float64     `json:"logprob"`
+		TokenID               json.Number `json:"token_id,omitzero"`
+		TextOffset            json.Number `json:"text_offset,omitzero"`
+		SamplingLogprob       float64     `json:"sampling_logprob,omitzero"`
+		LastActivation        any         `json:"last_activation,omitzero"`
+		RoutingMatrix         any         `json:"routing_matrix,omitzero"`
+		ExtraTokens           any         `json:"extra_tokens,omitzero"`
+		ExtraLogprobs         any         `json:"extra_logprobs,omitzero"`
+		ExtraSamplingLogprobs any         `json:"extra_sampling_logprobs,omitzero"`
+		TopLogprobs           []struct {
+			Token   string      `json:"token"`
+			Bytes   []byte      `json:"bytes"`
+			Logprob float64     `json:"logprob"`
+			TokenID json.Number `json:"token_id,omitzero"`
 		} `json:"top_logprobs"`
 	} `json:"content"`
 	// Alternative format used by some models
@@ -510,7 +519,7 @@ type MessageResponse struct {
 	ToolCalls        []ToolCall `json:"tool_calls"`
 	Refusal          struct{}   `json:"refusal"`
 	FunctionCall     struct{}   `json:"function_call"`
-	ReasoningContent struct{}   `json:"reasoning_content"`
+	ReasoningContent string     `json:"reasoning_content,omitzero"`
 	Annotations      struct{}   `json:"annotations"`
 	Audio            struct{}   `json:"audio"`
 	Reasoning        any        `json:"reasoning,omitzero"`
@@ -566,12 +575,14 @@ type ChatStreamChunkResponse struct {
 		Text         string       `json:"text,omitzero"`
 		Logprobs     Logprobs     `json:"logprobs,omitzero"`
 		Delta        struct {
-			Role      string     `json:"role"`
-			Content   string     `json:"content"`
-			ToolCalls []ToolCall `json:"tool_calls"`
-			TokenID   int64      `json:"token_id,omitzero"`
-			Reasoning any        `json:"reasoning,omitzero"`
+			Role             string     `json:"role"`
+			Content          string     `json:"content"`
+			ToolCalls        []ToolCall `json:"tool_calls"`
+			TokenID          int64      `json:"token_id,omitzero"`
+			Reasoning        any        `json:"reasoning,omitzero"`
+			ReasoningContent string     `json:"reasoning_content,omitzero"`
 		} `json:"delta"`
+		RawOutput            any                  `json:"raw_output,omitzero"`
 		ContentFilterResults ContentFilterResults `json:"content_filter_results,omitzero"`
 		StopReason           string               `json:"stop_reason,omitzero"`
 	} `json:"choices"`
@@ -674,6 +685,7 @@ type ErrorError struct {
 	Type           string `json:"type"`
 	Param          string `json:"param"`
 	Code           string `json:"code"`
+	Object         string `json:"object,omitzero"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

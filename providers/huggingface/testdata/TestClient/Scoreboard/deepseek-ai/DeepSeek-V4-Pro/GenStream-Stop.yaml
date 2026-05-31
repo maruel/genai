@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 207
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":true,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":"We"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" need"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" to"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" respond"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" with"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" a"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" detailed"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" description"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" of"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" Canada"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":","},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" starting"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" with"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" \""},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":"Canada"},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{"reasoning_content":" "},"finish_reason":null,"raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[{"index":0,"delta":{},"finish_reason":"stop","raw_output":null}],"usage":null}
+
+            data: {"id":"AKw6BoRKtCEK4lxV-chatcmpl-ffc9331","object":"chat.completion.chunk","created":1780256296,"model":"accounts/fireworks/models/deepseek-v4-pro","choices":[],"usage":{"prompt_tokens":16,"total_tokens":32,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":15}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Fireworks-Cached-Prompt-Tokens:
+                - "15"
+            Fireworks-Prompt-Tokens:
+                - "16"
+            Fireworks-Sampling-Options:
+                - '{"max_tokens": 32768, "temperature": 1.0, "top_k": 0, "top_p": 1.0, "min_p": 0.0, "typical_p": 1.0, "frequency_penalty": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0, "mirostat_target": null, "mirostat_lr": 0.1, "cycle_multiplier": 0.0, "cycle_base": 0.0, "cycle_allowed_length": 0, "cycle_sequence_breakers": []}'
+            Fireworks-Server-Time-To-First-Token:
+                - "0.333"
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 792fd72f7da1e5732d6b6173dea66aa8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - y9fUOKA2_dJ4aG68cOjhlpxXpRI1IqT4DabKIIwa-kYhTmQDCT5AyQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - fireworks-ai
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Over-Limit:
+                - "no"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 636ms

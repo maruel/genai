@@ -183,62 +183,6 @@
     },
     {
       "models": [
-        "labs-devstral-small-2512"
-      ],
-      "in": {
-        "document": {
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
         "ministral-14b-2512"
       ],
       "in": {
@@ -730,6 +674,12 @@
         "mistral-medium",
         "mistral-medium-2505",
         "mistral-medium-2508",
+        "mistral-medium-2604",
+        "mistral-medium-3",
+        "mistral-medium-3-5",
+        "mistral-medium-3.5",
+        "mistral-medium-c21211-r0-75",
+        "mistral-moderation-2603",
         "mistral-ocr-2503",
         "mistral-ocr-2505",
         "mistral-ocr-latest",
@@ -755,6 +705,8 @@
         "voxtral-mini-realtime-latest",
         "voxtral-mini-transcribe-2507",
         "voxtral-mini-transcribe-realtime-2602",
+        "voxtral-mini-tts-2603",
+        "voxtral-mini-tts-latest",
         "voxtral-small-2507"
       ]
     },

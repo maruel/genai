@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRu3o-3pDw3Z-9ed467598abfa2cf",
+              "id": "omJK9yF-4YNCb4-a04673d55d7da2b4",
               "object": "chat.completion",
-              "created": 1776355234,
+              "created": 1780235477,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -59,13 +59,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467598abfa2cf-YUL
+                - a04673d55d7da2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"229-oQnhkxs+MGgPGak65QCbZECy6Fk"
-            Retry-After:
-                - "2"
+                - W/"229-z11ptBhdTjQNWA/YxkMWOmDJyu0"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -73,31 +71,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - a39a68c9-d978-4f21-8677-2b7d232af821-noamzn
+                - 50418156-7b80-47b1-84c6-d4df6f9aa9bf-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:34.967Z"
+                - "2026-05-31T13:51:17.526Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:34.909Z"
+                - "2026-05-31T13:51:17.463Z"
             X-Api-Received:
-                - "2026-04-16T16:00:34.898Z"
+                - "2026-05-31T13:51:17.438Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 241ms
+        duration: 219ms

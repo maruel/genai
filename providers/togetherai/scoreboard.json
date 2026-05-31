@@ -11,7 +11,7 @@
   "scenarios": [
     {
       "models": [
-        "black-forest-labs/FLUX.2-pro"
+        "black-forest-labs/FLUX.2-max"
       ],
       "sota": true,
       "in": {
@@ -38,32 +38,15 @@
       "sota": true
     },
     {
+      "comments": "TogetherAI corrupts DeepSeek-V4-Pro streamed tool call arguments; GenStream tools are flaky. GenSync works fine.",
       "models": [
-        "Qwen/Qwen3.5-397B-A17B"
+        "deepseek-ai/DeepSeek-V4-Pro"
       ],
       "good": true,
       "reason": true,
       "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
         "text": {
           "inline": true
-        },
-        "video": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "video/mp4",
-            "video/webm"
-          ]
         }
       },
       "out": {
@@ -72,9 +55,8 @@
         }
       },
       "GenSync": {
-        "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
+        "reportFinishReason": "flaky",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
@@ -85,14 +67,14 @@
         "stopSequence": true
       },
       "GenStream": {
-        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
+        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -138,12 +120,11 @@
         }
       },
       "GenSync": {
-        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -151,7 +132,6 @@
         "stopSequence": true
       },
       "GenStream": {
-        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
@@ -203,7 +183,6 @@
         }
       },
       "GenSync": {
-        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
@@ -216,12 +195,11 @@
         "stopSequence": true
       },
       "GenStream": {
-        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -231,24 +209,13 @@
     },
     {
       "models": [
-        "black-forest-labs/FLUX.2-flex"
+        "Qwen/Qwen3.5-122B-A10B-FP8",
+        "Qwen/Qwen3.5-397B-A17B",
+        "Qwen/Qwen3.6-35B-A3B-FP8",
+        "Qwen/Qwen3.6-Plus",
+        "Qwen/Qwen3.7-Max"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
-      }
+      "reason": true
     },
     {
       "comments": "Untested",
@@ -353,7 +320,8 @@
         "black-forest-labs/FLUX.1-krea-dev",
         "black-forest-labs/FLUX.1-pro",
         "black-forest-labs/FLUX.1.1-pro",
-        "black-forest-labs/FLUX.2-max",
+        "black-forest-labs/FLUX.2-flex",
+        "black-forest-labs/FLUX.2-pro",
         "canopylabs/orpheus-3b-0.1-ft",
         "cartesia/sonic",
         "cartesia/sonic-2",
@@ -537,29 +505,57 @@
         "zai-org/GLM-4.7",
         "zai-org/GLM-5",
         "zai-org/GLM-5-FP4",
-        "zai-org/GLM-OCR"
+        "zai-org/GLM-OCR",
+        "xai/grok-imagine-image-pro"
       ]
     },
     {
       "models": [
         "ByteDance-Seed/Seedream-3.0",
         "ByteDance-Seed/Seedream-4.0",
+        "ByteDance/Seedance-2.0",
+        "ByteDance/Seedream-5.0-lite",
         "HiDream-ai/HiDream-I1-Dev",
         "HiDream-ai/HiDream-I1-Fast",
         "HiDream-ai/HiDream-I1-Full",
         "Lykon/DreamShaper",
         "Qwen/Qwen-Image",
+        "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
         "RunDiffusion/Juggernaut-pro-flux",
         "Rundiffusion/Juggernaut-Lightning-Flux",
+        "Wan-AI/wan2.7-i2v",
+        "Wan-AI/wan2.7-r2v",
+        "alibaba/happyhorse-1.0-i2v",
+        "alibaba/happyhorse-1.0-r2v",
+        "alibaba/happyhorse-1.0-t2v",
         "black-forest-labs/FLUX.1-dev",
         "black-forest-labs/FLUX.1-schnell-Free",
         "deepseek-ai/DeepSeek-V3.1",
         "google/flash-image-2.5",
         "google/gemini-3-pro-image",
+        "google/gemma-3-270m-it-lora",
+        "google/gemma-3-27b-it-lora",
+        "google/gemma-4-31B-it-lora",
+        "google/gemma-4-E2B-it",
+        "google/gemma-4-E4B-it",
         "google/imagen-4.0-fast",
         "google/imagen-4.0-preview",
         "google/imagen-4.0-ultra",
+        "google/veo-3.1",
+        "google/veo-3.1-lite",
+        "google/veo-3.1-test-debug",
         "ideogram/ideogram-3.0",
+        "meta-llama/Llama-3.3-70B-Instruct-FP8-Lora",
+        "meta-llama/Llama-4-Scout-17B-16E-Instruct-FP8-Lora",
+        "minimax/speech-2.8-turbo",
+        "mistralai/Mixtral-8x7B-Instruct-v0.1-FP8-Lora",
+        "mistralai/Voxtral-Mini-3B-2507",
+        "moonshotai/Kimi-K2.6",
+        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning-fp8",
+        "pearl-ai/gemma-4-31b-it",
+        "pixverse/pixverse-v6",
+        "rime-labs/rime-mist-v3",
+        "rime-labs/rime-mist-v3-omni",
         "stabilityai/stable-diffusion-3-medium",
         "stabilityai/stable-diffusion-xl-base-1.0"
       ]

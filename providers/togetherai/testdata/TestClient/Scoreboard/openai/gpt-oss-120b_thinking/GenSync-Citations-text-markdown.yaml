@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRiu6-z1gNr-9ed466847f07a2cf",
+              "id": "omJK7fD-4YNCb4-a04673a52e1ba2b4",
               "object": "chat.completion",
-              "created": 1776355202,
+              "created": 1780235470,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "The capital of Quackiland is **Quack**.",
+                    "content": "The capital of **Quackiland** is **Quack**.",
                     "tool_calls": [],
-                    "reasoning": "We need answer: The capital of Quanyland is Quack. So answer: Quack. Maybe it's a trick, but likely answer is Quack."
+                    "reasoning": "We need to answer: The capital of Quax? It's Quack. Simple."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 102,
-                "total_tokens": 156,
-                "completion_tokens": 54,
+                "total_tokens": 143,
+                "completion_tokens": 41,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed466847f07a2cf-YUL
+                - a04673a52e1ba2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2e0-6WTW0ZNFs8QohIuMyf4gkzjECEk"
-            Retry-After:
-                - "2"
+                - W/"2ac-6fL52lx1CFAaWctZSWBN/IlEBq0"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 180f3b6c-d2ea-4b62-bfb0-5c6c664b0ce5-noamzn
+                - e7c6bf65-1bf2-4301-85d8-c004148582c4-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:02.221Z"
+                - "2026-05-31T13:51:10.133Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:00.763Z"
+                - "2026-05-31T13:51:09.707Z"
             X-Api-Received:
-                - "2026-04-16T16:00:00.753Z"
+                - "2026-05-31T13:51:09.665Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 1.543s
+        duration: 544ms

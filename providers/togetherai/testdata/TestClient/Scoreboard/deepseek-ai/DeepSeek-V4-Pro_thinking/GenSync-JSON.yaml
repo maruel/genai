@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 264
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omKhoK1-gBAtS-a047f3f9dd47a2b7",
+              "object": "chat.completion",
+              "created": 1780251214,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "{\"is_fruit\": true}",
+                    "tool_calls": [],
+                    "reasoning": "We are asked: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nThe answer is true because bananas are berries (botanically fruits). We need to output JSON with the key \"is_fruit\" and boolean value true.\n\nSo the output should be: {\"is_fruit\": true}"
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 112,
+                "total_tokens": 201,
+                "completion_tokens": 89,
+                "reasoning_tokens": 81
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f3f9dd47a2b7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"3b4-UJmlWzQn0EmHSlAXYUBZ1EDBbdk"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - f9303316-9285-463f-94ca-34d135da243f-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T18:13:34.234Z"
+            X-Api-Call-Start:
+                - "2026-05-31T18:13:32.024Z"
+            X-Api-Received:
+                - "2026-05-31T18:13:32.012Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 2.452s

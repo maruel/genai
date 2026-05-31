@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRkbs-z1gNr-9ed466a7cd6fa2cf",
+              "id": "omJK84B-4YNCb4-a04673ad79b0a2b4",
               "object": "chat.completion",
-              "created": 1776355209,
+              "created": 1780235471,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "Apple",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"What fruit is it? Reply with only one word.\"\n\nWe need to infer context? There's no preceding context. Likely they want a fruit name guess? Could be a trick: respond with a one-word fruit name. Since no further context, we can pick any fruit. Probably \"apple\". It's safe. Must be exactly one word. So answer: apple."
+                    "reasoning": "User asks: \"What fruit is it? Reply with only one word.\" So need to guess fruit? Possibly a puzzle context missing? They just ask ambiguous. Could respond with a fruit name. Probably \"apple\". Provide one word."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 78,
-                "total_tokens": 167,
-                "completion_tokens": 89,
+                "total_tokens": 136,
+                "completion_tokens": 58,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed466a7cd6fa2cf-YUL
+                - a04673ad79b0a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"399-+m0RXK1gPIO3vyDjLyrJhsJkREY"
-            Retry-After:
-                - "2"
+                - W/"31f-yATQdPOxDfbGvDEZcPP4l0bUhYk"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - f08e3102-fc77-433b-a413-bcd03ed77c5d-noamzn
+                - beee81a1-eead-4fb8-b6a2-5140830073f4-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:09.529Z"
+                - "2026-05-31T13:51:11.422Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:06.503Z"
+                - "2026-05-31T13:51:11.029Z"
             X-Api-Received:
-                - "2026-04-16T16:00:06.482Z"
+                - "2026-05-31T13:51:10.996Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 3.217s
+        duration: 501ms

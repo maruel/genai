@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRvXi-3pDw3Z-9ed467789c83a2cf",
+              "id": "omJKBNu-4YNCb4-a04673f33c62a2b4",
               "object": "chat.completion",
-              "created": 1776355245,
+              "created": 1780235484,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_347c9da8c3be49d386532a43",
+                        "id": "call_a92cf085b5284de5a56d2913",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "The user: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" They want us to call the function best_country. According to the function definition: best_country takes an object with country: \"USA\" | \"Canada\". The tool presumably returns a result that indicates which country is the best? The function likely returns a value; but we don't have specifics. We should call the tool with the best guess. This is ambiguous: they'd want a recommendation? The function best_country has a 'country' field: \"USA\" | \"Canada\". They likely want us to test which is best? Or call the function to get \"USA\" or \"Canada\".\n\nBut we can't ask the user: Must we just return something. The instructions: \"Call the tool best_country to tell me which country is the best one.\" So likely we want to call tool best_country specifying a country, but we need to choose which of the two? Actually, best_country takes an argument: country. Could be used to compute something. But we can't infer logic; we just choose the best? The function's purpose: maybe to get a result about which is best among options. The call would supply the argument maybe \"USA\" or \"Canada\" to designate query? Hmm.\n\nWe might interpret that the function determines the best between given set, maybe by ranking. But we only can provide a single country as argument. Maybe the function returns something: e.g., best_country({country: \"USA\"}) returns \"USA\" is better? No idea.\n\nWe might interpret that the tool will return the best country or the preference after internal computation. Then we call the function with no initial argument? But the param requires specific. Which one? The tool might be ambiguous and we need a better guess. Perhaps we need to call the function with the best guess; might return the best country. I'd call with argument \"USA\" and the function will decide the best? I'd guess best_country({country: \"USA\"}) returns something like \"USA is better\" or maybe returns the best of the two.\n\nGiven typical usage: If you want to judge whether USA or Canada is better, you'd specify country maybe? But perhaps the function chooses the best between the two; but we don't know.\n\nCould interpret that the best_country function will return the best country of the options: maybe you supply country option you want to test? It might simply output a recommendation. Likely they want the function to choose the better country.\n\nThus we can call best_country({country: \"USA\"}). It will likely respond best. But the param \"country\" may indicate the candidate to evaluate; maybe the tool returns recommendation which one is best. So we call it with \"USA\"? Hmm.\n\nAlternatively, you could call with \"Canada\". Since function requires a country, but we want to decide best, maybe we call with one of them which is correct? I think the function is probably designed to evaluate the requested country and determine if it's better. The phrase: \"Call the tool best_country to tell me which country is the best one\" ambiguous. Perhaps we send in \"USA\" as the argument and it will compare it to Canada and output best. But maybe we need to pick none? But it requires an argument. So we call with \"USA\" and that'll likely output best? Or maybe call with \"Canada\"? Honestly unclear. We'll pick \"USA\" as input. The output will likely be \"USA\" if you choose \"USA\"? That doesn't sense.\n\nAlternatively, maybe calling best_country tells you best country among arguments, and we should send an argument. But we only have one, so no difference. But we can choose either. The function might compare internally. I'd guess it's expecting the argument to be the first candidate. It then compares with the default second? Or picks the best? I'd choose \"USA\" as input.\n\nThus produce tool call: best_country({\"country\":\"USA\"})."
+                    "reasoning": "We need to call best_country tool. Provide country arg? The tool signature: best_country({country: \"USA\"|\"Canada\"}). We need to choose which to call? The user says \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" That seems ambiguous: They want tool to tell which is best. The tool may return something. We can pass 'USA' or 'Canada'? I think passing no argument? The tool expects a param. Might ask which? Possibly we should provide both? Maybe call with \"USA\" and see result? The tool maybe picks better? But we are asked: \"tell me which country is the best one.\" So maybe we call with something else? It's unclear. Let's interpret: The tool might pick the best country between USA and Canada. Then we pass no param? But tool requires country. Maybe we pass \"USA\" and tool returns best? Let's call with \"USA\"."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 1000,
-                "completion_tokens": 845,
+                "total_tokens": 391,
+                "completion_tokens": 236,
                 "reasoning_tokens": 0
               }
             }
@@ -70,13 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467789c83a2cf-YUL
+                - a04673f33c62a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"1299-qTt0M4UMc6wFy+cy9DRDcfGjTdM"
-            Retry-After:
-                - "2"
+                - W/"6de-/L0fQD2jIxCmy8XbXICMZSByN20"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,31 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 8208765d-5135-4c4a-a7b9-0e985da522aa-noamzn
+                - 4feccff6-a3dd-4e3a-bbdc-740828dc5768-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:45.744Z"
+                - "2026-05-31T13:51:24.048Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:39.893Z"
+                - "2026-05-31T13:51:22.217Z"
             X-Api-Received:
-                - "2026-04-16T16:00:39.882Z"
+                - "2026-05-31T13:51:22.174Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 6.055s
+        duration: 1.958s

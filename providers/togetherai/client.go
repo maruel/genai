@@ -209,7 +209,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	cutoff := time.Now().Add(-365 * 25 * time.Hour)
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
-		if m.Type != "chat" || m.Created.AsTime().Before(cutoff) || strings.Contains(m.ID, "-VL-") || strings.Contains(m.ID, "-Vision-") {
+		if m.Type != "chat" || strings.Contains(m.ID, "-VL-") || strings.Contains(m.ID, "-Vision-") || (m.Created > 1000 && m.Created.AsTime().Before(cutoff)) {
 			continue
 		}
 		switch {
@@ -219,7 +219,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.ID
 			}
 		case good:
-			if v := qwenVersion(m.ID); v > bestVer {
+			if v := deepseekVersion(m.ID); v > bestVer {
 				bestVer = v
 				selectedModel = m.ID
 			}
@@ -248,7 +248,9 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
-	// As of August 2025, price, created date are not set. This greatly limits the automatic model selection.
+	// As of May 2026, pricing is still not set for image models, so we rely on naming conventions.
+	// FLUX.2 models are preferred for SOTA over arbitrary -pro models.
+	flux2BestID, flux2BestRank := "", 0
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		if m.Type != "image" {
@@ -260,10 +262,28 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 				selectedModel = m.ID
 			}
 		case good:
-			if strings.HasSuffix(m.ID, "-dev") && (selectedModel == "" || m.ID > selectedModel) {
+			if strings.HasSuffix(m.ID, "-dev") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
 				selectedModel = m.ID
 			}
 		default:
+			// Track the best FLUX.2 model by rank: max=3, pro=2, flex/dev=1.
+			if r := flux2Rank(m.ID); r > flux2BestRank {
+				flux2BestRank = r
+				flux2BestID = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		// SOTA: prefer FLUX.2 over any other -pro model.
+		if flux2BestID != "" {
+			return flux2BestID, nil
+		}
+		// Fallback to best -pro model (excluding kontext).
+		for _, mdl := range mdls {
+			m := mdl.(*Model)
+			if m.Type != "image" {
+				continue
+			}
 			if strings.HasSuffix(m.ID, "-pro") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
 				selectedModel = m.ID
 			}
@@ -273,6 +293,22 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+// flux2Rank returns a quality rank for FLUX.2 image models, or 0 for non-FLUX.2 models.
+//
+// max=3, pro=2, flex/dev=1.
+func flux2Rank(id string) int {
+	if !strings.HasPrefix(id, "black-forest-labs/FLUX.2") {
+		return 0
+	}
+	if strings.Contains(id, "-max") {
+		return 3
+	}
+	if strings.Contains(id, "-pro") {
+		return 2
+	}
+	return 1
 }
 
 // parseVersion extracts a leading version number (digits and dots) from s.
@@ -306,8 +342,25 @@ func glmVersion(modelID string) float64 {
 	return v
 }
 
+// deepseekVersion returns the version of a DeepSeek chat model (e.g.
+// DeepSeek-V4-Pro → 4.0) or 0 for non-DeepSeek models or non-chat variants
+// (e.g. DeepSeek-R1, DeepSeek-OCR, DeepSeek-Coder).
+func deepseekVersion(modelID string) float64 {
+	s, ok := strings.CutPrefix(modelID, "deepseek-ai/DeepSeek-V")
+	if !ok {
+		return 0
+	}
+	v, rem := parseVersion(s)
+	// Accept plain version numbers (V4, V4.1) and reject suffixed variants (R1, Coder, OCR).
+	if rem != "" && rem != "-Pro" {
+		return 0
+	}
+	return v
+}
+
 // qwenVersion returns the version of a base Qwen model (e.g. Qwen3.5-397B-A17B → 3.5)
-// or 0 for variants (e.g. Qwen3-Coder, Qwen3-VL, Qwen3-Next).
+// or 0 for variants (e.g. Qwen3-Coder, Qwen3-VL, Qwen3-Next) and quantized
+// models (e.g. Qwen3.6-35B-A3B-FP8).
 func qwenVersion(modelID string) float64 {
 	s, ok := strings.CutPrefix(modelID, "Qwen/Qwen")
 	if !ok {
@@ -317,6 +370,12 @@ func qwenVersion(modelID string) float64 {
 	// After the version, expect "-<digit>" (size like 397B), not "-<letter>" (variant like Coder).
 	if len(rem) < 2 || rem[0] != '-' || rem[1] < '0' || rem[1] > '9' {
 		return 0
+	}
+	// Reject quantized variants (-FP8, -FP4, -INT4) and fine-tuned variants (-Lora).
+	for _, suffix := range []string{"-FP8", "-FP4", "-INT4", "-Lora"} {
+		if strings.Contains(rem, suffix) {
+			return 0
+		}
 	}
 	return v
 }

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRu7v-3pDw3Z-9ed4675b0dd0a2cf",
+              "id": "omJKA1x-4YNCb4-a04673d6bfd4a2b4",
               "object": "chat.completion",
-              "created": 1776355235,
+              "created": 1780235478,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "{\"is_fruit\": true}",
                     "tool_calls": [],
-                    "reasoning": "User says: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}\". So we output JSON: {\"is_fruit\": true}. No explanation."
+                    "reasoning": "We need to produce only JSON according to the schema: {\"is_fruit\": bool}. No explanation. Just output this. The answer: banana is fruit -> true. So output {\"is_fruit\": true}. Ensure JSON format. No explanation."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 96,
-                "total_tokens": 156,
-                "completion_tokens": 60,
+                "total_tokens": 158,
+                "completion_tokens": 62,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4675b0dd0a2cf-YUL
+                - a04673d6bfd4a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"31e-xJ90+EWNsyjAIrWV0v+uAbT3T5I"
-            Retry-After:
-                - "2"
+                - W/"32e-XlWBfG6LZZoYq+n1wwCqCFZ76fk"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 141550af-da06-47cb-a768-3943b1b017a0-noamzn
+                - 7127ac8c-fd09-4f2e-a27d-688522956b1e-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:35.624Z"
+                - "2026-05-31T13:51:18.049Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:35.148Z"
+                - "2026-05-31T13:51:17.624Z"
             X-Api-Received:
-                - "2026-04-16T16:00:35.138Z"
+                - "2026-05-31T13:51:17.595Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "17"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 657ms
+        duration: 522ms

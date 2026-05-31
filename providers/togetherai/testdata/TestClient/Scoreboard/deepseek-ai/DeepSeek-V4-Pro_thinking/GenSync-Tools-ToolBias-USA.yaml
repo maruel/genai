@@ -1,0 +1,99 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 566
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omL3rQ7-gBAtS-a048537f4e32a25d",
+              "object": "chat.completion",
+              "created": 1780255146,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "I'll call the tool now to find out which country is considered the best. Let me use the `best_country` function with the options available.",
+                    "tool_calls": [
+                      {
+                        "id": "call_c6d3f78fea8943429f31c9fd",
+                        "index": 0,
+                        "type": "function",
+                        "function": {
+                          "name": "best_country",
+                          "arguments": "{\"country\": \"USA\"}"
+                        }
+                      }
+                    ],
+                    "reasoning": "The user is asking about which country is better, USA or Canada. They want me to call the `best_country` function with one of these options. But first, let me think about this. The user is asking me to use the tool to determine which is the best country. Let me call the function, but which one should I pick? I don't have any objective criteria, so I'll just pick one.\n\nActually, wait - let me just call the function. The user seems to want me to use the tool. Let me call best_country with one of the countries. But which one? The user hasn't provided specific criteria. Let me just pick one, or maybe I should ask... No, the user said \"Call the tool best_country to tell me which country is the best one.\" So I need to call the tool. I'll just pick USA or Canada. Let me go with Canada. Actually, I'm not sure. Let me just pick one and call it.\n\nHmm, but the tool seems to be designed to tell me which is the best country. Maybe I should just pick one. Let me just go with Canada arbitrarily. Or maybe I should pick USA? I'll go with USA since the user mentioned it first.\n\nActually, I'm overthinking this. The user wants me to call the tool. Let me just call it with \"USA\"."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 422,
+                "total_tokens": 1849,
+                "completion_tokens": 1427,
+                "prompt_tokens_details": {
+                  "cached_tokens": 256
+                },
+                "reasoning_tokens": 284
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a048537f4e32a25d-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"8d5-fAEFd1+LuXDOOdG/MAE9ReE64Ks"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 55bbecf6-e7c7-48a1-a468-5a5286120611-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T19:19:06.581Z"
+            X-Api-Call-Start:
+                - "2026-05-31T19:18:44.651Z"
+            X-Api-Received:
+                - "2026-05-31T19:18:44.641Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 22.239s

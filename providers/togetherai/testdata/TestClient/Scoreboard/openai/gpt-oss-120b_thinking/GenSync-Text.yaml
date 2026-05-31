@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRXDL-z1gNr-9ed4658e9baca2cf",
+              "id": "omJK4UP-4YNCb4-a0467361d9b8a2b4",
               "object": "chat.completion",
-              "created": 1776355165,
+              "created": 1780235459,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "Hello",
                     "tool_calls": [],
-                    "reasoning": "User request: \"Say hello. Use only one word.\" So answer should be a single word, presumably \"Hello\". Must be one word. So output \"Hello\"."
+                    "reasoning": "The user: \"Say hello. Use only one word.\" So we need a single word that says hello. Probably \"Hello\". That is one word. So output just \"Hello\"."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 75,
-                "total_tokens": 120,
-                "completion_tokens": 45,
+                "total_tokens": 123,
+                "completion_tokens": 48,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4658e9baca2cf-YUL
+                - a0467361d9b8a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2d8-wyQ/aiC/ONEBcD725q6O7xXlQEQ"
-            Retry-After:
-                - "2"
+                - W/"2df-gMMe2QinlG86mkrN2x4AcVQwGSI"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - e0e98cf3-7cc6-4b67-8727-2a61c733289a-noamzn
+                - 8026472a-f843-43e2-8f10-857eafe026e1-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:25.787Z"
+                - "2026-05-31T13:50:59.769Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:21.455Z"
+                - "2026-05-31T13:50:59.041Z"
             X-Api-Received:
-                - "2026-04-16T15:59:21.443Z"
+                - "2026-05-31T13:50:58.944Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 4.432s
+        duration: 1.011s

@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omKiXFA-2dTqGa-a047f76c1d54a2b7",
+              "object": "chat.completion",
+              "created": 1780251377,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "said",
+                    "tool_calls": [],
+                    "reasoning": "We are asked: \"What is the word said? Reply with only the word.\" But no context is given. The user says \"What is the word said?\" This seems like a riddle or a trick question. Perhaps it's referencing a common phrase like \"the word said\" or something? Or maybe it's a test: \"What is the word said?\" The answer might be \"word\" or \"said\"? But it says \"Reply with only the word.\" So we need to deduce the word.\n\nLet's think: The question is \"What is the word said?\" That might be a phrase from a game or a meme. Perhaps it's from \"What is the word?\" and the answer is \"word\"? Or maybe it's from \"Simon says\" style: \"What is the word said?\" The answer could be \"the word\". But it says \"the word said\", so the word that is said? Actually the sentence \"What is the word said?\" is ambiguous. It could be interpreted as: Someone says a word, and you're asked to identify that word. But no word was provided.\n\nWait: the user's message is: \"What is the word said? Reply with only the word.\" So it's a test of instruction following. Maybe the user is asking \"What is the word 'said'?\" But that doesn't make sense.\n\nPerhaps it's a famous puzzle: \"What is the word?\" or \"What is the word said?\" Often the answer is \"word\" because the question asks what is the word, and the word is \"word\". For example: \"What is the word?\" Answer: \"Word\". But here it's \"said\". Could it be that the word said is \"said\"? Or maybe the answer is \"the word\".\n\nLet's re-read: \"What is the word said?\" This could be parsed as: \"What is the word?\" and \"said\" might be the answer? Actually it says \"Reply with only the word.\" It might be that the answer is the word that is spoken, but there is no word given. So it's a paradox.\n\nPerhaps it's from a meme or a specific video. There's a clip where a person says \"What is the word?\" and the other person says something. Not sure.\n\nWait, there's a famous puzzle: \"What is the word that is pronounced differently when the first letter is capitalized?\" etc. But not.\n\nAnother interpretation: It could be that the user is mimicking a session where a person asks \"What is the word?\" and the assistant is supposed to answer with the word that was just said. But in this conversation, the only words are the user's question. So the word that was said might be \"What\"? Or maybe the word is \"said\". Because \"said\" is the last word of the question? But the question is: \"What is the word said?\" The word that is said could be the entire phrase? No.\n\nPerhaps it's a reference to \"The Word\" from the Bible or something.\n\nMaybe it's a logic puzzle. Sometimes there are riddles like: \"What is the word?\" and the answer is \"word\". For example, there's a riddle: \"What word in the English language does the following: the first two letters signify a male, the first three letters signify a female, the first four letters signify a great man, and the whole word a great woman.\" But that's not it.\n\nLet's think about the phrase \"What is the word said?\" Could it be from a cookie jar? No.\n\nPerhaps it's a trick: the word that is said in the question itself? The question says \"What is the word said?\" The word \"said\" is said. So the word said is \"said\". That is a possibility.\n\nAlternatively, it could be that the question is from a context of \"What is the word?\" where the answer is always the word that is being asked about. For instance, in some AI training, they ask \"What is the word?\" and the answer is \"word\". But here it says \"the word said\", so it could be \"said\". But the phrase is \"the word said\", which is the past participle of \"say\"? Actually \"the word said\" might mean \"the word that was spoken\". In that case, we don't have a previous message. The user's message is the first one. So the word that was said is the entire question? But it says \"the word\", singular.\n\nMaybe it's a quote from a movie or song. For instance, in \"The Princess Bride\", there's a scene where Inigo Montoya says something like \"You keep using that word. I do not think it means what you think it means.\" But not.\n\nMaybe it's from a song like \"What's the word? Thunderbird!\" Not.\n\nAnother idea: It's a simple instruction: \"What is the word said?\" meaning that the user wants me to output the word that they said, but they said multiple words. Unless \"the word said\" is a phrase referring to a specific word.\n\nCould it be that the answer is \"word\"? Because the question asks \"What is the word?\" and the word we are looking for is \"said\"? Wait: \"What is the word said?\" This could be interpreted as: There is a word, and that word is \"said\". So the answer is \"said\". If you say \"said\", then that is the word said. Actually, if I answer \"said\", then the word I said is \"said\", which matches.\n\nBut let's analyze the grammar: \"What is the word said?\" If it means \"What is the word (that is) said?\" then the word that is said in the context of the question could be ambiguous. The only word explicitly presented is the entire question, but the question itself contains the word \"said\". So maybe the answer is \"said\".\n\nAlternatively, maybe it's a prompt to test if I follow the instruction to reply with only the word. The instruction says: \"Reply with only the word.\" So if they ask \"What is the word said?\" and want only the word, perhaps they want the word that I am supposed to say? That is circular.\n\nLet's consider that this might be a typical AI test. For example, a prompt: \"Say apple. Reply with only the word.\" But here it's \"What is the word said?\" So it's asking me to identify the word that was said. The word that was said by the user: they said \"What is the word said?\" No, they said a whole sentence. But the phrase \"the word\" might refer to a puzzle where the word is \"said\".\n\nWait, I recall a riddle: \"What is the word?\" The answer is \"word\". \"What is the word said?\" The answer might be \"said\". Because the word \"said\" is the word said. That seems too trivial.\n\nMaybe the user forgot to put the word in quotes. Like: What is the word? \"said\". But they wrote \"What is the word said?\" It could be a typo: \"What is the word?\" and then \"s a i d\"? No.\n\nLet's think if there's a well-known puzzle: \"What is the word? Said.\" No.\n\nMaybe it's from a specific system prompt or jailbreak. For instance, someone might say \"Say 'I am a banana.' Reply with only the word.\" But here the instruction is embedded in the question.\n\nAnother possibility: The user is referencing the game \"Word Said\". Not aware.\n\nCould it be that the question is exactly: \"What is the word said?\" and the answer is \"said\"? I'll go with that logic. But let's be cautious: Often these riddles are like: \"What is the word?\" There's a famous one: \"What is the word?\" The answer is \"the word\". But \"the word said\" might indicate the word \"said\" is the answer. If I answer \"said\", it might be correct.\n\nAlternatively, the phrase is \"What is the word said?\". The words \"the word\" and \"said\" are both candidates. But the question is asking \"What is the word?\". And the word is the one being referred to as \"said\". So the word is \"said\".\n\nWe can try to see if there's any other interpretation: It could be that the user is saying: What is the word? \"Said\" is the word. So they want the word \"said\". So the answer is said.\n\nI'll answer with \"said\".\n\nBut wait: The user might mean: \"What is the word? (said)\" meaning that the word to reply with is \"said\". So I should reply with \"said\". That makes sense because the instruction says \"Reply with only the word.\" So the word to reply is \"said\".\n\nBut why would this be a test? Maybe the user wanted to see if I would output the word \"said\" or if I would try to explain. The instruction says \"Reply with only the word.\" So I must output only that word.\n\nThus, I'll output \"said\"."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 95,
+                "total_tokens": 1980,
+                "completion_tokens": 1885,
+                "reasoning_tokens": 1883
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f76c1d54a2b7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"2174-Vw/66rScyHOEmNISy4VVZm22bA4"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 424ad5e6-bc68-41d5-9685-9f5c4f312e28-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T18:16:17.814Z"
+            X-Api-Call-Start:
+                - "2026-05-31T18:15:53.092Z"
+            X-Api-Received:
+                - "2026-05-31T18:15:53.077Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 24.907s

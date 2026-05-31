@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRYX9-z1gNr-9ed465aa5a0fa2cf",
+              "id": "omJK4k7-4YNCb4-a0467367cb61a2b4",
               "object": "chat.completion",
-              "created": 1776355167,
+              "created": 1780235460,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "Hello",
                     "tool_calls": [],
-                    "reasoning": "We need to say hello using only one word. Probably \"Hello\". That's one word. Provide just that word."
+                    "reasoning": "The user asks: \"Say hello. Use only one word.\" So we respond with a single word greeting, like \"Hello\". That's one word. Must not add anything else. Provide just \"Hello\"."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 75,
-                "total_tokens": 109,
-                "completion_tokens": 34,
+                "total_tokens": 127,
+                "completion_tokens": 52,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed465aa5a0fa2cf-YUL
+                - a0467367cb61a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2af-o3htUTETDSX8BwYK+AO5jDmytwE"
-            Retry-After:
-                - "1"
+                - W/"2fa-WnQ1qkFQa3xRqMEyd8FwRkGCR1Q"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 05039eb3-5e48-496f-be6a-a3f7c96e74cb-noamzn
+                - 5ff2ec6a-53d6-4af3-8153-af27cbf744dd-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:27.678Z"
+                - "2026-05-31T13:51:00.575Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:25.856Z"
+                - "2026-05-31T13:50:59.878Z"
             X-Api-Received:
-                - "2026-04-16T15:59:25.840Z"
+                - "2026-05-31T13:50:59.856Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "1"
         status: 200 OK
         code: 200
-        duration: 1.901s
+        duration: 802ms

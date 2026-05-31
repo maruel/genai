@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRiDa-z1gNr-9ed466763c03a2cf",
+              "id": "omJK7SJ-4YNCb4-a04673a06ef9a2b4",
               "object": "chat.completion",
-              "created": 1776355200,
+              "created": 1780235469,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "The capital of **Quackiland** is **Quack**.",
+                    "content": "The capital of Quackiland is **Quack**.",
                     "tool_calls": [],
-                    "reasoning": "User asks: \"The capital of Quarkland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" It's a simple recapitulation. Answer: Quack. Might also mention that capital is Quack (the city). Provide straightforward answer. Also maybe ask if they need more info."
+                    "reasoning": "We have a simple question: The capital of Quackiland is Quack. The question asks: What is the capital of Quackiland? Answer: Quack. So answer concisely: Quack."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 97,
-                "total_tokens": 192,
-                "completion_tokens": 95,
+                "total_tokens": 162,
+                "completion_tokens": 65,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed466763c03a2cf-YUL
+                - a04673a06ef9a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"397-U/GdUEepX7WgJ08btje4cttgH3I"
-            Retry-After:
-                - "2"
+                - W/"30b-wXKp7k5z0+5cuj+SrvoH5oVIjMQ"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - f7b855cd-a46c-473c-9a3a-6e33c07ff1c9-noamzn
+                - 904af239-cfa2-4d22-9438-d162e592ae10-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:00.688Z"
+                - "2026-05-31T13:51:09.595Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:58.473Z"
+                - "2026-05-31T13:51:08.932Z"
             X-Api-Received:
-                - "2026-04-16T15:59:58.461Z"
+                - "2026-05-31T13:51:08.916Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 2.28s
+        duration: 765ms

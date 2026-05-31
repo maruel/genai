@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRtRR-3pDw3Z-9ed4674c5fa1a2cf",
+              "id": "omJK9LE-3pDw3Z-a04673c80880a2b4",
               "object": "chat.completion",
-              "created": 1776355233,
+              "created": 1780235476,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "Hello",
                     "tool_calls": [],
-                    "reasoning": "The user wants the assistant to \"Say hello. Use only one word.\" That's straightforward: I should output \"Hello\". That seems too easy.\n\nHowever, might need to consider constraints: \"Use only one word.\" So I should output only \"Hello\". That's all."
+                    "reasoning": "User says: \"Say hello. Use only one word.\" So we should reply with a single word greeting. Probably \"Hello\". They want one word. \"Hello\" is one word. Should we say \"Hi\"? That is also one word. They said \"Say hello. Use only one word.\" So maybe \"Hello\" is straightforward. Use only one word. So answer: Hello. Or \"Hi\". But \"hello\" matches the instruction. So reply \"Hello\"."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 75,
-                "total_tokens": 140,
-                "completion_tokens": 65,
+                "total_tokens": 182,
+                "completion_tokens": 107,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4674c5fa1a2cf-YUL
+                - a04673c80880a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"348-Ml5EAi/Ma9F2W9L5kgYZbwDsFaI"
-            Retry-After:
-                - "2"
+                - W/"3d0-tv6sL2tGtJo3l9i09JL6jA1b29w"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 2bcaf183-8b21-4208-a1df-8778e0097489-noamzn
+                - 2f658d2f-cac6-4b75-b582-426b8cba827e-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:33.589Z"
+                - "2026-05-31T13:51:16.411Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:32.799Z"
+                - "2026-05-31T13:51:15.306Z"
             X-Api-Received:
-                - "2026-04-16T16:00:32.788Z"
+                - "2026-05-31T13:51:15.291Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 980ms
+        duration: 1.284s

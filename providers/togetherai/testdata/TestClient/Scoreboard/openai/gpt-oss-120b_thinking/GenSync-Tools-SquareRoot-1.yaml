@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRd5M-z1gNr-9ed4660a1f8ca2cf",
+              "id": "omJK5vi-4YNCb4-a04673809b81a2b4",
               "object": "chat.completion",
-              "created": 1776355182,
+              "created": 1780235464,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_6dce7a921b584e269e429236",
+                        "id": "call_6591435e438d4d2b8983702e",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "The user wants the square root of 132413. Need to call the function square_root with number=132413."
+                    "reasoning": "We need to call the function square_root with number 132413. Then reply with only the result. Let's call."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -70,13 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4660a1f8ca2cf-YUL
+                - a04673809b81a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"3b9-ztP9thEo3vsN9CfXXZR8henhefw"
-            Retry-After:
-                - "2"
+                - W/"3c0-G2zXJ/LjMYnHsmqW3Q7C7F8beNI"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,31 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 97b4f475-0356-4f96-91c5-f8800b8e6602-noamzn
+                - 4517f2b7-dcc7-4815-95ab-74a2adb75911-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:42.860Z"
+                - "2026-05-31T13:51:04.409Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:41.176Z"
+                - "2026-05-31T13:51:03.852Z"
             X-Api-Received:
-                - "2026-04-16T15:59:41.165Z"
+                - "2026-05-31T13:51:03.835Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 1.748s
+        duration: 664ms

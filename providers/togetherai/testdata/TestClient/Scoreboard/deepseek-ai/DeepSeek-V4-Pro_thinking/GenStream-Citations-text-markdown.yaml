@@ -1,0 +1,173 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 275
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro"}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"We"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" are given"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":": \"The"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" capital of Quack"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"iland is Qu"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ack. The"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" Big Can"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ard Statue is"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" located in Quack"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":". What is the"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" capital of Quack"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"iland?\"\n\n"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"The question"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" is:"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" \"What is the"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" capital of Quack"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"iland?\" The first"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" sentence explicitly"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" states: \""}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"The capital of Qu"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ackiland"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" is Qu"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ack.\" So"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" the answer is Qu"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ack.\n\n"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"But"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" wait"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":","}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" there"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" might"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" be a trick."}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" The second sentence says"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" \"The Big Can"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ard Statue is"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" located in Quack"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":".\" That might"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" be a"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" red"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" herring"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" or"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" a"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" confirmation"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" that"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" Quack is a"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" city. The"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" question is straightforward"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":". The capital"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" of Quackiland"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":" is Qu"}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":"ack."}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"The capital","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"The capital","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":" of Quackiland","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" of Quackiland","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":" is Quack,","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" is Quack,","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":" as stated directly","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" as stated directly","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":" in the first sentence","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":" in the first sentence","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":".","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","reasoning":null}}],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":null}
+
+            data: {"id":"omKhxFy-gBAtS-a047f4b6ab2da2b7","object":"chat.completion.chunk","created":1780251242,"choices":[],"model":"deepseek-ai/DeepSeek-V4-Pro","usage":{"prompt_tokens":119,"total_tokens":271,"completion_tokens":152,"reasoning_tokens":133}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache, no-transform
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f4b6ab2da2b7-YUL
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - a1194a7f-16d8-4e6a-a42c-068ebe832b7d-noamzn
+            X-Api-Call-Start:
+                - "2026-05-31T18:14:02.777Z"
+            X-Api-Received:
+                - "2026-05-31T18:14:02.112Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 775ms

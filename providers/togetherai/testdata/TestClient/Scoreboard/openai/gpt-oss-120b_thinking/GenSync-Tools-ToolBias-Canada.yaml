@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRdgn-z1gNr-9ed46616fe2ca2cf",
+              "id": "omJK6CH-z1gNr-a04673866cfba2b4",
               "object": "chat.completion",
-              "created": 1776355191,
+              "created": 1780235466,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_5b66c4e09f0f4482b20e9c84",
+                        "id": "call_9a2335e912d44e9d919c5714",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "The user wants to determine whether Canada is a better country than USA. The tool best_country expects an input with field \"country\" presumably to specify which country they want to evaluate? Actually tool description: \"A tool to specify the best country\". It takes input {country: \"Canada\" | \"USA\"}. Probably you call it with a country, and it returns something telling if it's best? Might be designed to compare? Hmm ambiguous. Perhaps we need to ask the tool which is best? Could pass both? But expected field is a single country. Maybe we call it with each? Or maybe tool returns a boolean or something saying that the given country is the best? The user wants to know which is better; we can call the tool for each? The tool may return a result indicating if that country is best. We'll call for Canada; maybe returns something? Let's try call best_country with country \"Canada\"."
+                    "reasoning": "User wants us to call the best_country tool with either Canada or USA? The tool requires a \"country\" parameter (Canada or USA). Probably we call it to get some result. The user asks \"which country is the best one\". So we need to decide which to pass. Likely the tool returns something indicating if it's best? We can try passing one and get a result. Maybe we need to call tool for both? But the tool signature: best_country({_:\"country\": \"Canada\" | \"USA\"}). Probably returns something like a statement. We can call with \"Canada\" and see."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 364,
-                "completion_tokens": 209,
+                "total_tokens": 305,
+                "completion_tokens": 150,
                 "reasoning_tokens": 0
               }
             }
@@ -70,13 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed46616fe2ca2cf-YUL
+                - a04673866cfba2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"6db-rQF9EKGIL6jzvKgdM0+mtNgckGw"
-            Retry-After:
-                - "2"
+                - W/"583-Cd/7+kxmt814rIqjC6kqmOlh8F4"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,31 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 391afcd6-7fd0-4b37-997c-848b8f9e2b1d-noamzn
+                - 82d95e22-dd57-49a0-94e7-da6f42cc6bca-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:51.255Z"
+                - "2026-05-31T13:51:06.468Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:43.259Z"
+                - "2026-05-31T13:51:04.750Z"
             X-Api-Received:
-                - "2026-04-16T15:59:43.244Z"
+                - "2026-05-31T13:51:04.738Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 8.101s
+        duration: 1.786s

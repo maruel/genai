@@ -592,7 +592,7 @@ type LogprobsChunk struct {
 		Token   string  `json:"token"`
 		Logprob float64 `json:"logprob"`
 	} `json:"top_logprobs"`
-	Content any `json:"content,omitzero"` // Complex structure sometimes returned.
+	Content json.RawMessage `json:"content,omitzero"` // Undocumented model-specific field, not in Together.AI's OpenAPI LogprobsPart spec.
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -646,6 +646,24 @@ type Usage struct {
 	} `json:"prompt_tokens_details"`
 }
 
+// ChoiceError is the choice-level error in a streaming chat chunk.
+type ChoiceError struct {
+	Message string `json:"message"`
+	Type    string `json:"type"`
+	Code    string `json:"code"`
+	Param   string `json:"param,omitzero"`
+}
+
+func (e *ChoiceError) Error() string {
+	if e.Code != "" {
+		return fmt.Sprintf("%s (%s): %s", e.Code, e.Type, e.Message)
+	}
+	if e.Type != "" {
+		return fmt.Sprintf("%s: %s", e.Type, e.Message)
+	}
+	return e.Message
+}
+
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	ID      string    `json:"id"`
@@ -653,13 +671,13 @@ type ChatStreamChunkResponse struct {
 	Created base.Time `json:"created"`
 	Model   string    `json:"model"`
 	Choices []struct {
-		Index       int64         `json:"index"`
-		Text        string        `json:"text"` // Duplicated to Delta.Text
-		Seed        big.Int       `json:"seed"`
-		Error       any           `json:"error,omitzero"`
-		Role        string        `json:"role,omitzero"` // Sometimes appears in streaming
-		Logprobs    LogprobsChunk `json:"logprobs"`
-		TopLogprobs any           `json:"top_logprobs,omitzero"`
+		Index       int64              `json:"index"`
+		Text        string             `json:"text"` // Duplicated to Delta.Text
+		Seed        big.Int            `json:"seed"`
+		Error       *ChoiceError       `json:"error,omitzero"`
+		Role        string             `json:"role,omitzero"` // Sometimes appears in streaming
+		Logprobs    LogprobsChunk      `json:"logprobs"`
+		TopLogprobs map[string]float64 `json:"top_logprobs,omitzero"`
 		Delta       struct {
 			TokenID   int64      `json:"token_id"`
 			Role      string     `json:"role"`

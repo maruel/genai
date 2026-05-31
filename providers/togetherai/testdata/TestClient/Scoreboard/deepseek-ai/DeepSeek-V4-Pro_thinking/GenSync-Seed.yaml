@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 136
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omKhbGa-2dTqGa-a047f2fd6a02a2b7",
+              "object": "chat.completion",
+              "created": 1780251174,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "tool_calls": [],
+                    "reasoning": "We are asked: \"Say hello. Use only one word.\" So we need to respond with exactly one word that is a greeting. The user expects us to say hello using only one word. The simplest answer is \"Hello\" or \"Hi\". But we must use only one word. The instruction says \"Use only one word.\" So our response should be just that one word. However, as an AI, I might need to output only that word. The user message is: \"Say hello. Use only one word.\" So I'll respond with \"Hello\" or maybe \"Hi\". Which one is more appropriate? Both are one word. I'll choose \"Hello.\" But wait: the user might expect the response to be exactly the one word and nothing else. So the final output should be just \"Hello\" or \"Hi\". To be safe, I'll use \"Hello\". But let's check: The user says \"Say hello.\" So I need to say hello. Since it says \"Use only one word\", my entire response should be that one word. So I'll output: Hello."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 91,
+                "total_tokens": 317,
+                "completion_tokens": 226,
+                "reasoning_tokens": 224
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f2fd6a02a2b7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"5e9-aEFcz5tB9Y4evPfhJoLpTfbpb4A"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - fe4919f0-b75a-4564-a44e-79d6745f7fab-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T18:12:54.859Z"
+            X-Api-Call-Start:
+                - "2026-05-31T18:12:51.515Z"
+            X-Api-Received:
+                - "2026-05-31T18:12:51.504Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 3.496s

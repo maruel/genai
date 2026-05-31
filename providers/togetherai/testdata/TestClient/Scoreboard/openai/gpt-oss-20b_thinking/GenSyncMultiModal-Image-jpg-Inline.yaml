@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRyGR-4YNCb4-9ed467b25a7ca2cf",
+              "id": "omJKCkH-4YNCb4-a0467410187ea2b4",
               "object": "chat.completion",
-              "created": 1776355252,
+              "created": 1780235489,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Apple",
+                    "content": "unknown",
                     "tool_calls": [],
-                    "reasoning": "The user says: \"What fruit is it? Reply with only one word.\" There's no context. It seems they might have an image? But as text, no? Perhaps they want the assistant to guess a fruit based on some implicit description? Perhaps the missing context is a question prompt that expects a one-word answer. However, we have no description. There's no fruit described. So we have to interpret the question: \"What fruit is it? Reply with only one word.\" There's no context. We can respond with something like \"apple\" but that would be arbitrary. Maybe it's a trick: we need to ask for clarification. But they said \"Reply with only one word.\" The instruction: \"What fruit is it? Reply with only one word.\" Since no other context, maybe we are supposed to respond \"unknown\" or \"fruit\". But as the answer must be one word, not a phrase. We should perhaps respond \"Please provide more context\" but that's not a single word. The instruction is ambiguous. But we as ChatGPT could ask for clarification but that would break the rule \"Reply with only one word.\" Wait the instruction says: \"What fruit is it? Reply with only one word.\" Maybe the expectation is that there's an image or a description we can't see. But the user typed only that. So it's ambiguous. We might choose a guess like \"kiwi\". But we can't guess. The best is to ask clarifying question. But we cannot respond more than one word. So we cannot ask for clarification. The only possible one word is \"unknown\". But unknown is probably not the fruit. But maybe they want \"apple\". But it's wrong.\n\nWe could answer \"question\" but that is nonsense.\n\nGiven the instruction, we probably should respond \"Impossible\". But it's a fruit? \"Impossible\" is not a fruit. Or \"Apple\". Perhaps they want \"Apple\" because it's the most common fruit. But that may be wrong.\n\nBetter might be \"Sorry\". But no.\n\nThis is unsolvable. The best approach is to respond \"Sorry\" or \"unknown\". Let's choose \"unknown\". But unknown is not a fruit. But it's one word. But the question: \"What fruit is it?\" We can't answer. But we can say \"unknown\" as answer that indicates we don't know. However, that is not a fruit. But the instruction didn't say you must be correct.\n\nGiven constraints: we must reply with only one word; can't say that we need more info.\n\nWe could say: \"Apple\". It's probably the safe guess.\n\nAlternatively, maybe the question is from an earlier context: it's a riddle; \"What fruit is it?\" Then the answer might be \"Pear\" or \"Banana\". Eh.\n\nSince there's no context, I will answer \"Apple\"."
+                    "reasoning": "We need the fruit. The prompt: \"What fruit is it? Reply with only one word.\" Likely a riddle? But no more context. The user just asks a question without providing any description. There's no mention of some image. The conversation: just that. The answer: we don't know. We need to be safe. Probably \"apple\" or \"banana\"? But can't guess. Could say \"I don't know\" but must reply with only one word. So best: \"unknown\" is one word. That might be acceptable. The instruction: \"Reply with only one word.\" Not specifically that word. So \"unknown\" or \"I don't know\" but that's two words? \"IDon't\" no. So could reply \"Undetermined\". Also one word. Or \"Maybe\". One word. But I'd choose \"unknown\". Let’s respond with \"unknown\"."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 78,
-                "total_tokens": 656,
-                "completion_tokens": 578,
+                "total_tokens": 266,
+                "completion_tokens": 188,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467b25a7ca2cf-YUL
+                - a0467410187ea2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"c6f-etod6VGqA0Ul2k8yeYwiiovEwBQ"
-            Retry-After:
-                - "2"
+                - W/"535-Udr7FFSYucLg59g3ZSX7oZjpGqw"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - f4f617d1-7f4f-47b1-a8bc-39899c1e63c7-noamzn
+                - 6b959d50-d184-4127-a49f-46ec8f57226a-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:52.138Z"
+                - "2026-05-31T13:51:29.070Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:49.104Z"
+                - "2026-05-31T13:51:26.804Z"
             X-Api-Received:
-                - "2026-04-16T16:00:49.087Z"
+                - "2026-05-31T13:51:26.778Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 3.147s
+        duration: 2.363s

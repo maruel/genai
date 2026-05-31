@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRxL3-3pDw3Z-9ed4679e7a63a2cf",
+              "id": "omJKByM-3pDw3Z-a04673ff782fa2b4",
               "object": "chat.completion",
-              "created": 1776355247,
+              "created": 1780235485,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "The capital of Quackiland is **Quack**.",
+                    "content": "The capital of Quackiland is **Quack**.",
                     "tool_calls": [],
-                    "reasoning": "We have a riddle: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland? The answer is obviously Quack as stated. But it's repeating. The user might be testing you: The capital is Quack. So answer: Quack. Or maybe some pun? Quack stands for duck... But likely the answer: Quack.\n\nBut could there be trick: \"Quack\" refers to sound. However the data: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. So the capital is Quack. So answer: Quack. Probably they want you to answer \"Quack\". Let's produce short answer. Let's not overthink."
+                    "reasoning": "The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" This is a question about repeating info: capital is Quack. The answer: Quack. Should answer straightforwardly. Ensure formatting: Probably a brief answer: \"The capital of Quackiland is Quack.\" Possibly no extra."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 97,
-                "total_tokens": 278,
-                "completion_tokens": 181,
+                "total_tokens": 202,
+                "completion_tokens": 105,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4679e7a63a2cf-YUL
+                - a04673ff782fa2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"4de-t6sSrBbA2gCB2K0TaqLK+7HIDb0"
-            Retry-After:
-                - "2"
+                - W/"3c7-c3liRvu1ybsygwlL8g2sdPnNCtc"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 99c19d11-fc3f-4cc3-8cb0-2c5964110367-noamzn
+                - 1826f66c-a7e9-4329-a18a-b06e7a04a78b-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:47.071Z"
+                - "2026-05-31T13:51:25.308Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:45.945Z"
+                - "2026-05-31T13:51:24.185Z"
             X-Api-Received:
-                - "2026-04-16T16:00:45.933Z"
+                - "2026-05-31T13:51:24.172Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 1.334s
+        duration: 1.305s

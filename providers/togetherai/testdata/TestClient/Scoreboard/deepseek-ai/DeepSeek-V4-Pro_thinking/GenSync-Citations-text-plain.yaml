@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 260
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omKi79p-2dTqGa-a047f5715aaca2b7",
+              "object": "chat.completion",
+              "created": 1780251273,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "The capital of Quackiland is Quack.",
+                    "tool_calls": [],
+                    "reasoning": "We are given: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n\nThis is a simple question. The first sentence says: \"The capital of Quackiland is Quack.\" So the answer is Quack. The second sentence is just additional information. So the answer is Quack."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 114,
+                "total_tokens": 206,
+                "completion_tokens": 92,
+                "reasoning_tokens": 81
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f5715aaca2b7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"3b8-QtD2Kxs5KGqUEb3CqF7AfdjwwQs"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - baebe8af-75e1-4b74-8b48-1b8c0616e967-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T18:14:33.222Z"
+            X-Api-Call-Start:
+                - "2026-05-31T18:14:32.062Z"
+            X-Api-Received:
+                - "2026-05-31T18:14:32.032Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 1.384s

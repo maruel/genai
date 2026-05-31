@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"ofPRuET-3pDw3Z-9ed4675d6a9ba2cf","object":"chat.completion.chunk","created":1776355235,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":null}}],"model":"openai/gpt-oss-20b"}
+            data: {"id":"omJK9mH-3pDw3Z-a04673d10dd4a2b4","object":"chat.completion.chunk","created":1780235476,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","reasoning":null}}],"model":"openai/gpt-oss-20b"}
 
-            data: {"id":"ofPRuET-3pDw3Z-9ed4675d6a9ba2cf","object":"chat.completion.chunk","created":1776355235,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","reasoning":null}}],"model":"openai/gpt-oss-20b","usage":null}
+            data: {"id":"omJK9mH-3pDw3Z-a04673d10dd4a2b4","object":"chat.completion.chunk","created":1780235476,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","reasoning":null}}],"model":"openai/gpt-oss-20b","usage":null}
 
-            data: {"id":"ofPRuET-3pDw3Z-9ed4675d6a9ba2cf","object":"chat.completion.chunk","created":1776355235,"choices":[],"model":"openai/gpt-oss-20b","usage":{"prompt_tokens":79,"total_tokens":81,"completion_tokens":2,"reasoning_tokens":0}}
+            data: {"id":"omJK9mH-3pDw3Z-a04673d10dd4a2b4","object":"chat.completion.chunk","created":1780235476,"choices":[],"model":"openai/gpt-oss-20b","usage":{"prompt_tokens":79,"total_tokens":81,"completion_tokens":2,"reasoning_tokens":0}}
 
             data: [DONE]
 
@@ -39,11 +39,9 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4675d6a9ba2cf-YUL
+                - a04673d10dd4a2b4-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
-            Retry-After:
-                - "1"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -51,29 +49,13 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - c9ad539c-2542-4042-b251-21e26135c87c-noamzn
+                - c5f8f37d-ba56-443f-ad80-956c20ab4a39-noamzn
             X-Api-Call-Start:
-                - "2026-04-16T16:00:35.531Z"
+                - "2026-05-31T13:51:16.761Z"
             X-Api-Received:
-                - "2026-04-16T16:00:35.517Z"
+                - "2026-05-31T13:51:16.744Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "16"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "1"
         status: 200 OK
         code: 200
-        duration: 233ms
+        duration: 229ms

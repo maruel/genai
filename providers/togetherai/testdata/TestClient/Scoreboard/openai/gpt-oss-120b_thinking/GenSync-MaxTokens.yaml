@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRa5N-z1gNr-9ed465cafa15a2cf",
+              "id": "omJK5A3-z1gNr-a046737078d6a2b4",
               "object": "chat.completion",
-              "created": 1776355172,
+              "created": 1780235461,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "",
                     "tool_calls": [],
-                    "reasoning": "We need to explain the theory of relativity in great detail."
+                    "reasoning": "Need to produce a detailed explanation of theory of relativity, covering"
                   },
                   "logprobs": null,
                   "finish_reason": "length",
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed465cafa15a2cf-YUL
+                - a046737078d6a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"281-1DlbZh9/bu8HBrW8uTvn9FQTATM"
-            Retry-After:
-                - "2"
+                - W/"28d-RUKd+YKjsuqONVh8C6hdPYcJufg"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - b63ed05a-19f4-4360-b0c1-ab00f0a53c49-noamzn
+                - 1a249f66-f186-4a7c-96e2-db6d58361e35-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:32.095Z"
+                - "2026-05-31T13:51:01.414Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:31.086Z"
+                - "2026-05-31T13:51:01.255Z"
             X-Api-Received:
-                - "2026-04-16T15:59:31.073Z"
+                - "2026-05-31T13:51:01.244Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 1.084s
+        duration: 424ms

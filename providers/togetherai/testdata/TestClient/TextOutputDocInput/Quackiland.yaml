@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRS62-3pDw3Z-9ed4652018bca2cf",
+              "id": "omJGRgW-3pDw3Z-a04666d50bf9a2f9",
               "object": "chat.completion",
-              "created": 1776355145,
+              "created": 1780234946,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "The capital of Quackiland is **Quack**.",
                     "tool_calls": [],
-                    "reasoning": "We have a conversation. The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The user basically says that the capital is Quack.\n\nThey ask \"What is the capital of Quackiland?\" The answer should be \"Quack.\"\n\nWe must comply with policy. There's no reason to refuse. It's a straightforward question. Just answer: Quack. Provide a concise answer.\n\nWe should be mindful: The user statement already includes \"The capital of Quackiland is Quack.\" So the answer is simple. There's no other concerns.\n\nThus just answer: Quack."
+                    "reasoning": "The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The answer: Quack. We should respond with the answer, maybe more context? But it's straightforward. Probably just \"Quack\". We'll keep it concise."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 97,
-                "total_tokens": 257,
-                "completion_tokens": 160,
+                "total_tokens": 186,
+                "completion_tokens": 89,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4652018bca2cf-YUL
+                - a04666d50bf9a2f9-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"4ce-LgusHjfpReYREaFy29ycquepjtE"
-            Retry-After:
-                - "2"
+                - W/"383-fpUsQ/b83pQZDG7AwFFoxkzGhnI"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - b8cd2c95-7b21-4dab-8991-648044498db5-noamzn
+                - 97256d59-69d1-4ff2-88d5-d050ef163f88-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:05.920Z"
+                - "2026-05-31T13:42:26.046Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:04.211Z"
+                - "2026-05-31T13:42:25.202Z"
             X-Api-Received:
-                - "2026-04-16T15:59:04.199Z"
+                - "2026-05-31T13:42:24.955Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 2.363s
+        duration: 1.315s

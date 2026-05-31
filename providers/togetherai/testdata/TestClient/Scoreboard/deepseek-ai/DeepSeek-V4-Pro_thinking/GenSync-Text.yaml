@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 126
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omKhYJr-2dTqGa-a047f2beb8c7a2b7",
+              "object": "chat.completion",
+              "created": 1780251171,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "tool_calls": [],
+                    "reasoning": "First, the user said: \"Say hello. Use only one word.\" So I need to respond with just one word, and that word should be a greeting, like \"hello\" or something similar.\n\nThe instruction is clear: I must use only one word. So I should choose a standard greeting that qualifies as \"hello.\" Common options are \"Hello,\" \"Hi,\" \"Hey,\" \"Greetings,\" etc. But since I need to use only one word, I'll pick the most straightforward one.\n\nI think \"Hello\" is perfect because it directly matches the user's request to \"say hello.\" Also, the user said \"Use only one word,\" so my entire response should be that one word.\n\nMy response should be exactly one word, so I'll just output \"Hello.\"\n\nFinal check: The user said \"Say hello. Use only one word.\" Therefore, my response is \"Hello.\""
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 91,
+                "total_tokens": 276,
+                "completion_tokens": 185,
+                "reasoning_tokens": 183
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f2beb8c7a2b7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"575-8V9UzxD3d29m5RUbuBeaDw+8g/0"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 0bd319ef-9bb4-4c32-b527-f8c0fde6aab3-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T18:12:51.346Z"
+            X-Api-Call-Start:
+                - "2026-05-31T18:12:41.558Z"
+            X-Api-Received:
+                - "2026-05-31T18:12:41.543Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 10.065s

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRuoX-3pDw3Z-9ed467695a3ba2cf",
+              "id": "omJKAam-4YNCb4-a04673e29b77a2b4",
               "object": "chat.completion",
-              "created": 1776355237,
+              "created": 1780235480,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_d7b37a4c884b4140ab1d1202",
+                        "id": "call_4b328614069042f68a4a604d",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "We should invoke the square_root function with number 132413."
+                    "reasoning": "The user requests: \"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"\n\nWe must call the tool. The function signature: square_root takes an object with property number: number. We'll call with number: 132413.\n\nWe'll output the result directly."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 152,
-                "total_tokens": 185,
-                "completion_tokens": 33,
+                "total_tokens": 249,
+                "completion_tokens": 97,
                 "reasoning_tokens": 0
               }
             }
@@ -70,13 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467695a3ba2cf-YUL
+                - a04673e29b77a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"393-UScvgn0XpQfyJXrIwnblP4dqQCs"
-            Retry-After:
-                - "2"
+                - W/"499-ihpMtcJWAdHhLzuvSfsDKv6ygNk"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,31 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 1a9c4eb8-5503-48a1-be12-c5fd4eabc332-noamzn
+                - 8cb8af91-b642-49bd-a943-10ef2328fb5e-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:37.763Z"
+                - "2026-05-31T13:51:20.250Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:37.444Z"
+                - "2026-05-31T13:51:19.515Z"
             X-Api-Received:
-                - "2026-04-16T16:00:37.435Z"
+                - "2026-05-31T13:51:19.498Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 528ms
+        duration: 818ms

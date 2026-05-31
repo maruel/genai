@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRtxz-4YNCb4-9ed467581ff6a2cf",
+              "id": "omJK9sW-4YNCb4-a04673d39a76a2b4",
               "object": "chat.completion",
-              "created": 1776355234,
+              "created": 1780235477,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"Explain the theory of relativity in great"
+                    "reasoning": "User wants an explanation of the theory of relativity in great detail"
                   },
                   "logprobs": null,
                   "finish_reason": "length",
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467581ff6a2cf-YUL
+                - a04673d39a76a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"27f-yJUGlAFLpTmeNuksZv0lU9hA0do"
-            Retry-After:
-                - "2"
+                - W/"28a-5oZg0BYdlHjUNaMrzifcEP3IC2s"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 9ff76d25-59ce-47f9-b5bf-3992b31b19e4-noamzn
+                - 83cd64ea-765b-4815-8ec4-e6dc5681e498-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:34.781Z"
+                - "2026-05-31T13:51:17.300Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:34.634Z"
+                - "2026-05-31T13:51:17.149Z"
             X-Api-Received:
-                - "2026-04-16T16:00:34.619Z"
+                - "2026-05-31T13:51:17.105Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 230ms
+        duration: 273ms

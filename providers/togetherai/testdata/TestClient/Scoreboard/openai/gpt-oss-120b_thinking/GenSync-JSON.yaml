@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRaT6-z1gNr-9ed465d2e934a2cf",
+              "id": "omJK5PX-4YNCb4-a046737558c8a2b4",
               "object": "chat.completion",
-              "created": 1776355175,
+              "created": 1780235462,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "{\n  \"final\": \"{\\\"is_fruit\\\": true}\"\n}",
+                    "content": "{\n  \"is_fruit\": true\n}",
                     "tool_calls": [],
-                    "reasoning": "User asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to respond with JSON object containing key is_fruit with boolean value true (since banana is fruit). No extra text. Ensure valid JSON. Provide exactly {\"is_fruit\": true}."
+                    "reasoning": "User asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to output JSON with key is_fruit and boolean value. Banana is fruit, so true. Provide exactly {\"is_fruit\": true}. Ensure no extra text."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 96,
-                "total_tokens": 187,
-                "completion_tokens": 91,
+                "total_tokens": 180,
+                "completion_tokens": 84,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed465d2e934a2cf-YUL
+                - a046737558c8a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"3b8-cwxWS2S6wfsNGpVtrYjbIHsBWww"
-            Retry-After:
-                - "1"
+                - W/"381-9mHEztvPLzos0E2QVUcLd7GcEsA"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 5aa72fcd-71d5-4108-82c7-744a9e4e7d76-noamzn
+                - e4bddbb4-2125-4eb7-8ee8-438bbd9a355b-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:35.636Z"
+                - "2026-05-31T13:51:02.801Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:32.346Z"
+                - "2026-05-31T13:51:02.072Z"
             X-Api-Received:
-                - "2026-04-16T15:59:32.333Z"
+                - "2026-05-31T13:51:02.026Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "16"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "1"
         status: 200 OK
         code: 200
-        duration: 3.351s
+        duration: 856ms

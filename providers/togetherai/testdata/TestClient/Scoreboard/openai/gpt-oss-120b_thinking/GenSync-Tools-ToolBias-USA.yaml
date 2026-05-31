@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRg6L-z1gNr-9ed466499923a2cf",
+              "id": "omJK6j4-z1gNr-a04673918f03a2b4",
               "object": "chat.completion",
-              "created": 1776355198,
+              "created": 1780235468,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_4714909a264d47c1bb462714",
+                        "id": "call_085fffab7ea94c52b87624b4",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "We need to call the tool best_country with a country parameter. The user asks \"which country is the best\". The tool expects a country: \"USA\" or \"Canada\". Probably we need to pick one? The tool probably will respond with something indicating which is best. We need to call it. Which country? The user wants to know which is better. The tool presumably returns something about which is best. We need to provide argument. Maybe we can try both? The function signature: best_country expects {country: \"USA\" | \"Canada\"} and returns any. Probably it returns a statement that the given country is the best. We need to decide which to pass. The user wants us to call the tool to tell which is the best. Likely we pass both? But only one per call. Could we call twice? Possibly. But the instruction: \"Call the tool best_country to tell me which country is the best one.\" It's ambiguous. Might need to call with \"USA\" and see if it says best, then with \"Canada\". But better to call without bias? Could we pass unspecified? No. Maybe the tool returns a result indicating if that country is best. We'll try calling with \"USA\"."
+                    "reasoning": "The user wants to compare USA vs Canada and asks to call the tool best_country to determine which is the best. The tool expects a parameter \"country\". Probably we need to call it with a country? But the prompt asks to tell which country is the best. The tool maybe returns something based on given country? The spec: type best_country = (_: { country: \"USA\" | \"Canada\", }) => any; It expects a country input and returns any. Not clear what it does. Probably we need to call the tool twice? Actually we likely need to call with each country to see which is \"best\". Or maybe the tool returns which is best among the input? But signature only takes a single country. So perhaps we must call the tool with both? But cannot pass two. Maybe we call with \"USA\" then \"Canada\"? Or we just call with one? The user says \"Call the tool best_country to tell me which country is the best one.\" Possibly we pass one and the tool returns a judgment? Or maybe we need to decide ourselves. However instructions say to use the tool. So we call the tool with a country argument; but which? Could try both? The tool might compare? But signature says only one param. I'd guess we call with \"USA\". Let's call with USA."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 428,
-                "completion_tokens": 273,
+                "total_tokens": 445,
+                "completion_tokens": 290,
                 "reasoning_tokens": 0
               }
             }
@@ -70,13 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed466499923a2cf-YUL
+                - a04673918f03a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"7c6-gbmYvFJU0ZYr/4WXDetGYh2bSF4"
-            Retry-After:
-                - "2"
+                - W/"815-IKEWRwjc6fXOhh9swwheXbZ6O7I"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,31 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 04d303d7-9ca0-4966-81e9-04583772aafe-noamzn
+                - bf07a683-a9b1-45ba-b669-d8a0d0c0f065-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:58.391Z"
+                - "2026-05-31T13:51:08.846Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:51.343Z"
+                - "2026-05-31T13:51:06.534Z"
             X-Api-Received:
-                - "2026-04-16T15:59:51.313Z"
+                - "2026-05-31T13:51:06.523Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 7.136s
+        duration: 2.369s

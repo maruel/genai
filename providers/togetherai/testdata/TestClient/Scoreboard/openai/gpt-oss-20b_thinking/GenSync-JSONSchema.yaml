@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRuKP-3pDw3Z-9ed4675f2e30a2cf",
+              "id": "omJKAB4-4YNCb4-a04673d9fd15a2b4",
               "object": "chat.completion",
-              "created": 1776355237,
+              "created": 1780235479,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "{ \"is_fruit\": true }",
+                    "content": "{\"is_fruit\":true}",
                     "tool_calls": [],
-                    "reasoning": "The user asks a simple question: Is a banana a fruit? They specifically instruct: \"Do not include an explanation. Reply ONLY as JSON.\" So we must output JSON only, no explanation. JSON format: a small object, maybe {\"answer\":\"yes\"} or {\"isBananaFruit\":true}. We'll satisfy constraints: only JSON, no explanation. Provide a clear answer: yes. Use JSON. Ensure correct syntax. Also ensure not to include any explanation or text outside JSON. I'll produce:\n\n{\n  \"isBananaFruit\": true\n}\n\nOr shorter: {\"answer\": \"yes\"}.\n\nBetter: {\"answer\": true}? The question: Is a banana a fruit? So answer yes. Could be {\"bananaIsFruit\": true}. That is fine. Provide JSON.\n\nThus produce JSON."
+                    "reasoning": "The user: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"\n\nThus output should be JSON, no explanation. Provide a JSON only, presumably with a key that gives answer: maybe {\"answer\":\"yes\"} or {\"banana\":\"fruit\"}.\n\nSimplest: {\"is_fruit\":true}. No explanation. That meets requirement. Ensure no stray text. Output JSON content only. They want to answer if a banana is a fruit. It's indeed a fruit. So we output JSON. No explanation. Probably {\"banana\":\"fruit\"} or {\"is_fruit\":true}. I'll do the latter."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 84,
-                "total_tokens": 259,
-                "completion_tokens": 175,
+                "total_tokens": 222,
+                "completion_tokens": 138,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4675f2e30a2cf-YUL
+                - a04673d9fd15a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"518-yYAVL3ef5ZIvSd5CQ1mpqLoVTDI"
-            Retry-After:
-                - "1"
+                - W/"47a-RI7K5eLTjMmc1dppaZosKW7AkZI"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - df0d2b33-17eb-4253-8d36-c639f84805ae-noamzn
+                - e984da5a-9af0-43a4-a4c5-de922099e386-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:37.245Z"
+                - "2026-05-31T13:51:19.428Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:36.039Z"
+                - "2026-05-31T13:51:18.162Z"
             X-Api-Received:
-                - "2026-04-16T16:00:35.803Z"
+                - "2026-05-31T13:51:18.123Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "14"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "1"
         status: 200 OK
         code: 200
-        duration: 1.627s
+        duration: 1.38s

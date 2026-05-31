@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPS3WS-4YNCb4-9ed4680ba8f2a2cf",
+              "id": "omJKFFo-4YNCb4-a0467444ca7aa2b4",
               "object": "chat.completion",
-              "created": 1776355265,
+              "created": 1780235496,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Unknown",
+                    "content": "said",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"What is the word said? Reply with only the word.\"\n\nBut we lack context: which word? There's no preceding text. The user may have been referencing something earlier but it wasn't provided. The user wants only the word. But we don't know what the word is. Could be a previous conversation or an implicit question like a riddle. This is ambiguous.\n\nGiven we have no context, likely the best we can do is respond with something like \"I'm not sure\" or \"I don't know\". But the instructions: \"Reply with only the word.\" That suggests that there is a particular word expected. Since we don't have context, maybe answer \"unknown\". But that might not satisfy.\n\nWe need to handle. The instruction says \"What is the word said? Reply with only the word.\" So maybe they want a single word answer - maybe from a previous riddle or maybe they want \"Mundane\" or such. We don't have enough context. In such ambiguous question, we might ask for clarification, but the instructions say reply only with the word. That can't ask clarifying. But we can respond with something like \"Sorry, I don't know.\" But that's 4 words.\n\nWe must decide what to do. Possibly they'd accept a shrug? But they'd likely grade wrong. Maybe default answer \"Unknown\". I'll answer \"Unknown\". That is single word.\n\nThus: \"Unknown\"."
+                    "reasoning": "The user says: \"What is the word said? Reply with only the word.\" This is ambiguous. We have no context. Possibly a riddle? Could be referencing a known phrase: \"What is the word said?\" Could be a puzzle: maybe they want the word \"said\". Or \"word\" referring to \"palabra\"? The answer is ambiguous.\n\nMaybe it's a trick: the word said is \"said\" itself. The question: \"What is the word said?\" answer: said. So reply with \"said\". Probably. There's no additional context given. So answer with said."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 79,
-                "total_tokens": 374,
-                "completion_tokens": 295,
+                "total_tokens": 210,
+                "completion_tokens": 131,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4680ba8f2a2cf-YUL
+                - a0467444ca7aa2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"781-tvJMpQbnnzGC4P53B+9T2rP3Pgs"
-            Retry-After:
-                - "2"
+                - W/"447-NJO7LEgHeTtzXl4A/daLG9psAT4"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - a3e81089-391a-4f04-9cd4-13745601916f-noamzn
+                - 6a5d35c7-4c40-40ec-90b3-481728fceaef-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:01:05.743Z"
+                - "2026-05-31T13:51:36.253Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:01:03.368Z"
+                - "2026-05-31T13:51:35.242Z"
             X-Api-Received:
-                - "2026-04-16T16:01:03.356Z"
+                - "2026-05-31T13:51:35.218Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 2.461s
+        duration: 1.115s

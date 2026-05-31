@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRnyY-z1gNr-9ed466da3e09a2cf",
+              "id": "omJK8iK-z1gNr-a04673bb5df4a2b4",
               "object": "chat.completion",
-              "created": 1776355217,
+              "created": 1780235473,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "said",
                     "tool_calls": [],
-                    "reasoning": "User: \"What is the word said? Reply with only the word.\"\n\nWe need to answer with a single word? Probably they ask a riddle? The phrase \"What is the word said?\" Could be \"said\". The word said is \"said\". Might be trick: the word \"said\" is the word they said. So answer: \"said\". Probably that's it."
+                    "reasoning": "The user: \"What is the word said? Reply with only the word.\" So they ask: \"What is the word said?\" Possibly they want the word \"said\". Could be a riddle? The phrase \"What is the word said?\" The answer maybe \"said\". They ask to reply with only the word. Likely answer: \"said\". So I should output just the word."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 79,
-                "total_tokens": 167,
-                "completion_tokens": 88,
+                "total_tokens": 170,
+                "completion_tokens": 91,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed466da3e09a2cf-YUL
+                - a04673bb5df4a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"37d-Q9ImdpMWeeLSADfiInoKg/OGRD0"
-            Retry-After:
-                - "2"
+                - W/"389-ttQw9GT7HUaf3aGQJevKewvhvD8"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - ddfb19cf-7b62-4d80-8b70-137dbcebbeac-noamzn
+                - d42b23e5-fe84-49d6-9d92-e0aa9c764d73-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:17.892Z"
+                - "2026-05-31T13:51:13.822Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:14.479Z"
+                - "2026-05-31T13:51:13.232Z"
             X-Api-Received:
-                - "2026-04-16T16:00:14.468Z"
+                - "2026-05-31T13:51:13.208Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 3.484s
+        duration: 658ms

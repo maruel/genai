@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRxj2-3pDw3Z-9ed467a6cbbaa2cf",
+              "id": "omJKCLy-4YNCb4-a0467407ac33a2b4",
               "object": "chat.completion",
-              "created": 1776355248,
+              "created": 1780235486,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "Quack.",
                     "tool_calls": [],
-                    "reasoning": "The user says:\n\n\"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n\nThe user states the capital of Quackiland is Quack. Likely answer: Quack. They might want the user to answer \"Quack\". But perhaps rhetorical: they want to confirm or ask something else. The explicit question: \"What is the capital of Quackiland?\" They already answered in the statement that it's Quack. So answer: Quack. But maybe they want a witty: The capital is Quack. The Big Canard Statue is in Quack. So it's Quack. So answer: \"Quack.\" Let's respond."
+                    "reasoning": "Ok the user says \"Quackiland\" and capital is Quack; the question re-asks: \"What is the capital of Quackiland?\" So answer: Quack. They might expect \"Quack\" as answer. Possibly we should state \"Quack.\"\n\nWe need to follow instructions: Provide answer in plain language. We can just answer: \"Quack.\"\n\nI should also note that the user repeated the question, maybe to check we are paying attention. So answer simply: Quack."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 102,
-                "total_tokens": 267,
-                "completion_tokens": 165,
+                "total_tokens": 217,
+                "completion_tokens": 115,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467a6cbbaa2cf-YUL
+                - a0467407ac33a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"4b4-hna1FGrd+Hyae45fotI1oUm1mgE"
-            Retry-After:
-                - "0"
+                - W/"3fb-SVYq56BN9mecQjAa4sLsE4zpVg8"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 57c85ce2-e0eb-4f72-a91d-e8a37028df5f-noamzn
+                - f6b531c1-76f1-4ccd-b0fe-b1cabeac6280-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:48.934Z"
+                - "2026-05-31T13:51:26.699Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:47.279Z"
+                - "2026-05-31T13:51:25.480Z"
             X-Api-Received:
-                - "2026-04-16T16:00:47.265Z"
+                - "2026-05-31T13:51:25.426Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "17"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "0"
         status: 200 OK
         code: 200
-        duration: 1.849s
+        duration: 1.352s

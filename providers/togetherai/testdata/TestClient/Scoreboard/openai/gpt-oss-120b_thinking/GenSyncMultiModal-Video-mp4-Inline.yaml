@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRmbh-z1gNr-9ed466bbeff6a2cf",
+              "id": "omJK8D2-4YNCb4-a04673b09e67a2b4",
               "object": "chat.completion",
-              "created": 1776355214,
+              "created": 1780235473,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "said",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"What is the word said? Reply with only the word.\" It's ambiguous. Probably they previously asked something but not provided here. Might be a puzzle: \"What is the word said?\" Could be a riddle: The reply is \"said\". Or they want the word \"said\". Unclear. Possibly they want the word \"said\". The instruction: \"Reply with only the word.\" So answer with a single word. Likely the answer is \"said\". I'll output that."
+                    "reasoning": "The user asks: \"What is the word said? Reply with only the word.\" This is ambiguous, maybe a puzzle? The prompt: \"What is the word said? Reply with only the word.\" No context. Could be a trick: They want the word \"said\"? Or they ask \"What is the word said?\" The answer is \"said\". So reply with only the word: \"said\". Probably that."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 79,
-                "total_tokens": 192,
-                "completion_tokens": 113,
+                "total_tokens": 175,
+                "completion_tokens": 96,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed466bbeff6a2cf-YUL
+                - a04673b09e67a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"401-zuzSfIqJbdG315VNt7si1PEZ/Sw"
-            Retry-After:
-                - "2"
+                - W/"3a0-cxCA/ddT7Lv2uFOk2SxHvTZnAHY"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 6d94bccd-e75c-41db-8f8b-853d35c47b49-noamzn
+                - caa08547-104a-4e61-9f6a-aad27ef6dd7c-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:14.373Z"
+                - "2026-05-31T13:51:13.149Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:09.850Z"
+                - "2026-05-31T13:51:11.541Z"
             X-Api-Received:
-                - "2026-04-16T16:00:09.836Z"
+                - "2026-05-31T13:51:11.509Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 4.847s
+        duration: 1.721s

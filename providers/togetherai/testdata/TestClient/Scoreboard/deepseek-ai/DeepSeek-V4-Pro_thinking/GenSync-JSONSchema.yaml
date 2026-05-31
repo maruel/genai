@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 391
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "omKhp1c-2dTqGa-a047f4092fafa2b7",
+              "object": "chat.completion",
+              "created": 1780251218,
+              "model": "deepseek-ai/DeepSeek-V4-Pro",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "{\"is_fruit\": true}",
+                    "tool_calls": [],
+                    "reasoning": "We are asked: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\" The user wants a JSON response only, with no explanation. The question is a simple yes/no question, but the response must be in JSON format. Since it says \"Reply ONLY as JSON,\" we should output a JSON object. Probably something like {\"question\": \"Is a banana a fruit?\", \"answer\": \"yes\"} or just {\"answer\": \"yes\"}. But we need to interpret the instruction: \"Do not include an explanation. Reply ONLY as JSON.\" So we should structure the response as a JSON object with the answer. Since the query is just the question, we can reply with a JSON containing the answer. Alternatively, we could just output the answer as a JSON boolean or string.\n\nI think the most straightforward is to return: {\"answer\": true} or {\"answer\": \"yes\"}. Since the instruction says \"Reply ONLY as JSON\", I'll create a JSON object.\n\nLet's decide: The question \"Is a banana a fruit?\" answer is yes. So I'll output: {\"answer\": \"yes\"}.\n\nBut to be safe, I'll make it a simple JSON with the question and answer? The instruction says: \"Reply ONLY as JSON.\" It doesn't specify the format. I'll just provide a JSON object with the answer.\n\nI'll output: {\"answer\": \"yes\"}\n\nBut wait, the user might expect a specific format? Since no format is given, I'll use a simple key-value pair."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 100,
+                "total_tokens": 423,
+                "completion_tokens": 323,
+                "reasoning_tokens": 315
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a047f4092fafa2b7-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"7cb-C3ExVCivbY7rX/ftA8EuiH+VjZ4"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 3bd04878-1e23-47d3-a04d-6b2d5fe2bcae-noamzn
+            X-Api-Call-End:
+                - "2026-05-31T18:13:38.566Z"
+            X-Api-Call-Start:
+                - "2026-05-31T18:13:34.381Z"
+            X-Api-Received:
+                - "2026-05-31T18:13:34.368Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 4.35s

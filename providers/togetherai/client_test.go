@@ -88,6 +88,7 @@ func TestClient(t *testing.T) {
 			id := m.GetID()
 			reason := (strings.Contains(id, "-Thinking") ||
 				strings.HasPrefix(id, "openai/gpt") ||
+				strings.HasPrefix(id, "deepseek-ai/DeepSeek") ||
 				(strings.HasPrefix(id, "Qwen/Qwen3") && !strings.Contains(id, "Instruct")) ||
 				strings.HasPrefix(id, "zai-org/GLM"))
 			models = append(models, scoreboard.Model{Model: m.GetID(), Reason: reason})

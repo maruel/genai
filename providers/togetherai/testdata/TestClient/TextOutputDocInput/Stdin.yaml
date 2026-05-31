@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRRyu-3pDw3Z-9ed4652018c1a2cf",
+              "id": "omJGRic-4YNCb4-a04666d50c02a2f9",
               "object": "chat.completion",
-              "created": 1776355144,
+              "created": 1780234946,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "The capital of Quackiland is **Quack**.",
                     "tool_calls": [],
-                    "reasoning": "The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The answer is \"Quack\" from the given information. The task is simple: identify location. We should respond that the capital is Quack. Probably a short answer."
+                    "reasoning": "We have a question: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The user says: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\n\nThis is a puzzle? Likely a trick: The answer: Quack. Because they state that. The user essentially repeating the statement. The answer: Quack. But we might want to express politely: \"Qud\" Actually \"Quack\"? Yes.\n\nThus answer is \"Quack\".\n\nWe might provide explanation: The statement is the answer.\n\nThus respond succinctly."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 97,
-                "total_tokens": 189,
-                "completion_tokens": 92,
+                "total_tokens": 265,
+                "completion_tokens": 168,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed4652018c1a2cf-YUL
+                - a04666d50c02a2f9-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"390-qv1oWWozNOEDWWcir5DFRgDe1vc"
-            Retry-After:
-                - "2"
+                - W/"4c7-Fa2JlnKfu+Pw49wBjZCNP6zjPuo"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 701c2f67-089d-49f6-80a8-04cdc57a726b-noamzn
+                - e4ab61f5-d8e7-4796-b528-a8d9a6bc5094-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:04.598Z"
+                - "2026-05-31T13:42:26.895Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:03.858Z"
+                - "2026-05-31T13:42:25.222Z"
             X-Api-Received:
-                - "2026-04-16T15:59:03.845Z"
+                - "2026-05-31T13:42:25.077Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 985ms
+        duration: 2.155s

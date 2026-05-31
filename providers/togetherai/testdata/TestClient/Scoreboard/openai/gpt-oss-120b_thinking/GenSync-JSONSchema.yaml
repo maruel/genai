@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRbT4-z1gNr-9ed465e7efc3a2cf",
+              "id": "omJK5e1-z1gNr-a046737aa995a2b4",
               "object": "chat.completion",
-              "created": 1776355181,
+              "created": 1780235463,
               "model": "openai/gpt-oss-120b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "{\"is_fruit\": true}",
                     "tool_calls": [],
-                    "reasoning": "We need to answer: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"\n\nSo we must output JSON only, no extra text, no explanation. Probably something like {\"answer\": true} or {\"isFruit\": true}. Should respond with a JSON object answering the question. Without extra whitespace? Provide minimal JSON.\n\nWe need to ensure no extra text before or after. Just JSON.\n\nLet's output: {\"answer\":\"Yes\"} or {\"isFruit\":true}. Probably the simplest: {\"isFruit\": true}. Ensure no extra characters."
+                    "reasoning": "The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"\n\nWe need to respond with JSON only, presumably something like {\"answer\":\"Yes\"} or {\"banana\":\"fruit\"}.\n\nWe must not include any extra text. Ensure it's valid JSON, no extraneous punctuation.\n\nProbably: {\"isFruit\":true} or {\"answer\":\"Yes\"}.\n\nWe need to answer the question: \"Is a banana a fruit?\" So answer yes.\n\nThus produce JSON. No explanation."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 84,
-                "total_tokens": 211,
-                "completion_tokens": 127,
+                "total_tokens": 200,
+                "completion_tokens": 116,
                 "reasoning_tokens": 0
               }
             }
@@ -60,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed465e7efc3a2cf-YUL
+                - a046737aa995a2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"467-FTe+8H9F0JCXFuakk05oW8RQulk"
-            Retry-After:
-                - "0"
+                - W/"427-16PxgDUzi64ernNYG08OPDVay/s"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -74,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - b56707be-a204-4c99-913b-2c9db3bc053f-noamzn
+                - 3f96947d-fe3a-4a8d-a2d9-efb26b4dc2a7-noamzn
             X-Api-Call-End:
-                - "2026-04-16T15:59:41.080Z"
+                - "2026-05-31T13:51:03.753Z"
             X-Api-Call-Start:
-                - "2026-04-16T15:59:35.727Z"
+                - "2026-05-31T13:51:02.876Z"
             X-Api-Received:
-                - "2026-04-16T15:59:35.696Z"
+                - "2026-05-31T13:51:02.866Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "2"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "18"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "0"
         status: 200 OK
         code: 200
-        duration: 5.473s
+        duration: 945ms

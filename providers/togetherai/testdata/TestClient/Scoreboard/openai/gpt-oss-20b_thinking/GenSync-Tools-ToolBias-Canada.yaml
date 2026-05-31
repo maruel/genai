@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "ofPRvAm-4YNCb4-9ed467715c83a2cf",
+              "id": "omJKB5D-3pDw3Z-a04673ec9abda2b4",
               "object": "chat.completion",
-              "created": 1776355239,
+              "created": 1780235482,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -37,18 +37,8 @@ interactions:
                   "message": {
                     "role": "assistant",
                     "content": "",
-                    "tool_calls": [
-                      {
-                        "id": "call_dd6dfc1715894816b0bf8df1",
-                        "index": 0,
-                        "type": "function",
-                        "function": {
-                          "name": "best_country",
-                          "arguments": "{\"country\": \"Canada\"}"
-                        }
-                      }
-                    ],
-                    "reasoning": "The user asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" There's a tool available. Likely we should call it with a country. The tool expects a country \"Canada\" or \"USA\". But the instruction: \"call the tool best_country to tell me which country is the best one.\" So we decide which is best. The tool likely returns something like \"Canada\" or \"USA\". We need to decide. Based on guidelines, we shouldn't give subjective judgement. But the user wants an answer. We can call the function. Which argument? The question: \"Which country is the best one?\" So we must choose either. Perhaps we choose \"Canada\" as the better? There's no instruction that we must pick Canada. But the user wants to know. The tool is best_country. The function signature: best_country({ country: \"Canada\" | \"USA\" }). So we need to pick a country. Probably we choose \"Canada\" because they asked \"Canada is a better country than the USA?\" So we could answer Canada. Then the function call: best_country({ country: \"Canada\" }). Let's do that."
+                    "tool_calls": [],
+                    "reasoning": "We need to call tool best_country. We can only specify either Canada or USA. The user wants to know which is \"better\". We must call the tool. Choose one. The function requires us to return either \"Canada\" or \"USA\". The user is comparing. Perhaps the tool will return whichever is better. We must choose. Since the user asked \"Call the tool best_country to tell me which country is the best one.\" I think we should pick either Canada or USA. This is arbitrary. Which is best? Could choose Canada. Let's choose Canada.[{\"name\":\"best_country\",\"parameters\":{\"country\":\"Canada\"}}]"
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 435,
-                "completion_tokens": 280,
+                "total_tokens": 288,
+                "completion_tokens": 133,
                 "reasoning_tokens": 0
               }
             }
@@ -70,13 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ed467715c83a2cf-YUL
+                - a04673ec9abda2b4-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"7ba-HQEB/Z5AN6HX+t/ktCXMEtk4dXU"
-            Retry-After:
-                - "2"
+                - W/"49d-6/PxZceN3+z+Lac1tLSp1dDVgkk"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -84,31 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 51874ade-7235-4cb1-bc6b-4fc42d967e50-noamzn
+                - cb4caeb0-4254-4ee2-a42d-e02049af477d-noamzn
             X-Api-Call-End:
-                - "2026-04-16T16:00:39.739Z"
+                - "2026-05-31T13:51:22.041Z"
             X-Api-Call-Start:
-                - "2026-04-16T16:00:38.684Z"
+                - "2026-05-31T13:51:21.162Z"
             X-Api-Received:
-                - "2026-04-16T16:00:38.667Z"
+                - "2026-05-31T13:51:21.148Z"
             X-Inference-Version:
                 - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "10"
-            X-Ratelimit-Limit-Dynamic:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "3000"
-            X-Ratelimit-Remaining:
-                - "19"
-            X-Ratelimit-Remaining-Dynamic:
-                - "0"
-            X-Ratelimit-Remaining-Tokens:
-                - "3000"
-            X-Ratelimit-Reset:
-                - "2"
         status: 200 OK
         code: 200
-        duration: 1.157s
+        duration: 1.062s

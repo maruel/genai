@@ -251,7 +251,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	type candidate struct {
 		id      string
 		version float64
-		params  int // math.MaxInt for "-max" models
+		params  int  // math.MaxInt for "-max" models
+		isMax   bool // true for "-max" models
 	}
 	var candidates []candidate
 	for _, mdl := range mdls {
@@ -261,27 +262,33 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		}
 		ver, _ := strconv.ParseFloat(m[1], 64)
 		var params int
-		if m[2] == "" {
-			params = math.MaxInt // "-max" model
+		isMax := m[2] == ""
+		if isMax {
+			params = math.MaxInt
 		} else {
 			params, _ = strconv.Atoi(m[2])
 		}
-		candidates = append(candidates, candidate{mdl.GetID(), ver, params})
+		candidates = append(candidates, candidate{mdl.GetID(), ver, params, isMax})
 	}
 	if len(candidates) == 0 {
 		return "", errors.New("failed to find a model automatically")
 	}
-	// Find the most recent version family.
+	// "-max" models are only appropriate for SOTA, not for cheap or good.
+	allowMax := preference == string(genai.ModelSOTA)
+	// Find the most recent version family with at least one allowed candidate.
 	maxVer := 0.0
 	for _, cand := range candidates {
-		if cand.version > maxVer {
+		if (allowMax || !cand.isMax) && cand.version > maxVer {
 			maxVer = cand.version
 		}
 	}
-	// Filter to only the most recent version family.
+	if maxVer == 0 {
+		return "", errors.New("failed to find a model automatically")
+	}
+	// Filter to only the most recent version family, excluding max models unless SOTA.
 	latest := candidates[:0]
 	for _, cand := range candidates {
-		if cand.version == maxVer {
+		if cand.version == maxVer && (allowMax || !cand.isMax) {
 			latest = append(latest, cand)
 		}
 	}

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 803
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_19b9b55edfc94926b7def290","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_19b9b55edfc94926b7def290"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Target: Calculate the square root of 132413.\n    *   Tool used: `square_root` (already executed in the previous turn, result: 363.89).\n    *   Constraint 1: Reply with *only* the result.\n    *   Constraint 2: Do *not* give an explanation.\n\n2.  **Retrieve the Result:**\n    *   The tool returned `363.89`.\n\n3.  **Format the Output:**\n    *   Strictly the number: `363.89`\n\n4.  **Final Verification:**\n    *   Does the output contain only the result? Yes.\n    *   Is there any explanation? No.\n    *   Matches tool output? Yes. (Note: standard precision from the tool is 2 decimal places here, I will output exactly what the tool provided).\n\n5.  **Construct Final Response:**\n    *   `363.89`","role":"assistant"}}],"created":1780236023,"id":"chatcmpl-mn2hSTagxTQipmC9","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":242,"completion_tokens_details":{"reasoning_tokens":231},"prompt_tokens":96,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":338}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802360234548483e6498
+            Req-Arrive-Time:
+                - "1780236023459"
+            Req-Cost-Time:
+                - "4320"
+            Resp-Start-Time:
+                - "1780236027779"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4319"
+        status: 200 OK
+        code: 200
+        duration: 4.344s

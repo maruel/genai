@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: Is a banana a fruit?\n    *   Constraint 1: Do not include an explanation.\n    *   Constraint 2: Reply ONLY as JSON.\n    *   Constraint 3: Follow the provided schema: `{\"is_fruit\": bool}`.\n\n2.  **Determine the Answer:**\n    *   Is a banana a fruit? Yes (botanically and culinarily).\n    *   `is_fruit` = true.\n\n3.  **Format the Output:**\n    *   JSON format: `{\"is_fruit\": true}`\n    *   Check constraints: Only JSON? Yes. No explanation? Yes. Matches schema? Yes.\n\n4.  **Final Output Generation:**\n    `{\"is_fruit\": true}`\n    (Ensure no markdown formatting like ```json ... ``` if \"ONLY as JSON\" is strictly interpreted, though usually standard JSON string is safest. I will output just the raw JSON string to be perfectly compliant with \"ONLY as JSON\").\n    Wait, often LLM evaluators prefer raw JSON without markdown blocks when \"ONLY\" is specified. Let''s provide exactly `{\"is_fruit\": true}`.\n    Actually, let''s just output `{\"is_fruit\": true}`.\n    Wait, `bool` in JSON is `true` or `false`.\n    So, `{\"is_fruit\": true}`.\n    Done.","role":"assistant"}}],"created":1780236159,"id":"chatcmpl-115effcf-9f87-90f3-b431-fdef0d878761","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":325,"completion_tokens_details":{"reasoning_tokens":314},"prompt_tokens":41,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":366}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1780236159440"
+            Req-Cost-Time:
+                - "6102"
+            Resp-Start-Time:
+                - "1780236165543"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "6102"
+        status: 200 OK
+        code: 200
+        duration: 6.354s

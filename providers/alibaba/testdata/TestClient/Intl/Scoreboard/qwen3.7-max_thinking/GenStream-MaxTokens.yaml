@@ -1,0 +1,1027 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 209
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"max_tokens":16,"stream_options":{"include_usage":true},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","created":1780236088,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Here"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"'s a thinking process"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" that leads to the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" comprehensive"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" explanation of the theory"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of relativity:"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n\n1. "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Deconstruct the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Prompt:**\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Topic"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":** Theory of Rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativity.\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Requirement"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":** Explain in *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"great detail"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"*.\n    *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   **Target Audience"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":** General audience but"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" seeking a deep,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" thorough"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" understanding (needs to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" balance mathematical concepts"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" with intuitive analogies"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":")."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n\n2. "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Initial Structuring"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" &"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Outlining:**\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Introduction"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":** What"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" is it? Who"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" created it? The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" two parts (Special"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" and General"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"). Why is it"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" revolutionary"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"?\n    *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   **Part "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"1: Special Rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativity (19"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"05):**\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   Context"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"/Background (Max"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"well's equations,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" the aether problem"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":","},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Michelson-Mor"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ley).\n       "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   The Two"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Postulates.\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   Con"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"sequences (Time dilation"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", Length"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" contraction, Relativity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of simultaneity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", Mass-energy equivalence"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":").\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   Spacetime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (Minkowski"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" space).\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Part"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" 2: General"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Relativity (1"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"915):**"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Context/Background ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"The problem with Newton"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ian gravity, the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Equivalence Principle)."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" The Core Concept ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Curved spacetime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":").\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Mathematics (Einstein"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Field"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Equations - conceptual"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" overview).\n       "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   Consequences"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"/Predictions ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Gravitational time"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" dilation, light bending"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", black"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" holes, gravitational waves"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", expanding universe)."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n    *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Experimental Verification:**"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" How do we"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" know it's true"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"? (GPS,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" E"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ddington eclipse,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" LIGO,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" etc.).\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Un"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"resolved Issues/Conclusion"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":** Quantum gravity,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" dark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" matter/energy,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" legacy"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":".\n\n3."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"  **Drafting"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" the Content - Section"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" by Section:**\n\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"    *   **"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Introduction:**\n       "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   Hook:"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" It changed our understanding"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of space,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" time, and gravity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":".\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   Define the two"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" pillars"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":": Special Relativity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (SR"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":") deals with constant"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" speeds; General Rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativity ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"GR) deals with"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" acceleration and gravity."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n\n    *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Part 1"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":": Special Relativity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (SR):**\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *The Problem:*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Late 19"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"th-century physics had"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" a clash. Newton"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" said velocities add up"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":". Maxwell"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" said the speed of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" light ($"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"c$) is"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" constant. The \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"luminiferous"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" a"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ether\" was proposed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" but the Michelson"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"-Mor"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ley experiment found nothing"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":".\n       "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   *The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Postulates:*\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"            1."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"  Principle of Rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativity: Physics laws"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" are the same"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" in all inertial"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (non-acceler"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ating) frames."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n            "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"2.  In"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"variance of $"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"c$: The speed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of light in a"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" vacuum is the same"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" for all observers,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" regardless of their motion"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" or the source's"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" motion.\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"The Mind-Bending"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Consequences:* ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Use"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" analogies here)."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n            *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *Relativity of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Simultaneity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":* The train and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" lightning thought experiment."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Two events simultaneous to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" one observer aren't"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" another.\n           "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   *Time"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Dilation:* The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" light clock thought experiment"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":". Moving clocks"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" tick slower. Formula"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" $\\Delta t'"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" = \\gamma \\"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Delta t$. Explain"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" the Lorentz"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" factor ($\\gamma"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"$). Twin Par"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"adox (briefly"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" resolve it: acceleration"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" breaks the symmetry"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":").\n            *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   *Length Con"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"traction:* Moving objects"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" shrink in the direction"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of motion. Formula"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":": $L ="},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" L_0 /"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" \\gamma$.\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"            *   *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Mass-Energy Equ"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ivalence:* $E"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"=mc^2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"$. What it actually"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" means ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"mass is concentrated energy"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":","},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" rest energy). Mention"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" relativistic momentum/m"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ass (clarify"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" that \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"relativistic mass"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\" is an outdated"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" concept; invariant mass"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" is preferred"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", but total energy"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" increases).\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Spacetime:*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Hermann Minkowski"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"'s contribution. "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"3D space +"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" 1D time"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" = 4D"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" spacetime. The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" spacetime interval ($"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ds"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"^2$)"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" is invariant. Light"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" cones.\n\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Part"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" 2: General"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Relativity (GR"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"):**\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   *The Problem"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" with SR:* It"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" only works for *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"inertial*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" frames. It doesn"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"'t include"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" gravity. Newton's"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" gravity acts instantaneously"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", violating"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" SR's speed limit"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" ($c$"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":").\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   *The Equ"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ivalence Principle:* Einstein"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"'s \"happ"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"iest thought.\" Falling"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" in an elevator vs"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":". floating in space"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":". Acceleration and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" gravity are locally ind"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"istinguishable.\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"The Core Idea:*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Gravity is *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"not* a force"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":". It is the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" curvature of spacetime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" caused by mass and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" energy. \"M"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"atter tells spac"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"etime how to curve"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"; spacetime tells"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" matter how to move"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\" (John Arch"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ibald Wheeler quote"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" is essential).\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *The Rubber Sheet"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Analogy:* Use"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" it, but point"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" out its flaws ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"it relies"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" on external gravity to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" explain gravity"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"). Better analogy:"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" ants"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" on an apple,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" or drawing straight lines"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" on a curved"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" surface (geodes"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ics)."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *The Math ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Concept"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ual):* Einstein"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Field Equations ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"EFE). $G"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"_{\\mu\\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"u} + \\"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Lambda g_{\\"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"mu\\nu}"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" = \\frac{"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"8\\pi G"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"}{c^4"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"} T_{\\"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"mu\\nu}"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"$. Break down the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" terms"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":": Left side ="},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" geometry/curvature"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"; Right"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" side = matter/"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"energy. Mention the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" cosm"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ological constant ($\\"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Lambda$).\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Predictions and Phen"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"omena:*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n            *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *Gravitational"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Time Dilation:*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Clocks tick slower"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" in stronger gravitational"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" fields (Interstellar"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" movie reference helps)."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n            *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   *Gravit"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ational Lensing:*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Light bends around massive"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" objects.\n           "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   *Black"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Holes:* When"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" curvature becomes infinite ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"singularities) and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" escape"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" velocity exceeds $c"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"$ (event horizon"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"). Schwar"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"zschild radius."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n            *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *Gravitational"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Waves:* Ripples"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" in spacetime from"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" accelerating masses.\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"            *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   *Cosm"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ology:* The universe"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" isn't static."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Expanding universe ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"F"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"riedmann equations)."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n\n    *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Experimental Verification ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Crucial for"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" a \"detailed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\" explanation):**"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *SR:* Particle"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" accelerators (mu"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ons living longer),"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" atomic clocks on planes"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Hafele-"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Keating).\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"GR:* 1"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"919 E"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ddington eclipse ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"light bending), per"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ihelion pre"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"cession of Mercury,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" GPS satellites (need"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" both SR"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" and GR corrections),"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" LIGO (grav"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"itational waves in "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"2015"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"), Event Horizon Telescope"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (black hole images"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":").\n\n    *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   **The Frontier"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" / Unresolved Issues"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":**"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" The clash with Quantum"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Mechanics. QM"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" is discrete"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" and probabilistic;"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" GR"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" is continuous and deterministic"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":".\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   The search for"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Quantum Gravity ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"String Theory, Loop"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Quantum Gravity).\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"        *   Dark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Matter and Dark Energy"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (do we need"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" new"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" particles, or does"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" GR need modification at"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" galactic scales?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Mention MOND briefly"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" as an alternative,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" though GR+Dark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" sector is the standard"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":").\n\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   **Conclusion"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":**\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   Summarize"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" the paradigm shift."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" From absolute"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" space/time to dynamic"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" spacetime. Final"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" inspiring thought.\n\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"4. "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Review and Ref"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ine:**\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   *T"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"one:* Informative"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", authoritative, yet"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" accessible.\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   *Formatting"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":":* Use bolding"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", bullet points,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" and clear headings to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" make this massive wall"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of text readable."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Use LaTeX formatting for"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" equations"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" to make them look"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" professional.\n   "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   *Accuracy"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Check:*\n       "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *   Did"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" I accidentally say mass"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" increases with speed?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *Correction: Clar"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ify that \"rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativistic mass"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\" is outdated;"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" invariant"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" mass stays the same"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", but"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" relativistic momentum and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" total energy increase.*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"   Is the explanation"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" of the Twin Par"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"adox accurate? *"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"Yes,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" emphasize the change in"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" reference frames ("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"acceleration) for"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" the traveling twin.*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n        *  "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Are the EFE terms"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" correct? *Yes"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":", Einstein tensor +"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" cosmological constant ="},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" stress-energy tensor.*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"\n\n5. "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" **Final Polish:**"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" (This leads to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" the provided"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" good output, ensuring"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" seamless transitions between sections"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" and a logical"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" flow from the historical"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" context to modern front"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"iers.) *Self"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"-correction during drafting"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":": Make sure to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" explicitly state that Special"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativity is a \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"special\" case of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" General Rel"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"ativity.* Let's"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" generate the response."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" Post-generation check confirms"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" all constraints met beautifully"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":". High detail,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" structured"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" well. Keep it"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" engaging. Let"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":"'s go. =>"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":" *Output generated.*"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"Albert","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":" Einstein’s Theory of","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":" Relativity is one","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":" of the two foundational","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":" pillars of modern","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"length","logprobs":null}],"created":1780236088,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-de43622a-6694-9c75-8efb-a17af8e85d23","choices":[],"created":1780236088,"object":"chat.completion.chunk","usage":{"total_tokens":1787,"completion_tokens":1766,"prompt_tokens":21,"completion_tokens_details":{"reasoning_tokens":1745},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1780236088010"
+            Req-Cost-Time:
+                - "1226"
+            Resp-Start-Time:
+                - "1780236089237"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1226"
+        status: 200 OK
+        code: 200
+        duration: 1.477s

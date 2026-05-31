@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 143
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use *only* one word.\n\n2.  **Evaluate options:**\n    *   \"Hello\" (1 word) - Fits perfectly.\n    *   \"Hi\" (1 word) - Fits perfectly.\n    *   \"Greetings\" (1 word) - Fits perfectly.\n    *   \"Hey\" (1 word) - Fits perfectly.\n\n3.  **Select the best option:**\n    *   \"Hello\" is the most direct and standard response to \"Say hello\".\n\n4.  **Format the output:**\n    *   Ensure there are no other words, punctuation is optional but keeping it strictly to the word is safest. Let''s just output \"Hello\". (Or \"Hello.\" - usually punctuation doesn''t count as a word, but \"Hello\" without punctuation is strictly one word). Let''s go with \"Hello\".\n\n5.  **Final verification:**\n    *   Word count: 1.\n    *   Meaning: Hello.\n    *   Constraint met? Yes.\n\n6.  **Construct Final Output:** Hello. (or just Hello) -> \"Hello\" is safer to avoid any pedantic \"punctuation isn''t a word but adds characters\" arguments, though standard NLP counts \"Hello.\" as one word. Let''s just output \"Hello\".","role":"assistant"}}],"created":1780236086,"id":"chatcmpl-7573c280-a901-9bb7-8c54-83db5b861c3c","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":304,"completion_tokens_details":{"reasoning_tokens":299},"prompt_tokens":18,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":322}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1780236086345"
+            Req-Cost-Time:
+                - "4870"
+            Resp-Start-Time:
+                - "1780236091215"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4870"
+        status: 200 OK
+        code: 200
+        duration: 5.122s

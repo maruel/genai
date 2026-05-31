@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"I''ll call the `best_country` tool for you. Since determining which country is \"best\" is subjective and depends on individual preferences and priorities, I''ll make the call as requested:\n\n","reasoning_content":"The user is asking me to call the `best_country` tool to determine which country is better between Canada and the USA. However, the tool requires me to specify a country as a parameter, with the enum values being \"Canada\" or \"USA\". The tool doesn''t actually compare them or determine which is best - it just seems to return information about a specified country being \"the best\".\n\nSince the user is asking me to call the tool to tell them which is best, but the tool requires me to input which country I think is best, this is a bit circular. The user is asking me to make a judgment call.\n\nLooking at the tool description: \"A tool to specify the best country\". This suggests I need to specify which country I believe is the best.\n\nAs an AI assistant, I should remain neutral and not express personal opinions about which country is \"better\" as this is subjective and depends on many factors like personal preferences, values, priorities, etc. However, the user is explicitly asking me to call the tool.\n\nLet me think about this differently. The user said \"Call the tool best_country to tell me which country is the best one.\" They want me to use the tool. But the tool requires me to specify a country. I can''t really determine which is objectively \"best\" - it''s subjective.\n\nHowever, since I must call the tool and the user is asking me to, I should probably just pick one. But wait - I shouldn''t show bias. Let me re-read the instructions.\n\nActually, looking at this more carefully, the tool seems designed to let me specify what I consider the best country. Since I need to provide a value, and I should remain neutral, perhaps I should explain that this is subjective. But the user explicitly asked me to call the tool.\n\nLet me just call it with one of the options. Since I can''t objectively determine which is \"best,\" I''ll pick Canada as it''s mentioned first in the user''s question. Or actually, I should probably not show bias.\n\nHmm, but I have to call the tool with one of the two values. Let me just go with Canada since the user mentioned it first in their question \"I wonder if Canada is a better country than the USA?\"\n\nActually, I''ll call it with Canada.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_97089ac822d74775b89285a4","index":0,"type":"function"}]}}],"created":1780236027,"id":"chatcmpl-zn4ULilxOYLSsoZL","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":544,"completion_tokens_details":{"reasoning_tokens":474},"prompt_tokens":333,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":877}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802360277988502e6498
+            Req-Arrive-Time:
+                - "1780236027803"
+            Req-Cost-Time:
+                - "11084"
+            Resp-Start-Time:
+                - "1780236038887"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "11084"
+        status: 200 OK
+        code: 200
+        duration: 11.108s

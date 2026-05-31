@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 267
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Evaluate the Question against the Premises:**\n    *   The question directly asks for the capital of Quackiland.\n    *   Premise 1 explicitly states: \"The capital of Quackiland is Quack.\"\n\n3.  **Formulate the Answer:**\n    *   The capital of Quackiland is Quack.\n\n4.  **Review and Refine:**\n    *   Keep it concise and direct. \"Quack\" or \"The capital of Quackiland is Quack.\" Both are correct. I''ll provide a clear, direct answer. \n    *   No trick questions detected, just a simple reading comprehension / logic check.\n\n5.  **Final Output Generation:** \"The capital of Quackiland is Quack.\" (or just \"Quack\"). Let''s go with a complete sentence for politeness and clarity. \"The capital of Quackiland is Quack.\" Keep it simple. Let''s just say \"Quack.\" Actually, \"The capital of Quackiland is Quack.\" is better. Let''s write that. Wait, the prompt is extremely simple. I''ll just state the answer clearly. \"Quack\" is the core answer. Let''s say: \"The capital of Quackiland is Quack.\"","role":"assistant"}}],"created":1780236211,"id":"chatcmpl-de080477-c561-97af-9530-0c1bb3373c8a","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":348,"completion_tokens_details":{"reasoning_tokens":333},"prompt_tokens":39,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":387}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1780236211034"
+            Req-Cost-Time:
+                - "5886"
+            Resp-Start-Time:
+                - "1780236216920"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "5885"
+        status: 200 OK
+        code: 200
+        duration: 6.137s

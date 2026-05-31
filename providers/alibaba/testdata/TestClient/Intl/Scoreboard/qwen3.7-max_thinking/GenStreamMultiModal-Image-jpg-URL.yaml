@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 268
+        content_length: 347
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.7-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Based on the information provided in your statement, the capital of Quackiland is **Quack**.","role":"assistant"}}],"created":1780193919,"id":"chatcmpl-66cbf8af-2646-940b-a5dc-89df8476da0f","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":20,"prompt_tokens":41,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":61}}'
+        body: '{"error":{"message":"<400> InternalError.Algo.InvalidParameter: The provided messages input is invalid. The error info is [Unexpected item type in content.].","type":"invalid_request_error","param":null,"code":"invalid_parameter_error"},"id":"chatcmpl-6e21bc91-4ea0-9075-bb35-bceadbed52f9","request_id":"6e21bc91-4ea0-9075-bb35-bceadbed52f9"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1780193919067"
+                - "1780236222530"
             Req-Cost-Time:
-                - "1430"
+                - "99"
             Resp-Start-Time:
-                - "1780193920498"
+                - "1780236222629"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1430"
-        status: 200 OK
-        code: 200
-        duration: 2.435s
+                - "98"
+        status: 400 Bad Request
+        code: 400
+        duration: 350ms

@@ -9,7 +9,7 @@ interactions:
         content_length: 272
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
+            {"model":"qwen3.6-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,21 +19,21 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 681
-        body: '{"choices":[{"message":{"content":"Based on the information provided in your first sentence, the capital of Quackiland is **Quack**.\n\nThe text explicitly states: \"The capital of Quackiland is Quack.\" The mention of the Big Canard Statue simply adds context that this statue is located within that capital city.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":59,"total_tokens":100,"completion_tokens_details":{"text_tokens":59},"prompt_tokens_details":{"text_tokens":41}},"created":1775422717,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-lNYRI9Zw5hOpzskb"}'
+        content_length: 497
+        body: '{"choices":[{"message":{"content":"Based on the information provided in the first sentence, the capital of Quackiland is **Quack**.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":21,"total_tokens":62,"completion_tokens_details":{"text_tokens":21},"prompt_tokens_details":{"text_tokens":41}},"created":1780255231,"system_fingerprint":null,"model":"qwen3.6-35b-a3b","id":"chatcmpl--XPjAEJ8Iaf94LAG"}'
         headers:
             Content-Length:
-                - "681"
+                - "497"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217754227160932940e1372
+                - 0bc2426217802552296816387ef249
             Req-Arrive-Time:
-                - "1775422716096"
+                - "1780255229686"
             Req-Cost-Time:
-                - "1161"
+                - "1092"
             Resp-Start-Time:
-                - "1775422717258"
+                - "1780255230779"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1161"
+                - "1092"
         status: 200 OK
         code: 200
-        duration: 1.195s
+        duration: 1.378s

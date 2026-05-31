@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 283
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user provides a short text about a fictional place called \"Quackiland\" and asks a specific question based on that text.\n    *   Text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n\n2.  **Identify the Answer:** I need to look for the sentence that defines the capital of Quackiland.\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n\n3.  **Formulate the Output:** The answer is explicitly stated in the text.\n    *   Answer: Quack.\n\n4.  **Final Review:** Does the answer directly address the prompt using the provided information? Yes.\n\n5.  **Construct Final Response:** \"The capital of Quackiland is Quack.\" or simply \"Quack\". I will provide a complete sentence for clarity.\n\n    *   *Draft:* The capital of Quackiland is Quack.\n\n6.  **Final Output Generation.** cw","role":"assistant"}}],"created":1780236072,"id":"chatcmpl-bfNrdZUfhFTPz0Rp","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":256,"completion_tokens_details":{"reasoning_tokens":240},"prompt_tokens":44,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":300}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802360721098779e6498
+            Req-Arrive-Time:
+                - "1780236072114"
+            Req-Cost-Time:
+                - "4347"
+            Resp-Start-Time:
+                - "1780236076462"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4347"
+        status: 200 OK
+        code: 200
+        duration: 4.371s

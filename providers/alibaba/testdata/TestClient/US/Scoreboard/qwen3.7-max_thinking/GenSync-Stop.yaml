@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 175
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Canada ","reasoning_content":"Here''s a thinking process that leads to the comprehensive guide on Canada:\n\n1.  **Deconstruct the Prompt:**\n    *   **Topic:** Canada.\n    *   **Level of Detail:** \"Great details\" (needs to be comprehensive, covering various aspects like geography, history, culture, economy, politics, etc.).\n    *   **Starting Phrase:** Must start exactly with \"Canada is\".\n\n2.  **Outline the Structure:**\n    To provide a highly detailed and well-organized response, I should divide the essay into logical sections:\n    *   **Introduction:** Basic definition, location, size, and core identity (starting with the required phrase).\n    *   **Geography & Climate:** Landscapes, regions, climate zones, natural resources.\n    *   **History:** Indigenous peoples, European colonization, confederation, modern era.\n    *   **Government & Politics:** System of government, constitution, provinces/territories, international relations.\n    *   **Economy:** Key industries, trade, currency, economic challenges.\n    *   **Demographics & Society:** Population, immigration, languages, religion, urbanization.\n    *   **Culture & Identity:** Arts, sports, cuisine, national symbols, \"Canadian identity.\"\n    *   **Environment & Wildlife:** Biodiversity, national parks, environmental policies.\n    *   **Conclusion:** Summary of Canada''s global standing and future outlook.\n\n3.  **Drafting the Content - Section by Section:**\n\n    *   **Introduction:**\n        *   *Constraint Check:* Must start with \"Canada is\".\n        *   *Drafting:* Canada is a vast, diverse, and highly developed North American country... Mention it''s the second-largest country by landmass. Bordering the US. Bilingual, multicultural.\n\n    *   **Geography & Climate:**\n        *   *Size:* ~9.98 million sq km. Longest coastline in the world.\n        *   *Regions:*\n            *   Atlantic Canada (Maritimes + Newfoundland).\n            *   Central Canada (Quebec, Ontario).\n            *   Prairies (Manitoba, Saskatchewan, Alberta).\n            *   West Coast (British Columbia).\n            *   The North (Territories: Yukon, NWT, Nunavut).\n        *   *Climate:* Ranges from temperate rainforests (BC) to arctic tundra (North). Famous for harsh winters, but summers can be hot.\n\n    *   **History:**\n        *   *Pre-contact:* Indigenous peoples (First Nations, Inuit, Métis) lived there for millennia.\n        *   *Colonization:* Norse (L''Anse aux Meadows), then French (Jacques Cartier, Samuel de Champlain) and British. Seven Years'' War (Britain wins).\n        *   *Confederation:* 1867 (British North America Act). John A. Macdonald.\n        *   *20th Century:* Statute of Westminster (1931), Patriation of the Constitution (1982) under Pierre Trudeau. Truth and Reconciliation regarding residential schools.\n\n    *   **Government & Politics:**\n        *   *System:* Federal parliamentary democracy and constitutional monarchy (King Charles III is head of state, represented by the Governor General).\n        *   *Branches:* Executive (PM and Cabinet), Legislative (House of Commons, Senate), Judicial (Supreme Court).\n        *   *Divisions:* 10 provinces (have constitutional powers) and 3 territories (federal delegates).\n        *   *Political Landscape:* Liberal Party, Conservative Party, NDP, Bloc Québécois, Greens.\n\n    *   **Economy:**\n        *   *Type:* Highly developed, mixed economy. 9th/10th largest GDP globally.\n        *   *Sectors:*\n            *   Primary: Forestry, mining, oil/gas (Athabasca oil sands), agriculture (canola, wheat).\n            *   Secondary: Manufacturing (automotive in Ontario, aerospace in Quebec).\n            *   Tertiary: Services, finance (Toronto is a major hub), tech (Waterloo, Vancouver, Montreal AI).\n        *   *Trade:* Heavily reliant on the US (USMCA/NAFTA).\n\n    *   **Demographics & Society:**\n        *   *Population:* ~40 million (recently crossed this milestone). Low density.\n        *   *Immigration:* One of the highest per-capita immigration rates in the world. Points-based system.\n        *   *Languages:* Official bilingualism (English and French). Quebec is predominantly Francophone. Indigenous languages are recognized but many are endangered.\n        *   *Multiculturalism:* Official policy since 1971. \"Mosaic\" vs. American \"Melting Pot.\"\n\n    *   **Culture & Identity:**\n        *   *Values:* Politeness, egalitarianism, peacekeeping (historically), universal healthcare (Medicare).\n        *   *Sports:* Ice hockey (winter), Lacrosse (summer). CFL (football), curling, basketball (Toronto Raptors).\n        *   *Arts/Literature:* Group of Seven (painting), Margaret Atwood, Alice Munro, Drake, The Weeknd, Celine Dion, Ryan Reynolds.\n        *   *Food:* Poutine, maple syrup, butter tarts, Nanaimo bars, tourtière.\n\n    *   **Environment & Wildlife:**\n        *   *Fauna:* Moose, beaver (national symbol), polar bears, caribou, Canada goose.\n        *   *Flora:* Maple tree (leaf on the flag), boreal forests.\n        *   *Conservation:* Extensive national/provincial park systems. Challenges with oil sands and climate change targets.\n\n    *   **Conclusion:**\n        *   Summarize the duality of Canada: vast wilderness vs. highly modern cities, historical injustices vs. progressive modern policies. A middle power with significant global influence.\n\n4.  **Review and Refine:**\n    *   *Check against constraints:* Did I start with \"Canada is\"? Yes. Is it in \"great detail\"? Yes, it covers multiple disciplines.\n    *   *Tone:* Informative, objective, respectful (especially regarding Indigenous history), and engaging.\n    *   *Formatting:* Use bolding, bullet points, and headers to make this massive wall of text readable and digestible.\n    *   *Fact-Checking:*\n        *   Population: ~40 million (hit in 2023).\n        *   Monarch: King Charles III.\n        *   Constitution: 1982.\n        *   Provinces/Territories: 10 and 3.\n        *   Longest coastline: Yes.\n        *   Second largest country by *total* area (Russia is first; China/US are close but Canada is 2nd by total, 4th by land area). Clarified as \"second-largest country in the world by total area.\"\n\n5.  **Final Polish:** (This leads to the provided good output, ensuring smooth transitions between paragraphs and a professional, encyclopedic yet accessible tone.) Let''s generate the response. Post-generation check of the first words: \"Canada is\". Perfect. Keep it rolling. Ensure deep dives into Quebec''s distinct society and the Indigenous reconciliation process, as these are crucial to *modern* Canadian details. Include the USMCA. Mention universal healthcare. Good to go. Let''s write. \n*Self-correction during drafting: Make sure not to sound like a tourism brochure. Acknowledge challenges like the housing crisis, healthcare strain, and the legacy of residential schools to provide a truly comprehensive and realistic picture.* Let''s add a \"Contemporary Challenges\" section.\n\n6.  **Final Output Generation.** (Matches the provided good response).","role":"assistant"}}],"created":1780235978,"id":"chatcmpl-uHjOYFY0abkX3V8G","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":1858,"completion_tokens_details":{"reasoning_tokens":1683},"prompt_tokens":22,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":1880}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802359787448176e6498
+            Req-Arrive-Time:
+                - "1780235978749"
+            Req-Cost-Time:
+                - "34869"
+            Resp-Start-Time:
+                - "1780236013619"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "34869"
+        status: 200 OK
+        code: 200
+        duration: 34.896s

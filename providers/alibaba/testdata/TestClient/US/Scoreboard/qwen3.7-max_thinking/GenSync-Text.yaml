@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 133
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use *only* one word.\n\n2.  **Evaluate Options:**\n    *   \"Hello\" (1 word) - Fits perfectly.\n    *   \"Hi\" (1 word) - Fits perfectly.\n    *   \"Greetings\" (1 word) - Fits perfectly.\n    *   \"Hey\" (1 word) - Fits perfectly.\n\n3.  **Select the Best Option:**\n    *   \"Hello\" is the most direct and standard response to \"Say hello\".\n\n4.  **Format the Output:**\n    *   Ensure there are no punctuation marks if strictly interpreting \"one word\" (though a period is usually fine, it''s safer to just output the word itself, or just the word with standard capitalization). Let''s just output \"Hello\". Wait, punctuation isn''t a word, but to be absolutely safe against strict parsers, just \"Hello\" or \"Hello.\" is fine. Let''s go with \"Hello\".\n\n5.  **Final Verification:**\n    *   Word count: 1.\n    *   Meaning: Hello.\n    *   Constraint met? Yes.\n\n6.  **Construct Final Output:** Hello. (or just Hello) -> \"Hello\" is safest. Let''s just output \"Hello\". Keep it simple. No punctuation to avoid any \"that''s a word and a punctuation\" pedantry, though usually punctuation is ignored. Actually, \"Hello\" is perfectly fine. Let''s just write \"Hello\".","role":"assistant"}}],"created":1780235932,"id":"chatcmpl-7WT3fVx64AFPq-rh","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":341,"completion_tokens_details":{"reasoning_tokens":335},"prompt_tokens":18,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":359}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802359327657857e6498
+            Req-Arrive-Time:
+                - "1780235932770"
+            Req-Cost-Time:
+                - "6630"
+            Resp-Start-Time:
+                - "1780235939400"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "6629"
+        status: 200 OK
+        code: 200
+        duration: 6.991s

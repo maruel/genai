@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 267
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Extract the Answer:**\n    *   The question asks for the capital of Quackiland.\n    *   Premise 1 explicitly states: \"The capital of Quackiland is Quack.\"\n\n3.  **Formulate the Output:**\n    *   State the answer clearly based on the provided text.\n    *   Answer: Quack.\n\n4.  **Review against constraints:**\n    *   Direct, concise, accurate based *only* on the provided text.\n    *   No trick questions detected, just a simple reading comprehension/logic check.\n\n5.  **Final Answer Generation:** \"The capital of Quackiland is Quack.\" (or just \"Quack\"). Let''s go with a complete but concise sentence. \"The capital of Quackiland is Quack.\" or simply \"Quack.\" Both are fine. \"Quack\" is the most direct. Let''s write \"The capital of Quackiland is Quack.\" to be polite and complete. Actually, just \"Quack\" is perfectly succinct. I''ll provide a direct answer. \"Quack.\" or \"The capital of Quackiland is Quack.\" Let''s use the latter for clarity.\n\n*Self-Correction during thought process:* Keep it simple.\n\"The capital of Quackiland is Quack.\"\nDone.","role":"assistant"}}],"created":1780236066,"id":"chatcmpl-PwH6837i3ioPsYt3","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":363,"completion_tokens_details":{"reasoning_tokens":348},"prompt_tokens":39,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":402}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802360658398730e6498
+            Req-Arrive-Time:
+                - "1780236065844"
+            Req-Cost-Time:
+                - "6245"
+            Resp-Start-Time:
+                - "1780236072090"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "6245"
+        status: 200 OK
+        code: 200
+        duration: 6.269s

@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"I''ll call the `best_country` tool to specify which country is the best.\n\n","reasoning_content":"The user is asking me to call the `best_country` tool to tell them which country is the best one, specifically comparing the USA and Canada.\n\nLooking at the tool definition:\n- Name: `best_country`\n- Parameters: `country` (required, enum: [\"USA\", \"Canada\"])\n\nThe user is asking me to determine which is \"better\" between USA and Canada, but the tool seems to just specify \"the best country\" and takes a single country parameter. The user is asking me to call the tool to tell them which one is best.\n\nHowever, I need to think about this carefully. The tool takes a single country as input and \"specifies the best country\". This seems like it might just return information about that country being the best, rather than comparing two countries.\n\nThe user is asking me to determine which is better and call the tool. But I don''t have a tool that compares countries - I only have a tool that specifies a country as the best.\n\nGiven the user''s request \"Call the tool best_country to tell me which country is the best one\", I think they want me to pick one and call the tool. But which one should I pick?\n\nActually, let me re-read the user''s message: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nThe user is asking me to call the tool to determine which is best. But the tool doesn''t compare - it just takes one country. I think the user might be expecting me to make a judgment call and then call the tool with that country.\n\nHowever, I should be careful here. This seems like it could be a trick question or a test. The tool is called \"best_country\" and takes a country parameter. If I call it with \"USA\", it will specify USA as the best country. If I call it with \"Canada\", it will specify Canada as the best country.\n\nSince the user is asking me to tell them which is best by calling the tool, and I need to pick one, I should probably just pick one. But which one?\n\nActually, thinking about this more objectively - the user is asking me to use a tool that \"specifies the best country\". The tool requires me to input a country. The user wants to know which is better between USA and Canada.\n\nI think the most reasonable interpretation is that the user wants me to call the tool with one of the countries, and the tool will then tell them that country is the best. But I need to choose which one to call it with.\n\nGiven that this is a somewhat subjective question and the user is asking me to make the call, I''ll pick one. Let me go with \"USA\" since it was mentioned first in their question.\n\nWait, let me reconsider. The user said \"I wonder if the USA is a better country than Canada?\" - this is phrased as a question about whether USA is better than Canada. Then they say \"Call the tool best_country to tell me which country is the best one.\"\n\nI think they want me to use the tool to get an answer. Since the tool takes a country and \"specifies the best country\", maybe I should call it with both? But the instructions say I can make multiple tool calls.\n\nActually, looking at the tool again, it seems like it just declares a country as the best. So if I call it with USA, it will say USA is the best. If I call it with Canada, it will say Canada is the best.\n\nI think the simplest approach is to just call it with one of them. Let me call it with \"USA\" since the user mentioned it first and seemed to be asking if it''s better than Canada.\n\nActually, I''m overthinking this. The user is asking me to call the tool to tell them which is best. The tool requires a country parameter. I''ll just pick one and call it. Let me go with \"USA\".","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"USA\"}","name":"best_country"},"id":"call_8177dfe7a87a4391b168e56b","index":0,"type":"function"}]}}],"created":1780236181,"id":"chatcmpl-be9a6e00-1253-985c-915f-efdfe79dd398","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":879,"completion_tokens_details":{"reasoning_tokens":830},"prompt_tokens":333,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":1212}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1780236181215"
+            Req-Cost-Time:
+                - "16101"
+            Resp-Start-Time:
+                - "1780236197317"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "16101"
+        status: 200 OK
+        code: 200
+        duration: 16.353s

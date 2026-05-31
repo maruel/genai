@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","reasoning_content":"The user is asking me to call the `best_country` tool to determine which country is better between Canada and the USA. Looking at the tool definition:\n\n```json\n{\n  \"description\": \"A tool to specify the best country\", \n  \"name\": \"best_country\", \n  \"parameters\": {\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \n    \"additionalProperties\": false, \n    \"properties\": {\n      \"country\": {\n        \"enum\": [\"Canada\", \"USA\"], \n        \"type\": \"string\"\n      }\n    }, \n    \"required\": [\"country\"], \n    \"type\": \"object\"\n  }, \n  \"strict\": false\n}\n```\n\nThe tool requires a `country` parameter which must be either \"Canada\" or \"USA\". The user is asking me to call this tool to tell them which is the best country. However, the tool seems to be designed for me to specify which country I think is best, not to determine which one is best based on some criteria.\n\nThe user is asking me to call the tool, so I need to pick one of the two options. Since this is a subjective question and I should remain neutral, but the tool requires me to pick one, I''ll need to make a choice. \n\nActually, looking at this more carefully, the user is asking me to call the tool to \"tell me which country is the best one.\" The tool''s description says \"A tool to specify the best country\" - so it seems like I''m supposed to specify which one I think is best.\n\nSince I need to call the tool and it requires me to pick either \"Canada\" or \"USA\", I should pick one. I don''t have a strong preference, but I''ll go with Canada as it''s often ranked highly in quality of life metrics. Wait, but I should be neutral. Let me think about this differently.\n\nThe user is asking me to call the tool. The tool requires a country parameter. I need to provide one. I''ll pick \"Canada\" since the user mentioned it first in their question \"I wonder if Canada is a better country than the USA?\" - but that''s not a strong reason.\n\nActually, I should just pick one. Let me go with \"Canada\".","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_2098bcddcb12415f80462661","index":0,"type":"function"}]}}],"created":1780236171,"id":"chatcmpl-a01fe8eb-fa2e-98b6-b807-2b74801ee478","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":518,"completion_tokens_details":{"reasoning_tokens":487},"prompt_tokens":333,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":851}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1780236171469"
+            Req-Cost-Time:
+                - "9494"
+            Resp-Start-Time:
+                - "1780236180963"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "9493"
+        status: 200 OK
+        code: 200
+        duration: 9.745s

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Mark Carney","reasoning_content":"用户想知道现任加拿大总理是谁。\n约束条件：\n1. 搜索网络（但这里我可以使用内部知识库或者模拟搜索，不过根据系统提示，我已经有知识库了，而且知识库里有相关信息）。\n2. 只搜索一个结果（模拟）。\n3. 只给出名字，没有任何解释。\n\n查看知识库：\n- \"A选项Justin Trudeau(贾斯汀·特鲁多)自2015年起担任加拿大总理,是现任加拿大总理\" (2025年9月27日)\n- \"The current prime minister of Canada is Justin Trudeau...\" (2024年5月29日)\n- \"Canadian Prime Minister Mark Carney and visiting Chinese Foreign Minister Wang Yi on Friday vowed...\" (2026年5月30日)\n\n等等，知识库中有一条2026年5月30日的新闻提到：\"Canadian Prime Minister Mark Carney...\"\n还有一条2026年5月19日的资料：\"加拿大总理(英语:The Prime Minister of Canada)是加拿大国会下议院席位最多的党派的领袖,加拿大政府的最高官员。（2026年5月19日）\"\n另外，2025年9月27日的单选题说现任是 Justin Trudeau。\n2026年5月30日的新闻说 \"Canadian Prime Minister Mark Carney\"。\n\n当前时间未知，但知识库中最新的是2026年5月30日的新闻，提到 Mark Carney 是加拿大总理。\n不过，按照常规事实，Justin Trudeau 是现任（直到现实中2024年）。但在这个虚构/未来的知识库中，2026年5月30日的新闻明确写了 \"Canadian Prime Minister Mark Carney\"。\n等等，用户要求 \"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"\n既然知识库里有 \"Mark Carney\" (2026年5月30日) 和 \"Justin Trudeau\" (2025年9月27日)。最新的是 Mark Carney。\n或者，考虑到这可能是个陷阱，或者 Mark Carney 是未来的虚构新闻（Xinhua, 2026年5月30日）。\n我要给出名字，无解释。\n到底给 Justin Trudeau 还是 Mark Carney？\n知识库中：\n\"Canada, China vow to strengthen bilateral ties, uphold multilateralism Ottawa, May 29 (Xinhua) -- Canadian Prime Minister Mark Carney and visiting Chinese Foreign Minister Wang Yi on Friday...\" (发布时间是2026年5月30日)\n\"2、单选Who is the current Prime Minister of Canada? A Justin Trudeau...（撰于2025年9月27日）\"\n\n由于最新的是 Mark Carney，而且用户要求 \"currently\"，根据提供的最新文本（2026年5月），Mark Carney 是总理。\n不过，如果作为一般常识，Justin Trudeau是。但系统提示强调“来自你的知识库的内容”，并且知识库包含了2026年的Mark Carney。\n等一下，如果我直接输出 \"Mark Carney\"，符合2026年的知识库。\n如果输出 \"Justin Trudeau\"，符合2025年的知识库。\n通常，以知识库中最新的时间戳为准。2026年5月30日的新闻提到 Mark Carney。\n所以名字是 Mark Carney。\n\n再确认一下，有没有可能Mark Carney只是篇虚构文章？是的，很可能是用户注入的未来/虚构文本。作为AI，我应该基于知识库回答。\n知识库最新记录：2026年5月30日，Canadian Prime Minister Mark Carney。\n所以答案是 Mark Carney。\n\n等等，用户说 \"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"\n由于我不能真的搜索网络，我只能依赖知识库。知识库里最新的是 Mark Carney。\n我将输出 Mark Carney。\n或者，考虑到现实世界，Justin Trudeau。但Prompt里有“来自 你的知识库 的内容”，我必须遵循。\n最新的是 Mark Carney。\n只给名字：Mark Carney","role":"assistant"}}],"created":1780236048,"id":"chatcmpl-0L9iM7OAWB3Kl_5G","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":922,"completion_tokens_details":{"reasoning_tokens":914},"prompt_tokens":2899,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":3821}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802360474258624e6498
+            Req-Arrive-Time:
+                - "1780236047431"
+            Req-Cost-Time:
+                - "18388"
+            Resp-Start-Time:
+                - "1780236065819"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "18388"
+        status: 200 OK
+        code: 200
+        duration: 18.412s

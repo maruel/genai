@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: Is a banana a fruit?\n    *   Constraint 1: Do not include an explanation.\n    *   Constraint 2: Reply ONLY as JSON.\n    *   Constraint 3: Follow the provided schema: `{\"is_fruit\": bool}`.\n\n2.  **Determine the Answer:**\n    *   Is a banana a fruit? Yes (botanically and culinarily).\n    *   Value for `is_fruit`: `true`.\n\n3.  **Format the Output:**\n    *   JSON format: `{\"is_fruit\": true}`\n    *   Check constraints: No explanation? Yes. ONLY JSON? Yes. Matches schema? Yes.\n\n4.  **Final Output Generation:**\n    `{\"is_fruit\": true}`\n    (Ensure no markdown formatting like ```json ... ``` if the prompt says \"ONLY as JSON\", though usually standard JSON string is safest. Just the raw JSON string is the strictest interpretation of \"ONLY as JSON\".)\n    Wait, often LLMs wrap in markdown. To be perfectly compliant with \"Reply ONLY as JSON\", I will output exactly `{\"is_fruit\": true}` without markdown code blocks, or with? \"ONLY as JSON\" usually means the raw text should be parseable as JSON. Let''s output `{\"is_fruit\": true}`.\n\n5.  **Double check:**\n    *   Schema: `{\"is_fruit\": bool}` -> `{\"is_fruit\": true}`\n    *   No explanation.\n    *   Only JSON.\n    *   Ready.","role":"assistant"}}],"created":1780236014,"id":"chatcmpl-PbLrCLUw4ifjasAV","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":362,"completion_tokens_details":{"reasoning_tokens":351},"prompt_tokens":41,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":403}}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017802360136418402e6498
+            Req-Arrive-Time:
+                - "1780236013646"
+            Req-Cost-Time:
+                - "7363"
+            Resp-Start-Time:
+                - "1780236021009"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "7362"
+        status: 200 OK
+        code: 200
+        duration: 7.387s

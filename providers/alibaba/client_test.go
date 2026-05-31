@@ -117,10 +117,14 @@ func TestClient(t *testing.T) {
 			})
 
 			t.Run("Scoreboard", func(t *testing.T) {
+				// Prefer Reason from tested (non-untested) scenarios.
 				// Build the Reason lookup from the existing scoreboard.
 				reasonModels := map[string]bool{}
 				for _, sc := range alibaba.ScoreboardForBackend(b.opt).Scenarios {
 					for _, m := range sc.Models {
+						if _, ok := reasonModels[m]; ok && sc.Untested() {
+							continue
+						}
 						reasonModels[m] = sc.Reason
 					}
 				}

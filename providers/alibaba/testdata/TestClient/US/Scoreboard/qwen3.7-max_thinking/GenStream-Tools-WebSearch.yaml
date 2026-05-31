@@ -1,0 +1,457 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 301
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.7-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","created":1780236037,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"用户"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"想要"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知道现任加拿"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"大总理是谁。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n约束条件："},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n1"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":". 搜索网络"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"（但这里我"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"已经有"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库，且知识库"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"中提到了"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" \"The current prime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" minister of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Canada is Justin Trudeau"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\" 以及 \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Canadian Prime Minister Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Car"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"ney\" (2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"026"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"年5月3"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"0日的新闻)"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"）。\n2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":". 只搜索"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"一个结果（"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"模拟或基于已有"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"提取）。\n3"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" 只给出名字"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，不加任何解释"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"。\n\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"让我们看一下知识库里的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"信息：\n-"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" \"The current prime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" minister"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" of Canada is Justin"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Trudeau...（发布时间"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"是202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"4年5月"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"29日）"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\"\n- \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Canadian Prime Minister Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Carney and visiting"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Chinese Foreign Minister Wang"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Yi on Friday vowed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" to deepen bilateral ties"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"...（资料日期"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"为202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"6年5月"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"30日）"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\"\n- "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库时间戳有"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"2026"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"年的，说明当前"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"时间背景可能是2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"0"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"26年。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"在202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"6年5月"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"30日的资料"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"中，加拿"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"大总理是"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Mark Carney。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 等等"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，现实中 Mark Car"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"ney "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"并不是加拿大"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"总理"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"（截至我当前的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"真实知识，特"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"鲁多还是，"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"或者如果发生了替换"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，但这是提供的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库内容）。\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"- "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库中明确写道"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"：“Canadian Prime Minister"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Mark Carney ..."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" （资料日期为"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"2026"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"年5月3"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"0日）”"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 另一个"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"资料：“Who is"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" the current Prime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Minister of Canada?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" A Justin Trudeau ..."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"（来自20"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"25年9"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"月27日的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"资料）”\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"- 既然知识库"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"中最新的是2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"026"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"年5月3"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"0日的新闻，"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"里面称"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" \"Canadian Prime Minister"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Carney\"。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 但是"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，如果是基于现实"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"世界搜索，现任"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"总理是 Justin Trudeau"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 用户"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"的要求是 \"Search"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" the web to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" tell who is currently"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" the Prime Minister of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Canada. Only search"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" for one result."},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Give only the name"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" with no explanation.\""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 作为"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"AI，我应该根据"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"事实回答，还是"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"根据知识库？通常"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"优先事实，但如果"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"系统提示“来自"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"你的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库”，我应当"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"参考。不过，"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Mark Carney "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"是加拿大"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"总理"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"显然是一个虚构/"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"错误的新闻文本（"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"可能是某种"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"测试或幻觉生成的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库）。现实中，"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Justin Trudeau "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"是现任总理。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 让我"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"再仔细看看知识库"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"里的内容：\"Canadian"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Prime Minister Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Carney and visiting"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Chinese Foreign Minister Wang"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Yi on Friday vowed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"...\" 这是一篇"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"新华社风格"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"的文章，但 Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Carney 从未"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"担任过加拿"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"大总理。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 考虑到"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"用户的指令是 \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Search"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" the web...\"，"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"我可以直接输出 \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Justin Trudeau\"。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n- 等等"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，如果用户是在"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"测试我是否会盲目"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"遵循知识库中的错误"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"信息（Mark Car"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"ney），我应该输出"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"真实的"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"现任总理：Justin"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Trudeau。\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"- 或者，"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"按照"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库中20"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"25年"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"9月27"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"日的资料：\"A"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"选项Justin Trudeau("},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"贾"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"斯汀·特"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"鲁多)自"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"2015"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"年起担任加拿"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"大总理,是"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"现任加拿大"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"总理\"。\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"- 无论是现实"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"还是知识库中的大部分"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"内容"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，Justin Trudeau "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"都是正确答案。Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Carney 可能是"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"知识库注入的干扰"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"项。\n-"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" 只给出名字"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，无解释"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"。\n\n名字："},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Justin Trudeau"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n或者 Mark Car"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"ney？"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n现实中，Justin"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":" Trudeau "},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"是现任总理。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"我将输出 Justin Trudeau"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"\n为了保险起见"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"，直接写 \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"Justin Trudeau\""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":"。"},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"Justin Trudeau","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1780236037,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.7-max","id":"chatcmpl-qHAzni5v2sc7tpcu","choices":[],"created":1780236037,"object":"chat.completion.chunk","usage":{"total_tokens":3604,"completion_tokens":705,"prompt_tokens":2899,"completion_tokens_details":{"reasoning_tokens":698},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Eagleeye-Traceid:
+                - 0bc2426017802360371438562e6498
+            Req-Arrive-Time:
+                - "1780236037147"
+            Req-Cost-Time:
+                - "2053"
+            Resp-Start-Time:
+                - "1780236039201"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2053"
+        status: 200 OK
+        code: 200
+        duration: 2.076s

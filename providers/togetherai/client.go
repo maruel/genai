@@ -502,6 +502,28 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
+			// flushToolCall emits the buffered tool call, if any. It returns false only when the consumer
+			// asked to stop. Incomplete parallel tool calls (a model truncating the trailing call
+			// mid-arguments) are dropped rather than emitted as invalid.
+			flushToolCall := func() bool {
+				if pendingToolCall.ID == "" {
+					return true
+				}
+				args := pendingToolCall.Function.Arguments
+				if args == "" {
+					args = "{}"
+				}
+				tc := pendingToolCall
+				pendingToolCall = ToolCall{}
+				if !json.Valid([]byte(args)) {
+					return true
+				}
+				return yield(genai.Reply{ToolCall: genai.ToolCall{
+					ID:        tc.ID,
+					Name:      tc.Function.Name,
+					Arguments: args,
+				}})
+			}
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
@@ -530,58 +552,34 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				// There's only one at a time ever.
-				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple delta tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
-					return
-				}
 				if len(pkt.Choices[0].ToolCalls) > 1 {
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].ToolCalls)}
 					return
 				}
-				// TogetherAI streams the arguments. Buffer the arguments to send the fragment as a
-				// whole tool call.
+				// TogetherAI streams the arguments of one tool call at a time, switching to the next
+				// parallel call by sending a new ID. Buffer the arguments to send each call as a whole.
+				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple delta tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
+					return
+				}
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 					t := pkt.Choices[0].Delta.ToolCalls[0]
 					if t.ID != "" {
-						// A new call.
-						if pendingToolCall.ID != "" {
-							// Flush.
-							args := pendingToolCall.Function.Arguments
-							if args == "" {
-								args = "{}"
-							}
-							f := genai.Reply{ToolCall: genai.ToolCall{
-								ID:        pendingToolCall.ID,
-								Name:      pendingToolCall.Function.Name,
-								Arguments: args,
-							}}
-							if !yield(f) {
-								return
-							}
+						// A new (possibly parallel) call: flush the previous one first.
+						if !flushToolCall() {
+							return
 						}
 						pendingToolCall = t
 						continue
 					}
 					if pendingToolCall.ID != "" {
-						// Continuation.
+						// Continuation of the buffered call's arguments.
 						pendingToolCall.Function.Arguments += t.Function.Arguments
 						continue
 					}
-				} else if pendingToolCall.ID != "" {
-					// Flush.
-					args := pendingToolCall.Function.Arguments
-					if args == "" {
-						args = "{}"
-					}
-					f := genai.Reply{ToolCall: genai.ToolCall{
-						ID:        pendingToolCall.ID,
-						Name:      pendingToolCall.Function.Name,
-						Arguments: args,
-					}}
-					if !yield(f) {
-						return
-					}
+				} else if !flushToolCall() {
+					// No more tool call deltas: flush the buffered call.
+					return
 				}
 				if len(pkt.Choices[0].ToolCalls) == 1 {
 					// That's a non-streamed tool call.

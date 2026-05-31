@@ -96,8 +96,20 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		return nil
 	}
 
-	msgs = append(msgs, res.Message)
-	tr, err := res.DoToolCalls(ctx, optsTools.Tools)
+	// Some models emit several parallel tool calls for this single-answer prompt (and may even truncate
+	// the trailing ones). Accept the first tool call and drop the rest so the follow-up stays balanced.
+	asst := res.Message
+	seenToolCall := false
+	asst.Replies = slices.DeleteFunc(slices.Clone(asst.Replies), func(r genai.Reply) bool {
+		if r.ToolCall.IsZero() {
+			return false
+		}
+		drop := seenToolCall
+		seenToolCall = true
+		return drop
+	})
+	msgs = append(msgs, asst)
+	tr, err := asst.DoToolCalls(ctx, optsTools.Tools)
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1 (do calls)", "err", err)
 		f.Tools = scoreboard.False

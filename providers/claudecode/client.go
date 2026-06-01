@@ -296,6 +296,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		err = errors.Join(err, wait())
 	}()
 
+	if err := writeInitialize(stdin, &co); err != nil {
+		return genai.Result{}, err
+	}
 	if err := writeUserMsg(stdin, &userMsg); err != nil {
 		return genai.Result{}, err
 	}
@@ -303,6 +306,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	sc := newScanner(stdout)
 	var initSessionID string
 	var asstBlocks []OutputContentBlock
+	var summaries []string
 	for sc.Scan() {
 		line := sc.Bytes()
 		var b OutputTypeProbe
@@ -315,6 +319,13 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 				var m OutputInitMsg
 				if json.Unmarshal(line, &m) == nil {
 					initSessionID = m.SessionID
+				}
+			} else if b.Subtype == string(SystemPostTurnSummary) {
+				var m OutputPostTurnSummaryMsg
+				if json.Unmarshal(line, &m) == nil {
+					if s := m.Reasoning(); s != "" {
+						summaries = append(summaries, s)
+					}
 				}
 			}
 		case OutputAssistant:
@@ -335,7 +346,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 				}
 				return genai.Result{}, fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
 			}
-			return buildResult(&res, asstBlocks, initSessionID), nil
+			return buildResult(&res, asstBlocks, summaries, initSessionID), nil
 		default:
 		}
 	}
@@ -379,6 +390,10 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			finalErr = errors.Join(finalErr, wait())
 		}()
 
+		if err := writeInitialize(stdin, &co); err != nil {
+			finalErr = err
+			return
+		}
 		if err := writeUserMsg(stdin, &userMsg); err != nil {
 			finalErr = err
 			return
@@ -387,6 +402,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		sc := newScanner(stdout)
 		var initSessionID string
 		var asstBlocks []OutputContentBlock
+		var summaries []string
+		var streamUsage MsgUsage
 		for sc.Scan() {
 			line := sc.Bytes()
 			var b OutputTypeProbe
@@ -400,6 +417,16 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					if json.Unmarshal(line, &m) == nil {
 						initSessionID = m.SessionID
 					}
+				} else if b.Subtype == string(SystemPostTurnSummary) {
+					var m OutputPostTurnSummaryMsg
+					if json.Unmarshal(line, &m) == nil {
+						if s := m.Reasoning(); s != "" {
+							summaries = append(summaries, s)
+							if !yield(genai.Reply{Reasoning: s}) {
+								return
+							}
+						}
+					}
 				}
 			case OutputStreamEvent:
 				var ev OutputStreamEventMsg
@@ -409,6 +436,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				if ev.Event.Type == "error" {
 					finalErr = errors.New("claude stream error")
 					return
+				}
+				if ev.Event.Type == "message_delta" && len(ev.Event.Usage) != 0 {
+					var u MsgUsage
+					if json.Unmarshal(ev.Event.Usage, &u) == nil {
+						streamUsage = u
+					}
 				}
 				if ev.Event.Delta.Type != "" {
 					switch ev.Event.Delta.Type {
@@ -447,7 +480,10 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
 					return
 				}
-				result = buildResult(&res, asstBlocks, initSessionID)
+				result = buildResult(&res, asstBlocks, summaries, initSessionID)
+				if result.Usage.ReasoningTokens == 0 {
+					result.Usage.ReasoningTokens = streamUsage.OutputTokensDetails.ThinkingTokens
+				}
 				return
 			default:
 			}
@@ -580,6 +616,26 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 	return err
 }
 
+func writeInitialize(w io.Writer, co *callOpts) error {
+	if !co.progressSummaries {
+		return nil
+	}
+	m := InputControlRequestMsg{
+		Type:      InputControlRequest,
+		RequestID: "genai-init",
+		Request: ControlReqInitialize{
+			Subtype:                ControlInitialize,
+			AgentProgressSummaries: true,
+		},
+	}
+	data, err := json.Marshal(m)
+	if err != nil {
+		return fmt.Errorf("marshal initialize request: %w", err)
+	}
+	_, err = fmt.Fprintf(w, "%s\n", data)
+	return err
+}
+
 // docToInputBlock converts a genai.Doc to an InputContentBlock for the claude CLI.
 // Text documents are inlined as text blocks; images are sent as base64 or URL.
 func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
@@ -611,16 +667,21 @@ func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 }
 
 // buildResult converts a resultMsg and accumulated assistant content blocks into a genai.Result.
-func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, sessionID string) genai.Result {
+func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summaries []string, sessionID string) genai.Result {
 	r := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       res.Usage.InputTokens,
 			InputCachedTokens: res.Usage.CacheReadInputTokens,
+			ReasoningTokens:   res.Usage.OutputTokensDetails.ThinkingTokens,
 			OutputTokens:      res.Usage.OutputTokens,
 			TotalTokens:       res.Usage.InputTokens + res.Usage.OutputTokens,
 			FinishReason:      mapFinishReason(res.StopReason),
 			ServiceTier:       res.Usage.ServiceTier,
 		},
+	}
+
+	for _, s := range summaries {
+		r.Replies = append(r.Replies, genai.Reply{Reasoning: s})
 	}
 
 	// Prefer text content from the assistant messages (present in both sync and

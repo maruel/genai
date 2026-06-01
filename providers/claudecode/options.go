@@ -90,13 +90,14 @@ func (g *GenOption) Validate() error {
 
 // callOpts holds per-call options parsed from the GenOption slice.
 type callOpts struct {
-	tools          []string // nil = disabled; non-nil = enabled tool list
-	skills         bool
-	projSettings   bool
-	maxBudgetUSD   float64
-	permissionMode string
-	effort         string
-	systemPrompt   string
+	tools             []string // nil = disabled; non-nil = enabled tool list
+	skills            bool
+	projSettings      bool
+	maxBudgetUSD      float64
+	permissionMode    string
+	effort            string
+	systemPrompt      string
+	progressSummaries bool
 }
 
 // parseOpts validates and collects the per-call options.
@@ -116,6 +117,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			co.maxBudgetUSD = v.MaxBudgetUSD
 			co.permissionMode = v.PermissionMode
 			co.effort = v.Effort
+			co.progressSummaries = v.Effort != ""
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {

@@ -7,6 +7,8 @@
 package claudecode
 
 import (
+	"context"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -30,6 +32,33 @@ func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Cli
 		t.Fatalf("New: %v", err)
 	}
 	return c
+}
+
+func newOutputClient(t *testing.T, output string, captureArgs *[]string, opts ...genai.ProviderOption) *Client {
+	opts = append(opts, genai.ProviderOptionStarterWrapper(func(genai.Starter) genai.Starter {
+		return func(_ context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+			if captureArgs != nil {
+				*captureArgs = slices.Clone(args)
+			}
+			pr, pw := io.Pipe()
+			go func() { _, _ = io.Copy(io.Discard, pr) }()
+			return pw, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
+		}
+	}))
+	c, err := New(opts...)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	return c
+}
+
+func hasArg(args []string, flag, val string) bool {
+	for i, a := range args {
+		if a == flag && i+1 < len(args) && args[i+1] == val {
+			return true
+		}
+	}
+	return false
 }
 
 func TestClient(t *testing.T) {
@@ -167,7 +196,12 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("session_resumed_from_opaque", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_session")
+			const output = `{"type":"system","subtype":"init","session_id":"new-session"}
+{"type":"assistant","message":{"content":[{"type":"text","text":"You said hello."}],"usage":{"input_tokens":1,"output_tokens":1},"stop_reason":"end_turn"}}
+{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"num_turns":1,"result":"You said hello.","stop_reason":"end_turn","usage":{"input_tokens":1,"output_tokens":1},"session_id":"new-session"}
+`
+			var args []string
+			c := newOutputClient(t, output, &args)
 			prevAssistant := genai.Message{
 				Replies: []genai.Reply{
 					{Text: "Hello!"},
@@ -189,9 +223,14 @@ func TestClient(t *testing.T) {
 			if !strings.Contains(res.Replies[0].Text, "hello") {
 				t.Errorf("unexpected reply: %q", res.Replies[0].Text)
 			}
+			if !hasArg(args, "--resume", "550e8400-e29b-41d4-a716-446655440000") {
+				t.Errorf("--resume not found in args %v", args)
+			}
 		})
 		t.Run("error_result", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_error")
+			const output = `{"type":"result","subtype":"error_during_execution","is_error":true,"result":"boom","usage":{"input_tokens":0,"output_tokens":0},"session_id":"session"}
+`
+			c := newOutputClient(t, output, nil)
 			msgs := genai.Messages{genai.NewTextMessage("cause error")}
 			_, err := c.GenSync(t.Context(), msgs)
 			if err == nil {
@@ -232,9 +271,16 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("claude-opus-4-6"))
+			const output = `{"type":"control_response","response":{"subtype":"success","request_id":"genai-init","response":{}}}
+{"type":"system","subtype":"init","session_id":"session"}
+{"type":"stream_event","event":{"type":"content_block_delta","delta":{"type":"text_delta","text":"Hello"}}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Hello"}],"usage":{"input_tokens":1,"output_tokens":1},"stop_reason":"end_turn"}}
+{"type":"system","subtype":"post_turn_summary","summarizes_uuid":"assistant-1","status_category":"completed","status_detail":"thinking summary: greeted the user.","needs_action":"","uuid":"summary-1","session_id":"session"}
+{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"num_turns":1,"result":"Hello","stop_reason":"end_turn","usage":{"input_tokens":1,"output_tokens":1},"session_id":"session"}
+`
+			c := newOutputClient(t, output, nil, genai.ProviderOptionModel("claude-opus-4-6"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
-			seq, finish := c.GenStream(t.Context(), msgs)
+			seq, finish := c.GenStream(t.Context(), msgs, &GenOption{Effort: EffortMedium})
 
 			var text, reasoning strings.Builder
 			for r := range seq {
@@ -276,7 +322,9 @@ func TestClient(t *testing.T) {
 			t.Error("result missing duration_ms in opaque")
 		})
 		t.Run("error_event", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_error_event")
+			const output = `{"type":"stream_event","event":{"type":"error"}}
+`
+			c := newOutputClient(t, output, nil)
 			msgs := genai.Messages{genai.NewTextMessage("hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 			for range seq {

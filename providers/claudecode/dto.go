@@ -6,7 +6,11 @@
 
 package claudecode
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"slices"
+	"strings"
+)
 
 // ============================================================================
 // Input types (sent TO the agent via stdin)
@@ -554,6 +558,7 @@ type OutputAssistantMsg struct {
 	Message         AssistantMessageBody `json:"message"`
 	ParentToolUseID string               `json:"parent_tool_use_id"`
 	Error           string               `json:"error"`
+	RequestID       string               `json:"request_id,omitempty"`
 }
 
 // AssistantMessageBody is the inner message object within an assistant record.
@@ -570,6 +575,7 @@ type AssistantMessageBody struct {
 
 	Container         json.RawMessage `json:"container,omitempty"`
 	ContextManagement json.RawMessage `json:"context_management,omitempty"`
+	Diagnostics       json.RawMessage `json:"diagnostics,omitempty"`
 }
 
 // ContentBlockStart is the content_block field in a content_block_start streaming event.
@@ -627,6 +633,7 @@ type OutputResultMsg struct {
 	IsError          bool       `json:"is_error"`
 	DurationMs       int64      `json:"duration_ms"`
 	DurationAPIMs    int64      `json:"duration_api_ms"`
+	TtftMs           int64      `json:"ttft_ms,omitempty"`
 	NumTurns         int        `json:"num_turns"`
 	Result           string     `json:"result"`
 	Errors           []string   `json:"errors,omitempty"`
@@ -646,23 +653,23 @@ type OutputResultMsg struct {
 	DeferredToolUse   DeferredToolUse            `json:"deferred_tool_use,omitzero"`
 }
 
+// ModelUsageEntry holds per-model usage metadata in a result message.
+type ModelUsageEntry struct {
+	InputTokens              int64   `json:"inputTokens"`
+	OutputTokens             int64   `json:"outputTokens"`
+	CacheReadInputTokens     int64   `json:"cacheReadInputTokens"`
+	CacheCreationInputTokens int64   `json:"cacheCreationInputTokens"`
+	WebSearchRequests        int64   `json:"webSearchRequests"`
+	CostUSD                  float64 `json:"costUSD"`
+	ContextWindow            int64   `json:"contextWindow"`
+	MaxOutputTokens          int64   `json:"maxOutputTokens"`
+}
+
 // DeferredToolUse is a tool call deferred from a previous turn in the result message.
 type DeferredToolUse struct {
 	ID    string         `json:"id"`
 	Name  string         `json:"name"`
 	Input map[string]any `json:"input"`
-}
-
-// ModelUsageEntry is per-model usage stats in the result message.
-type ModelUsageEntry struct {
-	InputTokens              int     `json:"inputTokens"`
-	OutputTokens             int     `json:"outputTokens"`
-	CacheReadInputTokens     int     `json:"cacheReadInputTokens"`
-	CacheCreationInputTokens int     `json:"cacheCreationInputTokens"`
-	WebSearchRequests        int     `json:"webSearchRequests"`
-	CostUSD                  float64 `json:"costUSD"`
-	ContextWindow            int     `json:"contextWindow"`
-	MaxOutputTokens          int     `json:"maxOutputTokens"`
 }
 
 // ---------- Token usage ----------
@@ -682,6 +689,13 @@ type MsgUsage struct {
 
 	ServerToolUse ServerToolUse `json:"server_tool_use,omitzero"`
 	CacheCreation CacheCreation `json:"cache_creation,omitzero"`
+
+	OutputTokensDetails OutputTokensDetails `json:"output_tokens_details,omitzero"`
+}
+
+// OutputTokensDetails breaks down output token usage.
+type OutputTokensDetails struct {
+	ThinkingTokens int64 `json:"thinking_tokens"`
 }
 
 // ServerToolUse tracks server-side tool use counts.
@@ -723,11 +737,13 @@ type StreamEventData struct {
 
 // StreamDelta is a delta object inside a stream event.
 type StreamDelta struct {
-	Type        string `json:"type"`
-	Text        string `json:"text"`
-	PartialJSON string `json:"partial_json"`
-	Thinking    string `json:"thinking"`
-	Signature   string `json:"signature"`
+	Type                 string `json:"type"`
+	Text                 string `json:"text"`
+	PartialJSON          string `json:"partial_json"`
+	Thinking             string `json:"thinking"`
+	Signature            string `json:"signature"`
+	EstimatedTokens      int64  `json:"estimated_tokens,omitzero"`
+	EstimatedTokensDelta int64  `json:"estimated_tokens_delta,omitzero"`
 	// message_delta carries stop_reason.
 	StopReason string `json:"stop_reason,omitempty"`
 }
@@ -856,6 +872,18 @@ type OutputPostTurnSummaryMsg struct {
 	ArtifactURLs   []string      `json:"artifact_urls"`
 	UUID           string        `json:"uuid"`
 	SessionID      string        `json:"session_id"`
+}
+
+// Reasoning returns the concise human-readable progress summary.
+func (m *OutputPostTurnSummaryMsg) Reasoning() string {
+	var parts []string
+	for _, s := range []string{m.StatusDetail, m.NeedsAction, m.RecentAction, m.Description, m.Title} {
+		s = strings.TrimSpace(s)
+		if s != "" && !slices.Contains(parts, s) {
+			parts = append(parts, s)
+		}
+	}
+	return strings.Join(parts, "\n")
 }
 
 // OutputLocalCommandOutputMsg is output from a local slash command (e.g. /cost).

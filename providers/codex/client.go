@@ -408,8 +408,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				if internal.UnmarshalJSON(msg.Params, &p) != nil {
 					continue
 				}
-				if p.Turn.Status == "failed" || p.Turn.Status == "interrupted" {
-					errMsg := "codex turn " + p.Turn.Status
+				if p.Turn.Status == TurnStatusFailed || p.Turn.Status == TurnStatusInterrupted {
+					errMsg := "codex turn " + string(p.Turn.Status)
 					if p.Turn.Error != nil && p.Turn.Error.Message != "" {
 						errMsg = p.Turn.Error.Message
 					}
@@ -567,7 +567,7 @@ func msgToTurnInput(msg *genai.Message) ([]TurnInput, error) {
 	for i := range msg.Requests {
 		req := &msg.Requests[i]
 		if req.Text != "" {
-			items = append(items, TurnInput{Type: "text", Text: req.Text})
+			items = append(items, TurnInput{Type: TurnInputTypeText, Text: req.Text})
 		}
 		if !req.Doc.IsZero() {
 			blk, err := docToTurnInput(req.Doc)
@@ -587,20 +587,20 @@ func msgToTurnInput(msg *genai.Message) ([]TurnInput, error) {
 // Text documents are sent inline; images are sent as data URLs.
 func docToTurnInput(doc genai.Doc) (TurnInput, error) {
 	if doc.URL != "" {
-		return TurnInput{Type: "image", URL: doc.URL}, nil
+		return TurnInput{Type: TurnInputTypeImage, URL: doc.URL}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return TurnInput{}, fmt.Errorf("read doc: %w", err)
 	}
 	if strings.HasPrefix(mimeType, "text/") {
-		return TurnInput{Type: "text", Text: string(data)}, nil
+		return TurnInput{Type: TurnInputTypeText, Text: string(data)}, nil
 	}
 	if !strings.HasPrefix(mimeType, "image/") {
 		return TurnInput{}, fmt.Errorf("unsupported doc MIME type %q for codex (text and images only)", mimeType)
 	}
 	dataURL := "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)
-	return TurnInput{Type: "image", URL: dataURL}, nil
+	return TurnInput{Type: TurnInputTypeImage, URL: dataURL}, nil
 }
 
 // readTurnSync reads notifications from the scanner until turn/completed.
@@ -643,8 +643,8 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 			if internal.UnmarshalJSON(msg.Params, &p) != nil {
 				continue
 			}
-			if p.Turn.Status == "failed" || p.Turn.Status == "interrupted" {
-				errMsg := "codex turn " + p.Turn.Status
+			if p.Turn.Status == TurnStatusFailed || p.Turn.Status == TurnStatusInterrupted {
+				errMsg := "codex turn " + string(p.Turn.Status)
 				if p.Turn.Error != nil && p.Turn.Error.Message != "" {
 					errMsg = p.Turn.Error.Message
 				}
@@ -667,7 +667,7 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 // parseCompletedItem extracts a Reply from an item/completed notification if
 // the item is an agentMessage or reasoning. Returns nil for other item types.
 func parseCompletedItem(params json.RawMessage) *genai.Reply {
-	var p ItemNotification
+	var p ItemCompletedNotification
 	if internal.UnmarshalJSON(params, &p) != nil {
 		return nil
 	}

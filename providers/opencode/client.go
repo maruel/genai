@@ -488,7 +488,7 @@ func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]PromptContent
 // See packages/opencode/src/acp/agent.ts case "image" (~line 1327).
 func docToPromptContent(doc genai.Doc, supportsImage bool) (PromptContent, error) {
 	if doc.URL != "" {
-		return PromptContent{}, fmt.Errorf("URL documents not supported by opencode ACP; inline the content")
+		return PromptContent{}, errors.New("URL documents not supported by opencode ACP; inline the content")
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
@@ -498,7 +498,7 @@ func docToPromptContent(doc genai.Doc, supportsImage bool) (PromptContent, error
 		return PromptContent{Type: ContentText, Text: string(data)}, nil
 	}
 	if !supportsImage {
-		return PromptContent{}, fmt.Errorf("opencode agent does not support image input")
+		return PromptContent{}, errors.New("opencode agent does not support image input")
 	}
 	if !strings.HasPrefix(mimeType, "image/") {
 		return PromptContent{}, fmt.Errorf("unsupported doc MIME type %q for opencode (text and images only)", mimeType)

@@ -21,12 +21,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -801,12 +802,12 @@ func getExplicitPrevID(opts []genai.GenOption) string {
 // findPrevMeta searches msgs for session metadata stored directly in Reply.Opaque.
 func findPrevMeta(msgs genai.Messages) (sentMsgs int, respID string) {
 	for i := len(msgs) - 1; i >= 0; i-- {
-		for _, r := range msgs[i].Replies {
-			if r.Opaque != nil {
-				if id, ok := r.Opaque[opaqueResponseID].(string); ok && id != "" {
+		for j := range msgs[i].Replies {
+			if msgs[i].Replies[j].Opaque != nil {
+				if id, ok := msgs[i].Replies[j].Opaque[opaqueResponseID].(string); ok && id != "" {
 					respID = id
 				}
-				if n, ok := r.Opaque[opaqueSentMsgs].(float64); ok {
+				if n, ok := msgs[i].Replies[j].Opaque[opaqueSentMsgs].(float64); ok {
 					sentMsgs = int(n)
 				}
 				if respID != "" {
@@ -832,7 +833,8 @@ func deltaMessages(msgs genai.Messages, sentMsgs int) genai.Messages {
 		m := delta[i]
 		if len(m.Replies) > 0 {
 			filtered := make([]genai.Reply, 0, len(m.Replies))
-			for _, r := range m.Replies {
+			for j := range m.Replies {
+				r := m.Replies[j]
 				if len(r.Opaque) > 0 {
 					if r.Text == "" && r.ToolCall.IsZero() && r.Reasoning == "" && r.Doc.IsZero() && r.Citation.IsZero() {
 						// Drop Opaque-only bookkeeping replies.
@@ -872,6 +874,7 @@ func streamWithRespID(src iter.Seq[ResponseStreamChunkResponse], respID *string)
 				if pkt.Response.ID != "" {
 					*respID = pkt.Response.ID
 				}
+			default:
 			}
 			if !yield(pkt) {
 				return

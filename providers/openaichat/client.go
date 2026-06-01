@@ -25,13 +25,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -348,7 +349,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res := genai.Result{}
 	resp, err := c.PokeResultRaw(ctx, id)
 	if len(resp.Errors.Data) != 0 {
-		var errs []error
+		errs := make([]error, 0, len(resp.Errors.Data))
 		for _, d := range resp.Errors.Data {
 			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
 		}

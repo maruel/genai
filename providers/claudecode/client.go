@@ -284,7 +284,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		return genai.Result{}, err
 	}
 	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
-	args := c.buildArgs(co, sessionID, false)
+	args := c.buildArgs(&co, sessionID, false)
 
 	stdin, stdout, wait, err := c.exec(ctx, args)
 	if err != nil {
@@ -336,6 +336,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 				return genai.Result{}, fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
 			}
 			return buildResult(&res, asstBlocks, initSessionID), nil
+		default:
 		}
 	}
 	if err := sc.Err(); err != nil {
@@ -361,7 +362,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		return yieldNothing, errFinish(err)
 	}
 	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
-	args := c.buildArgs(co, sessionID, true)
+	args := c.buildArgs(&co, sessionID, true)
 
 	var (
 		result   genai.Result
@@ -448,6 +449,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				}
 				result = buildResult(&res, asstBlocks, initSessionID)
 				return
+			default:
 			}
 		}
 		if err := sc.Err(); err != nil {
@@ -463,7 +465,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // buildArgs constructs the claude CLI argument list for a call.
-func (c *Client) buildArgs(co callOpts, sessionID string, stream bool) []string {
+func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string {
 	args := []string{
 		"-p",
 		"--verbose",
@@ -625,7 +627,8 @@ func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, sessionI
 	// stream modes) over the plain-text result field. Claude Code may split
 	// thinking and text into separate assistant messages, so we accumulate
 	// content blocks from all assistant messages.
-	for _, blk := range asstBlocks {
+	for i := range asstBlocks {
+		blk := &asstBlocks[i]
 		switch blk.Type {
 		case "text":
 			if blk.Text != "" {
@@ -699,7 +702,7 @@ func hasOAuth() bool {
 	if err != nil {
 		return false
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	var cfg claudeConfig
 	if json.NewDecoder(f).Decode(&cfg) != nil {
 		return false

@@ -20,7 +20,7 @@ import (
 func TestBuildArgs(t *testing.T) {
 	t.Run("defaults", func(t *testing.T) {
 		c := &Client{model: ""}
-		args := c.buildArgs(callOpts{}, "", false)
+		args := c.buildArgs(&callOpts{}, "", false)
 		want := []string{
 			"-p",
 			"--verbose",
@@ -40,9 +40,8 @@ func TestBuildArgs(t *testing.T) {
 	t.Run("with_tools", func(t *testing.T) {
 		c := &Client{model: "sonnet"}
 		co := callOpts{tools: []string{"Bash", "Read"}, permissionMode: "bypassPermissions"}
-		args := c.buildArgs(co, "", false)
+		args := c.buildArgs(&co, "", false)
 		check := func(flag, val string) {
-			t.Helper()
 			for i, a := range args {
 				if a == flag && i+1 < len(args) && args[i+1] == val {
 					return
@@ -56,14 +55,13 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("with_session_resume", func(t *testing.T) {
 		c := &Client{}
-		args := c.buildArgs(callOpts{}, "my-session-id", false)
+		args := c.buildArgs(&callOpts{}, "my-session-id", false)
 		for _, a := range args {
 			if a == "--no-session-persistence" {
 				t.Error("--no-session-persistence must not appear when resuming")
 			}
 		}
 		check := func(flag, val string) {
-			t.Helper()
 			for i, a := range args {
 				if a == flag && i+1 < len(args) && args[i+1] == val {
 					return
@@ -75,7 +73,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("streaming", func(t *testing.T) {
 		c := &Client{}
-		args := c.buildArgs(callOpts{}, "", true)
+		args := c.buildArgs(&callOpts{}, "", true)
 		if !slices.Contains(args, "--include-partial-messages") {
 			t.Error("--include-partial-messages not found in streaming args")
 		}
@@ -83,9 +81,8 @@ func TestBuildArgs(t *testing.T) {
 	t.Run("with_system_prompt", func(t *testing.T) {
 		c := &Client{}
 		co := callOpts{systemPrompt: "Be helpful"}
-		args := c.buildArgs(co, "", false)
+		args := c.buildArgs(&co, "", false)
 		check := func(flag, val string) {
-			t.Helper()
 			for i, a := range args {
 				if a == flag && i+1 < len(args) && args[i+1] == val {
 					return

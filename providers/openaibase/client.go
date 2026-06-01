@@ -173,7 +173,8 @@ func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
-func (c *Client) DetectModelModalities(ctx context.Context, model string) (genai.Modalities, error) { //nolint:unparam // ctx for future use.
+func (c *Client) DetectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	_ = ctx
 	// Damn you OpenAI! This is super fragile.
 	// TODO: Fill out the scoreboard from https://platform.openai.com/docs/models then use that. This is sad
 	// because ListModels is useless. See

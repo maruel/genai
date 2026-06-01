@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -106,8 +107,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case *GenOption:
 			if !v.Thinking {
 				c.Thinking.Type = "disabled"
-			} else if v.ReasoningEffort != "" {
-				c.Thinking.ReasoningEffort = string(v.ReasoningEffort)
 			} else if v.ReasoningEffort != "" {
 				c.Thinking.ReasoningEffort = string(v.ReasoningEffort)
 			}

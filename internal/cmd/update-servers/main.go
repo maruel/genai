@@ -17,6 +17,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -65,7 +66,7 @@ var updates = []update{
 			re := regexp.MustCompile(`const BuildNumber\s*=\s*(\d+)`)
 			m := re.FindStringSubmatch(content)
 			if len(m) < 2 {
-				return "", fmt.Errorf("BuildNumber not found")
+				return "", errors.New("build number not found")
 			}
 			return m[1], nil
 		},
@@ -73,7 +74,7 @@ var updates = []update{
 			re := regexp.MustCompile(`(const BuildNumber\s*=\s*)\d+`)
 			result := re.ReplaceAllString(orig, `${1}`+newVersion)
 			if result == orig {
-				return "", fmt.Errorf("BuildNumber replacement had no effect")
+				return "", errors.New("build number replacement had no effect")
 			}
 			return result, nil
 		},
@@ -94,7 +95,7 @@ var updates = []update{
 			re := regexp.MustCompile(`const Version\s*=\s*"([^"]+)"`)
 			m := re.FindStringSubmatch(content)
 			if len(m) < 2 {
-				return "", fmt.Errorf("Version not found")
+				return "", errors.New("version not found")
 			}
 			return m[1], nil
 		},
@@ -102,7 +103,7 @@ var updates = []update{
 			re := regexp.MustCompile(`(const Version\s*=\s*)"[^"]*"`)
 			result := re.ReplaceAllString(orig, `${1}"`+newVersion+`"`)
 			if result == orig {
-				return "", fmt.Errorf("Version replacement had no effect")
+				return "", errors.New("version replacement had no effect")
 			}
 			return result, nil
 		},
@@ -135,7 +136,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		cur, latest, err := check(ctx, root, u)
+		cur, latest, err := check(ctx, root, &u)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -148,7 +149,7 @@ func main() {
 		if !*apply {
 			continue
 		}
-		if err := applyUpdate(root, u, cur, latest); err != nil {
+		if err := applyUpdate(root, &u, latest); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf("%s %supdated to %s%s\n", u.name, colorGreen, formatVersion(u.name, latest), colorReset)
@@ -183,7 +184,7 @@ func findRepoRoot() (string, error) {
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			return "", fmt.Errorf("not inside a Go module")
+			return "", errors.New("not inside a Go module")
 		}
 		dir = parent
 	}
@@ -198,7 +199,7 @@ func findUpdate(name string) (update, error) {
 	return update{}, fmt.Errorf("unknown target %q; valid: llamacpp, ollama", name)
 }
 
-func check(ctx context.Context, root string, u update) (cur, latest string, err error) {
+func check(ctx context.Context, root string, u *update) (cur, latest string, err error) {
 	content, err := os.ReadFile(filepath.Join(root, u.file))
 	if err != nil {
 		return "", "", err
@@ -218,7 +219,7 @@ func check(ctx context.Context, root string, u update) (cur, latest string, err 
 	return cur, latest, nil
 }
 
-func applyUpdate(root string, u update, cur, latest string) error {
+func applyUpdate(root string, u *update, latest string) error {
 	path := filepath.Join(root, u.file)
 	orig, err := os.ReadFile(path)
 	if err != nil {

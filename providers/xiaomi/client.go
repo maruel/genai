@@ -24,12 +24,13 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -130,7 +131,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			if mod[0] == genai.ModalityAudio {
-				if c.impl.Model, err = c.selectBestAudioModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.selectBestAudioModel(ctx); err != nil {
 					return nil, err
 				}
 			} else {
@@ -141,11 +142,12 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			c.impl.OutputModalities = mod
 		default:
 			c.impl.Model = model
-			if len(modalities) != 0 {
+			switch {
+			case len(modalities) != 0:
 				c.impl.OutputModalities = mod
-			} else if strings.Contains(model, "tts") {
+			case strings.Contains(model, "tts"):
 				c.impl.OutputModalities = genai.Modalities{genai.ModalityAudio}
-			} else {
+			default:
 				c.impl.OutputModalities = mod
 			}
 		}
@@ -175,7 +177,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 // selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
 //
 // Audio models are identified by "tts" in their name.
-func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
+func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
@@ -349,14 +351,14 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 						audioBuf = append(audioBuf, chunk...)
 						continue
 					}
-					var text string
+					var text strings.Builder
 					for _, c := range pkt.Choices[0].Delta.Content {
 						if c.Type == ContentText {
-							text += c.Text
+							text.WriteString(c.Text)
 						}
 					}
 					f := genai.Reply{
-						Text:      text,
+						Text:      text.String(),
 						Reasoning: pkt.Choices[0].Delta.ReasoningContent,
 					}
 					// Handle web search citations.

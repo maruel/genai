@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -38,46 +39,72 @@ import (
 type ServiceTier = openaibase.ServiceTier
 
 const (
-	ServiceTierAuto    = openaibase.ServiceTierAuto
+	// ServiceTierAuto lets OpenAI choose the service tier.
+	ServiceTierAuto = openaibase.ServiceTierAuto
+	// ServiceTierDefault uses the default service tier.
 	ServiceTierDefault = openaibase.ServiceTierDefault
-	ServiceTierFlex    = openaibase.ServiceTierFlex
+	// ServiceTierFlex uses the flex service tier.
+	ServiceTierFlex = openaibase.ServiceTierFlex
 )
 
 // ReasoningEffort is the effort the model should put into reasoning.
 type ReasoningEffort = openaibase.ReasoningEffort
 
 const (
-	ReasoningEffortNone    = openaibase.ReasoningEffortNone
+	// ReasoningEffortNone disables reasoning effort.
+	ReasoningEffortNone = openaibase.ReasoningEffortNone
+	// ReasoningEffortMinimal requests minimal reasoning effort.
 	ReasoningEffortMinimal = openaibase.ReasoningEffortMinimal
-	ReasoningEffortLow     = openaibase.ReasoningEffortLow
-	ReasoningEffortMedium  = openaibase.ReasoningEffortMedium
-	ReasoningEffortHigh    = openaibase.ReasoningEffortHigh
-	ReasoningEffortXHigh   = openaibase.ReasoningEffortXHigh
+	// ReasoningEffortLow requests low reasoning effort.
+	ReasoningEffortLow = openaibase.ReasoningEffortLow
+	// ReasoningEffortMedium requests medium reasoning effort.
+	ReasoningEffortMedium = openaibase.ReasoningEffortMedium
+	// ReasoningEffortHigh requests high reasoning effort.
+	ReasoningEffortHigh = openaibase.ReasoningEffortHigh
+	// ReasoningEffortXHigh requests extra-high reasoning effort.
+	ReasoningEffortXHigh = openaibase.ReasoningEffortXHigh
 )
 
 // Background is only supported on gpt-image-1.
 type Background = openaibase.Background
 
 const (
-	BackgroundAuto        = openaibase.BackgroundAuto
+	// BackgroundAuto lets OpenAI choose the image background.
+	BackgroundAuto = openaibase.BackgroundAuto
+	// BackgroundTransparent requests a transparent image background.
 	BackgroundTransparent = openaibase.BackgroundTransparent
-	BackgroundOpaque      = openaibase.BackgroundOpaque
+	// BackgroundOpaque requests an opaque image background.
+	BackgroundOpaque = openaibase.BackgroundOpaque
 )
 
 type (
-	ImageRequest       = openaibase.ImageRequest
-	ImageResponse      = openaibase.ImageResponse
-	ImageChoiceData    = openaibase.ImageChoiceData
-	GenOptionImage     = openaibase.GenOptionImage
-	Model              = openaibase.Model
-	ModelsResponse     = openaibase.ModelsResponse
-	File               = openaibase.File
+	// ImageRequest is an alias to the shared OpenAI image request type.
+	ImageRequest = openaibase.ImageRequest
+	// ImageResponse is an alias to the shared OpenAI image response type.
+	ImageResponse = openaibase.ImageResponse
+	// ImageChoiceData is an alias to the shared OpenAI image choice type.
+	ImageChoiceData = openaibase.ImageChoiceData
+	// GenOptionImage is an alias to the shared OpenAI image generation options.
+	GenOptionImage = openaibase.GenOptionImage
+	// Model is an alias to the shared OpenAI model type.
+	Model = openaibase.Model
+	// ModelsResponse is an alias to the shared OpenAI models response type.
+	ModelsResponse = openaibase.ModelsResponse
+	// File is an alias to the shared OpenAI file type.
+	File = openaibase.File
+	// FileDeleteResponse is an alias to the shared OpenAI file deletion response type.
 	FileDeleteResponse = openaibase.FileDeleteResponse
-	FileListResponse   = openaibase.FileListResponse
-	BatchRequest       = openaibase.BatchRequest
-	Batch              = openaibase.Batch
-	BatchUsage         = openaibase.BatchUsage
-	ErrorResponse      = openaibase.ErrorResponse
+	// FileListResponse is an alias to the shared OpenAI file list response type.
+	FileListResponse = openaibase.FileListResponse
+	// BatchRequest is an alias to the shared OpenAI batch request type.
+	BatchRequest = openaibase.BatchRequest
+	// Batch is an alias to the shared OpenAI batch type.
+	Batch = openaibase.Batch
+	// BatchUsage is an alias to the shared OpenAI batch usage type.
+	BatchUsage = openaibase.BatchUsage
+	// ErrorResponse is an alias to the shared OpenAI error response type.
+	ErrorResponse = openaibase.ErrorResponse
+	// ErrorResponseError is an alias to the shared OpenAI error detail type.
 	ErrorResponseError = openaibase.ErrorResponseError
 )
 

@@ -162,7 +162,7 @@ func (r *Recorder) replayDial(ctx context.Context, cfg *websocket.Config) (*Conn
 	r.mu.Unlock()
 
 	handler := func(ws *websocket.Conn) {
-		defer ws.Close()
+		defer func() { _ = ws.Close() }()
 		// Track position in the recorded lines.
 		pos := 0
 		for pos < len(lines) {

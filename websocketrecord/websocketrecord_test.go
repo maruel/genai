@@ -183,7 +183,11 @@ func TestRecorder(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			t.Cleanup(func() { rec.Stop() })
+			t.Cleanup(func() {
+				if err := rec.Stop(); err != nil {
+					t.Error(err)
+				}
+			})
 			cfg, err := websocket.NewConfig("ws://localhost:0", "http://localhost:0")
 			if err != nil {
 				t.Fatal(err)
@@ -192,7 +196,11 @@ func TestRecorder(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer c.Close()
+			t.Cleanup(func() {
+				if err := c.Close(); err != nil {
+					t.Error(err)
+				}
+			})
 			// Send the request (replay server expects one request then sends responses).
 			if err := c.Send("anything"); err != nil {
 				t.Fatal(err)
@@ -227,8 +235,12 @@ func TestConn(t *testing.T) {
 			// Start an echo server.
 			echoSrv := httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
 				var msg string
-				websocket.Message.Receive(ws, &msg)
-				websocket.Message.Send(ws, msg)
+				if err := websocket.Message.Receive(ws, &msg); err != nil {
+					return
+				}
+				if err := websocket.Message.Send(ws, msg); err != nil {
+					return
+				}
 			}))
 			defer echoSrv.Close()
 
@@ -253,8 +265,12 @@ func TestConn(t *testing.T) {
 		t.Run("ws_returns_underlying", func(t *testing.T) {
 			echoSrv := httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
 				var msg string
-				websocket.Message.Receive(ws, &msg)
-				websocket.Message.Send(ws, msg)
+				if err := websocket.Message.Receive(ws, &msg); err != nil {
+					return
+				}
+				if err := websocket.Message.Send(ws, msg); err != nil {
+					return
+				}
 			}))
 			defer echoSrv.Close()
 
@@ -267,7 +283,11 @@ func TestConn(t *testing.T) {
 				t.Fatal(err)
 			}
 			c := &Conn{ws: ws}
-			defer c.Close()
+			t.Cleanup(func() {
+				if err := c.Close(); err != nil {
+					t.Error(err)
+				}
+			})
 			if c.WS() != ws {
 				t.Fatal("WS() should return the underlying connection")
 			}

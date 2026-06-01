@@ -19,12 +19,13 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/maruel/roundtrippers"
+	"golang.org/x/net/websocket"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
-	"golang.org/x/net/websocket"
 )
 
 // wsConn abstracts a WebSocket text-message connection for recording/replay.
@@ -96,7 +97,7 @@ func (c *Client) WebSocket(ctx context.Context) (*WebSocketConn, error) {
 	// Extract auth headers from the HTTP client's transport chain.
 	wsCfg.Header = http.Header{}
 	wsCfg.Header.Set("OpenAI-Beta", "responses=v1")
-	if h, ok := c.impl.ProviderBase.Client.Transport.(*roundtrippers.Header); ok {
+	if h, ok := c.impl.Client.Transport.(*roundtrippers.Header); ok {
 		for k, vs := range h.Header {
 			for _, v := range vs {
 				wsCfg.Header.Set(k, v)
@@ -162,13 +163,6 @@ func (w *WebSocketConn) Close() error {
 	err := w.ws.Close()
 	w.ws = nil
 	return err
-}
-
-// newWebSocketConn creates a WebSocketConn with a pre-existing wsConn.
-//
-// This is used by tests to inject a recorded or replayed connection.
-func newWebSocketConn(c *Client, conn wsConn) *WebSocketConn {
-	return &WebSocketConn{client: c, ws: conn}
 }
 
 // send sends a message over the WebSocket.
@@ -360,10 +354,6 @@ func (w *WebSocketConn) GenStream(ctx context.Context, msgs genai.Messages, opts
 //
 // This gives direct access to the WebSocket protocol for power users.
 func (w *WebSocketConn) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[ResponseStreamChunkResponse], func() error) {
-	if in.PreviousResponseID == "" {
-		// Try to find metadata from prior calls in the context.
-		// For raw access, the caller manages previous_response_id manually.
-	}
 	req := WSRequest{
 		Type:     "response.create",
 		Response: *in,

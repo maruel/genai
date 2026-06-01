@@ -22,12 +22,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 // Official python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
@@ -358,28 +359,6 @@ func deepseekVersion(modelID string) float64 {
 	return v
 }
 
-// qwenVersion returns the version of a base Qwen model (e.g. Qwen3.5-397B-A17B → 3.5)
-// or 0 for variants (e.g. Qwen3-Coder, Qwen3-VL, Qwen3-Next) and quantized
-// models (e.g. Qwen3.6-35B-A3B-FP8).
-func qwenVersion(modelID string) float64 {
-	s, ok := strings.CutPrefix(modelID, "Qwen/Qwen")
-	if !ok {
-		return 0
-	}
-	v, rem := parseVersion(s)
-	// After the version, expect "-<digit>" (size like 397B), not "-<letter>" (variant like Coder).
-	if len(rem) < 2 || rem[0] != '-' || rem[1] < '0' || rem[1] > '9' {
-		return 0
-	}
-	// Reject quantized variants (-FP8, -FP4, -INT4) and fine-tuned variants (-Lora).
-	for _, suffix := range []string{"-FP8", "-FP4", "-INT4", "-Lora"} {
-		if strings.Contains(rem, suffix) {
-			return 0
-		}
-	}
-	return v
-}
-
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.
@@ -540,7 +519,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 				// Check for streaming errors.
 				if pkt.Choices[0].Error != nil {
-					finalErr = fmt.Errorf("streaming error: %v", pkt.Choices[0].Error)
+					finalErr = fmt.Errorf("streaming error: %w", pkt.Choices[0].Error)
 					return
 				}
 				if pkt.Choices[0].FinishReason != "" {

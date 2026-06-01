@@ -29,12 +29,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -154,7 +155,7 @@ func (o *GenOptionText) Validate() error {
 		return fmt.Errorf("ThinkingBudget must be set when Thinking is %q", ThinkingEnabled)
 	}
 	if o.ThinkingDisplay != "" && o.Thinking != ThinkingAdaptive {
-		return fmt.Errorf("ThinkingDisplay is only valid with ThinkingAdaptive")
+		return errors.New("ThinkingDisplay is only valid with ThinkingAdaptive")
 	}
 	switch o.ThinkingDisplay {
 	case "", "summarized", "omitted":

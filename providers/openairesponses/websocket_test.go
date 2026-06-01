@@ -13,11 +13,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/maruel/roundtrippers"
+	"golang.org/x/net/websocket"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/websocketrecord"
-	"github.com/maruel/roundtrippers"
-	"golang.org/x/net/websocket"
 )
 
 func TestWSRequest(t *testing.T) {
@@ -99,7 +100,11 @@ func TestWebSocketConn(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Cleanup(func() { rec.Stop() })
+		t.Cleanup(func() {
+			if err := rec.Stop(); err != nil {
+				t.Error(err)
+			}
+		})
 
 		if !rec.IsReplay() {
 			if os.Getenv("RECORD") != "all" || os.Getenv("OPENAI_API_KEY") == "" {
@@ -121,7 +126,11 @@ func TestWebSocketConn(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			t.Cleanup(func() { conn.Close() })
+			t.Cleanup(func() {
+				if err := conn.Close(); err != nil {
+					t.Error(err)
+				}
+			})
 
 			// Record 3 turns with raw messages, exercising the recorder.
 			// Each turn sends a response.create and waits for the terminal event.
@@ -132,7 +141,7 @@ func TestWebSocketConn(t *testing.T) {
 				"Good, now say goodbye in exactly 2 words.",
 			}
 			for i, text := range texts {
-				req := fmt.Sprintf(`{"type":"response.create","model":"%s","input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"%s"}]}],"store":false%s}`,
+				req := fmt.Sprintf(`{"type":"response.create","model":%q,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":%q}]}],"store":false%s}`,
 					model, text, prevIDStr(prevID))
 				if err := conn.Send(req); err != nil {
 					t.Fatal(err)
@@ -149,7 +158,9 @@ func TestWebSocketConn(t *testing.T) {
 							ID string `json:"id"`
 						} `json:"response"`
 					}
-					json.Unmarshal([]byte(msg), &evt)
+					if err := json.Unmarshal([]byte(msg), &evt); err != nil {
+						t.Fatal(err)
+					}
 					if evt.Response.ID != "" {
 						prevID = evt.Response.ID
 					}
@@ -171,7 +182,11 @@ func TestWebSocketConn(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Cleanup(func() { conn.Close() })
+		t.Cleanup(func() {
+			if err := conn.Close(); err != nil {
+				t.Error(err)
+			}
+		})
 
 		for turn := range 3 {
 			if err := conn.Send("request"); err != nil {
@@ -185,7 +200,9 @@ func TestWebSocketConn(t *testing.T) {
 				var evt struct {
 					Type string `json:"type"`
 				}
-				json.Unmarshal([]byte(msg), &evt)
+				if err := json.Unmarshal([]byte(msg), &evt); err != nil {
+					t.Fatal(err)
+				}
 				if evt.Type == "response.completed" || evt.Type == "response.failed" {
 					t.Logf("Replay turn %d: %s", turn+1, evt.Type)
 					break
@@ -197,8 +214,8 @@ func TestWebSocketConn(t *testing.T) {
 	t.Run("Smoke_Local", func(t *testing.T) {
 		// Self-contained test with a local echo server. Verifies the full
 		// record→replay flow without any network dependency.
-		srv := startEchoServer(t)
-		defer srv.Close()
+		srv := startEchoServer()
+		t.Cleanup(srv.Close)
 
 		dir := t.TempDir()
 		path := dir + "/smoke"
@@ -240,7 +257,11 @@ func TestWebSocketConn(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Cleanup(func() { rec2.Stop() })
+		t.Cleanup(func() {
+			if err := rec2.Stop(); err != nil {
+				t.Error(err)
+			}
+		})
 		if !rec2.IsReplay() {
 			t.Fatal("expected replay mode after recording")
 		}
@@ -252,7 +273,11 @@ func TestWebSocketConn(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Cleanup(func() { conn2.Close() })
+		t.Cleanup(func() {
+			if err := conn2.Close(); err != nil {
+				t.Error(err)
+			}
+		})
 		for i := range 3 {
 			req := fmt.Sprintf("turn %d", i+1)
 			if err := conn2.Send(req); err != nil {
@@ -387,7 +412,7 @@ func buildWSConfig(c *Client) (*websocket.Config, error) {
 	}
 	cfg.Header = http.Header{}
 	cfg.Header.Set("OpenAI-Beta", "responses=v1")
-	if h, ok := c.impl.ProviderBase.Client.Transport.(*roundtrippers.Header); ok {
+	if h, ok := c.impl.Client.Transport.(*roundtrippers.Header); ok {
 		for k, vs := range h.Header {
 			for _, v := range vs {
 				cfg.Header.Set(k, v)
@@ -401,12 +426,12 @@ func prevIDStr(id string) string {
 	if id == "" {
 		return ""
 	}
-	return fmt.Sprintf(`,"previous_response_id":"%s"`, id)
+	return fmt.Sprintf(`,"previous_response_id":%q`, id)
 }
 
 // startEchoServer starts a local WebSocket server that echoes received
 // messages with a prefix, simulating a conversation for testing.
-func startEchoServer(t *testing.T) *httptest.Server {
+func startEchoServer() *httptest.Server {
 	return httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
 		for {
 			var msg string

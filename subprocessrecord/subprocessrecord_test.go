@@ -82,7 +82,7 @@ func TestRecorder(t *testing.T) {
 			}
 			want := `{"msg":"hello"}` + "\n"
 			starter := rec.Wrap(fakeStarter(want))
-			stdin, stdout, wait, err := starter(context.Background(), []string{"fake"})
+			stdin, stdout, wait, err := starter(t.Context(), []string{"fake"})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -93,8 +93,12 @@ func TestRecorder(t *testing.T) {
 			if string(got) != want {
 				t.Fatalf("stdout: got %q, want %q", got, want)
 			}
-			stdin.Close()
-			stdout.Close()
+			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if err := stdout.Close(); err != nil {
+				t.Fatal(err)
+			}
 			if err := wait(); err != nil {
 				t.Fatal(err)
 			}
@@ -126,7 +130,7 @@ func TestRecorder(t *testing.T) {
 				return nil, nil, nil, nil
 			}
 			starter := rec.Wrap(boom)
-			stdin, stdout, wait, err := starter(context.Background(), []string{"ignored"})
+			stdin, stdout, wait, err := starter(t.Context(), []string{"ignored"})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -137,7 +141,9 @@ func TestRecorder(t *testing.T) {
 			if string(got) != want {
 				t.Fatalf("stdout: got %q, want %q", got, want)
 			}
-			stdin.Close()
+			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
 			if err := wait(); err != nil {
 				t.Fatal(err)
 			}
@@ -156,15 +162,19 @@ func TestRecorder(t *testing.T) {
 				t.Fatal(err)
 			}
 			starter := rec.Wrap(fakeStarter(want))
-			stdin, stdout, _, err := starter(context.Background(), nil)
+			stdin, stdout, _, err := starter(t.Context(), nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 			if _, err := io.ReadAll(stdout); err != nil {
 				t.Fatal(err)
 			}
-			stdin.Close()
-			stdout.Close()
+			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if err := stdout.Close(); err != nil {
+				t.Fatal(err)
+			}
 			if err := rec.Stop(); err != nil {
 				t.Fatal(err)
 			}
@@ -178,7 +188,7 @@ func TestRecorder(t *testing.T) {
 				t.Fatal("expected replay after recording")
 			}
 			starter2 := rec2.Wrap(nil)
-			_, stdout2, _, err := starter2(context.Background(), nil)
+			_, stdout2, _, err := starter2(t.Context(), nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -204,7 +214,7 @@ func TestRecorder(t *testing.T) {
 				return nil, nil, nil, wantErr
 			}
 			starter := rec.Wrap(failing)
-			_, _, _, err = starter(context.Background(), nil)
+			_, _, _, err = starter(t.Context(), nil)
 			if !errors.Is(err, wantErr) {
 				t.Fatalf("got %v, want %v", err, wantErr)
 			}
@@ -215,7 +225,7 @@ func TestRecorder(t *testing.T) {
 			// Manually force replay mode with a missing fixture.
 			rec := &Recorder{fixture: path + ".ndjson", replay: true}
 			starter := rec.Wrap(nil)
-			_, _, _, err := starter(context.Background(), nil)
+			_, _, _, err := starter(t.Context(), nil)
 			if err == nil {
 				t.Fatal("expected error for missing fixture")
 			}

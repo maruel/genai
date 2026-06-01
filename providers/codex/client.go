@@ -257,12 +257,12 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	out := make([]genai.Model, len(models))
-	for i, m := range models {
-		name := m.DisplayName
+	for i := range models {
+		name := models[i].DisplayName
 		if name == "" {
-			name = m.ID
+			name = models[i].ID
 		}
-		out[i] = &model{id: m.ID, displayName: name}
+		out[i] = &model{id: models[i].ID, displayName: name}
 	}
 	return out, nil
 }
@@ -416,7 +416,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = errors.New(errMsg)
 					return
 				}
-				result = buildResult(replies, usage, newThreadID)
+				result = buildResult(replies, &usage, newThreadID)
 				return
 			case MethodErrorNotification:
 				var p ErrorNotification
@@ -424,6 +424,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = fmt.Errorf("codex error: %s", p.Error.Message)
 					return
 				}
+			default:
 			}
 		}
 		if err := sc.Err(); err != nil {
@@ -650,12 +651,13 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 				}
 				return genai.Result{}, errors.New(errMsg)
 			}
-			return buildResult(replies, usage, threadID), nil
+			return buildResult(replies, &usage, threadID), nil
 		case MethodErrorNotification:
 			var p ErrorNotification
 			if internal.UnmarshalJSON(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
 				return genai.Result{}, fmt.Errorf("codex error: %s", p.Error.Message)
 			}
+		default:
 		}
 	}
 	if err := sc.Err(); err != nil {
@@ -688,6 +690,7 @@ func parseCompletedItem(params json.RawMessage) *genai.Reply {
 			return nil
 		}
 		return &genai.Reply{Reasoning: strings.Join(item.Summary, "\n")}
+	default:
 	}
 	return nil
 }
@@ -703,9 +706,9 @@ func accumulateUsage(usage *genai.Usage, tu *ThreadTokenUsage) {
 
 // buildResult constructs a genai.Result from collected replies, usage, and
 // thread ID.
-func buildResult(replies []genai.Reply, usage genai.Usage, threadID string) genai.Result {
+func buildResult(replies []genai.Reply, usage *genai.Usage, threadID string) genai.Result {
 	usage.FinishReason = genai.FinishedStop
-	r := genai.Result{Usage: usage}
+	r := genai.Result{Usage: *usage}
 	r.Replies = append(r.Replies, replies...)
 	if threadID != "" {
 		r.Replies = append(r.Replies, genai.Reply{

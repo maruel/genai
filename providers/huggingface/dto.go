@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -421,7 +422,8 @@ func (l *Logprobs) IsZero() bool {
 // To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	out := make([][]genai.Logprob, 0, len(l.Content))
-	for _, p := range l.Content {
+	for i := range l.Content {
+		p := &l.Content[i]
 		lp := make([]genai.Logprob, 0, len(p.TopLogprobs))
 		// The first token is the same as the content token.
 		// Intentionally discard Bytes. Skip entries with empty Token since they can't be represented.

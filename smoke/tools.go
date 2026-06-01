@@ -262,7 +262,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 					f.Tools = scoreboard.Flaky
 					continue
 				}
-				biasedResults[i] = res2 == line.countrySelected //nolint:gosec // G602: i bounded by len(data) == len(biasedResults)
+				biasedResults[i] = res2 == line.countrySelected
 			}
 		case 2:
 			indecisiveOccurred = true

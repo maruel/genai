@@ -20,13 +20,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/roundtrippers"
 )
 
 func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, opts ...genai.ProviderOption) (genai.Provider, error) {
@@ -46,7 +47,7 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	return anthropic.New(t.Context(), opts...)
 }
 
-// modelsMeta is the same as in client.go
+// modelsMeta is the same as in client.go.
 type modelsData struct {
 	Models map[string]modelData `json:"models"`
 }

@@ -35,15 +35,16 @@ import (
 //
 // Don't forget to call Stop()!
 func New(path string, h http.RoundTripper, opts ...recorder.Option) (*recorder.Recorder, error) {
-	args := []recorder.Option{
+	args := make([]recorder.Option, 0, 7+len(opts))
+	args = append(args,
 		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingCloudflare, recorder.AfterCaptureHook),
 		recorder.WithHook(trimRecordingHostPort, recorder.AfterCaptureHook),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
 		recorder.WithMatcher(matchWithBody),
-		recorder.WithFS(&skipEmptyFS{FS: cassette.NewDiskFS()}),
-	}
+		recorder.WithFS(&skipEmptyFS{fs: cassette.NewDiskFS()}),
+	)
 	return recorder.New(path, append(args, opts...)...)
 }
 
@@ -75,7 +76,11 @@ func Wrap(t TB, opts ...recorder.Option) func(h http.RoundTripper) http.RoundTri
 }
 
 type skipEmptyFS struct {
-	cassette.FS
+	fs cassette.FS
+}
+
+func (c *skipEmptyFS) ReadFile(name string) ([]byte, error) {
+	return c.fs.ReadFile(name)
 }
 
 func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
@@ -85,7 +90,7 @@ func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
 	}
 	// Skip write if content is unchanged to avoid unnecessary file touches
 	// (important for ModeReplayWithNewEpisodes which always calls persistCassette).
-	if existing, err := c.FS.ReadFile(name); err == nil && bytes.Equal(existing, data) {
+	if existing, err := c.fs.ReadFile(name); err == nil && bytes.Equal(existing, data) {
 		return nil
 	}
 	if d := filepath.Dir(name); d != "." {
@@ -93,7 +98,11 @@ func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
 			return err
 		}
 	}
-	return c.FS.WriteFile(name, data)
+	return c.fs.WriteFile(name, data)
+}
+
+func (c *skipEmptyFS) IsFileExists(name string) bool {
+	return c.fs.IsFileExists(name)
 }
 
 // Trimmers.

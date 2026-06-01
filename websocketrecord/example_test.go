@@ -38,7 +38,7 @@ func Example() {
 		fmt.Println("New:", err)
 		return
 	}
-	defer rec.Stop()
+	defer func() { _ = rec.Stop() }()
 
 	cfg, err := websocket.NewConfig("ws"+echoSrv.URL[4:], echoSrv.URL)
 	if err != nil {
@@ -50,7 +50,7 @@ func Example() {
 		fmt.Println("DialContext:", err)
 		return
 	}
-	defer c.Close()
+	defer func() { _ = c.Close() }()
 
 	// Use c.Send and c.Receive instead of websocket.Message.
 	if err := c.Send("hello"); err != nil {

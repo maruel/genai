@@ -432,7 +432,7 @@ type Content struct {
 	ID string `json:"id,omitzero"`
 	// For ContentServerToolUse, it will be {"query": "..."}. For ContentMCPToolUse, it depends on the MCP
 	// server.
-	Input any `json:"input,omitzero"` // To reorder, I need to redo HTTP recordings.
+	Input map[string]json.RawMessage `json:"input,omitzero"`
 	// Type == ContentToolUse, ContentServerToolUse, ContentMCPToolUse
 	Name string `json:"name,omitzero"`
 	// Type == ContentToolUse; indicates what invoked the tool call.
@@ -714,8 +714,16 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 			if c.Name, ok = v["name"].(string); !ok {
 				return false, errors.New("field Opaque.mcp_tool_use.name not found")
 			}
-			if c.Input, ok = v["input"]; !ok {
+			input, ok := v["input"]
+			if !ok {
 				return false, errors.New("field Opaque.mcp_tool_use.input not found")
+			}
+			b, err := json.Marshal(input)
+			if err != nil {
+				return false, fmt.Errorf("failed to marshal Opaque.mcp_tool_use.input: %w", err)
+			}
+			if err := json.Unmarshal(b, &c.Input); err != nil {
+				return false, fmt.Errorf("failed to unmarshal Opaque.mcp_tool_use.input: %w", err)
 			}
 			return false, nil
 		}
@@ -731,7 +739,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 			if c.Content, ok = v["content"].([]Content); !ok {
 				return false, errors.New("field Opaque.mcp_tool_result.content not found")
 			}
-			if c.ServerName, ok = v["tool_use_id"].(string); !ok {
+			if c.ServerName, ok = v["server_name"].(string); !ok {
 				return false, errors.New("field Opaque.mcp_tool_result.server_name not found")
 			}
 			return false, nil
@@ -746,7 +754,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		c.ID = in.ToolCall.ID
 		c.Name = in.ToolCall.Name
 		if err := json.Unmarshal([]byte(in.ToolCall.Arguments), &c.Input); err != nil {
-			return false, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
+			return false, fmt.Errorf("failed to unmarshal input: %w; for tool call: %#v", err, in)
 		}
 		return false, nil
 	}
@@ -1335,74 +1343,84 @@ type ChatStreamChunkResponse struct {
 	Type ChunkType `json:"type"`
 
 	// Type == "message_start"
-	Message struct {
-		ID           string             `json:"id"`
-		Type         string             `json:"type"` // "message", "thinking"
-		Role         string             `json:"role"`
-		Model        string             `json:"model"`
-		Content      []string           `json:"content"`
-		StopReason   StopReason         `json:"stop_reason"`
-		StopSequence string             `json:"stop_sequence"`
-		StopDetails  RefusalStopDetails `json:"stop_details"`
-		Usage        Usage              `json:"usage"`
-	} `json:"message"`
+	Message StreamMessage `json:"message"`
 
 	Index int64 `json:"index"`
 
 	// Type == ChunkContentBlockStart
-	ContentBlock struct {
-		Type ContentType `json:"type"`
-
-		// Type == ContentText
-		Text string `json:"text"`
-
-		// Type == ContentThinking
-		Thinking  string `json:"thinking"`
-		Signature []byte `json:"signature"` // Never actually filed but present on content_block_start.
-
-		// Type == ContentToolUse, ContentMCPToolUse
-		ID     string `json:"id"`
-		Name   string `json:"name"`
-		Input  any    `json:"input"`
-		Caller Caller `json:"caller"`
-
-		// Always empty on content_block_start; actual citations arrive as citations_delta in subsequent deltas.
-		Citations Citations `json:"citations"`
-
-		// Type == ContentWebSearchToolResult, ContentWebFetchToolResult, ContentMCPToolResult
-		ToolUseID string   `json:"tool_use_id"`
-		Content   Contents `json:"content"`
-
-		// Type == ContentMCPToolResult
-		ServerName string `json:"server_name,omitzero"`
-	} `json:"content_block"`
+	ContentBlock StreamContentBlock `json:"content_block"`
 
 	// Type == ChunkContentBlockDelta
-	Delta struct {
-		Type DeltaType `json:"type"`
-
-		// Type == DeltaText
-		Text string `json:"text"`
-
-		// Type == DeltaInputJSON
-		PartialJSON string `json:"partial_json"`
-
-		// Type == DeltaThinking
-		Thinking string `json:"thinking"`
-
-		// Type == DeltaSignature
-		Signature []byte `json:"signature"`
-
-		// Type == DeltaCitations
-		Citation Citation `json:"citation"`
-
-		// Type == ""
-		StopReason   StopReason         `json:"stop_reason"`
-		StopSequence string             `json:"stop_sequence"`
-		StopDetails  RefusalStopDetails `json:"stop_details"`
-	} `json:"delta"`
+	Delta StreamDelta `json:"delta"`
 
 	Usage Usage `json:"usage"`
+}
+
+// StreamMessage is the message payload in a message_start streaming chunk.
+type StreamMessage struct {
+	ID           string             `json:"id"`
+	Type         string             `json:"type"` // "message", "thinking"
+	Role         string             `json:"role"`
+	Model        string             `json:"model"`
+	Content      []string           `json:"content"`
+	StopReason   StopReason         `json:"stop_reason"`
+	StopSequence string             `json:"stop_sequence"`
+	StopDetails  RefusalStopDetails `json:"stop_details"`
+	Usage        Usage              `json:"usage"`
+}
+
+// StreamContentBlock is the content_block payload in a content_block_start streaming chunk.
+type StreamContentBlock struct {
+	Type ContentType `json:"type"`
+
+	// Type == ContentText
+	Text string `json:"text"`
+
+	// Type == ContentThinking
+	Thinking string `json:"thinking"`
+	// Never actually filled but present on content_block_start.
+	Signature []byte `json:"signature"`
+
+	// Type == ContentToolUse, ContentMCPToolUse
+	ID     string                     `json:"id"`
+	Name   string                     `json:"name"`
+	Input  map[string]json.RawMessage `json:"input"`
+	Caller Caller                     `json:"caller"`
+
+	// Always empty on content_block_start; actual citations arrive as citations_delta in subsequent deltas.
+	Citations Citations `json:"citations"`
+
+	// Type == ContentWebSearchToolResult, ContentWebFetchToolResult, ContentMCPToolResult
+	ToolUseID string   `json:"tool_use_id"`
+	Content   Contents `json:"content"`
+
+	// Type == ContentMCPToolResult
+	ServerName string `json:"server_name,omitzero"`
+}
+
+// StreamDelta is the delta payload in a content_block_delta or message_delta streaming chunk.
+type StreamDelta struct {
+	Type DeltaType `json:"type"`
+
+	// Type == DeltaText
+	Text string `json:"text"`
+
+	// Type == DeltaInputJSON
+	PartialJSON string `json:"partial_json"`
+
+	// Type == DeltaThinking
+	Thinking string `json:"thinking"`
+
+	// Type == DeltaSignature
+	Signature []byte `json:"signature"`
+
+	// Type == DeltaCitations
+	Citation Citation `json:"citation"`
+
+	// Type == ""
+	StopReason   StopReason         `json:"stop_reason"`
+	StopSequence string             `json:"stop_sequence"`
+	StopDetails  RefusalStopDetails `json:"stop_details"`
 }
 
 // ChunkType is the type of a streaming chunk.

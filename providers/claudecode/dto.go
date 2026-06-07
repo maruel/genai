@@ -7,9 +7,13 @@
 package claudecode
 
 import (
+	"bytes"
 	"encoding/json"
 	"slices"
 	"strings"
+	"time"
+
+	"github.com/maruel/genai/providers/anthropic"
 )
 
 // ============================================================================
@@ -60,16 +64,8 @@ type InputUserContent struct {
 // InputContentBlock is a single block in the content array sent to Claude Code.
 type InputContentBlock struct {
 	Type   string           `json:"type"`
-	Source InputImageSource `json:"source,omitzero"`
+	Source anthropic.Source `json:"source,omitzero"`
 	Text   string           `json:"text,omitempty"`
-}
-
-// InputImageSource is an image source block sent to Claude Code.
-type InputImageSource struct {
-	Type      string `json:"type"`                 // "base64" or "url"
-	MediaType string `json:"media_type,omitempty"` // e.g. "image/png"
-	Data      string `json:"data,omitempty"`       // base64-encoded bytes
-	URL       string `json:"url,omitempty"`        // Type == "url"
 }
 
 // ---------- control request ----------
@@ -114,9 +110,9 @@ const (
 // ControlReqInitialize initializes the SDK session.
 type ControlReqInitialize struct {
 	Subtype                ControlSubtype  `json:"subtype"` // ControlInitialize
-	Hooks                  json.RawMessage `json:"hooks,omitempty"`
+	Hooks                  HooksConfig     `json:"hooks,omitempty"`
 	SDKMcpServers          []string        `json:"sdkMcpServers,omitempty"`
-	JSONSchema             json.RawMessage `json:"jsonSchema,omitempty"`
+	JSONSchema             JSONSchema      `json:"jsonSchema,omitempty"`
 	SystemPrompt           string          `json:"systemPrompt,omitempty"`
 	AppendSystemPrompt     string          `json:"appendSystemPrompt,omitempty"`
 	Agents                 json.RawMessage `json:"agents,omitempty"`
@@ -131,17 +127,17 @@ type ControlReqInterrupt struct {
 
 // ControlReqCanUseTool requests permission to use a tool.
 type ControlReqCanUseTool struct {
-	Subtype               ControlSubtype  `json:"subtype"` // ControlCanUseTool
-	ToolName              string          `json:"tool_name"`
-	Input                 json.RawMessage `json:"input"`
-	PermissionSuggestions json.RawMessage `json:"permission_suggestions,omitempty"`
-	BlockedPath           string          `json:"blocked_path,omitempty"`
-	DecisionReason        string          `json:"decision_reason,omitempty"`
-	Title                 string          `json:"title,omitempty"`
-	DisplayName           string          `json:"display_name,omitempty"`
-	ToolUseID             string          `json:"tool_use_id"`
-	AgentID               string          `json:"agent_id,omitempty"`
-	Description           string          `json:"description,omitempty"`
+	Subtype               ControlSubtype             `json:"subtype"` // ControlCanUseTool
+	ToolName              string                     `json:"tool_name"`
+	Input                 map[string]json.RawMessage `json:"input"`
+	PermissionSuggestions []PermissionUpdate         `json:"permission_suggestions,omitempty"`
+	BlockedPath           string                     `json:"blocked_path,omitempty"`
+	DecisionReason        string                     `json:"decision_reason,omitempty"`
+	Title                 string                     `json:"title,omitempty"`
+	DisplayName           string                     `json:"display_name,omitempty"`
+	ToolUseID             string                     `json:"tool_use_id"`
+	AgentID               string                     `json:"agent_id,omitempty"`
+	Description           string                     `json:"description,omitempty"`
 }
 
 // ControlReqSetPermissionMode changes the tool permission mode.
@@ -175,17 +171,17 @@ type ControlReqGetContextUsage struct {
 
 // ControlReqHookCallback delivers a hook callback with its input data.
 type ControlReqHookCallback struct {
-	Subtype    ControlSubtype  `json:"subtype"` // ControlHookCallback
-	CallbackID string          `json:"callback_id"`
-	Input      json.RawMessage `json:"input"`
-	ToolUseID  string          `json:"tool_use_id,omitempty"`
+	Subtype    ControlSubtype    `json:"subtype"` // ControlHookCallback
+	CallbackID string            `json:"callback_id"`
+	Input      HookCallbackInput `json:"input"`
+	ToolUseID  string            `json:"tool_use_id,omitempty"`
 }
 
 // ControlReqMcpMessage sends a JSON-RPC message to a specific MCP server.
 type ControlReqMcpMessage struct {
-	Subtype    ControlSubtype  `json:"subtype"` // ControlMcpMessage
-	ServerName string          `json:"server_name"`
-	Message    json.RawMessage `json:"message"`
+	Subtype    ControlSubtype `json:"subtype"` // ControlMcpMessage
+	ServerName string         `json:"server_name"`
+	Message    JSONRPCMessage `json:"message"`
 }
 
 // ControlReqRewindFiles reverts file changes since a given user message.
@@ -212,8 +208,8 @@ type ControlReqSeedReadState struct {
 
 // ControlReqMcpSetServers replaces the set of dynamically managed MCP servers.
 type ControlReqMcpSetServers struct {
-	Subtype ControlSubtype  `json:"subtype"` // ControlMcpSetServers
-	Servers json.RawMessage `json:"servers"`
+	Subtype ControlSubtype             `json:"subtype"` // ControlMcpSetServers
+	Servers map[string]json.RawMessage `json:"servers"`
 }
 
 // ControlReqReloadPlugins reloads plugins from disk.
@@ -242,8 +238,8 @@ type ControlReqStopTask struct {
 
 // ControlReqApplyFlagSettings merges settings into the flag settings layer.
 type ControlReqApplyFlagSettings struct {
-	Subtype  ControlSubtype  `json:"subtype"` // ControlApplyFlagSettings
-	Settings json.RawMessage `json:"settings"`
+	Subtype  ControlSubtype             `json:"subtype"` // ControlApplyFlagSettings
+	Settings map[string]json.RawMessage `json:"settings"`
 }
 
 // ControlReqGetSettings returns the effective and per-source settings.
@@ -253,13 +249,136 @@ type ControlReqGetSettings struct {
 
 // ControlReqElicitation requests the SDK consumer to handle an MCP elicitation.
 type ControlReqElicitation struct {
-	Subtype         ControlSubtype  `json:"subtype"` // ControlElicitation
-	MCPServerName   string          `json:"mcp_server_name"`
-	Message         string          `json:"message"`
-	Mode            string          `json:"mode,omitempty"` // "form" or "url"
-	URL             string          `json:"url,omitempty"`
-	ElicitationID   string          `json:"elicitation_id,omitempty"`
-	RequestedSchema json.RawMessage `json:"requested_schema,omitempty"`
+	Subtype         ControlSubtype `json:"subtype"` // ControlElicitation
+	MCPServerName   string         `json:"mcp_server_name"`
+	Message         string         `json:"message"`
+	Mode            string         `json:"mode,omitempty"` // "form" or "url"
+	URL             string         `json:"url,omitempty"`
+	ElicitationID   string         `json:"elicitation_id,omitempty"`
+	RequestedSchema JSONSchema     `json:"requested_schema,omitempty"`
+}
+
+// JSONSchema is an open JSON Schema object.
+type JSONSchema map[string]any
+
+// HookEvent identifies a Claude Code hook event.
+type HookEvent string
+
+// HookEvent values.
+const (
+	HookPreToolUse        HookEvent = "PreToolUse"
+	HookPostToolUse       HookEvent = "PostToolUse"
+	HookPostToolUseFail   HookEvent = "PostToolUseFailure"
+	HookUserPromptSubmit  HookEvent = "UserPromptSubmit"
+	HookStop              HookEvent = "Stop"
+	HookSubagentStop      HookEvent = "SubagentStop"
+	HookPreCompact        HookEvent = "PreCompact"
+	HookNotification      HookEvent = "Notification"
+	HookSubagentStart     HookEvent = "SubagentStart"
+	HookPermissionRequest HookEvent = "PermissionRequest"
+)
+
+// HooksConfig maps hook event names to hook matcher configs.
+type HooksConfig map[HookEvent][]HookMatcherConfig
+
+// HookMatcherConfig is one initialized SDK hook matcher.
+type HookMatcherConfig struct {
+	Matcher         string   `json:"matcher,omitempty"`
+	HookCallbackIDs []string `json:"hookCallbackIds,omitempty"`
+	Timeout         float64  `json:"timeout,omitempty"`
+}
+
+// HookCallbackInput carries a hook callback payload from Claude Code.
+type HookCallbackInput struct {
+	HookEventName         string                     `json:"hook_event_name,omitempty"`
+	SessionID             string                     `json:"session_id,omitempty"`
+	TranscriptPath        string                     `json:"transcript_path,omitempty"`
+	Cwd                   string                     `json:"cwd,omitempty"`
+	PermissionMode        string                     `json:"permission_mode,omitempty"`
+	AgentID               string                     `json:"agent_id,omitempty"`
+	AgentType             string                     `json:"agent_type,omitempty"`
+	ToolName              string                     `json:"tool_name,omitempty"`
+	ToolInput             map[string]json.RawMessage `json:"tool_input,omitempty"`
+	ToolResponse          any                        `json:"tool_response,omitempty"`
+	ToolUseID             string                     `json:"tool_use_id,omitempty"`
+	Error                 string                     `json:"error,omitempty"`
+	IsInterrupt           bool                       `json:"is_interrupt,omitempty"`
+	Prompt                string                     `json:"prompt,omitempty"`
+	StopHookActive        bool                       `json:"stop_hook_active,omitempty"`
+	AgentTranscriptPath   string                     `json:"agent_transcript_path,omitempty"`
+	Trigger               string                     `json:"trigger,omitempty"`
+	CustomInstructions    string                     `json:"custom_instructions,omitempty"`
+	Message               string                     `json:"message,omitempty"`
+	Title                 string                     `json:"title,omitempty"`
+	NotificationType      string                     `json:"notification_type,omitempty"`
+	PermissionSuggestions []PermissionUpdate         `json:"permission_suggestions,omitempty"`
+}
+
+// PermissionUpdate is a permission update suggestion.
+type PermissionUpdate struct {
+	Type        PermissionUpdateType        `json:"type"`
+	Rules       []PermissionRuleValue       `json:"rules,omitempty"`
+	Behavior    PermissionBehavior          `json:"behavior,omitempty"`
+	Mode        string                      `json:"mode,omitempty"`
+	Directories []string                    `json:"directories,omitempty"`
+	Destination PermissionUpdateDestination `json:"destination,omitempty"`
+}
+
+// PermissionUpdateType is the permission update variant discriminator.
+type PermissionUpdateType string
+
+// PermissionUpdateType values.
+const (
+	PermissionUpdateAddRules          PermissionUpdateType = "addRules"
+	PermissionUpdateReplaceRules      PermissionUpdateType = "replaceRules"
+	PermissionUpdateRemoveRules       PermissionUpdateType = "removeRules"
+	PermissionUpdateSetMode           PermissionUpdateType = "setMode"
+	PermissionUpdateAddDirectories    PermissionUpdateType = "addDirectories"
+	PermissionUpdateRemoveDirectories PermissionUpdateType = "removeDirectories"
+)
+
+// PermissionRuleValue is one permission rule value.
+type PermissionRuleValue struct {
+	ToolName    string  `json:"toolName"`
+	RuleContent *string `json:"ruleContent,omitempty"`
+}
+
+// PermissionBehavior is the behavior assigned to permission rules.
+type PermissionBehavior string
+
+// PermissionBehavior values.
+const (
+	PermissionBehaviorAllow PermissionBehavior = "allow"
+	PermissionBehaviorDeny  PermissionBehavior = "deny"
+	PermissionBehaviorAsk   PermissionBehavior = "ask"
+)
+
+// PermissionUpdateDestination is where a permission update should apply.
+type PermissionUpdateDestination string
+
+// PermissionUpdateDestination values.
+const (
+	PermissionUpdateUserSettings    PermissionUpdateDestination = "userSettings"
+	PermissionUpdateProjectSettings PermissionUpdateDestination = "projectSettings"
+	PermissionUpdateLocalSettings   PermissionUpdateDestination = "localSettings"
+	PermissionUpdateSession         PermissionUpdateDestination = "session"
+)
+
+// JSONRPCMessage is a JSON-RPC 2.0 MCP envelope.
+type JSONRPCMessage struct {
+	JSONRPC string          `json:"jsonrpc"`
+	ID      json.RawMessage `json:"id,omitempty"`
+	Method  string          `json:"method,omitempty"`
+	Params  json.RawMessage `json:"params,omitempty"`
+	Result  json.RawMessage `json:"result,omitempty"`
+	Error   *JSONRPCError   `json:"error,omitempty"`
+}
+
+// JSONRPCError is a JSON-RPC 2.0 error object.
+type JSONRPCError struct {
+	Code    int             `json:"code"`
+	Message string          `json:"message"`
+	Data    json.RawMessage `json:"data,omitempty"`
 }
 
 // ---------- control response ----------
@@ -281,11 +400,11 @@ type InputControlResponseMsg struct {
 
 // ControlResponse is the inner response, either success or error.
 type ControlResponse struct {
-	Subtype                   ControlResponseSubtype `json:"subtype"` // ControlResponseSuccess or ControlResponseError
-	RequestID                 string                 `json:"request_id"`
-	Response                  json.RawMessage        `json:"response,omitempty"`                    // success only
-	Error                     string                 `json:"error,omitempty"`                       // error only
-	PendingPermissionRequests json.RawMessage        `json:"pending_permission_requests,omitempty"` // error only
+	Subtype                   ControlResponseSubtype     `json:"subtype"` // ControlResponseSuccess or ControlResponseError
+	RequestID                 string                     `json:"request_id"`
+	Response                  map[string]json.RawMessage `json:"response,omitempty"`                    // success only
+	Error                     string                     `json:"error,omitempty"`                       // error only
+	PendingPermissionRequests json.RawMessage            `json:"pending_permission_requests,omitempty"` // error only
 }
 
 // ---------- keep alive / env vars ----------
@@ -399,6 +518,10 @@ const (
 	SystemTaskNotification SystemSubtype = "task_notification"
 	// SystemTaskProgress reports progress of a background subagent.
 	SystemTaskProgress SystemSubtype = "task_progress"
+	// SystemTaskUpdated reports a patch to background subagent state.
+	SystemTaskUpdated SystemSubtype = "task_updated"
+	// SystemThinkingTokens reports incremental estimated thinking token usage.
+	SystemThinkingTokens SystemSubtype = "thinking_tokens"
 	// SystemCompactBoundary marks where context was compacted.
 	SystemCompactBoundary SystemSubtype = "compact_boundary"
 	// SystemStatus reports idle/running/requires_action transitions.
@@ -463,6 +586,9 @@ type OutputInitMsg struct {
 	Betas          []string        `json:"betas,omitempty"`
 	PluginErrors   []InitPluginErr `json:"plugin_errors,omitempty,omitzero"`
 	MemoryPaths    InitMemPaths    `json:"memory_paths,omitzero"`
+
+	AnalyticsDisabled       bool `json:"analytics_disabled,omitempty"`
+	ProductFeedbackDisabled bool `json:"product_feedback_disabled,omitempty"`
 }
 
 // InitMCPServer is an MCP server entry in the system/init message.
@@ -526,6 +652,10 @@ type OutputSystemMsg struct {
 	PermissionMode  string              `json:"permissionMode,omitempty"`
 	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitzero"`
 	Prompt          json.RawMessage     `json:"prompt,omitempty"`
+
+	// thinking_tokens fields.
+	EstimatedTokens      int64 `json:"estimated_tokens,omitzero"`
+	EstimatedTokensDelta int64 `json:"estimated_tokens_delta,omitzero"`
 }
 
 // PatchWire is the patch object on task system messages.
@@ -563,26 +693,31 @@ type OutputAssistantMsg struct {
 
 // AssistantMessageBody is the inner message object within an assistant record.
 type AssistantMessageBody struct {
-	ID           string               `json:"id"`
-	Type         string               `json:"type,omitempty"`
-	Role         string               `json:"role"`
-	Model        string               `json:"model"`
-	Content      []OutputContentBlock `json:"content"`
-	Usage        MsgUsage             `json:"usage"`
-	StopReason   string               `json:"stop_reason"`
-	StopSequence string               `json:"stop_sequence"`
-	StopDetails  json.RawMessage      `json:"stop_details,omitempty"`
+	ID           string                       `json:"id"`
+	Type         string                       `json:"type,omitempty"`
+	Role         string                       `json:"role"`
+	Model        string                       `json:"model"`
+	Content      []OutputContentBlock         `json:"content"`
+	Usage        MsgUsage                     `json:"usage"`
+	StopReason   string                       `json:"stop_reason"`
+	StopSequence string                       `json:"stop_sequence"`
+	StopDetails  anthropic.RefusalStopDetails `json:"stop_details,omitzero"`
 
-	Container         json.RawMessage `json:"container,omitempty"`
-	ContextManagement json.RawMessage `json:"context_management,omitempty"`
-	Diagnostics       json.RawMessage `json:"diagnostics,omitempty"`
+	Container         Container         `json:"container,omitzero"`
+	ContextManagement ContextManagement `json:"context_management,omitzero"`
+	Diagnostics       Diagnostics       `json:"diagnostics,omitzero"`
 }
 
 // ContentBlockStart is the content_block field in a content_block_start streaming event.
 type ContentBlockStart struct {
-	Type string `json:"type"`
-	ID   string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	Type      string                     `json:"type"`
+	Text      string                     `json:"text,omitempty"`
+	ID        string                     `json:"id,omitempty"`
+	Name      string                     `json:"name,omitempty"`
+	Input     map[string]json.RawMessage `json:"input,omitempty"`
+	Thinking  string                     `json:"thinking,omitempty"`
+	Signature []byte                     `json:"signature,omitempty"`
+	Caller    anthropic.Caller           `json:"caller,omitzero"`
 }
 
 // OutputContentBlock is a single content block inside an assistant message.
@@ -595,19 +730,124 @@ type ContentBlockStart struct {
 //   - "server_tool_use":     ID, Name, Input, Caller
 //   - "web_search_tool_use": ID, Name, Input, Caller
 type OutputContentBlock struct {
-	Type      string          `json:"type"`
-	Text      string          `json:"text,omitempty"`
-	ID        string          `json:"id,omitempty"`
-	Name      string          `json:"name,omitempty"`
-	Input     json.RawMessage `json:"input,omitempty"`
-	Thinking  string          `json:"thinking,omitempty"`
-	Signature string          `json:"signature,omitempty"`
-	Caller    json.RawMessage `json:"caller,omitempty"`
+	Type      string                     `json:"type"`
+	Text      string                     `json:"text,omitempty"`
+	ID        string                     `json:"id,omitempty"`
+	Name      string                     `json:"name,omitempty"`
+	Input     map[string]json.RawMessage `json:"input,omitempty"`
+	Thinking  string                     `json:"thinking,omitempty"`
+	Signature []byte                     `json:"signature,omitempty"`
+	Caller    anthropic.Caller           `json:"caller,omitzero"`
 	// tool_result fields (inline MCP tool results).
-	ToolUseID string          `json:"tool_use_id,omitempty"`
-	Content   json.RawMessage `json:"content,omitempty"`
-	IsError   bool            `json:"is_error,omitempty"`
+	ToolUseID string            `json:"tool_use_id,omitempty"`
+	Content   ToolResultPayload `json:"content,omitempty"`
+	IsError   bool              `json:"is_error,omitempty"`
 }
+
+// BashInput is the input for the Bash tool.
+type BashInput struct {
+	Command     string `json:"command"`
+	Description string `json:"description,omitempty"`
+	TimeoutMs   int64  `json:"timeout_ms,omitempty"`
+}
+
+// ReadInput is the input for the Read tool.
+type ReadInput struct {
+	FilePath string `json:"file_path"`
+	Offset   int    `json:"offset,omitempty"`
+	Limit    int    `json:"limit,omitempty"`
+}
+
+// EditInput is the input for the Edit tool.
+type EditInput struct {
+	FilePath   string `json:"file_path"`
+	OldString  string `json:"old_string"`
+	NewString  string `json:"new_string"`
+	ReplaceAll bool   `json:"replace_all,omitempty"`
+}
+
+// WriteInput is the input for the Write tool.
+type WriteInput struct {
+	FilePath string `json:"file_path"`
+	Content  string `json:"content"`
+}
+
+// GrepInput is the input for the Grep tool.
+type GrepInput struct {
+	Pattern string `json:"pattern"`
+	Path    string `json:"path,omitempty"`
+	Glob    string `json:"glob,omitempty"`
+	Output  string `json:"output_mode,omitempty"`
+	Head    int    `json:"head_limit,omitempty"`
+}
+
+// GlobInput is the input for the Glob tool.
+type GlobInput struct {
+	Pattern string `json:"pattern"`
+	Path    string `json:"path,omitempty"`
+}
+
+// Container carries code-execution container metadata on a message.
+type Container struct {
+	ID        string    `json:"id"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Skills    []Skill   `json:"skills,omitempty"`
+}
+
+// IsZero reports whether c carries no container metadata.
+func (c Container) IsZero() bool {
+	return c.ID == "" && c.ExpiresAt.IsZero() && len(c.Skills) == 0
+}
+
+// Skill is a skill loaded in a code-execution container.
+type Skill struct {
+	SkillID string    `json:"skill_id"`
+	Type    SkillType `json:"type"`
+	Version string    `json:"version"`
+}
+
+// SkillType identifies a loaded skill kind.
+type SkillType string
+
+// SkillType values.
+const (
+	SkillAnthropic SkillType = "anthropic"
+	SkillCustom    SkillType = "custom"
+)
+
+// Diagnostics carries request-level prompt-cache diagnostic metadata.
+type Diagnostics struct {
+	CacheMissReason CacheMissReason `json:"cache_miss_reason,omitzero"`
+}
+
+// IsZero reports whether d carries no diagnostics metadata.
+func (d Diagnostics) IsZero() bool {
+	return d.CacheMissReason.IsZero()
+}
+
+// CacheMissReason explains why a prompt-cache prefix could not be reused.
+type CacheMissReason struct {
+	Type                   CacheMissReasonType `json:"type"`
+	CacheMissedInputTokens int64               `json:"cache_missed_input_tokens,omitempty"`
+}
+
+// IsZero reports whether c carries no cache miss reason.
+func (c CacheMissReason) IsZero() bool {
+	return c.Type == "" && c.CacheMissedInputTokens == 0
+}
+
+// CacheMissReasonType identifies why a prompt-cache prefix was missed.
+type CacheMissReasonType string
+
+// CacheMissReasonType values.
+const (
+	CacheMissReasonModelChanged            CacheMissReasonType = "model_changed"
+	CacheMissReasonSystemChanged           CacheMissReasonType = "system_changed"
+	CacheMissReasonToolsChanged            CacheMissReasonType = "tools_changed"
+	CacheMissReasonMessagesChanged         CacheMissReasonType = "messages_changed"
+	CacheMissReasonPreviousMessageNotFound CacheMissReasonType = "previous_message_not_found"
+	CacheMissReasonUnavailable             CacheMissReasonType = "unavailable"
+)
 
 // ---------- user (echoed) ----------
 
@@ -634,6 +874,8 @@ type OutputResultMsg struct {
 	DurationMs       int64      `json:"duration_ms"`
 	DurationAPIMs    int64      `json:"duration_api_ms"`
 	TtftMs           int64      `json:"ttft_ms,omitempty"`
+	TtftStreamMs     int64      `json:"ttft_stream_ms,omitempty"`
+	TimeToRequestMs  int64      `json:"time_to_request_ms,omitempty"`
 	NumTurns         int        `json:"num_turns"`
 	Result           string     `json:"result"`
 	Errors           []string   `json:"errors,omitempty"`
@@ -667,9 +909,9 @@ type ModelUsageEntry struct {
 
 // DeferredToolUse is a tool call deferred from a previous turn in the result message.
 type DeferredToolUse struct {
-	ID    string         `json:"id"`
-	Name  string         `json:"name"`
-	Input map[string]any `json:"input"`
+	ID    string                     `json:"id"`
+	Name  string                     `json:"name"`
+	Input map[string]json.RawMessage `json:"input"`
 }
 
 // ---------- Token usage ----------
@@ -684,8 +926,7 @@ type MsgUsage struct {
 	InferenceGeo             string `json:"inference_geo,omitzero"`
 	Speed                    string `json:"speed,omitzero"`
 
-	// Iterations is an int or an array, depending on the model.
-	Iterations json.RawMessage `json:"iterations,omitzero"`
+	Iterations []IterationUsage `json:"iterations,omitempty"`
 
 	ServerToolUse ServerToolUse `json:"server_tool_use,omitzero"`
 	CacheCreation CacheCreation `json:"cache_creation,omitzero"`
@@ -693,9 +934,32 @@ type MsgUsage struct {
 	OutputTokensDetails OutputTokensDetails `json:"output_tokens_details,omitzero"`
 }
 
+// IsZero reports whether m carries no usage data.
+func (m *MsgUsage) IsZero() bool {
+	if m == nil {
+		return true
+	}
+	return m.InputTokens == 0 &&
+		m.OutputTokens == 0 &&
+		m.CacheCreationInputTokens == 0 &&
+		m.CacheReadInputTokens == 0 &&
+		m.ServiceTier == "" &&
+		m.InferenceGeo == "" &&
+		m.Speed == "" &&
+		len(m.Iterations) == 0 &&
+		m.ServerToolUse.IsZero() &&
+		m.CacheCreation.IsZero() &&
+		m.OutputTokensDetails.IsZero()
+}
+
 // OutputTokensDetails breaks down output token usage.
 type OutputTokensDetails struct {
 	ThinkingTokens int64 `json:"thinking_tokens"`
+}
+
+// IsZero reports whether o carries no output token details.
+func (o OutputTokensDetails) IsZero() bool {
+	return o.ThinkingTokens == 0
 }
 
 // ServerToolUse tracks server-side tool use counts.
@@ -704,11 +968,42 @@ type ServerToolUse struct {
 	WebFetchRequests  int `json:"web_fetch_requests"`
 }
 
+// IsZero reports whether s carries no server-side tool use counts.
+func (s ServerToolUse) IsZero() bool {
+	return s.WebSearchRequests == 0 && s.WebFetchRequests == 0
+}
+
 // CacheCreation breaks down cache creation by time bucket.
 type CacheCreation struct {
 	Ephemeral1hInputTokens int `json:"ephemeral_1h_input_tokens"`
 	Ephemeral5mInputTokens int `json:"ephemeral_5m_input_tokens"`
 }
+
+// IsZero reports whether c carries no cache creation token counts.
+func (c CacheCreation) IsZero() bool {
+	return c.Ephemeral1hInputTokens == 0 && c.Ephemeral5mInputTokens == 0
+}
+
+// IterationUsage holds per-iteration token usage.
+type IterationUsage struct {
+	Type                     IterationUsageType `json:"type"`
+	Model                    string             `json:"model,omitempty"`
+	InputTokens              int64              `json:"input_tokens"`
+	OutputTokens             int64              `json:"output_tokens"`
+	CacheReadInputTokens     int64              `json:"cache_read_input_tokens"`
+	CacheCreationInputTokens int64              `json:"cache_creation_input_tokens"`
+	CacheCreation            CacheCreation      `json:"cache_creation,omitzero"`
+}
+
+// IterationUsageType identifies the kind of usage iteration.
+type IterationUsageType string
+
+// IterationUsageType values.
+const (
+	IterationUsageMessage        IterationUsageType = "message"
+	IterationUsageCompaction     IterationUsageType = "compaction"
+	IterationUsageAdvisorMessage IterationUsageType = "advisor_message"
+)
 
 // ---------- stream_event ----------
 
@@ -725,14 +1020,46 @@ type OutputStreamEventMsg struct {
 
 // StreamEventData is the nested event body inside a stream_event record.
 type StreamEventData struct {
-	Type         string          `json:"type"`
-	Index        int             `json:"index"`
-	Delta        StreamDelta     `json:"delta,omitzero"`
-	ContentBlock json.RawMessage `json:"content_block,omitempty"`
+	Type         string            `json:"type"`
+	Index        int               `json:"index"`
+	Delta        StreamDelta       `json:"delta,omitzero"`
+	ContentBlock ContentBlockStart `json:"content_block,omitzero"`
 	// message_start carries the full message object; message_delta carries
 	// stop_reason and usage in a delta wrapper.
-	Message json.RawMessage `json:"message,omitempty"`
-	Usage   json.RawMessage `json:"usage,omitempty"`
+	Message           AssistantMessageBody `json:"message,omitzero"`
+	Usage             MsgUsage             `json:"usage,omitzero"`
+	ContextManagement ContextManagement    `json:"context_management,omitzero"`
+}
+
+// ContextManagement carries Claude Code context edit metadata.
+type ContextManagement struct {
+	AppliedEdits []AppliedEdit `json:"applied_edits,omitempty"`
+}
+
+// IsZero reports whether c carries no context management metadata.
+func (c ContextManagement) IsZero() bool {
+	return len(c.AppliedEdits) == 0
+}
+
+// AppliedEditType is the context management edit discriminator.
+type AppliedEditType string
+
+// AppliedEditType values returned in context management metadata.
+const (
+	AppliedEditClearToolUses AppliedEditType = "clear_tool_uses_20250919"
+	AppliedEditClearThinking AppliedEditType = "clear_thinking_20251015"
+)
+
+// AppliedEdit is one context management edit applied during a request.
+//
+// The Type discriminator determines which variant-specific field is populated:
+// ClearedToolUses for clear_tool_uses_20250919 or ClearedThinkingTurns for
+// clear_thinking_20251015.
+type AppliedEdit struct {
+	Type                 AppliedEditType `json:"type"`
+	ClearedInputTokens   int64           `json:"cleared_input_tokens"`
+	ClearedToolUses      int64           `json:"cleared_tool_uses,omitempty"`
+	ClearedThinkingTurns int64           `json:"cleared_thinking_turns,omitempty"`
 }
 
 // StreamDelta is a delta object inside a stream event.
@@ -741,7 +1068,7 @@ type StreamDelta struct {
 	Text                 string `json:"text"`
 	PartialJSON          string `json:"partial_json"`
 	Thinking             string `json:"thinking"`
-	Signature            string `json:"signature"`
+	Signature            []byte `json:"signature"`
 	EstimatedTokens      int64  `json:"estimated_tokens,omitzero"`
 	EstimatedTokensDelta int64  `json:"estimated_tokens_delta,omitzero"`
 	// message_delta carries stop_reason.
@@ -979,31 +1306,74 @@ type OutputUserBlock struct {
 
 // OutputUserContentBlock is a single content block in a user message.
 type OutputUserContentBlock struct {
-	Type      string            `json:"type"`
-	Text      string            `json:"text,omitempty"`
-	Source    OutputImageSource `json:"source,omitzero"`
-	ToolUseID string            `json:"tool_use_id,omitempty"`
+	Type      string           `json:"type"`
+	Text      string           `json:"text,omitempty"`
+	Source    anthropic.Source `json:"source,omitzero"`
+	ToolUseID string           `json:"tool_use_id,omitempty"`
 	// Nested content and error flag for inline tool_result blocks (MCP tools).
-	Content []ToolResultContent `json:"content,omitempty"`
-	IsError bool                `json:"is_error,omitempty"`
-}
-
-// OutputImageSource is an image source in an output user content block.
-type OutputImageSource struct {
-	Type      string `json:"type"`
-	MediaType string `json:"media_type"`
-	Data      string `json:"data"`
+	Content ToolResultPayload `json:"content,omitempty"`
+	IsError bool              `json:"is_error,omitempty"`
 }
 
 // OutputToolResult is the message body format for tool results delivered via
 // the top-level parent_tool_use_id path (standard Claude Code tools).
 type OutputToolResult struct {
-	Content []ToolResultContent `json:"content"`
-	IsError bool                `json:"is_error"`
+	Content ToolResultPayload `json:"content"`
+	IsError bool              `json:"is_error"`
 }
 
-// ToolResultContent is a content entry in a tool result.
-type ToolResultContent struct {
-	Type string `json:"type"`
-	Text string `json:"text"`
+// ToolResultPayload is a tool result content payload.
+//
+// Claude Code emits content as either a plain string or an array of content
+// blocks, depending on the tool path.
+type ToolResultPayload struct {
+	Text   string
+	Blocks []anthropic.Content
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (t *ToolResultPayload) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 || string(data) == "null" {
+		t.Text = ""
+		t.Blocks = nil
+		return nil
+	}
+	if data[0] == '"' {
+		var s string
+		if err := json.Unmarshal(data, &s); err != nil {
+			return err
+		}
+		t.Text = s
+		t.Blocks = nil
+		return nil
+	}
+	var blocks []anthropic.Content
+	if err := json.Unmarshal(data, &blocks); err != nil {
+		return err
+	}
+	t.Text = ""
+	t.Blocks = blocks
+	return nil
+}
+
+// MarshalJSON implements json.Marshaler.
+func (t ToolResultPayload) MarshalJSON() ([]byte, error) {
+	if t.Text != "" || t.Blocks == nil {
+		return json.Marshal(t.Text)
+	}
+	return json.Marshal(t.Blocks)
+}
+
+// IsZero reports whether t carries no tool result content.
+func (t ToolResultPayload) IsZero() bool {
+	return t.Text == "" && len(t.Blocks) == 0
+}
+
+// TextBlocks returns content as text blocks.
+func (t ToolResultPayload) TextBlocks() []anthropic.Content {
+	if t.Text != "" {
+		return []anthropic.Content{{Type: "text", Text: t.Text}}
+	}
+	return t.Blocks
 }

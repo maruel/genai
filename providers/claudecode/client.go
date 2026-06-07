@@ -53,6 +53,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/msgutil"
+	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -437,11 +438,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = errors.New("claude stream error")
 					return
 				}
-				if ev.Event.Type == "message_delta" && len(ev.Event.Usage) != 0 {
-					var u MsgUsage
-					if json.Unmarshal(ev.Event.Usage, &u) == nil {
-						streamUsage = u
-					}
+				if ev.Event.Type == "message_delta" && !ev.Event.Usage.IsZero() {
+					streamUsage = ev.Event.Usage
 				}
 				if ev.Event.Delta.Type != "" {
 					switch ev.Event.Delta.Type {
@@ -642,7 +640,7 @@ func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 	if doc.URL != "" {
 		return InputContentBlock{
 			Type:   "image",
-			Source: InputImageSource{Type: "url", URL: doc.URL},
+			Source: anthropic.Source{Type: "url", URL: doc.URL},
 		}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
@@ -655,7 +653,7 @@ func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 	case strings.HasPrefix(mimeType, "image/"):
 		return InputContentBlock{
 			Type: "image",
-			Source: InputImageSource{
+			Source: anthropic.Source{
 				Type:      "base64",
 				MediaType: mimeType,
 				Data:      base64.StdEncoding.EncodeToString(data),

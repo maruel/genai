@@ -113,6 +113,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		switch v := opt.(type) {
 		case *genai.GenOptionText:
+			sp = v.SystemPrompt
 			c.NPredict = v.MaxTokens
 			if v.TopLogprobs > 0 {
 				c.TopLogprobs = v.TopLogprobs

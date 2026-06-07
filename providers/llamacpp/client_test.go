@@ -310,6 +310,25 @@ func TestGenOption(t *testing.T) {
 			t.Errorf("ChatTemplateKWArgs[enable_thinking] = %v, want false", v)
 		}
 	})
+	t.Run("system_prompt", func(t *testing.T) {
+		var req llamacpp.ChatRequest
+		opts := &genai.GenOptionText{SystemPrompt: "You are concise."}
+		if err := req.Init(msgs, "model", opts); err != nil {
+			t.Fatal(err)
+		}
+		if len(req.Messages) != 2 {
+			t.Fatalf("Messages = %d, want 2", len(req.Messages))
+		}
+		if req.Messages[0].Role != "system" {
+			t.Errorf("Messages[0].Role = %q, want system", req.Messages[0].Role)
+		}
+		if len(req.Messages[0].Content) != 1 || req.Messages[0].Content[0].Text != "You are concise." {
+			t.Errorf("Messages[0].Content = %#v, want system prompt", req.Messages[0].Content)
+		}
+		if req.Messages[1].Role != "user" {
+			t.Errorf("Messages[1].Role = %q, want user", req.Messages[1].Role)
+		}
+	})
 }
 
 func TestMessage(t *testing.T) {

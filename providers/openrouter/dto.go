@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -455,9 +456,9 @@ type TopLogprob struct {
 
 // InlineError is an upstream error embedded in an otherwise successful response.
 type InlineError struct {
-	Message  string         `json:"message,omitzero"`
-	Code     any            `json:"code,omitzero"` // Can be string or number.
-	Metadata map[string]any `json:"metadata,omitzero"`
+	Message  string                     `json:"message,omitzero"`
+	Code     json.RawMessage            `json:"code,omitzero"` // Can be string or number.
+	Metadata map[string]json.RawMessage `json:"metadata,omitzero"`
 }
 
 // ChatResponse is the provider-specific chat completion response.
@@ -592,15 +593,15 @@ type Model struct {
 		MaxCompletionTokens int64 `json:"max_completion_tokens"`
 		IsModerated         bool  `json:"is_moderated"`
 	} `json:"top_provider"`
-	HuggingFaceID       string                 `json:"hugging_face_id,omitzero"`
-	PerRequestLimits    map[string]any         `json:"per_request_limits"`
-	SupportedParameters []string               `json:"supported_parameters"`
-	DefaultParameters   ModelDefaultParameters `json:"default_parameters"`
-	CanonicalSlug       string                 `json:"canonical_slug"`
-	KnowledgeCutoff     string                 `json:"knowledge_cutoff,omitzero"`
-	ExpirationDate      string                 `json:"expiration_date"`
-	Links               ModelLinks             `json:"links,omitzero"` // Provider-specific links
-	SupportedVoices     []string               `json:"supported_voices,omitzero"`
+	HuggingFaceID       string                     `json:"hugging_face_id,omitzero"`
+	PerRequestLimits    map[string]json.RawMessage `json:"per_request_limits"`
+	SupportedParameters []string                   `json:"supported_parameters"`
+	DefaultParameters   ModelDefaultParameters     `json:"default_parameters"`
+	CanonicalSlug       string                     `json:"canonical_slug"`
+	KnowledgeCutoff     string                     `json:"knowledge_cutoff,omitzero"`
+	ExpirationDate      string                     `json:"expiration_date"`
+	Links               ModelLinks                 `json:"links,omitzero"` // Provider-specific links
+	SupportedVoices     []string                   `json:"supported_voices,omitzero"`
 }
 
 // ModelLinks contains provider-specific links for a model.
@@ -652,16 +653,28 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 // ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	ErrorVal struct {
-		Message  string         `json:"message"`
-		Type     string         `json:"type"`
-		Code     any            `json:"code"` // Can be string or number.
-		Metadata map[string]any `json:"metadata,omitzero"`
+		Message  string                     `json:"message"`
+		Type     string                     `json:"type"`
+		Code     json.RawMessage            `json:"code"` // Can be string or number.
+		Metadata map[string]json.RawMessage `json:"metadata,omitzero"`
 	} `json:"error"`
 	UserID string `json:"user_id,omitzero"`
 }
 
 func (er *ErrorResponse) Error() string {
-	return fmt.Sprintf("%v (%s): %s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message)
+	return fmt.Sprintf("%s (%s): %s", rawMessageString(er.ErrorVal.Code), er.ErrorVal.Type, er.ErrorVal.Message)
+}
+
+func rawMessageString(v json.RawMessage) string {
+	v = bytes.TrimSpace(v)
+	if len(v) == 0 || bytes.Equal(v, []byte("null")) {
+		return "<nil>"
+	}
+	var s string
+	if err := json.Unmarshal(v, &s); err == nil {
+		return s
+	}
+	return string(v)
 }
 
 // IsAPIError implements base.ErrorResponseI.

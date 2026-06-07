@@ -393,7 +393,7 @@ func TestOutputMessages(t *testing.T) {
 		if got.Hooks[HookPreToolUse][0].HookCallbackIDs[0] != "hook_1" {
 			t.Errorf("hook callback id = %q, want hook_1", got.Hooks[HookPreToolUse][0].HookCallbackIDs[0])
 		}
-		if got.JSONSchema["type"] != "object" {
+		if string(got.JSONSchema["type"]) != `"object"` {
 			t.Errorf("json schema type = %v, want object", got.JSONSchema["type"])
 		}
 	})

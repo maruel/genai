@@ -77,6 +77,14 @@ var optOutMethods = []Method{
 	MethodThreadNameUpdated,
 }
 
+func marshalJSONRaw(v any) (json.RawMessage, error) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	return json.RawMessage(b), nil
+}
+
 // cmdExecutor is the production executor backed by exec.Cmd.
 type cmdExecutor struct{ bin string }
 
@@ -445,14 +453,18 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // used request ID so the caller can continue numbering.
 func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) {
 	// 1. Send initialize request.
+	params, err := marshalJSONRaw(InitializeParams{
+		ClientInfo:   ClientInfo{Name: "genai-codex", Title: "genai-codex", Version: "1.0.0"},
+		Capabilities: Capabilities{OptOutNotificationMethods: optOutMethods},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal initialize params: %w", err)
+	}
 	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      1,
 		Method:  "initialize",
-		Params: InitializeParams{
-			ClientInfo:   ClientInfo{Name: "genai-codex", Title: "genai-codex", Version: "1.0.0"},
-			Capabilities: Capabilities{OptOutNotificationMethods: optOutMethods},
-		},
+		Params:  params,
 	}); err != nil {
 		return nil, fmt.Errorf("write initialize: %w", err)
 	}
@@ -466,7 +478,11 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) 
 	}
 
 	// 3. Fetch model list.
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: struct{}{}}); err != nil {
+	params, err = marshalJSONRaw(struct{}{})
+	if err != nil {
+		return nil, fmt.Errorf("marshal model/list params: %w", err)
+	}
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: params}); err != nil {
 		return nil, fmt.Errorf("write model/list: %w", err)
 	}
 	mlData, err := readResponse(sc)
@@ -490,18 +506,26 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 	// Send thread/start or thread/resume.
 	var threadReq JSONRPCRequest
 	if resumeThreadID != "" {
+		params, err := marshalJSONRaw(ThreadResumeParams{ThreadID: resumeThreadID})
+		if err != nil {
+			return "", fmt.Errorf("marshal thread/resume params: %w", err)
+		}
 		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      3,
 			Method:  "thread/resume",
-			Params:  ThreadResumeParams{ThreadID: resumeThreadID},
+			Params:  params,
 		}
 	} else {
+		params, err := marshalJSONRaw(ThreadStartParams{Model: mdl})
+		if err != nil {
+			return "", fmt.Errorf("marshal thread/start params: %w", err)
+		}
 		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      3,
 			Method:  "thread/start",
-			Params:  ThreadStartParams{Model: mdl},
+			Params:  params,
 		}
 	}
 	if err := msgutil.WriteNDJSON(stdin, threadReq); err != nil {
@@ -553,11 +577,15 @@ func sendTurnStart(stdin io.Writer, threadID string, effort ReasoningEffort, msg
 	if err != nil {
 		return err
 	}
+	params, err := marshalJSONRaw(TurnStartParams{ThreadID: threadID, Input: input, Effort: effort})
+	if err != nil {
+		return fmt.Errorf("marshal turn/start params: %w", err)
+	}
 	return msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      100, // Arbitrary; we don't wait for this response.
 		Method:  "turn/start",
-		Params:  TurnStartParams{ThreadID: threadID, Input: input, Effort: effort},
+		Params:  params,
 	})
 }
 

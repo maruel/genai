@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -564,10 +565,10 @@ type TokenIDs []*json.Number
 
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
-	Tokens        []string  `json:"tokens"`
-	TokenLogprobs []float64 `json:"token_logprobs"`
-	TokenIDs      TokenIDs  `json:"token_ids,omitzero"` // Not set.
-	Content       []any     `json:"content,omitzero"`   // Complex structure with logprobs data.
+	Tokens        []string          `json:"tokens"`
+	TokenLogprobs []float64         `json:"token_logprobs"`
+	TokenIDs      TokenIDs          `json:"token_ids,omitzero"` // Not set.
+	Content       []json.RawMessage `json:"content,omitzero"`   // Complex structure with logprobs data.
 }
 
 // To converts to the genai equivalent.

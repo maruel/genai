@@ -31,12 +31,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -480,7 +481,7 @@ func (f *FunctionResponse) From(in *genai.ToolCallResult) {
 	f.ID = in.ID
 	f.Name = in.Name
 	// Must match functionResponse
-	f.Response = StructValue{"response": in.Result}
+	f.Response = StructValue{"response": json.RawMessage(strconv.AppendQuote(nil, in.Result))}
 }
 
 // ToResult converts the response to a genai.Result.

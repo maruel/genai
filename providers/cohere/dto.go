@@ -177,9 +177,13 @@ func (c *Content) FromRequest(in *genai.Request, docs *[]Document) error {
 				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			name := in.Doc.GetFilename()
+			docData, err := newDocumentData(name, string(data))
+			if err != nil {
+				return err
+			}
 			*docs = append(*docs, Document{
 				ID:   name,
-				Data: map[string]any{"title": name, "snippet": string(data)},
+				Data: docData,
 			})
 			// This is handled as ChatRequest.Documents.
 			return nil
@@ -220,9 +224,13 @@ func (c *Content) FromReply(in *genai.Reply, docs *[]Document) error {
 				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			name := in.Doc.GetFilename()
+			docData, err := newDocumentData(name, string(data))
+			if err != nil {
+				return err
+			}
 			*docs = append(*docs, Document{
 				ID:   name,
-				Data: map[string]any{"title": name, "snippet": string(data)},
+				Data: docData,
 			})
 			// This is handled as ChatRequest.Documents.
 			return nil
@@ -379,7 +387,7 @@ type CitationSource struct {
 	ID string `json:"id,omitzero"`
 
 	// Type == SourceTool
-	ToolOutput map[string]any `json:"tool_output,omitzero"`
+	ToolOutput map[string]json.RawMessage `json:"tool_output,omitzero"`
 
 	// Type == SourceDocument
 	Document struct {
@@ -407,8 +415,23 @@ type Tool struct {
 // passes documents as Content inside a Message.
 type Document struct {
 	// Or a string.
-	ID   string         `json:"id,omitzero"`
-	Data map[string]any `json:"data,omitzero"`
+	ID   string                     `json:"id,omitzero"`
+	Data map[string]json.RawMessage `json:"data,omitzero"`
+}
+
+func newDocumentData(title, snippet string) (map[string]json.RawMessage, error) {
+	titleJSON, err := json.Marshal(title)
+	if err != nil {
+		return nil, fmt.Errorf("marshal document title: %w", err)
+	}
+	snippetJSON, err := json.Marshal(snippet)
+	if err != nil {
+		return nil, fmt.Errorf("marshal document snippet: %w", err)
+	}
+	return map[string]json.RawMessage{
+		"title":   titleJSON,
+		"snippet": snippetJSON,
+	}, nil
 }
 
 // ChatResponse is the response from the chat API.

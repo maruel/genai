@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -46,56 +47,56 @@ type ChatRequest struct {
 	Grammar         string `json:"grammar,omitzero"`
 	TimingsPerToken bool   `json:"timings_per_token,omitzero"`
 
-	Tools               []Tool          `json:"tools,omitzero"`
-	ToolChoice          string          `json:"tool_choice,omitzero"` // Default: "auto"; "none", "required"
-	Stop                []string        `json:"stop,omitzero"`
-	ParallelToolCalls   bool            `json:"parallel_tool_calls,omitzero"`
-	AddGenerationPrompt bool            `json:"add_generation_prompt,omitzero"`
-	ReasoningFormat     ReasoningFormat `json:"reasoning_format,omitzero"`
-	ChatTemplateKWArgs  map[string]any  `json:"chat_template_kwargs,omitzero"`
-	N                   int64           `json:"n,omitzero"` // Must be 1 anyway.
-	Logprobs            bool            `json:"logprobs,omitzero"`
-	TopLogprobs         int64           `json:"top_logprobs,omitzero"` // Requires Logprobs:true
+	Tools               []Tool                     `json:"tools,omitzero"`
+	ToolChoice          string                     `json:"tool_choice,omitzero"` // Default: "auto"; "none", "required"
+	Stop                []string                   `json:"stop,omitzero"`
+	ParallelToolCalls   bool                       `json:"parallel_tool_calls,omitzero"`
+	AddGenerationPrompt bool                       `json:"add_generation_prompt,omitzero"`
+	ReasoningFormat     ReasoningFormat            `json:"reasoning_format,omitzero"`
+	ChatTemplateKWArgs  map[string]json.RawMessage `json:"chat_template_kwargs,omitzero"`
+	N                   int64                      `json:"n,omitzero"` // Must be 1 anyway.
+	Logprobs            bool                       `json:"logprobs,omitzero"`
+	TopLogprobs         int64                      `json:"top_logprobs,omitzero"` // Requires Logprobs:true
 
 	// Prompt              string             `json:"prompt"`
-	Temperature         float64  `json:"temperature,omitzero"`
-	DynaTempRange       float64  `json:"dynatemp_range,omitzero"`
-	DynaTempExponent    float64  `json:"dynatemp_exponent,omitzero"`
-	TopK                int64    `json:"top_k,omitzero"`
-	TopP                float64  `json:"top_p,omitzero"`
-	MinP                float64  `json:"min_p,omitzero"`
-	NPredict            int64    `json:"n_predict,omitzero"` // Maximum number of tokens to predict
-	NIndent             int64    `json:"n_indent,omitzero"`
-	NKeep               int64    `json:"n_keep,omitzero"`
-	TypicalP            float64  `json:"typical_p,omitzero"`
-	RepeatPenalty       float64  `json:"repeat_penalty,omitzero"`
-	RepeatLastN         int64    `json:"repeat_last_n,omitzero"`
-	PresencePenalty     float64  `json:"presence_penalty,omitzero"`
-	FrequencyPenalty    float64  `json:"frequency_penalty,omitzero"`
-	DryMultiplier       float64  `json:"dry_multiplier,omitzero"`
-	DryBase             float64  `json:"dry_base,omitzero"`
-	DryAllowedLength    int64    `json:"dry_allowed_length,omitzero"`
-	DryPenaltyLastN     int64    `json:"dry_penalty_last_n,omitzero"`
-	DrySequenceBreakers []string `json:"dry_sequence_breakers,omitzero"`
-	XTCProbability      float64  `json:"xtc_probability,omitzero"`
-	XTCThreshold        float64  `json:"xtc_threshold,omitzero"`
-	Mirostat            int32    `json:"mirostat,omitzero"`
-	MirostatTau         float64  `json:"mirostat_tau,omitzero"`
-	MirostatEta         float64  `json:"mirostat_eta,omitzero"`
-	Seed                int64    `json:"seed,omitzero"`
-	IgnoreEos           bool     `json:"ignore_eos,omitzero"`
-	LogitBias           []any    `json:"logit_bias,omitzero"`
-	Nprobs              int64    `json:"n_probs,omitzero"`
-	MinKeep             int64    `json:"min_keep,omitzero"`
-	TMaxPredictMS       int64    `json:"t_max_predict_ms,omitzero"`
-	ImageData           []any    `json:"image_data,omitzero"`
-	IDSlot              int64    `json:"id_slot,omitzero"`
-	CachePrompt         bool     `json:"cache_prompt,omitzero"`
-	ReturnTokens        bool     `json:"return_tokens,omitzero"`
-	Samplers            []string `json:"samplers,omitzero"`
-	PostSamplingProbs   bool     `json:"post_sampling_probs,omitzero"`
-	ResponseFields      []string `json:"response_fields,omitzero"`
-	Lora                []Lora   `json:"lora,omitzero"`
+	Temperature         float64           `json:"temperature,omitzero"`
+	DynaTempRange       float64           `json:"dynatemp_range,omitzero"`
+	DynaTempExponent    float64           `json:"dynatemp_exponent,omitzero"`
+	TopK                int64             `json:"top_k,omitzero"`
+	TopP                float64           `json:"top_p,omitzero"`
+	MinP                float64           `json:"min_p,omitzero"`
+	NPredict            int64             `json:"n_predict,omitzero"` // Maximum number of tokens to predict
+	NIndent             int64             `json:"n_indent,omitzero"`
+	NKeep               int64             `json:"n_keep,omitzero"`
+	TypicalP            float64           `json:"typical_p,omitzero"`
+	RepeatPenalty       float64           `json:"repeat_penalty,omitzero"`
+	RepeatLastN         int64             `json:"repeat_last_n,omitzero"`
+	PresencePenalty     float64           `json:"presence_penalty,omitzero"`
+	FrequencyPenalty    float64           `json:"frequency_penalty,omitzero"`
+	DryMultiplier       float64           `json:"dry_multiplier,omitzero"`
+	DryBase             float64           `json:"dry_base,omitzero"`
+	DryAllowedLength    int64             `json:"dry_allowed_length,omitzero"`
+	DryPenaltyLastN     int64             `json:"dry_penalty_last_n,omitzero"`
+	DrySequenceBreakers []string          `json:"dry_sequence_breakers,omitzero"`
+	XTCProbability      float64           `json:"xtc_probability,omitzero"`
+	XTCThreshold        float64           `json:"xtc_threshold,omitzero"`
+	Mirostat            int32             `json:"mirostat,omitzero"`
+	MirostatTau         float64           `json:"mirostat_tau,omitzero"`
+	MirostatEta         float64           `json:"mirostat_eta,omitzero"`
+	Seed                int64             `json:"seed,omitzero"`
+	IgnoreEos           bool              `json:"ignore_eos,omitzero"`
+	LogitBias           []json.RawMessage `json:"logit_bias,omitzero"`
+	Nprobs              int64             `json:"n_probs,omitzero"`
+	MinKeep             int64             `json:"min_keep,omitzero"`
+	TMaxPredictMS       int64             `json:"t_max_predict_ms,omitzero"`
+	ImageData           []json.RawMessage `json:"image_data,omitzero"`
+	IDSlot              int64             `json:"id_slot,omitzero"`
+	CachePrompt         bool              `json:"cache_prompt,omitzero"`
+	ReturnTokens        bool              `json:"return_tokens,omitzero"`
+	Samplers            []string          `json:"samplers,omitzero"`
+	PostSamplingProbs   bool              `json:"post_sampling_probs,omitzero"`
+	ResponseFields      []string          `json:"response_fields,omitzero"`
+	Lora                []Lora            `json:"lora,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -158,11 +159,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case *GenOption:
 			c.ReasoningFormat = v.ReasoningFormat
 			if c.ChatTemplateKWArgs == nil {
-				c.ChatTemplateKWArgs = map[string]any{}
+				c.ChatTemplateKWArgs = map[string]json.RawMessage{}
 			}
 			// llama-server defaults enable_thinking to true, so we must
 			// explicitly disable it when not requested.
-			c.ChatTemplateKWArgs["enable_thinking"] = v.Thinking
+			if v.Thinking {
+				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("true")
+			} else {
+				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("false")
+			}
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
@@ -406,11 +411,11 @@ type CompletionRequest struct {
 	JSONSchema          *jsonschema.Schema `json:"json_schema,omitzero"`
 	Seed                int64              `json:"seed,omitzero"`
 	IgnoreEos           bool               `json:"ignore_eos,omitzero"`
-	LogitBias           []any              `json:"logit_bias,omitzero"`
+	LogitBias           []json.RawMessage  `json:"logit_bias,omitzero"`
 	Nprobs              int64              `json:"n_probs,omitzero"`
 	MinKeep             int64              `json:"min_keep,omitzero"`
 	TMaxPredictMS       int64              `json:"t_max_predict_ms,omitzero"`
-	ImageData           []any              `json:"image_data,omitzero"`
+	ImageData           []json.RawMessage  `json:"image_data,omitzero"`
 	IDSlot              int64              `json:"id_slot,omitzero"`
 	CachePrompt         bool               `json:"cache_prompt,omitzero"`
 	ReturnTokens        bool               `json:"return_tokens,omitzero"`
@@ -468,54 +473,54 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 
 // GenerationSettings contains the generation settings returned by the server in completion responses.
 type GenerationSettings struct {
-	NPredict            int64    `json:"n_predict"`
-	Seed                int64    `json:"seed"`
-	Temperature         float64  `json:"temperature"`
-	DynaTempRange       float64  `json:"dynatemp_range"`
-	DynaTempExponent    float64  `json:"dynatemp_exponent"`
-	TopK                int64    `json:"top_k"`
-	TopP                float64  `json:"top_p"`
-	MinP                float64  `json:"min_p"`
-	XTCProbability      float64  `json:"xtc_probability"`
-	XTCThreshold        float64  `json:"xtc_threshold"`
-	TypicalP            float64  `json:"typical_p"`
-	RepeatLastN         int64    `json:"repeat_last_n"`
-	RepeatPenalty       float64  `json:"repeat_penalty"`
-	PresencePenalty     float64  `json:"presence_penalty"`
-	FrequencyPenalty    float64  `json:"frequency_penalty"`
-	DryMultiplier       float64  `json:"dry_multiplier"`
-	DryBase             float64  `json:"dry_base"`
-	DryAllowedLength    int64    `json:"dry_allowed_length"`
-	DryPenaltyLastN     int64    `json:"dry_penalty_last_n"`
-	DrySequenceBreakers []string `json:"dry_sequence_breakers"`
-	Mirostat            int32    `json:"mirostat"`
-	MirostatTau         float64  `json:"mirostat_tau"`
-	MirostatEta         float64  `json:"mirostat_eta"`
-	Stop                []string `json:"stop"`
-	MaxTokens           int64    `json:"max_tokens"`
-	NKeep               int64    `json:"n_keep"`
-	NDiscard            int64    `json:"n_discard"`
-	IgnoreEos           bool     `json:"ignore_eos"`
-	Stream              bool     `json:"stream"`
-	LogitBias           []any    `json:"logit_bias"`
-	NProbs              int64    `json:"n_probs"`
-	MinKeep             int64    `json:"min_keep"`
-	Grammar             string   `json:"grammar"`
-	GrammarLazy         bool     `json:"grammar_lazy"`
-	GrammarTriggers     []string `json:"grammar_triggers"`
-	PreservedTokens     []string `json:"preserved_tokens"`
-	ChatFormat          string   `json:"chat_format"`
-	ReasoningFormat     string   `json:"reasoning_format"`
-	ReasoningInContent  bool     `json:"reasoning_in_content"`
-	ThinkingForcedOpen  bool     `json:"thinking_forced_open"`
-	Samplers            []string `json:"samplers"`
-	SpeculativeNMax     int64    `json:"speculative.n_max"`
-	SpeculativeNMin     int64    `json:"speculative.n_min"`
-	SpeculativePMin     float64  `json:"speculative.p_min"`
-	TimingsPerToken     bool     `json:"timings_per_token"`
-	PostSamplingProbs   bool     `json:"post_sampling_probs"`
-	Lora                []Lora   `json:"lora"`
-	TopNSigma           float64  `json:"top_n_sigma"`
+	NPredict            int64             `json:"n_predict"`
+	Seed                int64             `json:"seed"`
+	Temperature         float64           `json:"temperature"`
+	DynaTempRange       float64           `json:"dynatemp_range"`
+	DynaTempExponent    float64           `json:"dynatemp_exponent"`
+	TopK                int64             `json:"top_k"`
+	TopP                float64           `json:"top_p"`
+	MinP                float64           `json:"min_p"`
+	XTCProbability      float64           `json:"xtc_probability"`
+	XTCThreshold        float64           `json:"xtc_threshold"`
+	TypicalP            float64           `json:"typical_p"`
+	RepeatLastN         int64             `json:"repeat_last_n"`
+	RepeatPenalty       float64           `json:"repeat_penalty"`
+	PresencePenalty     float64           `json:"presence_penalty"`
+	FrequencyPenalty    float64           `json:"frequency_penalty"`
+	DryMultiplier       float64           `json:"dry_multiplier"`
+	DryBase             float64           `json:"dry_base"`
+	DryAllowedLength    int64             `json:"dry_allowed_length"`
+	DryPenaltyLastN     int64             `json:"dry_penalty_last_n"`
+	DrySequenceBreakers []string          `json:"dry_sequence_breakers"`
+	Mirostat            int32             `json:"mirostat"`
+	MirostatTau         float64           `json:"mirostat_tau"`
+	MirostatEta         float64           `json:"mirostat_eta"`
+	Stop                []string          `json:"stop"`
+	MaxTokens           int64             `json:"max_tokens"`
+	NKeep               int64             `json:"n_keep"`
+	NDiscard            int64             `json:"n_discard"`
+	IgnoreEos           bool              `json:"ignore_eos"`
+	Stream              bool              `json:"stream"`
+	LogitBias           []json.RawMessage `json:"logit_bias"`
+	NProbs              int64             `json:"n_probs"`
+	MinKeep             int64             `json:"min_keep"`
+	Grammar             string            `json:"grammar"`
+	GrammarLazy         bool              `json:"grammar_lazy"`
+	GrammarTriggers     []string          `json:"grammar_triggers"`
+	PreservedTokens     []string          `json:"preserved_tokens"`
+	ChatFormat          string            `json:"chat_format"`
+	ReasoningFormat     string            `json:"reasoning_format"`
+	ReasoningInContent  bool              `json:"reasoning_in_content"`
+	ThinkingForcedOpen  bool              `json:"thinking_forced_open"`
+	Samplers            []string          `json:"samplers"`
+	SpeculativeNMax     int64             `json:"speculative.n_max"`
+	SpeculativeNMin     int64             `json:"speculative.n_min"`
+	SpeculativePMin     float64           `json:"speculative.p_min"`
+	TimingsPerToken     bool              `json:"timings_per_token"`
+	PostSamplingProbs   bool              `json:"post_sampling_probs"`
+	Lora                []Lora            `json:"lora"`
+	TopNSigma           float64           `json:"top_n_sigma"`
 }
 
 // CompletionResponse is the response from the completion endpoint.

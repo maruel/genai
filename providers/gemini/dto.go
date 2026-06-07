@@ -81,7 +81,7 @@ type Schema struct {
 	// in the list.
 	AnyOf []*Schema `json:"anyOf,omitzero"`
 	// Optional. Default value of the data.
-	Default any `json:"default,omitzero"`
+	Default json.RawMessage `json:"default,omitzero"`
 	// Optional. The description of the data.
 	Description string `json:"description,omitzero"`
 	// Optional. Possible values of the element of primitive type with enum format. Examples:
@@ -90,7 +90,7 @@ type Schema struct {
 	// enum:["101", "201", "301"]}
 	Enum []string `json:"enum,omitzero"`
 	// Optional. Example of the object. Will only populated when the object is the root.
-	Example any `json:"example,omitzero"`
+	Example json.RawMessage `json:"example,omitzero"`
 	// Optional. The format of the data. Supported formats: for NUMBER type: "float", "double"
 	// for INTEGER type: "int32", "int64" for STRING type: "email", "byte", etc
 	Format Format `json:"format,omitzero"`
@@ -144,7 +144,7 @@ type FileData struct {
 }
 
 // StructValue is documented at https://protobuf.dev/reference/protobuf/google.protobuf/#struct
-type StructValue map[string]any
+type StructValue map[string]json.RawMessage
 
 // Value is documented at https://protobuf.dev/reference/protobuf/google.protobuf/#value
 type Value struct {
@@ -700,9 +700,9 @@ type ImageResponse struct {
 //
 // See generateVideosResponseFromMldev in js-genai for more details.
 type Operation struct {
-	Name     string         `json:"name"`
-	Metadata map[string]any `json:"metadata"`
-	Done     bool           `json:"done"`
+	Name     string                     `json:"name"`
+	Metadata map[string]json.RawMessage `json:"metadata"`
+	Done     bool                       `json:"done"`
 	// One of the following:
 	Error    Status `json:"error"`
 	Response struct {
@@ -729,9 +729,9 @@ type Operation struct {
 
 // Status is documented at https://ai.google.dev/api/files#v1beta.Status
 type Status struct {
-	Code    int64          `json:"code"`
-	Message string         `json:"message"`
-	Details map[string]any `json:"details"`
+	Code    int64                      `json:"code"`
+	Message string                     `json:"message"`
+	Details map[string]json.RawMessage `json:"details"`
 }
 
 // File types.

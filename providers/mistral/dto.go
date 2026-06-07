@@ -673,13 +673,13 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // ErrorDetail can be either a struct or a string. When a string, it decodes into Msg.
 type ErrorDetail struct {
-	Type string `json:"type"` // "string_type", "missing"
-	Msg  string `json:"msg"`
-	Loc  []any  `json:"loc"` // to be joined, a mix of string and number
+	Type string            `json:"type"` // "string_type", "missing"
+	Msg  string            `json:"msg"`
+	Loc  []json.RawMessage `json:"loc"` // to be joined, a mix of string and number
 	// Input is either a list or an instance of struct { Type string `json:"type"` }.
-	Input any    `json:"input"`
-	Ctx   any    `json:"ctx"`
-	URL   string `json:"url"`
+	Input json.RawMessage `json:"input"`
+	Ctx   json.RawMessage `json:"ctx"`
+	URL   string          `json:"url"`
 }
 
 func (ed *ErrorDetail) String() string {
@@ -687,7 +687,20 @@ func (ed *ErrorDetail) String() string {
 		// This was actually a string
 		return ed.Msg
 	}
-	return fmt.Sprintf("%s: %s at %s", ed.Type, ed.Msg, ed.Loc)
+	return fmt.Sprintf("%s: %s at %s", ed.Type, ed.Msg, formatErrorLoc(ed.Loc))
+}
+
+func formatErrorLoc(loc []json.RawMessage) string {
+	parts := make([]string, len(loc))
+	for i, raw := range loc {
+		var s string
+		if err := json.Unmarshal(raw, &s); err == nil {
+			parts[i] = s
+		} else {
+			parts[i] = string(raw)
+		}
+	}
+	return "[" + strings.Join(parts, " ") + "]"
 }
 
 // ErrorDetails represents a collection of error details.

@@ -7,6 +7,7 @@
 package gemini
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -196,37 +197,45 @@ func (s *Schema) FromGoType(t reflect.Type, tag reflect.StructTag, parent string
 	return nil
 }
 
-func convertValue(s string, kind reflect.Kind) (any, error) {
+func convertValue(s string, kind reflect.Kind) (json.RawMessage, error) {
 	switch kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		i, err := strconv.ParseInt(s, 10, 64)
 		if err != nil {
 			return nil, err
 		}
-		return i, nil
+		return marshalJSONRaw(i)
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		u, err := strconv.ParseUint(s, 10, 64)
 		if err != nil {
 			return nil, err
 		}
-		return u, nil
+		return marshalJSONRaw(u)
 	case reflect.Float32, reflect.Float64:
 		f, err := strconv.ParseFloat(s, 64)
 		if err != nil {
 			return nil, err
 		}
-		return f, nil
+		return marshalJSONRaw(f)
 	case reflect.Bool:
 		b, err := strconv.ParseBool(s)
 		if err != nil {
 			return nil, err
 		}
-		return b, nil
+		return marshalJSONRaw(b)
 	case reflect.String:
-		return s, nil
+		return marshalJSONRaw(s)
 	case reflect.Invalid, reflect.Uintptr, reflect.Complex64, reflect.Complex128, reflect.Array, reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.Struct, reflect.UnsafePointer:
 		return nil, fmt.Errorf("failed to convert example value %v for type %s", s, kind)
 	default:
 		return nil, fmt.Errorf("failed to convert example value %v for type %s", s, kind)
 	}
+}
+
+func marshalJSONRaw(v any) (json.RawMessage, error) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	return json.RawMessage(b), nil
 }

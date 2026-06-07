@@ -156,10 +156,10 @@ type UpdateProbe struct {
 
 // JSONRPCRequest is the envelope for all JSON-RPC 2.0 requests sent to OpenCode.
 type JSONRPCRequest struct {
-	JSONRPC string `json:"jsonrpc"`
-	ID      int64  `json:"id,omitzero"`
-	Method  Method `json:"method"`
-	Params  any    `json:"params,omitzero"`
+	JSONRPC string          `json:"jsonrpc"`
+	ID      int64           `json:"id,omitzero"`
+	Method  Method          `json:"method"`
+	Params  json.RawMessage `json:"params,omitzero"`
 }
 
 // ---------- Handshake request params ----------
@@ -536,9 +536,9 @@ type PromptUsage struct {
 // JSONRPCResponse is a JSON-RPC 2.0 response sent back to the agent (e.g. for
 // permission requests).
 type JSONRPCResponse struct {
-	JSONRPC string `json:"jsonrpc"`
-	ID      int64  `json:"id"`
-	Result  any    `json:"result"`
+	JSONRPC string          `json:"jsonrpc"`
+	ID      int64           `json:"id"`
+	Result  json.RawMessage `json:"result"`
 }
 
 // PermissionResponseResult is the result sent back for a permission request.

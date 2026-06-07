@@ -278,7 +278,7 @@ func TestSchema_FromGoType(t *testing.T) {
 				Properties: map[string]Schema{
 					"A": {
 						Type:    "INTEGER",
-						Default: int64(123),
+						Default: json.RawMessage(`123`),
 					},
 				},
 				Required: []string{"A"},
@@ -295,7 +295,7 @@ func TestSchema_FromGoType(t *testing.T) {
 					"A": {
 						Type:    "NUMBER",
 						Format:  "double",
-						Default: 123.45,
+						Default: json.RawMessage(`123.45`),
 					},
 				},
 				Required: []string{"A"},
@@ -311,7 +311,7 @@ func TestSchema_FromGoType(t *testing.T) {
 				Properties: map[string]Schema{
 					"A": {
 						Type:    "BOOLEAN",
-						Default: true,
+						Default: json.RawMessage(`true`),
 					},
 				},
 				Required: []string{"A"},
@@ -327,7 +327,7 @@ func TestSchema_FromGoType(t *testing.T) {
 				Properties: map[string]Schema{
 					"A": {
 						Type:    "INTEGER",
-						Example: int64(456),
+						Example: json.RawMessage(`456`),
 					},
 				},
 				Required: []string{"A"},
@@ -344,7 +344,7 @@ func TestSchema_FromGoType(t *testing.T) {
 					"A": {
 						Type:    "NUMBER",
 						Format:  "double",
-						Example: 67.89,
+						Example: json.RawMessage(`67.89`),
 					},
 				},
 				Required: []string{"A"},
@@ -360,7 +360,7 @@ func TestSchema_FromGoType(t *testing.T) {
 				Properties: map[string]Schema{
 					"A": {
 						Type:    "BOOLEAN",
-						Example: false,
+						Example: json.RawMessage(`false`),
 					},
 				},
 				Required: []string{"A"},

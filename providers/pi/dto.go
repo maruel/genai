@@ -835,10 +835,10 @@ type ContentBlock struct {
 	ThinkingSignature string `json:"thinkingSignature,omitzero"`
 	Redacted          bool   `json:"redacted,omitzero"`
 	// toolCall block
-	ID               string         `json:"id,omitzero"`
-	Name             string         `json:"name,omitzero"`
-	Arguments        map[string]any `json:"arguments,omitzero"`
-	ThoughtSignature string         `json:"thoughtSignature,omitzero"`
+	ID               string                     `json:"id,omitzero"`
+	Name             string                     `json:"name,omitzero"`
+	Arguments        map[string]json.RawMessage `json:"arguments,omitzero"`
+	ThoughtSignature string                     `json:"thoughtSignature,omitzero"`
 	// image block
 	Data     string `json:"data,omitzero"`
 	MimeType string `json:"mimeType,omitzero"`

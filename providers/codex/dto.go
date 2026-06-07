@@ -635,10 +635,10 @@ type MethodProbe struct {
 
 // JSONRPCRequest is the envelope for all JSON-RPC 2.0 requests sent to codex.
 type JSONRPCRequest struct {
-	JSONRPC string `json:"jsonrpc"`
-	ID      int64  `json:"id,omitzero"`
-	Method  string `json:"method"`
-	Params  any    `json:"params,omitzero"`
+	JSONRPC string          `json:"jsonrpc"`
+	ID      int64           `json:"id,omitzero"`
+	Method  string          `json:"method"`
+	Params  json.RawMessage `json:"params,omitzero"`
 }
 
 // JSONRPCNotification is a JSON-RPC 2.0 notification (no id, no response expected).

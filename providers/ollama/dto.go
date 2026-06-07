@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -417,9 +418,9 @@ func (m *Message) To(out *genai.Message) error {
 type ToolCall struct {
 	ID       string `json:"id,omitzero"`
 	Function struct {
-		Index     int64  `json:"index,omitzero"`
-		Name      string `json:"name"`
-		Arguments any    `json:"arguments"`
+		Index     int64           `json:"index,omitzero"`
+		Name      string          `json:"name"`
+		Arguments json.RawMessage `json:"arguments"`
 	} `json:"function"`
 }
 

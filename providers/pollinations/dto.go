@@ -267,7 +267,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	}
 
 	// Otherwise, it's likely a raw JSON object. Convert it back to a string.
-	data := map[string]any{}
+	data := map[string]json.RawMessage{}
 	if err := json.Unmarshal(b, &data); err != nil {
 		return err
 	}
@@ -869,8 +869,8 @@ type ErrorResponse struct {
 		Step      string `json:"step"`
 		Timestamp int64  `json:"timestamp"`
 	} `json:"timingInfo"`
-	RequestID         string         `json:"requestId"`
-	RequestParameters map[string]any `json:"requestParameters"`
+	RequestID         string                     `json:"requestId"`
+	RequestParameters map[string]json.RawMessage `json:"requestParameters"`
 }
 
 func (er *ErrorResponse) Error() string {

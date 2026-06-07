@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai/base"
 )
 
@@ -221,15 +222,15 @@ const (
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	QueueTime               float64        `json:"queue_time"`
-	PromptTokens            int64          `json:"prompt_tokens"`
-	PromptTime              float64        `json:"prompt_time"`
-	CompletionTokens        int64          `json:"completion_tokens"`
-	CompletionTime          float64        `json:"completion_time"`
-	TotalTokens             int64          `json:"total_tokens"`
-	TotalTime               float64        `json:"total_time"`
-	PromptTokensDetails     map[string]any `json:"prompt_tokens_details,omitzero"`
-	CompletionTokensDetails map[string]any `json:"completion_tokens_details,omitzero"`
+	QueueTime               float64                    `json:"queue_time"`
+	PromptTokens            int64                      `json:"prompt_tokens"`
+	PromptTime              float64                    `json:"prompt_time"`
+	CompletionTokens        int64                      `json:"completion_tokens"`
+	CompletionTime          float64                    `json:"completion_time"`
+	TotalTokens             int64                      `json:"total_tokens"`
+	TotalTime               float64                    `json:"total_time"`
+	PromptTokensDetails     map[string]json.RawMessage `json:"prompt_tokens_details,omitzero"`
+	CompletionTokensDetails map[string]json.RawMessage `json:"completion_tokens_details,omitzero"`
 }
 
 // BrowserSearchArguments is the Argument for the "browser.search" tool.

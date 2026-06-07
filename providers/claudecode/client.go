@@ -618,13 +618,17 @@ func writeInitialize(w io.Writer, co *callOpts) error {
 	if !co.progressSummaries {
 		return nil
 	}
+	req, err := json.Marshal(ControlReqInitialize{
+		Subtype:                ControlInitialize,
+		AgentProgressSummaries: true,
+	})
+	if err != nil {
+		return fmt.Errorf("marshal initialize request body: %w", err)
+	}
 	m := InputControlRequestMsg{
 		Type:      InputControlRequest,
 		RequestID: "genai-init",
-		Request: ControlReqInitialize{
-			Subtype:                ControlInitialize,
-			AgentProgressSummaries: true,
-		},
+		Request:   json.RawMessage(req),
 	}
 	data, err := json.Marshal(m)
 	if err != nil {

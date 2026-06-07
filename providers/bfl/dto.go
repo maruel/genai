@@ -8,6 +8,8 @@
 
 package bfl
 
+import "encoding/json"
+
 // ImageRequest is described in https://docs.bfl.ml/api-reference/tasks/generate-an-image-with-flux-11-[pro]
 // and the likes.
 type ImageRequest struct {
@@ -66,9 +68,9 @@ type ImageRequestResponse struct {
 	// inaccessible.
 	PollingURL string `json:"polling_url"`
 	// Cost, InputMP, and OutputMP are optional fields returned by the API.
-	Cost     any `json:"cost,omitempty"`
-	InputMP  any `json:"input_mp,omitempty"`
-	OutputMP any `json:"output_mp,omitempty"`
+	Cost     json.RawMessage `json:"cost,omitempty"`
+	InputMP  json.RawMessage `json:"input_mp,omitempty"`
+	OutputMP json.RawMessage `json:"output_mp,omitempty"`
 }
 
 // ImageResult is the provider-specific image generation result.

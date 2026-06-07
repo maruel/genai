@@ -21,6 +21,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
@@ -28,7 +30,6 @@ import (
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/roundtrippers"
 )
 
 func TestClient(t *testing.T) {
@@ -291,7 +292,7 @@ func TestGenOption(t *testing.T) {
 		if req.ChatTemplateKWArgs == nil {
 			t.Fatal("ChatTemplateKWArgs is nil")
 		}
-		if v, ok := req.ChatTemplateKWArgs["enable_thinking"]; !ok || v != true {
+		if v, ok := req.ChatTemplateKWArgs["enable_thinking"]; !ok || string(v) != "true" {
 			t.Errorf("ChatTemplateKWArgs[enable_thinking] = %v, want true", v)
 		}
 	})
@@ -306,7 +307,7 @@ func TestGenOption(t *testing.T) {
 		if req.ChatTemplateKWArgs == nil {
 			t.Fatal("ChatTemplateKWArgs is nil")
 		}
-		if v, ok := req.ChatTemplateKWArgs["enable_thinking"]; !ok || v != false {
+		if v, ok := req.ChatTemplateKWArgs["enable_thinking"]; !ok || string(v) != "false" {
 			t.Errorf("ChatTemplateKWArgs[enable_thinking] = %v, want false", v)
 		}
 	})

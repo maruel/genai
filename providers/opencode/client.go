@@ -63,6 +63,14 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+func marshalJSONRaw(v any) (json.RawMessage, error) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	return json.RawMessage(b), nil
+}
+
 // sessionIDKey is the key used in Reply.Opaque to carry session IDs.
 const sessionIDKey = "session_id"
 
@@ -365,15 +373,19 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 
 	// 1. Send initialize request.
 	hs.nextID++
+	params, err := marshalJSONRaw(InitializeParams{
+		ProtocolVersion:    1,
+		ClientCapabilities: ClientCapabilities{Terminal: false},
+		ClientInfo:         ClientInfo{Name: "genai-opencode", Title: "genai-opencode", Version: "1.0.0"},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal initialize params: %w", err)
+	}
 	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      hs.nextID,
 		Method:  MethodInitialize,
-		Params: InitializeParams{
-			ProtocolVersion:    1,
-			ClientCapabilities: ClientCapabilities{Terminal: false},
-			ClientInfo:         ClientInfo{Name: "genai-opencode", Title: "genai-opencode", Version: "1.0.0"},
-		},
+		Params:  params,
 	}); err != nil {
 		return nil, fmt.Errorf("write initialize: %w", err)
 	}
@@ -390,18 +402,26 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	hs.nextID++
 	var sessionReq JSONRPCRequest
 	if resumeSessionID != "" {
+		params, err := marshalJSONRaw(SessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir(), McpServers: []MCPServer{}})
+		if err != nil {
+			return nil, fmt.Errorf("marshal session/load params: %w", err)
+		}
 		sessionReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodSessionLoad,
-			Params:  SessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir(), McpServers: []MCPServer{}},
+			Params:  params,
 		}
 	} else {
+		params, err := marshalJSONRaw(SessionNewParams{Cwd: os.TempDir(), McpServers: []MCPServer{}})
+		if err != nil {
+			return nil, fmt.Errorf("marshal session/new params: %w", err)
+		}
 		sessionReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodSessionNew,
-			Params:  SessionNewParams{Cwd: os.TempDir(), McpServers: []MCPServer{}},
+			Params:  params,
 		}
 	}
 	if err := msgutil.WriteNDJSON(stdin, sessionReq); err != nil {
@@ -428,11 +448,15 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	// 3. Switch model if requested (best-effort).
 	if mdl != "" {
 		hs.nextID++
+		params, err := marshalJSONRaw(SetSessionModelParams{SessionID: hs.sessionID, ModelID: mdl})
+		if err != nil {
+			return nil, fmt.Errorf("marshal setSessionModel params: %w", err)
+		}
 		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodUnstableSetSessionModel,
-			Params:  SetSessionModelParams{SessionID: hs.sessionID, ModelID: mdl},
+			Params:  params,
 		}); err != nil {
 			return nil, fmt.Errorf("write setSessionModel: %w", err)
 		}
@@ -451,11 +475,15 @@ func sendUserPrompt(stdin io.Writer, hs *handshakeResult, msg *genai.Message) (i
 	}
 	hs.nextID++
 	id := hs.nextID
+	params, err := marshalJSONRaw(SessionPromptParams{SessionID: hs.sessionID, Prompt: content})
+	if err != nil {
+		return 0, fmt.Errorf("marshal session/prompt params: %w", err)
+	}
 	return id, msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      id,
 		Method:  MethodSessionPrompt,
-		Params:  SessionPromptParams{SessionID: hs.sessionID, Prompt: content},
+		Params:  params,
 	})
 }
 
@@ -626,7 +654,11 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 		return fmt.Errorf("unmarshal request id: %w", err)
 	}
 	if msg.Method != MethodSessionRequestPermission {
-		return msgutil.WriteNDJSON(stdin, JSONRPCResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
+		result, err := marshalJSONRaw(struct{}{})
+		if err != nil {
+			return fmt.Errorf("marshal empty response result: %w", err)
+		}
+		return msgutil.WriteNDJSON(stdin, JSONRPCResponse{JSONRPC: "2.0", ID: id, Result: result})
 	}
 	var params PermissionRequestParams
 	if err := internal.UnmarshalJSON(msg.Params, &params); err != nil {
@@ -643,10 +675,14 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 	if optionID == "" && len(params.Options) > 0 {
 		optionID = params.Options[0].OptionID
 	}
+	result, err := marshalJSONRaw(PermissionResponseResult{OptionID: optionID})
+	if err != nil {
+		return fmt.Errorf("marshal permission response result: %w", err)
+	}
 	return msgutil.WriteNDJSON(stdin, JSONRPCResponse{
 		JSONRPC: "2.0",
 		ID:      id,
-		Result:  PermissionResponseResult{OptionID: optionID},
+		Result:  result,
 	})
 }
 

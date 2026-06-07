@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -361,8 +362,8 @@ type ChatResponse struct {
 // MessageResponse is a message in a provider-specific response.
 type MessageResponse struct {
 	// Normally a string, or an object if response_format.type == "json_schema".
-	Response  any        `json:"response"`
-	ToolCalls []ToolCall `json:"tool_calls"`
+	Response  json.RawMessage `json:"response"`
+	ToolCalls []ToolCall      `json:"tool_calls"`
 }
 
 // To converts to the genai equivalent.
@@ -376,21 +377,18 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 		}
 		return nil
 	}
-	switch v := msg.Response.(type) {
-	case string:
+	var s string
+	if err := json.Unmarshal(msg.Response, &s); err == nil {
 		// This is just sad.
-		if strings.HasPrefix(v, "<tool_call>") {
+		if strings.HasPrefix(s, "<tool_call>") {
 			return errors.New("hacked up XML tool calls are not supported")
 		} else {
-			out.Replies = []genai.Reply{{Text: v}}
+			out.Replies = []genai.Reply{{Text: s}}
 		}
-	default:
-		// Marshal back into JSON.
-		b, err := json.Marshal(v)
-		if err != nil {
-			return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
-		}
-		out.Replies = []genai.Reply{{Text: string(b)}}
+	} else if len(msg.Response) != 0 {
+		out.Replies = []genai.Reply{{Text: string(msg.Response)}}
+	} else {
+		out.Replies = []genai.Reply{{Text: "null"}}
 	}
 	return nil
 }
@@ -452,8 +450,8 @@ type ToolCall struct {
 		Arguments string `json:"arguments"`
 	} `json:"function,omitzero"`
 
-	Arguments any    `json:"arguments"`
-	Name      string `json:"name"`
+	Arguments json.RawMessage `json:"arguments"`
+	Name      string          `json:"name"`
 }
 
 // To converts to the genai equivalent.
@@ -465,9 +463,9 @@ func (c *ToolCall) To(out *genai.ToolCall) error {
 	if c.Function.Arguments != "" {
 		out.Arguments = c.Function.Arguments
 	} else {
-		raw, err := json.Marshal(c.Arguments)
-		if err != nil {
-			return fmt.Errorf("failed to marshal tool call arguments: %w", err)
+		raw := c.Arguments
+		if len(raw) == 0 {
+			raw = json.RawMessage("null")
 		}
 		out.Arguments = string(raw)
 	}
@@ -505,8 +503,8 @@ type Model struct {
 	} `json:"task"`
 	Tags       []string `json:"tags"`
 	Properties []struct {
-		PropertyID string `json:"property_id"`
-		Value      any    `json:"value"` // sometimes a string, sometimes an array
+		PropertyID string          `json:"property_id"`
+		Value      json.RawMessage `json:"value"` // sometimes a string, sometimes an array
 	} `json:"properties"`
 }
 
@@ -532,12 +530,10 @@ func (m *Model) String() string {
 		if p.PropertyID == "info" || p.PropertyID == "terms" {
 			continue
 		}
-		switch p.Value.(type) {
-		case json.Number, string, int:
-			suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
-		default:
-			b, _ := json.Marshal(p.Value)
-			d := json.NewDecoder(bytes.NewReader(b))
+		if v, ok := rawScalarString(p.Value); ok {
+			suffixes = append(suffixes, fmt.Sprintf("%s=%s", p.PropertyID, v))
+		} else {
+			d := json.NewDecoder(bytes.NewReader(p.Value))
 			d.DisallowUnknownFields()
 			var mp []ModelPricing
 			if err := d.Decode(&mp); err == nil {
@@ -561,7 +557,7 @@ func (m *Model) String() string {
 				}
 				suffixes = append(suffixes, fmt.Sprintf("%s=[%s]", p.PropertyID, strings.Join(s, ", ")))
 			} else {
-				suffixes = append(suffixes, fmt.Sprintf("%s=%v", p.PropertyID, p.Value))
+				suffixes = append(suffixes, fmt.Sprintf("%s=%s", p.PropertyID, p.Value))
 			}
 		}
 	}
@@ -577,7 +573,7 @@ func (m *Model) String() string {
 func (m *Model) Context() int64 {
 	for _, p := range m.Properties {
 		if p.PropertyID == "context_window" || p.PropertyID == "max_input_tokens" {
-			if s, ok := p.Value.(string); ok {
+			if s, ok := rawString(p.Value); ok {
 				if v, err := strconv.ParseInt(s, 10, 64); err == nil {
 					return v
 				}
@@ -596,8 +592,7 @@ func (m *Model) Price() (float64, float64) {
 		if p.PropertyID != "price" {
 			continue
 		}
-		b, _ := json.Marshal(p.Value)
-		d := json.NewDecoder(bytes.NewReader(b))
+		d := json.NewDecoder(bytes.NewReader(p.Value))
 		d.DisallowUnknownFields()
 		if err := d.Decode(&mp); err != nil {
 			return in, out
@@ -613,6 +608,25 @@ func (m *Model) Price() (float64, float64) {
 		return in, out
 	}
 	return in, out
+}
+
+func rawScalarString(v json.RawMessage) (string, bool) {
+	if s, ok := rawString(v); ok {
+		return s, true
+	}
+	v = bytes.TrimSpace(v)
+	if len(v) == 0 || v[0] == '[' || v[0] == '{' {
+		return "", false
+	}
+	return string(v), true
+}
+
+func rawString(v json.RawMessage) (string, bool) {
+	var s string
+	if err := json.Unmarshal(v, &s); err != nil {
+		return "", false
+	}
+	return s, true
 }
 
 // ModelsResponse represents the response structure for Cloudflare models listing.

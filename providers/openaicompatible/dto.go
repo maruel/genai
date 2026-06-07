@@ -327,7 +327,7 @@ type Usage struct {
 //
 
 // ErrorResponse is as generic as possible since error responses are highly non-standard.
-type ErrorResponse map[string]any
+type ErrorResponse map[string]json.RawMessage
 
 func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s", *er)

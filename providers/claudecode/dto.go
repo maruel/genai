@@ -74,9 +74,9 @@ type InputContentBlock struct {
 // The Request field is a JSON object whose "subtype" discriminator determines
 // its schema. Use one of the ControlReq* structs below as the Request value.
 type InputControlRequestMsg struct {
-	Type      InputType `json:"type"` // InputControlRequest
-	RequestID string    `json:"request_id"`
-	Request   any       `json:"request"`
+	Type      InputType       `json:"type"` // InputControlRequest
+	RequestID string          `json:"request_id"`
+	Request   json.RawMessage `json:"request"`
 }
 
 // ControlSubtype is the "subtype" discriminator for control requests.
@@ -259,7 +259,7 @@ type ControlReqElicitation struct {
 }
 
 // JSONSchema is an open JSON Schema object.
-type JSONSchema map[string]any
+type JSONSchema map[string]json.RawMessage
 
 // HookEvent identifies a Claude Code hook event.
 type HookEvent string
@@ -299,7 +299,7 @@ type HookCallbackInput struct {
 	AgentType             string                     `json:"agent_type,omitempty"`
 	ToolName              string                     `json:"tool_name,omitempty"`
 	ToolInput             map[string]json.RawMessage `json:"tool_input,omitempty"`
-	ToolResponse          any                        `json:"tool_response,omitempty"`
+	ToolResponse          json.RawMessage            `json:"tool_response,omitempty"`
 	ToolUseID             string                     `json:"tool_use_id,omitempty"`
 	Error                 string                     `json:"error,omitempty"`
 	IsInterrupt           bool                       `json:"is_interrupt,omitempty"`

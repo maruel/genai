@@ -69,7 +69,6 @@ const threadIDKey = "thread_id"
 // These reduce noise for a text-generation-only use case.
 var optOutMethods = []Method{
 	MethodCommandTerminalInteract,
-	MethodFileChangeOutputDelta,
 	MethodReasoningSummaryPartAdded,
 	MethodReasoningTextDelta,
 	MethodPlanDelta,

@@ -7,6 +7,7 @@
 package codex
 
 import (
+	"encoding/json"
 	"errors"
 	"slices"
 	"testing"
@@ -76,6 +77,50 @@ func TestParseOpts(t *testing.T) {
 					t.Errorf("expected %q in unsupported, got %v", tc.want, uerr.Options)
 				}
 			})
+		}
+	})
+}
+
+func TestContextCompactionThreadItem(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		const input = `{"id":"cc1","type":"contextCompaction"}`
+		var item ContextCompactionThreadItem
+		if err := json.Unmarshal([]byte(input), &item); err != nil {
+			t.Fatal(err)
+		}
+		if item.ID != "cc1" {
+			t.Errorf("ID = %q, want cc1", item.ID)
+		}
+		if item.Type != ItemTypeContextCompaction {
+			t.Errorf("Type = %q, want %q", item.Type, ItemTypeContextCompaction)
+		}
+	})
+}
+
+func TestUserMessageItem(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		const input = `{"id":"u1","type":"userMessage","clientId":null,"content":[{"type":"text","text":"hello","text_elements":[]}]}`
+		var item UserMessageItem
+		if err := json.Unmarshal([]byte(input), &item); err != nil {
+			t.Fatal(err)
+		}
+		if item.ID != "u1" {
+			t.Errorf("ID = %q, want u1", item.ID)
+		}
+		if item.Type != ItemTypeUserMessage {
+			t.Errorf("Type = %q, want %q", item.Type, ItemTypeUserMessage)
+		}
+		if len(item.Content) != 1 {
+			t.Fatalf("len(Content) = %d, want 1", len(item.Content))
+		}
+		if item.Content[0].Type != TurnInputTypeText {
+			t.Errorf("Content[0].Type = %q, want %q", item.Content[0].Type, TurnInputTypeText)
+		}
+		if item.Content[0].Text != "hello" {
+			t.Errorf("Content[0].Text = %q, want hello", item.Content[0].Text)
+		}
+		if len(item.Content[0].TextElements) != 0 {
+			t.Errorf("len(Content[0].TextElements) = %d, want 0", len(item.Content[0].TextElements))
 		}
 	})
 }

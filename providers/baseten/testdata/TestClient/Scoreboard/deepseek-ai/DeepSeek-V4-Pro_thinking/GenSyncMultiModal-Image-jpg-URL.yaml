@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 289
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 141
+        body: |
+            {
+            	"error": {
+            		"code": 400,
+            		"message": "This model does not support multimodal (image/video/audio) inputs.",
+            		"type": "Bad Request"
+            	}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "141"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264614414"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a3a0e7b66b8a02451508a6993
+            X-Baseten-Session-Id:
+                - 54ca7019e800a3a0e7b66b8a02451508a6993
+        status: 400 Bad Request
+        code: 400
+        duration: 140ms

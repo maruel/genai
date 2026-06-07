@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 153
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 576
+        body: '{"id":"chatcmpl-1870a4c172c14218a46af5cc5cc0a35e","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need to respond with a detailed talk about Canada, starting with \"Canada "},"finish_reason":"stop"}],"created":1780264608,"model":"deepseek-ai/DeepSeek-V4-Pro","object":"chat.completion","usage":{"prompt_tokens":17,"completion_tokens":17,"total_tokens":34,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "576"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264607708"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a1fdd7870a2b02d0dcd0c040f
+            X-Baseten-Session-Id:
+                - 54ca7019e800a1fdd7870a2b02d0dcd0c040f
+        status: 200 OK
+        code: 200
+        duration: 436ms

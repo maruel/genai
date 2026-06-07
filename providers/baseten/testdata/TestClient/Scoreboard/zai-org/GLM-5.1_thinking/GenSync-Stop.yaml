@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 187
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.1","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 627
+        body: '{"id":"chatcmpl-bbd4908ae3fc4975afffde7e71d92df9","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"1.  **Analyze the Request:**\n    *   **Topic:** Canada.\n    *   **Level of Detail:** Great detail.\n    *   **Starting Phrase:** \"Canada "},"finish_reason":"stop"}],"created":1780792778,"model":"zai-org/GLM-5.1","object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":39,"total_tokens":57,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":3},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":39,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "627"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780792778460"
+            X-Baseten-Model-Id:
+                - q419k9kq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - womg10g
+            X-Baseten-Request-Id:
+                - 54ca7019e9f855edc7384b72a74e2562a5dcc
+            X-Baseten-Session-Id:
+                - 54ca7019e9f855edc7384b72a74e2562a5dcc
+        status: 200 OK
+        code: 200
+        duration: 451ms

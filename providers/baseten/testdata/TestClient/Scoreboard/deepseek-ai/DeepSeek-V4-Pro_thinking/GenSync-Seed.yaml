@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 121
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 735
+        body: '{"id":"chatcmpl-fa789af08ac64014ada19cf981fc3a96","choices":[{"index":0,"message":{"content":"Hello.","role":"assistant","reasoning_content":"We are asked: \"Say hello. Use only one word.\" So I need to respond with a single word that means hello. The simplest is \"Hello.\" But I must use only one word. So \"Hello\" is one word. I''ll respond with \"Hello.\""},"finish_reason":"stop"}],"created":1780264606,"model":"deepseek-ai/DeepSeek-V4-Pro","object":"chat.completion","usage":{"prompt_tokens":13,"completion_tokens":59,"total_tokens":72,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":55,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "735"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264605873"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a18b578e7954edc98ecde83ff
+            X-Baseten-Session-Id:
+                - 54ca7019e800a18b578e7954edc98ecde83ff
+        status: 200 OK
+        code: 200
+        duration: 862ms

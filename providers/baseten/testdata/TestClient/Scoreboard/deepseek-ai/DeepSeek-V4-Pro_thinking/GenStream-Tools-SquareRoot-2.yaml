@@ -1,0 +1,89 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 917
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"chatcmpl-tool-d78ad5cec7584370a4be68dd74ca3b77","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-d78ad5cec7584370a4be68dd74ca3b77","name":"square_root"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":"assistant","refusal":null,"reasoning_content":"We"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":1,"total_tokens":92,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" are asked"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":3,"total_tokens":94,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":3,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" to use the square"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":7,"total_tokens":98,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"_root tool and"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":10,"total_tokens":101,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":10,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" reply with only"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":13,"total_tokens":104,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":13,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" the result,"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":16,"total_tokens":107,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" no explanation."}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":19,"total_tokens":110,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":19,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" The tool"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":21,"total_tokens":112,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":21,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" returned "}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":23,"total_tokens":114,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":23,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"363.89"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":26,"total_tokens":117,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":". We"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":28,"total_tokens":119,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":28,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" will"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":29,"total_tokens":120,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":29,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" reply"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":30,"total_tokens":121,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":30,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" with that"}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":32,"total_tokens":123,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":32,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"."}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":35,"total_tokens":126,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":33,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[{"index":0,"delta":{"content":"363.89","function_call":null,"tool_calls":null,"role":null,"refusal":null},"finish_reason":"stop"}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":38,"total_tokens":129,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":33,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-2750ced8b0864881ac23a25da75a8abb","choices":[],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":91,"completion_tokens":38,"total_tokens":129,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":33,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264610352"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a2a317729987547334b4a53d9
+            X-Baseten-Session-Id:
+                - 54ca7019e800a2a317729987547334b4a53d9
+        status: 200 OK
+        code: 200
+        duration: 268ms

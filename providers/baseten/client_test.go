@@ -7,9 +7,11 @@
 package baseten_test
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -163,6 +165,97 @@ func TestClient(t *testing.T) {
 			}, opts...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
+	})
+}
+
+func TestGenOption(t *testing.T) {
+	msgs := genai.Messages{genai.NewTextMessage("test")}
+	t.Run("thinking default", func(t *testing.T) {
+		var req baseten.ChatRequest
+		if err := req.Init(msgs, "zai-org/GLM-5.1"); err != nil {
+			t.Fatal(err)
+		}
+		if !req.ChatTemplateArgs.EnableThinking {
+			t.Error("EnableThinking = false, want true")
+		}
+		b, err := json.Marshal(&req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(b), `"chat_template_args":{"enable_thinking":true}`) {
+			t.Errorf("expected chat_template_args.enable_thinking in JSON, got: %s", b)
+		}
+	})
+	t.Run("thinking enabled", func(t *testing.T) {
+		var req baseten.ChatRequest
+		if err := req.Init(msgs, "zai-org/GLM-5.1", &baseten.GenOption{Thinking: true}); err != nil {
+			t.Fatal(err)
+		}
+		if !req.ChatTemplateArgs.EnableThinking {
+			t.Error("EnableThinking = false, want true")
+		}
+		b, err := json.Marshal(&req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(b), `"chat_template_args":{"enable_thinking":true}`) {
+			t.Errorf("expected chat_template_args.enable_thinking in JSON, got: %s", b)
+		}
+	})
+	t.Run("thinking disabled", func(t *testing.T) {
+		var req baseten.ChatRequest
+		if err := req.Init(msgs, "zai-org/GLM-5.1", &baseten.GenOption{}); err != nil {
+			t.Fatal(err)
+		}
+		if req.ChatTemplateArgs.EnableThinking {
+			t.Error("EnableThinking = true, want false")
+		}
+		b, err := json.Marshal(&req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if strings.Contains(string(b), "chat_template_args") {
+			t.Errorf("expected no chat_template_args in JSON, got: %s", b)
+		}
+	})
+	t.Run("no default", func(t *testing.T) {
+		var req baseten.ChatRequest
+		if err := req.Init(msgs, "deepseek-ai/DeepSeek-V4-Pro"); err != nil {
+			t.Fatal(err)
+		}
+		if req.ChatTemplateArgs.EnableThinking {
+			t.Error("EnableThinking = true, want false")
+		}
+	})
+	t.Run("discovered reasoning", func(t *testing.T) {
+		model := strings.ReplaceAll(t.Name(), "/", "-")
+		var req baseten.ChatRequest
+		if err := req.Init(msgs, model); err != nil {
+			t.Fatal(err)
+		}
+		if req.ChatTemplateArgs.EnableThinking {
+			t.Error("EnableThinking = true before discovery, want false")
+		}
+		c, err := baseten.New(
+			t.Context(),
+			genai.ProviderOptionAPIKey("fake"),
+			genai.ProviderOptionPreloadedModels{
+				&baseten.Model{ID: model, SupportedFeatures: []string{"reasoning"}},
+			},
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err = c.ListModels(t.Context()); err != nil {
+			t.Fatal(err)
+		}
+		req = baseten.ChatRequest{}
+		if err = req.Init(msgs, model); err != nil {
+			t.Fatal(err)
+		}
+		if !req.ChatTemplateArgs.EnableThinking {
+			t.Error("EnableThinking = false after discovery, want true")
+		}
 	})
 }
 

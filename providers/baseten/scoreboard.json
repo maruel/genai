@@ -4,9 +4,10 @@
   "scenarios": [
     {
       "models": [
-        "zai-org/GLM-5"
+        "zai-org/GLM-5.1"
       ],
       "sota": true,
+      "reason": true,
       "in": {
         "text": {
           "inline": true
@@ -19,32 +20,30 @@
       },
       "GenSync": {
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
         "maxTokens": true,
         "stopSequence": true
       }
     },
     {
       "models": [
-        "MiniMaxAI/MiniMax-M2.5"
+        "deepseek-ai/DeepSeek-V4-Pro"
       ],
       "good": true,
       "reason": true,
@@ -65,6 +64,7 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
+        "json": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -75,6 +75,7 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
+        "json": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -103,7 +104,6 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
         "maxTokens": true
       },
       "GenStream": {
@@ -114,131 +114,17 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
         "maxTokens": true
       }
     },
     {
       "models": [
-        "deepseek-ai/DeepSeek-V3.1"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "moonshotai/Kimi-K2.5"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "zai-org/GLM-4.7"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
+        "moonshotai/Kimi-K2.5",
         "moonshotai/Kimi-K2.6",
-        "nvidia/Nemotron-120B-A12B"
+        "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B",
+        "nvidia/Nemotron-120B-A12B",
+        "zai-org/GLM-4.7",
+        "zai-org/GLM-5"
       ]
     }
   ]

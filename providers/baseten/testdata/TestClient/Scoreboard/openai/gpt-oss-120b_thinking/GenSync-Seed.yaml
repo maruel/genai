@@ -19,21 +19,34 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 1080
-        body: '{"id":"chatcmpl-7c4815d3c57244ceb240c7e909868a62","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":" need to respond according to policy. The user asks: \"Say hello. Use only one word.\"\n\nWe should respond with a single word that says hello, e.g., \"Hello!\" That''s one word (though exclamation maybe punctuation). Should be fine. No disallowed content. Provide just the word.","reasoning":" need to respond according to policy. The user asks: \"Say hello. Use only one word.\"\n\nWe should respond with a single word that says hello, e.g., \"Hello!\" That''s one word (though exclamation maybe punctuation). Should be fine. No disallowed content. Provide just the word."},"finish_reason":"stop"}],"created":1771458210,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":86,"completion_tokens":70,"total_tokens":156,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        content_length: 753
+        body: '{"id":"chatcmpl-43b9e0276a854cf781358a220f205005","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":" user says: \"Say hello. Use only one word.\"\n\nWe need to respond with a single word that says hello. Likely \"Hello\". That''s one word. Must be just \"Hello\". No extra punctuation maybe allowed but still one word. Provide exactly one word."},"finish_reason":"stop"}],"created":1780264256,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":86,"completion_tokens":62,"total_tokens":148,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Content-Length:
-                - "1080"
+                - "753"
             Content-Type:
                 - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
             Vary:
+                - Origin
                 - Origin
             Via:
                 - 1.1 google
             X-Baseten-Accepted-At:
-                - "1771458210329"
+                - "1780264255048"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvvndvx
+            X-Baseten-Request-Id:
+                - 54ca7019e8004be4970a3a8a638f61dc98582
+            X-Baseten-Session-Id:
+                - 54ca7019e8004be4970a3a8a638f61dc98582
         status: 200 OK
         code: 200
-        duration: 615ms
+        duration: 1.337s

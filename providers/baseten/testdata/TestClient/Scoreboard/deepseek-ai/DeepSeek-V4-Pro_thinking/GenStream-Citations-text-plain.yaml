@@ -1,0 +1,125 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 277
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":"assistant","refusal":null,"reasoning_content":"We"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":1,"total_tokens":37,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" are given"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":3,"total_tokens":39,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":3,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":": \"The capital"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":7,"total_tokens":43,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" of Qu"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":9,"total_tokens":45,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ackiland"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":11,"total_tokens":47,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":11,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" is Qu"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":13,"total_tokens":49,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":13,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ack. The Big"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":17,"total_tokens":53,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":17,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" Canard Stat"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":20,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":20,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ue is located"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":23,"total_tokens":59,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":23,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" in Qu"}}],"created":1780264612,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":25,"total_tokens":61,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":25,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ack.\n\n"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":27,"total_tokens":63,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":27,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"What is the capital"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":31,"total_tokens":67,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":31,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" of Qu"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":33,"total_tokens":69,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":33,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ackiland"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":35,"total_tokens":71,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":35,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"?\"\n\nThis"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":37,"total_tokens":73,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":37,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" is a straightforward"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":40,"total_tokens":76,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":40,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" question. The first"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":44,"total_tokens":80,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":44,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" sentence states"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":46,"total_tokens":82,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":46,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" that"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":47,"total_tokens":83,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":47,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" the capital of Qu"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":51,"total_tokens":87,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":51,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ackiland"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":53,"total_tokens":89,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":53,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" is Qu"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":55,"total_tokens":91,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":55,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ack. So"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":58,"total_tokens":94,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":58,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" the answer is Qu"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":62,"total_tokens":98,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":62,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":"ack. The"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":65,"total_tokens":101,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":65,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" information"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":66,"total_tokens":102,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":66,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" about the"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":68,"total_tokens":104,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":68,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" statue"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":69,"total_tokens":105,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":69,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" is irrelevant"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":71,"total_tokens":107,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":71,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" to"}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":72,"total_tokens":108,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":72,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null,"reasoning_content":" the question."}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":75,"total_tokens":111,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":75,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":"The capital of Quackiland","function_call":null,"tool_calls":null,"role":null,"refusal":null}}],"created":1780264613,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":82,"total_tokens":118,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":75,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":" is Quack.","function_call":null,"tool_calls":null,"role":null,"refusal":null}}],"created":1780264614,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":86,"total_tokens":122,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":75,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null},"finish_reason":"stop"}],"created":1780264614,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":87,"total_tokens":123,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":75,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-fd83e48f6dd74d3db1aedca32f142790","choices":[],"created":1780264614,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":87,"total_tokens":123,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":75,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264612100"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a310b72c3b144e77c352dc665
+            X-Baseten-Session-Id:
+                - 54ca7019e800a310b72c3b144e77c352dc665
+        status: 200 OK
+        code: 200
+        duration: 270ms

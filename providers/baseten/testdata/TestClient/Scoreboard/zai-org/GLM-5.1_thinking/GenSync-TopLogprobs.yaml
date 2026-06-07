@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 178
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.1","messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":true,"top_logprobs":2,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1559
+        body: '{"id":"chatcmpl-f898adff9df5450196d29c3830c4f3c8","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"1.  **Analyze the Request:**\n    *   Command: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Determine the appropriate response:**\n    *   The goal is to greet (\"say hello\").\n    *   The constraint is strictly one word.\n    *   \"Hello\" is the most direct, accurate, and compliant response.\n\n3.  **Evaluate alternatives:**\n    *   \"Hi\" (also one word, means hello)\n    *   \"Greetings\" (also one word)\n    *   \"Hey\" (also one word)\n    *   \"Hello\" is the exact word requested in the prompt (\"Say hello\").\n\n4.  **Format the output:**\n    *   Just the word, no punctuation that might be construed as extra (though a period or exclamation mark is standard, strictly speaking, just the word is safest, but standard orthography usually allows terminal punctuation. Let''s stick to just the word to be absolutely safe on the \"only one word\" constraint, or \"Hello!\" / \"Hello.\"). Let''s just output \"Hello\".\n\n5.  **Final verification:** \"Hello\" is exactly one word. It fulfills the command."},"finish_reason":"stop","stop_reason":154827}],"created":1780792778,"model":"zai-org/GLM-5.1","object":"chat.completion","usage":{"prompt_tokens":14,"completion_tokens":251,"total_tokens":265,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":3},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":249,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1559"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780792762524"
+            X-Baseten-Model-Id:
+                - q419k9kq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - womg10g
+            X-Baseten-Request-Id:
+                - 54ca7019e9f85209d7816b918acaef2ff99de
+            X-Baseten-Session-Id:
+                - 54ca7019e9f85209d7816b918acaef2ff99de
+        status: 200 OK
+        code: 200
+        duration: 15.611s

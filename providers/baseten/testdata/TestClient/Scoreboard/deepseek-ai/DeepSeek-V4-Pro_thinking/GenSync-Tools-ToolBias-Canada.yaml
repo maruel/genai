@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 578
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 649
+        body: '{"id":"chatcmpl-686c4ac5a8ca463b92375c4a2a158dd4","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-eab13d9c3e4741ca9dbaf94763c1e412","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant"},"finish_reason":"tool_calls"}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","object":"chat.completion","usage":{"prompt_tokens":354,"completion_tokens":32,"total_tokens":386,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":256},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "649"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264610411"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a2a6c728cb1ddde7072e455f0
+            X-Baseten-Session-Id:
+                - 54ca7019e800a2a6c728cb1ddde7072e455f0
+        status: 200 OK
+        code: 200
+        duration: 548ms

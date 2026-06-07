@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 897
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.1","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"chatcmpl-tool-4d75718d93c240b5bc62ea2c041553bb","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-4d75718d93c240b5bc62ea2c041553bb","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 551
+        body: '{"id":"chatcmpl-ff09211ffea845d8a2e825c161a7ee5c","choices":[{"index":0,"message":{"content":"363.89","role":"assistant","reasoning_content":"The tool returned 363.89."},"finish_reason":"stop","stop_reason":154827}],"created":1780792781,"model":"zai-org/GLM-5.1","object":"chat.completion","usage":{"prompt_tokens":56,"completion_tokens":14,"total_tokens":70,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":3},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "551"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780792781122"
+            X-Baseten-Model-Id:
+                - q419k9kq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - womg10g
+            X-Baseten-Request-Id:
+                - 54ca7019e9f8569427ad2874095596985e72f
+            X-Baseten-Session-Id:
+                - 54ca7019e9f8569427ad2874095596985e72f
+        status: 200 OK
+        code: 200
+        duration: 366ms

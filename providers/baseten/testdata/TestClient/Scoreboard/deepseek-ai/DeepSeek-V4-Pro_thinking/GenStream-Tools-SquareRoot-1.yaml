@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 622
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4-Pro","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-9ac7d716ecff4a6e81b677d8d5af27cf","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-d78ad5cec7584370a4be68dd74ca3b77","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}],"role":"assistant","refusal":null}}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":346,"completion_tokens":27,"total_tokens":373,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":256},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-9ac7d716ecff4a6e81b677d8d5af27cf","choices":[{"index":0,"delta":{"content":null,"function_call":null,"tool_calls":null,"role":null,"refusal":null},"finish_reason":"tool_calls"}],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":346,"completion_tokens":32,"total_tokens":378,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":256},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-9ac7d716ecff4a6e81b677d8d5af27cf","choices":[],"created":1780264610,"model":"deepseek-ai/DeepSeek-V4-Pro","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":346,"completion_tokens":32,"total_tokens":378,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":256},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780264609803"
+            X-Baseten-Model-Id:
+                - wx4g5r5q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvmz15j
+            X-Baseten-Request-Id:
+                - 54ca7019e800a280c7bedb6a00059e7de09cd
+            X-Baseten-Session-Id:
+                - 54ca7019e800a280c7bedb6a00059e7de09cd
+        status: 200 OK
+        code: 200
+        duration: 502ms

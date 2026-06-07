@@ -24,16 +24,21 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
+
+	"github.com/maruel/roundtrippers"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
 var scoreboardJSON []byte
+
+//go:embed models.json
+var modelsJSON []byte
 
 // Scoreboard for Baseten.
 func Scoreboard() scoreboard.Score {
@@ -272,6 +277,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if c.impl.PreloadedModels != nil {
+		cacheModelFeatures(c.impl.PreloadedModels)
 		return c.impl.PreloadedModels, nil
 	}
 	// https://docs.baseten.co/reference/inference-api/models
@@ -279,7 +285,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.impl.DoRequest(ctx, "GET", "https://inference.baseten.co/v1/models", nil, &resp); err != nil {
 		return nil, err
 	}
-	return resp.ToModels(), nil
+	mdls := resp.ToModels()
+	cacheModelFeatures(mdls)
+	return mdls, nil
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
@@ -367,6 +375,46 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 
 func processHeaders(h http.Header) []genai.RateLimit {
 	return nil
+}
+
+type modelsData struct {
+	Models map[string]modelData `json:"models"`
+}
+
+type modelData struct {
+	EnableThinking bool `json:"enable_thinking"`
+}
+
+var modelsEnableThinking sync.Map
+
+func init() {
+	data := modelsData{}
+	if err := json.Unmarshal(modelsJSON, &data); err != nil {
+		panic(fmt.Sprintf("failed to parse embedded models.json: %v", err))
+	}
+	for k, v := range data.Models {
+		modelsEnableThinking.Store(k, v.EnableThinking)
+	}
+}
+
+func cacheModelFeatures(mdls []genai.Model) {
+	for _, m := range mdls {
+		bm, ok := m.(*Model)
+		if !ok {
+			continue
+		}
+		if _, ok = modelsEnableThinking.Load(bm.ID); ok {
+			continue
+		}
+		if slices.Contains(bm.SupportedFeatures, "reasoning") {
+			modelsEnableThinking.Store(bm.ID, true)
+		}
+	}
+}
+
+func enableThinkingByDefault(model string) bool {
+	v, ok := modelsEnableThinking.Load(model)
+	return ok && v.(bool)
 }
 
 var _ genai.Provider = &Client{}

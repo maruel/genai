@@ -19,21 +19,34 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 875
-        body: '{"id":"chatcmpl-3c4b9caa4d5e4826b15aef1bd5d8c770","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-4c22e821c4df490ab394c1b1d8521780","type":"function","function":{"name":"square_root","arguments":"{\n  \"number\": 132413\n}"}}],"role":"assistant","reasoning_content":" user wants square root of 132413 using tool. Need to call function square_root with number 132413.","reasoning":" user wants square root of 132413 using tool. Need to call function square_root with number 132413."},"finish_reason":"tool_calls"}],"created":1771458218,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":157,"completion_tokens":50,"total_tokens":207,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        content_length: 746
+        body: '{"id":"chatcmpl-506ba2bd10e1435688d2d6ff7dded3d2","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-7233ebad2ade44cda677709699792ee7","type":"function","function":{"name":"square_root","arguments":"{\n  \"number\": 132413\n}"}}],"role":"assistant","reasoning_content":" need to call the square_root tool with number 132413. Then output only the result."},"finish_reason":"tool_calls"}],"created":1780264276,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":157,"completion_tokens":46,"total_tokens":203,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Content-Length:
-                - "875"
+                - "746"
             Content-Type:
                 - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
             Vary:
+                - Origin
                 - Origin
             Via:
                 - 1.1 google
             X-Baseten-Accepted-At:
-                - "1771458217657"
+                - "1780264274994"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvvndvx
+            X-Baseten-Request-Id:
+                - 54ca7019e80050c3278aa8d7ed33033b5d9b7
+            X-Baseten-Session-Id:
+                - 54ca7019e80050c3278aa8d7ed33033b5d9b7
         status: 200 OK
         code: 200
-        duration: 480ms
+        duration: 1.554s

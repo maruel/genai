@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.1","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2199
+        body: '{"id":"chatcmpl-62dd91cd76634b3c8da880a568ac013d","choices":[{"index":0,"message":{"content":"I''ll call the `best_country` tool right away to find out!","tool_calls":[{"id":"chatcmpl-tool-732bc9e4bd4f48b1a063b45164d5aa07","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant","reasoning_content":"The user wants me to call the best_country tool to determine which country is the best. Let me call it with the parameter they''re curious about. However, the tool only accepts \"Canada\" or \"USA\" as the country parameter, and it seems to specify a single country. The user is asking which one is the best, so I should call the tool. But the tool takes a \"country\" parameter - it''s not clear if this is asking me to input a country and it returns whether it''s the best, or if it just returns the best country. Let me just call it with one of the options. \n\nActually, looking at the tool more carefully, it''s called \"best_country\" and takes a \"country\" parameter with enum [\"Canada\", \"USA\"]. It seems like I need to provide a country value. Since the user is asking which is better, I think the tool is designed to tell us which country is the best. I''ll call it with \"Canada\" since that''s what the user seems to be leaning toward wondering about, but actually the tool might just return the best country regardless of input. Let me just call it with one of the values - I''ll try \"Canada\" since that''s the one the user is asking about.\n\nHmm, but actually, the tool description says \"A tool to specify the best country\" - so it seems like you provide a country and it tells you if it''s the best or something. Let me just call it and see what happens. I''ll call it with \"Canada\" since that''s the focus of the user''s question."},"finish_reason":"tool_calls","stop_reason":154829}],"created":1780792784,"model":"zai-org/GLM-5.1","object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":351,"total_tokens":562,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":209},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":325,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "2199"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780792781489"
+            X-Baseten-Model-Id:
+                - q419k9kq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - womg10g
+            X-Baseten-Request-Id:
+                - 54ca7019e9f856ab37d20acfe3b317042d3e6
+            X-Baseten-Session-Id:
+                - 54ca7019e9f856ab37d20acfe3b317042d3e6
+        status: 200 OK
+        code: 200
+        duration: 3.416s

@@ -19,21 +19,34 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 3490
-        body: '{"id":"chatcmpl-ffcd49745b7b47bdac896a3bc0f6992b","choices":[{"index":0,"message":{"content":"Canada is the world’s second‑largest country by total area, spanning roughly 9.98 million km² (3.85 million mi²) from the Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Circle. Despite its massive size, Canada’s population is about 38 million people (2024 estimate), giving it one of the lowest population densities of any major nation. The country is a constitutional monarchy and a federal parliamentary democracy, with English and French recognized as its two official languages and a rich mosaic of Indigenous, immigrant, and settler cultures.\n\n---\n\n## 1. Geography and Climate  \n\n| Region | Key Features | Climate |\n|--------|--------------|----------|\n| **Atlantic Canada** (Newfoundland & Labrador, Nova Scotia, Prince Edward Island, New Brunswick) | Rugged coastline, the Bay of Fundy (world’s highest tidal range), historic fishing villages. | Cool‑moderate maritime; heavy precipitation, especially in winter. |\n| **Central Canada** (Quebec, Ontario) | Great Lakes basin, Ottawa River, expansive boreal forest; Toronto and Montreal are Canada’s two largest cities. | Humid continental: hot, humid summers; cold, snowy winters. |\n| **Prairie Provinces** (Manitoba, Saskatchewan, Alberta) | Fertile plains, vast wheat fields, oil sands (Alberta), and the Canadian Shield’s edge. | Continental, with very cold winters and hot, dry summers; frequent thunderstorms. |\n| **West Coast** (British Columbia) | Pacific coastline, coastal rainforests, the Rocky Mountains, and the island of Vancouver. | Mild, rainy winter on the coast; interior valleys have more continental climate. |\n| **North** (Yukon, Northwest Territories, Nunavut) | Arctic tundra, permafrost, the Canadian Arctic Archipelago, the Northwest Passage. | Polar climate: long, extreme winters, short cool summers; northern lights (aurora borealis) are spectacular. |\n\nThe country’s physical geography is dominated by the **Canadian Shield**, a Precambrian granite formation covering roughly 50 % of Canada, rich in minerals such as nickel, copper, and gold. The **Rocky Mountains**, **Appalachian** range, and a network of thousands of lakes (including the Great Lakes, which contain about 20 % of the world’s fresh water) contribute to breathtaking scenery and support a thriving outdoor tourism industry.\n\n---\n\n## 2. History  \n\n### Indigenous Foundations  \n- Over 600 First Nations, Inuit, and Métis","role":"assistant","reasoning_content":" need to respond with a detailed description of Canada, starting with \"Canada is\". Should be comprehensive, covering geography, history, politics, economy, culture, etc. Follow OpenAI policy: no disallowed content. It''s fine. Provide detailed info.","reasoning":" need to respond with a detailed description of Canada, starting with \"Canada is\". Should be comprehensive, covering geography, history, politics, economy, culture, etc. Follow OpenAI policy: no disallowed content. It''s fine. Provide detailed info."},"finish_reason":"stop"}],"created":1771458216,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":90,"completion_tokens":588,"total_tokens":678,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        content_length: 2744
+        body: '{"id":"chatcmpl-cb8c38a38392408f8a08f2af572f3442","choices":[{"index":0,"message":{"content":"Canada is a vast and diverse country that stretches from the Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Circle. It is the world’s second‑largest nation by total land area (about 9.98 million km²) and the fourth‑largest by total area when including its extensive inland waters. Despite its size, Canada’s population is relatively modest—around 40 million people as of the most recent census—concentrated primarily along the southern border with the United States. Below is a comprehensive overview of the many facets that define Canada.\n\n---\n\n## 1. Geography & Natural Environment  \n\n| Feature | Details |\n|---------|---------|\n| **Regions** | **Atlantic Canada** (Newfoundland & Labrador, Nova Scotia, Prince Edward Island, New Brunswick); **Central Canada** (Quebec, Ontario); **The Prairies** (Manitoba, Saskatchewan, Alberta); **West Coast** (British Columbia); **Northern Territories** (Yukon, Northwest Territories, Nunavut). |\n| **Major Landforms** | Canadian Shield (ancient Precambrian rock covering ~50 % of the country), Appalachian Mountains, Rocky Mountains, Great Lakes, Hudson Bay, Arctic Archipelago. |\n| **Climate** | Ranges from subarctic and tundra in the north to humid continental in the south, with mild maritime influences on the Pacific and Atlantic coasts. |\n| **Biodiversity** | Home to iconic species such as the moose, beaver, polar bear, caribou, and Canada goose. Over 45 % of the land is protected in national parks and wildlife reserves. |\n| **Water Resources** | Contains the world’s largest freshwater system by volume (the Great Lakes) and hundreds of thousands of rivers and lakes, providing vital hydroelectric power and supporting fisheries. |\n\n---\n\n## 2. History  \n\n| Period | Key Events & Themes |\n|--------|---------------------|\n| **Indigenous Nations** | Over 600 distinct First Nations, Inuit, and Métis","role":"assistant","reasoning_content":" must respond to a user request to talk about Canada in great detail, starting with \"Canada is\". The user didn''t request disallowed content. So comply. Provide detailed description: geography, history, demographics, politics, economy, culture, etc. Ensure it starts with \"Canada is\". It''s fine."},"finish_reason":"stop"}],"created":1780264273,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":90,"completion_tokens":490,"total_tokens":580,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Content-Length:
-                - "3490"
+                - "2744"
             Content-Type:
                 - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
             Vary:
+                - Origin
                 - Origin
             Via:
                 - 1.1 google
             X-Baseten-Accepted-At:
-                - "1771458211142"
+                - "1780264258202"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvvndvx
+            X-Baseten-Request-Id:
+                - 54ca7019e8004ca9a72179988425938b496ff
+            X-Baseten-Session-Id:
+                - 54ca7019e8004ca9a72179988425938b496ff
         status: 200 OK
         code: 200
-        duration: 5.462s
+        duration: 15.077s

@@ -19,21 +19,34 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 82
-        body: '{"message":"returning log probs is not supported","type":"Bad Request","code":400}'
+        content_length: 743
+        body: '{"id":"chatcmpl-32a6b27ba3794821a1222fa7836d8ba0","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":" need to comply with developer. The user asks: \"Say hello. Use only one word.\" So we must respond with a single word that says hello, like \"Hello\". That''s one word. That is consistent. There''s no policy violation. Should be fine."},"finish_reason":"stop"}],"created":1780264257,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":86,"completion_tokens":60,"total_tokens":146,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
         headers:
             Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+                - h3=":443"; ma=2592000
             Content-Length:
-                - "82"
+                - "743"
             Content-Type:
                 - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
             Vary:
+                - Origin
                 - Origin
             Via:
                 - 1.1 google
             X-Baseten-Accepted-At:
-                - "1771458210944"
-        status: 400 Bad Request
-        code: 400
-        duration: 39ms
+                - "1780264256386"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvvndvx
+            X-Baseten-Request-Id:
+                - 54ca7019e8004c383700896d3f1c3d3634b3a
+            X-Baseten-Session-Id:
+                - 54ca7019e8004c383700896d3f1c3d3634b3a
+        status: 200 OK
+        code: 200
+        duration: 1.339s

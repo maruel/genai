@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.1","messages":[{"role":"user","content":"Say hello. Use only one word."}],"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1076
+        body: '{"id":"chatcmpl-135fb445921e489a8d3257a6a5283e6e","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"1.  **Analyze the Request:**\n    *   Command: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Determine the appropriate response:**\n    *   The word must be a greeting equivalent to \"hello\".\n    *   Options: \"Hello\", \"Hi\", \"Hey\", \"Greetings\".\n    *   \"Hello\" is the most direct and accurate response to \"Say hello\".\n\n3.  **Apply the constraint:**\n    *   Must be exactly one word. No punctuation (or minimal, but strictly one word). \"Hello\" is one word.\n\n4.  **Final Output Generation:**\n    *   Output: Hello"},"finish_reason":"stop","stop_reason":154827}],"created":1780792761,"model":"zai-org/GLM-5.1","object":"chat.completion","usage":{"prompt_tokens":14,"completion_tokens":141,"total_tokens":155,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":3},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":139,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1076"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780792759727"
+            X-Baseten-Model-Id:
+                - q419k9kq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - womg10g
+            X-Baseten-Request-Id:
+                - 54ca7019e9f8515b275e182532e8ea9929974
+            X-Baseten-Session-Id:
+                - 54ca7019e9f8515b275e182532e8ea9929974
+        status: 200 OK
+        code: 200
+        duration: 1.378s

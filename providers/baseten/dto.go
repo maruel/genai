@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -20,10 +20,24 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 )
+
+// GenOption controls Baseten-specific generation options.
+type GenOption struct {
+	// Thinking controls Baseten extended thinking for opt-in models like GLM, Kimi, and Nemotron.
+	//
+	// These models default to thinking enabled. Set Thinking to false to disable it.
+	Thinking bool
+}
+
+// Validate implements genai.Validatable.
+func (g *GenOption) Validate() error {
+	return nil
+}
 
 // ChatRequest is documented at https://docs.baseten.co/api-reference/openai-compatible
 type ChatRequest struct {
@@ -54,6 +68,9 @@ type ChatRequest struct {
 	ToolChoice        string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
 	Tools             []Tool  `json:"tools,omitzero"`
 	ParallelToolCalls bool    `json:"parallel_tool_calls,omitzero"`
+	ChatTemplateArgs  struct {
+		EnableThinking bool `json:"enable_thinking,omitzero"`
+	} `json:"chat_template_args,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -62,6 +79,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
+	c.ChatTemplateArgs.EnableThinking = enableThinkingByDefault(model)
 	var errs []error
 	var unsupported []string
 	sp := ""
@@ -70,6 +88,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case *GenOption:
+			c.ChatTemplateArgs.EnableThinking = v.Thinking
 		case *genai.GenOptionText:
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -371,7 +391,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 		return nil
 	}
 
-	s := ""
+	var s string
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
 	}
@@ -429,6 +449,7 @@ type ChatResponse struct {
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
+		StopReason   json.Number  `json:"stop_reason,omitzero"`
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`

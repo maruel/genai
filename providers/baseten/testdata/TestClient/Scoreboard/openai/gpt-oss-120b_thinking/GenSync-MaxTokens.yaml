@@ -19,21 +19,34 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 660
-        body: '{"id":"chatcmpl-7ffac34fcb444f589def6624bcc8bab0","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":" user wants an explanation of the theory of relativity in great detail. This","reasoning":" user wants an explanation of the theory of relativity in great detail. This"},"finish_reason":"length"}],"created":1771458211,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":88,"completion_tokens":16,"total_tokens":104,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        content_length: 574
+        body: '{"id":"chatcmpl-905364535a1f444bb30a2ad65a6babde","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":" need to provide a detailed explanation of the theory of relativity, likely both"},"finish_reason":"length"}],"created":1780264258,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":88,"completion_tokens":16,"total_tokens":104,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Content-Length:
-                - "660"
+                - "574"
             Content-Type:
                 - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
             Vary:
+                - Origin
                 - Origin
             Via:
                 - 1.1 google
             X-Baseten-Accepted-At:
-                - "1771458210983"
+                - "1780264257727"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvvndvx
+            X-Baseten-Request-Id:
+                - 54ca7019e8004c8cb70609acc12dc37bcb6f2
+            X-Baseten-Session-Id:
+                - 54ca7019e8004c8cb70609acc12dc37bcb6f2
         status: 200 OK
         code: 200
-        duration: 158ms
+        duration: 474ms

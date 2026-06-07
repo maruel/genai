@@ -19,21 +19,41 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 1829
-        body: '{"id":"chatcmpl-12e50cee51e4498d8f3d1f63a0dba281","choices":[{"index":0,"message":{"content":"apple","role":"assistant","reasoning_content":" user asks: \"What fruit is it? Reply with only one word.\" There''s no context about an image or description. The user is presumably asking ambiguous question. According to policy, we need to answer with a single word fruit name, but we don''t know which fruit. Should we ask for clarification? The user explicitly says \"Reply with only one word.\" So we must give a fruit name. Since ambiguous, maybe we can answer with a generic fruit like \"apple\". It''s a single word. It''s permissible. There''s no disallowed content. So answer \"Apple\". Should we capitalize? Probably lower case \"apple\". The instruction says only one word, so answer \"apple\".","reasoning":" user asks: \"What fruit is it? Reply with only one word.\" There''s no context about an image or description. The user is presumably asking ambiguous question. According to policy, we need to answer with a single word fruit name, but we don''t know which fruit. Should we ask for clarification? The user explicitly says \"Reply with only one word.\" So we must give a fruit name. Since ambiguous, maybe we can answer with a generic fruit like \"apple\". It''s a single word. It''s permissible. There''s no disallowed content. So answer \"Apple\". Should we capitalize? Probably lower case \"apple\". The instruction says only one word, so answer \"apple\"."},"finish_reason":"stop"}],"created":1771458226,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":89,"completion_tokens":144,"total_tokens":233,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        content_length: 101
+        body: |
+            {
+            	"error": {
+            		"code": 400,
+            		"message": "image_url is not supported",
+            		"type": "Bad Request"
+            	}
+            }
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Content-Length:
-                - "1829"
+                - "101"
             Content-Type:
                 - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
             Vary:
+                - Origin
                 - Origin
             Via:
                 - 1.1 google
             X-Baseten-Accepted-At:
-                - "1771458225183"
-        status: 200 OK
-        code: 200
-        duration: 1.442s
+                - "1780264294779"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qvvndvx
+            X-Baseten-Request-Id:
+                - 54ca7019e8005597f78308cd070c06afaf893
+            X-Baseten-Session-Id:
+                - 54ca7019e8005597f78308cd070c06afaf893
+        status: 400 Bad Request
+        code: 400
+        duration: 89ms

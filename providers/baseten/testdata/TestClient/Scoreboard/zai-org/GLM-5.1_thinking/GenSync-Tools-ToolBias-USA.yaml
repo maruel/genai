@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.1","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 898
+        body: '{"id":"chatcmpl-01eeed4e9be342a9aeacca726424ea8d","choices":[{"index":0,"message":{"content":"I''ll call the `best_country` tool to find out which country is the best!","tool_calls":[{"id":"chatcmpl-tool-d419d23f0b7349c2bd11615d89840f12","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}],"role":"assistant","reasoning_content":"The user wants me to call the best_country tool to determine which country is the best. Let me call it with the appropriate parameter."},"finish_reason":"tool_calls","stop_reason":154829}],"created":1780792785,"model":"zai-org/GLM-5.1","object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":56,"total_tokens":267,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":209},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":27,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "898"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1780792784906"
+            X-Baseten-Model-Id:
+                - q419k9kq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - womg10g
+            X-Baseten-Request-Id:
+                - 54ca7019e9f85780d72638177f8a148b91921
+            X-Baseten-Session-Id:
+                - 54ca7019e9f85780d72638177f8a148b91921
+        status: 200 OK
+        code: 200
+        duration: 949ms

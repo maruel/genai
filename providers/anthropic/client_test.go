@@ -649,7 +649,7 @@ func TestStructuredOutput(t *testing.T) {
 func TestEffort(t *testing.T) {
 	msgs := genai.Messages{genai.NewTextMessage("test")}
 	t.Run("valid", func(t *testing.T) {
-		for _, e := range []anthropic.Effort{"", anthropic.EffortLow, anthropic.EffortMedium, anthropic.EffortHigh, anthropic.EffortMax} {
+		for _, e := range []anthropic.Effort{"", anthropic.EffortLow, anthropic.EffortMedium, anthropic.EffortHigh, anthropic.EffortXHigh, anthropic.EffortMax} {
 			t.Run(string(e), func(t *testing.T) {
 				var req anthropic.ChatRequest
 				if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Effort: e}); err != nil {

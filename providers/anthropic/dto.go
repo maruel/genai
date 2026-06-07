@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -1617,6 +1618,7 @@ type EffortCapability struct {
 	Max       CapabilitySupport `json:"max"`
 	Medium    CapabilitySupport `json:"medium"`
 	Supported bool              `json:"supported"`
+	XHigh     CapabilitySupport `json:"xhigh"`
 }
 
 // ModelCapabilities describes model capability information.

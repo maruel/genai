@@ -139,6 +139,8 @@ const (
 	EffortMedium Effort = "medium"
 	// EffortHigh favors quality over latency.
 	EffortHigh Effort = "high"
+	// EffortXHigh favors coding and agentic work at higher token usage.
+	EffortXHigh Effort = "xhigh"
 	// EffortMax maximizes quality.
 	EffortMax Effort = "max"
 )
@@ -163,7 +165,7 @@ func (o *GenOptionText) Validate() error {
 		return fmt.Errorf("invalid ThinkingDisplay %q", o.ThinkingDisplay)
 	}
 	switch o.Effort {
-	case "", EffortLow, EffortMedium, EffortHigh, EffortMax:
+	case "", EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
 	default:
 		return fmt.Errorf("invalid Effort %q", o.Effort)
 	}

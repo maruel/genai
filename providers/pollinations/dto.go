@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/invopop/jsonschema"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -639,14 +640,18 @@ type ContentFilterResult struct {
 
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
-	Aliases           Strings  `json:"aliases"`
-	Description       string   `json:"description"`
-	InputModalities   []string `json:"input_modalities"`
-	Name              string   `json:"name"`
-	OutputModalities  []string `json:"output_modalities"`
-	PaidOnly          bool     `json:"paid_only"`
-	VideoCapabilities []string `json:"video_capabilities,omitzero"`
-	Pricing           struct {
+	Aliases            Strings  `json:"aliases"`
+	Brand              string   `json:"brand"`
+	Category           string   `json:"category"`
+	Description        string   `json:"description"`
+	InputModalities    []string `json:"input_modalities"`
+	MaxReferenceImages int64    `json:"max_reference_images,omitzero"`
+	Name               string   `json:"name"`
+	OutputModalities   []string `json:"output_modalities"`
+	PaidOnly           bool     `json:"paid_only"`
+	Title              string   `json:"title"`
+	VideoCapabilities  []string `json:"video_capabilities,omitzero"`
+	Pricing            struct {
 		AudioInputPrice        base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice       base.Float64 `json:"audio_output_price,omitzero"`
 		AudioTokenPrice        base.Float64 `json:"audio_token_price,omitzero"`
@@ -672,7 +677,7 @@ func (i *ImageModel) GetID() string {
 }
 
 func (i *ImageModel) String() string {
-	return i.Name + " in:text out:image"
+	return fmt.Sprintf("%s in:%s out:%s", i.Name, strings.Join(i.Inputs(), ","), strings.Join(i.Outputs(), ","))
 }
 
 // Context implements genai.Model.
@@ -685,6 +690,9 @@ func (i *ImageModel) Inputs() []string {
 	if len(i.InputModalities) != 0 {
 		return i.InputModalities
 	}
+	if i.MaxReferenceImages > 0 {
+		return []string{"image", "text"}
+	}
 	return []string{"text"}
 }
 
@@ -692,6 +700,9 @@ func (i *ImageModel) Inputs() []string {
 func (i *ImageModel) Outputs() []string {
 	if len(i.OutputModalities) != 0 {
 		return i.OutputModalities
+	}
+	if i.Category == "video" {
+		return []string{"video"}
 	}
 	return []string{"image"}
 }
@@ -710,20 +721,23 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 
 // TextModel is the provider-specific text model metadata.
 type TextModel struct {
-	Aliases          Strings  `json:"aliases"`
-	Audio            bool     `json:"audio"`
-	Community        bool     `json:"community"`
-	ContextLength    int64    `json:"context_length,omitzero"`
-	ContextWindow    int64    `json:"context_window,omitzero"`
-	Description      string   `json:"description"`
-	InputModalities  []string `json:"input_modalities"` // "text", "image", "audio"
-	IsSpecialized    bool     `json:"is_specialized,omitzero"`
-	MaxInputChars    int64    `json:"maxInputChars"`
-	Name             string   `json:"name"`
-	OriginalName     string   `json:"original_name"`
-	OutputModalities []string `json:"output_modalities"` // "text", "image", "audio"
-	PaidOnly         bool     `json:"paid_only"`
-	Pricing          struct {
+	Aliases            Strings  `json:"aliases"`
+	Audio              bool     `json:"audio"`
+	Brand              string   `json:"brand"`
+	Category           string   `json:"category"`
+	Community          bool     `json:"community"`
+	ContextLength      int64    `json:"context_length,omitzero"`
+	ContextWindow      int64    `json:"context_window,omitzero"`
+	Description        string   `json:"description"`
+	InputModalities    []string `json:"input_modalities"` // "text", "image", "audio"
+	IsSpecialized      bool     `json:"is_specialized,omitzero"`
+	MaxInputChars      int64    `json:"maxInputChars"`
+	MaxReferenceImages int64    `json:"max_reference_images,omitzero"`
+	Name               string   `json:"name"`
+	OriginalName       string   `json:"original_name"`
+	OutputModalities   []string `json:"output_modalities"` // "text", "image", "audio"
+	PaidOnly           bool     `json:"paid_only"`
+	Pricing            struct {
 		AudioInputPrice        base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice       base.Float64 `json:"audio_output_price,omitzero"`
 		AudioTokenPrice        base.Float64 `json:"audio_token_price,omitzero"`
@@ -746,6 +760,7 @@ type TextModel struct {
 	Search                 bool     `json:"search"`
 	SupportsSystemMessages bool     `json:"supportsSystemMessages"`
 	Tier                   string   `json:"tier"` // "anonymous", "seed", "flower"
+	Title                  string   `json:"title"`
 	Tools                  bool     `json:"tools"`
 	Uncensored             bool     `json:"uncensored"`
 	Vision                 bool     `json:"vision"`
@@ -758,21 +773,13 @@ func (t *TextModel) GetID() string {
 }
 
 func (t *TextModel) String() string {
-	var in []string
-	if len(t.InputModalities) != 0 {
-		in = make([]string, len(t.InputModalities))
-		copy(in, t.InputModalities)
-		sort.Strings(in)
-	}
+	in := append([]string(nil), t.Inputs()...)
+	sort.Strings(in)
 	if t.Tools {
 		in = append(in, "tools")
 	}
-	var out []string
-	if len(t.OutputModalities) != 0 {
-		out = make([]string, len(t.OutputModalities))
-		copy(out, t.OutputModalities)
-		sort.Strings(out)
-	}
+	out := append([]string(nil), t.Outputs()...)
+	sort.Strings(out)
 	return fmt.Sprintf("%s in:%s; out:%s; provider:%s; %s",
 		t.Name, strings.Join(in, ","), strings.Join(out, ","), t.Provider, t.Description)
 }
@@ -784,11 +791,17 @@ func (t *TextModel) Context() int64 {
 
 // Inputs returns the supported input modalities.
 func (t *TextModel) Inputs() []string {
+	if len(t.InputModalities) == 0 && t.MaxReferenceImages > 0 {
+		return []string{"image", "text"}
+	}
 	return t.InputModalities
 }
 
 // Outputs returns the supported output modalities.
 func (t *TextModel) Outputs() []string {
+	if len(t.OutputModalities) == 0 && t.Category == "text" {
+		return []string{"text"}
+	}
 	return t.OutputModalities
 }
 

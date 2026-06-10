@@ -397,7 +397,9 @@ func TestToolDef(t *testing.T) {
 			t.Fatal("GetInputSchema returned empty schema")
 		}
 		var m map[string]any
-		json.Unmarshal(schema, &m)
+		if err := json.Unmarshal(schema, &m); err != nil {
+			t.Fatal(err)
+		}
 		if _, ok := m["properties"].(map[string]any)["value"]; !ok {
 			t.Errorf("Expected schema to have 'value' property, got %s", schema)
 		}

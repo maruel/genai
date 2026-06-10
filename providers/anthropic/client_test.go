@@ -632,12 +632,16 @@ func TestStructuredOutput(t *testing.T) {
 			var m map[string]any
 			switch tc.wantSchema {
 			case "object":
-				json.Unmarshal(req.OutputConfig.Format.Schema, &m)
+				if err := json.Unmarshal(req.OutputConfig.Format.Schema, &m); err != nil {
+					t.Fatal(err)
+				}
 				if got := m["type"]; got != "object" {
 					t.Errorf("Schema.type = %q, want \"object\"", got)
 				}
 			case "full":
-				json.Unmarshal(req.OutputConfig.Format.Schema, &m)
+				if err := json.Unmarshal(req.OutputConfig.Format.Schema, &m); err != nil {
+					t.Fatal(err)
+				}
 				if got := m["type"]; got != "object" {
 					t.Errorf("Schema.type = %q, want \"object\"", got)
 				}

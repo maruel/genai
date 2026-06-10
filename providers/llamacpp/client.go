@@ -27,12 +27,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json

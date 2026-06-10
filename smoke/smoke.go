@@ -20,13 +20,14 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/maruel/httpjson"
+	"golang.org/x/sync/errgroup"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
-	"golang.org/x/sync/errgroup"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 )
 
 // ProviderFactory is a function that returns a provider instance. The name represents the sub-test name.

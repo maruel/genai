@@ -17,13 +17,14 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/roundtrippers"
 )
 
 // Not implementing TestClient_AllModels since we need to preload Ollama models. Can be done later.

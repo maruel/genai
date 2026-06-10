@@ -14,6 +14,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 )

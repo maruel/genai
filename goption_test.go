@@ -8,10 +8,9 @@ package genai
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
-
-	"github.com/invopop/jsonschema"
 )
 
 func TestModalities(t *testing.T) {
@@ -167,11 +166,6 @@ func TestGenOptionText(t *testing.T) {
 					errMsg: "field DecodeAs: must be a pointer to a struct, got struct {}",
 				},
 				{
-					name:   "Invalid DecodeAs jsonschema.Schema",
-					in:     GenOptionText{DecodeAs: &jsonschema.Schema{}},
-					errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
-				},
-				{
 					name:   "Invalid DecodeAs string",
 					in:     GenOptionText{DecodeAs: "string"},
 					errMsg: "field DecodeAs: must be a pointer to a struct, got string",
@@ -283,7 +277,7 @@ func TestToolDef(t *testing.T) {
 					in: ToolDef{
 						Name:                "tool",
 						Description:         "do stuff",
-						InputSchemaOverride: &jsonschema.Schema{},
+						InputSchemaOverride: json.RawMessage("{}"),
 					},
 				},
 			}
@@ -395,12 +389,17 @@ func TestToolDef(t *testing.T) {
 			Description: "A test tool",
 			Callback:    func(ctx context.Context, input *testInput) (string, error) { return "", nil },
 		}
-		schema := tool.GetInputSchema()
-		if schema == nil {
-			t.Fatal("GetInputSchema returned nil")
+		schema, err := tool.GetInputSchema()
+		if err != nil {
+			t.Fatal(err)
 		}
-		if _, ok := schema.Properties.Get("value"); !ok {
-			t.Errorf("Expected schema to have 'value' property, got %+v", schema.Properties)
+		if len(schema) == 0 {
+			t.Fatal("GetInputSchema returned empty schema")
+		}
+		var m map[string]any
+		json.Unmarshal(schema, &m)
+		if _, ok := m["properties"].(map[string]any)["value"]; !ok {
+			t.Errorf("Expected schema to have 'value' property, got %s", schema)
 		}
 	})
 }
@@ -487,11 +486,6 @@ func TestValidateReflectedToJSON(t *testing.T) {
 			in     any
 			errMsg string
 		}{
-			{
-				name:   "jsonschema.Schema pointer",
-				in:     &jsonschema.Schema{},
-				errMsg: "must be an actual struct serializable as JSON, not a *jsonschema.Schema",
-			},
 			{
 				name:   "non-pointer struct",
 				in:     testStruct{},

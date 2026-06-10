@@ -17,7 +17,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 )
@@ -32,8 +31,8 @@ type ChatRequest struct {
 		Mode string `json:"mode,omitzero"` // "fast", "accurate", "off"; default "fast" for command-r7b-12-2024 and command-a-03-2025, else "accurate".
 	} `json:"citation_options,omitzero"`
 	ResponseFormat struct {
-		Type       string             `json:"type,omitzero"` // "text", "json_object"
-		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+		Type       string           `json:"type,omitzero"` // "text", "json_object"
+		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
 	MaxTokens        int64    `json:"max_tokens,omitzero"`
@@ -405,9 +404,9 @@ type CitationSource struct {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
-		Description string             `json:"description,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
+		Description string           `json:"description,omitzero"`
 	} `json:"function,omitzero"`
 }
 

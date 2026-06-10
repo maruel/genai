@@ -14,10 +14,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/httprecord"
 	"github.com/maruel/genai/providers/huggingface"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func ExampleNew_hTTP_record() {

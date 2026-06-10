@@ -22,12 +22,13 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/maruel/roundtrippers"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 )
 
 //go:embed scoreboard.json

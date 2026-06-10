@@ -18,14 +18,15 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/maruel/roundtrippers"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/roundtrippers"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func getClientInner(t *testing.T, model string, modalities genai.Modalities, preloadedModels []genai.Model, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {

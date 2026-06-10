@@ -22,8 +22,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -148,10 +146,10 @@ type ChatRequest struct {
 	ResponseFormat  struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
-			Description string             `json:"description,omitzero"`
-			Name        string             `json:"name,omitzero"`
-			Schema      *jsonschema.Schema `json:"schema,omitzero"`
-			Strict      bool               `json:"strict,omitzero"`
+			Description string           `json:"description,omitzero"`
+			Name        string           `json:"name,omitzero"`
+			Schema      genai.JSONSchema `json:"schema,omitzero"`
+			Strict      bool             `json:"strict,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	ServiceTier   ServiceTier `json:"service_tier,omitzero"`
@@ -194,10 +192,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.ReasoningEffort = v.ReasoningEffort
 			c.ServiceTier = v.ServiceTier
 		case *genai.GenOptionText:
-			unsupported = append(unsupported, c.initOptionsText(v, model)...)
+			u, err := c.initOptionsText(v, model)
+			unsupported = append(unsupported, u...)
+			if err != nil {
+				errs = append(errs, err)
+			}
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			c.initOptionsTools(v, model)
+			if err := c.initOptionsTools(v, model); err != nil {
+				errs = append(errs, err)
+			}
 		case *genai.GenOptionWeb:
 			if v.Search {
 				c.WebSearchOptions = &WebSearchOptions{
@@ -299,7 +303,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) []string {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) ([]string, error) {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	// TODO: This is not great.
@@ -329,14 +333,18 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) []st
 		// OpenAI requires a name.
 		c.ResponseFormat.JSONSchema.Name = "response"
 		c.ResponseFormat.JSONSchema.Strict = true
-		c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		if err != nil {
+			return unsupported, err
+		}
+		c.ResponseFormat.JSONSchema.Schema = s
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
-	return unsupported
+	return unsupported, nil
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) error {
 	if len(v.Tools) != 0 {
 		// TODO: Determine exactly which models do not support this.
 		if model != "o4-mini" {
@@ -355,11 +363,14 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) {
 			c.Tools[i].Type = "function"
 			c.Tools[i].Function.Name = t.Name
 			c.Tools[i].Function.Description = t.Description
-			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-				c.Tools[i].Function.Parameters = t.GetInputSchema()
+			s, err := t.GetInputSchema()
+			if err != nil {
+				return err
 			}
+			c.Tools[i].Function.Parameters = s
 		}
 	}
+	return nil
 }
 
 // WebSearchOptions is "documented" at https://platform.openai.com/docs/guides/tools-web-search
@@ -795,10 +806,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Description string             `json:"description,omitzero"`
-		Name        string             `json:"name,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
-		Strict      bool               `json:"strict,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
+		Strict      bool             `json:"strict,omitzero"`
 	} `json:"function,omitzero"`
 }
 

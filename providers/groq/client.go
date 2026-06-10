@@ -25,11 +25,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -79,10 +80,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
 		case *genai.GenOptionText:
-			unsupported = append(unsupported, c.initOptionsText(v)...)
+			u, err := c.initOptionsText(v)
+			unsupported = append(unsupported, u...)
+			if err != nil {
+				errs = append(errs, err)
+			}
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			c.initOptionsTools(v)
+			if err := c.initOptionsTools(v); err != nil {
+				errs = append(errs, err)
+			}
 		case *genai.GenOptionWeb:
 			if v.Search {
 				// https://console.groq.com/docs/browser-search
@@ -140,7 +147,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []string {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, error) {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	c.Temperature = v.Temperature
@@ -154,15 +161,18 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []string {
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
 		c.ResponseFormat.Type = "json_schema"
-		c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
-		c.ResponseFormat.JSONSchema.Extras = map[string]any{"name": "response"}
+		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		if err != nil {
+			return unsupported, err
+		}
+		c.ResponseFormat.JSONSchema = append(s[:len(s)-1], `,"name":"response"}`...)
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
-	return unsupported
+	return unsupported, nil
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) error {
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -178,11 +188,14 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 			c.Tools[i].Type = "function"
 			c.Tools[i].Function.Name = t.Name
 			c.Tools[i].Function.Description = t.Description
-			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-				c.Tools[i].Function.Parameters = t.GetInputSchema()
+			s, err := t.GetInputSchema()
+			if err != nil {
+				return err
 			}
+			c.Tools[i].Function.Parameters = s
 		}
 	}
+	return nil
 }
 
 // From must be called with at most one ToolCallResults.

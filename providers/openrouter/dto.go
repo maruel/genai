@@ -17,8 +17,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -69,8 +67,8 @@ type ChatRequest struct {
 	Modalities          []string  `json:"modalities,omitzero"`
 	PresencePenalty     float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ResponseFormat      struct {
-		Type       string             `json:"type,omitzero"` // "json_object", "json_schema"
-		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+		Type       string           `json:"type,omitzero"` // "json_object", "json_schema"
+		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Reasoning     *Reasoning           `json:"reasoning,omitzero"`
 	Route         Route                `json:"route,omitzero"`
@@ -344,9 +342,9 @@ const (
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

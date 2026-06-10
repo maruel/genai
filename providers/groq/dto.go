@@ -11,8 +11,7 @@ package groq
 import (
 	"encoding/json"
 
-	"github.com/invopop/jsonschema"
-
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 )
 
@@ -55,8 +54,8 @@ type ChatRequest struct {
 	PresencePenalty   float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ReasoningFormat   ReasoningFormat `json:"reasoning_format,omitzero"`
 	ResponseFormat    struct {
-		Type       string             `json:"type,omitzero"` // "json_object", "json_schema"
-		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+		Type       string           `json:"type,omitzero"` // "json_object", "json_schema"
+		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	SearchSettings struct {
 		Country        string   `json:"country,omitzero"`
@@ -158,9 +157,9 @@ const (
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

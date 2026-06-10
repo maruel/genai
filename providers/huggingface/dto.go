@@ -19,8 +19,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -37,8 +35,8 @@ type ChatRequest struct {
 	MaxTokens        int64     `json:"max_tokens,omitzero"`
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ResponseFormat   struct {
-		Type       string             `json:"type,omitzero"` // "text", "json_object" or "json_schema".
-		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+		Type       string           `json:"type,omitzero"` // "text", "json_object" or "json_schema".
+		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
 	Stop          []string `json:"stop,omitzero"` // Up to 4
@@ -91,9 +89,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
-				// Huggingface complains otherwise.
-				c.ResponseFormat.JSONSchema.Extras = map[string]any{"name": "response"}
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					// Huggingface complains otherwise.
+					c.ResponseFormat.JSONSchema = append(s[:len(s)-1], `,"name":"response"}`...)
+				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -112,9 +114,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Arguments = t.InputSchemaOverride; c.Tools[i].Function.Arguments == nil {
-						c.Tools[i].Function.Arguments = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Arguments = s
 				}
 			}
 		case genai.GenOptionSeed:
@@ -357,9 +361,9 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Arguments   *jsonschema.Schema `json:"arguments,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Arguments   genai.JSONSchema `json:"arguments,omitzero"`
 	} `json:"function,omitzero"`
 }
 

@@ -20,8 +20,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -39,16 +37,16 @@ type ChatRequest struct {
 	PresencePenalty   float64   `json:"presence_penalty,omitzero"`   // [0, 2.0]
 	RepetitionPenalty float64   `json:"repetition_penalty,omitzero"` // [0, 2.0]
 	ResponseFormat    struct {
-		Type       string             `json:"type,omitzero"` // json_object, json_schema
-		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+		Type       string           `json:"type,omitzero"` // json_object, json_schema
+		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	GuidedJSON  *jsonschema.Schema `json:"guided_json,omitzero"`
-	Seed        int64              `json:"seed,omitzero"`
-	Stream      bool               `json:"stream,omitzero"`
-	Temperature float64            `json:"temperature,omitzero"` // [0, 5]
-	Tools       []Tool             `json:"tools,omitzero"`
-	TopK        int64              `json:"top_k,omitzero"` // [1, 50]
-	TopP        float64            `json:"top_p,omitzero"` // [0, 2.0]
+	GuidedJSON  genai.JSONSchema `json:"guided_json,omitzero"`
+	Seed        int64            `json:"seed,omitzero"`
+	Stream      bool             `json:"stream,omitzero"`
+	Temperature float64          `json:"temperature,omitzero"` // [0, 5]
+	Tools       []Tool           `json:"tools,omitzero"`
+	TopK        int64            `json:"top_k,omitzero"` // [1, 50]
+	TopP        float64          `json:"top_p,omitzero"` // [0, 2.0]
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -78,7 +76,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.ResponseFormat.JSONSchema = s
+				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -93,9 +96,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 				}
 			}
 		case genai.GenOptionSeed:
@@ -247,9 +252,9 @@ func (m *Message) From(in *genai.Message) error {
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
-		Description string             `json:"description"`
-		Name        string             `json:"name"`
-		Parameters  *jsonschema.Schema `json:"parameters"`
+		Description string           `json:"description"`
+		Name        string           `json:"name"`
+		Parameters  genai.JSONSchema `json:"parameters"`
 	} `json:"function"`
 }
 
@@ -270,8 +275,8 @@ type prompt struct {
 	Raw               bool    `json:"raw,omitzero"`                // Do not apply chat template
 	RepetitionPenalty float64 `json:"repetition_penalty,omitzero"` // [0, 2.0]
 	ResponseFormat    struct {
-		Type       string              `json:"type,omitzero"` // json_object, json_schema
-		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+		Type       string           `json:"type,omitzero"` // json_object, json_schema
+		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed        int64   `json:"seed,omitzero"`
 	Stream      bool    `json:"stream,omitzero"`

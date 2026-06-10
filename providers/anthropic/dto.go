@@ -26,8 +26,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -65,8 +63,8 @@ type OutputConfig struct {
 
 // OutputFormat is documented at https://docs.anthropic.com/en/api/messages#body-output-config-format
 type OutputFormat struct {
-	Type   string             `json:"type,omitzero"`
-	Schema *jsonschema.Schema `json:"schema,omitzero"`
+	Type   string           `json:"type,omitzero"`
+	Schema genai.JSONSchema `json:"schema,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -141,9 +139,15 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				c.Thinking.Display = v.ThinkingDisplay
 			}
 		case *genai.GenOptionText:
-			unsupported = append(unsupported, c.initOptionsText(v)...)
+			u, err := c.initOptionsText(v)
+			unsupported = append(unsupported, u...)
+			if err != nil {
+				errs = append(errs, err)
+			}
 		case *genai.GenOptionTools:
-			c.initOptionsTools(v)
+			if err := c.initOptionsTools(v); err != nil {
+				errs = append(errs, err)
+			}
 		case *genai.GenOptionWeb:
 			c.initOptionsWeb(v)
 		default:
@@ -186,7 +190,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []string {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, error) {
 	var unsupported []string
 	if v.TopLogprobs > 0 {
 		unsupported = append(unsupported, "GenOptionText.TopLogprobs")
@@ -204,20 +208,24 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []string {
 	c.TopK = v.TopK
 	c.StopSequences = v.Stop
 	if v.DecodeAs != nil {
+		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		if err != nil {
+			return unsupported, err
+		}
 		c.OutputConfig.Format = OutputFormat{
 			Type:   "json_schema",
-			Schema: internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs)),
+			Schema: s,
 		}
 	} else if v.ReplyAsJSON {
 		c.OutputConfig.Format = OutputFormat{
 			Type:   "json_schema",
-			Schema: &jsonschema.Schema{Type: "object"},
+			Schema: json.RawMessage(`{"type":"object"}`),
 		}
 	}
-	return unsupported
+	return unsupported, nil
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) error {
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -234,11 +242,14 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 			// c.Tools[i].Type = "custom"
 			c.Tools[i].Name = t.Name
 			c.Tools[i].Description = t.Description
-			if c.Tools[i].InputSchema = t.InputSchemaOverride; c.Tools[i].InputSchema == nil {
-				c.Tools[i].InputSchema = t.GetInputSchema()
+			s, err := t.GetInputSchema()
+			if err != nil {
+				return err
 			}
+			c.Tools[i].InputSchema = s
 		}
 	}
+	return nil
 }
 
 func (c *ChatRequest) initOptionsWeb(v *genai.GenOptionWeb) {
@@ -1207,8 +1218,8 @@ type ToolChoice struct {
 type Tool struct {
 	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "text_editor_20250429", "text_editor_20250728", "web_search_20250305", "web_fetch_20250910"
 	// Type == "custom"
-	Description string             `json:"description,omitzero"`
-	InputSchema *jsonschema.Schema `json:"input_schema,omitzero"`
+	Description string           `json:"description,omitzero"`
+	InputSchema genai.JSONSchema `json:"input_schema,omitzero"`
 
 	// Type == "custom": tool name
 	// Type == "computer_20241022", "computer_20250124": "computer"

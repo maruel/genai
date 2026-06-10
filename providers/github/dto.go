@@ -9,7 +9,7 @@
 package github
 
 import (
-	"github.com/invopop/jsonschema"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 )
 
@@ -35,8 +35,8 @@ type ChatRequest struct {
 }
 
 type responseFormat struct {
-	Type       string             `json:"type"`
-	JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
+	Type       string           `json:"type"`
+	JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 }
 
 // Message is a provider-specific message.
@@ -88,10 +88,10 @@ type Tool struct {
 
 // Function is a provider-specific function definition.
 type Function struct {
-	Name        string             `json:"name"`
-	Description string             `json:"description,omitzero"`
-	Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
-	Strict      bool               `json:"strict,omitzero"`
+	Name        string           `json:"name"`
+	Description string           `json:"description,omitzero"`
+	Parameters  genai.JSONSchema `json:"parameters,omitzero"`
+	Strict      bool             `json:"strict,omitzero"`
 }
 
 // ToolCall is a provider-specific tool call.

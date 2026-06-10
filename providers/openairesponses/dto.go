@@ -23,8 +23,6 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -147,11 +145,11 @@ type Response struct {
 	Temperature      float64 `json:"temperature,omitzero"`
 	Text             struct {
 		Format struct {
-			Type        string             `json:"type"` // "text", "json_schema", "json_object"
-			Name        string             `json:"name,omitzero"`
-			Description string             `json:"description,omitzero"`
-			Schema      *jsonschema.Schema `json:"schema,omitzero"`
-			Strict      bool               `json:"strict,omitzero"`
+			Type        string           `json:"type"` // "text", "json_schema", "json_object"
+			Name        string           `json:"name,omitzero"`
+			Description string           `json:"description,omitzero"`
+			Schema      genai.JSONSchema `json:"schema,omitzero"`
+			Strict      bool             `json:"strict,omitzero"`
 		} `json:"format"`
 		Verbosity string `json:"verbosity,omitzero"` // "low", "medium", "high"
 	} `json:"text,omitzero"`
@@ -359,7 +357,12 @@ func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 		// OpenAI requires a name.
 		r.Text.Format.Name = "response"
 		r.Text.Format.Strict = true
-		r.Text.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		if err != nil {
+			errs = append(errs, err)
+		} else {
+			r.Text.Format.Schema = s
+		}
 	} else if v.ReplyAsJSON {
 		r.Text.Format.Type = "json_object"
 	}
@@ -386,9 +389,11 @@ func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
 			r.Tools[i].Type = "function"
 			r.Tools[i].Name = t.Name
 			r.Tools[i].Description = t.Description
-			if r.Tools[i].Parameters = t.InputSchemaOverride; r.Tools[i].Parameters == nil {
-				r.Tools[i].Parameters = t.GetInputSchema()
+			s, err := t.GetInputSchema()
+			if err != nil {
+				errs = append(errs, err)
 			}
+			r.Tools[i].Parameters = s
 		}
 	}
 	return errs
@@ -408,11 +413,11 @@ type Tool struct {
 	Type string `json:"type,omitzero"`
 
 	// Type == "function"
-	Name              string             `json:"name,omitzero"`
-	Description       string             `json:"description,omitzero"`
-	Parameters        *jsonschema.Schema `json:"parameters,omitzero"`
-	Strict            bool               `json:"strict,omitzero"`
-	ReturnTokenBudget string             `json:"return_token_budget,omitzero"` // "default"
+	Name              string           `json:"name,omitzero"`
+	Description       string           `json:"description,omitzero"`
+	Parameters        genai.JSONSchema `json:"parameters,omitzero"`
+	Strict            bool             `json:"strict,omitzero"`
+	ReturnTokenBudget string           `json:"return_token_budget,omitzero"` // "default"
 
 	// Type == "file_search"
 	FileSearchVectorStoreIDs []string `json:"vector_store_ids,omitzero"`

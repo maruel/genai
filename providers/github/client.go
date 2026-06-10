@@ -25,11 +25,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -73,9 +74,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
-				schema := internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
-				schema.Extras = map[string]any{"name": "response"}
-				c.ResponseFormat = responseFormat{Type: "json_schema", JSONSchema: schema}
+				schema, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					raw := append(schema[:len(schema)-1], `,"name":"response"}`...)
+					c.ResponseFormat = responseFormat{Type: "json_schema", JSONSchema: raw}
+				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat = responseFormat{Type: "json_object"}
 			}
@@ -94,9 +99,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 				}
 			}
 		case genai.GenOptionSeed:

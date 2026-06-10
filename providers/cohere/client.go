@@ -23,11 +23,12 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 //go:embed scoreboard.json
@@ -70,7 +71,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.StopSequences = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.ResponseFormat.JSONSchema = s
+				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -89,9 +95,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 				}
 			}
 		case genai.GenOptionSeed:

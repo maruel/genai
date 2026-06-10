@@ -24,11 +24,12 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/maruel/httpjson"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/myrecorder"
-	"github.com/maruel/httpjson"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 // Records manages HTTP recording/playback for tests.

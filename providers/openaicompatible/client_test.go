@@ -13,11 +13,12 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
-	"github.com/maruel/roundtrippers"
 )
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.

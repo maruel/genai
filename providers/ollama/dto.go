@@ -23,8 +23,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -65,7 +63,7 @@ type ChatRequest struct {
 // doesn't use llama-server's native JSON support at all.
 type ChatRequestFormat struct {
 	Type   string
-	Schema *jsonschema.Schema
+	Schema genai.JSONSchema
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -195,7 +193,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				c.Logprobs = true
 			}
 			if v.DecodeAs != nil {
-				c.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.Format.Schema = s
+				}
 			} else if v.ReplyAsJSON {
 				c.Format.Type = "json"
 			}
@@ -212,9 +215,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 				}
 			}
 		case *GenOptionText:
@@ -448,9 +453,9 @@ func (t *ToolCall) To(out *genai.ToolCall) error {
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Description string             `json:"description,omitzero"`
-		Name        string             `json:"name,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

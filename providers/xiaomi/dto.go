@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -147,23 +146,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				}
 				c.Tools = make([]ToolOrSearch, len(v.Tools))
 				for i, t := range v.Tools {
-					fn := Tool{
-						Type: "function",
-						Function: struct {
-							Name        string             `json:"name,omitzero"`
-							Description string             `json:"description,omitzero"`
-							Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
-							Strict      bool               `json:"strict,omitzero"`
-						}{
-							Name:        t.Name,
-							Description: t.Description,
-							Strict:      true,
-							Parameters:  t.InputSchemaOverride,
-						},
+					fn := Tool{Type: "function"}
+					fn.Function.Name = t.Name
+					fn.Function.Description = t.Description
+					fn.Function.Strict = true
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
-					if fn.Function.Parameters == nil {
-						fn.Function.Parameters = t.GetInputSchema()
-					}
+					fn.Function.Parameters = s
 					c.Tools[i] = ToolOrSearch{Tool: &fn}
 				}
 			}
@@ -538,10 +529,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
-		Strict      bool               `json:"strict,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
+		Strict      bool             `json:"strict,omitzero"`
 	} `json:"function"`
 }
 

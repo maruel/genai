@@ -17,7 +17,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -36,10 +35,10 @@ type ChatRequest struct {
 	ResponseFormat struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
-			Name        string             `json:"name,omitzero"`
-			Description string             `json:"description,omitzero"`
-			Strict      bool               `json:"strict,omitzero"`
-			Schema      *jsonschema.Schema `json:"schema,omitzero"`
+			Name        string           `json:"name,omitzero"`
+			Description string           `json:"description,omitzero"`
+			Strict      bool             `json:"strict,omitzero"`
+			Schema      genai.JSONSchema `json:"schema,omitzero"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Tools []Tool `json:"tools,omitzero"`
@@ -104,7 +103,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				// Mistral requires a name.
 				c.ResponseFormat.JSONSchema.Name = "response"
 				c.ResponseFormat.JSONSchema.Strict = true
-				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.ResponseFormat.JSONSchema.Schema = s
+				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -123,9 +127,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 					// This costs a lot more.
 					c.Tools[i].Function.Strict = true
 				}
@@ -387,10 +393,10 @@ const (
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Strict      bool               `json:"strict,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Strict      bool             `json:"strict,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

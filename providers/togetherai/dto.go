@@ -19,8 +19,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -48,8 +46,8 @@ type ChatRequest struct {
 	LogitBias                     map[string]float64 `json:"logit_bias,omitzero"`
 	Seed                          int64              `json:"seed,omitzero"`
 	ResponseFormat                struct {
-		Type   string             `json:"type,omitzero"` // "json_object", "json_schema" according to python library.
-		Schema *jsonschema.Schema `json:"schema,omitzero"`
+		Type   string           `json:"type,omitzero"` // "json_object", "json_schema" according to python library.
+		Schema genai.JSONSchema `json:"schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Tools       []Tool `json:"tools,omitzero"`
 	ToolChoice  string `json:"tool_choice,omitzero"`  // "auto" or a []Tool
@@ -87,7 +85,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.DecodeAs != nil {
 				// Warning: using a model small may fail.
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.ResponseFormat.Schema = s
+				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
@@ -109,9 +112,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 				}
 			}
 		case genai.GenOptionSeed:
@@ -426,9 +431,9 @@ const (
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

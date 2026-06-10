@@ -17,8 +17,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -79,7 +77,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			errs = append(errs, e...)
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			c.initOptionsTools(v)
+			if err := c.initOptionsTools(v); err != nil {
+				errs = append(errs, err)
+			}
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
@@ -151,7 +151,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) error {
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -166,11 +166,14 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 			c.Tools[i].Type = "function"
 			c.Tools[i].Function.Name = t.Name
 			c.Tools[i].Function.Description = t.Description
-			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-				c.Tools[i].Function.Parameters = t.GetInputSchema()
+			s, err := t.GetInputSchema()
+			if err != nil {
+				return err
 			}
+			c.Tools[i].Function.Parameters = s
 		}
 	}
+	return nil
 }
 
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
@@ -402,9 +405,9 @@ const (
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string             `json:"name,omitzero"`
-		Description string             `json:"description,omitzero"`
-		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Name        string           `json:"name,omitzero"`
+		Description string           `json:"description,omitzero"`
+		Parameters  genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 

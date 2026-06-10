@@ -17,7 +17,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -50,7 +49,7 @@ type ChatRequest struct {
 	ResponseFormat struct {
 		Type       string `json:"type,omitzero"` // "json_schema", "regex"
 		JSONSchema struct {
-			Schema *jsonschema.Schema `json:"schema,omitzero"`
+			Schema genai.JSONSchema `json:"schema,omitzero"`
 		} `json:"json_schema,omitzero"`
 		Regex struct {
 			Regex string `json:"regex,omitzero"`
@@ -151,7 +150,12 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	if v.DecodeAs != nil {
 		// Requires Tier 3 to work in practice.
 		c.ResponseFormat.Type = "json_schema"
-		c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		if err != nil {
+			errs = append(errs, err)
+		} else {
+			c.ResponseFormat.JSONSchema.Schema = s
+		}
 	} else if v.ReplyAsJSON {
 		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
 	}

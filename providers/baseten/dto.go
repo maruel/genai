@@ -19,8 +19,6 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/invopop/jsonschema"
-
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -51,9 +49,9 @@ type ChatRequest struct {
 	ResponseFormat      struct {
 		Type       string `json:"type"` // "json_object", "json_schema"
 		JSONSchema struct {
-			Name   string             `json:"name"`
-			Schema *jsonschema.Schema `json:"schema"`
-			Strict bool               `json:"strict"`
+			Name   string           `json:"name"`
+			Schema genai.JSONSchema `json:"schema"`
+			Strict bool             `json:"strict"`
 		} `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
 	Seed          int64    `json:"seed,omitzero"`
@@ -103,7 +101,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.ResponseFormat.JSONSchema.Schema = s
+				}
 				c.ResponseFormat.JSONSchema.Strict = true
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
@@ -124,9 +127,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
 					}
+					c.Tools[i].Function.Parameters = s
 				}
 			}
 		case genai.GenOptionSeed:
@@ -403,9 +408,9 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
-		Name        string             `json:"name"`
-		Description string             `json:"description"`
-		Parameters  *jsonschema.Schema `json:"parameters"`
+		Name        string           `json:"name"`
+		Description string           `json:"description"`
+		Parameters  genai.JSONSchema `json:"parameters"`
 	} `json:"function"`
 }
 

@@ -25,11 +25,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/roundtrippers"
 )
 
 // Official python SDK: https://github.com/huggingface/huggingface_hub

@@ -15,6 +15,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
@@ -22,7 +24,6 @@ import (
 	"github.com/maruel/genai/providers/perplexity"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/roundtrippers"
 )
 
 func getClientInner(t *testing.T, apiKey string, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {

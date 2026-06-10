@@ -20,9 +20,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/maruel/genai/httprecord"
 	"github.com/maruel/roundtrippers"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
+
+	"github.com/maruel/genai/httprecord"
 )
 
 // Records represents HTTP recordings.

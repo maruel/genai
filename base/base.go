@@ -23,12 +23,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/maruel/httpjson"
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/internal/sse"
-	"github.com/maruel/httpjson"
-	"github.com/maruel/roundtrippers"
 )
 
 // DefaultTransport integrates HTTP retries.

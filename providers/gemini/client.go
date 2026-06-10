@@ -229,6 +229,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			params := Schema{}
+			// TODO: Generate from raw json schema!
 			if t.InputSchemaOverride != nil {
 				errs = append(errs, fmt.Errorf("%s: ToolDef.InputSchemaOverride is not yet implemented", t.Name))
 			} else {

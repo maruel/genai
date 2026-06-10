@@ -17,10 +17,11 @@ import (
 	"strings"
 	"syscall"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers"
-	"golang.org/x/sync/errgroup"
 )
 
 func listCache(ctx context.Context, c genai.Provider) error {

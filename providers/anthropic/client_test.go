@@ -629,17 +629,20 @@ func TestStructuredOutput(t *testing.T) {
 			if req.OutputConfig.Format.Schema == nil {
 				t.Fatal("expected Schema to be set")
 			}
+			var m map[string]any
 			switch tc.wantSchema {
 			case "object":
-				if got := req.OutputConfig.Format.Schema.Type; got != "object" {
-					t.Errorf("Schema.Type = %q, want \"object\"", got)
+				json.Unmarshal(req.OutputConfig.Format.Schema, &m)
+				if got := m["type"]; got != "object" {
+					t.Errorf("Schema.type = %q, want \"object\"", got)
 				}
 			case "full":
-				if got := req.OutputConfig.Format.Schema.Type; got != "object" {
-					t.Errorf("Schema.Type = %q, want \"object\"", got)
+				json.Unmarshal(req.OutputConfig.Format.Schema, &m)
+				if got := m["type"]; got != "object" {
+					t.Errorf("Schema.type = %q, want \"object\"", got)
 				}
-				if req.OutputConfig.Format.Schema.Properties == nil {
-					t.Error("expected Schema.Properties to be set for DecodeAs")
+				if m["properties"] == nil {
+					t.Error("expected Schema.properties to be set for DecodeAs")
 				}
 			}
 		})

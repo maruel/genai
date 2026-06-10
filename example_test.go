@@ -16,11 +16,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/gemini"
-	"github.com/maruel/roundtrippers"
 )
 
 func ExampleProvider_genSync_vision() {

@@ -38,6 +38,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"

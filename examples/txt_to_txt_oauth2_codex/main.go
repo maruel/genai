@@ -36,9 +36,10 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/maruel/roundtrippers"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/openairesponses"
-	"github.com/maruel/roundtrippers"
 )
 
 const (

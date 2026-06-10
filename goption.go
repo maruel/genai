@@ -8,6 +8,7 @@ package genai
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -19,6 +20,19 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
 )
+
+// JSONSchema is a JSON Schema document encoded as raw JSON bytes.
+type JSONSchema = json.RawMessage
+
+// JSONSchemaFor returns the JSON schema for the given type as raw JSON.
+//
+// Many providers (including OpenAI) struggle with $ref that jsonschema package uses by default.
+func JSONSchemaFor(t reflect.Type) (JSONSchema, error) {
+	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
+	schema := r.ReflectFromType(t)
+	b, err := json.Marshal(schema)
+	return b, err
+}
 
 // GenOption is options that can be provided to Provider.GenSync and Provider.GenStream.
 type GenOption interface {
@@ -248,7 +262,7 @@ type ToolDef struct {
 	// to describe as struct tags.
 	//
 	// It is okay to initialize Callback, then take the return value of GetInputSchema() to initialize InputSchemaOverride, then mutate it.
-	InputSchemaOverride *jsonschema.Schema
+	InputSchemaOverride JSONSchema
 
 	_ struct{}
 }
@@ -303,9 +317,12 @@ func (t *ToolDef) Validate() error {
 }
 
 // GetInputSchema returns the json schema for the input argument of the callback.
-func (t *ToolDef) GetInputSchema() *jsonschema.Schema {
+func (t *ToolDef) GetInputSchema() (JSONSchema, error) {
+	if len(t.InputSchemaOverride) != 0 {
+		return t.InputSchemaOverride, nil
+	}
 	// This function assumes Validate() was called.
-	return internal.JSONSchemaFor(reflect.TypeOf(t.Callback).In(1))
+	return JSONSchemaFor(reflect.TypeOf(t.Callback).In(1))
 }
 
 // ToolCallRequest determines if we want the LLM to request a tool call.
@@ -377,9 +394,7 @@ func validateReflectedToJSON(r any) error {
 	if tp.Kind() != reflect.Pointer || tp.Elem().Kind() != reflect.Struct {
 		return fmt.Errorf("must be a pointer to a struct, got %T", r)
 	}
-	if _, ok := r.(*jsonschema.Schema); ok {
-		return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")
-	}
+
 	return nil
 }
 

@@ -14,7 +14,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"reflect"
 	"slices"
 	"strings"
 	"time"
@@ -89,7 +88,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
 				c.ResponseFormat.Type = "json_schema"
-				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := v.DecodeSchema()
 				if err != nil {
 					errs = append(errs, err)
 				} else {

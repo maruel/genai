@@ -14,7 +14,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -150,7 +149,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	if v.DecodeAs != nil {
 		// Requires Tier 3 to work in practice.
 		c.ResponseFormat.Type = "json_schema"
-		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := v.DecodeSchema()
 		if err != nil {
 			errs = append(errs, err)
 		} else {

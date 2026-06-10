@@ -21,7 +21,6 @@ import (
 	"iter"
 	"net/http"
 	"os"
-	"reflect"
 	"slices"
 
 	"github.com/maruel/roundtrippers"
@@ -159,7 +158,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, error) 
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
 		c.ResponseFormat.Type = "json_schema"
-		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := v.DecodeSchema()
 		if err != nil {
 			return unsupported, err
 		}

@@ -88,6 +88,52 @@ func TestGenOptionPollInterval(t *testing.T) {
 }
 
 func TestGenOptionText(t *testing.T) {
+	t.Run("DecodeSchema", func(t *testing.T) {
+		t.Run("JSONSchema passthrough", func(t *testing.T) {
+			schema := JSONSchema(`{"type":"object","properties":{"x":{"type":"integer"}}}`)
+			opts := GenOptionText{DecodeAs: schema}
+			got, err := opts.DecodeSchema()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(got) != string(schema) {
+				t.Errorf("got %s, want %s", got, schema)
+			}
+		})
+		t.Run("struct pointer generates schema", func(t *testing.T) {
+			type circle struct {
+				Radius float64 `json:"radius" jsonschema_description:"circle radius"`
+			}
+			opts := GenOptionText{DecodeAs: &circle{}}
+			got, err := opts.DecodeSchema()
+			if err != nil {
+				t.Fatal(err)
+			}
+			var m map[string]any
+			if err := json.Unmarshal(got, &m); err != nil {
+				t.Fatalf("invalid JSON: %s", got)
+			}
+			props, ok := m["properties"].(map[string]any)
+			if !ok {
+				t.Fatalf("no properties in schema: %s", got)
+			}
+			if _, ok := props["radius"]; !ok {
+				t.Errorf("missing radius property in schema: %s", got)
+			}
+		})
+		t.Run("empty JSONSchema passthrough", func(t *testing.T) {
+			schema := JSONSchema(`{}`)
+			opts := GenOptionText{DecodeAs: schema}
+			got, err := opts.DecodeSchema()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(got) != `{}` {
+				t.Errorf("got %s, want {}", got)
+			}
+		})
+	})
+
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {

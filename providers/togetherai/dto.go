@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -85,7 +84,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.DecodeAs != nil {
 				// Warning: using a model small may fail.
 				c.ResponseFormat.Type = "json_schema"
-				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := v.DecodeSchema()
 				if err != nil {
 					errs = append(errs, err)
 				} else {

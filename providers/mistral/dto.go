@@ -14,7 +14,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -103,7 +102,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				// Mistral requires a name.
 				c.ResponseFormat.JSONSchema.Name = "response"
 				c.ResponseFormat.JSONSchema.Strict = true
-				s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := v.DecodeSchema()
 				if err != nil {
 					errs = append(errs, err)
 				} else {

@@ -24,16 +24,6 @@ import (
 // JSONSchema is a JSON Schema document encoded as raw JSON bytes.
 type JSONSchema = json.RawMessage
 
-// JSONSchemaFor returns the JSON schema for the given type as raw JSON.
-//
-// Many providers (including OpenAI) struggle with $ref that jsonschema package uses by default.
-func JSONSchemaFor(t reflect.Type) (JSONSchema, error) {
-	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
-	schema := r.ReflectFromType(t)
-	b, err := json.Marshal(schema)
-	return b, err
-}
-
 // GenOption is options that can be provided to Provider.GenSync and Provider.GenStream.
 type GenOption interface {
 	// Validate ensures the options object is valid.
@@ -149,19 +139,16 @@ type GenOptionText struct {
 	// ReplyAsJSON enforces the output to be valid JSON, any JSON. It is
 	// important to tell the model to reply in JSON in the prompt itself.
 	ReplyAsJSON bool
-	// DecodeAs enforces a reply with a specific JSON structure. It must be a pointer to a struct that can be
-	// decoded by encoding/json and can have jsonschema tags.
+	// DecodeAs enforces a reply with a specific JSON structure. It must be either a pointer to a struct that can be
+	// decoded by encoding/json and can have jsonschema tags, or a JSONSchema.
 	//
 	// It is important to request the model to "reply in JSON" in the prompt itself.
 	//
-	// It is recommended to use jsonschema_description tags to describe each
-	// field or argument.
+	// If you use a JSONSchema, it will be used to validate the reply.
 	//
-	// Use jsonschema:"enum=..." to enforce a specific value within a set.
-	//
-	// Use omitempty to make the field optional.
-	//
-	// See https://github.com/invopop/jsonschema#example for more examples.
+	// If you use a pointer to a struct, it is recommended to use jsonschema_description tags to describe each
+	// field or argument. Use jsonschema:"enum=..." to enforce a specific value within a set. Use omitempty to
+	// make the field optional. See https://github.com/invopop/jsonschema#example for more examples.
 	DecodeAs any
 
 	_ struct{}
@@ -190,11 +177,24 @@ func (o *GenOptionText) Validate() error {
 		}
 	}
 	if o.DecodeAs != nil {
-		if err := validateReflectedToJSON(o.DecodeAs); err != nil {
-			return fmt.Errorf("field DecodeAs: %w", err)
+		if _, ok := o.DecodeAs.(JSONSchema); !ok {
+			if err := validateReflectedToJSON(o.DecodeAs); err != nil {
+				return fmt.Errorf("field DecodeAs: %w", err)
+			}
 		}
 	}
 	return nil
+}
+
+// DecodeSchema returns the JSONSchema for the DecodeAs field.
+//
+// If DecodeAs is a JSONSchema instance, it is returned directly. Otherwise it uses invopop/jsonschema to
+// construct the schema from the type's fields and tags.
+func (o *GenOptionText) DecodeSchema() (JSONSchema, error) {
+	if j, ok := o.DecodeAs.(JSONSchema); ok {
+		return j, nil
+	}
+	return jsonSchemaFor(reflect.TypeOf(o.DecodeAs))
 }
 
 // Tools
@@ -322,7 +322,7 @@ func (t *ToolDef) GetInputSchema() (JSONSchema, error) {
 		return t.InputSchemaOverride, nil
 	}
 	// This function assumes Validate() was called.
-	return JSONSchemaFor(reflect.TypeOf(t.Callback).In(1))
+	return jsonSchemaFor(reflect.TypeOf(t.Callback).In(1))
 }
 
 // ToolCallRequest determines if we want the LLM to request a tool call.
@@ -394,8 +394,17 @@ func validateReflectedToJSON(r any) error {
 	if tp.Kind() != reflect.Pointer || tp.Elem().Kind() != reflect.Struct {
 		return fmt.Errorf("must be a pointer to a struct, got %T", r)
 	}
-
 	return nil
+}
+
+// jsonSchemaFor returns the JSON schema for the given type as raw JSON.
+//
+// Many providers (including OpenAI) struggle with $ref that jsonschema package uses by default.
+func jsonSchemaFor(t reflect.Type) (JSONSchema, error) {
+	r := jsonschema.Reflector{Anonymous: true, DoNotReference: true}
+	schema := r.ReflectFromType(t)
+	b, err := json.Marshal(schema)
+	return b, err
 }
 
 // isErrorType returns true if the type is of error type.

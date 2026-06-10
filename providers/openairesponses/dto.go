@@ -19,7 +19,6 @@ import (
 	"errors"
 	"fmt"
 	"mime"
-	"reflect"
 	"slices"
 	"strings"
 
@@ -357,7 +356,7 @@ func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 		// OpenAI requires a name.
 		r.Text.Format.Name = "response"
 		r.Text.Format.Strict = true
-		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := v.DecodeSchema()
 		if err != nil {
 			errs = append(errs, err)
 		} else {

@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"mime"
 	"path/filepath"
-	"reflect"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -333,7 +332,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) ([]s
 		// OpenAI requires a name.
 		c.ResponseFormat.JSONSchema.Name = "response"
 		c.ResponseFormat.JSONSchema.Strict = true
-		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := v.DecodeSchema()
 		if err != nil {
 			return unsupported, err
 		}

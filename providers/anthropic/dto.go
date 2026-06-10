@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -208,7 +207,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, error) 
 	c.TopK = v.TopK
 	c.StopSequences = v.Stop
 	if v.DecodeAs != nil {
-		s, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+		s, err := v.DecodeSchema()
 		if err != nil {
 			return unsupported, err
 		}

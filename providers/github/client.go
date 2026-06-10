@@ -19,7 +19,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -74,11 +73,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
-				schema, err := genai.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+				s, err := v.DecodeSchema()
 				if err != nil {
 					errs = append(errs, err)
 				} else {
-					raw := append(schema[:len(schema)-1], `,"name":"response"}`...)
+					raw := append(s[:len(s)-1], `,"name":"response"}`...)
 					c.ResponseFormat = responseFormat{Type: "json_schema", JSONSchema: raw}
 				}
 			} else if v.ReplyAsJSON {

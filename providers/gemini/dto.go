@@ -11,6 +11,7 @@
 package gemini
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -71,9 +72,10 @@ const (
 	FormatUUID Format = "uuid"
 )
 
-// Schema is documented at https://ai.google.dev/api/caching#Schema
+// Schema support is documented at https://ai.google.dev/gemini-api/docs/structured-output
 //
-// The official Go SDK documentation is at https://pkg.go.dev/google.golang.org/genai#Schema
+// The Schema struct is documented at https://ai.google.dev/api/caching#Schema
+// and in the official Go SDK documentation is at https://pkg.go.dev/google.golang.org/genai#Schema
 //
 // Adapted to have less pointers and use omitzero.
 type Schema struct {
@@ -127,6 +129,187 @@ type Schema struct {
 	Title string `json:"title,omitzero"`
 	// Optional. The type of the data.
 	Type Type `json:"type,omitzero"`
+}
+
+// jsonSchemaNode is a minimal subset of JSON Schema used for conversion to Gemini's Schema.
+type jsonSchemaNode struct {
+	AnyOf       []jsonSchemaNode          `json:"anyOf"`
+	Default     json.RawMessage           `json:"default"`
+	Description string                    `json:"description"`
+	Enum        []json.RawMessage         `json:"enum"`
+	Example     json.RawMessage           `json:"example"`
+	Format      string                    `json:"format"`
+	Items       *jsonSchemaNode           `json:"items"`
+	MaxItems    int64                     `json:"maxItems"`
+	MaxLength   int64                     `json:"maxLength"`
+	Maximum     float64                   `json:"maximum"`
+	MinItems    int64                     `json:"minItems"`
+	MinLength   int64                     `json:"minLength"`
+	Minimum     float64                   `json:"minimum"`
+	Nullable    bool                      `json:"nullable"`
+	Properties  map[string]jsonSchemaNode `json:"properties"`
+	Required    []string                  `json:"required"`
+	Title       string                    `json:"title"`
+	// Type handles both the single-string form ("string") and the
+	// type-array nullable form (["string", "null"]).
+	Type jsonSchemaType `json:"type"`
+}
+
+// jsonSchemaType unmarshals the JSON Schema "type" field which may be either a
+// plain string ("string") or an array encoding a nullable type (["string", "null"]).
+type jsonSchemaType struct {
+	value    string
+	nullable bool
+}
+
+func (t *jsonSchemaType) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] == '[' {
+		var arr []string
+		if err := json.Unmarshal(b, &arr); err != nil {
+			return err
+		}
+		for _, v := range arr {
+			if v == "null" {
+				t.nullable = true
+			} else {
+				t.value = v
+			}
+		}
+		return nil
+	}
+	return json.Unmarshal(b, &t.value)
+}
+
+// FromJSONSchema populates s from a JSON Schema document.
+//
+// Accepts standard JSON Schema with lowercase type names ("string", "integer", etc.).
+// Use with genai.GenOptionText.DecodeSchema() or genai.ToolDef.GetInputSchema().
+func (s *Schema) FromJSONSchema(js genai.JSONSchema) error {
+	var n jsonSchemaNode
+	if err := json.Unmarshal(js, &n); err != nil {
+		return fmt.Errorf("invalid JSON schema: %w", err)
+	}
+	return s.fromNode(&n)
+}
+
+func (s *Schema) fromNode(n *jsonSchemaNode) error {
+	s.Description = n.Description
+	s.Title = n.Title
+	s.Default = n.Default
+	s.Example = n.Example
+
+	// anyOf: detect the nullable shorthand [T, null] or [null, T] vs a real union.
+	if len(n.AnyOf) > 0 {
+		if nonNull := nullableFrom(n.AnyOf); nonNull != nil {
+			if err := s.fromNode(nonNull); err != nil {
+				return err
+			}
+			s.Nullable = true
+			return nil
+		}
+		s.AnyOf = make([]*Schema, len(n.AnyOf))
+		for i := range n.AnyOf {
+			sub := &Schema{}
+			if err := sub.fromNode(&n.AnyOf[i]); err != nil {
+				return fmt.Errorf("anyOf[%d]: %w", i, err)
+			}
+			s.AnyOf[i] = sub
+		}
+		return nil
+	}
+
+	// Nullable comes from the "nullable" field or the ["T","null"] type-array form.
+	s.Nullable = n.Nullable || n.Type.nullable
+	if len(n.Enum) > 0 {
+		s.Enum = make([]string, len(n.Enum))
+		for i, raw := range n.Enum {
+			// Gemini's Schema.Enum is []string, but integer enums in JSON Schema are
+			// encoded as numbers. Convert numbers to their string representation so that
+			// e.g. {"type":"integer","enum":[101,201]} becomes Enum:["101","201"].
+			// Use json.Decoder with UseNumber so large integers are not rounded via float64.
+			dec := json.NewDecoder(bytes.NewReader(raw))
+			dec.UseNumber()
+			var v any
+			if err := dec.Decode(&v); err != nil {
+				return fmt.Errorf("enum[%d]: %w", i, err)
+			}
+			switch tv := v.(type) {
+			case string:
+				s.Enum[i] = tv
+			case json.Number:
+				s.Enum[i] = tv.String()
+			default:
+				return fmt.Errorf("enum[%d]: unsupported type %T, must be string or number", i, v)
+			}
+		}
+	}
+	s.Required = n.Required
+	s.MinLength = n.MinLength
+	s.MaxLength = n.MaxLength
+	s.MinItems = n.MinItems
+	s.MaxItems = n.MaxItems
+	s.Minimum = n.Minimum
+	s.Maximum = n.Maximum
+	s.Format = Format(n.Format)
+
+	switch n.Type.value {
+	case "string":
+		s.Type = TypeString
+	case "integer":
+		s.Type = TypeInteger
+	case "number":
+		s.Type = TypeNumber
+	case "boolean":
+		s.Type = TypeBoolean
+	case "null":
+		s.Type = TypeNull
+	case "array":
+		s.Type = TypeArray
+		if n.Items != nil {
+			s.Items = &Schema{}
+			if err := s.Items.fromNode(n.Items); err != nil {
+				return fmt.Errorf("items: %w", err)
+			}
+		}
+	case "object":
+		s.Type = TypeObject
+		if len(n.Properties) > 0 {
+			s.Properties = make(map[string]Schema, len(n.Properties))
+			for k := range n.Properties {
+				prop := Schema{}
+				v := n.Properties[k]
+				if err := prop.fromNode(&v); err != nil {
+					return fmt.Errorf("property %q: %w", k, err)
+				}
+				s.Properties[k] = prop
+			}
+			// PropertyOrdering is not set: JSON Schema has no standard ordering field,
+			// and map iteration is unordered. Callers that need deterministic field
+			// ordering in Gemini structured output must set PropertyOrdering themselves.
+		}
+	case "":
+		// No type — valid alongside anyOf/allOf or for schemaless nodes.
+	default:
+		return fmt.Errorf("unsupported JSON Schema type: %q", n.Type.value)
+	}
+
+	return nil
+}
+
+// nullableFrom returns the non-null node when anyOf encodes a nullable type as [T, null] or [null, T].
+// Only the 2-element form is detected; a 3+-element anyOf that includes null is treated as a real union,
+// leaving the null arm in place. invopop/jsonschema always emits the 2-element form for pointer types.
+func nullableFrom(anyOf []jsonSchemaNode) *jsonSchemaNode {
+	if len(anyOf) != 2 {
+		return nil
+	}
+	if anyOf[0].Type.value == "null" {
+		return &anyOf[1]
+	}
+	if anyOf[1].Type.value == "null" {
+		return &anyOf[0]
+	}
+	return nil
 }
 
 // Content and Part types.

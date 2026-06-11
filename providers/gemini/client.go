@@ -206,7 +206,10 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []error {
 	c.GenerationConfig.StopSequences = v.Stop
 	if v.DecodeAs != nil {
 		c.GenerationConfig.ResponseMimeType = "application/json"
-		if err := c.GenerationConfig.ResponseSchema.FromGoObj(v.DecodeAs); err != nil {
+		js, err := v.DecodeSchema()
+		if err != nil {
+			errs = append(errs, fmt.Errorf("decodeAs schema: %w", err))
+		} else if err = c.GenerationConfig.ResponseSchema.FromJSONSchema(js); err != nil {
 			errs = append(errs, fmt.Errorf("decodeAs: %w", err))
 		}
 	} else if v.ReplyAsJSON {
@@ -229,13 +232,11 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 		c.Tools = make([]Tool, len(v.Tools))
 		for i, t := range v.Tools {
 			params := Schema{}
-			// TODO: Generate from raw json schema!
-			if t.InputSchemaOverride != nil {
-				errs = append(errs, fmt.Errorf("%s: ToolDef.InputSchemaOverride is not yet implemented", t.Name))
-			} else {
-				if err := params.FromGoType(reflect.TypeOf(t.Callback).In(1).Elem(), reflect.StructTag(""), ""); err != nil {
-					errs = append(errs, fmt.Errorf("%s: tool parameters: %w", t.Name, err))
-				}
+			js, err := t.GetInputSchema()
+			if err != nil {
+				errs = append(errs, fmt.Errorf("%s: tool parameters schema: %w", t.Name, err))
+			} else if err = params.FromJSONSchema(js); err != nil {
+				errs = append(errs, fmt.Errorf("%s: tool parameters: %w", t.Name, err))
 			}
 			// See FunctionResponse.To().
 			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
@@ -243,7 +244,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 				Description: t.Description,
 				Parameters:  params,
 			}}
-			if err := c.Tools[i].FunctionDeclarations[0].Response.FromGoObj(functionResponse); err != nil {
+			if err := c.Tools[i].FunctionDeclarations[0].Response.FromJSONSchema(functionResponseSchema); err != nil {
 				errs = append(errs, fmt.Errorf("%s: tool response: %w", t.Name, err))
 			}
 		}
@@ -251,9 +252,8 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 	return errs
 }
 
-var functionResponse struct {
-	Response string `json:"response"`
-}
+// functionResponseSchema is the fixed JSON Schema for the tool function response wrapper.
+var functionResponseSchema = genai.JSONSchema(`{"type":"object","properties":{"response":{"type":"string"}},"required":["response"]}`)
 
 // From converts from the genai equivalent.
 func (c *Content) From(in *genai.Message) error {

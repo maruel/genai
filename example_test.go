@@ -81,9 +81,9 @@ func ExampleClient_GenSync_jSON() {
 }
 
 func ExampleClient_GenSync_jSON_schema() {
-	// Supported by Cerebras, Cloudflare, Cohere, Gemini, Groq, HuggingFace, Mistral, Ollama, OpenAI, Perplexity, TogetherAI.
+	// Generate the JSON schema for structured output using a Go struct.
 
-	// Using a free small model for testing.
+	// Using a small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
@@ -100,6 +100,42 @@ func ExampleClient_GenSync_jSON_schema() {
 	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if err := resp.Decode(&got); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Round: %v\n", got.Round)
+	// This would Output: Round: true
+}
+
+func ExampleClient_GenSync_jSON_schema_raw() {
+	// Use a raw JSONSchema when the schema is dynamic, loaded at runtime, or uses JSON Schema
+	// features not expressible via Go struct tags.
+
+	// Using a small model for testing.
+	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
+	ctx := context.Background()
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
+	if err == nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage("Is a circle round? Reply as JSON."),
+	}
+	schema := genai.JSONSchema(`{
+		"type": "object",
+		"properties": {
+			"round": {"type": "boolean", "description": "Whether the shape is round"}
+		},
+		"required": ["round"]
+	}`)
+	opts := genai.GenOptionText{DecodeAs: schema}
+	resp, err := c.GenSync(ctx, msgs, &opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var got struct {
+		Round bool `json:"round"`
 	}
 	if err := resp.Decode(&got); err != nil {
 		log.Fatal(err)

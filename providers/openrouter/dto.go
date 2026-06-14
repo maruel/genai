@@ -56,27 +56,24 @@ type Reasoning struct {
 
 // ChatRequest is documented at https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
 type ChatRequest struct {
-	FrequencyPenalty    float64   `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
-	Logprobs            bool      `json:"logprobs,omitzero"`
-	TopLogprobs         int64     `json:"top_logprobs,omitzero"` // [0, 20]
-	MaxTokens           int64     `json:"max_tokens,omitzero"`
-	MaxCompletionTokens int64     `json:"max_completion_tokens,omitzero"`
-	Messages            []Message `json:"messages"`
-	Model               string    `json:"model"`
-	Models              []string  `json:"models,omitzero"`
-	Modalities          []string  `json:"modalities,omitzero"`
-	PresencePenalty     float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
-	ResponseFormat      struct {
-		Type       string           `json:"type,omitzero"` // "json_object", "json_schema"
-		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
-	} `json:"response_format,omitzero"`
-	Reasoning     *Reasoning           `json:"reasoning,omitzero"`
-	Route         Route                `json:"route,omitzero"`
-	Provider      *ProviderPreferences `json:"provider,omitzero"`
-	Seed          int64                `json:"seed,omitzero"`
-	Stop          []string             `json:"stop,omitzero"`
-	Stream        bool                 `json:"stream"`
-	StreamOptions struct {
+	FrequencyPenalty    float64              `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
+	Logprobs            bool                 `json:"logprobs,omitzero"`
+	TopLogprobs         int64                `json:"top_logprobs,omitzero"` // [0, 20]
+	MaxTokens           int64                `json:"max_tokens,omitzero"`
+	MaxCompletionTokens int64                `json:"max_completion_tokens,omitzero"`
+	Messages            []Message            `json:"messages"`
+	Model               string               `json:"model"`
+	Models              []string             `json:"models,omitzero"`
+	Modalities          []string             `json:"modalities,omitzero"`
+	PresencePenalty     float64              `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ResponseFormat      ResponseFormat       `json:"response_format,omitzero"`
+	Reasoning           *Reasoning           `json:"reasoning,omitzero"`
+	Route               Route                `json:"route,omitzero"`
+	Provider            *ProviderPreferences `json:"provider,omitzero"`
+	Seed                int64                `json:"seed,omitzero"`
+	Stop                []string             `json:"stop,omitzero"`
+	Stream              bool                 `json:"stream"`
+	StreamOptions       struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
 	Temperature       float64            `json:"temperature,omitzero"` // [0, 2]
@@ -87,6 +84,19 @@ type ChatRequest struct {
 	User              string             `json:"user,omitzero"`
 	Metadata          map[string]string  `json:"metadata,omitzero"`
 	LogitBias         map[string]float64 `json:"logit_bias,omitzero"`
+}
+
+// ResponseFormat requests structured output from the model.
+type ResponseFormat struct {
+	Type       string           `json:"type,omitzero"` // "json_object", "json_schema"
+	JSONSchema JSONSchemaFormat `json:"json_schema,omitzero"`
+}
+
+// JSONSchemaFormat describes OpenRouter's json_schema response format.
+type JSONSchemaFormat struct {
+	Name   string           `json:"name,omitzero"`
+	Schema genai.JSONSchema `json:"schema,omitzero"`
+	Strict bool             `json:"strict,omitzero"`
 }
 
 // ReasoningDetail is a structured reasoning step from models that expose chain-of-thought.
@@ -475,6 +485,7 @@ type ChatResponse struct {
 	Object            string       `json:"object"`   // "chat.completion"
 	Provider          string       `json:"provider"` // The provider that served the request.
 	Usage             Usage        `json:"usage"`
+	ServiceTier       string       `json:"service_tier,omitzero"`
 	SystemFingerprint string       `json:"system_fingerprint"`
 	Error             *InlineError `json:"error,omitzero"` // Upstream error on partial failure.
 	UserID            string       `json:"user_id,omitzero"`
@@ -489,6 +500,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
+			ServiceTier:       c.ServiceTier,
 		},
 	}
 	if c.Error != nil {
@@ -547,6 +559,7 @@ type ChatStreamChunkResponse struct {
 	Created           base.Time `json:"created"`
 	Model             string    `json:"model"`
 	Provider          string    `json:"provider,omitzero"`
+	ServiceTier       string    `json:"service_tier,omitzero"`
 	SystemFingerprint string    `json:"system_fingerprint"`
 	Choices           []struct {
 		Index              int64        `json:"index"`
@@ -595,11 +608,34 @@ type Model struct {
 	PerRequestLimits    map[string]json.RawMessage `json:"per_request_limits"`
 	SupportedParameters []string                   `json:"supported_parameters"`
 	DefaultParameters   ModelDefaultParameters     `json:"default_parameters"`
+	Benchmarks          ModelBenchmarks            `json:"benchmarks,omitzero"`
 	CanonicalSlug       string                     `json:"canonical_slug"`
 	KnowledgeCutoff     string                     `json:"knowledge_cutoff,omitzero"`
 	ExpirationDate      string                     `json:"expiration_date"`
 	Links               ModelLinks                 `json:"links,omitzero"` // Provider-specific links
 	SupportedVoices     []string                   `json:"supported_voices,omitzero"`
+}
+
+// ModelBenchmarks contains OpenRouter benchmark metadata for a model.
+type ModelBenchmarks struct {
+	ArtificialAnalysis ModelArtificialAnalysisBenchmark `json:"artificial_analysis,omitzero"`
+	DesignArena        []ModelDesignArenaBenchmark      `json:"design_arena,omitzero"`
+}
+
+// ModelArtificialAnalysisBenchmark contains Artificial Analysis scores.
+type ModelArtificialAnalysisBenchmark struct {
+	IntelligenceIndex float64 `json:"intelligence_index,omitzero"`
+	CodingIndex       float64 `json:"coding_index,omitzero"`
+	AgenticIndex      float64 `json:"agentic_index,omitzero"`
+}
+
+// ModelDesignArenaBenchmark contains Design Arena scores.
+type ModelDesignArenaBenchmark struct {
+	Arena    string  `json:"arena"`
+	Category string  `json:"category"`
+	ELO      float64 `json:"elo,omitzero"`
+	WinRate  float64 `json:"win_rate,omitzero"`
+	Rank     int64   `json:"rank,omitzero"`
 }
 
 // ModelLinks contains provider-specific links for a model.

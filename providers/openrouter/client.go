@@ -162,7 +162,9 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, error) 
 		if err != nil {
 			return unsupported, err
 		}
-		c.ResponseFormat.JSONSchema = append(s[:len(s)-1], `,"name":"response"}`...)
+		c.ResponseFormat.JSONSchema.Name = "response"
+		c.ResponseFormat.JSONSchema.Schema = s
+		c.ResponseFormat.JSONSchema.Strict = true
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
@@ -369,6 +371,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
+				}
+				if pkt.ServiceTier != "" {
+					u.ServiceTier = pkt.ServiceTier
 				}
 				if pkt.Choices[0].FinishReason != "" {
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()

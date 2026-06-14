@@ -643,8 +643,11 @@ type ContentFilterResult struct {
 
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
+	AddedDate          int64    `json:"added_date,omitzero"`
 	Aliases            Strings  `json:"aliases"`
+	Alpha              bool     `json:"alpha,omitzero"`
 	Brand              string   `json:"brand"`
+	Capabilities       []string `json:"capabilities,omitzero"`
 	Category           string   `json:"category"`
 	Description        string   `json:"description"`
 	InputModalities    []string `json:"input_modalities"`
@@ -724,9 +727,12 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 
 // TextModel is the provider-specific text model metadata.
 type TextModel struct {
+	AddedDate          int64    `json:"added_date,omitzero"`
 	Aliases            Strings  `json:"aliases"`
+	Alpha              bool     `json:"alpha,omitzero"`
 	Audio              bool     `json:"audio"`
 	Brand              string   `json:"brand"`
+	Capabilities       []string `json:"capabilities,omitzero"`
 	Category           string   `json:"category"`
 	Community          bool     `json:"community"`
 	ContextLength      int64    `json:"context_length,omitzero"`

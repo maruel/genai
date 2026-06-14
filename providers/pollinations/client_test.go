@@ -9,8 +9,10 @@ package pollinations_test
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"net/http"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -55,6 +57,45 @@ func getClientInner(t *testing.T, opts *providerOptions, fn func(http.RoundTripp
 		provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, provOpts...)
 	}
 	return pollinations.New(t.Context(), provOpts...)
+}
+
+func TestImageModelsResponse(t *testing.T) {
+	t.Run("metadata fields", func(t *testing.T) {
+		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000}]`
+		var resp pollinations.ImageModelsResponse
+		dec := json.NewDecoder(strings.NewReader(body))
+		dec.DisallowUnknownFields()
+		if err := dec.Decode(&resp); err != nil {
+			t.Fatal(err)
+		}
+		if !resp[0].Alpha {
+			t.Fatal("Alpha = false, want true")
+		}
+		if resp[0].AddedDate != 1768608000000 {
+			t.Fatalf("AddedDate = %d, want 1768608000000", resp[0].AddedDate)
+		}
+	})
+}
+
+func TestTextModelsResponse(t *testing.T) {
+	t.Run("metadata fields", func(t *testing.T) {
+		body := `[{"name":"openai","aliases":["gpt-5.4-nano"],"category":"text","brand":"OpenAI","pricing":{"currency":"pollen","promptTextTokens":"0.00000015","promptCachedTokens":"0.000000015","completionTextTokens":"0.0000009375"},"title":"GPT-5.4 Nano","description":"GPT-5.4 Nano - Fast & Balanced","input_modalities":["text","image"],"output_modalities":["text"],"max_reference_images":10,"capabilities":["tool_calling"],"tools":true,"context_length":400000,"is_specialized":false,"alpha":true,"added_date":1759795200000}]`
+		var resp pollinations.TextModelsResponse
+		dec := json.NewDecoder(strings.NewReader(body))
+		dec.DisallowUnknownFields()
+		if err := dec.Decode(&resp); err != nil {
+			t.Fatal(err)
+		}
+		if got := resp[0].Capabilities; !slices.Equal(got, []string{"tool_calling"}) {
+			t.Fatalf("Capabilities = %q, want [tool_calling]", got)
+		}
+		if !resp[0].Alpha {
+			t.Fatal("Alpha = false, want true")
+		}
+		if resp[0].AddedDate != 1759795200000 {
+			t.Fatalf("AddedDate = %d, want 1759795200000", resp[0].AddedDate)
+		}
+	})
 }
 
 func TestClient(t *testing.T) {

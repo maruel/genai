@@ -652,6 +652,7 @@ type OutputSystemMsg struct {
 	// Other optional fields.
 	PermissionMode  string              `json:"permissionMode,omitempty"`
 	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitzero"`
+	CompactResult   string              `json:"compact_result,omitempty"`
 	Prompt          json.RawMessage     `json:"prompt,omitempty"`
 
 	// thinking_tokens fields.
@@ -898,6 +899,25 @@ type OutputResultMsg struct {
 	TerminalReason    string                     `json:"terminal_reason,omitempty"`
 	APIErrorStatus    int                        `json:"api_error_status,omitzero"`
 	DeferredToolUse   DeferredToolUse            `json:"deferred_tool_use,omitzero"`
+	Origin            ResultOrigin               `json:"origin,omitzero"`
+}
+
+// ResultOriginKind identifies why a result was emitted.
+type ResultOriginKind string
+
+// Result origin kinds.
+const (
+	ResultOriginTaskNotification ResultOriginKind = "task-notification"
+)
+
+// ResultOrigin identifies why a result was emitted.
+type ResultOrigin struct {
+	Kind ResultOriginKind `json:"kind"`
+}
+
+// IsZero reports whether r carries no origin metadata.
+func (r ResultOrigin) IsZero() bool {
+	return r.Kind == ""
 }
 
 // ModelUsageEntry holds per-model usage metadata in a result message.

@@ -183,6 +183,16 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("SubagentType = %q, want Explore", got.SubagentType)
 		}
 	})
+	t.Run("status_compact_result", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"status","status":null,"compact_result":"success","session_id":"s1","uuid":"u1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.CompactResult != "success" {
+			t.Errorf("CompactResult = %q, want success", got.CompactResult)
+		}
+	})
 	t.Run("init_flags", func(t *testing.T) {
 		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"1.0","uuid":"u1","analytics_disabled":true,"product_feedback_disabled":true}`
 		var got OutputInitMsg
@@ -387,6 +397,16 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.TimeToRequestMs != 5 {
 			t.Errorf("TimeToRequestMs = %d, want 5", got.TimeToRequestMs)
+		}
+	})
+	t.Run("result_origin", func(t *testing.T) {
+		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"num_turns":1,"result":"ok","session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","origin":{"kind":"task-notification"}}`
+		var got OutputResultMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Origin.Kind != ResultOriginTaskNotification {
+			t.Errorf("Origin.Kind = %q, want %q", got.Origin.Kind, ResultOriginTaskNotification)
 		}
 	})
 	t.Run("tool_result_string_content", func(t *testing.T) {

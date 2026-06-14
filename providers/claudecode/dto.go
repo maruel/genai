@@ -629,6 +629,7 @@ type OutputSystemMsg struct {
 
 	// task_started / task_progress / task_notification fields.
 	Description  string        `json:"description,omitempty"`
+	SubagentType string        `json:"subagent_type,omitempty"`
 	TaskID       string        `json:"task_id,omitempty"`
 	TaskType     string        `json:"task_type,omitempty"`
 	ToolUseID    string        `json:"tool_use_id,omitempty"`
@@ -689,6 +690,8 @@ type OutputAssistantMsg struct {
 	ParentToolUseID string               `json:"parent_tool_use_id"`
 	Error           string               `json:"error"`
 	RequestID       string               `json:"request_id,omitempty"`
+	SubagentType    string               `json:"subagent_type,omitempty"`
+	TaskDescription string               `json:"task_description,omitempty"`
 }
 
 // AssistantMessageBody is the inner message object within an assistant record.
@@ -860,6 +863,8 @@ type OutputUserMsg struct {
 	Message         json.RawMessage `json:"message"`
 	ParentToolUseID string          `json:"parent_tool_use_id"`
 	ToolUseResult   json.RawMessage `json:"tool_use_result,omitempty"`
+	SubagentType    string          `json:"subagent_type,omitempty"`
+	TaskDescription string          `json:"task_description,omitempty"`
 	IsSynthetic     bool            `json:"isSynthetic,omitempty"`
 	IsReplay        bool            `json:"isReplay,omitempty"`
 }

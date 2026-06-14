@@ -173,6 +173,16 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("Patch.Status = %q, want completed", got.Patch.Status)
 		}
 	})
+	t.Run("task_started_subagent_metadata", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"task_started","task_id":"task-1","tool_use_id":"toolu_1","description":"Find harness/model selection logic","subagent_type":"Explore","task_type":"local_agent","prompt":"Find harness/model selection logic","uuid":"u1","session_id":"s1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.SubagentType != "Explore" {
+			t.Errorf("SubagentType = %q, want Explore", got.SubagentType)
+		}
+	})
 	t.Run("init_flags", func(t *testing.T) {
 		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"1.0","uuid":"u1","analytics_disabled":true,"product_feedback_disabled":true}`
 		var got OutputInitMsg
@@ -227,10 +237,16 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("assistant_message_metadata", func(t *testing.T) {
-		const data = `{"type":"assistant","message":{"model":"claude-opus-4-8","id":"msg_01","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_1","name":"Bash","input":{"command":"true"},"caller":{"type":"direct"}}],"stop_reason":"refusal","stop_sequence":null,"stop_details":{"type":"refusal","category":"cyber","explanation":"blocked"},"usage":{"input_tokens":1,"output_tokens":2},"container":{"id":"container_1","expires_at":"2026-06-07T12:00:00Z","skills":[{"skill_id":"sk_1","type":"anthropic","version":"latest"}]},"diagnostics":{"cache_miss_reason":{"type":"tools_changed","cache_missed_input_tokens":42}}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null}`
+		const data = `{"type":"assistant","message":{"model":"claude-opus-4-8","id":"msg_01","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_1","name":"Bash","input":{"command":"true"},"caller":{"type":"direct"}}],"stop_reason":"refusal","stop_sequence":null,"stop_details":{"type":"refusal","category":"cyber","explanation":"blocked"},"usage":{"input_tokens":1,"output_tokens":2},"container":{"id":"container_1","expires_at":"2026-06-07T12:00:00Z","skills":[{"skill_id":"sk_1","type":"anthropic","version":"latest"}]},"diagnostics":{"cache_miss_reason":{"type":"tools_changed","cache_missed_input_tokens":42}}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null,"subagent_type":"Explore","task_description":"Find harness/model selection logic"}`
 		var got OutputAssistantMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
+		}
+		if got.SubagentType != "Explore" {
+			t.Errorf("SubagentType = %q, want Explore", got.SubagentType)
+		}
+		if got.TaskDescription != "Find harness/model selection logic" {
+			t.Errorf("TaskDescription = %q, want Find harness/model selection logic", got.TaskDescription)
 		}
 		if got.Message.Container.ID != "container_1" {
 			t.Errorf("Container.ID = %q, want container_1", got.Message.Container.ID)
@@ -260,6 +276,19 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if input.Command != "true" {
 			t.Errorf("BashInput.Command = %q, want true", input.Command)
+		}
+	})
+	t.Run("user_subagent_metadata", func(t *testing.T) {
+		const data = `{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Find harness/model selection logic"}]},"parent_tool_use_id":"toolu_1","session_id":"s1","uuid":"u1","timestamp":"2026-06-13T20:16:11.423Z","subagent_type":"Explore","task_description":"Find harness/model selection logic"}`
+		var got OutputUserMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.SubagentType != "Explore" {
+			t.Errorf("SubagentType = %q, want Explore", got.SubagentType)
+		}
+		if got.TaskDescription != "Find harness/model selection logic" {
+			t.Errorf("TaskDescription = %q, want Find harness/model selection logic", got.TaskDescription)
 		}
 	})
 	t.Run("permission_suggestions", func(t *testing.T) {

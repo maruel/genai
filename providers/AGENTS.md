@@ -58,7 +58,6 @@ investigate more efficiently. Only then look at the online documentation to conf
   `RECORD=failure_only go test ./<directory>`. **Always default to `RECORD=failure_only`** (only re-records
   failed cassettes). For surgical re-recording, delete the specific cassette files that need updating, then
   run `RECORD=failure_only go test ./<directory>`.
-- Mandatory: Only use `RECORD=all` when explicitly asked by the user.
 - Use `-run` to scope recording to specific tests.
 - When recording smoketests against live APIs, run fewer models at a time (use `-run`) to avoid exceeding
   the default 10-minute `go test` timeout. Reasoning models in particular can generate tens of thousands

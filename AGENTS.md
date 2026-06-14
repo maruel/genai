@@ -153,6 +153,7 @@ func (o *Options) Validate() error {
 - Don't assume all providers support the same features
 - Don't commit test recordings with real API keys
 - Ask before breaking backward compatibility
+- **Mandatory**: Never use `RECORD=all`, selectively delete cassettes instead. Explicitly ask the user before.
 
 ## Contributing Guidelines
 

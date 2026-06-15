@@ -791,6 +791,37 @@ type GlobInput struct {
 	Path    string `json:"path,omitempty"`
 }
 
+// AskUserQuestionInput is the input for the AskUserQuestion tool.
+type AskUserQuestionInput struct {
+	Questions []AskUserQuestion `json:"questions"`
+}
+
+// AskUserQuestion is a single question in an AskUserQuestion tool call.
+type AskUserQuestion struct {
+	Question    string                  `json:"question"`
+	Header      string                  `json:"header,omitempty"`
+	Options     []AskUserQuestionOption `json:"options"`
+	MultiSelect bool                    `json:"multiSelect,omitempty"`
+}
+
+// AskUserQuestionOption is a selectable option in an AskUserQuestion.
+type AskUserQuestionOption struct {
+	Label       string `json:"label"`
+	Description string `json:"description,omitempty"`
+}
+
+// TodoWriteInput is the input for the TodoWrite tool.
+type TodoWriteInput struct {
+	Todos []TodoWriteItem `json:"todos"`
+}
+
+// TodoWriteItem is a single todo entry in a TodoWrite tool call.
+type TodoWriteItem struct {
+	Content    string `json:"content"`
+	Status     string `json:"status"`
+	ActiveForm string `json:"activeForm,omitempty"`
+}
+
 // Container carries code-execution container metadata on a message.
 type Container struct {
 	ID        string    `json:"id"`

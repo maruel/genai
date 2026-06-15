@@ -348,6 +348,52 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("PermissionSuggestions[2].Directories = %v, want [/tmp/a /tmp/b]", dirs.Directories)
 		}
 	})
+	t.Run("ask_user_question_input", func(t *testing.T) {
+		const data = `{"questions":[{"question":"Which option?","header":"Pick","options":[{"label":"A","description":"First"},{"label":"B"}],"multiSelect":true}]}`
+		var got AskUserQuestionInput
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if len(got.Questions) != 1 {
+			t.Fatalf("len(Questions) = %d, want 1", len(got.Questions))
+		}
+		q := got.Questions[0]
+		if q.Question != "Which option?" {
+			t.Errorf("Question = %q, want Which option?", q.Question)
+		}
+		if q.Header != "Pick" {
+			t.Errorf("Header = %q, want Pick", q.Header)
+		}
+		if len(q.Options) != 2 {
+			t.Fatalf("len(Options) = %d, want 2", len(q.Options))
+		}
+		if q.Options[0].Description != "First" {
+			t.Errorf("Options[0].Description = %q, want First", q.Options[0].Description)
+		}
+		if !q.MultiSelect {
+			t.Error("MultiSelect = false, want true")
+		}
+	})
+	t.Run("todo_write_input", func(t *testing.T) {
+		const data = `{"todos":[{"content":"Fix bug","status":"in_progress","activeForm":"Fixing bug"}]}`
+		var got TodoWriteInput
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if len(got.Todos) != 1 {
+			t.Fatalf("len(Todos) = %d, want 1", len(got.Todos))
+		}
+		todo := got.Todos[0]
+		if todo.Content != "Fix bug" {
+			t.Errorf("Content = %q, want Fix bug", todo.Content)
+		}
+		if todo.Status != "in_progress" {
+			t.Errorf("Status = %q, want in_progress", todo.Status)
+		}
+		if todo.ActiveForm != "Fixing bug" {
+			t.Errorf("ActiveForm = %q, want Fixing bug", todo.ActiveForm)
+		}
+	})
 	t.Run("stream_content_block_start", func(t *testing.T) {
 		const data = `{"type":"stream_event","event":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"toolu_1","name":"Bash","input":{},"caller":{"type":"code_execution_20260120","tool_id":"srv_1"}}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null}`
 		var got OutputStreamEventMsg

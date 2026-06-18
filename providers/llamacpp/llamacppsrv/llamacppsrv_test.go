@@ -5,6 +5,7 @@
 package llamacppsrv
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -101,11 +102,13 @@ func TestParseBuildNumber(t *testing.T) {
 	})
 }
 
+var errUnexpectedHTTPRequest = errors.New("unexpected HTTP request")
+
 type forbidRoundTrip struct {
 	t *testing.T
 }
 
 func (f forbidRoundTrip) RoundTrip(*http.Request) (*http.Response, error) {
-	f.t.Fatal("unexpected HTTP request")
-	return nil, nil
+	f.t.Fatal(errUnexpectedHTTPRequest)
+	return nil, errUnexpectedHTTPRequest
 }

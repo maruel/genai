@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 741
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user wants a detailed d"}}],"created":1779999188,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":21,"prompt_tokens":28,"total_tokens":49,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-adq3cL4FjOQ0KDQMBCqsXOpGxBDQT19m","timings":{"cache_n":7,"prompt_n":21,"prompt_ms":107.969,"prompt_per_token_ms":5.141380952380952,"prompt_per_second":194.5002732265743,"predicted_n":21,"predicted_ms":532.063,"predicted_per_token_ms":25.336333333333332,"predicted_per_second":39.46901024878633}}'
+        content_length: 866
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed response about Canada:\n\n1.  **Analyze the Request:**\n    *   **Topic:** Canada.\n    *   **Requirement:** Talk about it in \"great details.\" (Th"}}],"created":1782171077,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":53,"prompt_tokens":28,"total_tokens":81,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-1dmKSTcx5Yt8BMkA0n0hVuUNtbEfHmrd","timings":{"cache_n":7,"prompt_n":21,"prompt_ms":69.981,"prompt_per_token_ms":3.3324285714285713,"prompt_per_second":300.08145067947015,"predicted_n":53,"predicted_ms":716.068,"predicted_per_token_ms":13.510716981132076,"predicted_per_second":74.01531698106884}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "741"
+                - "866"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 664ms
+        duration: 797ms

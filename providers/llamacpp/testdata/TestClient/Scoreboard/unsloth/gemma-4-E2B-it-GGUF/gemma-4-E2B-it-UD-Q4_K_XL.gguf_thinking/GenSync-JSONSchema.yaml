@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1219
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}\n","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking if a banana is a fruit.\n2.  **Analyze the Constraint:** \"Do not include an explanation. Reply ONLY as JSON.\"\n3.  **Determine the Answer:** A banana is botanically a fruit.\n4.  **Format the Output:** The output must be strict JSON format.\n\n5.  **Draft the JSON response:**\n    *   Key-value pair reflecting the answer.\n    *   Example: `{\"is_banana_a_fruit\": true}`\n\n6.  **Final Output Generation.** (Ensure adherence to the strict constraint.)"}}],"created":1779999193,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":156,"prompt_tokens":33,"total_tokens":189,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-xcreLKol2rjuUptzdKyYfxc0EgyZ3S6A","timings":{"cache_n":7,"prompt_n":26,"prompt_ms":69.565,"prompt_per_token_ms":2.675576923076923,"prompt_per_second":373.7511679723999,"predicted_n":156,"predicted_ms":2102.26,"predicted_per_token_ms":13.476025641025643,"predicted_per_second":74.20585465166059}}'
+        content_length: 1231
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user is asking \"Is a banana a fruit?\"\n2.  **Constraint Check:** \"Do not include an explanation. Reply ONLY as JSON.\"\n3.  **Determine the Answer:** Botanically and culinarily, a banana is classified as a fruit.\n4.  **Format the Output:** The output must be a JSON object.\n\n5.  **Construct the JSON:**\n    *   Key: A relevant identifier (e.g., \"is_fruit\").\n    *   Value: The answer (True/False).\n\n6.  **Final Output Generation:** (Ensure strict adherence to JSON format.)"}}],"created":1782171081,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":163,"prompt_tokens":33,"total_tokens":196,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-eOC1YSMFhOSp1X8GJ83k28avUO5ww6IL","timings":{"cache_n":7,"prompt_n":26,"prompt_ms":68.635,"prompt_per_token_ms":2.6398076923076923,"prompt_per_second":378.8154731550958,"predicted_n":163,"predicted_ms":2205.947,"predicted_per_token_ms":13.533417177914112,"predicted_per_second":73.89116782950813}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1219"
+                - "1231"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.184s
+        duration: 2.286s

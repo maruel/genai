@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 635
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1779999221,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":284,"total_tokens":286,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-uPPzPUwpJddk7SVuKXlBE5SRQfctxIUr","timings":{"cache_n":0,"prompt_n":284,"prompt_ms":480.439,"prompt_per_token_ms":1.69168661971831,"prompt_per_second":591.1260326493061,"predicted_n":2,"predicted_ms":14.907,"predicted_per_token_ms":7.4535,"predicted_per_second":134.16515730864694}}'
+        content_length: 1683
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image description/context (implied by the instruction and the image content, even though I cannot *see* the image directly, I must rely on the input provided, which is a description/context marker \"It is [image content]\" followed by the request).\n2.  **Analyze the Input Data:** The input ends with \"It is [image data]\" and the actual visual data is represented by the prompt structure. The text provided is: \"What fruit is it? Reply with only one word.\" followed by an implied image/data that needs identification. The visual description provided is: \"It is [an image of a yellow, curved fruit].\" The final element is a signature/identifier (\"It is [something]\").\n3.  **Identify the Subject:** The visual subject is clearly a banana.\n4.  **Determine the Required Output Format:** The instruction explicitly states: \"Reply with only one word.\"\n5.  **Formulate the Answer:** The single-word answer for the fruit is \"Banana\"."}}],"created":1782171122,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":232,"prompt_tokens":71,"total_tokens":303,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-EMnyFbvFaZzrlKC49asnkkCogmbF2TGr","timings":{"cache_n":7,"prompt_n":64,"prompt_ms":137.134,"prompt_per_token_ms":2.14271875,"prompt_per_second":466.6968075021512,"predicted_n":232,"predicted_ms":3088.887,"predicted_per_token_ms":13.314168103448276,"predicted_per_second":75.10795959839255}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "635"
+                - "1683"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 508ms
+        duration: 3.229s

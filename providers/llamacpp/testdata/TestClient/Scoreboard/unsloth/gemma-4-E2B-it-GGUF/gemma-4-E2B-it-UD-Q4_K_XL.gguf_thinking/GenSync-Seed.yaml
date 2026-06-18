@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1194
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user wants me to say \"hello\" but use only one word.\n2.  **Identify the Core Goal:** Express a greeting.\n3.  **Determine Possible One-Word Greetings:**\n    *   Hi\n    *   Hello\n    *   Hey\n    *   Greetings\n    *   Salutations\n    *   Howdy\n4.  **Select the Most Direct/Standard Option:** \"Hello\" is the most direct fulfillment of the request, as it is the word the user asked me to convey, constrained to one word.\n5.  **Final Output Generation:** Hello."}}],"created":1779999181,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":144,"prompt_tokens":24,"total_tokens":168,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-l8wgysbi5Vzb9ebgBjY7koxTIuEhb2od","timings":{"cache_n":7,"prompt_n":17,"prompt_ms":154.538,"prompt_per_token_ms":9.090470588235295,"prompt_per_second":110.00530613829608,"predicted_n":144,"predicted_ms":1923.906,"predicted_per_token_ms":13.360458333333334,"predicted_per_second":74.84773164593281}}'
+        content_length: 1188
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user wants me to say \"hello\" but use only one word.\n2.  **Identify the Core Goal:** Express a greeting.\n3.  **Determine Possible One-Word Greetings:**\n    *   Hi\n    *   Hello\n    *   Hey\n    *   Greetings\n    *   Salutations\n    *   Howdy\n4.  **Select the Most Direct/Standard Option:** \"Hello\" is the most direct fulfillment of the request, as it is the word the user asked me to convey.\n5.  **Final Output Generation:** (Produce the chosen word.)"}}],"created":1782171073,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":143,"prompt_tokens":24,"total_tokens":167,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-KiSQ2mZDGF9t4yP1hjiJ5WTcPq8OUppQ","timings":{"cache_n":7,"prompt_n":17,"prompt_ms":69.039,"prompt_per_token_ms":4.061117647058824,"prompt_per_second":246.23763380118484,"predicted_n":143,"predicted_ms":1902.108,"predicted_per_token_ms":13.301454545454545,"predicted_per_second":75.17974794280872}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1194"
+                - "1188"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.104s
+        duration: 1.982s

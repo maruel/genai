@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1429
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking a direct question based on a provided statement: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n2.  **Identify the Key Information:**\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n3.  **Extract the Answer:** Premise 1 directly answers the question.\n4.  **Formulate the Response:** State the identified capital. (Self-Correction/Verification: The question is a trick/redundancy question, but the answer is explicitly provided.)\n\n5.  **Final Answer Generation.**"}}],"created":1779999212,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":202,"prompt_tokens":47,"total_tokens":249,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-pohaPOW3TTnAzVz5U2lEWLMpI9o3WuZS","timings":{"cache_n":7,"prompt_n":40,"prompt_ms":88.993,"prompt_per_token_ms":2.224825,"prompt_per_second":449.4735540997607,"predicted_n":202,"predicted_ms":2713.159,"predicted_per_token_ms":13.431480198019802,"predicted_per_second":74.45195803121011}}'
+        content_length: 1476
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking for the capital of \"Quackiland.\"\n2.  **Analyze the Provided Information (Premises):**\n    *   \"The capital of Quackiland is Quack.\" (Premise 1)\n    *   \"The Big Canard Statue is located in Quack.\" (Premise 2)\n3.  **Identify the Target Question:** \"What is the capital of Quackiland?\"\n4.  **Extract the Answer from the Premises:** Premise 1 directly states the answer.\n5.  **Formulate the Conclusion:** The capital of Quackiland is Quack.\n6.  **Verify (Self-Correction/Review):** The information is self-contained. The answer is explicitly given in the first sentence. (The second sentence is extra detail, possibly a distractor, but doesn''t change the capital.)\n7.  **Final Answer Generation.**"}}],"created":1782171103,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":220,"prompt_tokens":47,"total_tokens":267,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-JwntaI9pAgWdYxz3p6YECYJSsYcwnvB0","timings":{"cache_n":7,"prompt_n":40,"prompt_ms":79.246,"prompt_per_token_ms":1.98115,"prompt_per_second":504.75733790979984,"predicted_n":220,"predicted_ms":3077.457,"predicted_per_token_ms":13.988440909090908,"predicted_per_second":71.48759511505766}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1429"
+                - "1476"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.815s
+        duration: 3.168s

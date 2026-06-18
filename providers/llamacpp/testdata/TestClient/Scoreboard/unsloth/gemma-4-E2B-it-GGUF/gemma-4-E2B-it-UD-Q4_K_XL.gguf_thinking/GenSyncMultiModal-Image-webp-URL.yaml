@@ -19,17 +19,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 100
-        body: '{"error":{"code":400,"message":"Failed to load image or audio file","type":"invalid_request_error"}}'
+        content_length: 2876
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Missing","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has presented a prompt: \"What fruit is it? Reply with only one word. Video:\".\n2.  **Examine the Input:** The input consists of a question about an image/video (\"What fruit is it?\") but provides *no image or video*. The input ends abruptly after \"Video:\".\n3.  **Determine the Task Feasibility:** I cannot identify a fruit without visual information.\n4.  **Formulate the Response Strategy:** Since the required information (the video/image) is missing, I cannot answer the question. I must inform the user that the input is missing.\n5.  **Review Constraints:** The user asked to \"Reply with only one word.\"\n6.  **Select the Best Response (Handling Missing Data):**\n    *   \"Missing\" (One word, accurate)\n    *   \"No\" (One word, accurate)\n    *   *Self-Correction/Refinement:* While \"No\" is technically accurate in that I cannot answer, it doesn''t fully explain *why*. A more direct response acknowledging the lack of input is better. However, adhering strictly to the \"one word\" constraint while being helpful is key.\n\n7.  **Final Decision:** Since there is no image, I cannot identify the fruit. A neutral response is required.\n\n*(Self-Correction based on typical LLM behavior in this scenario: If I cannot answer, I must state that I need the input. However, if the instruction is extremely rigid (\"one word\"), I must choose the most appropriate single word.)*\n\n*Attempting to adhere to the constraint:* Since I have nothing to look at, I cannot name a fruit.\n\n*Alternative thought process:* If I were a strict AI following instructions, I might just wait for the input. But since the prompt is complete (even if empty), I must respond.\n\n*Choosing the simplest answer indicating failure:*\n\n*Resulting output:* (Wait for the actual image/video.) Since I cannot wait, I must state the limitation.\n\n*Final decision is to acknowledge the missing input.* (But the instruction implies I *should* have the image.)\n\n*If forced to reply with only one word based on the prompt structure:* I cannot proceed.\n\n*(Since I must provide an output, I will state the logical conclusion based on the provided input.)*"}}],"created":1782171146,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":508,"prompt_tokens":29,"total_tokens":537,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-ZVrK32uzMkCO4nSYP27iYjrgyQEbQaFo","timings":{"cache_n":7,"prompt_n":22,"prompt_ms":75.817,"prompt_per_token_ms":3.4462272727272723,"prompt_per_second":290.17238877824235,"predicted_n":508,"predicted_ms":6371.607,"predicted_per_token_ms":12.54253346456693,"predicted_per_second":79.72870894265763}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "100"
+                - "2876"
             Content-Type:
                 - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
             Server:
                 - llama.cpp
-        status: 400 Bad Request
-        code: 400
-        duration: 87ms
+        status: 200 OK
+        code: 200
+        duration: 8.159s

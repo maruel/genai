@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 725
-        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed explanation of"}}],"created":1779999187,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":25,"total_tokens":41,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-o43HeubnX4E03tWtI78NJ0ATo8TC29D4","timings":{"cache_n":7,"prompt_n":18,"prompt_ms":107.537,"prompt_per_token_ms":5.974277777777778,"prompt_per_second":167.3842491421557,"predicted_n":16,"predicted_ms":397.853,"predicted_per_token_ms":24.8658125,"predicted_per_second":40.21585862114902}}'
+        content_length: 726
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed explanation of"}}],"created":1782171076,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":25,"total_tokens":41,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-oRvJgbsTuhno9OSZZJzePECR9yqRAzaH","timings":{"cache_n":7,"prompt_n":18,"prompt_ms":72.099,"prompt_per_token_ms":4.0055000000000005,"prompt_per_second":249.65672200724003,"predicted_n":16,"predicted_ms":228.051,"predicted_per_token_ms":14.2531875,"predicted_per_second":70.15974496932704}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "725"
+                - "726"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 528ms
+        duration: 311ms

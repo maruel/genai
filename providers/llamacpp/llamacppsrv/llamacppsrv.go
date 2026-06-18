@@ -1,4 +1,4 @@
-// Copyright 2024 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -32,7 +32,7 @@ import (
 // https://github.com/ggml-org/llama.cpp/releases
 //
 // You are free to use the build number that works best for you.
-const BuildNumber = 9383
+const BuildNumber = 9763
 
 // Server is a llama-server instance.
 type Server struct {

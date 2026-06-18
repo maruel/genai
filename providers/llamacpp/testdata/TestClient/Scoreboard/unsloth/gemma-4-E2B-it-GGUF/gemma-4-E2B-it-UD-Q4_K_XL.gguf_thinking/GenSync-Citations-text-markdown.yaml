@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1380
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided a short riddle/text about \"Quackiland\" and asks a specific question: \"What is the capital of Quackiland?\"\n2.  **Analyze the Provided Text (The Clues):**\n    *   \"The capital of Quackiland is Quack.\" (Clue 1)\n    *   \"The Big Canard Statue is located in Quack.\" (Clue 2)\n3.  **Determine the Answer:** Clue 1 directly states the answer.\n4.  **Formulate the Response:** State the answer clearly based on the provided text. (Self-Correction/Verification: The text is straightforward. The capital is explicitly named.)\n\n5.  **Final Answer Construction:** The capital of Quackiland is Quack."}}],"created":1779999215,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":192,"prompt_tokens":52,"total_tokens":244,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-BoSBj4JxnRvLLgMfo9H8iY3Y0PyzLodC","timings":{"cache_n":7,"prompt_n":45,"prompt_ms":89.935,"prompt_per_token_ms":1.9985555555555556,"prompt_per_second":500.36137210207374,"predicted_n":192,"predicted_ms":2582.765,"predicted_per_token_ms":13.451901041666666,"predicted_per_second":74.33893521090769}}'
+        content_length: 1343
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided a short riddle/text snippet about \"Quackiland\" and asked a direct question: \"What is the capital of Quackiland?\"\n2.  **Analyze the Provided Text (The Clues):**\n    *   \"The capital of Quackiland is Quack.\"\n    *   \"The Big Canard Statue is located in Quack.\"\n    *   \"What is the capital of Quackiland?\"\n3.  **Identify the Answer:** The first sentence explicitly states the answer.\n4.  **Formulate the Response:** State the answer clearly based on the provided text.\n5.  **Final Check:** Does the answer match the text? Yes. (The capital is Quack)."}}],"created":1782171105,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":181,"prompt_tokens":52,"total_tokens":233,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-EgRBb0HCVhoXUNtiYSMfhxKjc3mHqc54","timings":{"cache_n":7,"prompt_n":45,"prompt_ms":79.198,"prompt_per_token_ms":1.7599555555555555,"prompt_per_second":568.196166569863,"predicted_n":181,"predicted_ms":2456.081,"predicted_per_token_ms":13.569508287292818,"predicted_per_second":73.69463792114348}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1380"
+                - "1343"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.685s
+        duration: 2.548s

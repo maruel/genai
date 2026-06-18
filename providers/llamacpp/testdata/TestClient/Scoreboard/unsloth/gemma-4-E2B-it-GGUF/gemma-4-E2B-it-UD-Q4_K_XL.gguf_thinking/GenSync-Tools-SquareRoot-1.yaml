@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1311
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the `square_root` tool.\nThe user explicitly requested that the reply should only be the result, with no explanation.\n\n1.  **Identify the tool:** The available tool is `square_root(number)`.\n2.  **Identify the input:** The number to calculate the square root of is 132413.\n3.  **Construct the tool call:** `square_root(number=132413)`.\n4.  **Execute the tool call.**\n5.  **Return the result** (as requested, only the result).","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"OygZ9nourlrZHyhTgmnj3wIXLeilNJ2P"}]}}],"created":1779999195,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":165,"prompt_tokens":95,"total_tokens":260,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-hMsJ2rIlKY4xzSxP8rF9SU0CuYOjjdHi","timings":{"cache_n":0,"prompt_n":95,"prompt_ms":134.763,"prompt_per_token_ms":1.4185578947368422,"prompt_per_second":704.9412672617855,"predicted_n":165,"predicted_ms":2275.815,"predicted_per_token_ms":13.792818181818182,"predicted_per_second":72.5014994628298}}'
+        content_length: 1458
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the provided `square_root` tool and return only the result.\n\n1.  **Identify the intent:** The user wants a mathematical calculation (square root).\n2.  **Identify the tool:** The available tool is `square_root(number)`.\n3.  **Determine the input:** The number to calculate the square root of is 132413.\n4.  **Construct the tool call:** `square_root(number=132413)`.\n5.  **Execute the tool call and process the result:** (Simulated execution)\n6.  **Format the output:** The user explicitly requested *only the result*, with no explanation.\n\nI need to call the tool first.","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"Ht3GT5F84cw6ywCdTZIPlUYaidid6DmX"}]}}],"created":1782171084,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":195,"prompt_tokens":95,"total_tokens":290,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-fxn5cGC8T7W5t6q7XQMKaRbU4A4cFLSE","timings":{"cache_n":0,"prompt_n":95,"prompt_ms":102.509,"prompt_per_token_ms":1.0790421052631578,"prompt_per_second":926.7478953067535,"predicted_n":195,"predicted_ms":2663.997,"predicted_per_token_ms":13.661523076923077,"predicted_per_second":73.1982806286944}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1311"
+                - "1458"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.423s
+        duration: 2.778s

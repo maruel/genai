@@ -7,7 +7,6 @@
 package llamacppsrv
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -106,9 +105,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
 	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
-	if runtime.GOOS != "windows" {
-		cmd.Env = append(os.Environ(), "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
-	}
+	cmd.Env = serverEnv(cmd.Dir)
 	if logOutput != nil {
 		cmd.Stdout = logOutput
 		cmd.Stderr = logOutput
@@ -195,17 +192,15 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		execSuffix = ".exe"
 	}
 	llamaserver := filepath.Join(cache, "llama-server"+execSuffix)
-	if _, err := os.Stat(llamaserver); err == nil {
+	if cachedExecutable(llamaserver) {
 		// Run it to confirm the version and that the file is not corrupted.
 		// If this fails, starts from scratch.
-		if out, err := exec.CommandContext(ctx, llamaserver, "--version").CombinedOutput(); err == nil {
-			if i := bytes.IndexByte(out, '\n'); i > 1 {
-				re := regexp.MustCompile(`^version: (\d+) .+$`)
-				if m := re.FindStringSubmatch(string(out[0:i])); len(m) == 2 {
-					if v, _ := strconv.Atoi(m[1]); v == version {
-						return llamaserver, nil
-					}
-				}
+		cmd := exec.CommandContext(ctx, llamaserver, "--version")
+		cmd.Dir = filepath.Dir(llamaserver)
+		cmd.Env = serverEnv(cmd.Dir)
+		if out, err := cmd.CombinedOutput(); err == nil {
+			if v, ok := parseBuildNumber(out); ok && v == version {
+				return llamaserver, nil
 			}
 		}
 	}
@@ -233,6 +228,33 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		return "", fmt.Errorf("failed to download %s from github: %w", asset.Name, err)
 	}
 	return llamaserver, nil
+}
+
+func cachedExecutable(path string) bool {
+	info, err := os.Stat(path)
+	return err == nil && info.Mode().IsRegular()
+}
+
+func parseBuildNumber(out []byte) (int, bool) {
+	re := regexp.MustCompile(`(?m)^\s*version:\s*b?(\d+)\b`)
+	m := re.FindSubmatch(out)
+	if len(m) != 2 {
+		return 0, false
+	}
+	v, err := strconv.Atoi(string(m[1]))
+	return v, err == nil
+}
+
+func serverEnv(dir string) []string {
+	env := os.Environ()
+	switch runtime.GOOS {
+	case "darwin":
+		env = append(env, "DYLD_LIBRARY_PATH="+dir+":"+os.Getenv("DYLD_LIBRARY_PATH"))
+	case "windows":
+	default:
+		env = append(env, "LD_LIBRARY_PATH="+dir+":"+os.Getenv("LD_LIBRARY_PATH"))
+	}
+	return env
 }
 
 // assetSuffix returns the substring to match in release asset names for the

@@ -130,7 +130,7 @@ func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
-	names := slices.Sorted(maps.Keys(providers.Available(ctx)))
+	names := slices.Sorted(maps.Keys(providers.All))
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
 	flag.StringVar(provider, "p", "", "alias for -provider")
 	all := flag.Bool("all", false, "include all details")

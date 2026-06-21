@@ -24,9 +24,10 @@ import sys
 
 
 def get_git_files():
+    """Return the list of files tracked by git, or [] on failure."""
     try:
         result = subprocess.run(["git", "ls-files", "-z"], capture_output=True, text=True, check=True)
-        return [f for f in result.stdout.split("\0") if f]
+        return [f for f in result.stdout.split("\0") if f and (os.path.exists(f) or os.path.islink(f))]
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         print(f"Error listing git files: {e}", file=sys.stderr)
         return []
@@ -53,6 +54,24 @@ def _py_docstring(lines, i):
     return ""
 
 
+def _c_style_block_comment(lines: list[str], i: int) -> str:
+    """Extract the description from a C-style block comment starting at lines[i]."""
+    comment_parts = []
+    for line_index, line in enumerate(lines[i:]):
+        text = line.strip()
+        if line_index == 0:
+            text = text[2:].strip()
+        end = text.find("*/")
+        if end >= 0:
+            text = text[:end].strip()
+        text = text.lstrip("*").strip()
+        if text:
+            comment_parts.append(text)
+        if end >= 0:
+            break
+    return " ".join(comment_parts)
+
+
 def get_file_description(filepath):
     """Return the description for a file, or None if not applicable.
 
@@ -65,6 +84,7 @@ def get_file_description(filepath):
         "*.d.ts": None,
         "pnpm-lock.yaml": None,
         "*.cjs": "//",
+        "*.css": "/*",
         "*.go": "//",
         "*.js": "//",
         "*.kt": "//",
@@ -84,11 +104,9 @@ def get_file_description(filepath):
         return None
     fname = os.path.basename(filepath)
     match = next(((pat, p) for pat, p in comment_prefixes.items() if fnmatch.fnmatch(fname, pat)), None)
-    if match is None:
-        return None  # extension not recognised
-    _, prefix = match
+    _, prefix = match if match else (None, None)
     if not prefix:
-        return None  # explicitly excluded pattern
+        return None  # unrecognised extension or explicitly excluded pattern
     with open(filepath, encoding="utf-8") as f:
         lines = [f.readline() for _ in range(20)]
     in_copyright = False
@@ -101,6 +119,8 @@ def get_file_description(filepath):
             continue
         if fname.endswith(".py") and (sline.startswith('"""') or sline.startswith("'''")):
             return _py_docstring(lines, i)
+        if prefix == "/*" and sline.startswith(prefix):
+            return _c_style_block_comment(lines, i)
         # Skip common directives/metadata that aren't descriptions.
         if sline.startswith(f"{prefix}go:"):
             continue
@@ -156,14 +176,13 @@ def discover_configs(all_files):
             oroot = os.path.dirname(other_target)
             if oroot == root:
                 continue
-            if not prefix:
-                child_rel = oroot
-            elif oroot.startswith(prefix):
+            if prefix:
+                if not oroot.startswith(prefix):
+                    continue
                 child_rel = oroot[len(prefix) :]
             else:
-                continue
-            if "/" not in child_rel:
-                exclude.add(child_rel)
+                child_rel = oroot
+            exclude.add(child_rel)
     return configs
 
 
@@ -186,11 +205,12 @@ def generate_index(target, exclude, all_files, all_configs):
             relpath = filepath
         # Check excluded subdirectories, but let sub-workspace AGENTS.md through.
         rel_parts = relpath.replace("\\", "/").split("/")
-        if rel_parts[0] in exclude and filepath not in all_configs:
-            continue
-        # Skip any file in a testdata/ directory.
         if "testdata" in rel_parts:
             continue
+        # A file is excluded if its path starts with any excluded prefix.
+        if any(relpath.startswith(ex + "/") or relpath == ex for ex in exclude):
+            if filepath not in all_configs:
+                continue
         desc = get_file_description(filepath)
         if desc is None:
             continue  # file type has no comment convention
@@ -260,6 +280,7 @@ def ensure_claude_symlinks(all_files: list[str], check: bool) -> int:
 
 
 def main() -> int:
+    """Parse arguments and update (or check) the file indexes."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument(
         "--check",

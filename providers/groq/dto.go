@@ -275,14 +275,23 @@ type ChatStreamChunkResponse struct {
 
 // Model is the provider-specific model metadata.
 type Model struct {
-	ID                  string    `json:"id"`
-	Object              string    `json:"object"`
-	Created             base.Time `json:"created"`
-	OwnedBy             string    `json:"owned_by"`
-	Active              bool      `json:"active"`
-	ContextWindow       int64     `json:"context_window"`
-	PublicApps          []string  `json:"public_apps"`
-	MaxCompletionTokens int64     `json:"max_completion_tokens"`
+	ID                          string            `json:"id"`
+	Object                      string            `json:"object"`
+	Created                     base.Time         `json:"created"`
+	OwnedBy                     string            `json:"owned_by"`
+	Name                        string            `json:"name"`
+	Active                      bool              `json:"active"`
+	ContextWindow               int64             `json:"context_window"`
+	ContextLength               int64             `json:"context_length"`
+	PublicApps                  []string          `json:"public_apps"`
+	InputModalities             []string          `json:"input_modalities"`
+	OutputModalities            []string          `json:"output_modalities"`
+	SupportedFeatures           []string          `json:"supported_features"`
+	SupportedSamplingParameters []string          `json:"supported_sampling_parameters"`
+	HuggingFaceID               string            `json:"hugging_face_id"`
+	Pricing                     map[string]string `json:"pricing"`
+	MaxCompletionTokens         int64             `json:"max_completion_tokens"`
+	MaxOutputLength             int64             `json:"max_output_length"`
 }
 
 // ModelsResponse represents the response structure for Groq models listing.

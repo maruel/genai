@@ -19,7 +19,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"object":"list","data":[{"id":"mimo-v2-flash","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2-omni","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2-pro","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2-tts","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-pro","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-tts","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-tts-voiceclone","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-tts-voicedesign","object":"model","owned_by":"xiaomi"}]}'
+        body: '{"object":"list","data":[{"id":"mimo-v2-flash","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2-omni","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2-pro","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2-tts","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-asr","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-pro","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-tts","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-tts-voiceclone","object":"model","owned_by":"xiaomi"},{"id":"mimo-v2.5-tts-voicedesign","object":"model","owned_by":"xiaomi"}]}'
         headers:
             Content-Type:
                 - application/json
@@ -33,4 +33,4 @@ interactions:
                 - "200"
         status: 200 OK
         code: 200
-        duration: 795ms
+        duration: 1.019s

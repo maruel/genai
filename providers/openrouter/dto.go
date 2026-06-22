@@ -584,6 +584,15 @@ type ModelDefaultParameters struct {
 	RepetitionPenalty float64 `json:"repetition_penalty,omitzero"`
 }
 
+// ModelReasoning contains reasoning capability metadata for a model.
+type ModelReasoning struct {
+	DefaultEffort     string   `json:"default_effort,omitzero"`
+	DefaultEnabled    bool     `json:"default_enabled,omitzero"`
+	Mandatory         bool     `json:"mandatory,omitzero"`
+	SupportedEfforts  []string `json:"supported_efforts,omitzero"`
+	SupportsMaxTokens bool     `json:"supports_max_tokens,omitzero"`
+}
+
 // Model is the provider-specific model metadata.
 type Model struct {
 	ID            string       `json:"id"`
@@ -608,6 +617,7 @@ type Model struct {
 	PerRequestLimits    map[string]json.RawMessage `json:"per_request_limits"`
 	SupportedParameters []string                   `json:"supported_parameters"`
 	DefaultParameters   ModelDefaultParameters     `json:"default_parameters"`
+	Reasoning           ModelReasoning             `json:"reasoning,omitzero"`
 	Benchmarks          ModelBenchmarks            `json:"benchmarks,omitzero"`
 	CanonicalSlug       string                     `json:"canonical_slug"`
 	KnowledgeCutoff     string                     `json:"knowledge_cutoff,omitzero"`

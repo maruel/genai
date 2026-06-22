@@ -499,12 +499,12 @@ func (m *Model) String() string {
 	if !m.Active {
 		suffix = " (inactive)"
 	}
-	return fmt.Sprintf("%s (%s) Context: %d/%d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, m.MaxCompletionTokens, suffix)
+	return fmt.Sprintf("%s (%s) Context: %d/%d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Context(), m.MaxOutputLength, suffix)
 }
 
 // Context implements genai.Model.
 func (m *Model) Context() int64 {
-	return m.ContextWindow
+	return max(m.ContextLength, m.ContextWindow)
 }
 
 // ToModels converts Groq models to genai.Model interfaces.

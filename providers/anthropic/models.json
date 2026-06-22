@@ -1,16 +1,15 @@
 {
   "models": {
+    "claude-fable-5": {
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 128000
+    },
     "claude-haiku-4-5-20251001": {
       "max_input_tokens": 200000,
       "max_output_tokens": 64000,
       "adaptive_thinking_not_supported": true
     },
     "claude-opus-4-1-20250805": {
-      "max_input_tokens": 200000,
-      "max_output_tokens": 32000,
-      "adaptive_thinking_not_supported": true
-    },
-    "claude-opus-4-20250514": {
       "max_input_tokens": 200000,
       "max_output_tokens": 32000,
       "adaptive_thinking_not_supported": true
@@ -31,11 +30,6 @@
     "claude-opus-4-8": {
       "max_input_tokens": 1000000,
       "max_output_tokens": 128000
-    },
-    "claude-sonnet-4-20250514": {
-      "max_input_tokens": 1000000,
-      "max_output_tokens": 64000,
-      "adaptive_thinking_not_supported": true
     },
     "claude-sonnet-4-5-20250929": {
       "max_input_tokens": 1000000,

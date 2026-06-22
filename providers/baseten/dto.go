@@ -592,6 +592,7 @@ type Usage struct {
 // Model is the provider-specific model metadata.
 type Model struct {
 	ID                          string   `json:"id"`
+	HuggingFaceID               string   `json:"hugging_face_id,omitzero"`
 	Object                      string   `json:"object,omitzero"`
 	OwnedBy                     string   `json:"owned_by,omitzero"`
 	Name                        string   `json:"name,omitzero"`

@@ -6,6 +6,11 @@
 - **Test with filter**: `go test ./<directory>`
 - **Format source files**: `gofmt -w -s .`
 - **Retrieve documentation**: `godoc -all ./<directory>`
+- **Weekly model regeneration**: `./internal/regen_weekly.sh`
+  - Requires live provider credentials. The script fails before changing files if any required env var is missing.
+  - Required env vars: `ANTHROPIC_API_KEY`, `BASETEN_API_KEY`, `CEREBRAS_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_KEY`, `COHERE_API_KEY`, `DEEPSEEK_API_KEY`, `GEMINI_API_KEY`, `GITHUB_TOKEN`, `GROQ_API_KEY`, `HUGGINGFACE_API_KEY`, `MISTRAL_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `TOGETHER_API_KEY`, `MIMO_API_KEY`, and one of `DASHSCOPE_API_KEY_INTL`, `DASHSCOPE_API_KEY_US`, `DASHSCOPE_API_KEY_CN`, or `DASHSCOPE_API_KEY`.
+  - It installs `cmd/list-models` and `cmd/scoreboard`, writes `docs/MODELS.md`, then runs `go generate ./...`.
+  - If a provider fails after the env check, inspect the `list-models -strict -provider <provider>` error. The script deletes that provider's `Warmup.yaml` and runs `go test ./providers/<provider>/...` to expose stale recording issues. Never use `RECORD=all`.
 
 ## Directory Structure
 

@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 602
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 732
+        body: '{"id":"chatcmpl-7456bdc5b7cf40e0a6c0d777bede4d33","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-fea99bbf6f6445a081d8fd2d6c72085b","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}],"role":"assistant","reasoning_content":"The user wants me to calculate the square root of 132413."},"finish_reason":"tool_calls","stop_reason":154829}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion","usage":{"prompt_tokens":213,"completion_tokens":28,"total_tokens":241,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":15,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "732"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162065228"
+        status: 200 OK
+        code: 200
+        duration: 448ms

@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2082
+        body: '{"id":"chatcmpl-7a02802d67154a559a30fd69c6a7556c","choices":[{"index":0,"message":{"content":"Sure! Let me call the `best_country` tool for you right away.","tool_calls":[{"id":"chatcmpl-tool-b7e72e55931849d482be8f9ef2b93af3","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant","reasoning_content":"The user wants me to call the best_country tool to determine which country is the best. The tool accepts either \"Canada\" or \"USA\" as the country parameter. However, the user is asking me to determine which is the best country, not to specify one. \n\nLet me think about this. The tool is called \"best_country\" and it \"specifies the best country.\" The user wants to know which is best. I think I should call it with one of the options. But which one? The user seems to be asking me to find out, not to assert. \n\nLet me just call the tool. I could try calling it with \"Canada\" since that''s what the user mentioned first, or I could call both. But calling both seems odd since the tool is about specifying the best country. Let me just call it with \"Canada\" and see what it returns.\n\nActually, I think calling it with either option should return some kind of result. Let me call it with \"Canada\" since that''s what the user mentioned first.\n\nHmm, but actually the tool description says \"A tool to specify the best country\" - so it seems like I''m supposed to specify which country I think is best. The user is asking me to call the tool to tell them which country is best. I''ll go with Canada since the user seemed to mention it first and with a positive framing (\"I wonder if Canada is a better country\")."},"finish_reason":"tool_calls","stop_reason":154829}],"created":1782162068,"model":"zai-org/GLM-5.2","object":"chat.completion","usage":{"prompt_tokens":218,"completion_tokens":319,"total_tokens":537,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":292,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "2082"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162065980"
+        status: 200 OK
+        code: 200
+        duration: 2.621s

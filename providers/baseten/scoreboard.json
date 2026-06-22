@@ -4,7 +4,7 @@
   "scenarios": [
     {
       "models": [
-        "zai-org/GLM-5.1"
+        "zai-org/GLM-5.2"
       ],
       "sota": true,
       "reason": true,
@@ -23,7 +23,8 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
@@ -31,10 +32,10 @@
       },
       "GenStream": {
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
+        "reportFinishReason": "flaky",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
@@ -126,7 +127,7 @@
         "nvidia/Nemotron-120B-A12B",
         "zai-org/GLM-4.7",
         "zai-org/GLM-5",
-        "zai-org/GLM-5.2"
+        "zai-org/GLM-5.1"
       ]
     }
   ]

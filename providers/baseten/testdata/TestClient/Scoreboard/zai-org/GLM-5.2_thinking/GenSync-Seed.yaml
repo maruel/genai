@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 155
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1022
+        body: '{"id":"chatcmpl-81f4d50c3b6e4731b5925e865a17c87b","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n\n2.  **Determine the appropriate response:**\n    *   The word for greeting someone as requested is \"Hello\".\n\n3.  **Apply constraints:**\n    *   Length constraint: Exactly one word.\n    *   Punctuation: None needed, or just the word itself. Let''s provide just the word to be safe, though \"Hello.\" is technically one word. Just \"Hello\" is safer.\n\n4.  **Final Output:** Hello"},"finish_reason":"stop","stop_reason":154827}],"created":1782162062,"model":"zai-org/GLM-5.2","object":"chat.completion","usage":{"prompt_tokens":21,"completion_tokens":124,"total_tokens":145,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":122,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "1022"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162061748"
+        status: 200 OK
+        code: 200
+        duration: 1.183s

@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"Say hello. Use only one word."}],"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1145
+        body: '{"id":"chatcmpl-4661fc98dd3541ee89b00208cf70a86b","choices":[{"index":0,"message":{"content":"Hello.","role":"assistant","reasoning_content":"1.  **Analyze the Request:**\n    *   Action: Say hello.\n    *   Constraint: Use only one word.\n    *   Constraint: Do not violate safety policies (not applicable here, but always keep in mind).\n\n2.  **Determine the appropriate response:**\n    *   The most direct and standard way to say hello in one word is \"Hello\" (or \"Hi\").\n\n3.  **Format the output:**\n    *   Just the word \"Hello.\" (or \"Hello\"). No punctuation is strictly required but a simple word is best. Let''s use \"Hello\".\n\n4.  **Final check against constraints:**\n    *   Does it say hello? Yes.\n    *   Is it exactly one word? Yes."},"finish_reason":"stop","stop_reason":154827}],"created":1782162061,"model":"zai-org/GLM-5.2","object":"chat.completion","usage":{"prompt_tokens":21,"completion_tokens":159,"total_tokens":180,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":156,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "1145"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162059639"
+        status: 200 OK
+        code: 200
+        duration: 2.184s

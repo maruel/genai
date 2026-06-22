@@ -196,7 +196,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 			if err2 != nil {
 				continue
 			}
-			if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && (weights == 0 || w < weights) {
+			if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && !strings.Contains(m.ID, "Llama-3.2-") && (weights == 0 || w < weights) {
 				weights = w
 				selectedModel = m.ID
 			}

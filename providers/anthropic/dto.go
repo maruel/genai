@@ -117,7 +117,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				c.Thinking.Type = "disabled"
 				c.Thinking.Display = ""
 			case ThinkingEnabled:
-				if v.ThinkingBudget >= c.MaxTokens {
+				if c.MaxTokens != 0 && v.ThinkingBudget >= c.MaxTokens {
 					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
 				}
 				c.Thinking.BudgetTokens = v.ThinkingBudget
@@ -125,13 +125,16 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			default:
 				// Auto-detect from ThinkingBudget for backward compatibility.
 				if v.ThinkingBudget > 0 {
-					if v.ThinkingBudget >= c.MaxTokens {
+					if c.MaxTokens != 0 && v.ThinkingBudget >= c.MaxTokens {
 						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
 					}
 					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
 					// Thinking isn't compatible with temperature, top_p, or top_k modifications as well as forced tool use.
 					c.Thinking.BudgetTokens = v.ThinkingBudget
 					c.Thinking.Type = string(ThinkingEnabled)
+				} else {
+					c.Thinking.Type = "disabled"
+					c.Thinking.Display = ""
 				}
 			}
 			if v.ThinkingDisplay != "" {

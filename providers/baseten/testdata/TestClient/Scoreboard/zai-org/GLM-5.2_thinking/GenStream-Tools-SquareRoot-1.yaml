@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 656
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":"The"}}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":1,"total_tokens":214,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"reasoning_content":" user wants the"}}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":4,"total_tokens":217,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":4,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"reasoning_content":" square root of 132"}}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":9,"total_tokens":222,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"reasoning_content":"413."}}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":14,"total_tokens":227,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"chatcmpl-tool-b13b4b61d64e43cbb9336ea31790545b","type":"function","function":{"name":"square_root","arguments":"{\"number\": "}}]}}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":19,"total_tokens":232,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"chatcmpl-tool-b13b4b61d64e43cbb9336ea31790545b","type":"function","function":{"arguments":"132413"}}]}}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":24,"total_tokens":237,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"chatcmpl-tool-b13b4b61d64e43cbb9336ea31790545b","type":"function","function":{"arguments":"}"}}]},"finish_reason":"tool_calls","stop_reason":154829}],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":25,"total_tokens":238,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-842350effd9c4a8db52585737b6039d5","choices":[],"created":1782162065,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":213,"completion_tokens":25,"total_tokens":238,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":32},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162065045"
+        status: 200 OK
+        code: 200
+        duration: 195ms

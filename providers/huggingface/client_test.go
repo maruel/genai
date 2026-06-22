@@ -121,8 +121,8 @@ func TestClient(t *testing.T) {
 					}
 				}
 			}
-			if strings.Contains(model.Model, "-1B-") {
-				// It returns 502 on JSON
+			if strings.Contains(model.Model, "-1B-") || strings.Contains(model.Model, "Llama-3.1-8B") {
+				// Small Llama models return 502 on JSON.
 				return &internaltest.HideHTTPCode{Provider: c, StatusCode: 502}
 			}
 			return c

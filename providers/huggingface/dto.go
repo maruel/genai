@@ -413,6 +413,7 @@ type Logprobs struct {
 	// Alternative format used by some models
 	Tokens         []json.RawMessage `json:"tokens,omitzero"`
 	TokenLogprobs  []json.RawMessage `json:"token_logprobs,omitzero"`
+	TokenIDs       []json.RawMessage `json:"token_ids,omitzero"`
 	TopLogprobsAlt []json.RawMessage `json:"top_logprobs,omitzero"`
 	Refusal        struct{}          `json:"refusal,omitzero"`
 }

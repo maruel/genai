@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1418
+        body: '{"id":"chatcmpl-b3fa611d81164cc0a16fdb40206c25b9","choices":[{"index":0,"message":{"content":"I''ll call the `best_country` tool for both countries so we can compare! Let me make both calls at once:","tool_calls":[{"id":"chatcmpl-tool-66b22a139c79415598379b082638b025","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"id":"chatcmpl-tool-295c24d91665470580a3f5aa139dd3aa","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant","reasoning_content":"The user wants me to call the best_country tool. They''re asking about USA vs Canada. I need to call the tool, but the tool only accepts one country parameter. Let me call it with \"USA\" since that seems to be what they''re leaning towards, but actually the user is asking which is the best — so I should probably call it for both countries to compare. But the tool just takes a single country and presumably tells you if it''s the best or not. Let me call both to compare."},"finish_reason":"tool_calls","stop_reason":154829}],"created":1782162070,"model":"zai-org/GLM-5.2","object":"chat.completion","usage":{"prompt_tokens":218,"completion_tokens":150,"total_tokens":368,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":96},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":104,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "1418"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162068601"
+        status: 200 OK
+        code: 200
+        duration: 1.458s

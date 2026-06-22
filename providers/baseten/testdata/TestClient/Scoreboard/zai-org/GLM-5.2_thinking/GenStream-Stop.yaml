@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.2","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream":true,"stream_options":{"include_usage":true},"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":"1"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":1,"total_tokens":26,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":".  **Analyze"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":6,"total_tokens":31,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":6,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":" the Request:**\n   "}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":11,"total_tokens":36,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":11,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":" *   **Topic:**"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":16,"total_tokens":41,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":" Canada in"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":18,"total_tokens":43,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":18,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":" great detail"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":20,"total_tokens":45,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":20,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":".\n    *   **"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":25,"total_tokens":50,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":25,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":"Starting phrase:** \"Canada"}}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":30,"total_tokens":55,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":30,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-74b1cfa4a06444248cf0b3527f8d7a87","choices":[{"index":0,"delta":{"reasoning_content":" "},"finish_reason":"stop"}],"created":1782162063,"model":"zai-org/GLM-5.2","object":"chat.completion.chunk","usage":{"prompt_tokens":25,"completion_tokens":35,"total_tokens":60,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":31,"rejected_prediction_tokens":0}}}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1782162063359"
+        status: 200 OK
+        code: 200
+        duration: 179ms

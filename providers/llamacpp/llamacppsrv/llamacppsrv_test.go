@@ -8,36 +8,31 @@ package llamacppsrv
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strconv"
 	"testing"
 )
 
+func TestMain(m *testing.M) {
+	if os.Getenv("LLAMACPP_TEST_HELPER") == "1" {
+		os.Exit(runDownloadReleaseHelper())
+	}
+	os.Exit(m.Run())
+}
+
 func TestDownloadRelease(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		if runtime.GOOS == "windows" {
-			t.Skip("test uses a POSIX shell script")
-		}
 		cache := t.TempDir()
-		exe := filepath.Join(cache, "llama-server")
+		exe := installHelperExecutable(t, cache)
 		want := 1234
-		envName := "LD_LIBRARY_PATH"
-		if runtime.GOOS == "darwin" {
-			envName = "DYLD_LIBRARY_PATH"
-		}
-		script := `#!/bin/sh
-case ":$` + envName + `:" in
-*:` + cache + `:*) ;;
-*) exit 2 ;;
-esac
-printf 'version: ` + strconv.Itoa(want) + ` test\n'
-`
-		if err := os.WriteFile(exe, []byte(script), 0o755); err != nil {
-			t.Fatal(err)
-		}
+		t.Setenv("LLAMACPP_TEST_HELPER", "1")
+		t.Setenv("LLAMACPP_TEST_CACHE", cache)
+		t.Setenv("LLAMACPP_TEST_VERSION", strconv.Itoa(want))
 
 		oldTransport := http.DefaultTransport
 		http.DefaultTransport = forbidRoundTrip{t: t}
@@ -52,14 +47,12 @@ printf 'version: ` + strconv.Itoa(want) + ` test\n'
 		}
 	})
 	t.Run("validExactVersion", func(t *testing.T) {
-		if runtime.GOOS == "windows" {
-			t.Skip("test uses a POSIX shell script")
-		}
 		cache := t.TempDir()
-		exe := filepath.Join(cache, "llama-server")
-		if err := os.WriteFile(exe, []byte("#!/bin/sh\nprintf 'version: 1234\\n'\n"), 0o755); err != nil {
-			t.Fatal(err)
-		}
+		exe := installHelperExecutable(t, cache)
+		t.Setenv("LLAMACPP_TEST_HELPER", "1")
+		t.Setenv("LLAMACPP_TEST_CACHE", cache)
+		t.Setenv("LLAMACPP_TEST_VERSION", "1234")
+		t.Setenv("LLAMACPP_TEST_VERSION_OUTPUT", "version: 1234\n")
 
 		oldTransport := http.DefaultTransport
 		http.DefaultTransport = forbidRoundTrip{t: t}
@@ -73,6 +66,52 @@ printf 'version: ` + strconv.Itoa(want) + ` test\n'
 			t.Fatalf("expected %q, got %q", exe, got)
 		}
 	})
+}
+
+func installHelperExecutable(t *testing.T, cache string) string {
+	src, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	suffix := ""
+	if runtime.GOOS == "windows" {
+		suffix = ".exe"
+	}
+	dst := filepath.Join(cache, "llama-server"+suffix)
+	b, err := os.ReadFile(src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(dst, b, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	return dst
+}
+
+func runDownloadReleaseHelper() int {
+	if !slices.Contains(os.Args[1:], "--version") {
+		return 2
+	}
+	cache := os.Getenv("LLAMACPP_TEST_CACHE")
+	switch runtime.GOOS {
+	case "darwin":
+		if !slices.Contains(filepath.SplitList(os.Getenv("DYLD_LIBRARY_PATH")), cache) {
+			return 2
+		}
+	case "windows":
+	default:
+		if !slices.Contains(filepath.SplitList(os.Getenv("LD_LIBRARY_PATH")), cache) {
+			return 2
+		}
+	}
+	out := os.Getenv("LLAMACPP_TEST_VERSION_OUTPUT")
+	if out == "" {
+		out = fmt.Sprintf("version: %s test\n", os.Getenv("LLAMACPP_TEST_VERSION"))
+	}
+	if _, err := fmt.Print(out); err != nil {
+		return 2
+	}
+	return 0
 }
 
 func TestParseBuildNumber(t *testing.T) {

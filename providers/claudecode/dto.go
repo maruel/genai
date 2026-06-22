@@ -770,6 +770,18 @@ type EditInput struct {
 	ReplaceAll bool   `json:"replace_all,omitempty"`
 }
 
+// MultiEditInput is the input for the MultiEdit tool.
+type MultiEditInput struct {
+	FilePath string            `json:"file_path"`
+	Edits    []EditReplacement `json:"edits"`
+}
+
+// EditReplacement is one old/new text replacement in a MultiEdit tool call.
+type EditReplacement struct {
+	OldString string `json:"old_string"`
+	NewString string `json:"new_string"`
+}
+
 // WriteInput is the input for the Write tool.
 type WriteInput struct {
 	FilePath string `json:"file_path"`

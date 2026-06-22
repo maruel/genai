@@ -487,7 +487,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 
 // parseMessageUpdateDelta extracts text and reasoning deltas from a message_update event.
 func parseMessageUpdateDelta(line []byte) (text, reasoning string, err error) {
-	var ev MessageUpdateEvent
+	var ev MessageUpdateDeltaEvent
 	if err := json.Unmarshal(line, &ev); err != nil {
 		return "", "", fmt.Errorf("unmarshal message_update: %w", err)
 	}

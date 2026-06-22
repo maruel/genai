@@ -344,6 +344,13 @@ type ToolCallUpdate struct {
 	RawInput      json.RawMessage    `json:"rawInput,omitzero"`
 }
 
+// EditInput is the rawInput shape for OpenCode edit and replace tool calls.
+type EditInput struct {
+	FilePath  string `json:"filePath"`
+	OldString string `json:"oldString"`
+	NewString string `json:"newString"`
+}
+
 // ToolCallContent is a content entry in a tool call update result. This is a
 // flat union discriminated by Type:
 //

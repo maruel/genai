@@ -706,6 +706,35 @@ type MessageUpdateEvent struct {
 	AssistantMessageEvent AssistantMessageEvent `json:"assistantMessageEvent"`
 }
 
+// MessageUpdateDeltaEvent is the minimal message_update event shape needed by
+// streaming consumers that only need the assistantMessageEvent payload.
+type MessageUpdateDeltaEvent struct {
+	Type                  EventType          `json:"type"`
+	AssistantMessageEvent MessageUpdateDelta `json:"assistantMessageEvent"`
+}
+
+// MessageUpdateDelta is the compact assistantMessageEvent payload emitted in a
+// message_update event.
+type MessageUpdateDelta struct {
+	Type     DeltaType              `json:"type"`
+	Delta    string                 `json:"delta,omitzero"`
+	Reason   StopReason             `json:"reason,omitzero"`
+	ToolCall *MessageUpdateToolCall `json:"toolCall,omitzero"`
+	Error    *MessageUpdateError    `json:"error,omitzero"`
+}
+
+// MessageUpdateToolCall is the tool call payload in a message_update delta.
+type MessageUpdateToolCall struct {
+	ID        string                     `json:"id"`
+	Name      string                     `json:"name"`
+	Arguments map[string]json.RawMessage `json:"arguments"`
+}
+
+// MessageUpdateError is the error payload in a message_update delta.
+type MessageUpdateError struct {
+	ErrorMessage string `json:"errorMessage"`
+}
+
 // MessageEndEvent is emitted when a message is complete.
 type MessageEndEvent struct {
 	Type    EventType    `json:"type"`
@@ -736,6 +765,44 @@ type ToolExecEndEvent struct {
 	ToolName   string         `json:"toolName"`
 	Result     ToolExecResult `json:"result"`
 	IsError    bool           `json:"isError"`
+}
+
+// EditToolArgs is the args shape for Pi's edit tool.
+type EditToolArgs struct {
+	Path    string        `json:"path"`
+	OldText string        `json:"oldText"`
+	NewText string        `json:"newText"`
+	Edits   []ReplaceEdit `json:"edits"`
+}
+
+// ReplaceEdit is one old/new text replacement in an edit tool call.
+type ReplaceEdit struct {
+	OldText string `json:"oldText"`
+	NewText string `json:"newText"`
+}
+
+// SubagentToolArgs is the args shape for Pi's subagent tool.
+type SubagentToolArgs struct {
+	SubagentToolStep
+
+	Action string                  `json:"action"`
+	Tasks  []SubagentToolStep      `json:"tasks"`
+	Chain  []SubagentToolChainStep `json:"chain"`
+}
+
+// SubagentToolStep is one subagent invocation in a subagent tool call.
+type SubagentToolStep struct {
+	Agent string `json:"agent"`
+	Label string `json:"label"`
+	Phase string `json:"phase"`
+	Task  string `json:"task"`
+}
+
+// SubagentToolChainStep is one chain step in a subagent tool call.
+type SubagentToolChainStep struct {
+	SubagentToolStep
+
+	Parallel []SubagentToolStep `json:"parallel"`
 }
 
 // ToolExecResult is the result payload for tool_execution_update and

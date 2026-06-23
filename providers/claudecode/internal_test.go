@@ -160,6 +160,16 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("EstimatedTokensDelta = %d, want 88", got.EstimatedTokensDelta)
 		}
 	})
+	t.Run("api_retry_fractional_delay", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"api_retry","attempt":1,"max_retries":10,"retry_delay_ms":599.3873493672435,"error_status":401,"error":"authentication_failed","session_id":"s1","uuid":"u1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.RetryDelayMs != 599.3873493672435 {
+			t.Errorf("RetryDelayMs = %.13f, want 599.3873493672435", got.RetryDelayMs)
+		}
+	})
 	t.Run("task_updated", func(t *testing.T) {
 		const data = `{"type":"system","subtype":"task_updated","task_id":"task-1","patch":{"status":"completed","end_time":1780832660165},"uuid":"u1","session_id":"s1"}`
 		var got OutputSystemMsg

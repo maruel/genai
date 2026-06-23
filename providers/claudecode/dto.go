@@ -642,7 +642,7 @@ type OutputSystemMsg struct {
 	// api_retry fields.
 	Attempt      int             `json:"attempt,omitempty"`
 	MaxRetries   int             `json:"max_retries,omitempty"`
-	RetryDelayMs int             `json:"retry_delay_ms,omitempty"`
+	RetryDelayMs float64         `json:"retry_delay_ms,omitempty"`
 	ErrorStatus  int             `json:"error_status,omitempty"`
 	Error        json.RawMessage `json:"error,omitempty"`
 

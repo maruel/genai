@@ -147,12 +147,17 @@ type ControlCanUseToolBehavior string
 // ControlCanUseToolBehavior values.
 const (
 	ControlCanUseToolBehaviorAllow ControlCanUseToolBehavior = "allow"
+	ControlCanUseToolBehaviorDeny  ControlCanUseToolBehavior = "deny"
 )
 
-// ControlResponsePayload is the known success response object fields.
+// ControlResponsePayload is the can_use_tool permission decision payload.
 type ControlResponsePayload struct {
-	Behavior     ControlCanUseToolBehavior `json:"behavior"`
-	UpdatedInput json.RawMessage           `json:"updatedInput,omitempty"`
+	Behavior           ControlCanUseToolBehavior `json:"behavior"`
+	UpdatedInput       json.RawMessage           `json:"updatedInput,omitempty"`       // Required for allow: original or modified tool input.
+	UpdatedPermissions []PermissionUpdate        `json:"updatedPermissions,omitempty"` // Optional for allow.
+	Message            string                    `json:"message,omitempty"`            // Required for deny.
+	Interrupt          bool                      `json:"interrupt,omitempty"`          // Optional for deny.
+	ToolUseID          string                    `json:"toolUseID,omitempty"`
 }
 
 // ControlReqSetPermissionMode changes the tool permission mode.

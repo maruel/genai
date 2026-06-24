@@ -627,11 +627,38 @@ func handleControlRequest(ctx context.Context, w io.Writer, h ControlHandler, li
 		res.Response.RequestID = req.RequestID
 	}
 	switch res.Response.Subtype {
-	case ControlResponseSuccess, ControlResponseError:
+	case ControlResponseSuccess:
+		if err := fillControlSuccessResponse(&res, &req); err != nil {
+			return err
+		}
+	case ControlResponseError:
 	default:
 		return fmt.Errorf("control response subtype = %q, want success or error", res.Response.Subtype)
 	}
 	return writeControlResponse(w, &res)
+}
+
+func fillControlSuccessResponse(res *InputControlResponseMsg, req *OutputControlRequestMsg) error {
+	if res.Response.Response.Behavior != ControlCanUseToolBehaviorAllow {
+		return nil
+	}
+	if len(res.Response.Response.UpdatedInput) != 0 {
+		return nil
+	}
+	can, err := req.DecodeCanUseTool()
+	if err != nil {
+		return nil
+	}
+	if can.Input == nil {
+		res.Response.Response.UpdatedInput = json.RawMessage(`{}`)
+		return nil
+	}
+	updatedInput, err := json.Marshal(can.Input)
+	if err != nil {
+		return fmt.Errorf("marshal control updatedInput: %w", err)
+	}
+	res.Response.Response.UpdatedInput = updatedInput
+	return nil
 }
 
 func writeControlResponse(w io.Writer, m *InputControlResponseMsg) error {

@@ -150,6 +150,13 @@ func TestHandleControlRequest(t *testing.T) {
 		if got.Response.Response.Behavior != ControlCanUseToolBehaviorAllow {
 			t.Errorf("behavior = %q, want %q", got.Response.Response.Behavior, ControlCanUseToolBehaviorAllow)
 		}
+		var updated AskUserQuestionInput
+		if err := json.Unmarshal(got.Response.Response.UpdatedInput, &updated); err != nil {
+			t.Fatal(err)
+		}
+		if len(updated.Questions) != 1 || updated.Questions[0].Question != "Which option?" {
+			t.Errorf("updatedInput = %+v, want original AskUserQuestion input", updated)
+		}
 	})
 	t.Run("missing_handler", func(t *testing.T) {
 		const data = `{"type":"control_request","request_id":"r1","request":{"subtype":"can_use_tool","tool_name":"Bash","input":{"command":"git status"},"tool_use_id":"toolu_1"}}`

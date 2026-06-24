@@ -9,6 +9,7 @@ package claudecode
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"slices"
 	"strings"
 	"time"
@@ -138,6 +139,20 @@ type ControlReqCanUseTool struct {
 	ToolUseID             string                     `json:"tool_use_id"`
 	AgentID               string                     `json:"agent_id,omitempty"`
 	Description           string                     `json:"description,omitempty"`
+}
+
+// ControlCanUseToolBehavior is the can_use_tool control response behavior.
+type ControlCanUseToolBehavior string
+
+// ControlCanUseToolBehavior values.
+const (
+	ControlCanUseToolBehaviorAllow ControlCanUseToolBehavior = "allow"
+)
+
+// ControlResponsePayload is the known success response object fields.
+type ControlResponsePayload struct {
+	Behavior     ControlCanUseToolBehavior `json:"behavior"`
+	UpdatedInput json.RawMessage           `json:"updatedInput,omitempty"`
 }
 
 // ControlReqSetPermissionMode changes the tool permission mode.
@@ -400,11 +415,11 @@ type InputControlResponseMsg struct {
 
 // ControlResponse is the inner response, either success or error.
 type ControlResponse struct {
-	Subtype                   ControlResponseSubtype     `json:"subtype"` // ControlResponseSuccess or ControlResponseError
-	RequestID                 string                     `json:"request_id"`
-	Response                  map[string]json.RawMessage `json:"response,omitempty"`                    // success only
-	Error                     string                     `json:"error,omitempty"`                       // error only
-	PendingPermissionRequests json.RawMessage            `json:"pending_permission_requests,omitempty"` // error only
+	Subtype                   ControlResponseSubtype `json:"subtype"` // ControlResponseSuccess or ControlResponseError
+	RequestID                 string                 `json:"request_id"`
+	Response                  ControlResponsePayload `json:"response,omitzero"`                     // success only
+	Error                     string                 `json:"error,omitempty"`                       // error only
+	PendingPermissionRequests json.RawMessage        `json:"pending_permission_requests,omitempty"` // error only
 }
 
 // ---------- keep alive / env vars ----------
@@ -558,6 +573,25 @@ type OutputTypeProbe struct {
 	// system messages, but free-form strings like "success" or "error_max_turns"
 	// for result messages.
 	Subtype string `json:"subtype"`
+}
+
+// OutputControlRequestMsg is a host control request emitted by Claude Code.
+type OutputControlRequestMsg struct {
+	Type      OutputType      `json:"type"` // OutputControlRequest
+	RequestID string          `json:"request_id"`
+	Request   json.RawMessage `json:"request"`
+}
+
+// DecodeCanUseTool decodes a can_use_tool control request.
+func (m *OutputControlRequestMsg) DecodeCanUseTool() (ControlReqCanUseTool, error) {
+	var out ControlReqCanUseTool
+	if len(m.Request) == 0 {
+		return out, errors.New("empty control request")
+	}
+	if err := json.Unmarshal(m.Request, &out); err != nil {
+		return ControlReqCanUseTool{}, err
+	}
+	return out, nil
 }
 
 // ---------- system/init ----------
@@ -808,6 +842,13 @@ type AskUserQuestionInput struct {
 	Questions []AskUserQuestion `json:"questions"`
 }
 
+// AskUserQuestionUpdatedInput is the updated AskUserQuestion input returned
+// in an approved control response.
+type AskUserQuestionUpdatedInput struct {
+	Questions []AskUserQuestion `json:"questions"`
+	Answers   map[string]string `json:"answers"`
+}
+
 // AskUserQuestion is a single question in an AskUserQuestion tool call.
 type AskUserQuestion struct {
 	Question    string                  `json:"question"`
@@ -913,6 +954,30 @@ type OutputUserMsg struct {
 	IsReplay        bool            `json:"isReplay,omitempty"`
 }
 
+// DecodeMessage decodes the raw user message body into its concrete wire shape.
+func (m *OutputUserMsg) DecodeMessage() (OutputUserMessage, error) {
+	var out OutputUserMessage
+	if len(m.Message) == 0 {
+		return out, nil
+	}
+	if err := json.Unmarshal(m.Message, &out); err != nil {
+		return OutputUserMessage{}, err
+	}
+	return out, nil
+}
+
+// DecodeToolUseResult decodes the top-level tool_use_result summary.
+func (m *OutputUserMsg) DecodeToolUseResult() (OutputToolUseResult, error) {
+	var out OutputToolUseResult
+	if len(m.ToolUseResult) == 0 {
+		return out, nil
+	}
+	if err := json.Unmarshal(m.ToolUseResult, &out); err != nil {
+		return OutputToolUseResult{}, err
+	}
+	return out, nil
+}
+
 // ---------- result ----------
 
 // OutputResultMsg is the wire representation of a result record.
@@ -943,6 +1008,18 @@ type OutputResultMsg struct {
 	APIErrorStatus    int                        `json:"api_error_status,omitzero"`
 	DeferredToolUse   DeferredToolUse            `json:"deferred_tool_use,omitzero"`
 	Origin            ResultOrigin               `json:"origin,omitzero"`
+}
+
+// AsError returns the Claude Code error represented by m, if any.
+func (m *OutputResultMsg) AsError() error {
+	if !m.IsError {
+		return nil
+	}
+	errMsg := m.Result
+	if errMsg == "" && len(m.Errors) > 0 {
+		errMsg = strings.Join(m.Errors, "; ")
+	}
+	return errors.New("claude error (" + m.Subtype + "): " + errMsg)
 }
 
 // ResultOriginKind identifies why a result was emitted.
@@ -1360,6 +1437,77 @@ type OutputElicitationCompleteMsg struct {
 
 // ---------- output helper types ----------
 
+// OutputUserMessageKind identifies the concrete shape of an OutputUserMessage.
+type OutputUserMessageKind string
+
+// OutputUserMessageKind values.
+const (
+	// OutputUserMessageText is a user message with content encoded as a string.
+	OutputUserMessageText OutputUserMessageKind = "text"
+	// OutputUserMessageBlock is a user message with content encoded as blocks.
+	OutputUserMessageBlock OutputUserMessageKind = "block"
+	// OutputUserMessageToolResult is a top-level standard tool result body.
+	OutputUserMessageToolResult OutputUserMessageKind = "tool_result"
+)
+
+// OutputUserMessage is a typed union for OutputUserMsg.Message.
+type OutputUserMessage struct {
+	Kind       OutputUserMessageKind
+	Role       string
+	Text       string
+	Content    []OutputUserContentBlock
+	ToolResult OutputToolResult
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (m *OutputUserMessage) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	*m = OutputUserMessage{}
+	if len(data) == 0 || string(data) == "null" {
+		return nil
+	}
+	var p struct {
+		Role    string          `json:"role"`
+		Content json.RawMessage `json:"content"`
+	}
+	if err := json.Unmarshal(data, &p); err != nil {
+		return err
+	}
+	if len(p.Content) == 0 {
+		return errors.New("user message content is required")
+	}
+	if p.Role == "user" {
+		m.Role = p.Role
+		content := bytes.TrimSpace(p.Content)
+		if len(content) == 0 || string(content) == "null" {
+			return errors.New("user message content is required")
+		}
+		if content[0] == '"' {
+			var text string
+			if err := json.Unmarshal(content, &text); err != nil {
+				return err
+			}
+			m.Kind = OutputUserMessageText
+			m.Text = text
+			return nil
+		}
+		var blocks []OutputUserContentBlock
+		if err := json.Unmarshal(content, &blocks); err != nil {
+			return err
+		}
+		m.Kind = OutputUserMessageBlock
+		m.Content = blocks
+		return nil
+	}
+	var res OutputToolResult
+	if err := json.Unmarshal(data, &res); err != nil {
+		return err
+	}
+	m.Kind = OutputUserMessageToolResult
+	m.ToolResult = res
+	return nil
+}
+
 // OutputUserText is a plain-text user message body.
 type OutputUserText struct {
 	Role    string `json:"role"`
@@ -1388,6 +1536,31 @@ type OutputUserContentBlock struct {
 type OutputToolResult struct {
 	Content ToolResultPayload `json:"content"`
 	IsError bool              `json:"is_error"`
+}
+
+// OutputToolUseResult is the optional top-level tool_use_result summary on
+// echoed user messages. Claude Code currently emits either a string such as
+// "Error: ..." or an object.
+type OutputToolUseResult struct {
+	Text   string
+	Object map[string]json.RawMessage
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (t *OutputToolUseResult) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	*t = OutputToolUseResult{}
+	if len(data) == 0 || string(data) == "null" {
+		return nil
+	}
+	switch data[0] {
+	case '"':
+		return json.Unmarshal(data, &t.Text)
+	case '{':
+		return json.Unmarshal(data, &t.Object)
+	default:
+		return errors.New("tool_use_result must be a string or object")
+	}
 }
 
 // ToolResultPayload is a tool result content payload.

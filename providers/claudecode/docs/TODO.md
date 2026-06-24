@@ -1,34 +1,37 @@
 # Future Enhancements
 
 This document outlines how the claudecode provider could leverage the wire
-protocol types (documented in `wire.go`) to expose new functionality through
+protocol types (documented in `dto.go`) to expose new functionality through
 the `genai` interfaces.
 
 ## Current State
 
-The provider currently sends only `inputUser` messages and parses
-`outputAssistant`, `outputStreamEvent`, `outputInit`, and `outputResult`.
-All control requests, slash commands, keep-alive, and environment variable
-updates are unused. The provider requires `--permission-mode bypassPermissions`
-or similar, meaning it never receives `control_request` messages for tool
-approvals.
+The provider sends `inputUser` messages and can answer stdout
+`control_request` messages through `GenOption.ControlHandler`. Slash commands,
+keep-alive, and environment variable updates are unused. Calls without a
+control handler still default to `--permission-mode bypassPermissions` when
+tools are enabled.
 
 ## Opportunities
 
-### 1. Interactive Permission Handling
+### 1. Rich Interactive Permission Handling
 
-**Problem:** The provider requires blanket permission modes (`bypassPermissions`,
-`acceptEdits`) because it cannot respond to tool approval requests.
+**Current state:** `GenOption.ControlHandler` can answer `can_use_tool`
+requests over stdio, which supports `AskUserQuestion` and other permission
+prompts without blanket bypass.
+
+**Remaining problem:** The callback is raw and provider-specific. There is no
+portable genai-level UI contract for rendering questions, dialogs, or
+elicitation forms.
 
 **Wire types:** `outputTypeControlRequest` (output) + `inputControlResponse` (input).
 Claude Code sends a `controlCanUseTool` request with tool name and input; the
 host responds with allow/deny via `inputControlResponse`.
 
 **genai integration:**
-- Expose a callback or channel on `GenOption` for permission decisions.
-- In the stream loop, detect `outputTypeControlRequest`, invoke the callback,
-  and write the response to stdin.
-- Enables fine-grained tool control without blanket bypass.
+- Add typed helpers for common permission response shapes.
+- Consider a provider-neutral callback or channel for permission decisions.
+- Extend coverage to `request_user_dialog` and `elicitation` response shapes.
 
 ### 2. Mid-Session Model Switching
 

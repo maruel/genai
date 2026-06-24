@@ -8,6 +8,8 @@ package claudecode
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -238,6 +240,180 @@ func TestClient(t *testing.T) {
 			}
 			if !strings.Contains(err.Error(), "claude error") {
 				t.Errorf("unexpected error message: %v", err)
+			}
+		})
+		t.Run("ask_user_question_haiku", func(t *testing.T) {
+			const question = "Which login boundary should Google use in caic?"
+			const answer = "Identity only"
+			c := newTestClient(t, "GenSync_ask_user_question_haiku", genai.ProviderOptionModel("haiku"))
+			msg := genai.NewTextMessage(`Use the AskUserQuestion tool exactly once.
+Set the question field exactly to: "` + question + `"
+Use exactly two options with labels "Identity only" and "Forge-coupled".
+Do not answer the question yourself.`)
+			raw, err := c.GenSyncRaw(t.Context(), genai.Messages{msg}, &GenOption{
+				Tools:        []string{"AskUserQuestion"},
+				MaxBudgetUSD: 0.05,
+				ControlHandler: func(_ context.Context, req OutputControlRequestMsg) (InputControlResponseMsg, error) {
+					can, err := req.DecodeCanUseTool()
+					if err != nil {
+						return InputControlResponseMsg{}, err
+					}
+					if can.Subtype != ControlCanUseTool {
+						return InputControlResponseMsg{}, errors.New("unexpected control request subtype " + string(can.Subtype))
+					}
+					if can.ToolName != "AskUserQuestion" {
+						return InputControlResponseMsg{}, errors.New("unexpected tool " + can.ToolName)
+					}
+					rawInput, err := json.Marshal(can.Input)
+					if err != nil {
+						return InputControlResponseMsg{}, err
+					}
+					var input AskUserQuestionInput
+					if err := json.Unmarshal(rawInput, &input); err != nil {
+						return InputControlResponseMsg{}, err
+					}
+					if len(input.Questions) != 1 || input.Questions[0].Question != question {
+						return InputControlResponseMsg{}, errors.New("unexpected AskUserQuestion input")
+					}
+					updatedInput, err := json.Marshal(AskUserQuestionUpdatedInput{
+						Questions: input.Questions,
+						Answers:   map[string]string{question: answer},
+					})
+					if err != nil {
+						return InputControlResponseMsg{}, err
+					}
+					return InputControlResponseMsg{
+						Response: ControlResponse{
+							Subtype: ControlResponseSuccess,
+							Response: ControlResponsePayload{
+								Behavior:     ControlCanUseToolBehaviorAllow,
+								UpdatedInput: updatedInput,
+							},
+						},
+					}, nil
+				},
+			})
+
+			var got, toolUseID string
+			var controlSeen bool
+			for _, line := range raw {
+				var p OutputTypeProbe
+				if json.Unmarshal(line, &p) != nil {
+					continue
+				}
+				switch p.Type {
+				case OutputControlRequest:
+					var m OutputControlRequestMsg
+					if err := json.Unmarshal(line, &m); err != nil {
+						t.Fatalf("parse control request: %v", err)
+					}
+					can, err := m.DecodeCanUseTool()
+					if err != nil {
+						t.Fatalf("parse can_use_tool: %v", err)
+					}
+					if can.ToolName == "AskUserQuestion" {
+						controlSeen = true
+					}
+				case OutputAssistant:
+					var m OutputAssistantMsg
+					if err := json.Unmarshal(line, &m); err != nil {
+						t.Fatalf("parse assistant: %v", err)
+					}
+					for i := range m.Message.Content {
+						b := &m.Message.Content[i]
+						if b.Type != "tool_use" || b.Name != "AskUserQuestion" {
+							continue
+						}
+						rawInput, err := json.Marshal(b.Input)
+						if err != nil {
+							t.Fatalf("marshal AskUserQuestion input: %v", err)
+						}
+						var input AskUserQuestionInput
+						if err := json.Unmarshal(rawInput, &input); err != nil {
+							t.Fatalf("parse AskUserQuestion input: %v", err)
+						}
+						if len(input.Questions) == 0 {
+							t.Fatal("AskUserQuestion input has no questions")
+						}
+						got = input.Questions[0].Question
+						toolUseID = b.ID
+						break
+					}
+				}
+			}
+			if toolUseID == "" {
+				if err != nil {
+					t.Fatalf("GenSyncRaw: %v; AskUserQuestion tool call not found", err)
+				}
+				t.Fatal("AskUserQuestion tool call not found")
+			}
+			if err != nil {
+				t.Fatalf("GenSyncRaw after AskUserQuestion %s: %v", toolUseID, err)
+			}
+			if !controlSeen {
+				t.Fatal("AskUserQuestion control request not found")
+			}
+
+			var result OutputResultMsg
+			for _, line := range raw {
+				var p OutputTypeProbe
+				if json.Unmarshal(line, &p) != nil || p.Type != OutputResult {
+					continue
+				}
+				if err := json.Unmarshal(line, &result); err != nil {
+					t.Fatalf("parse result: %v", err)
+				}
+				break
+			}
+			if result.Type == "" {
+				t.Fatal("result record not found")
+			}
+			if result.Result == "" {
+				t.Fatal("result text is empty")
+			}
+			if got != question {
+				t.Errorf("question = %q, want %q", got, question)
+			}
+			if len(result.PermissionDenials) != 0 {
+				t.Fatalf("PermissionDenials = %d, want 0", len(result.PermissionDenials))
+			}
+
+			var toolResultText string
+			for _, line := range raw {
+				var p OutputTypeProbe
+				if json.Unmarshal(line, &p) != nil || p.Type != OutputUser {
+					continue
+				}
+				var m OutputUserMsg
+				if err := json.Unmarshal(line, &m); err != nil {
+					t.Fatalf("parse user: %v", err)
+				}
+				msg, err := m.DecodeMessage()
+				if err != nil {
+					t.Fatalf("decode user message: %v", err)
+				}
+				if msg.Kind != OutputUserMessageBlock {
+					continue
+				}
+				for i := range msg.Content {
+					b := &msg.Content[i]
+					if b.Type == "tool_result" && b.ToolUseID == toolUseID {
+						if b.IsError {
+							t.Fatalf("tool_result for %s is an error: %q", toolUseID, b.Content.Text)
+						}
+						toolResultText = b.Content.Text
+						break
+					}
+				}
+				if toolResultText != "" {
+					break
+				}
+			}
+			if toolResultText == "" {
+				t.Fatalf("answered tool_result not found for %s", toolUseID)
+			}
+			if !strings.Contains(toolResultText, answer) {
+				t.Errorf("tool_result = %q, want answer %q", toolResultText, answer)
 			}
 		})
 	})

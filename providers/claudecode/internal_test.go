@@ -7,6 +7,8 @@
 package claudecode
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"slices"
@@ -54,6 +56,31 @@ func TestBuildArgs(t *testing.T) {
 		check("--permission-mode", "bypassPermissions")
 		check("--model", "sonnet")
 	})
+	t.Run("with_control_handler", func(t *testing.T) {
+		c := &Client{model: "haiku"}
+		co := callOpts{
+			tools: []string{"AskUserQuestion"},
+			controlHandler: func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error) {
+				return InputControlResponseMsg{}, nil
+			},
+		}
+		args := c.buildArgs(&co, "", false)
+		check := func(flag, val string) {
+			for i, a := range args {
+				if a == flag && i+1 < len(args) && args[i+1] == val {
+					return
+				}
+			}
+			t.Errorf("flag %q %q not found in args %v", flag, val, args)
+		}
+		check("--tools", "AskUserQuestion")
+		check("--permission-prompt-tool", "stdio")
+		for _, a := range args {
+			if a == "--permission-mode" {
+				t.Errorf("--permission-mode must not default when a control handler is configured: %v", args)
+			}
+		}
+	})
 	t.Run("with_session_resume", func(t *testing.T) {
 		c := &Client{}
 		args := c.buildArgs(&callOpts{}, "my-session-id", false)
@@ -92,6 +119,48 @@ func TestBuildArgs(t *testing.T) {
 			t.Errorf("flag %q %q not found in args %v", flag, val, args)
 		}
 		check("--system-prompt", "Be helpful")
+	})
+}
+
+func TestHandleControlRequest(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		const data = `{"type":"control_request","request_id":"r1","request":{"subtype":"can_use_tool","tool_name":"AskUserQuestion","input":{"questions":[{"question":"Which option?","options":[{"label":"A"},{"label":"B"}]}]},"tool_use_id":"toolu_1"}}`
+		h := func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error) {
+			return InputControlResponseMsg{
+				Response: ControlResponse{
+					Subtype:  ControlResponseSuccess,
+					Response: ControlResponsePayload{Behavior: ControlCanUseToolBehaviorAllow},
+				},
+			}, nil
+		}
+		var buf bytes.Buffer
+		if err := handleControlRequest(t.Context(), &buf, h, []byte(data)); err != nil {
+			t.Fatal(err)
+		}
+		var got InputControlResponseMsg
+		if err := internal.UnmarshalJSON(buf.Bytes(), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Type != InputControlResponse {
+			t.Errorf("Type = %q, want %q", got.Type, InputControlResponse)
+		}
+		if got.Response.RequestID != "r1" {
+			t.Errorf("RequestID = %q, want r1", got.Response.RequestID)
+		}
+		if got.Response.Response.Behavior != ControlCanUseToolBehaviorAllow {
+			t.Errorf("behavior = %q, want %q", got.Response.Response.Behavior, ControlCanUseToolBehaviorAllow)
+		}
+	})
+	t.Run("missing_handler", func(t *testing.T) {
+		const data = `{"type":"control_request","request_id":"r1","request":{"subtype":"can_use_tool","tool_name":"Bash","input":{"command":"git status"},"tool_use_id":"toolu_1"}}`
+		var buf bytes.Buffer
+		err := handleControlRequest(t.Context(), &buf, nil, []byte(data))
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !strings.Contains(err.Error(), "no control handler") {
+			t.Errorf("error = %v, want no control handler", err)
+		}
 	})
 }
 
@@ -309,6 +378,68 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.TaskDescription != "Find harness/model selection logic" {
 			t.Errorf("TaskDescription = %q, want Find harness/model selection logic", got.TaskDescription)
+		}
+	})
+	t.Run("user_inline_tool_result_error", func(t *testing.T) {
+		const data = `{"type":"user","message":{"role":"user","content":[{"type":"tool_result","content":"Answer questions?","is_error":true,"tool_use_id":"toolu_ask"}]},"parent_tool_use_id":null,"session_id":"s1","uuid":"u1","timestamp":"2026-06-23T18:51:57.326Z","tool_use_result":"Error: Answer questions?"}`
+		var got OutputUserMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		msg, err := got.DecodeMessage()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if msg.Kind != OutputUserMessageBlock {
+			t.Fatalf("Kind = %q, want %q", msg.Kind, OutputUserMessageBlock)
+		}
+		if len(msg.Content) != 1 {
+			t.Fatalf("len(Content) = %d, want 1", len(msg.Content))
+		}
+		block := msg.Content[0]
+		if block.ToolUseID != "toolu_ask" || !block.IsError || block.Content.Text != "Answer questions?" {
+			t.Fatalf("tool result block = %+v, want errored AskUserQuestion result", block)
+		}
+		res, err := got.DecodeToolUseResult()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res.Text != "Error: Answer questions?" {
+			t.Errorf("ToolUseResult.Text = %q, want error summary", res.Text)
+		}
+	})
+	t.Run("user_plain_answer_after_question", func(t *testing.T) {
+		const data = `{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Identity only (Recommended)"}]}}`
+		var got OutputUserMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		msg, err := got.DecodeMessage()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if msg.Kind != OutputUserMessageBlock {
+			t.Fatalf("Kind = %q, want %q", msg.Kind, OutputUserMessageBlock)
+		}
+		if len(msg.Content) != 1 || msg.Content[0].Text != "Identity only (Recommended)" {
+			t.Fatalf("Content = %+v, want plain answer text block", msg.Content)
+		}
+	})
+	t.Run("user_top_level_tool_result", func(t *testing.T) {
+		const data = `{"type":"user","message":{"content":[{"type":"text","text":"file not found"}],"is_error":true},"parent_tool_use_id":"toolu_read"}`
+		var got OutputUserMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		msg, err := got.DecodeMessage()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if msg.Kind != OutputUserMessageToolResult {
+			t.Fatalf("Kind = %q, want %q", msg.Kind, OutputUserMessageToolResult)
+		}
+		if !msg.ToolResult.IsError || len(msg.ToolResult.Content.Blocks) != 1 || msg.ToolResult.Content.Blocks[0].Text != "file not found" {
+			t.Fatalf("ToolResult = %+v, want error block content", msg.ToolResult)
 		}
 	})
 	t.Run("permission_suggestions", func(t *testing.T) {
@@ -573,9 +704,14 @@ func TestWriteUserMsg(t *testing.T) {
 
 func TestGenOption(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		for _, m := range []string{"acceptEdits", "bypassPermissions", "default", "dontAsk", "plan"} {
+		for _, m := range []string{"acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan"} {
 			if err := (&GenOption{PermissionMode: m}).Validate(); err != nil {
 				t.Errorf("mode %q: unexpected error: %v", m, err)
+			}
+		}
+		for _, e := range []string{EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax} {
+			if err := (&GenOption{Effort: e}).Validate(); err != nil {
+				t.Errorf("effort %q: unexpected error: %v", e, err)
 			}
 		}
 	})
@@ -588,6 +724,9 @@ func TestGenOption(t *testing.T) {
 		}
 		if err := (&GenOption{PermissionMode: "hack"}).Validate(); err == nil {
 			t.Error("expected error for invalid mode")
+		}
+		if err := (&GenOption{Effort: "extreme"}).Validate(); err == nil {
+			t.Error("expected error for invalid effort")
 		}
 	})
 	t.Run("system_prompt", func(t *testing.T) {

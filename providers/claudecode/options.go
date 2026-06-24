@@ -7,6 +7,7 @@
 package claudecode
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -27,11 +28,18 @@ type ProviderOptionAPIKeyAuth bool
 // Validate implements genai.Validatable.
 func (p ProviderOptionAPIKeyAuth) Validate() error { return nil }
 
+// ControlHandler answers Claude Code control requests emitted on stdout.
+//
+// The returned response may omit Type and Response.RequestID; the provider
+// fills them from the control request before writing the response to stdin.
+type ControlHandler func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error)
+
 // Effort levels for the Effort field in GenOption.
 const (
 	EffortLow    = "low"
 	EffortMedium = "medium"
 	EffortHigh   = "high"
+	EffortXHigh  = "xhigh"
 	EffortMax    = "max"
 )
 
@@ -52,8 +60,12 @@ type GenOption struct {
 	// MaxBudgetUSD caps the dollar amount the session may spend (--max-budget-usd).
 	MaxBudgetUSD float64
 	// PermissionMode sets the permission mode (--permission-mode).
-	// Valid values: "acceptEdits", "bypassPermissions", "default", "dontAsk", "plan".
+	// Valid values: "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan".
 	PermissionMode string
+	// ControlHandler handles Claude Code stdout control requests. When set, the
+	// provider enables the stdio permission prompt tool and sends the returned
+	// control response back to Claude on stdin.
+	ControlHandler ControlHandler
 	// Effort sets the reasoning effort level (--effort).
 	// Use the Effort* constants.
 	Effort string
@@ -73,16 +85,16 @@ func (g *GenOption) Validate() error {
 	}
 	if g.PermissionMode != "" {
 		switch g.PermissionMode {
-		case "acceptEdits", "bypassPermissions", "default", "dontAsk", "plan":
+		case "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan":
 		default:
-			return fmt.Errorf("GenOption.PermissionMode: invalid mode %q; must be one of acceptEdits, bypassPermissions, default, dontAsk, plan", g.PermissionMode)
+			return fmt.Errorf("GenOption.PermissionMode: invalid mode %q; must be one of acceptEdits, auto, bypassPermissions, default, dontAsk, plan", g.PermissionMode)
 		}
 	}
 	if g.Effort != "" {
 		switch g.Effort {
-		case "low", "medium", "high", "max":
+		case "low", "medium", "high", "xhigh", "max":
 		default:
-			return fmt.Errorf("GenOption.Effort: invalid level %q; must be one of low, medium, high, max", g.Effort)
+			return fmt.Errorf("GenOption.Effort: invalid level %q; must be one of low, medium, high, xhigh, max", g.Effort)
 		}
 	}
 	return nil
@@ -95,6 +107,7 @@ type callOpts struct {
 	projSettings      bool
 	maxBudgetUSD      float64
 	permissionMode    string
+	controlHandler    ControlHandler
 	effort            string
 	systemPrompt      string
 	progressSummaries bool
@@ -116,6 +129,12 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			co.projSettings = v.ProjectSettings
 			co.maxBudgetUSD = v.MaxBudgetUSD
 			co.permissionMode = v.PermissionMode
+			if v.ControlHandler != nil {
+				if co.controlHandler != nil {
+					return callOpts{}, errors.New("GenOption.ControlHandler: multiple handlers configured")
+				}
+				co.controlHandler = v.ControlHandler
+			}
 			co.effort = v.Effort
 			co.progressSummaries = v.Effort != ""
 		case *genai.GenOptionText:

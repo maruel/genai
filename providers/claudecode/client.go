@@ -263,53 +263,15 @@ func (c *Client) ListModels(_ context.Context) ([]genai.Model, error) {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (r genai.Result, err error) {
-	if err := c.ensureBin(); err != nil {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	records, err := c.GenSyncRaw(ctx, msgs, opts...)
+	if len(records) == 0 {
 		return genai.Result{}, err
 	}
-	co, optsErr := parseOpts(opts)
-	if optsErr != nil {
-		var uerr *base.ErrNotSupported
-		if !errors.As(optsErr, &uerr) {
-			return genai.Result{}, optsErr
-		}
-		// Proceed with the call; return ErrNotSupported after getting results.
-		defer func() {
-			if err == nil {
-				err = optsErr
-			}
-		}()
-	}
-	userMsg, err := msgutil.LastUserMsg(msgs)
-	if err != nil {
-		return genai.Result{}, err
-	}
-	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
-	args := c.buildArgs(&co, sessionID, false)
-
-	stdin, stdout, wait, err := c.exec(ctx, args)
-	if err != nil {
-		return genai.Result{}, err
-	}
-	defer func() {
-		// Always close stdin so the subprocess sees EOF and exits.
-		_ = stdin.Close()
-		err = errors.Join(err, wait())
-	}()
-
-	if err := writeInitialize(stdin, &co); err != nil {
-		return genai.Result{}, err
-	}
-	if err := writeUserMsg(stdin, &userMsg); err != nil {
-		return genai.Result{}, err
-	}
-
-	sc := newScanner(stdout)
 	var initSessionID string
 	var asstBlocks []OutputContentBlock
 	var summaries []string
-	for sc.Scan() {
-		line := sc.Bytes()
+	for _, line := range records {
 		var b OutputTypeProbe
 		if json.Unmarshal(line, &b) != nil {
 			continue
@@ -331,30 +293,88 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			}
 		case OutputAssistant:
 			var asst OutputAssistantMsg
-			if err := internal.UnmarshalJSON(line, &asst); err != nil {
-				return genai.Result{}, fmt.Errorf("parse assistant: %w", err)
+			if e := internal.UnmarshalJSON(line, &asst); e != nil {
+				return genai.Result{}, errors.Join(fmt.Errorf("parse assistant: %w", e), err)
 			}
 			asstBlocks = append(asstBlocks, asst.Message.Content...)
 		case OutputResult:
 			var res OutputResultMsg
-			if err := internal.UnmarshalJSON(line, &res); err != nil {
-				return genai.Result{}, fmt.Errorf("parse result: %w", err)
+			if e := internal.UnmarshalJSON(line, &res); e != nil {
+				return genai.Result{}, errors.Join(fmt.Errorf("parse result: %w", e), err)
 			}
-			if res.IsError {
-				errMsg := res.Result
-				if errMsg == "" && len(res.Errors) > 0 {
-					errMsg = strings.Join(res.Errors, "; ")
-				}
-				return genai.Result{}, fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
+			if e := res.AsError(); e != nil {
+				return genai.Result{}, errors.Join(e, err)
 			}
-			return buildResult(&res, asstBlocks, summaries, initSessionID), nil
+			return buildResult(&res, asstBlocks, summaries, initSessionID), err
 		default:
 		}
 	}
-	if err := sc.Err(); err != nil {
-		return genai.Result{}, fmt.Errorf("read stdout: %w", err)
+	return genai.Result{}, errors.Join(errors.New("claude exited without a result message"), err)
+}
+
+// GenSyncRaw returns the raw Claude Code stdout records for one synchronous turn.
+func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (records []json.RawMessage, err error) {
+	if err := c.ensureBin(); err != nil {
+		return nil, err
 	}
-	return genai.Result{}, errors.New("claude exited without a result message")
+	co, optsErr := parseOpts(opts)
+	if optsErr != nil {
+		var uerr *base.ErrNotSupported
+		if !errors.As(optsErr, &uerr) {
+			return nil, optsErr
+		}
+		// Proceed with the call; return ErrNotSupported after getting results.
+		defer func() {
+			if err == nil {
+				err = optsErr
+			}
+		}()
+	}
+	userMsg, err := msgutil.LastUserMsg(msgs)
+	if err != nil {
+		return nil, err
+	}
+	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
+	args := c.buildArgs(&co, sessionID, false)
+
+	stdin, stdout, wait, err := c.exec(ctx, args)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		// Always close stdin so the subprocess sees EOF and exits.
+		_ = stdin.Close()
+		err = errors.Join(err, wait())
+	}()
+
+	if err := writeInitialize(stdin, &co); err != nil {
+		return nil, err
+	}
+	if err := writeUserMsg(stdin, &userMsg); err != nil {
+		return nil, err
+	}
+
+	sc := newScanner(stdout)
+	for sc.Scan() {
+		line := sc.Bytes()
+		records = append(records, append(json.RawMessage(nil), line...))
+		var b OutputTypeProbe
+		if json.Unmarshal(line, &b) != nil {
+			continue
+		}
+		switch b.Type {
+		case OutputControlRequest:
+			if err := handleControlRequest(ctx, stdin, co.controlHandler, line); err != nil {
+				return records, err
+			}
+		case OutputResult:
+			return records, nil
+		}
+	}
+	if err := sc.Err(); err != nil {
+		return records, fmt.Errorf("read stdout: %w", err)
+	}
+	return records, errors.New("claude exited without a result message")
 }
 
 // GenStream implements genai.Provider.
@@ -470,12 +490,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = fmt.Errorf("parse result: %w", err)
 					return
 				}
-				if res.IsError {
-					errMsg := res.Result
-					if errMsg == "" && len(res.Errors) > 0 {
-						errMsg = strings.Join(res.Errors, "; ")
-					}
-					finalErr = fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
+				if err := res.AsError(); err != nil {
+					finalErr = err
 					return
 				}
 				result = buildResult(&res, asstBlocks, summaries, initSessionID)
@@ -483,6 +499,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					result.Usage.ReasoningTokens = streamUsage.OutputTokensDetails.ThinkingTokens
 				}
 				return
+			case OutputControlRequest:
+				if err := handleControlRequest(ctx, stdin, co.controlHandler, line); err != nil {
+					finalErr = err
+					return
+				}
 			default:
 			}
 		}
@@ -555,13 +576,15 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 		args = append(args, "--max-budget-usd", strconv.FormatFloat(co.maxBudgetUSD, 'f', 4, 64))
 	}
 
+	if co.controlHandler != nil {
+		args = append(args, "--permission-prompt-tool", "stdio")
+	}
+
 	// Permission mode: default to "bypassPermissions" when tools are enabled
-	// so they aren't denied in headless mode. "dontAsk" silently denies
-	// unapproved tools.
-	// TODO: Support interactive permission approval via the stream-json
-	// protocol instead of bypassing all checks.
+	// and the caller has not installed a control handler. With a handler, let
+	// Claude Code emit can_use_tool requests over stdio.
 	pm := co.permissionMode
-	if pm == "" && len(co.tools) > 0 {
+	if pm == "" && len(co.tools) > 0 && co.controlHandler == nil {
 		pm = "bypassPermissions"
 	}
 	if pm != "" {
@@ -581,8 +604,43 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 	return args
 }
 
-// extractSessionID scans message history for a session ID stored in
-// Reply.Opaque by a previous claudecode call.
+func handleControlRequest(ctx context.Context, w io.Writer, h ControlHandler, line []byte) error {
+	if h == nil {
+		return errors.New("claude requested host control but no control handler is configured")
+	}
+	var req OutputControlRequestMsg
+	if err := internal.UnmarshalJSON(line, &req); err != nil {
+		return fmt.Errorf("parse control request: %w", err)
+	}
+	res, err := h(ctx, req)
+	if err != nil {
+		return fmt.Errorf("handle control request %q: %w", req.RequestID, err)
+	}
+	if res.Type == "" {
+		res.Type = InputControlResponse
+	}
+	if res.Type != InputControlResponse {
+		return fmt.Errorf("control response type = %q, want %q", res.Type, InputControlResponse)
+	}
+	if res.Response.RequestID == "" {
+		res.Response.RequestID = req.RequestID
+	}
+	switch res.Response.Subtype {
+	case ControlResponseSuccess, ControlResponseError:
+	default:
+		return fmt.Errorf("control response subtype = %q, want success or error", res.Response.Subtype)
+	}
+	return writeControlResponse(w, &res)
+}
+
+func writeControlResponse(w io.Writer, m *InputControlResponseMsg) error {
+	data, err := json.Marshal(m)
+	if err != nil {
+		return fmt.Errorf("marshal control response: %w", err)
+	}
+	_, err = fmt.Fprintf(w, "%s\n", data)
+	return err
+}
 
 // writeUserMsg encodes a genai.Message as NDJSON and writes it to stdin.
 func writeUserMsg(w io.Writer, msg *genai.Message) error {

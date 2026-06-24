@@ -369,6 +369,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...ge
 			}
 		case OutputResult:
 			return records, nil
+		default:
 		}
 	}
 	if err := sc.Err(); err != nil {

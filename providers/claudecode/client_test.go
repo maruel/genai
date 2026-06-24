@@ -339,6 +339,7 @@ Do not answer the question yourself.`)
 						toolUseID = b.ID
 						break
 					}
+				default:
 				}
 			}
 			if toolUseID == "" {

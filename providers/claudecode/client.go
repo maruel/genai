@@ -647,7 +647,7 @@ func fillControlSuccessResponse(res *InputControlResponseMsg, req *OutputControl
 	}
 	can, err := req.DecodeCanUseTool()
 	if err != nil {
-		return nil
+		return fmt.Errorf("decode can_use_tool control request: %w", err)
 	}
 	if can.Input == nil {
 		res.Response.Response.UpdatedInput = json.RawMessage(`{}`)

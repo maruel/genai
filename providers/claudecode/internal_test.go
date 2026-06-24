@@ -169,6 +169,25 @@ func TestHandleControlRequest(t *testing.T) {
 			t.Errorf("error = %v, want no control handler", err)
 		}
 	})
+	t.Run("malformed_can_use_tool", func(t *testing.T) {
+		const data = `{"type":"control_request","request_id":"r1","request":42}`
+		h := func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error) {
+			return InputControlResponseMsg{
+				Response: ControlResponse{
+					Subtype:  ControlResponseSuccess,
+					Response: ControlResponsePayload{Behavior: ControlCanUseToolBehaviorAllow},
+				},
+			}, nil
+		}
+		var buf bytes.Buffer
+		err := handleControlRequest(t.Context(), &buf, h, []byte(data))
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !strings.Contains(err.Error(), "decode can_use_tool control request") {
+			t.Errorf("error = %v, want decode can_use_tool control request", err)
+		}
+	})
 }
 
 func TestBuildResult(t *testing.T) {

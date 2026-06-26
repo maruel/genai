@@ -1558,6 +1558,140 @@ type ModelServiceTier struct {
 	Description string `json:"description"`
 }
 
+// Account notifications and rate-limit responses.
+
+// AuthMode identifies the active Codex authentication mode.
+type AuthMode string
+
+// Auth mode constants.
+const (
+	AuthModeAPIKey              AuthMode = "apikey"
+	AuthModeChatGPT             AuthMode = "chatgpt"
+	AuthModeChatGPTAuthTokens   AuthMode = "chatgptAuthTokens"
+	AuthModeAgentIdentity       AuthMode = "agentIdentity"
+	AuthModePersonalAccessToken AuthMode = "personalAccessToken"
+	AuthModeBedrockAPIKey       AuthMode = "bedrockApiKey"
+)
+
+// AccountUpdatedNotification holds params for account/updated.
+type AccountUpdatedNotification struct {
+	AuthMode AuthMode `json:"authMode,omitzero"`
+	PlanType PlanType `json:"planType,omitzero"`
+}
+
+// AccountLoginCompletedNotification holds params for account/login/completed.
+type AccountLoginCompletedNotification struct {
+	LoginID string `json:"loginId,omitzero"`
+	Success bool   `json:"success"`
+	Error   string `json:"error,omitzero"`
+}
+
+// GetAccountRateLimitsResponse is the response to account/rateLimits/read.
+type GetAccountRateLimitsResponse struct {
+	RateLimits            RateLimitSnapshot             `json:"rateLimits"`
+	RateLimitsByLimitID   map[string]RateLimitSnapshot  `json:"rateLimitsByLimitId,omitzero"`
+	RateLimitResetCredits *RateLimitResetCreditsSummary `json:"rateLimitResetCredits,omitzero"`
+}
+
+// RateLimitResetCreditsSummary summarizes available rate-limit reset credits.
+type RateLimitResetCreditsSummary struct {
+	AvailableCount int64 `json:"availableCount"`
+}
+
+// ConsumeAccountRateLimitResetCreditParams holds params for account/rateLimitResetCredit/consume.
+type ConsumeAccountRateLimitResetCreditParams struct {
+	IdempotencyKey string `json:"idempotencyKey"`
+}
+
+// ConsumeAccountRateLimitResetCreditResponse is the response to account/rateLimitResetCredit/consume.
+type ConsumeAccountRateLimitResetCreditResponse struct {
+	Outcome ConsumeAccountRateLimitResetCreditOutcome `json:"outcome"`
+}
+
+// ConsumeAccountRateLimitResetCreditOutcome is the result of consuming a rate-limit reset credit.
+type ConsumeAccountRateLimitResetCreditOutcome string
+
+// Rate-limit reset credit outcome constants.
+const (
+	ConsumeAccountRateLimitResetCreditOutcomeReset           ConsumeAccountRateLimitResetCreditOutcome = "reset"
+	ConsumeAccountRateLimitResetCreditOutcomeNothingToReset  ConsumeAccountRateLimitResetCreditOutcome = "nothingToReset"
+	ConsumeAccountRateLimitResetCreditOutcomeNoCredit        ConsumeAccountRateLimitResetCreditOutcome = "noCredit"
+	ConsumeAccountRateLimitResetCreditOutcomeAlreadyRedeemed ConsumeAccountRateLimitResetCreditOutcome = "alreadyRedeemed"
+)
+
+// AccountRateLimitsUpdatedNotification holds params for account/rateLimits/updated.
+//
+// It is a sparse rolling rate-limit update. Clients should merge available
+// fields into the latest account/rateLimits/read snapshot or refetch it.
+type AccountRateLimitsUpdatedNotification struct {
+	RateLimits RateLimitSnapshot `json:"rateLimits"`
+}
+
+// RateLimitSnapshot is a Codex account rate-limit snapshot.
+type RateLimitSnapshot struct {
+	LimitID              string                     `json:"limitId,omitzero"`
+	LimitName            string                     `json:"limitName,omitzero"`
+	Primary              *RateLimitWindow           `json:"primary,omitzero"`
+	Secondary            *RateLimitWindow           `json:"secondary,omitzero"`
+	Credits              *CreditsSnapshot           `json:"credits,omitzero"`
+	IndividualLimit      *SpendControlLimitSnapshot `json:"individualLimit,omitzero"`
+	PlanType             PlanType                   `json:"planType,omitzero"`
+	RateLimitReachedType RateLimitReachedType       `json:"rateLimitReachedType,omitzero"`
+}
+
+// PlanType identifies a Codex account plan.
+type PlanType string
+
+// Plan type constants.
+const (
+	PlanTypeFree                        PlanType = "free"
+	PlanTypeGo                          PlanType = "go"
+	PlanTypePlus                        PlanType = "plus"
+	PlanTypePro                         PlanType = "pro"
+	PlanTypeProLite                     PlanType = "prolite"
+	PlanTypeTeam                        PlanType = "team"
+	PlanTypeSelfServeBusinessUsageBased PlanType = "self_serve_business_usage_based"
+	PlanTypeBusiness                    PlanType = "business"
+	PlanTypeEnterpriseCbpUsageBased     PlanType = "enterprise_cbp_usage_based"
+	PlanTypeEnterprise                  PlanType = "enterprise"
+	PlanTypeEdu                         PlanType = "edu"
+	PlanTypeUnknown                     PlanType = "unknown"
+)
+
+// RateLimitReachedType identifies which account limit was exhausted.
+type RateLimitReachedType string
+
+// Rate-limit reached type constants.
+const (
+	RateLimitReachedTypeRateLimitReached                 RateLimitReachedType = "rate_limit_reached"
+	RateLimitReachedTypeWorkspaceOwnerCreditsDepleted    RateLimitReachedType = "workspace_owner_credits_depleted"
+	RateLimitReachedTypeWorkspaceMemberCreditsDepleted   RateLimitReachedType = "workspace_member_credits_depleted"
+	RateLimitReachedTypeWorkspaceOwnerUsageLimitReached  RateLimitReachedType = "workspace_owner_usage_limit_reached"
+	RateLimitReachedTypeWorkspaceMemberUsageLimitReached RateLimitReachedType = "workspace_member_usage_limit_reached"
+)
+
+// RateLimitWindow is one Codex rate-limit window.
+type RateLimitWindow struct {
+	UsedPercent        int   `json:"usedPercent"`
+	WindowDurationMins int64 `json:"windowDurationMins,omitzero"`
+	ResetsAt           int64 `json:"resetsAt,omitzero"`
+}
+
+// CreditsSnapshot describes Codex account credit availability.
+type CreditsSnapshot struct {
+	HasCredits bool   `json:"hasCredits"`
+	Unlimited  bool   `json:"unlimited"`
+	Balance    string `json:"balance,omitzero"`
+}
+
+// SpendControlLimitSnapshot describes a Codex workspace spend-control limit.
+type SpendControlLimitSnapshot struct {
+	Limit            string `json:"limit"`
+	Used             string `json:"used"`
+	RemainingPercent int    `json:"remainingPercent"`
+	ResetsAt         int64  `json:"resetsAt"`
+}
+
 // Error notification.
 
 // ErrorNotification holds params for error notifications.

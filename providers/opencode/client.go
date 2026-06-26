@@ -450,17 +450,17 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 		hs.nextID++
 		params, err := marshalJSONRaw(SetSessionModelParams{SessionID: hs.sessionID, ModelID: mdl})
 		if err != nil {
-			return nil, fmt.Errorf("marshal setSessionModel params: %w", err)
+			return nil, fmt.Errorf("marshal session/set_model params: %w", err)
 		}
 		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
-			Method:  MethodUnstableSetSessionModel,
+			Method:  MethodSessionSetModel,
 			Params:  params,
 		}); err != nil {
-			return nil, fmt.Errorf("write setSessionModel: %w", err)
+			return nil, fmt.Errorf("write session/set_model: %w", err)
 		}
-		// Best-effort: ignore errors from the unstable method.
+		// Best-effort: ignore errors if the agent rejects session/set_model.
 		_, _ = readResponse(sc)
 	}
 

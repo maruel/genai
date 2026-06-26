@@ -25,14 +25,13 @@ type Method string
 // JSON-RPC method constants for the ACP protocol.
 const (
 	// Request methods (client → agent).
-	MethodInitialize              Method = "initialize"
-	MethodSessionNew              Method = "session/new"
-	MethodSessionLoad             Method = "session/load"
-	MethodSessionPrompt           Method = "session/prompt"
-	MethodSessionCancel           Method = "session/cancel"
-	MethodSessionSetModel         Method = "session/set_model"
-	MethodSessionSetMode          Method = "session/set_mode"
-	MethodUnstableSetSessionModel Method = "unstable_setSessionModel"
+	MethodInitialize      Method = "initialize"
+	MethodSessionNew      Method = "session/new"
+	MethodSessionLoad     Method = "session/load"
+	MethodSessionPrompt   Method = "session/prompt"
+	MethodSessionCancel   Method = "session/cancel"
+	MethodSessionSetModel Method = "session/set_model"
+	MethodSessionSetMode  Method = "session/set_mode"
 
 	// Notification methods (agent → client).
 	MethodSessionUpdate            Method = "session/update"
@@ -263,7 +262,7 @@ type SessionPromptParams struct {
 
 // ---------- Model switching ----------
 
-// SetSessionModelParams holds the params for unstable_setSessionModel.
+// SetSessionModelParams holds the params for session/set_model.
 type SetSessionModelParams struct {
 	SessionID string `json:"sessionId"`
 	ModelID   string `json:"modelId"`

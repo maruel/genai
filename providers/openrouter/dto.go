@@ -655,15 +655,16 @@ type ModelLinks struct {
 
 // ModelPricing contains the per-token pricing information.
 type ModelPricing struct {
-	Prompt            string `json:"prompt"`                      // USD per token.
-	Completion        string `json:"completion"`                  // USD per token.
-	Image             string `json:"image"`                       // USD per image.
-	Request           string `json:"request"`                     // USD per request.
-	Audio             string `json:"audio,omitzero"`              // USD per audio token.
-	InternalReasoning string `json:"internal_reasoning,omitzero"` // USD per reasoning token.
-	InputCacheRead    string `json:"input_cache_read,omitzero"`   // USD per cached input token read.
-	InputCacheWrite   string `json:"input_cache_write,omitzero"`  // USD per cached input token write.
-	WebSearch         string `json:"web_search,omitzero"`         // USD per web search.
+	Prompt            string `json:"prompt"`                        // USD per token.
+	Completion        string `json:"completion"`                    // USD per token.
+	Image             string `json:"image"`                         // USD per image.
+	Request           string `json:"request"`                       // USD per request.
+	Audio             string `json:"audio,omitzero"`                // USD per audio token.
+	InternalReasoning string `json:"internal_reasoning,omitzero"`   // USD per reasoning token.
+	InputCacheRead    string `json:"input_cache_read,omitzero"`     // USD per cached input token read.
+	InputCacheWrite   string `json:"input_cache_write,omitzero"`    // USD per cached input token write.
+	InputCacheWrite1h string `json:"input_cache_write_1h,omitzero"` // USD per cached input token write (1h).
+	WebSearch         string `json:"web_search,omitzero"`           // USD per web search.
 }
 
 // GetID implements genai.Model.

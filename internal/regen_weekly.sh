@@ -59,9 +59,16 @@ if [[ ${#MISSING[@]} -ne 0 ]]; then
 	exit 1
 fi
 
-echo "# List of models available on each provider" >docs/MODELS.new.md
-echo "" >>docs/MODELS.new.md
-echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)" >>docs/MODELS.new.md
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/genai-models.XXXXXX")
+tmp="$tmpdir/MODELS.md"
+cleanup() {
+	rm -rf "$tmpdir"
+}
+trap cleanup EXIT
+
+echo "# List of models available on each provider" >"$tmp"
+echo "" >>"$tmp"
+echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)" >>"$tmp"
 
 for i in "${PROVIDERS[@]}"; do
 	echo "- $i"
@@ -69,13 +76,13 @@ for i in "${PROVIDERS[@]}"; do
 		echo ""
 		echo "## $i"
 		echo ""
-	} >>docs/MODELS.new.md
-	if ! list-models -strict -provider "$i" | sed 's/^/- /' >>docs/MODELS.new.md; then
+	} >>"$tmp"
+	if ! list-models -strict -provider "$i" | sed 's/^/- /' >>"$tmp"; then
 		find "./providers/$i" -name Warmup.yaml -delete
 		go test "./providers/$i/..."
 		exit 1
 	fi
 done
-mv docs/MODELS.new.md docs/MODELS.md
+mv "$tmp" docs/MODELS.md
 
 go generate ./...

@@ -90,7 +90,7 @@ jobs:
           git config "branch.${branch}.gh-merge-base" "${base}"
           git switch -c "${branch}"
           git push --set-upstream origin "${branch}"
-          go install github.com/caic-xyz/md/cmd/md@66aa7e5f8e5b30e7497eeadf58cb1d15a416c3bf
+          go install github.com/caic-xyz/md/cmd/md@latest
           go run ./internal/cmd/autofix-weekly-regen -push
       - name: Check for changes
         id: git-check

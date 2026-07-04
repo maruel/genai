@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 299
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-5","id":"msg_01G1taf16vTeB7UA3UqKdBjn","type":"message","role":"assistant","content":[{"type":"text","text":"# Canada: A Comprehensive Overview\n\nCanada is the second-largest country in the world by total area, spanning approximately 9.98 million square kilometers across North America. It stretches from the Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Ocean, bordering the United States to the south (the longest international border in the world).\n\n## Geography and Regions\n\nCanada is divided into 10 provinces and 3 territories:\n\n**Provinces:**\n- Ontario (most populous, home to Toronto and the capital Ottawa)\n- Quebec (predominantly French-speaking)\n- British Columbia (Pacific coast, includes Vancouver)\n- Alberta (known for oil sands and Rocky Mountains)\n- Manitoba, Saskatchewan (Prairie provinces)\n- Nova Scotia, New Brunswick, Prince Edward Island, Newfoundland and Labrador (Atlantic Canada)\n\n**Territories:**\n- Yukon, Northwest Territories, and Nunavut (northern regions with smaller populations)\n\nThe country features diverse landscapes including the Rocky Mountains, vast boreal forests, the Canadian Shield, prairie grasslands, and Arctic tundra. It contains an enormous number of lakes—more than any other country—including the Great Lakes shared with the US.\n\n## Government and Politics\n\nCanada operates as a **federal parliamentary democracy** and **constitutional monarchy**. King Charles III is the ceremonial head of state, represented domestically by the Governor General. The Prime Minister serves as head of government, currently Justin Trudeau (Liberal Party) as of early 2025, though Canadian politics were undergoing transition.\n\nThe government structure includes:\n- Federal Parliament (House of Commons and Senate)\n- Provincial/territorial legislatures with significant autonomy\n- Major political parties: Liberal, Conservative, New Democratic Party (NDP), Bloc Québécois, Green Party\n\n## History\n\n- **Indigenous Peoples**: First Nations, Métis, and Inuit peoples inhabited the land for thousands of years before European contact\n- **Colonial Era**: French and British colonization from the 1600s-1700s\n- **Confederation**: Canada became a self-governing dominion in 1867 through the British North America Act\n- **Independence**: Gradually gained full sovereignty, with the Constitution Act of 1982 patriating the constitution completely from Britain\n- **Reconciliation**: Ongoing efforts to address historical injustices against Indigenous peoples, including residential schools\n\n## Culture and Society\n\nCanada is officially **bilingual** (English and French) and promotes **multiculturalism** as a core national policy. Major cultural characteristics include:\n\n- **Population**: Approximately 40 million people, concentrated near the US border\n- **Immigration**: One of the highest per-capita immigration rates globally, contributing to significant ethnic diversity\n- **Indigenous Culture**: Rich traditions from over 600 recognized First Nations, plus Métis and Inuit communities\n- **Values**: Generally associated with politeness, tolerance, and social progressivism\n\n## Economy\n\nCanada has a highly developed mixed economy, ranking among the world''s largest:\n\n- **Natural Resources**: Major exporter of oil, natural gas, minerals, and timber\n- **Trade**: Heavily integrated with the US economy through USMCA (formerly NAFTA)\n- **Sectors**: Strong manufacturing, technology, financial services, and agriculture\n- **Currency**: Canadian Dollar (CAD)\n\n## Healthcare and Social Systems\n\nCanada is known for its **universal healthcare system** (Medicare), funded publicly though administered provincially. Social programs also include:\n- Employment insurance\n- Public pension plans\n- Extensive social safety nets compared to the US\n\n## Major Cities\n\n- **Toronto**: Financial capital, most populous city\n- **Montreal**: Cultural hub, largest French-speaking city outside France\n- **Vancouver**: Pacific gateway, known for scenery and film industry\n- **Ottawa**: National capital\n- **Calgary**: Energy sector hub\n\n## Climate\n\nCanada experiences extreme climate variation—from temperate coastal regions in BC to harsh Arctic conditions in the north. Winters can be severely cold, particularly in central and northern regions, while summers vary from mild to hot depending on location.\n\n## International Relations\n\nCanada is a member of numerous international organizations:\n- G7 and G20\n- NATO\n- United Nations\n- Commonwealth of Nations\n- La Francophonie\n\nIt maintains a reputation for peacekeeping, diplomacy, and multilateral cooperation, though its foreign policy is often closely aligned with the United States given proximity and economic ties.\n\n---\n\nWould you like me to go deeper into any particular aspect—history, economy, indigenous relations, or something else?"}],"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1641,"output_tokens_details":{"thinking_tokens":0},"service_tier":"standard","inference_geo":"global"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-04T20:11:49Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-04T20:12:05Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-04T20:11:48Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-04T20:11:49Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a160c7fdc9c9a2d5-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-dd9a8573f16309d31503536c16ddf722-f729838ae8858b5f-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 16.632s

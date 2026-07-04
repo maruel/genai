@@ -2,43 +2,142 @@
   "models": {
     "claude-fable-5": {
       "max_input_tokens": 1000000,
-      "max_output_tokens": 128000
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": false
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
     },
     "claude-haiku-4-5-20251001": {
       "max_input_tokens": 200000,
       "max_output_tokens": 64000,
-      "adaptive_thinking_not_supported": true
+      "thinking": {
+        "enabled": true,
+        "adaptive": false,
+        "disabled": true
+      }
     },
     "claude-opus-4-1-20250805": {
       "max_input_tokens": 200000,
       "max_output_tokens": 32000,
-      "adaptive_thinking_not_supported": true
+      "thinking": {
+        "enabled": true,
+        "adaptive": false,
+        "disabled": true
+      }
     },
     "claude-opus-4-5-20251101": {
       "max_input_tokens": 200000,
       "max_output_tokens": 64000,
-      "adaptive_thinking_not_supported": true
+      "thinking": {
+        "enabled": true,
+        "adaptive": false,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": false,
+        "max": false
+      }
     },
     "claude-opus-4-6": {
       "max_input_tokens": 1000000,
-      "max_output_tokens": 128000
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": true,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": false,
+        "max": true
+      }
     },
     "claude-opus-4-7": {
       "max_input_tokens": 1000000,
-      "max_output_tokens": 128000
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
     },
     "claude-opus-4-8": {
       "max_input_tokens": 1000000,
-      "max_output_tokens": 128000
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
     },
     "claude-sonnet-4-5-20250929": {
       "max_input_tokens": 1000000,
       "max_output_tokens": 64000,
-      "adaptive_thinking_not_supported": true
+      "thinking": {
+        "enabled": true,
+        "adaptive": false,
+        "disabled": true
+      }
     },
     "claude-sonnet-4-6": {
       "max_input_tokens": 1000000,
-      "max_output_tokens": 128000
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": true,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": false,
+        "max": true
+      }
+    },
+    "claude-sonnet-5": {
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
     }
   }
 }

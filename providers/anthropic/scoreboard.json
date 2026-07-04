@@ -8,6 +8,7 @@
   "dashboardURL": "https://console.anthropic.com/settings/billing",
   "scenarios": [
     {
+      "comments": "Claude Fable 5 is more capable, but it is much more expensive. Keep Opus 4.8 as SOTA default for now.",
       "models": [
         "claude-opus-4-8"
       ],
@@ -67,7 +68,7 @@
     },
     {
       "models": [
-        "claude-sonnet-4-6"
+        "claude-sonnet-5"
       ],
       "good": true,
       "reason": true,
@@ -103,7 +104,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": true,
@@ -115,7 +116,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": true,
@@ -244,7 +245,7 @@
     },
     {
       "models": [
-        "claude-sonnet-4-6"
+        "claude-sonnet-5"
       ],
       "in": {
         "document": {
@@ -278,7 +279,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -292,7 +293,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
@@ -303,7 +304,7 @@
       }
     },
     {
-      "comments": "Old models",
+      "comments": "Other models",
       "models": [
         "claude-fable-5",
         "claude-opus-4-1-20250805",
@@ -312,7 +313,8 @@
         "claude-opus-4-6",
         "claude-opus-4-7",
         "claude-sonnet-4-20250514",
-        "claude-sonnet-4-5-20250929"
+        "claude-sonnet-4-5-20250929",
+        "claude-sonnet-4-6"
       ]
     }
   ]

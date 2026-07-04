@@ -66,25 +66,24 @@ func (p ProviderOptionMultipartBoundary) Validate() error {
 
 // GenOptionText defines Anthropic specific options.
 type GenOptionText struct {
-	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer. When 0,
-	// reasoning is disabled. It generally must be above 1024 and below MaxTokens.
+	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer. It generally
+	// must be above 1024 and below MaxTokens.
 	//
-	// Ignored when Thinking is ThinkingAdaptive.
+	// It is used only with ThinkingEnabled.
 	ThinkingBudget int64
-	// Thinking controls the thinking mode. When empty, the mode is auto-detected from ThinkingBudget:
-	// ThinkingEnabled if ThinkingBudget > 0, ThinkingDisabled otherwise.
-	//
-	// Set to ThinkingAdaptive for models that support it (e.g. claude-opus-4-6). In adaptive mode, the
-	// model decides autonomously whether and how much to think. ThinkingBudget is ignored.
+	// Thinking controls the thinking mode. When empty, the provider selects adaptive thinking for models that
+	// support it, disables thinking for models that only support budgeted thinking, and falls back to adaptive
+	// thinking when model capabilities are unknown.
 	//
 	// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
+	// https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking
 	Thinking ThinkingType
-	// ThinkingDisplay controls whether the thinking text is returned. Valid values are "summarized"
+	// ThinkingDisplay controls whether adaptive thinking text is returned. Valid values are "summarized"
 	// and "omitted". Defaults to "summarized" in adaptive mode since opus-4-8/4-7 default to
 	// "omitted" which hides the thinking text.
 	//
 	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#controlling-thinking-display
-	ThinkingDisplay string
+	ThinkingDisplay ThinkingDisplay
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
@@ -100,31 +99,6 @@ type GenOptionText struct {
 	//
 	// https://platform.claude.com/docs/en/api/messages/create
 	InferenceGeo string
-}
-
-// ThinkingType controls how the model uses extended thinking.
-//
-// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
-type ThinkingType string
-
-const (
-	// ThinkingEnabled enables extended thinking with an explicit budget set via ThinkingBudget.
-	ThinkingEnabled ThinkingType = "enabled"
-	// ThinkingDisabled disables extended thinking.
-	ThinkingDisabled ThinkingType = "disabled"
-	// ThinkingAdaptive lets the model decide autonomously whether and how much to think.
-	// ThinkingBudget is ignored. Use Effort to control thinking depth.
-	ThinkingAdaptive ThinkingType = "adaptive"
-)
-
-// Validate implements genai.Validatable.
-func (t ThinkingType) Validate() error {
-	switch t {
-	case "", ThinkingEnabled, ThinkingDisabled, ThinkingAdaptive:
-		return nil
-	default:
-		return fmt.Errorf("invalid ThinkingType %q", t)
-	}
 }
 
 // Effort controls the amount of effort the model puts into its response.
@@ -150,19 +124,17 @@ func (o *GenOptionText) Validate() error {
 	if err := o.Thinking.Validate(); err != nil {
 		return err
 	}
-	if o.Thinking == ThinkingAdaptive && o.ThinkingBudget > 0 {
-		return fmt.Errorf("ThinkingBudget must not be set when Thinking is %q", ThinkingAdaptive)
+	if o.ThinkingBudget > 0 && o.Thinking != ThinkingEnabled {
+		return fmt.Errorf("ThinkingBudget must be set only when Thinking is %q", ThinkingEnabled)
 	}
 	if o.Thinking == ThinkingEnabled && o.ThinkingBudget == 0 {
 		return fmt.Errorf("ThinkingBudget must be set when Thinking is %q", ThinkingEnabled)
 	}
-	if o.ThinkingDisplay != "" && o.Thinking != ThinkingAdaptive {
-		return errors.New("ThinkingDisplay is only valid with ThinkingAdaptive")
+	if err := o.ThinkingDisplay.Validate(); err != nil {
+		return err
 	}
-	switch o.ThinkingDisplay {
-	case "", "summarized", "omitted":
-	default:
-		return fmt.Errorf("invalid ThinkingDisplay %q", o.ThinkingDisplay)
+	if o.ThinkingDisplay != "" && (o.Thinking == ThinkingEnabled || o.Thinking == ThinkingDisabled) {
+		return errors.New("ThinkingDisplay is only valid with adaptive thinking")
 	}
 	switch o.Effort {
 	case "", EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
@@ -300,6 +272,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.ID
 			}
 		default:
+			// Claude Fable 5 is more capable, but it is much more expensive. Keep SOTA on Opus for now.
 			if strings.Contains(m.ID, "-opus-") {
 				date = m.CreatedAt
 				selectedModel = m.ID
@@ -319,7 +292,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
-	c.ensureMaxTokens(ctx, opts)
+	c.ensureModelData(ctx)
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
 	// https://docs.anthropic.com/en/api/creating-message-batches
 	// Anthropic supports creating multiple processing requests as part on one HTTP post. I'm not sure the value
@@ -592,7 +565,7 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	c.ensureMaxTokens(ctx, opts)
+	c.ensureModelData(ctx)
 	return c.impl.GenSync(ctxWithBeta(ctx, opts), msgs, opts...)
 }
 
@@ -603,7 +576,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	c.ensureMaxTokens(ctx, opts)
+	c.ensureModelData(ctx)
 	return c.impl.GenStream(ctxWithBeta(ctx, opts), msgs, opts...)
 }
 
@@ -622,30 +595,22 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-// ensureMaxTokens ensures the max_tokens is cached for the model.
-// Falls back to ListModels for (new) unknown models.
-func (c *Client) ensureMaxTokens(ctx context.Context, opts []genai.GenOption) {
+// ensureModelData ensures model capabilities are cached for request validation and defaults.
+// Falls back to ListModels for unknown models.
+func (c *Client) ensureModelData(ctx context.Context) {
 	if c.impl.Model == "" {
 		return
 	}
-	// Check if user already provided MaxTokens.
-	for _, o := range opts {
-		if v, ok := o.(*genai.GenOptionText); ok && v.MaxTokens != 0 {
-			return
-		}
-	}
-	// Check out cache.
-	if _, ok := modelsMaxTokens.Load(c.impl.Model); ok {
+	if _, ok := getModelData(c.impl.Model); ok {
 		return
 	}
-	// Check upstream.
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return
 	}
 	for _, m := range mdls {
-		if am, ok := m.(*Model); ok && am.ID == c.impl.Model && am.MaxTokens != 0 {
-			modelsMaxTokens.Store(c.impl.Model, int(am.MaxTokens))
+		if am, ok := m.(*Model); ok && am.ID == c.impl.Model {
+			cacheModelData(am)
 			return
 		}
 	}
@@ -654,12 +619,20 @@ func (c *Client) ensureMaxTokens(ctx context.Context, opts []genai.GenOption) {
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if c.impl.PreloadedModels != nil {
+		for _, m := range c.impl.PreloadedModels {
+			if am, ok := m.(*Model); ok {
+				cacheModelData(am)
+			}
+		}
 		return c.impl.PreloadedModels, nil
 	}
 	// https://docs.anthropic.com/en/api/models-list
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://api.anthropic.com/v1/models?limit=1000", nil, &resp); err != nil {
 		return nil, err
+	}
+	for i := range resp.Data {
+		cacheModelData(&resp.Data[i])
 	}
 	return resp.ToModels(), nil
 }
@@ -680,7 +653,7 @@ func (c *Client) GetModel(ctx context.Context, id string) (*Model, error) {
 //
 // https://docs.anthropic.com/en/api/counting-tokens
 func (c *Client) CountTokens(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (*CountTokensResponse, error) {
-	c.ensureMaxTokens(ctx, opts)
+	c.ensureModelData(ctx)
 	var chat ChatRequest
 	if err := chat.Init(msgs, c.impl.Model, opts...); err != nil {
 		return nil, err
@@ -978,17 +951,27 @@ type modelsData struct {
 }
 
 type modelData struct {
-	MaxInputTokens               int64 `json:"max_input_tokens"`
-	MaxOutputTokens              int64 `json:"max_output_tokens"`
-	AdaptiveThinkingNotSupported bool  `json:"adaptive_thinking_not_supported,omitempty"`
+	MaxInputTokens  int64             `json:"max_input_tokens"`
+	MaxOutputTokens int64             `json:"max_output_tokens"`
+	Thinking        modelThinkingData `json:"thinking"`
+	Effort          modelEffortData   `json:"effort,omitzero"`
 }
 
-var (
-	// modelsMaxTokens caches max output tokens per model from models.json.
-	modelsMaxTokens sync.Map
-	// modelsAdaptiveBlocked is true for models that don't support adaptive thinking.
-	modelsAdaptiveBlocked sync.Map
-)
+type modelThinkingData struct {
+	Enabled  bool `json:"enabled"`
+	Adaptive bool `json:"adaptive"`
+	Disabled bool `json:"disabled"`
+}
+
+type modelEffortData struct {
+	Low    bool `json:"low"`
+	Medium bool `json:"medium"`
+	High   bool `json:"high"`
+	XHigh  bool `json:"xhigh"`
+	Max    bool `json:"max"`
+}
+
+var modelsMeta sync.Map // map[string]modelData
 
 func init() {
 	data := modelsData{}
@@ -996,10 +979,91 @@ func init() {
 		panic(fmt.Sprintf("failed to parse embedded models.json: %v", err))
 	}
 	for k, v := range data.Models {
-		modelsMaxTokens.Store(k, int(v.MaxOutputTokens))
-		if v.AdaptiveThinkingNotSupported {
-			modelsAdaptiveBlocked.Store(k, true)
-		}
+		modelsMeta.Store(k, v)
+	}
+}
+
+func cacheModelData(m *Model) {
+	modelsMeta.Store(m.ID, modelData{
+		MaxInputTokens:  m.MaxInputTokens,
+		MaxOutputTokens: m.MaxTokens,
+		Thinking: modelThinkingData{
+			Enabled:  m.Capabilities.Thinking.Types.Enabled.Supported,
+			Adaptive: m.Capabilities.Thinking.Types.Adaptive.Supported,
+			Disabled: modelCanDisableThinking(m.ID),
+		},
+		Effort: modelEffortData{
+			Low:    m.Capabilities.Effort.Low.Supported,
+			Medium: m.Capabilities.Effort.Medium.Supported,
+			High:   m.Capabilities.Effort.High.Supported,
+			XHigh:  m.Capabilities.Effort.XHigh.Supported,
+			Max:    m.Capabilities.Effort.Max.Supported,
+		},
+	})
+}
+
+func getModelData(model string) (modelData, bool) {
+	v, ok := modelsMeta.Load(model)
+	if !ok {
+		return modelData{}, false
+	}
+	m, ok := v.(modelData)
+	return m, ok
+}
+
+func (m *modelData) defaultThinking() Thinking {
+	switch {
+	case m.Thinking.Adaptive:
+		return Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
+	case m.Thinking.Enabled && m.Thinking.Disabled:
+		return Thinking{Type: ThinkingDisabled}
+	default:
+		return Thinking{}
+	}
+}
+
+func (m *modelData) supportsEffort(e Effort) bool {
+	switch e {
+	case "":
+		return true
+	case EffortLow:
+		return m.Effort.Low
+	case EffortMedium:
+		return m.Effort.Medium
+	case EffortHigh:
+		return m.Effort.High
+	case EffortXHigh:
+		return m.Effort.XHigh
+	case EffortMax:
+		return m.Effort.Max
+	default:
+		return false
+	}
+}
+
+func modelCanDisableThinking(id string) bool {
+	// Claude Fable 5 and Mythos models have adaptive thinking always on; Anthropic rejects disabled thinking.
+	// The Models API does not currently expose this bit.
+	switch id {
+	case "claude-fable-5", "claude-mythos-5", "claude-mythos-preview":
+		return false
+	default:
+		return true
+	}
+}
+
+func (m *modelData) supportsThinking(t ThinkingType) bool {
+	switch t {
+	case "":
+		return true
+	case ThinkingDisabled:
+		return m.Thinking.Disabled
+	case ThinkingAdaptive:
+		return m.Thinking.Adaptive
+	case ThinkingEnabled:
+		return m.Thinking.Enabled
+	default:
+		return false
 	}
 }
 

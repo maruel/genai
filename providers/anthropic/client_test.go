@@ -53,9 +53,24 @@ type modelsData struct {
 }
 
 type modelData struct {
-	MaxInputTokens               int64 `json:"max_input_tokens"`
-	MaxOutputTokens              int64 `json:"max_output_tokens"`
-	AdaptiveThinkingNotSupported bool  `json:"adaptive_thinking_not_supported,omitempty"`
+	MaxInputTokens  int64             `json:"max_input_tokens"`
+	MaxOutputTokens int64             `json:"max_output_tokens"`
+	Thinking        modelThinkingData `json:"thinking"`
+	Effort          modelEffortData   `json:"effort,omitzero"`
+}
+
+type modelThinkingData struct {
+	Enabled  bool `json:"enabled"`
+	Adaptive bool `json:"adaptive"`
+	Disabled bool `json:"disabled"`
+}
+
+type modelEffortData struct {
+	Low    bool `json:"low"`
+	Medium bool `json:"medium"`
+	High   bool `json:"high"`
+	XHigh  bool `json:"xhigh"`
+	Max    bool `json:"max"`
 }
 
 func TestClient(t *testing.T) {
@@ -88,9 +103,20 @@ func TestClient(t *testing.T) {
 				t.Fatalf("model %s has no MaxTokens", am.ID)
 			}
 			want.Models[am.ID] = modelData{
-				MaxInputTokens:               am.MaxInputTokens,
-				MaxOutputTokens:              am.MaxTokens,
-				AdaptiveThinkingNotSupported: !am.Capabilities.Thinking.Types.Adaptive.Supported,
+				MaxInputTokens:  am.MaxInputTokens,
+				MaxOutputTokens: am.MaxTokens,
+				Thinking: modelThinkingData{
+					Enabled:  am.Capabilities.Thinking.Types.Enabled.Supported,
+					Adaptive: am.Capabilities.Thinking.Types.Adaptive.Supported,
+					Disabled: am.ID != "claude-fable-5" && am.ID != "claude-mythos-5" && am.ID != "claude-mythos-preview",
+				},
+				Effort: modelEffortData{
+					Low:    am.Capabilities.Effort.Low.Supported,
+					Medium: am.Capabilities.Effort.Medium.Supported,
+					High:   am.Capabilities.Effort.High.Supported,
+					XHigh:  am.Capabilities.Effort.XHigh.Supported,
+					Max:    am.Capabilities.Effort.Max.Supported,
+				},
 			}
 		}
 		b, err := json.MarshalIndent(want, "", "  ")
@@ -110,7 +136,15 @@ func TestClient(t *testing.T) {
 				}
 				t.Logf("Updated %s with %d models", path, len(want.Models))
 			} else {
-				t.Fatalf("%s is out of date, run with -update-models to regenerate it", path)
+				got := modelsData{}
+				if err := json.Unmarshal(actual, &got); err != nil {
+					t.Fatal(err)
+				}
+				for id, m := range want.Models {
+					if got.Models[id] != m {
+						t.Fatalf("%s is out of date for %s, run with -update-models to regenerate it", path, id)
+					}
+				}
 			}
 		}
 	})
@@ -659,7 +693,7 @@ func TestEffort(t *testing.T) {
 		for _, e := range []anthropic.Effort{"", anthropic.EffortLow, anthropic.EffortMedium, anthropic.EffortHigh, anthropic.EffortXHigh, anthropic.EffortMax} {
 			t.Run(string(e), func(t *testing.T) {
 				var req anthropic.ChatRequest
-				if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Effort: e}); err != nil {
+				if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Effort: e}); err != nil {
 					t.Fatal(err)
 				}
 				if req.OutputConfig.Effort != e {
@@ -669,14 +703,26 @@ func TestEffort(t *testing.T) {
 		}
 	})
 	t.Run("invalid", func(t *testing.T) {
-		var req anthropic.ChatRequest
-		err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Effort: "bogus"})
-		if err == nil {
-			t.Fatal("expected error for invalid effort")
-		}
-		if !strings.Contains(err.Error(), "invalid Effort") {
-			t.Errorf("unexpected error: %v", err)
-		}
+		t.Run("bogus", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Effort: "bogus"})
+			if err == nil {
+				t.Fatal("expected error for invalid effort")
+			}
+			if !strings.Contains(err.Error(), "invalid Effort") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("unsupported", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-haiku-4-5-20251001", &anthropic.GenOptionText{Effort: anthropic.EffortHigh})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "GenOptionText.Effort") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
 	})
 }
 
@@ -685,26 +731,26 @@ func TestThinking(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Run("adaptive", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive}); err != nil {
+			if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive}); err != nil {
 				t.Fatal(err)
 			}
-			if req.Thinking.Type != "adaptive" {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "adaptive")
+			if req.Thinking.Type != anthropic.ThinkingAdaptive {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingAdaptive)
 			}
 			if req.Thinking.BudgetTokens != 0 {
 				t.Errorf("Thinking.BudgetTokens = %d, want 0", req.Thinking.BudgetTokens)
 			}
-			if req.Thinking.Display != "summarized" {
-				t.Errorf("Thinking.Display = %q, want %q", req.Thinking.Display, "summarized")
+			if req.Thinking.Display != anthropic.ThinkingDisplaySummarized {
+				t.Errorf("Thinking.Display = %q, want %q", req.Thinking.Display, anthropic.ThinkingDisplaySummarized)
 			}
 		})
 		t.Run("enabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048}); err != nil {
+			if err := req.Init(msgs, "claude-sonnet-4-6", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048}); err != nil {
 				t.Fatal(err)
 			}
-			if req.Thinking.Type != "enabled" {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "enabled")
+			if req.Thinking.Type != anthropic.ThinkingEnabled {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingEnabled)
 			}
 			if req.Thinking.BudgetTokens != 2048 {
 				t.Errorf("Thinking.BudgetTokens = %d, want 2048", req.Thinking.BudgetTokens)
@@ -712,39 +758,39 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("disabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled}); err != nil {
+			if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled}); err != nil {
 				t.Fatal(err)
 			}
-			if req.Thinking.Type != "disabled" {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "disabled")
+			if req.Thinking.Type != anthropic.ThinkingDisabled {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingDisabled)
 			}
 		})
-		t.Run("auto_detect_enabled", func(t *testing.T) {
+		t.Run("auto_adaptive_from_model", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{ThinkingBudget: 2048}); err != nil {
+			if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{}); err != nil {
 				t.Fatal(err)
 			}
-			if req.Thinking.Type != "enabled" {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "enabled")
+			if req.Thinking.Type != anthropic.ThinkingAdaptive {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingAdaptive)
 			}
-			if req.Thinking.BudgetTokens != 2048 {
-				t.Errorf("Thinking.BudgetTokens = %d, want 2048", req.Thinking.BudgetTokens)
+			if req.Thinking.Display != anthropic.ThinkingDisplaySummarized {
+				t.Errorf("Thinking.Display = %q, want %q", req.Thinking.Display, anthropic.ThinkingDisplaySummarized)
 			}
 		})
-		t.Run("auto_detect_disabled", func(t *testing.T) {
+		t.Run("auto_disabled_when_only_budgeted_thinking_supported", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{}); err != nil {
+			if err := req.Init(msgs, "claude-haiku-4-5-20251001", &anthropic.GenOptionText{}); err != nil {
 				t.Fatal(err)
 			}
-			if req.Thinking.Type != "disabled" {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "disabled")
+			if req.Thinking.Type != anthropic.ThinkingDisabled {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingDisabled)
 			}
 		})
 	})
 	t.Run("invalid", func(t *testing.T) {
 		t.Run("bogus", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: "bogus"})
+			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: "bogus"})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -754,17 +800,27 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("adaptive_with_budget", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingBudget: 2048})
+			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingBudget: 2048})
 			if err == nil {
 				t.Fatal("expected error")
 			}
-			if !strings.Contains(err.Error(), "ThinkingBudget must not be set") {
+			if !strings.Contains(err.Error(), "ThinkingBudget must be set only when Thinking") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("budget_without_enabled", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-sonnet-4-6", &anthropic.GenOptionText{ThinkingBudget: 2048})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "ThinkingBudget must be set only when Thinking") {
 				t.Errorf("unexpected error: %v", err)
 			}
 		})
 		t.Run("enabled_without_budget", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled})
+			err := req.Init(msgs, "claude-sonnet-4-6", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -774,21 +830,51 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("display_without_adaptive", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048, ThinkingDisplay: "summarized"})
+			err := req.Init(msgs, "claude-sonnet-4-6", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048, ThinkingDisplay: anthropic.ThinkingDisplaySummarized})
 			if err == nil {
 				t.Fatal("expected error")
 			}
-			if !strings.Contains(err.Error(), "ThinkingDisplay is only valid with ThinkingAdaptive") {
+			if !strings.Contains(err.Error(), "ThinkingDisplay is only valid with adaptive thinking") {
 				t.Errorf("unexpected error: %v", err)
 			}
 		})
 		t.Run("invalid_display", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingDisplay: "bogus"})
+			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingDisplay: "bogus"})
 			if err == nil {
 				t.Fatal("expected error")
 			}
 			if !strings.Contains(err.Error(), "invalid ThinkingDisplay") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("adaptive_unsupported", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-haiku-4-5-20251001", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "GenOptionText.Thinking") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("enabled_unsupported", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "GenOptionText.Thinking") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("disabled_unsupported", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-fable-5", &anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "GenOptionText.Thinking") {
 				t.Errorf("unexpected error: %v", err)
 			}
 		})

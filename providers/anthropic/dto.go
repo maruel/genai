@@ -79,20 +79,13 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	var errs []error
 	var unsupported []string
 	msgToCache := 0
-	// Default thinking: adaptive for models that support it, disabled otherwise.
-	if _, ok := modelsAdaptiveBlocked.Load(model); ok {
-		c.Thinking.Type = "disabled"
+	md, hasModelData := getModelData(model)
+	if hasModelData {
+		c.Thinking = md.defaultThinking()
+		// Anthropic requires a non-zero max_tokens.
+		c.MaxTokens = md.MaxOutputTokens
 	} else {
-		c.Thinking.Type = "adaptive"
-		c.Thinking.Display = "summarized"
-	}
-	// Anthropic requires a non-zero max_tokens.
-	if v, ok := modelsMaxTokens.Load(model); ok {
-		if i, ok := v.(int); ok {
-			c.MaxTokens = int64(i)
-		} else {
-			return fmt.Errorf("internal error: invalid cached MaxTokens %v", v)
-		}
+		c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
 	}
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
@@ -106,39 +99,31 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				unsupported = append(unsupported, "GenOptionText.MessagesToCache")
 			}
 			c.OutputConfig.Effort = v.Effort
+			if hasModelData && !md.supportsEffort(v.Effort) {
+				unsupported = append(unsupported, "GenOptionText.Effort")
+			}
 			c.InferenceGeo = v.InferenceGeo
 			switch v.Thinking {
 			case ThinkingAdaptive:
-				c.Thinking.Type = string(ThinkingAdaptive)
-				// Default to summarized so reasoning text is returned.
-				// opus-4-8/4-7 default to "omitted" which hides thinking text.
-				c.Thinking.Display = "summarized"
+				c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
 			case ThinkingDisabled:
-				c.Thinking.Type = "disabled"
-				c.Thinking.Display = ""
+				c.Thinking = Thinking{Type: ThinkingDisabled}
 			case ThinkingEnabled:
 				if c.MaxTokens != 0 && v.ThinkingBudget >= c.MaxTokens {
 					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
 				}
-				c.Thinking.BudgetTokens = v.ThinkingBudget
-				c.Thinking.Type = string(ThinkingEnabled)
+				c.Thinking = Thinking{BudgetTokens: v.ThinkingBudget, Type: ThinkingEnabled}
 			default:
-				// Auto-detect from ThinkingBudget for backward compatibility.
-				if v.ThinkingBudget > 0 {
-					if c.MaxTokens != 0 && v.ThinkingBudget >= c.MaxTokens {
-						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
-					}
-					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-					// Thinking isn't compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-					c.Thinking.BudgetTokens = v.ThinkingBudget
-					c.Thinking.Type = string(ThinkingEnabled)
-				} else {
-					c.Thinking.Type = "disabled"
-					c.Thinking.Display = ""
-				}
 			}
 			if v.ThinkingDisplay != "" {
-				c.Thinking.Display = v.ThinkingDisplay
+				if c.Thinking.Type != ThinkingAdaptive {
+					errs = append(errs, errors.New("ThinkingDisplay is only valid with adaptive thinking"))
+				} else {
+					c.Thinking.Display = v.ThinkingDisplay
+				}
+			}
+			if hasModelData && !md.supportsThinking(c.Thinking.Type) {
+				unsupported = append(unsupported, "GenOptionText.Thinking")
 			}
 		case *genai.GenOptionText:
 			u, err := c.initOptionsText(v)
@@ -160,7 +145,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	// Post process to take into account limitations by the provider.
 	// Forced tool use is incompatible with thinking.
 	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-	if c.Thinking.Type != "disabled" && c.ToolChoice.Type == ToolChoiceAny {
+	if c.Thinking.Type != "" && c.Thinking.Type != ThinkingDisabled && c.ToolChoice.Type == ToolChoiceAny {
 		unsupported = append(unsupported, "GenOptionTools.Force")
 		c.ToolChoice.Type = ToolChoiceAuto
 	}
@@ -1183,11 +1168,56 @@ func (c *Citation) To(dst *genai.Citation) error {
 	return nil
 }
 
+// ThinkingType controls how the model uses extended thinking.
+//
+// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
+type ThinkingType string
+
+const (
+	// ThinkingEnabled enables extended thinking with an explicit budget set via ThinkingBudget.
+	ThinkingEnabled ThinkingType = "enabled"
+	// ThinkingDisabled disables extended thinking.
+	ThinkingDisabled ThinkingType = "disabled"
+	// ThinkingAdaptive lets the model decide autonomously whether and how much to think.
+	// ThinkingBudget is ignored. Use Effort to control thinking depth.
+	ThinkingAdaptive ThinkingType = "adaptive"
+)
+
+// Validate implements genai.Validatable.
+func (t ThinkingType) Validate() error {
+	switch t {
+	case "", ThinkingEnabled, ThinkingDisabled, ThinkingAdaptive:
+		return nil
+	default:
+		return fmt.Errorf("invalid ThinkingType %q", t)
+	}
+}
+
+// ThinkingDisplay controls adaptive thinking visibility.
+type ThinkingDisplay string
+
+const (
+	// ThinkingDisplaySummarized returns summarized thinking text.
+	ThinkingDisplaySummarized ThinkingDisplay = "summarized"
+	// ThinkingDisplayOmitted hides thinking text.
+	ThinkingDisplayOmitted ThinkingDisplay = "omitted"
+)
+
+// Validate implements genai.Validatable.
+func (d ThinkingDisplay) Validate() error {
+	switch d {
+	case "", ThinkingDisplaySummarized, ThinkingDisplayOmitted:
+		return nil
+	default:
+		return fmt.Errorf("invalid ThinkingDisplay %q", d)
+	}
+}
+
 // Thinking is a provider-specific thinking block.
 type Thinking struct {
-	BudgetTokens int64  `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens; unused for adaptive
-	Display      string `json:"display,omitzero"`       // "summarized", "omitted"; omitted is default on opus-4-8/4-7
-	Type         string `json:"type,omitzero"`          // "enabled", "disabled", "adaptive"
+	BudgetTokens int64           `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens; unused for adaptive
+	Display      ThinkingDisplay `json:"display,omitzero"`       // "summarized", "omitted"; omitted is default on opus-4-8/4-7
+	Type         ThinkingType    `json:"type,omitzero"`          // "enabled", "disabled", "adaptive"
 }
 
 // ToolChoiceType is documented at https://docs.anthropic.com/en/api/messages#body-tool-choice

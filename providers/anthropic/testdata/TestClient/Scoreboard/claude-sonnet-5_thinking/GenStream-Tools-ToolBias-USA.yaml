@@ -1,0 +1,143 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 701
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-5","id":"msg_018zooTNk2tBTsCDVZ3wj1h8","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":527,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":8,"service_tier":"standard","inference_geo":"global"}}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}            }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user is asking me to use a tool to identify the \"best\" country, which is inherently subjective since there's no objective criteria for what"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" makes a country \"best.\" Still, I'll call the tool as requested and make a selection, while acknowled"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ging the subjectivity involved."}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EvoDCmMIDxgCKkCWpFTzwxJoNwGEbc13X2rnBvEzYDdVbJJs6qlHD4xp/6fwMP3PFgZpbWkahPWcWSPwAEP2+UXDE7BJl2XQwELmMg9jbGF1ZGUtc29ubmV0LTU4AEIIdGhpbmtpbmcSDE+mUTQz30K9yJWocBoMDwyGHGWL6cZC1cEHIjBpH1ZG6M/Lw4QcYpqtMfyg3ts9xxTdOawy8NR1rRfJlYrg+49jDW8zPUm4iOCRuVAqxAJPpSIrzoakZ0qE0eEwsVEDO7k9EpxuH9PYKmW0hfWAY2sChbdOGrLWXd+7aysbbBYSDijAi09Tij775XI4U95LJvLxD98BmtP6TfzE7zD8/xOIl+q+IXHU9brM7/POlZMgrReUCDkLBuWQtqiLPv4D413npyeuOKWG8PRukCfEOZW0frfCUG5Pig2r1gKMB/08h+ZcSe35XnFLe/8VOEh2nfB7vluQhjXabcEReQSglR2x6IitTnm7ch1LZEuHAsO22w/HBlRVhD54S2k8Vxa5UdIQncZJhcifDQm8I1eHzoMX8FJkp61cuH/Jq8og0TguoOV4TsKDJlyZt0QIllnRqaEKqs2kwww1JdAgap57lLK/gcCzF4MBonXK+LaBSHshfmrLXmYfsgpVzCmx3Hj88MkGfPc8m39g9qOhYMROskCCB6wYAQ=="} }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"This is a fun"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" but ultimately subjective question — \"best\" can mean different things depending on what you value (econom"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"y, healthcare, culture, geography, etc.). There's no objective answer, but I'll go ahead and use the tool as requested to give"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a pick."}               }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1              }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_01WyUXzyEy5i4JhMybbpvavx","name":"best_country","input":{},"caller":{"type":"direct"}}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":""}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"{\"coun"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"try\": \"Cana"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"da\"}"}              }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2       }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":527,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":215,"output_tokens_details":{"thinking_tokens":86}}}
+
+            event: message_stop
+            data: {"type":"message_stop"          }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-04T20:12:10Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-04T20:12:10Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-04T20:12:10Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-04T20:12:10Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a160c8867fbba2d5-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-91f2eee0788b2d273675d1a3160add75-c4c63c94d66839c2-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.038s

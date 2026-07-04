@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 687
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-5","id":"msg_01R7WVhUymt9fVSa3p2g1RhL","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking me to determine which country is \"best,\" which is inherently subjective and can''t be objectively resolved by a tool. I''ll call the tool anyway since that''s what''s available, but I should acknowledge that this kind of judgment depends entirely on what criteria matter most.","signature":"EpEECmMIDxgCKkAsQh+/7VeoaU/JoetkmuClBxYsknW0/NeAv92Dx2htaDTax3nHYIm7rIt486ik++CmvJel6WaQSLdCdwqeepCWMg9jbGF1ZGUtc29ubmV0LTU4AEIIdGhpbmtpbmcSDM7h32Ysfluuoe4dxhoMi/TI8dugyrRSv5htIjBzt7HpxeYlrLpQn+zp07RabPf0MX/J2D0wog7FkT+5bKm9VFyccDjvBJuNeG8ZUSgq2wIpNeg2Da6iO0NEAA1KXPf+7PGnmhT5hOhRJs2CIdL1l6IaRM831DGPNpzQ5lz6JEGwwQoedspSi1NLIfRGmpq8vu98DPGUK/5sz9q93CrK1qq0TcfeDZi+QwQjk7b3r//P+hsGiIJ/By1Rqjl3gBCXIpF/iieIMnLefttgKqQ36Rgj2EK4gBYg6YNwp3C+Kdxrd3aJ7XpfdLS5/d+hpRmYLFr8naTymeggH9nM+vLPkxEhmqhGZU/bMUxxqqLsfDdnNsRNW1qapjrbjE11+2RWRkHqlTUS/OrU/e5em+vD8nMM83GqDAIPfoxN5hQe2JGaPtyfllGFPmPZylO8FslsRHly51eVh+6MYye2fP8fRRUESSePszuhnqLo5HDVwmKdSYwg53AyjDtgdYBXYTFiJAJVNSb7wJYTYwVweC38An5vmEhwKwzFzispp1XOO2jNnlksVgNxBgbuUBgB"},{"type":"tool_use","id":"toolu_017vPyaqfx1gCWymk59QV27V","name":"best_country","input":{"country":"USA"},"caller":{"type":"direct"}}],"stop_reason":"tool_use","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":527,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":143,"output_tokens_details":{"thinking_tokens":93},"service_tier":"standard","inference_geo":"global"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-04T20:12:12Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-04T20:12:14Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-04T20:12:11Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-04T20:12:12Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a160c88c7a15a2d5-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-428cff6443e8990bd6297c347d0f5e8d-d9d9e98697c8c8e4-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.212s

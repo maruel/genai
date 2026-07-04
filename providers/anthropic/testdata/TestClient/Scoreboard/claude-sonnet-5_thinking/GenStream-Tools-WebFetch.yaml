@@ -1,0 +1,172 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 359
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-5","id":"msg_01EZ57fHFtt4tuiBnCWfXxtf","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":1145,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":3,"service_tier":"standard","inference_geo":"global"}}    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}          }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'m recalling that Perdu.com is a famous French joke site with"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" \"perdu\" meaning \"lost\" — let me check what it"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" actually contains."}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"ErkCCmMIDxgCKkBTVhT5JvpoOb2/Ae284ohyxw3OhXgjdu+VtGdTsdqBTqMgvTKa0VMtPQDThjrf0lMFWJ9bcDf/57ZX591BIgEeMg9jbGF1ZGUtc29ubmV0LTU4AEIIdGhpbmtpbmcSDLTNYhEL53QqnofBcRoMAcBaV3HES0ACrDYLIjCtsjYRgYkarXUvUWjxl4OsAcTMo4Ghl+BNMYWhHHpxP0JihypeFSv40CwCHONzckgqgwH93gksE/2fC6kN4UDr0gKWC7Nz8KknCwcha/mgxi+Aald4ht+qFrsjmdj3yTx8/qDngl7WVBP8FNDT+5zAOWZ1dkb/LtM/tdkssT8uhTti4XO/Bj5pUb9mgk3OlI2AoS7tIAg0JcUzyfW403VYm94/VKbGUanFa6wx5aW12KSA0HN1GRgB"}    }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0             }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"server_tool_use","id":"srvtoolu_0194vUZFFSpJojna2ttEcvj4","name":"web_fetch","input":{}}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"url"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"\": \"h"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ttps:/"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"/perdu."}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"com"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"\"}"}   }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1              }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_0194vUZFFSpJojna2ttEcvj4","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-07-04T20:09:33.497000+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"---\ntitle: Vous Etes Perdu ?\n---\n\n# Perdu sur l'Internet ?\n\n## Pas de panique, on va vous aider\n\n**```\n* <----- vous êtes ici\n```**"},"title":"Vous Etes Perdu ?"}},"caller":{"type":"direct"}}   }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2     }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"The"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" page at **https://perdu.com** is a small, humorous French website."}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" Here's what it says:\n\n- **Title:** \"Vous Etes Perdu ?\" (*\"Are you lost?\"*)\n- **Heading:** \"Perdu s"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ur l'Internet ?\" (*\"Lost on the Internet?\"*)\n- **Subheading:** \"Pas de panique, on va vous aider\" (*\"Don't"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" panic, we'll help you\"*)\n- Below that, there's a little ASCII-style diagram with"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" an arrow and the text \"vous êtes ici\" (*\"you are here\"*) — like the"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" \"You Are Here\" marker on a map.\n\nIt's essentially a playful joke page often used as a placeholder or"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" test URL, poking fun at the idea of being \"lost\" on the internet, similar to a \"You Are Here\" map marker."}    }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":3 }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":2524,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":363,"output_tokens_details":{"thinking_tokens":43},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}}       }
+
+            event: message_stop
+            data: {"type":"message_stop"    }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-04T20:12:21Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-04T20:12:21Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-04T20:12:21Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-04T20:12:21Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a160c8cb484da2d5-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-e1692ba18aa9c28a42542fb2c9b8fca9-6e601a2fd333bdf1-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 801ms

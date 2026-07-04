@@ -1,0 +1,227 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 313
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-5","id":"msg_01QRWc3JEbJ5D55Zv16xeqLv","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1,"service_tier":"standard","inference_geo":"global"}}        }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}  }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"#"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Canada\n\nCanada is the second-largest country in the world by total area, spanning approximately 9.98"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" million square kilometers, and occupies the northern portion of North America, stretching from the Atl"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"antic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Ocean. Its imm"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ense size gives it the longest coastline of any nation on Earth.\n\n## Geography and Climate\n\nCanada is divided into ten provinces"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" and three territories, each with distinct geographic and cultural characteristics:\n\n**Provinces:** Ontario, Qu"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ebec, British Columbia, Alberta, Manitoba, Saskatchewan, Nova Scotia, New Brunswick, Newfoundland and Labrador, and"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Prince Edward Island\n\n**Territories:** Yukon, Northwest Territories, and Nunavut\n\nThe country's landscape is remarkably diverse, featuring the"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Rocky Mountains in the west, vast prairies in the central provinces, the Canadian Shield (an"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" ancient geological formation covering much of central and eastern Canada), dense boreal forests, and"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Arctic tundra in the north. Canada also boasts more lakes than any other country, including the Great Lakes shared with the United States."}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\nClimate varies dramatically by region—from temperate rainforests on the west coast to subarctic and Arctic conditions in the"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" north. Winters can be extremely harsh in much of the country, while southern reg"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ions experience more moderate four-season climates.\n\n## History\n\nIndigenous peoples have"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" inhabited Canada for over 10,000 years, developing rich, diverse cultures including First Nations, Inuit, and later Métis peoples. European"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" exploration began with Norse settlers around 1000 CE, followed by French and British colonization starting in the 16th and"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" 17th centuries.\n\nKey historical milestones include:\n- **1534**: Jacques Cartier cla"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ims territory for France\n- **1763**: Treaty of Paris transfers New France to British control\n- **1867**: Confederation—"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Canada becomes a self-governing dominion within the British Empire\n- **1931**: Statute of Westminster grants full legislative independence\n- **1982"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"**: Constitution Act patriates the constitution, adding the Charter of Rights and Freedoms\n\n## Government and"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Politics\n\nCanada operates as a **federal parliamentary democracy** and **constitutional monarchy**. King Charles III ser"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ves as head of state, represented domestically by the Governor General. The Prime Minister serves as head of government, currently leading a"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" system with multiple active political parties, including the Liberal Party, Conservative Party, New Democratic Party, and"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Bloc Québécois.\n\nThe country is officially **bilingual**, with English and French as official languages, reflecting its"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" colonial history and ongoing commitment to linguistic duality, particularly important in Quebec.\n\n##"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Economy\n\nCanada possesses one of the world's largest economies, driven by:\n- **Natural resources**: oil, natural gas, timber, min"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"erals, and fisheries\n- **Manufacturing**: automotive industry, aerospace\n- **Agriculture**: wheat, canola, and other gr"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ains\n- **Technology sector**: growing tech hubs in Toronto, Vancouver, and Montreal\n- **Financial services**"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\nCanada is part of major international trade agreements, including the USMCA (United States-Mexico-Canada Agreement), and is a member of the G7,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" G20, NATO, and the Commonwealth.\n\n## Society and Culture\n\nCanada is renowned for its multiculturalism,"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" officially adopted as government policy in 1971. The country has welcomed immigr"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ants from around the world, creating a diverse mosaic often contrasted with the American \"melting pot\" concept.\n\n**Major"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" cities** include:\n- **Toronto**: largest city, financial capital\n- **Montreal**: cultural hub, largest French-speaking city"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" outside France\n- **Vancouver**: known for scenic beauty and Pacific trade\n- **"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Ottawa**: national capital\n- **Calgary and Edmonton**: major centers in oil-rich Alberta\n\nCan"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"adian culture blends Indigenous heritage, French and British colonial influences, and contributions from immigrant commun"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ities worldwide. The country is known for universal healthcare, strong social safety nets, and generally progressive social"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" policies.\n\n## Notable Achievements and Symbols\n\n- **National symbols**: the maple leaf, bea"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ver, and the maple syrup industry\n- **Sports**: ice hockey is considered the national win"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ter sport; lacrosse is the official summer sport\n- **Literature and arts**: acclaimed authors like Margaret Atwood and"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Alice Munro\n- **Scientific contributions**: insulin discovery, teleph"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"one invention (Alexander Graham Bell), and significant space technology cont"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ributions (Canadarm)\n\nCanada consistently ranks highly in global indices for quality of life, education, and political stability, making it one"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" of the most developed nations globally while maintaining a distinct national identity shaped by its unique ge"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ography, history, and commitment to diversity."}   }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0        }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":1622,"output_tokens_details":{"thinking_tokens":0}}         }
+
+            event: message_stop
+            data: {"type":"message_stop" }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-04T20:11:49Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-04T20:11:49Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-04T20:11:49Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-04T20:11:49Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a160c7fd1887a2d5-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-e5b3acaa479a7398fc036db51259c7c5-26eecead2a8d6cf1-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.126s

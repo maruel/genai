@@ -119,16 +119,6 @@ func newScanner(r io.Reader) *bufio.Scanner {
 	return sc
 }
 
-// Validate implements genai.ProviderOption.
-func (p ReasoningEffort) Validate() error {
-	switch p {
-	case ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh:
-		return nil
-	default:
-		return fmt.Errorf("invalid reasoning effort %q; use one of the ReasoningEffort* constants", string(p))
-	}
-}
-
 // Client is a genai provider that delegates to the local `codex` CLI.
 type Client struct {
 	base.NotImplemented

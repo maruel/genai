@@ -19,7 +19,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/maruel/roundtrippers"
 	"golang.org/x/net/websocket"
 
 	"github.com/maruel/genai"
@@ -75,43 +74,6 @@ type WebSocketConn struct {
 	mu sync.Mutex
 	// Protected by mu.
 	ws wsConn
-}
-
-// WebSocket opens a persistent WebSocket connection to the OpenAI Responses API.
-//
-// The returned connection inherits the client's model, API key, and base URL.
-// Call Close() when done.
-func (c *Client) WebSocket(ctx context.Context) (*WebSocketConn, error) {
-	if c.impl.Model == "" {
-		return nil, errors.New("a model is required")
-	}
-	// Derive WebSocket URL from the client's base URL.
-	wsURL := strings.Replace(c.baseURL, "https://", "wss://", 1)
-	wsURL = strings.Replace(wsURL, "http://", "ws://", 1)
-	wsURL += "/responses"
-
-	wsCfg, err := websocket.NewConfig(wsURL, wsURL)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create websocket config: %w", err)
-	}
-	// Extract auth headers from the HTTP client's transport chain.
-	wsCfg.Header = http.Header{}
-	wsCfg.Header.Set("OpenAI-Beta", "responses=v1")
-	if h, ok := c.impl.Client.Transport.(*roundtrippers.Header); ok {
-		for k, vs := range h.Header {
-			for _, v := range vs {
-				wsCfg.Header.Set(k, v)
-			}
-		}
-	}
-	raw, err := wsCfg.DialContext(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to websocket %s: %w", wsURL, err)
-	}
-	return &WebSocketConn{
-		client: c,
-		ws:     &websocketConn{raw},
-	}, nil
 }
 
 // Name implements genai.Provider.

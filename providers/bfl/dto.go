@@ -8,7 +8,18 @@
 
 package bfl
 
-import "encoding/json"
+import (
+	"encoding/base64"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"slices"
+	"strings"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
+)
 
 // ImageRequest is described in https://docs.bfl.ml/api-reference/tasks/generate-an-image-with-flux-11-[pro]
 // and the likes.
@@ -57,6 +68,80 @@ type ImageRequest struct {
 	InputImage2 string `json:"input_image2,omitzero"`
 	InputImage3 string `json:"input_image3,omitzero"`
 	InputImage4 string `json:"input_image4,omitzero"`
+}
+
+// Init initializes the request from the given parameters.
+func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	if len(msgs) != 1 {
+		return errors.New("must pass exactly one Message")
+	}
+	msg := msgs[0]
+	msg.Requests = slices.Clone(msg.Requests)
+	for _, r := range msg.Requests {
+		if r.Text != "" {
+			continue
+		}
+		// Check if this is a text/plain document that we can handle
+		if !r.Doc.IsZero() {
+			mimeType, data, err := r.Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			switch {
+			// text/plain, text/markdown
+			case strings.HasPrefix(mimeType, "text/"):
+				if r.Doc.URL != "" {
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				}
+				// Convert document content to text content.
+				r.Text = string(data)
+				r.Doc = genai.Doc{}
+			case strings.HasPrefix(mimeType, "image/"):
+				// Used in Kontext
+				s := r.Doc.URL
+				if s == "" {
+					s = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+				}
+				switch {
+				case i.InputImage == "":
+					i.InputImage = s
+				case i.InputImage2 == "":
+					i.InputImage2 = s
+				case i.InputImage3 == "":
+					i.InputImage3 = s
+				case i.InputImage4 == "":
+					i.InputImage4 = s
+				default:
+					return errors.New("too many images")
+				}
+				r.Doc = genai.Doc{}
+			default:
+				return errors.New("only text and text documents can be passed as input")
+			}
+			continue
+		}
+		return errors.New("unknown Request type")
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		switch v := opt.(type) {
+		case *genai.GenOptionImage:
+			i.Height = int64(v.Height)
+			i.Width = int64(v.Width)
+		case genai.GenOptionSeed:
+			i.Seed = int64(v)
+		default:
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
+		}
+	}
+
+	i.Prompt = msg.String()
+	return nil
 }
 
 // ImageRequestResponse is the same for all requests since everything is asynchronous.

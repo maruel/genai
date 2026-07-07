@@ -13,7 +13,10 @@
 
 package codex
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // ============================================================
 // Shared types: enums, JSON-RPC envelope, routing probes.
@@ -736,6 +739,16 @@ type ThreadStartResult struct {
 
 // ReasoningEffort controls how much reasoning the model performs.
 type ReasoningEffort string
+
+// Validate implements genai.ProviderOption.
+func (p ReasoningEffort) Validate() error {
+	switch p {
+	case ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh:
+		return nil
+	default:
+		return fmt.Errorf("invalid reasoning effort %q; use one of the ReasoningEffort* constants", string(p))
+	}
+}
 
 // Reasoning effort levels, from least to most compute.
 const (

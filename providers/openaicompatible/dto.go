@@ -104,57 +104,6 @@ func (m *Message) IsZero() bool {
 	return m.Role == "" && len(m.Content) == 0
 }
 
-// Content is a provider-specific content block.
-type Content struct {
-	Type ContentType `json:"type,omitzero"`
-	Text string      `json:"text,omitzero"`
-}
-
-// ContentType is a provider-specific content type.
-type ContentType string
-
-// Content type values.
-const (
-	ContentText ContentType = "text"
-)
-
-// Contents represents a slice of Content with custom unmarshalling to handle
-// both string and Content struct types.
-type Contents []Content
-
-// MarshalJSON implements json.Marshaler.
-func (c *Contents) MarshalJSON() ([]byte, error) {
-	if len(*c) == 1 && (*c)[0].Type == ContentText {
-		return json.Marshal((*c)[0].Text)
-	}
-	return json.Marshal([]Content(*c))
-}
-
-// UnmarshalJSON implements custom unmarshalling for Contents type
-// to handle cases where content could be a string or Content struct.
-func (c *Contents) UnmarshalJSON(b []byte) error {
-	if bytes.Equal(b, []byte("null")) {
-		*c = nil
-		return nil
-	}
-	if err := json.Unmarshal(b, (*[]Content)(c)); err == nil {
-		return nil
-	}
-
-	v := Content{}
-	if err := json.Unmarshal(b, &v); err == nil {
-		*c = Contents{v}
-		return nil
-	}
-
-	s := ""
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-	*c = Contents{{Type: ContentText, Text: s}}
-	return nil
-}
-
 // From converts from a genai.Message to a Message.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
@@ -231,6 +180,57 @@ func (m *Message) To(out *genai.Message) error {
 			}
 		}
 	}
+	return nil
+}
+
+// Content is a provider-specific content block.
+type Content struct {
+	Type ContentType `json:"type,omitzero"`
+	Text string      `json:"text,omitzero"`
+}
+
+// ContentType is a provider-specific content type.
+type ContentType string
+
+// Content type values.
+const (
+	ContentText ContentType = "text"
+)
+
+// Contents represents a slice of Content with custom unmarshalling to handle
+// both string and Content struct types.
+type Contents []Content
+
+// MarshalJSON implements json.Marshaler.
+func (c *Contents) MarshalJSON() ([]byte, error) {
+	if len(*c) == 1 && (*c)[0].Type == ContentText {
+		return json.Marshal((*c)[0].Text)
+	}
+	return json.Marshal([]Content(*c))
+}
+
+// UnmarshalJSON implements custom unmarshalling for Contents type
+// to handle cases where content could be a string or Content struct.
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		*c = nil
+		return nil
+	}
+	if err := json.Unmarshal(b, (*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	v := Content{}
+	if err := json.Unmarshal(b, &v); err == nil {
+		*c = Contents{v}
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*c = Contents{{Type: ContentText, Text: s}}
 	return nil
 }
 

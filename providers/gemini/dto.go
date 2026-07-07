@@ -13,12 +13,20 @@ package gemini
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"mime"
+	"path"
+	"reflect"
+	"slices"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 )
 
 // Schema types.
@@ -481,12 +489,254 @@ func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
+// Init initializes the provider specific completion request with the generic completion request.
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
+	// Validate messages
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	var errs []error
+	var unsupported []string
+
+	for _, opt := range opts {
+		switch v := opt.(type) {
+		case *GenOption:
+			// Accept both positive numbers and -1 (dynamic thinking)
+			if v.ThinkingBudget != 0 {
+				// https://ai.google.dev/gemini-api/docs/thinking
+				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
+					IncludeThoughts: true,
+					ThinkingBudget:  v.ThinkingBudget,
+				}
+			} else if strings.HasPrefix(model, "gemini-flash") &&
+				!strings.Contains(model, "-pro") &&
+				!strings.Contains(model, "image") &&
+				!strings.Contains(model, "live") &&
+				!strings.Contains(model, "tts") {
+				// We need to set it to disable thinking on recent gemini models.
+				//
+				// Most models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview. Setting the
+				// struct to empty will fail the RPC. :(
+				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+			}
+			if v.CodeExecution {
+				c.Tools = append(c.Tools, Tool{CodeExecution: &struct{}{}})
+			}
+			if v.URLContext {
+				c.Tools = append(c.Tools, Tool{URLContext: &struct{}{}})
+			}
+			if v.FileSearch != nil {
+				c.Tools = append(c.Tools, Tool{FileSearch: v.FileSearch})
+			}
+		case *genai.GenOptionText:
+			errs = append(errs, c.initOptionsText(v)...)
+		case *genai.GenOptionTools:
+			errs = append(errs, c.initOptionsTools(v)...)
+		case *genai.GenOptionWeb:
+			if v.Search {
+				// https://ai.google.dev/gemini-api/docs/google-search
+				c.Tools = append(c.Tools, Tool{GoogleSearch: &GoogleSearch{}})
+			}
+			if v.Fetch {
+				// https://ai.google.dev/gemini-api/docs/url-context
+				c.Tools = append(c.Tools, Tool{URLContext: &struct{}{}})
+			}
+		case *genai.GenOptionAudio:
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
+		case *genai.GenOptionImage:
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
+		case *genai.GenOptionVideo:
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
+		case genai.GenOptionSeed:
+			c.GenerationConfig.Seed = int64(v)
+		default:
+			unsupported = append(unsupported, internal.TypeName(opt))
+		}
+	}
+
+	c.Contents = make([]Content, len(msgs))
+	for i := range msgs {
+		if err := c.Contents[i].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+		}
+	}
+	// If we have unsupported features but no other errors, return a structured error.
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &base.ErrNotSupported{Options: unsupported}
+	}
+	return errors.Join(errs...)
+}
+
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []error {
+	var errs []error
+	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
+	c.GenerationConfig.Temperature = v.Temperature
+	c.GenerationConfig.TopP = v.TopP
+	// For large ones, we could use cached storage.
+	if v.SystemPrompt != "" {
+		c.SystemInstruction.Parts = []Part{{Text: v.SystemPrompt}}
+	}
+	if v.TopLogprobs > 0 {
+		// TODO: It is unsupported when streaming, but we don't know here if streaming is enabled.
+		c.GenerationConfig.Logprobs = v.TopLogprobs
+		c.GenerationConfig.ResponseLogprobs = true
+	}
+	c.GenerationConfig.TopK = v.TopK
+	c.GenerationConfig.StopSequences = v.Stop
+	if v.DecodeAs != nil {
+		c.GenerationConfig.ResponseMimeType = "application/json"
+		js, err := v.DecodeSchema()
+		if err != nil {
+			errs = append(errs, fmt.Errorf("decodeAs schema: %w", err))
+		} else if err = c.GenerationConfig.ResponseSchema.FromJSONSchema(js); err != nil {
+			errs = append(errs, fmt.Errorf("decodeAs: %w", err))
+		}
+	} else if v.ReplyAsJSON {
+		c.GenerationConfig.ResponseMimeType = "application/json"
+	}
+	return errs
+}
+
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
+	var errs []error
+	if len(v.Tools) != 0 {
+		switch v.Force {
+		case genai.ToolCallAny:
+			c.ToolConfig.FunctionCallingConfig.Mode = ToolModeValidated
+		case genai.ToolCallRequired:
+			c.ToolConfig.FunctionCallingConfig.Mode = ToolModeAny
+		case genai.ToolCallNone:
+			c.ToolConfig.FunctionCallingConfig.Mode = ToolModeNone
+		}
+		c.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			params := Schema{}
+			js, err := t.GetInputSchema()
+			if err != nil {
+				errs = append(errs, fmt.Errorf("%s: tool parameters schema: %w", t.Name, err))
+			} else if err = params.FromJSONSchema(js); err != nil {
+				errs = append(errs, fmt.Errorf("%s: tool parameters: %w", t.Name, err))
+			}
+			// See FunctionResponse.To().
+			c.Tools[i].FunctionDeclarations = []FunctionDeclaration{{
+				Name:        t.Name,
+				Description: t.Description,
+				Parameters:  params,
+			}}
+			if err := c.Tools[i].FunctionDeclarations[0].Response.FromJSONSchema(functionResponseSchema); err != nil {
+				errs = append(errs, fmt.Errorf("%s: tool response: %w", t.Name, err))
+			}
+		}
+	}
+	return errs
+}
+
 // Content is the equivalent of Message for other providers.
 // https://ai.google.dev/api/caching?hl=en#Content
 type Content struct {
 	Role string `json:"role,omitzero"` // "user", "model"
 	// Parts can be both content and tool calls.
 	Parts []Part `json:"parts"`
+}
+
+// From converts from the genai equivalent.
+func (c *Content) From(in *genai.Message) error {
+	switch r := in.Role(); r {
+	case "user", "computer":
+		c.Role = "user"
+	case "assistant":
+		c.Role = "model"
+	default:
+		return fmt.Errorf("unsupported role %q", r)
+	}
+	c.Parts = make([]Part, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
+	for i := range in.Requests {
+		if err := c.Parts[i].FromRequest(&in.Requests[i]); err != nil {
+			return fmt.Errorf("request #%d: %w", i, err)
+		}
+	}
+	offset := len(in.Requests)
+	for i := range in.Replies {
+		if err := c.Parts[i].FromReply(&in.Replies[i]); err != nil {
+			return fmt.Errorf("reply #%d: %w", i, err)
+		}
+	}
+	offset += len(in.Replies)
+	for i := range in.ToolCallResults {
+		c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i])
+	}
+	return nil
+}
+
+// To converts to the genai equivalent.
+func (c *Content) To(out *genai.Message) error {
+	for i := range c.Parts {
+		part := &c.Parts[i]
+		if part.Thought {
+			out.Replies = append(out.Replies, genai.Reply{Reasoning: part.Text})
+			continue
+		}
+		// There's no signal as to what it is, we have to test its content.
+		// We need to split out content from tools.
+		if part.Text != "" {
+			out.Replies = append(out.Replies, genai.Reply{Text: part.Text})
+			continue
+		}
+		if part.InlineData.MimeType != "" {
+			exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+			if err != nil {
+				return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
+			}
+			if len(exts) == 0 {
+				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+			}
+			out.Replies = append(out.Replies, genai.Reply{
+				Doc: genai.Doc{Filename: "content" + exts[0], Src: &bb.BytesBuffer{D: part.InlineData.Data}},
+			})
+			continue
+		}
+		if part.FileData.MimeType != "" {
+			exts, err := mime.ExtensionsByType(part.FileData.MimeType)
+			if err != nil {
+				return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.FileData.MimeType, err)}
+			}
+			if len(exts) == 0 {
+				return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.FileData.MimeType)}
+			}
+			out.Replies = append(out.Replies, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
+			continue
+		}
+		if part.FunctionCall.Name != "" {
+			r := genai.Reply{}
+			if len(part.ThoughtSignature) != 0 {
+				r.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
+			}
+			if err := part.FunctionCall.To(&r.ToolCall); err != nil {
+				return err
+			}
+			out.Replies = append(out.Replies, r)
+			continue
+		}
+		if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
+			out.Replies = append(out.Replies, genai.Reply{
+				Text:   part.ExecutableCode.Code,
+				Opaque: map[string]any{"type": "executable_code", "language": part.ExecutableCode.Language},
+			})
+			continue
+		}
+		if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
+			out.Replies = append(out.Replies, genai.Reply{
+				Text:   part.CodeExecutionResult.Output,
+				Opaque: map[string]any{"type": "code_execution_result", "outcome": part.CodeExecutionResult.Outcome},
+			})
+			continue
+		}
+		if reflect.ValueOf(part).IsZero() {
+			continue
+		}
+		return &internal.BadError{Err: fmt.Errorf("implement support for part %#v", part)}
+	}
+	return nil
 }
 
 // Part is a union that only has one of the field set.
@@ -510,6 +760,106 @@ type Part struct {
 	VideoMetadata VideoMetadata `json:"videoMetadata,omitzero"`
 }
 
+// FromRequest converts from a genai request.
+func (p *Part) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		p.Text = in.Text
+		return nil
+	}
+	if !in.Doc.IsZero() {
+		mimeType := ""
+		var data []byte
+		if in.Doc.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+				return err
+			}
+			// Gemini refuses text documents as attachment. WTF.
+			if strings.HasPrefix(mimeType, "text/") {
+				if in.Doc.URL != "" {
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				}
+				p.Text = string(data)
+			} else {
+				p.InlineData.MimeType = mimeType
+				p.InlineData.Data = data
+			}
+		} else {
+			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+			}
+			p.FileData.MimeType = mimeType
+			p.FileData.FileURI = in.Doc.URL
+		}
+		return nil
+	}
+	return errors.New("unknown Request type")
+}
+
+// FromReply converts from a genai reply.
+func (p *Part) FromReply(in *genai.Reply) error {
+	if len(in.Opaque) != 0 {
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+	}
+	if in.Reasoning != "" {
+		p.Thought = true
+		p.Text = in.Reasoning
+		return nil
+	}
+	if in.Text != "" {
+		p.Text = in.Text
+		return nil
+	}
+	if !in.ToolCall.IsZero() {
+		if err := p.FunctionCall.From(&in.ToolCall); err != nil {
+			return err
+		}
+		o := in.ToolCall.Opaque
+		if b, ok := o["signature"].([]byte); ok {
+			p.ThoughtSignature = b
+		}
+		return nil
+	}
+	if !in.Doc.IsZero() {
+		mimeType := ""
+		var data []byte
+		if in.Doc.URL == "" {
+			// If more than 20MB, we need to use
+			// https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#large-pdfs-urls
+			// cacheName, err := c.cacheContent(ctx, context, mime, sp)
+			// When using cached content, system instruction, tools or tool_config cannot be used. Weird.
+			// in.CachedContent = cacheName
+			var err error
+			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
+				return err
+			}
+			// Gemini refuses text documents as attachment. WTF.
+			if strings.HasPrefix(mimeType, "text/") {
+				if in.Doc.URL != "" {
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				}
+				p.Text = string(data)
+			} else {
+				p.InlineData.MimeType = mimeType
+				p.InlineData.Data = data
+			}
+		} else {
+			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
+			}
+			p.FileData.MimeType = mimeType
+			p.FileData.FileURI = in.Doc.URL
+		}
+		return nil
+	}
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
+}
+
 // FunctionCall is documented at https://ai.google.dev/api/caching?hl=en#FunctionCall
 type FunctionCall struct {
 	ID               string      `json:"id,omitzero"`
@@ -518,11 +868,41 @@ type FunctionCall struct {
 	ThoughtSignature []byte      `json:"thoughtSignature,omitzero"` // Returned by some models with thinking
 }
 
+// From converts from the genai equivalent.
+func (f *FunctionCall) From(in *genai.ToolCall) error {
+	f.ID = in.ID
+	f.Name = in.Name
+	if err := json.Unmarshal([]byte(in.Arguments), &f.Args); err != nil {
+		return &internal.BadError{Err: fmt.Errorf("failed to unmarshal arguments: %w", err)}
+	}
+	return nil
+}
+
+// To converts to the genai equivalent.
+func (f *FunctionCall) To(out *genai.ToolCall) error {
+	out.ID = f.ID
+	out.Name = f.Name
+	raw, err := json.Marshal(f.Args)
+	if err != nil {
+		return &internal.BadError{Err: fmt.Errorf("failed to marshal arguments: %w", err)}
+	}
+	out.Arguments = string(raw)
+	return nil
+}
+
 // FunctionResponse is documented at https://ai.google.dev/api/caching?hl=en#FunctionResponse
 type FunctionResponse struct {
 	ID       string      `json:"id,omitzero"`
 	Name     string      `json:"name,omitzero"`
 	Response StructValue `json:"response,omitzero"`
+}
+
+// From converts from the genai equivalent.
+func (f *FunctionResponse) From(in *genai.ToolCallResult) {
+	f.ID = in.ID
+	f.Name = in.Name
+	// Must match functionResponse
+	f.Response = StructValue{"response": json.RawMessage(strconv.AppendQuote(nil, in.Result))}
 }
 
 // ExecutableCode is documented at https://ai.google.dev/api/caching?hl=en#ExecutableCode
@@ -562,6 +942,35 @@ type ChatResponse struct {
 	ResponseID     string              `json:"responseId"`
 }
 
+// ToResult converts the response to a genai.Result.
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
+		Usage: genai.Usage{
+			InputTokens:       c.UsageMetadata.PromptTokenCount,
+			InputCachedTokens: c.UsageMetadata.CachedContentTokenCount,
+			ReasoningTokens:   c.UsageMetadata.ThoughtsTokenCount,
+			OutputTokens:      c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
+			TotalTokens:       c.UsageMetadata.TotalTokenCount,
+		},
+	}
+	if len(c.Candidates) != 1 {
+		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %d", len(c.Candidates))
+	}
+	// Gemini is the only one returning uppercase so convert down for compatibility.
+	out.Usage.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
+	err := c.Candidates[0].To(&out.Message)
+	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		// Lie for the benefit of everyone.
+		out.Usage.FinishReason = genai.FinishedToolCalls
+	}
+	// It'd be nice to have citation support, but it's only filled with
+	// https://ai.google.dev/api/semantic-retrieval/question-answering and the likes and as of June 2025, it
+	// only works in English (!)
+
+	out.Logprobs = c.Candidates[0].LogprobsResult.To()
+	return out, err
+}
+
 // ResponseCandidate is described at https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
 //
 // It is essentially a "Message".
@@ -598,6 +1007,35 @@ type ResponseCandidate struct {
 	AvgLogprobs        float64            `json:"avgLogprobs"`
 	LogprobsResult     LogprobsResult     `json:"logprobsResult"`
 	Index              int64              `json:"index"`
+}
+
+// To converts to the genai equivalent.
+func (r *ResponseCandidate) To(out *genai.Message) error {
+	if err := r.Content.To(out); err != nil {
+		return err
+	}
+	if !internal.BeLenient {
+		if len(r.SafetyRatings) > 0 {
+			return &internal.BadError{Err: fmt.Errorf("implement safety rating: %v", r.SafetyRatings)}
+		}
+		if len(r.CitationMetadata.CitationSources) > 0 {
+			return &internal.BadError{Err: fmt.Errorf("implement citation metadata: %v", r.CitationMetadata.CitationSources)}
+		}
+		if len(r.GroundingAttributions) > 0 {
+			return &internal.BadError{Err: fmt.Errorf("implement grounding attributions: %v", r.GroundingAttributions)}
+		}
+	}
+	if !r.GroundingMetadata.IsZero() {
+		replies, err := r.GroundingMetadata.To()
+		if err != nil {
+			return err
+		}
+		out.Replies = append(out.Replies, replies...)
+	}
+	if len(r.UrlContextMetadata.UrlMetadata) > 0 {
+		out.Replies = append(out.Replies, r.UrlContextMetadata.To()...)
+	}
+	return nil
 }
 
 // Grounding types.
@@ -664,11 +1102,76 @@ func (g *GroundingMetadata) IsZero() bool {
 	return len(g.GroundingChunks) == 0 && len(g.GroundingSupports) == 0 && len(g.WebSearchQueries) == 0 && len(g.SearchEntryPoint.SDKBlob) == 0 && g.RetrievalMetadata.GoogleSearchDynamicRetrievalScore == 0
 }
 
+// To converts to the genai equivalent.
+func (g *GroundingMetadata) To() ([]genai.Reply, error) {
+	var out []genai.Reply
+	src := make([]genai.CitationSource, 0, len(g.WebSearchQueries))
+	for _, q := range g.WebSearchQueries {
+		src = append(src, genai.CitationSource{Type: genai.CitationWebQuery, Snippet: q})
+	}
+	for _, s := range g.GroundingSupports {
+		c := genai.Citation{
+			StartIndex: s.Segment.StartIndex,
+			EndIndex:   s.Segment.EndIndex,
+		}
+		c.Sources = append(c.Sources, src...)
+		// This will cause duplicate source.
+		for _, idx := range s.GroundingChunkIndices {
+			if idx < 0 || idx > int64(len(g.GroundingChunks)) {
+				return out, &internal.BadError{Err: fmt.Errorf("invalid grounding chunk index: %v", idx)}
+			}
+			gc := g.GroundingChunks[idx]
+			rc := gc.RetrievedContext
+			if rc.DocumentName != "" || rc.URI != "" || rc.FileSearchStore != "" {
+				id := rc.DocumentName
+				if id == "" {
+					id = rc.FileSearchStore
+				}
+				c.Sources = append(c.Sources, genai.CitationSource{
+					Type:    genai.CitationDocument,
+					ID:      id,
+					Title:   rc.Title,
+					URL:     rc.URI,
+					Snippet: rc.Text,
+				})
+			} else {
+				// TODO: The URL points to https://vertexaisearch.cloud.google.com/grounding-api-redirect/... which is
+				// not good. We should to a HEAD request to get the actual URL.
+				c.Sources = append(c.Sources, genai.CitationSource{
+					Type:  genai.CitationWeb,
+					URL:   gc.Web.URI,
+					Title: gc.Web.Title,
+				})
+			}
+		}
+		out = append(out, genai.Reply{Citation: c})
+	}
+	// Sometimes there's no GroundingSupports. Make sure to still flush the web query.
+	if len(src) > 0 && len(g.GroundingSupports) == 0 {
+		out = append(out, genai.Reply{Citation: genai.Citation{Sources: src}})
+	}
+	// SearchEntryPoint will contain some HTML.
+	return out, nil
+}
+
 // URL context types.
 
 // UrlContextMetadata is documented at https://ai.google.dev/gemini-api/docs/url-context
 type UrlContextMetadata struct {
 	UrlMetadata []UrlMetadataEntry `json:"urlMetadata,omitzero"`
+}
+
+// To converts to the genai equivalent.
+func (u *UrlContextMetadata) To() []genai.Reply {
+	out := make([]genai.Reply, 0, len(u.UrlMetadata))
+	for _, um := range u.UrlMetadata {
+		out = append(out, genai.Reply{
+			Citation: genai.Citation{
+				Sources: []genai.CitationSource{{Type: genai.CitationWeb, URL: um.RetrievedUrl}},
+			},
+		})
+	}
+	return out
 }
 
 // UrlMetadataEntry is a single URL retrieval result.
@@ -683,6 +1186,20 @@ type UrlMetadataEntry struct {
 type LogprobsResult struct {
 	TopCandidates    []TopCandidate   `json:"topCandidates"`
 	ChosenCandidates []TokenCandidate `json:"chosenCandidates"`
+}
+
+// To converts to the genai equivalent.
+func (l *LogprobsResult) To() [][]genai.Logprob {
+	out := make([][]genai.Logprob, 0, len(l.ChosenCandidates))
+	for i, chosen := range l.ChosenCandidates {
+		lp := make([]genai.Logprob, 1, len(l.TopCandidates[i].Candidates)+1)
+		lp[0] = genai.Logprob{ID: chosen.TokenID, Text: chosen.Token, Logprob: chosen.LogProbability}
+		for _, tc := range l.TopCandidates[i].Candidates {
+			lp = append(lp, genai.Logprob{ID: tc.TokenID, Text: tc.Token, Logprob: tc.LogProbability})
+		}
+		out = append(out, lp)
+	}
+	return out
 }
 
 // TopCandidate is documented at https://ai.google.dev/api/generate-content#TopCandidates
@@ -810,6 +1327,67 @@ type ImageRequest struct {
 	// There should be only one instance.
 	Instances  []ImageInstance `json:"instances"`
 	Parameters ImageParameters `json:"parameters"`
+}
+
+// Init initializes the request from the given parameters.
+func (i *ImageRequest) Init(msg *genai.Message, model string, mod genai.Modalities, opts ...genai.GenOption) error {
+	if err := msg.Validate(); err != nil {
+		return err
+	}
+	var mimeStr string
+	var img []byte
+	for i := range msg.Requests {
+		if msg.Requests[i].Text != "" {
+			continue
+		}
+		if msg.Requests[i].Doc.IsZero() {
+			return errors.New("only text or image can be passed as input")
+		}
+		if len(img) != 0 {
+			return errors.New("only one image can be passed as input")
+		}
+		var err error
+		if mimeStr, img, err = msg.Requests[i].Doc.Read(10 * 1024 * 1024); err != nil {
+			return err
+		}
+	}
+	if slices.Contains(mod, genai.ModalityImage) {
+		i.Parameters = ImageParameters{
+			IncludeSafetyAttributes: true,
+			IncludeRAIReason:        true,
+			OutputOptions:           ImageOutput{MimeType: "image/jpeg"},
+		}
+	}
+	i.Instances = []ImageInstance{{Prompt: msg.String()}}
+	if len(img) != 0 {
+		i.Instances[0].Image.BytesBase64Encoded = img
+		i.Instances[0].Image.MimeType = mimeStr
+	}
+	// This is important otherwise it can return 2 images.
+	// TODO: Expose it in OptionsImage.
+	i.Parameters.SampleCount = 1
+	// The acceptable value depends on the country the paying user account is associated with.
+	i.Parameters.PersonGeneration = "allow_adult"
+	// Seems like it's not supported?
+	// i.Parameters.EnhancePrompt = true
+	var uce error
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		switch v := opt.(type) {
+		case *GenOption:
+		case *genai.GenOptionImage:
+			// TODO: Width and Height
+		case *genai.GenOptionVideo:
+			if v.Duration != 0 {
+				i.Parameters.DurationSeconds = int64(v.Duration.Round(time.Second) / time.Second)
+			}
+		default:
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
+		}
+	}
+	return uce
 }
 
 // ImageInstance is not really documented, better to read the SDK code and guess, since they don't use proper
@@ -1054,6 +1632,37 @@ func (c *CachedContent) GetDisplayName() string {
 // GetExpiry implements genai.CacheItem.
 func (c *CachedContent) GetExpiry() time.Time {
 	return c.ExpireTime
+}
+
+// Init initializes the request from the given parameters.
+func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName string, ttl time.Duration, opts ...genai.GenOption) error {
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		if o, ok := opt.(*genai.GenOptionText); ok && o.SystemPrompt != "" {
+			c.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
+		}
+	}
+	// For large files, use https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#pdfs_1
+	c.Contents = make([]Content, len(msgs))
+	for i := range msgs {
+		if err := c.Contents[i].From(&msgs[i]); err != nil {
+			return fmt.Errorf("message #%d: %w", i, err)
+		}
+	}
+	c.Model = "models/" + model
+	c.DisplayName = displayName
+	// Note: Do not set c.Name here. The API auto-generates the name and returns it in the response.
+	// Setting it causes "INVALID_ARGUMENT (400): Do not set 'name' in a request to create cached content."
+	if ttl > 0 {
+		c.TTL = Duration(ttl)
+	}
+	// TODO: ToolConfig
+	return nil
 }
 
 // Expiration must be embedded. Only one of the fields can be set.

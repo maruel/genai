@@ -681,6 +681,13 @@ func (c *Client) CountTokensRaw(ctx context.Context, in *CountTokensRequest) (*C
 	return &resp, nil
 }
 
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{
+		GenAsync: true,
+	}
+}
+
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
@@ -933,13 +940,6 @@ func processHeaders(h http.Header) []genai.RateLimit {
 		})
 	}
 	return limits
-}
-
-// Capabilities implements genai.Provider.
-func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{
-		GenAsync: true,
-	}
 }
 
 //go:embed models.json

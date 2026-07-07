@@ -18,6 +18,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 )
 
@@ -52,6 +53,108 @@ type ChatRequest struct {
 // SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
+}
+
+// Init initializes the provider specific completion request with the generic completion request.
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
+	c.Model = model
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	var errs []error
+	var unsupported []string
+	sp := ""
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		switch v := opt.(type) {
+		case *genai.GenOptionText:
+			c.MaxTokens = v.MaxTokens
+			c.Temperature = v.Temperature
+			c.P = v.TopP
+			sp = v.SystemPrompt
+			c.K = v.TopK
+			if v.TopLogprobs > 0 {
+				c.Logprobs = true
+			}
+			c.StopSequences = v.Stop
+			if v.DecodeAs != nil {
+				c.ResponseFormat.Type = "json_schema"
+				s, err := v.DecodeSchema()
+				if err != nil {
+					errs = append(errs, err)
+				} else {
+					c.ResponseFormat.JSONSchema = s
+				}
+			} else if v.ReplyAsJSON {
+				c.ResponseFormat.Type = "json_object"
+			}
+		case *genai.GenOptionTools:
+			if len(v.Tools) != 0 {
+				switch v.Force {
+				case genai.ToolCallAny:
+				case genai.ToolCallRequired:
+					c.ToolChoice = "required"
+					c.StrictTools = true
+				case genai.ToolCallNone:
+					c.ToolChoice = "none"
+				}
+				c.Tools = make([]Tool, len(v.Tools))
+				for i, t := range v.Tools {
+					c.Tools[i].Type = "function"
+					c.Tools[i].Function.Name = t.Name
+					c.Tools[i].Function.Description = t.Description
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, err)
+					}
+					c.Tools[i].Function.Parameters = s
+				}
+			}
+		case genai.GenOptionSeed:
+			c.Seed = int64(v)
+		default:
+			unsupported = append(unsupported, internal.TypeName(opt))
+		}
+	}
+
+	if sp != "" {
+		c.Messages = append(c.Messages, Message{Role: "system", Content: []Content{{Type: "text", Text: sp}}})
+	}
+	for i := range msgs {
+		if len(msgs[i].ToolCallResults) > 1 {
+			// Handle messages with multiple tool call results by creating multiple messages
+			for j := range msgs[i].ToolCallResults {
+				// Create a copy of the message with only one tool call result
+				msgCopy := msgs[i]
+				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
+				var newMsg Message
+				if d, err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+				} else if c.Messages = append(c.Messages, newMsg); len(d) != 0 {
+					c.Documents = append(c.Documents, d...)
+				}
+			}
+		} else {
+			var newMsg Message
+			if d, err := newMsg.From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			} else {
+				if c.Messages = append(c.Messages, newMsg); len(d) != 0 {
+					c.Documents = append(c.Documents, d...)
+				}
+				if len(newMsg.Content) == 0 && len(newMsg.ToolCalls) == 0 && len(msgs[i].ToolCallResults) == 0 {
+					errs = append(errs, fmt.Errorf("message %d: must have at least one content or tool call block", i))
+				}
+			}
+		}
+	}
+	// If we have unsupported features but no other errors, return a structured error.
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &base.ErrNotSupported{Options: unsupported}
+	}
+	return errors.Join(errs...)
 }
 
 // Message is documented at https://docs.cohere.com/reference/chat

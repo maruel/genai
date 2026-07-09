@@ -559,6 +559,7 @@ type Model struct {
 		Moderation                 bool `json:"moderation"`
 		OCR                        bool `json:"ocr"`
 		Reasoning                  bool `json:"reasoning"`
+		UnifiedResources           bool `json:"unified_resources"`
 		Vision                     bool `json:"vision"`
 	} `json:"capabilities"`
 	Name                        string   `json:"name"`

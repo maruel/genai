@@ -8,6 +8,7 @@ package mistral_test
 
 import (
 	_ "embed"
+	"encoding/json"
 	"net/http"
 	"os"
 	"slices"
@@ -21,6 +22,21 @@ import (
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
+
+func TestModelsResponse(t *testing.T) {
+	t.Run("capabilities", func(t *testing.T) {
+		body := `{"object":"list","data":[{"id":"mistral-medium-latest","object":"model","created":1783628909,"owned_by":"mistralai","capabilities":{"completion_chat":true,"function_calling":true,"reasoning":true,"completion_fim":false,"fine_tuning":false,"vision":true,"ocr":false,"classification":false,"moderation":false,"audio":false,"audio_transcription":false,"audio_transcription_realtime":false,"audio_speech":false,"unified_resources":true},"name":"mistral-medium-latest","description":"Official mistral-medium-latest Mistral AI model","max_context_length":262144,"aliases":[],"deprecation":null,"deprecation_replacement_model":null,"default_model_temperature":1.0,"type":"base"}]}`
+		var resp mistral.ModelsResponse
+		dec := json.NewDecoder(strings.NewReader(body))
+		dec.DisallowUnknownFields()
+		if err := dec.Decode(&resp); err != nil {
+			t.Fatal(err)
+		}
+		if !resp.Data[0].Capabilities.UnifiedResources {
+			t.Fatal("UnifiedResources = false, want true")
+		}
+	})
+}
 
 func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	if os.Getenv("MISTRAL_API_KEY") == "" && !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {

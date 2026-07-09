@@ -401,10 +401,10 @@ type Tool struct {
 
 // ChatResponse is the response from the chat API.
 type ChatResponse struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"` // "chat.completion"
-	Model   string    `json:"model"`
-	Created base.Time `json:"created"`
+	ID      string     `json:"id"`
+	Object  string     `json:"object"` // "chat.completion"
+	Model   string     `json:"model"`
+	Created base.TimeS `json:"created"`
 	Choices []struct {
 		FinishReason FinishReason    `json:"finish_reason"`
 		Index        int64           `json:"index"`
@@ -464,10 +464,10 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 
 // Usage represents token usage information.
 type Usage struct {
-	PromptTokens       int64 `json:"prompt_tokens"`
-	CompletionTokens   int64 `json:"completion_tokens"`
-	TotalTokens        int64 `json:"total_tokens"`
-	PromptAudioSeconds int64 `json:"prompt_audio_seconds"`
+	PromptTokens     int64          `json:"prompt_tokens"`
+	CompletionTokens int64          `json:"completion_tokens"`
+	TotalTokens      int64          `json:"total_tokens"`
+	PromptAudio      base.DurationS `json:"prompt_audio_seconds"`
 }
 
 // MessageResponse represents a message in the API response.
@@ -522,10 +522,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 // ChatStreamChunkResponse represents a streaming chunk from the chat API.
 type ChatStreamChunkResponse struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"` // "chat.completion.chunk"
-	Created base.Time `json:"created"`
-	Model   string    `json:"model"`
+	ID      string     `json:"id"`
+	Object  string     `json:"object"` // "chat.completion.chunk"
+	Created base.TimeS `json:"created"`
+	Model   string     `json:"model"`
 	Choices []struct {
 		Index int64 `json:"index"`
 		Delta struct {
@@ -542,10 +542,10 @@ type ChatStreamChunkResponse struct {
 
 // Model is documented at https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
 type Model struct {
-	ID           string    `json:"id"`
-	Object       string    `json:"object"`
-	Created      base.Time `json:"created"`
-	OwnedBy      string    `json:"owned_by"`
+	ID           string     `json:"id"`
+	Object       string     `json:"object"`
+	Created      base.TimeS `json:"created"`
+	OwnedBy      string     `json:"owned_by"`
 	Capabilities struct {
 		Audio                      bool `json:"audio"`
 		AudioSpeech                bool `json:"audio_speech"`

@@ -85,7 +85,7 @@ type ChatRequest struct {
 	LogitBias           []json.RawMessage `json:"logit_bias,omitzero"`
 	Nprobs              int64             `json:"n_probs,omitzero"`
 	MinKeep             int64             `json:"min_keep,omitzero"`
-	TMaxPredictMS       int64             `json:"t_max_predict_ms,omitzero"`
+	TMaxPredict         base.DurationMS   `json:"t_max_predict_ms,omitzero"`
 	ImageData           []json.RawMessage `json:"image_data,omitzero"`
 	IDSlot              int64             `json:"id_slot,omitzero"`
 	CachePrompt         bool              `json:"cache_prompt,omitzero"`
@@ -218,12 +218,12 @@ func (c *ChatRequest) SetStream(stream bool) {
 
 // ChatResponse is the response from the chat completions endpoint.
 type ChatResponse struct {
-	Created           base.Time `json:"created"`
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Object            string    `json:"object"` // "chat.completion"
-	ID                string    `json:"id"`
-	Timings           Timings   `json:"timings"`
-	Usage             Usage     `json:"usage"`
+	Created           base.TimeS `json:"created"`
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Object            string     `json:"object"` // "chat.completion"
+	ID                string     `json:"id"`
+	Timings           Timings    `json:"timings"`
+	Usage             Usage      `json:"usage"`
 	Choices           []struct {
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
@@ -350,11 +350,11 @@ const (
 
 // ChatStreamChunkResponse is a single chunk in a streaming chat response.
 type ChatStreamChunkResponse struct {
-	Created           base.Time `json:"created"`
-	ID                string    `json:"id"`
-	Model             string    `json:"model"` // "gpt-3.5-turbo"
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Object            string    `json:"object"` // "chat.completion.chunk"
+	Created           base.TimeS `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"` // "gpt-3.5-turbo"
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Object            string     `json:"object"` // "chat.completion.chunk"
 	Choices           []struct {
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
@@ -416,7 +416,7 @@ type CompletionRequest struct {
 	LogitBias           []json.RawMessage `json:"logit_bias,omitzero"`
 	Nprobs              int64             `json:"n_probs,omitzero"`
 	MinKeep             int64             `json:"min_keep,omitzero"`
-	TMaxPredictMS       int64             `json:"t_max_predict_ms,omitzero"`
+	TMaxPredict         base.DurationMS   `json:"t_max_predict_ms,omitzero"`
 	ImageData           []json.RawMessage `json:"image_data,omitzero"`
 	IDSlot              int64             `json:"id_slot,omitzero"`
 	CachePrompt         bool              `json:"cache_prompt,omitzero"`
@@ -588,15 +588,15 @@ func (s StopType) ToFinishReason() genai.FinishReason {
 
 // Timings contains timing information for prompt processing and prediction.
 type Timings struct {
-	CacheN              int64   `json:"cache_n"`
-	PromptN             int64   `json:"prompt_n"`
-	PromptMS            float64 `json:"prompt_ms"`
-	PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
-	PromptPerSecond     float64 `json:"prompt_per_second"`
-	PredictedN          int64   `json:"predicted_n"`
-	PredictedMS         float64 `json:"predicted_ms"`
-	PredictedPerTokenMS float64 `json:"predicted_per_token_ms"`
-	PredictedPerSecond  float64 `json:"predicted_per_second"`
+	CacheN             int64           `json:"cache_n"`
+	PromptN            int64           `json:"prompt_n"`
+	Prompt             base.DurationMS `json:"prompt_ms"`
+	PromptPerToken     base.DurationMS `json:"prompt_per_token_ms"`
+	PromptPerSecond    float64         `json:"prompt_per_second"`
+	PredictedN         int64           `json:"predicted_n"`
+	Predicted          base.DurationMS `json:"predicted_ms"`
+	PredictedPerToken  base.DurationMS `json:"predicted_per_token_ms"`
+	PredictedPerSecond float64         `json:"predicted_per_second"`
 }
 
 // CompletionStreamChunkResponse is a single chunk in a streaming completion response.
@@ -991,10 +991,10 @@ type ModelHF struct {
 
 // ModelOpenAI is the OpenAI-compatible model metadata from the llama-server.
 type ModelOpenAI struct {
-	ID      string    `json:"id"`       // Path to the file
-	Object  string    `json:"object"`   // "model"
-	Created base.Time `json:"created"`  // Dummy
-	OwnedBy string    `json:"owned_by"` // "llamacpp"
+	ID      string     `json:"id"`       // Path to the file
+	Object  string     `json:"object"`   // "model"
+	Created base.TimeS `json:"created"`  // Dummy
+	OwnedBy string     `json:"owned_by"` // "llamacpp"
 	Meta    struct {
 		VocabType int64 `json:"vocab_type"` // 1
 		NVocab    int64 `json:"n_vocab"`

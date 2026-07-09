@@ -14,6 +14,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -261,8 +262,11 @@ func TestOutputMessages(t *testing.T) {
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
-		if got.RetryDelayMs != 599.3873493672435 {
-			t.Errorf("RetryDelayMs = %.13f, want 599.3873493672435", got.RetryDelayMs)
+		if got.RetryDelay != base.DurationMS(599.3873493672435) {
+			t.Errorf("RetryDelay = %.13f, want 599.3873493672435", got.RetryDelay)
+		}
+		if got.RetryDelay.AsDuration() != 599*time.Millisecond+387*time.Microsecond+349*time.Nanosecond {
+			t.Errorf("RetryDelay.AsDuration() = %v", got.RetryDelay.AsDuration())
 		}
 	})
 	t.Run("task_updated", func(t *testing.T) {
@@ -274,8 +278,59 @@ func TestOutputMessages(t *testing.T) {
 		if got.Subtype != SystemTaskUpdated {
 			t.Errorf("Subtype = %q, want %q", got.Subtype, SystemTaskUpdated)
 		}
-		if got.Patch.Status != "completed" {
-			t.Errorf("Patch.Status = %q, want completed", got.Patch.Status)
+		if got.Patch.Status != TaskPatchStatusCompleted {
+			t.Errorf("Patch.Status = %q, want %q", got.Patch.Status, TaskPatchStatusCompleted)
+		}
+		if got.Patch.EndTime != base.TimeMS(1780832660165) {
+			t.Errorf("Patch.EndTime = %v, want 1780832660165", got.Patch.EndTime)
+		}
+		if got.Patch.EndTime.AsTime() != time.Date(2026, 6, 7, 11, 44, 20, 165000000, time.UTC) {
+			t.Errorf("Patch.EndTime.AsTime() = %v", got.Patch.EndTime.AsTime())
+		}
+	})
+	t.Run("task_updated_backgrounded", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"task_updated","task_id":"task-1","patch":{"is_backgrounded":true},"uuid":"u1","session_id":"s1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if !got.Patch.IsBackgrounded {
+			t.Error("Patch.IsBackgrounded = false, want true")
+		}
+	})
+	t.Run("background_tasks_changed", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"background_tasks_changed","tasks":[{"task_id":"bldd7gfwj","task_type":"local_bash","description":"Run the smoke test with podman"}],"uuid":"u1","session_id":"s1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Subtype != SystemBackgroundTasksChanged {
+			t.Errorf("Subtype = %q, want %q", got.Subtype, SystemBackgroundTasksChanged)
+		}
+		if len(got.Tasks) != 1 {
+			t.Fatalf("len(Tasks) = %d, want 1", len(got.Tasks))
+		}
+		if got.Tasks[0].TaskID != "bldd7gfwj" {
+			t.Errorf("Tasks[0].TaskID = %q, want bldd7gfwj", got.Tasks[0].TaskID)
+		}
+		if got.Tasks[0].TaskType != "local_bash" {
+			t.Errorf("Tasks[0].TaskType = %q, want local_bash", got.Tasks[0].TaskType)
+		}
+		if got.Tasks[0].Description != "Run the smoke test with podman" {
+			t.Errorf("Tasks[0].Description = %q, want Run the smoke test with podman", got.Tasks[0].Description)
+		}
+	})
+	t.Run("background_tasks_changed_empty", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"background_tasks_changed","tasks":[],"uuid":"u1","session_id":"s1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Tasks == nil {
+			t.Fatal("Tasks = nil, want empty slice")
+		}
+		if len(got.Tasks) != 0 {
+			t.Errorf("len(Tasks) = %d, want 0", len(got.Tasks))
 		}
 	})
 	t.Run("task_started_subagent_metadata", func(t *testing.T) {
@@ -651,11 +706,11 @@ func TestOutputMessages(t *testing.T) {
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
-		if got.TtftStreamMs != 4 {
-			t.Errorf("TtftStreamMs = %d, want 4", got.TtftStreamMs)
+		if got.TtftStream != base.DurationMS(4) {
+			t.Errorf("TtftStream = %v, want 4", got.TtftStream)
 		}
-		if got.TimeToRequestMs != 5 {
-			t.Errorf("TimeToRequestMs = %d, want 5", got.TimeToRequestMs)
+		if got.TimeToRequest != base.DurationMS(5) {
+			t.Errorf("TimeToRequest = %v, want 5", got.TimeToRequest)
 		}
 	})
 	t.Run("result_origin", func(t *testing.T) {
@@ -666,6 +721,19 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.Origin.Kind != ResultOriginTaskNotification {
 			t.Errorf("Origin.Kind = %q, want %q", got.Origin.Kind, ResultOriginTaskNotification)
+		}
+	})
+	t.Run("tool_progress", func(t *testing.T) {
+		const data = `{"type":"tool_progress","tool_use_id":"toolu_1","tool_name":"Bash","parent_tool_use_id":null,"elapsed_time_seconds":1.5,"uuid":"u1","session_id":"s1"}`
+		var got OutputToolProgressMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.ElapsedTime != base.DurationS(1.5) {
+			t.Errorf("ElapsedTime = %v, want 1.5", got.ElapsedTime)
+		}
+		if got.ElapsedTime.AsDuration() != 1500*time.Millisecond {
+			t.Errorf("ElapsedTime.AsDuration() = %v", got.ElapsedTime.AsDuration())
 		}
 	})
 	t.Run("tool_result_string_content", func(t *testing.T) {

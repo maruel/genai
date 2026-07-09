@@ -439,10 +439,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"` // "chat.completion"
-	Created base.Time `json:"created"`
-	Model   string    `json:"model"` // The actual model name, which is likely different from the alias.
+	ID      string     `json:"id"`
+	Object  string     `json:"object"` // "chat.completion"
+	Created base.TimeS `json:"created"`
+	Model   string     `json:"model"` // The actual model name, which is likely different from the alias.
 	Choices []struct {
 		Index                int64               `json:"index"`
 		Message              MessageResponse     `json:"message"`
@@ -579,10 +579,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	ID      string    `json:"id"`      //
-	Object  string    `json:"object"`  // "chat.completion.chunk"
-	Created base.Time `json:"created"` //
-	Model   string    `json:"model"`   // Original model full name
+	ID      string     `json:"id"`      //
+	Object  string     `json:"object"`  // "chat.completion.chunk"
+	Created base.TimeS `json:"created"` //
+	Model   string     `json:"model"`   // Original model full name
 	Choices []struct {
 		ContentFilterResults ContentFilterResult `json:"content_filter_results"`
 		Index                int64               `json:"index"`

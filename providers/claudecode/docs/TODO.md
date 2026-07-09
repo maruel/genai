@@ -114,7 +114,8 @@ proxy or SSH timeouts.
 **Problem:** When Claude Code spawns subagents, the caller gets no visibility
 until the final result.
 
-**Wire types:** `systemTaskStarted`, `systemTaskProgress`, `systemTaskNotification`.
+**Wire types:** `systemTaskStarted`, `systemTaskProgress`, `systemTaskNotification`,
+`systemBackgroundTasksChanged`.
 
 **genai integration:**
 - Surface subagent events as `Reply` entries in the stream with a new field

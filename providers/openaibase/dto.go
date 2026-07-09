@@ -168,7 +168,7 @@ func (i *ImageRequest) Init(msg *genai.Message, model string, opts ...genai.GenO
 
 // ImageResponse is the provider-specific image generation response.
 type ImageResponse struct {
-	Created base.Time         `json:"created"`
+	Created base.TimeS        `json:"created"`
 	Data    []ImageChoiceData `json:"data"`
 	Usage   struct {
 		InputTokens        int64 `json:"input_tokens"`
@@ -213,10 +213,10 @@ func (o *GenOptionImage) Validate() error {
 // https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
 // "Modalities:", then extract the modalities from the text.
 type Model struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"`
-	Created base.Time `json:"created"`
-	OwnedBy string    `json:"owned_by"`
+	ID      string     `json:"id"`
+	Object  string     `json:"object"`
+	Created base.TimeS `json:"created"`
+	OwnedBy string     `json:"owned_by"`
 }
 
 // GetID implements genai.Model.
@@ -250,15 +250,15 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // File is documented at https://platform.openai.com/docs/api-reference/files/object
 type File struct {
-	Bytes         int64     `json:"bytes"` // File size
-	CreatedAt     base.Time `json:"created_at"`
-	ExpiresAt     base.Time `json:"expires_at"`
-	Filename      string    `json:"filename"`
-	ID            string    `json:"id"`
-	Object        string    `json:"object"`         // "file"
-	Purpose       string    `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
-	Status        string    `json:"status"`         // Deprecated
-	StatusDetails string    `json:"status_details"` // Deprecated
+	Bytes         int64      `json:"bytes"` // File size
+	CreatedAt     base.TimeS `json:"created_at"`
+	ExpiresAt     base.TimeS `json:"expires_at"`
+	Filename      string     `json:"filename"`
+	ID            string     `json:"id"`
+	Object        string     `json:"object"`         // "file"
+	Purpose       string     `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
+	Status        string     `json:"status"`         // Deprecated
+	StatusDetails string     `json:"status_details"` // Deprecated
 }
 
 // GetID implements genai.Model.
@@ -299,13 +299,13 @@ type BatchRequest struct {
 
 // Batch is documented at https://platform.openai.com/docs/api-reference/batch/object
 type Batch struct {
-	CancelledAt      base.Time `json:"cancelled_at"`
-	CancellingAt     base.Time `json:"cancelling_at"`
-	CompletedAt      base.Time `json:"completed_at"`
-	CompletionWindow string    `json:"completion_window"` // "24h"
-	CreatedAt        base.Time `json:"created_at"`
-	Endpoint         string    `json:"endpoint"`      // Same as BatchRequest.Endpoint
-	ErrorFileID      string    `json:"error_file_id"` // File ID containing the outputs of requests with errors.
+	CancelledAt      base.TimeS `json:"cancelled_at"`
+	CancellingAt     base.TimeS `json:"cancelling_at"`
+	CompletedAt      base.TimeS `json:"completed_at"`
+	CompletionWindow string     `json:"completion_window"` // "24h"
+	CreatedAt        base.TimeS `json:"created_at"`
+	Endpoint         string     `json:"endpoint"`      // Same as BatchRequest.Endpoint
+	ErrorFileID      string     `json:"error_file_id"` // File ID containing the outputs of requests with errors.
 	Errors           struct {
 		Data []struct {
 			Code    string `json:"code"`
@@ -314,12 +314,12 @@ type Batch struct {
 			Param   string `json:"param"`
 		} `json:"data"`
 	} `json:"errors"`
-	ExpiredAt     base.Time         `json:"expired_at"`
-	ExpiresAt     base.Time         `json:"expires_at"`
-	FailedAt      base.Time         `json:"failed_at"`
-	FinalizingAt  base.Time         `json:"finalizing_at"`
+	ExpiredAt     base.TimeS        `json:"expired_at"`
+	ExpiresAt     base.TimeS        `json:"expires_at"`
+	FailedAt      base.TimeS        `json:"failed_at"`
+	FinalizingAt  base.TimeS        `json:"finalizing_at"`
 	ID            string            `json:"id"`
-	InProgressAt  base.Time         `json:"in_progress_at"`
+	InProgressAt  base.TimeS        `json:"in_progress_at"`
 	InputFileID   string            `json:"input_file_id"` // Input data
 	Metadata      map[string]string `json:"metadata"`
 	Model         string            `json:"model,omitzero"`

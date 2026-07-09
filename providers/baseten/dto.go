@@ -445,11 +445,11 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	Object            string    `json:"object"` // "chat.completion"
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Created           base.Time `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	Object            string     `json:"object"` // "chat.completion"
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Created           base.TimeS `json:"created"`
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -517,12 +517,12 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	Object            string    `json:"object"`
-	ServiceTier       string    `json:"service_tier"`
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Created           base.Time `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	Object            string     `json:"object"`
+	ServiceTier       string     `json:"service_tier"`
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Created           base.TimeS `json:"created"`
 	Choices           []struct {
 		Delta struct {
 			Role             string          `json:"role"`

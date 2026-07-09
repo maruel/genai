@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/anthropic"
 )
 
@@ -540,6 +541,8 @@ const (
 	SystemTaskProgress SystemSubtype = "task_progress"
 	// SystemTaskUpdated reports a patch to background subagent state.
 	SystemTaskUpdated SystemSubtype = "task_updated"
+	// SystemBackgroundTasksChanged reports the full live background task set.
+	SystemBackgroundTasksChanged SystemSubtype = "background_tasks_changed"
 	// SystemThinkingTokens reports incremental estimated thinking token usage.
 	SystemThinkingTokens SystemSubtype = "thinking_tokens"
 	// SystemCompactBoundary marks where context was compacted.
@@ -683,13 +686,14 @@ type OutputSystemMsg struct {
 	UsageExtra   TaskUsageWire `json:"usage,omitzero"`
 	OutputFile   string        `json:"output_file,omitempty"`
 	Summary      string        `json:"summary,omitempty"`
+	Tasks        []TaskWire    `json:"tasks,omitempty"`
 
 	// api_retry fields.
-	Attempt      int             `json:"attempt,omitempty"`
-	MaxRetries   int             `json:"max_retries,omitempty"`
-	RetryDelayMs float64         `json:"retry_delay_ms,omitempty"`
-	ErrorStatus  int             `json:"error_status,omitempty"`
-	Error        json.RawMessage `json:"error,omitempty"`
+	Attempt     int             `json:"attempt,omitempty"`
+	MaxRetries  int             `json:"max_retries,omitempty"`
+	RetryDelay  base.DurationMS `json:"retry_delay_ms,omitempty"`
+	ErrorStatus int             `json:"error_status,omitempty"`
+	Error       json.RawMessage `json:"error,omitempty"`
 
 	// Patch carries task completion state.
 	Patch PatchWire `json:"patch,omitzero"`
@@ -718,9 +722,19 @@ type OutputSystemMsg struct {
 
 // PatchWire is the patch object on task system messages.
 type PatchWire struct {
-	Status  string `json:"status"`   // "completed" or "killed".
-	EndTime int64  `json:"end_time"` // Unix epoch milliseconds.
+	Status         TaskPatchStatus `json:"status"`   // "completed" or "killed".
+	EndTime        base.TimeMS     `json:"end_time"` // Unix epoch milliseconds.
+	IsBackgrounded bool            `json:"is_backgrounded,omitempty"`
 }
+
+// TaskPatchStatus is the status field in task_updated patch objects.
+type TaskPatchStatus string
+
+// TaskPatchStatus values.
+const (
+	TaskPatchStatusCompleted TaskPatchStatus = "completed"
+	TaskPatchStatusKilled    TaskPatchStatus = "killed"
+)
 
 // CompactMetadataWire is the compact_metadata object on compact_boundary system messages.
 type CompactMetadataWire struct {
@@ -730,9 +744,16 @@ type CompactMetadataWire struct {
 
 // TaskUsageWire is the usage object on task_progress/task_notification system messages.
 type TaskUsageWire struct {
-	TotalTokens int `json:"total_tokens"`
-	ToolUses    int `json:"tool_uses"`
-	DurationMs  int `json:"duration_ms"`
+	TotalTokens int             `json:"total_tokens"`
+	ToolUses    int             `json:"tool_uses"`
+	Duration    base.DurationMS `json:"duration_ms"`
+}
+
+// TaskWire is one entry in a background_tasks_changed system message.
+type TaskWire struct {
+	TaskID      string `json:"task_id"`
+	TaskType    string `json:"task_type"`
+	Description string `json:"description"`
 }
 
 // ---------- assistant ----------
@@ -821,9 +842,9 @@ func (f FallbackModelRef) IsZero() bool {
 
 // BashInput is the input for the Bash tool.
 type BashInput struct {
-	Command     string `json:"command"`
-	Description string `json:"description,omitempty"`
-	TimeoutMs   int64  `json:"timeout_ms,omitempty"`
+	Command     string          `json:"command"`
+	Description string          `json:"description,omitempty"`
+	Timeout     base.DurationMS `json:"timeout_ms,omitempty"`
 }
 
 // ReadInput is the input for the Read tool.
@@ -1019,23 +1040,23 @@ func (m *OutputUserMsg) DecodeToolUseResult() (OutputToolUseResult, error) {
 
 // OutputResultMsg is the wire representation of a result record.
 type OutputResultMsg struct {
-	Type             OutputType `json:"type"`
-	Subtype          string     `json:"subtype"`
-	IsError          bool       `json:"is_error"`
-	DurationMs       int64      `json:"duration_ms"`
-	DurationAPIMs    int64      `json:"duration_api_ms"`
-	TtftMs           int64      `json:"ttft_ms,omitempty"`
-	TtftStreamMs     int64      `json:"ttft_stream_ms,omitempty"`
-	TimeToRequestMs  int64      `json:"time_to_request_ms,omitempty"`
-	NumTurns         int        `json:"num_turns"`
-	Result           string     `json:"result"`
-	Errors           []string   `json:"errors,omitempty"`
-	SessionID        string     `json:"session_id"`
-	TotalCostUSD     float64    `json:"total_cost_usd"`
-	Usage            MsgUsage   `json:"usage"`
-	UUID             string     `json:"uuid"`
-	StructuredOutput string     `json:"structured_output"`
-	Timestamp        string     `json:"timestamp,omitempty"`
+	Type             OutputType      `json:"type"`
+	Subtype          string          `json:"subtype"`
+	IsError          bool            `json:"is_error"`
+	Duration         base.DurationMS `json:"duration_ms"`
+	DurationAPI      base.DurationMS `json:"duration_api_ms"`
+	Ttft             base.DurationMS `json:"ttft_ms,omitempty"`
+	TtftStream       base.DurationMS `json:"ttft_stream_ms,omitempty"`
+	TimeToRequest    base.DurationMS `json:"time_to_request_ms,omitempty"`
+	NumTurns         int             `json:"num_turns"`
+	Result           string          `json:"result"`
+	Errors           []string        `json:"errors,omitempty"`
+	SessionID        string          `json:"session_id"`
+	TotalCostUSD     float64         `json:"total_cost_usd"`
+	Usage            MsgUsage        `json:"usage"`
+	UUID             string          `json:"uuid"`
+	StructuredOutput string          `json:"structured_output"`
+	Timestamp        string          `json:"timestamp,omitempty"`
 
 	FastModeState     string                     `json:"fast_mode_state,omitempty"`
 	ModelUsage        map[string]ModelUsageEntry `json:"modelUsage,omitempty"`
@@ -1197,7 +1218,7 @@ type OutputStreamEventMsg struct {
 	Timestamp       string          `json:"timestamp,omitempty"`
 	ParentToolUseID string          `json:"parent_tool_use_id"`
 	Event           StreamEventData `json:"event"`
-	TtftMs          int             `json:"ttft_ms,omitempty"`
+	Ttft            base.DurationMS `json:"ttft_ms,omitempty"`
 }
 
 // StreamEventData is the nested event body inside a stream_event record.
@@ -1286,14 +1307,14 @@ type RateLimitInfo struct {
 
 // OutputToolProgressMsg is emitted periodically while a tool is running.
 type OutputToolProgressMsg struct {
-	Type               OutputType `json:"type"` // OutputToolProgress
-	ToolUseID          string     `json:"tool_use_id"`
-	ToolName           string     `json:"tool_name"`
-	ParentToolUseID    string     `json:"parent_tool_use_id"` // nullable
-	ElapsedTimeSeconds int        `json:"elapsed_time_seconds"`
-	TaskID             string     `json:"task_id,omitempty"`
-	UUID               string     `json:"uuid"`
-	SessionID          string     `json:"session_id"`
+	Type            OutputType     `json:"type"` // OutputToolProgress
+	ToolUseID       string         `json:"tool_use_id"`
+	ToolName        string         `json:"tool_name"`
+	ParentToolUseID string         `json:"parent_tool_use_id"` // nullable
+	ElapsedTime     base.DurationS `json:"elapsed_time_seconds"`
+	TaskID          string         `json:"task_id,omitempty"`
+	UUID            string         `json:"uuid"`
+	SessionID       string         `json:"session_id"`
 }
 
 // ---------- auth_status ----------

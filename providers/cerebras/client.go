@@ -152,7 +152,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
-	var created base.Time
+	var created base.TimeS
 	for _, mdl := range mdls {
 		// WARNING: This is fragile and will break in the future.
 		m := mdl.(*Model)

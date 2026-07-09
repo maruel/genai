@@ -16,6 +16,8 @@ package codex
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/maruel/genai/base"
 )
 
 // ============================================================
@@ -908,7 +910,7 @@ type Thread struct {
 	ForkedFromID   *string         `json:"forkedFromId,omitzero"`
 	ParentThreadID *string         `json:"parentThreadId,omitzero"`
 	CLIVersion     string          `json:"cliVersion,omitzero"`
-	CreatedAt      int64           `json:"createdAt,omitzero"`
+	CreatedAt      base.TimeS      `json:"createdAt,omitzero"`
 	CWD            string          `json:"cwd,omitzero"`
 	Ephemeral      bool            `json:"ephemeral,omitzero"`
 	GitInfo        *GitInfo        `json:"gitInfo,omitzero"`
@@ -917,7 +919,7 @@ type Thread struct {
 	Preview        string          `json:"preview,omitzero"`
 	Source         json.RawMessage `json:"source,omitzero"`
 	ThreadSource   ThreadSource    `json:"threadSource,omitzero"`
-	UpdatedAt      int64           `json:"updatedAt,omitzero"`
+	UpdatedAt      base.TimeS      `json:"updatedAt,omitzero"`
 	Status         ThreadStatus    `json:"status,omitzero"`
 	Name           string          `json:"name,omitzero"`
 	AgentNickname  string          `json:"agentNickname,omitzero"`
@@ -973,8 +975,8 @@ type ItemStartedNotification struct {
 	ThreadID string `json:"threadId"`
 	// TurnID is the turn containing the item.
 	TurnID string `json:"turnId"`
-	// StartedAtMs is the Unix timestamp in milliseconds when the item started.
-	StartedAtMs int64 `json:"startedAtMs"`
+	// StartedAt is the Unix timestamp in milliseconds when the item started.
+	StartedAt base.TimeMS `json:"startedAtMs"`
 }
 
 // ItemCompletedNotification holds params for item/completed notifications.
@@ -985,8 +987,8 @@ type ItemCompletedNotification struct {
 	ThreadID string `json:"threadId"`
 	// TurnID is the turn containing the item.
 	TurnID string `json:"turnId"`
-	// CompletedAtMs is the Unix timestamp in milliseconds when the item completed.
-	CompletedAtMs int64 `json:"completedAtMs"`
+	// CompletedAt is the Unix timestamp in milliseconds when the item completed.
+	CompletedAt base.TimeMS `json:"completedAtMs"`
 }
 
 // Turn describes a turn in turn/started and turn/completed params.
@@ -996,9 +998,9 @@ type Turn struct {
 	ItemsView   TurnItemsView     `json:"itemsView,omitzero"`
 	Status      TurnStatus        `json:"status"`
 	Error       *TurnError        `json:"error,omitzero"`
-	StartedAt   *int64            `json:"startedAt,omitzero"`
-	CompletedAt *int64            `json:"completedAt,omitzero"`
-	DurationMs  *int64            `json:"durationMs,omitzero"`
+	StartedAt   base.TimeS        `json:"startedAt,omitzero"`
+	CompletedAt base.TimeS        `json:"completedAt,omitzero"`
+	Duration    *base.DurationMS  `json:"durationMs,omitzero"`
 }
 
 // TurnError describes a turn failure.
@@ -1077,7 +1079,7 @@ type CommandExecutionItem struct {
 	CommandActions   []CommandAction        `json:"commandActions,omitzero"`
 	AggregatedOutput *string                `json:"aggregatedOutput,omitzero"`
 	ExitCode         *int                   `json:"exitCode,omitzero"`
-	DurationMs       *int64                 `json:"durationMs,omitzero"`
+	Duration         *base.DurationMS       `json:"durationMs,omitzero"`
 }
 
 // FileChangeItem is a file creation/modification/deletion item.
@@ -1100,7 +1102,7 @@ type McpToolCallItem struct {
 	PluginID          string             `json:"pluginId,omitzero"`
 	Result            *McpToolCallResult `json:"result,omitzero"`
 	Error             *McpToolCallError  `json:"error,omitzero"`
-	DurationMs        *int64             `json:"durationMs,omitzero"`
+	Duration          *base.DurationMS   `json:"durationMs,omitzero"`
 }
 
 // DynamicToolCallItem is a dynamically registered tool call item.
@@ -1113,7 +1115,7 @@ type DynamicToolCallItem struct {
 	Status       DynamicToolCallStatus              `json:"status,omitzero"`
 	ContentItems []DynamicToolCallOutputContentItem `json:"contentItems,omitzero"`
 	Success      *bool                              `json:"success,omitzero"`
-	DurationMs   *int64                             `json:"durationMs,omitzero"`
+	Duration     base.DurationMS                    `json:"durationMs,omitzero"`
 }
 
 // CollabAgentToolCallItem is a collaborative multi-agent tool call item.
@@ -1408,7 +1410,7 @@ type RawResponseItemCompletedNotification struct {
 type ItemGuardianApprovalReviewStartedNotification struct {
 	ThreadID     string                       `json:"threadId"`
 	TurnID       string                       `json:"turnId"`
-	StartedAtMs  int64                        `json:"startedAtMs"`
+	StartedAt    base.TimeMS                  `json:"startedAtMs"`
 	ReviewID     string                       `json:"reviewId"`
 	TargetItemID *string                      `json:"targetItemId,omitzero"`
 	Review       GuardianApprovalReview       `json:"review"`
@@ -1419,8 +1421,8 @@ type ItemGuardianApprovalReviewStartedNotification struct {
 type ItemGuardianApprovalReviewCompletedNotification struct {
 	ThreadID       string                       `json:"threadId"`
 	TurnID         string                       `json:"turnId"`
-	StartedAtMs    int64                        `json:"startedAtMs"`
-	CompletedAtMs  int64                        `json:"completedAtMs"`
+	StartedAt      base.TimeMS                  `json:"startedAtMs"`
+	CompletedAt    base.TimeMS                  `json:"completedAtMs"`
 	ReviewID       string                       `json:"reviewId"`
 	TargetItemID   *string                      `json:"targetItemId,omitzero"`
 	DecisionSource AutoReviewDecisionSource     `json:"decisionSource"`
@@ -1685,9 +1687,9 @@ const (
 
 // RateLimitWindow is one Codex rate-limit window.
 type RateLimitWindow struct {
-	UsedPercent        int   `json:"usedPercent"`
-	WindowDurationMins int64 `json:"windowDurationMins,omitzero"`
-	ResetsAt           int64 `json:"resetsAt,omitzero"`
+	UsedPercent        int        `json:"usedPercent"`
+	WindowDurationMins int64      `json:"windowDurationMins,omitzero"`
+	ResetsAt           base.TimeS `json:"resetsAt,omitzero"`
 }
 
 // CreditsSnapshot describes Codex account credit availability.
@@ -1699,10 +1701,10 @@ type CreditsSnapshot struct {
 
 // SpendControlLimitSnapshot describes a Codex workspace spend-control limit.
 type SpendControlLimitSnapshot struct {
-	Limit            string `json:"limit"`
-	Used             string `json:"used"`
-	RemainingPercent int    `json:"remainingPercent"`
-	ResetsAt         int64  `json:"resetsAt"`
+	Limit            string     `json:"limit"`
+	Used             string     `json:"used"`
+	RemainingPercent int        `json:"remainingPercent"`
+	ResetsAt         base.TimeS `json:"resetsAt"`
 }
 
 // Error notification.
@@ -1763,14 +1765,14 @@ const (
 
 // ThreadGoal is the current long-running goal state for a thread.
 type ThreadGoal struct {
-	ThreadID        string           `json:"threadId"`
-	Objective       string           `json:"objective"`
-	Status          ThreadGoalStatus `json:"status"`
-	TokenBudget     *int64           `json:"tokenBudget,omitzero"`
-	TokensUsed      int64            `json:"tokensUsed"`
-	TimeUsedSeconds int64            `json:"timeUsedSeconds"`
-	CreatedAt       int64            `json:"createdAt"`
-	UpdatedAt       int64            `json:"updatedAt"`
+	ThreadID    string           `json:"threadId"`
+	Objective   string           `json:"objective"`
+	Status      ThreadGoalStatus `json:"status"`
+	TokenBudget *int64           `json:"tokenBudget,omitzero"`
+	TokensUsed  int64            `json:"tokensUsed"`
+	TimeUsed    base.DurationS   `json:"timeUsedSeconds"`
+	CreatedAt   base.TimeS       `json:"createdAt"`
+	UpdatedAt   base.TimeS       `json:"updatedAt"`
 }
 
 // ThreadSettings contains the active settings for a thread.

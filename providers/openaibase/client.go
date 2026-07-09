@@ -197,7 +197,7 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
-	var created base.Time
+	var created base.TimeS
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// Do not select the specialized models automatically.
@@ -248,7 +248,7 @@ func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (s
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood)
 	selectedModel := ""
-	var created base.Time
+	var created base.TimeS
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// OpenAI doesn't report much for each model. :(

@@ -167,8 +167,8 @@ type Response struct {
 	// Response only
 	ID                string            `json:"id,omitzero"`
 	Object            string            `json:"object,omitzero"` // "response"
-	CreatedAt         base.Time         `json:"created_at,omitzero"`
-	CompletedAt       base.Time         `json:"completed_at,omitzero"`
+	CreatedAt         base.TimeS        `json:"created_at,omitzero"`
+	CompletedAt       base.TimeS        `json:"completed_at,omitzero"`
 	Status            string            `json:"status,omitzero"` // "completed"
 	IncompleteDetails IncompleteDetails `json:"incomplete_details,omitzero"`
 	Error             APIError          `json:"error,omitzero"`

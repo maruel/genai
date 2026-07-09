@@ -589,7 +589,7 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     struct{}     `json:"logprobs"`
 	} `json:"choices"`
-	Created           base.Time      `json:"created"`
+	Created           base.TimeS     `json:"created"`
 	ID                string         `json:"id"`
 	Model             string         `json:"model"`
 	Object            string         `json:"object"` // "chat.completion"
@@ -687,11 +687,11 @@ type BrowserFindArguments struct {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	ID                string    `json:"id"`
-	Object            string    `json:"object"`
-	Created           base.Time `json:"created"`
-	Model             string    `json:"model"`
-	SystemFingerprint string    `json:"system_fingerprint"`
+	ID                string     `json:"id"`
+	Object            string     `json:"object"`
+	Created           base.TimeS `json:"created"`
+	Model             string     `json:"model"`
+	SystemFingerprint string     `json:"system_fingerprint"`
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		Delta        Message      `json:"delta"`
@@ -711,7 +711,7 @@ type ChatStreamChunkResponse struct {
 type Model struct {
 	ID                          string            `json:"id"`
 	Object                      string            `json:"object"`
-	Created                     base.Time         `json:"created"`
+	Created                     base.TimeS        `json:"created"`
 	OwnedBy                     string            `json:"owned_by"`
 	Name                        string            `json:"name"`
 	Active                      bool              `json:"active"`

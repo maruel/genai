@@ -606,7 +606,7 @@ type ChatResponse struct {
 		Logprobs           *Logprobs    `json:"logprobs,omitzero"`
 		Error              *InlineError `json:"error,omitzero"`
 	} `json:"choices"`
-	Created           base.Time    `json:"created"`
+	Created           base.TimeS   `json:"created"`
 	ID                string       `json:"id"`
 	Model             string       `json:"model"`    // The model that actually served the request.
 	Object            string       `json:"object"`   // "chat.completion"
@@ -681,13 +681,13 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	ID                string    `json:"id"`
-	Object            string    `json:"object"`
-	Created           base.Time `json:"created"`
-	Model             string    `json:"model"`
-	Provider          string    `json:"provider,omitzero"`
-	ServiceTier       string    `json:"service_tier,omitzero"`
-	SystemFingerprint string    `json:"system_fingerprint"`
+	ID                string     `json:"id"`
+	Object            string     `json:"object"`
+	Created           base.TimeS `json:"created"`
+	Model             string     `json:"model"`
+	Provider          string     `json:"provider,omitzero"`
+	ServiceTier       string     `json:"service_tier,omitzero"`
+	SystemFingerprint string     `json:"system_fingerprint"`
 	Choices           []struct {
 		Index              int64        `json:"index"`
 		Delta              Message      `json:"delta"`
@@ -724,7 +724,7 @@ type ModelReasoning struct {
 type Model struct {
 	ID            string       `json:"id"`
 	Name          string       `json:"name"`
-	Created       base.Time    `json:"created"`
+	Created       base.TimeS   `json:"created"`
 	Description   string       `json:"description"`
 	ContextLength int64        `json:"context_length"`
 	Pricing       ModelPricing `json:"pricing"`

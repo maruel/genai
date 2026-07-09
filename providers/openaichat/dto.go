@@ -825,13 +825,13 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Created           base.Time `json:"created"`
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	Object            string    `json:"object"`
-	Usage             Usage     `json:"usage"`
-	ServiceTier       string    `json:"service_tier"`
-	SystemFingerprint string    `json:"system_fingerprint"`
+	Created           base.TimeS `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	Object            string     `json:"object"`
+	Usage             Usage      `json:"usage"`
+	ServiceTier       string     `json:"service_tier"`
+	SystemFingerprint string     `json:"system_fingerprint"`
 
 	audioFormat string // Set by GenSyncRaw after Init; used by ToResult for Doc filenames.
 }
@@ -973,7 +973,7 @@ type ChatStreamChunkResponse struct {
 		Index        int64        `json:"index"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Created           base.Time           `json:"created"`
+	Created           base.TimeS          `json:"created"`
 	ID                string              `json:"id"`
 	Model             string              `json:"model"`
 	Object            string              `json:"object"` // "chat.completion.chunk"

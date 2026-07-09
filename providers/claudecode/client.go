@@ -803,11 +803,11 @@ func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summarie
 	if res.TotalCostUSD > 0 {
 		opaque["total_cost_usd"] = res.TotalCostUSD
 	}
-	if res.DurationMs > 0 {
-		opaque["duration_ms"] = res.DurationMs
+	if res.Duration > 0 {
+		opaque["duration_ms"] = res.Duration
 	}
-	if res.DurationAPIMs > 0 {
-		opaque["duration_api_ms"] = res.DurationAPIMs
+	if res.DurationAPI > 0 {
+		opaque["duration_api_ms"] = res.DurationAPI
 	}
 	if res.NumTurns > 0 {
 		opaque["num_turns"] = res.NumTurns

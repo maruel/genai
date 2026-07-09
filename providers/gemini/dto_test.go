@@ -13,6 +13,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 )
 
 func TestSchema(t *testing.T) {
@@ -264,4 +265,15 @@ func TestSchema(t *testing.T) {
 			}
 		})
 	})
+}
+
+func TestImageParametersDurationS(t *testing.T) {
+	got, err := json.Marshal(ImageParameters{Duration: base.DurationS(8)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	const want = `{"personGeneration":"","durationSeconds":8}`
+	if string(got) != want {
+		t.Errorf("MarshalJSON() = %s, want %s", got, want)
+	}
 }

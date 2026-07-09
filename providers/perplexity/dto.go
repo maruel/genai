@@ -326,12 +326,12 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	ID        string    `json:"id"` // UUID
-	Model     string    `json:"model"`
-	Object    string    `json:"object"` // "chat.completion"
-	Created   base.Time `json:"created"`
-	Citations []string  `json:"citations"` // Same URLs from SearchResults in the same order.
-	Images    []Images  `json:"images"`    // The images do not seem to have a direct relation with the citations.
+	ID        string     `json:"id"` // UUID
+	Model     string     `json:"model"`
+	Object    string     `json:"object"` // "chat.completion"
+	Created   base.TimeS `json:"created"`
+	Citations []string   `json:"citations"` // Same URLs from SearchResults in the same order.
+	Images    []Images   `json:"images"`    // The images do not seem to have a direct relation with the citations.
 	Choices   []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`

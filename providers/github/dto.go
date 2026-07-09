@@ -437,11 +437,11 @@ type contentFilterResults struct {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	ID                string    `json:"id"`
-	Object            string    `json:"object"` // "chat.completion"
-	Created           base.Time `json:"created"`
-	Model             string    `json:"model"`
-	SystemFingerprint string    `json:"system_fingerprint"`
+	ID                string     `json:"id"`
+	Object            string     `json:"object"` // "chat.completion"
+	Created           base.TimeS `json:"created"`
+	Model             string     `json:"model"`
+	SystemFingerprint string     `json:"system_fingerprint"`
 	Choices           []struct {
 		Index                int64                `json:"index"`
 		FinishReason         FinishReason         `json:"finish_reason"`
@@ -528,12 +528,12 @@ type Usage struct {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	ID                string    `json:"id"`
-	Object            string    `json:"object"`
-	Created           base.Time `json:"created"`
-	Model             string    `json:"model"`
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Obfuscation       string    `json:"obfuscation,omitzero"` // Azure-specific
+	ID                string     `json:"id"`
+	Object            string     `json:"object"`
+	Created           base.TimeS `json:"created"`
+	Model             string     `json:"model"`
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Obfuscation       string     `json:"obfuscation,omitzero"` // Azure-specific
 	Choices           []struct {
 		Index int64 `json:"index"`
 		Delta struct {

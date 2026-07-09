@@ -1381,7 +1381,7 @@ func (i *ImageRequest) Init(msg *genai.Message, model string, mod genai.Modaliti
 			// TODO: Width and Height
 		case *genai.GenOptionVideo:
 			if v.Duration != 0 {
-				i.Parameters.DurationSeconds = int64(v.Duration.Round(time.Second) / time.Second)
+				i.Parameters.Duration = base.DurationS(v.Duration.Round(time.Second).Seconds())
 			}
 		default:
 			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
@@ -1424,8 +1424,8 @@ type ImageParameters struct {
 	// NegativePrompt           string  `json:"negativePrompt,omitzero"`
 
 	// Video only.
-	DurationSeconds int64  `json:"durationSeconds,omitzero"`
-	NegativePrompt  string `json:"negativePrompt,omitzero"`
+	Duration       base.DurationS `json:"durationSeconds,omitzero"`
+	NegativePrompt string         `json:"negativePrompt,omitzero"`
 	// VertexAI only:
 	// FPS int64 `json:"fps,omitzero"`
 	// Seed int64 `json:"seed,omitzero"`

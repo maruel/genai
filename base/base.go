@@ -597,27 +597,46 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 
 //
 
-// Time is a JSON encoded unix timestamp. This is used by many providers.
-type Time int64
+// TimeS is a JSON encoded unix timestamp in seconds.
+type TimeS float64
 
-// AsTime returns the time as UTC so its string value doesn't depend on the local time zone.
-func (t *Time) AsTime() time.Time {
-	return time.Unix(int64(*t), 0).UTC()
+// IsZero reports whether the timestamp is absent.
+func (t TimeS) IsZero() bool {
+	return t == 0
 }
 
-// UnmarshalJSON decodes JSON numbers as unix timestamps, converting float64 to int64 by rounding.
-func (t *Time) UnmarshalJSON(b []byte) error {
-	var i int64
-	if err := json.Unmarshal(b, &i); err == nil {
-		*t = Time(i)
-		return nil
-	}
-	var f float64
-	if err := json.Unmarshal(b, &f); err != nil {
-		return err
-	}
-	*t = Time(int64(math.Round(f)))
-	return nil
+// AsTime returns the time rounded to milliseconds as UTC so its string value doesn't depend on the local time zone.
+func (t *TimeS) AsTime() time.Time {
+	return time.UnixMilli(int64(math.Round(float64(*t) * float64(time.Second/time.Millisecond)))).UTC()
+}
+
+// TimeMS is a JSON encoded unix timestamp in milliseconds.
+type TimeMS float64
+
+// IsZero reports whether the timestamp is absent.
+func (t TimeMS) IsZero() bool {
+	return t == 0
+}
+
+// AsTime returns the time rounded to milliseconds as UTC so its string value doesn't depend on the local time zone.
+func (t *TimeMS) AsTime() time.Time {
+	return time.UnixMilli(int64(math.Round(float64(*t)))).UTC()
+}
+
+// DurationMS is a JSON encoded duration in milliseconds.
+type DurationMS float64
+
+// AsDuration returns the duration truncated to nanoseconds.
+func (d *DurationMS) AsDuration() time.Duration {
+	return time.Duration(float64(*d) * float64(time.Millisecond))
+}
+
+// DurationS is a JSON encoded duration in seconds.
+type DurationS float64
+
+// AsDuration returns the duration truncated to nanoseconds.
+func (d *DurationS) AsDuration() time.Duration {
+	return time.Duration(float64(*d) * float64(time.Second))
 }
 
 // Float64 is a float64 that can be unmarshalled from both JSON numbers and strings.

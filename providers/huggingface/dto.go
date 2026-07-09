@@ -370,7 +370,7 @@ type Tool struct {
 type ChatResponse struct {
 	Object            string            `json:"object"` // "chat.completion"
 	ID                string            `json:"id"`
-	Created           base.Time         `json:"created"`
+	Created           base.TimeS        `json:"created"`
 	Model             string            `json:"model"`
 	SystemFingerprint string            `json:"system_fingerprint"`
 	Prompt            []json.RawMessage `json:"prompt,omitzero"` // Some models return empty prompt field
@@ -570,11 +570,11 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	Object            string    `json:"object"` // "chat.completion.chunk"
-	Created           base.Time `json:"created"`
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	SystemFingerprint string    `json:"system_fingerprint"`
+	Object            string     `json:"object"` // "chat.completion.chunk"
+	Created           base.TimeS `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	SystemFingerprint string     `json:"system_fingerprint"`
 	Choices           []struct {
 		Index        int64        `json:"index,omitzero"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -594,8 +594,8 @@ type ChatStreamChunkResponse struct {
 	} `json:"choices"`
 	Usage      Usage `json:"usage"`
 	SLAMetrics struct {
-		TSUs   int64 `json:"ts_us"`
-		TTFTMs int64 `json:"ttft_ms"`
+		TSUs int64           `json:"ts_us"`
+		TTFT base.DurationMS `json:"ttft_ms"`
 	} `json:"sla_metrics,omitzero"`
 }
 

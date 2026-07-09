@@ -423,11 +423,11 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	Object            string    `json:"object"` // "chat.completion"
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Created           base.Time `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	Object            string     `json:"object"` // "chat.completion"
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Created           base.TimeS `json:"created"`
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -436,11 +436,11 @@ type ChatResponse struct {
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
-		QueueTime  float64   `json:"queue_time"`      // In seconds
-		PromptTime float64   `json:"prompt_time"`     // In seconds
-		ChatTime   float64   `json:"completion_time"` // In seconds
-		TotalTime  float64   `json:"total_time"`      // In seconds
-		Created    base.Time `json:"created"`
+		QueueTime  float64    `json:"queue_time"`      // In seconds
+		PromptTime float64    `json:"prompt_time"`     // In seconds
+		ChatTime   float64    `json:"completion_time"` // In seconds
+		TotalTime  float64    `json:"total_time"`      // In seconds
+		Created    base.TimeS `json:"created"`
 	} `json:"time_info"`
 }
 
@@ -500,11 +500,11 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	ID                string    `json:"id"`
-	Model             string    `json:"model"`
-	Object            string    `json:"object"`
-	SystemFingerprint string    `json:"system_fingerprint"`
-	Created           base.Time `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	Object            string     `json:"object"`
+	SystemFingerprint string     `json:"system_fingerprint"`
+	Created           base.TimeS `json:"created"`
 	Choices           []struct {
 		Delta struct {
 			Role      string     `json:"role"`
@@ -518,11 +518,11 @@ type ChatStreamChunkResponse struct {
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
-		QueueTime  float64   `json:"queue_time"`
-		PromptTime float64   `json:"prompt_time"`
-		ChatTime   float64   `json:"completion_time"`
-		TotalTime  float64   `json:"total_time"`
-		Created    base.Time `json:"created"`
+		QueueTime  float64    `json:"queue_time"`
+		PromptTime float64    `json:"prompt_time"`
+		ChatTime   float64    `json:"completion_time"`
+		TotalTime  float64    `json:"total_time"`
+		Created    base.TimeS `json:"created"`
 	} `json:"time_info"`
 }
 
@@ -570,10 +570,10 @@ type Usage struct {
 
 // Model is the provider-specific model metadata.
 type Model struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"`
-	Created base.Time `json:"created"`
-	OwnedBy string    `json:"owned_by"`
+	ID      string     `json:"id"`
+	Object  string     `json:"object"`
+	Created base.TimeS `json:"created"`
+	OwnedBy string     `json:"owned_by"`
 }
 
 // GetID implements genai.Model.

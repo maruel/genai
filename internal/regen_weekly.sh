@@ -59,6 +59,26 @@ if [[ ${#MISSING[@]} -ne 0 ]]; then
 	exit 1
 fi
 
+list_models() {
+	local provider=$1
+	local out=$2
+	local delay=10
+	local attempt
+	for attempt in {1..3}; do
+		if list-models -strict -provider "$provider" >"$out"; then
+			return 0
+		fi
+		rm -f "$out"
+		if [[ $attempt == 3 ]]; then
+			break
+		fi
+		echo "list-models failed for $provider on attempt $attempt/3; retrying in ${delay}s" >&2
+		sleep "$delay"
+		delay=$((delay * 2))
+	done
+	return 1
+}
+
 tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/genai-models.XXXXXX")
 tmp="$tmpdir/MODELS.md"
 cleanup() {
@@ -77,11 +97,13 @@ for i in "${PROVIDERS[@]}"; do
 		echo "## $i"
 		echo ""
 	} >>"$tmp"
-	if ! list-models -strict -provider "$i" | sed 's/^/- /' >>"$tmp"; then
+	provider_tmp="$tmpdir/$i.txt"
+	if ! list_models "$i" "$provider_tmp"; then
 		find "./providers/$i" -name Warmup.yaml -delete
 		go test "./providers/$i/..."
 		exit 1
 	fi
+	sed 's/^/- /' "$provider_tmp" >>"$tmp"
 done
 mv "$tmp" docs/MODELS.md
 

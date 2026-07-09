@@ -567,6 +567,12 @@ const (
 	// SystemPostTurnSummary is a background summary emitted after each
 	// assistant turn (summarizes_uuid points to the assistant message).
 	SystemPostTurnSummary SystemSubtype = "post_turn_summary"
+	// SystemModelRefusalFallback reports that Claude Code retried a refused
+	// request with a fallback model.
+	SystemModelRefusalFallback SystemSubtype = "model_refusal_fallback"
+	// SystemModelRefusalNoFallback reports that Claude Code has no further
+	// fallback after a model refusal.
+	SystemModelRefusalNoFallback SystemSubtype = "model_refusal_no_fallback"
 )
 
 // ---------- envelope probe ----------
@@ -688,6 +694,17 @@ type OutputSystemMsg struct {
 	// Patch carries task completion state.
 	Patch PatchWire `json:"patch,omitzero"`
 
+	// model_refusal_fallback / model_refusal_no_fallback fields.
+	Trigger                string `json:"trigger,omitempty"`
+	Direction              string `json:"direction,omitempty"`
+	OriginalModel          string `json:"original_model,omitempty"`
+	FallbackModel          string `json:"fallback_model,omitempty"`
+	RequestID              string `json:"request_id,omitempty"`
+	APIRefusalCategory     string `json:"api_refusal_category,omitempty"`
+	APIRefusalExplanation  string `json:"api_refusal_explanation,omitempty"`
+	RefusedUserMessageUUID string `json:"refused_user_message_uuid,omitempty"`
+	Content                string `json:"content,omitempty"`
+
 	// Other optional fields.
 	PermissionMode  string              `json:"permissionMode,omitempty"`
 	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitzero"`
@@ -761,6 +778,8 @@ type ContentBlockStart struct {
 	Thinking  string                     `json:"thinking,omitempty"`
 	Signature []byte                     `json:"signature,omitempty"`
 	Caller    anthropic.Caller           `json:"caller,omitzero"`
+	From      FallbackModelRef           `json:"from,omitzero"`
+	To        FallbackModelRef           `json:"to,omitzero"`
 }
 
 // OutputContentBlock is a single content block inside an assistant message.
@@ -770,6 +789,7 @@ type ContentBlockStart struct {
 //   - "thinking":            Thinking, Signature
 //   - "tool_use":            ID, Name, Input
 //   - "tool_result":         ToolUseID, Content, IsError
+//   - "fallback":            From, To
 //   - "server_tool_use":     ID, Name, Input, Caller
 //   - "web_search_tool_use": ID, Name, Input, Caller
 type OutputContentBlock struct {
@@ -781,10 +801,22 @@ type OutputContentBlock struct {
 	Thinking  string                     `json:"thinking,omitempty"`
 	Signature []byte                     `json:"signature,omitempty"`
 	Caller    anthropic.Caller           `json:"caller,omitzero"`
+	From      FallbackModelRef           `json:"from,omitzero"`
+	To        FallbackModelRef           `json:"to,omitzero"`
 	// tool_result fields (inline MCP tool results).
 	ToolUseID string            `json:"tool_use_id,omitempty"`
 	Content   ToolResultPayload `json:"content,omitempty"`
 	IsError   bool              `json:"is_error,omitempty"`
+}
+
+// FallbackModelRef identifies a model in a fallback content block.
+type FallbackModelRef struct {
+	Model string `json:"model"`
+}
+
+// IsZero reports whether f carries no model reference.
+func (f FallbackModelRef) IsZero() bool {
+	return f.Model == ""
 }
 
 // BashInput is the input for the Bash tool.

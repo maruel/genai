@@ -393,6 +393,52 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("BashInput.Command = %q, want true", input.Command)
 		}
 	})
+	t.Run("assistant_fallback_content", func(t *testing.T) {
+		const data = `{"type":"assistant","message":{"model":"claude-opus-4-8","id":"msg_01","type":"message","role":"assistant","content":[{"type":"fallback","from":{"model":"claude-fable-5"},"to":{"model":"claude-opus-4-8"}}],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":1,"output_tokens":1}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null,"request_id":"req_1"}`
+		var got OutputAssistantMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		block := got.Message.Content[0]
+		if block.Type != "fallback" || block.From.Model != "claude-fable-5" || block.To.Model != "claude-opus-4-8" {
+			t.Fatalf("Content[0] = %+v, want fallback from fable to opus", block)
+		}
+	})
+	t.Run("synthetic_refusal_assistant", func(t *testing.T) {
+		const data = `{"type":"assistant","message":{"id":"m1","container":null,"model":"<synthetic>","role":"assistant","stop_details":{"type":"refusal","category":"bio","explanation":null,"fallback_has_prefill_claim":null,"recommended_model":null},"stop_reason":"refusal","stop_sequence":"","type":"message","usage":{"input_tokens":0,"output_tokens":0,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"server_tool_use":{"web_search_requests":0},"service_tier":null,"cache_creation":{"ephemeral_1h_input_tokens":0,"ephemeral_5m_input_tokens":0},"inference_geo":null,"iterations":null,"speed":null},"content":[{"type":"text","text":"API Error: blocked"}],"context_management":null},"parent_tool_use_id":null,"session_id":"s1","uuid":"u1","error":"invalid_request","request_id":"req_1"}`
+		var got OutputAssistantMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Message.StopDetails.Category != "bio" || got.Error != "invalid_request" {
+			t.Fatalf("Message.StopDetails = %+v, Error = %q, want bio invalid_request", got.Message.StopDetails, got.Error)
+		}
+	})
+	t.Run("model_refusal_system_messages", func(t *testing.T) {
+		const fallback = `{"type":"system","subtype":"model_refusal_fallback","trigger":"refusal","direction":"retry","original_model":"claude-fable-5","fallback_model":"claude-opus-4-8","request_id":"req_1","api_refusal_category":"bio","api_refusal_explanation":null,"refused_user_message_uuid":"user_1","content":"Switched to Opus 4.8.","session_id":"s1","uuid":"u1"}`
+		var got OutputSystemMsg
+		if err := internal.UnmarshalJSON([]byte(fallback), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Subtype != SystemModelRefusalFallback {
+			t.Errorf("Subtype = %q, want %q", got.Subtype, SystemModelRefusalFallback)
+		}
+		if got.OriginalModel != "claude-fable-5" || got.FallbackModel != "claude-opus-4-8" || got.APIRefusalCategory != "bio" {
+			t.Fatalf("refusal metadata = %+v, want fable->opus bio", got)
+		}
+
+		const noFallback = `{"type":"system","subtype":"model_refusal_no_fallback","original_model":"claude-fable-5","request_id":"req_1","api_refusal_category":"bio","api_refusal_explanation":null,"refused_user_message_uuid":"user_1","content":"","session_id":"s1","uuid":"u1"}`
+		got = OutputSystemMsg{}
+		if err := internal.UnmarshalJSON([]byte(noFallback), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Subtype != SystemModelRefusalNoFallback {
+			t.Errorf("Subtype = %q, want %q", got.Subtype, SystemModelRefusalNoFallback)
+		}
+		if got.OriginalModel != "claude-fable-5" || got.APIRefusalCategory != "bio" || got.RequestID != "req_1" {
+			t.Fatalf("refusal metadata = %+v, want fable bio req_1", got)
+		}
+	})
 	t.Run("user_subagent_metadata", func(t *testing.T) {
 		const data = `{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Find harness/model selection logic"}]},"parent_tool_use_id":"toolu_1","session_id":"s1","uuid":"u1","timestamp":"2026-06-13T20:16:11.423Z","subagent_type":"Explore","task_description":"Find harness/model selection logic"}`
 		var got OutputUserMsg

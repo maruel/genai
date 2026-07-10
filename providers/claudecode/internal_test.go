@@ -333,6 +333,29 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("len(Tasks) = %d, want 0", len(got.Tasks))
 		}
 	})
+	t.Run("commands_changed", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"commands_changed","commands":[{"name":"widget","description":"Render widgets","argumentHint":"","aliases":["caic-widget:widget"]}],"uuid":"u1","session_id":"s1"}`
+		var got OutputCommandsChangedMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Subtype != SystemCommandsChanged {
+			t.Errorf("Subtype = %q, want %q", got.Subtype, SystemCommandsChanged)
+		}
+		if len(got.Commands) != 1 {
+			t.Fatalf("len(Commands) = %d, want 1", len(got.Commands))
+		}
+		cmd := got.Commands[0]
+		if cmd.Name != "widget" {
+			t.Errorf("Commands[0].Name = %q, want widget", cmd.Name)
+		}
+		if cmd.ArgumentHint != "" {
+			t.Errorf("Commands[0].ArgumentHint = %q, want empty", cmd.ArgumentHint)
+		}
+		if len(cmd.Aliases) != 1 || cmd.Aliases[0] != "caic-widget:widget" {
+			t.Errorf("Commands[0].Aliases = %v, want [caic-widget:widget]", cmd.Aliases)
+		}
+	})
 	t.Run("task_started_subagent_metadata", func(t *testing.T) {
 		const data = `{"type":"system","subtype":"task_started","task_id":"task-1","tool_use_id":"toolu_1","description":"Find harness/model selection logic","subagent_type":"Explore","task_type":"local_agent","prompt":"Find harness/model selection logic","uuid":"u1","session_id":"s1"}`
 		var got OutputSystemMsg

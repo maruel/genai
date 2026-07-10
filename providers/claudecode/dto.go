@@ -549,6 +549,8 @@ const (
 	SystemCompactBoundary SystemSubtype = "compact_boundary"
 	// SystemStatus reports idle/running/requires_action transitions.
 	SystemStatus SystemSubtype = "status"
+	// SystemCommandsChanged reports the full available slash command set.
+	SystemCommandsChanged SystemSubtype = "commands_changed"
 	// SystemSessionStateChanged mirrors notifySessionStateChanged;
 	// authoritative turn-over signal ("idle" fires after result is flushed).
 	SystemSessionStateChanged SystemSubtype = "session_state_changed"
@@ -711,6 +713,7 @@ type OutputSystemMsg struct {
 
 	// Other optional fields.
 	PermissionMode  string              `json:"permissionMode,omitempty"`
+	Commands        []CommandWire       `json:"commands,omitempty"`
 	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitzero"`
 	CompactResult   string              `json:"compact_result,omitempty"`
 	Prompt          json.RawMessage     `json:"prompt,omitempty"`
@@ -754,6 +757,14 @@ type TaskWire struct {
 	TaskID      string `json:"task_id"`
 	TaskType    string `json:"task_type"`
 	Description string `json:"description"`
+}
+
+// CommandWire is one entry in a commands_changed system message.
+type CommandWire struct {
+	Name         string   `json:"name"`
+	Description  string   `json:"description"`
+	ArgumentHint string   `json:"argumentHint"`
+	Aliases      []string `json:"aliases,omitempty"`
 }
 
 // ---------- assistant ----------
@@ -1414,6 +1425,15 @@ func (m *OutputPostTurnSummaryMsg) Reasoning() string {
 		}
 	}
 	return strings.Join(parts, "\n")
+}
+
+// OutputCommandsChangedMsg reports the full available slash command set.
+type OutputCommandsChangedMsg struct {
+	Type      OutputType    `json:"type"`    // OutputSystem
+	Subtype   SystemSubtype `json:"subtype"` // SystemCommandsChanged
+	Commands  []CommandWire `json:"commands"`
+	UUID      string        `json:"uuid"`
+	SessionID string        `json:"session_id"`
 }
 
 // OutputLocalCommandOutputMsg is output from a local slash command (e.g. /cost).

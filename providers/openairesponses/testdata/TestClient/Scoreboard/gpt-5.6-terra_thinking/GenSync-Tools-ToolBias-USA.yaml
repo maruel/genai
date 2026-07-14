@@ -1,0 +1,186 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 677
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0bc3ed3c70d61375006a553993011c819c8ebe6401e69ef3fe",
+              "object": "response",
+              "created_at": 1783970195,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1783970196,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.6-terra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_0bc3ed3c70d61375006a55399372d4819cba2305bc74acada2",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqVTmV-LffAvZcGDzbAYATcrObdUURBq256yszmcVhSwZu_EFEh3zycsaCvgCigU0QdvRPte2cCXLQE_oh6bwjgbfyHO_oU7W6ctmzuKwjGaIEWZVUa-BQDxxTQ41zLIqK-vSp6vJjexLSG2kabbFbcEJ2ZGEhsPhIol-v8sF75OxHOTI3aYBMQbdXwWpDQT96bJIq9X_fIhWRsecxthJ1Guu-r_60smKMVD3Z6vW3S67vk5GK39vH1dexwlJ0o_ScWpYqIjBnSAPIZ29rRG_1DAL1vzTFJK0DtInVDsuWteAgIwU3T4Gt5GYA1sP0zLUAmiWbwDSyYeLYGdd1L9CMmGb8Fd1wdTZiBq6jlWsMGK3T_wKdqsZsNDViUsenKTsFn2y9mZfm1eAuhsYdOvUEICx3DndteLFLWOrtbNi5Uv0_WnV5o9uQSvF-lvxjEn8p-fzPcaOIknL_zBs-8dRAjDc9bLG2dJkh1ifAB7E7ej4ZvIBIX4OMsoyNovArMHH6Hic454tcJl5fFOQep-4Rphema0OnsWhsO7fzsHsNsRlUxLB7gsaDQcgJo-BR3xb0h2bHVvQo9z5qcPJbtGAkRnVyDMLMLWZg0A7p1og4mqqiUxaxgZelKCBj68YMCo4nn6I3twNDLzDj9_kDBOpHh45Yqg5pWLfkAhXhJrcZMp_tmypfLE0xdoZPg0IzWlNll75lgPKguMTDoZRlxZNLKB1CFnBAiuex68SY0iLxeEnmhQL79rigCeoWwRyC3T3xJcOiS8p1zpn010g-2e3CyLEL5ztLhVZFslK3MtLKLoSY_vQsh_DtdWNpv0gqfvQ6W9y-rX0pjezwuPgihWV0j8uDSMHevCYop-GkBzSfdffcbBjtj_Ns8lOH479VkBLKA4ky_untrsvCzWXhqZrXtzizACpm_u9C3LOPVT6RF9OAmmav5sWGg_yg4Fiag_4jbmhWqGLgSZsUjosDHqJk3U1WXdwFbNMNvmp8ASMZAuy4IN-zI-TiE93VCLTPDP-ZmpzNJwn5pO7Hp0w4RNSoy7qHZw==",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Selecting the right tool**\n\nI see that I need to choose a specific tool for the task at hand. The user probably wants to get the best results, so I\u2019m considering if I should be using the USA as the country enum. I think I can go ahead and make that call, aiming to use the best tool to fulfill what the user is looking for. I'll ensure to provide accurate and relevant information!"
+                    }
+                  ]
+                },
+                {
+                  "id": "fc_0bc3ed3c70d61375006a553994dadc819ca13dd4080f015d2e",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"country\":\"USA\"}",
+                  "call_id": "call_LJCrutjzEXp3ubme245Kr784",
+                  "name": "best_country"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "required",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "A tool to specify the best country",
+                  "name": "best_country",
+                  "output_schema": null,
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "USA",
+                          "Canada"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "country"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 44,
+                "output_tokens_details": {
+                  "reasoning_tokens": 24
+                },
+                "total_tokens": 121
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1aa9f76686231ac-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "2054"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 2.113s

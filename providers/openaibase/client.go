@@ -30,6 +30,37 @@ import (
 // prefer their undated aliases (e.g. "gpt-5.5") when selecting the best model.
 var modelDateSuffixRE = regexp.MustCompile(`-\d{4}-\d{2}-\d{2}$`)
 
+func textModelRank(id string, cheap bool, good bool) int {
+	if !strings.HasPrefix(id, "gpt") {
+		return 0
+	}
+	if cheap {
+		if strings.HasSuffix(id, "-luna") {
+			return 2
+		}
+		if strings.HasSuffix(id, "-nano") {
+			return 1
+		}
+		return 0
+	}
+	if good {
+		if strings.HasSuffix(id, "-terra") {
+			return 2
+		}
+		if strings.HasSuffix(id, "-mini") {
+			return 1
+		}
+		return 0
+	}
+	if strings.HasSuffix(id, "-sol") {
+		return 2
+	}
+	if !strings.Contains(id, "-luna") && !strings.Contains(id, "-terra") && !strings.Contains(id, "-nano") && !strings.Contains(id, "-mini") && !strings.Contains(id, "-pro") {
+		return 1
+	}
+	return 0
+}
+
 // Client holds the shared state and methods common to both the OpenAI Chat Completion and Responses API
 // providers.
 //
@@ -197,6 +228,7 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
+	selectedRank := 0
 	var created base.TimeS
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
@@ -213,30 +245,31 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 		if modelDateSuffixRE.MatchString(m.ID) {
 			continue
 		}
-		switch {
-		case cheap:
-			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created > created) {
-				created = m.Created
-				selectedModel = m.ID
-			}
-		case good:
-			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
-				created = m.Created
-				selectedModel = m.ID
-			}
-		default:
-			// Pro variants are significantly more expensive; skip them for
-			// the SOTA tier.
-			if strings.HasPrefix(m.ID, "gpt") && !strings.Contains(m.ID, "-nano") && !strings.Contains(m.ID, "-mini") && !strings.Contains(m.ID, "-pro") && (created == 0 || m.Created > created) {
-				created = m.Created
-				selectedModel = m.ID
-			}
+		rank := textModelRank(m.ID, cheap, good)
+		if rank == 0 {
+			continue
+		}
+		if selectedModel == "" || m.Created > created || m.Created == created && rank > selectedRank {
+			created = m.Created
+			selectedRank = rank
+			selectedModel = m.ID
 		}
 	}
 	if selectedModel == "" {
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+func isImageModelMatch(id string, cheap bool) bool {
+	if !strings.HasPrefix(id, "gpt-image") {
+		return false
+	}
+	isMini := strings.HasSuffix(id, "-mini")
+	if cheap {
+		return isMini
+	}
+	return !isMini
 }
 
 // SelectBestImageModel selects the most appropriate image model based on the preference (cheap, good, or SOTA).
@@ -246,16 +279,12 @@ func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (s
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
 	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood)
 	selectedModel := ""
 	var created base.TimeS
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// OpenAI doesn't report much for each model. :(
-		isCheap := strings.HasPrefix(m.ID, "dall")
-		isGood := strings.HasSuffix(m.ID, "-mini")
-		isSOTA := strings.HasPrefix(m.ID, "gpt-image")
-		if !isCheap && !isSOTA {
+		if !isImageModelMatch(m.ID, cheap) {
 			continue
 		}
 		// Prefer undated aliases (e.g. "gpt-image-2") over dated
@@ -263,25 +292,9 @@ func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (s
 		if modelDateSuffixRE.MatchString(m.ID) {
 			continue
 		}
-		switch {
-		case cheap:
-			// Use lexicographic ordering for dall-e models since dall-e-2 has a higher
-			// Created timestamp than dall-e-3 due to an API data quirk.
-			if isCheap {
-				if selectedModel == "" || m.ID > selectedModel {
-					selectedModel = m.ID
-				}
-			}
-		case good:
-			if isGood && (created == 0 || m.Created > created) {
-				created = m.Created
-				selectedModel = m.ID
-			}
-		default:
-			if isSOTA && !isGood && (created == 0 || m.Created > created) {
-				created = m.Created
-				selectedModel = m.ID
-			}
+		if selectedModel == "" || m.Created > created {
+			created = m.Created
+			selectedModel = m.ID
 		}
 	}
 	if selectedModel == "" {

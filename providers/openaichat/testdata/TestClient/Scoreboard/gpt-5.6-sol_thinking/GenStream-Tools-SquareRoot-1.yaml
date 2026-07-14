@@ -1,0 +1,83 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 692
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-sol","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"store":true,"reasoning_effort":"none","service_tier":"flex","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":null,"tool_calls":[{"index":0,"id":"call_SkTcjOPkAUtyP86tnlDQsw9A","type":"function","function":{"name":"square_root","arguments":""}}],"refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"WrxQz4nKqo92c"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\""}}]},"finish_reason":null}],"usage":null,"obfuscation":"eByazFv"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"number"}}]},"finish_reason":null}],"usage":null,"obfuscation":"qHFk"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\":"}}]},"finish_reason":null}],"usage":null,"obfuscation":"bGQeTCe"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"132"}}]},"finish_reason":null}],"usage":null,"obfuscation":"hCaeJEu"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"413"}}]},"finish_reason":null}],"usage":null,"obfuscation":"RJ5iPKz"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]},"finish_reason":null}],"usage":null,"obfuscation":"GJFMppML6"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"usage":null,"obfuscation":"3vHhX8OJ"}
+
+            data: {"id":"chatcmpl-E1Ee3gz2H7GFeBbrZkT6wAQgylR0o","object":"chat.completion.chunk","created":1783963331,"model":"gpt-5.6-sol","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":155,"completion_tokens":18,"total_tokens":173,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"CuwM7OzXVo"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1a9f7d27c61c6cd-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "795"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "499967"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 3ms
+        status: 200 OK
+        code: 200
+        duration: 3.936s

@@ -6,149 +6,9 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 546
-        host: api.openai.com
-        body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"batch.json\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"TODO\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-5.4-nano\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}]}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
-        headers:
-            Content-Type:
-                - multipart/form-data; boundary=80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1
-        url: https://api.openai.com/v1/files
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "object": "file",
-              "id": "file-XguHi7oSjUw9VY3JU6ywPv",
-              "purpose": "batch",
-              "filename": "batch.json",
-              "bytes": 183,
-              "created_at": 1776442803,
-              "expires_at": 1779034803,
-              "status": "processed",
-              "status_details": null
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9edcc140dff8a2ed-YUL
-            Content-Type:
-                - application/json
-            Openai-Processing-Ms:
-                - "215"
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Openai-Proxy-Wasm:
-                - v0.1
-        status: 200 OK
-        code: 200
-        duration: 318ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 108
-        host: api.openai.com
-        body: |
-            {"completion_window":"24h","endpoint":"/v1/chat/completions","input_file_id":"file-XguHi7oSjUw9VY3JU6ywPv"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/batches
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |-
-            {
-              "id": "batch_69e25db3b81081908a8f14aabfbccad4",
-              "object": "batch",
-              "endpoint": "/v1/chat/completions",
-              "model": null,
-              "errors": null,
-              "input_file_id": "file-XguHi7oSjUw9VY3JU6ywPv",
-              "completion_window": "24h",
-              "status": "validating",
-              "output_file_id": null,
-              "error_file_id": null,
-              "created_at": 1776442803,
-              "in_progress_at": null,
-              "expires_at": 1776529203,
-              "finalizing_at": null,
-              "completed_at": null,
-              "failed_at": null,
-              "expired_at": null,
-              "cancelling_at": null,
-              "cancelled_at": null,
-              "request_counts": {
-                "total": 0,
-                "completed": 0,
-                "failed": 0
-              },
-              "usage": {
-                "input_tokens": 0,
-                "output_tokens": 0,
-                "total_tokens": 0,
-                "input_tokens_details": {
-                  "cached_tokens": 0
-                },
-                "output_tokens_details": {
-                  "reasoning_tokens": 0
-                }
-              },
-              "metadata": null
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9edcc142db79a2ed-YUL
-            Content-Type:
-                - application/json
-            Openai-Processing-Ms:
-                - "133"
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Openai-Proxy-Wasm:
-                - v0.1
-        status: 200 OK
-        code: 200
-        duration: 223ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
         content_length: 559
         host: api.openai.com
-        body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"batch.json\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"TODO\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-5.4-nano\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}],\"store\":true}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
+        body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"batch.json\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"TODO\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-5.6-luna\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}],\"store\":true}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
         headers:
             Content-Type:
                 - multipart/form-data; boundary=80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1
@@ -163,12 +23,12 @@ interactions:
         body: |
             {
               "object": "file",
-              "id": "file-DQPtRG6p6FjSvRmzkUT9Z1",
+              "id": "file-EWJe6fDptMBV7Jbo99MMqP",
               "purpose": "batch",
               "filename": "batch.json",
               "bytes": 196,
-              "created_at": 1780014126,
-              "expires_at": 1782606126,
+              "created_at": 1783960612,
+              "expires_at": 1786552612,
               "status": "processed",
               "status_details": null
             }
@@ -182,11 +42,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a03157bb4bcbaacd-YYZ
+                - a1a9b5829950255a-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "196"
+                - "172"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -199,8 +59,8 @@ interactions:
                 - v0.1
         status: 200 OK
         code: 200
-        duration: 1.095s
-    - id: 3
+        duration: 293ms
+    - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -208,7 +68,7 @@ interactions:
         content_length: 108
         host: api.openai.com
         body: |
-            {"completion_window":"24h","endpoint":"/v1/chat/completions","input_file_id":"file-DQPtRG6p6FjSvRmzkUT9Z1"}
+            {"completion_window":"24h","endpoint":"/v1/chat/completions","input_file_id":"file-EWJe6fDptMBV7Jbo99MMqP"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -222,19 +82,19 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "batch_6a18dc2eab308190b15570c3562c0739",
+              "id": "batch_6a551424dc408190b232a74c0281e547",
               "object": "batch",
               "endpoint": "/v1/chat/completions",
               "model": null,
               "errors": null,
-              "input_file_id": "file-DQPtRG6p6FjSvRmzkUT9Z1",
+              "input_file_id": "file-EWJe6fDptMBV7Jbo99MMqP",
               "completion_window": "24h",
               "status": "validating",
               "output_file_id": null,
               "error_file_id": null,
-              "created_at": 1780014126,
+              "created_at": 1783960612,
               "in_progress_at": null,
-              "expires_at": 1780100526,
+              "expires_at": 1784047012,
               "finalizing_at": null,
               "completed_at": null,
               "failed_at": null,
@@ -268,11 +128,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a03157c21ab0aacd-YYZ
+                - a1a9b5843d45255a-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "718"
+                - "864"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -285,4 +145,4 @@ interactions:
                 - v0.1
         status: 200 OK
         code: 200
-        duration: 806ms
+        duration: 949ms

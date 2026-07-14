@@ -814,6 +814,9 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	} else {
 		res, err = c.GenSync(ctx, msgs, opts...)
 	}
+	if res.Usage.ReasoningTokens != 0 {
+		cs.isReasoning = true
+	}
 	for i := range res.Replies {
 		rep := &res.Replies[i]
 		if rep.Reasoning != "" {

@@ -28,7 +28,7 @@ func TestWSRequest(t *testing.T) {
 		req := WSRequest{
 			Type: "response.create",
 			Response: Response{
-				Model: "gpt-5.5",
+				Model: "gpt-5.6-luna",
 				Input: []Message{
 					{
 						Type: MessageMessage,
@@ -53,8 +53,8 @@ func TestWSRequest(t *testing.T) {
 		if got := m["type"]; got != "response.create" {
 			t.Errorf("type = %q, want %q", got, "response.create")
 		}
-		if got := m["model"]; got != "gpt-5.5" {
-			t.Errorf("model = %q, want %q", got, "gpt-5.5")
+		if got := m["model"]; got != "gpt-5.6-luna" {
+			t.Errorf("model = %q, want %q", got, "gpt-5.6-luna")
 		}
 		if got := m["previous_response_id"]; got != "resp_abc" {
 			t.Errorf("previous_response_id = %q, want %q", got, "resp_abc")
@@ -71,7 +71,7 @@ func TestWSRequest(t *testing.T) {
 		req := WSRequest{
 			Type: "response.create",
 			Response: Response{
-				Model: "gpt-5.5",
+				Model: "gpt-5.6-luna",
 			},
 		}
 		data, err := json.Marshal(req)
@@ -112,7 +112,7 @@ func TestWebSocketConn(t *testing.T) {
 			if os.Getenv("RECORD") != "all" || os.Getenv("OPENAI_API_KEY") == "" {
 				t.Skip("set RECORD=all and OPENAI_API_KEY to record")
 			}
-			model := "gpt-5.5"
+			model := "gpt-5.6-luna"
 			if v := os.Getenv("WS_MODEL"); v != "" {
 				model = v
 			}
@@ -294,7 +294,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient("gpt-5.5")}
+		w := &WebSocketConn{client: newClient("gpt-5.6-luna")}
 		msgs := genai.Messages{genai.NewTextMessage("Hello")}
 		req, err := w.buildRequest(msgs)
 		if err != nil {
@@ -303,8 +303,8 @@ func TestWebSocketConn(t *testing.T) {
 		if req.Type != "response.create" {
 			t.Errorf("Type = %q, want %q", req.Type, "response.create")
 		}
-		if req.Model != "gpt-5.5" {
-			t.Errorf("Model = %q, want %q", req.Model, "gpt-5.5")
+		if req.Model != "gpt-5.6-luna" {
+			t.Errorf("Model = %q, want %q", req.Model, "gpt-5.6-luna")
 		}
 		if req.PreviousResponseID != "" {
 			t.Errorf("PreviousResponseID = %q, want empty", req.PreviousResponseID)
@@ -312,7 +312,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest_with_meta", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient("gpt-5.5")}
+		w := &WebSocketConn{client: newClient("gpt-5.6-luna")}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Hello"),
 			{Replies: []genai.Reply{
@@ -338,7 +338,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest_user_override", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient("gpt-5.5")}
+		w := &WebSocketConn{client: newClient("gpt-5.6-luna")}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Hello"),
 			{Replies: []genai.Reply{{Opaque: map[string]any{

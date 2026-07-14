@@ -15,6 +15,8 @@ package openaibase
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/maruel/genai"
@@ -37,7 +39,7 @@ const (
 	ServiceTierDefault ServiceTier = "default"
 	// ServiceTierFlex has the request be processed with the Flex Processing service tier.
 	//
-	// Flex processing is in beta, and currently only available for GPT-5, o3 and o4-mini models.
+	// Flex processing is in beta with limited model availability; supported models are listed on the pricing page.
 	//
 	// https://platform.openai.com/docs/guides/flex-processing
 	ServiceTierFlex ServiceTier = "flex"
@@ -205,6 +207,21 @@ type GenOptionImage struct {
 // Validate implements genai.Validatable.
 func (o *GenOptionImage) Validate() error {
 	return o.Background.Validate()
+}
+
+// HasInputWithMimePrefix reports whether the messages include a document whose detected MIME type has the prefix.
+func HasInputWithMimePrefix(msgs genai.Messages, prefix string) bool {
+	for i := range msgs {
+		for j := range msgs[i].Requests {
+			if msgs[i].Requests[j].Doc.IsZero() {
+				continue
+			}
+			if strings.HasPrefix(internal.MimeByExt(filepath.Ext(msgs[i].Requests[j].Doc.GetFilename())), prefix) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // Model is documented at https://platform.openai.com/docs/api-reference/models/object

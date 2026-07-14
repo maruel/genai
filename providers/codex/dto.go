@@ -731,10 +731,23 @@ type ThreadStartResult struct {
 	InstructionSources      []string                 `json:"instructionSources,omitzero"`
 	ApprovalPolicy          json.RawMessage          `json:"approvalPolicy,omitzero"`
 	ApprovalsReviewer       ApprovalsReviewer        `json:"approvalsReviewer,omitzero"`
-	Sandbox                 json.RawMessage          `json:"sandbox,omitzero"`
+	Sandbox                 ThreadSandbox            `json:"sandbox,omitzero"`
 	ActivePermissionProfile *ActivePermissionProfile `json:"activePermissionProfile,omitzero"`
 	ReasoningEffort         *ReasoningEffort         `json:"reasoningEffort,omitzero"`
+	MultiAgentMode          string                   `json:"multiAgentMode,omitzero"`
 	InitialTurnsPage        json.RawMessage          `json:"initialTurnsPage,omitzero"`
+}
+
+// ThreadSandbox describes sandbox settings active for a thread.
+type ThreadSandbox struct {
+	Type          string              `json:"type,omitzero"`
+	Access        ThreadSandboxAccess `json:"access,omitzero"`
+	NetworkAccess bool                `json:"networkAccess,omitzero"`
+}
+
+// ThreadSandboxAccess describes filesystem access granted inside a thread sandbox.
+type ThreadSandboxAccess struct {
+	Type string `json:"type,omitzero"`
 }
 
 // Turn request params.
@@ -745,7 +758,7 @@ type ReasoningEffort string
 // Validate implements genai.ProviderOption.
 func (p ReasoningEffort) Validate() error {
 	switch p {
-	case ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh:
+	case ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh, ReasoningEffortMax, ReasoningEffortUltra:
 		return nil
 	default:
 		return fmt.Errorf("invalid reasoning effort %q; use one of the ReasoningEffort* constants", string(p))
@@ -766,6 +779,10 @@ const (
 	ReasoningEffortHigh ReasoningEffort = "high"
 	// ReasoningEffortXHigh requests extra-high model reasoning effort.
 	ReasoningEffortXHigh ReasoningEffort = "xhigh"
+	// ReasoningEffortMax requests maximum model reasoning effort.
+	ReasoningEffortMax ReasoningEffort = "max"
+	// ReasoningEffortUltra requests maximum model reasoning with automatic task delegation.
+	ReasoningEffortUltra ReasoningEffort = "ultra"
 )
 
 // TurnStartParams holds the params for turn/start.
@@ -920,8 +937,11 @@ type Thread struct {
 	Source         json.RawMessage `json:"source,omitzero"`
 	ThreadSource   ThreadSource    `json:"threadSource,omitzero"`
 	UpdatedAt      base.TimeS      `json:"updatedAt,omitzero"`
+	RecencyAt      base.TimeS      `json:"recencyAt,omitzero"`
 	Status         ThreadStatus    `json:"status,omitzero"`
 	Name           string          `json:"name,omitzero"`
+	Extra          json.RawMessage `json:"extra,omitzero"`
+	HistoryMode    string          `json:"historyMode,omitzero"`
 	AgentNickname  string          `json:"agentNickname,omitzero"`
 	AgentRole      string          `json:"agentRole,omitzero"`
 	Turns          []Turn          `json:"turns,omitzero"`
@@ -1535,21 +1555,27 @@ type ModelListResult struct {
 
 // ModelInfo describes a single model in a model/list result.
 type ModelInfo struct {
-	ID                        string              `json:"id"`
-	DisplayName               string              `json:"displayName,omitzero"`
-	Model                     string              `json:"model,omitzero"`
-	Description               string              `json:"description,omitzero"`
-	DefaultReasoningEffort    ReasoningEffort     `json:"defaultReasoningEffort,omitzero"`
-	Hidden                    bool                `json:"hidden,omitzero"`
-	IsDefault                 bool                `json:"isDefault,omitzero"`
-	SupportsPersonality       bool                `json:"supportsPersonality,omitzero"`
-	Upgrade                   *string             `json:"upgrade,omitzero"`
-	UpgradeInfo               *ModelUpgradeInfo   `json:"upgradeInfo,omitzero"`
-	AvailabilityNux           *json.RawMessage    `json:"availabilityNux,omitzero"`
-	SupportedReasoningEfforts []ModelReasoningOpt `json:"supportedReasoningEfforts,omitzero"`
-	InputModalities           []InputModality     `json:"inputModalities,omitzero"`
-	ServiceTiers              []ModelServiceTier  `json:"serviceTiers,omitzero"`
-	DefaultServiceTier        *string             `json:"defaultServiceTier,omitzero"`
+	ID                        string               `json:"id"`
+	DisplayName               string               `json:"displayName,omitzero"`
+	Model                     string               `json:"model,omitzero"`
+	Description               string               `json:"description,omitzero"`
+	DefaultReasoningEffort    ReasoningEffort      `json:"defaultReasoningEffort,omitzero"`
+	Hidden                    bool                 `json:"hidden,omitzero"`
+	IsDefault                 bool                 `json:"isDefault,omitzero"`
+	SupportsPersonality       bool                 `json:"supportsPersonality,omitzero"`
+	Upgrade                   string               `json:"upgrade,omitzero"`
+	UpgradeInfo               ModelUpgradeInfo     `json:"upgradeInfo,omitzero"`
+	AvailabilityNux           ModelAvailabilityNux `json:"availabilityNux,omitzero"`
+	SupportedReasoningEfforts []ModelReasoningOpt  `json:"supportedReasoningEfforts,omitzero"`
+	InputModalities           []InputModality      `json:"inputModalities,omitzero"`
+	AdditionalSpeedTiers      []string             `json:"additionalSpeedTiers,omitzero"`
+	ServiceTiers              []ModelServiceTier   `json:"serviceTiers,omitzero"`
+	DefaultServiceTier        string               `json:"defaultServiceTier,omitzero"`
+}
+
+// ModelAvailabilityNux holds a new-user-experience announcement for a model.
+type ModelAvailabilityNux struct {
+	Message string `json:"message,omitzero"`
 }
 
 // ModelUpgradeInfo holds upgrade migration information for a model.

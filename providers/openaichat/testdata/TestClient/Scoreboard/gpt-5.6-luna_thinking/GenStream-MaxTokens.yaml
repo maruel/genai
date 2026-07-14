@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 258
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-luna","max_completion_tokens":16,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"store":true,"service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-E1EEov7ieNZL2V3U3iBsFzq6groiC","object":"chat.completion.chunk","created":1783961766,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"e"}
+
+            data: {"id":"chatcmpl-E1EEov7ieNZL2V3U3iBsFzq6groiC","object":"chat.completion.chunk","created":1783961766,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"length"}],"usage":null,"obfuscation":"1Fau7HzXZDP"}
+
+            data: {"id":"chatcmpl-E1EEov7ieNZL2V3U3iBsFzq6groiC","object":"chat.completion.chunk","created":1783961766,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":16,"completion_tokens":16,"total_tokens":32,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":16,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"zIOXYqgnob"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1a9d1ac0935255a-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "457"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "199209"
+            X-Ratelimit-Reset-Requests:
+                - 239ms
+            X-Ratelimit-Reset-Tokens:
+                - 237ms
+        status: 200 OK
+        code: 200
+        duration: 601ms

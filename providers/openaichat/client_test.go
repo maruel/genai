@@ -76,7 +76,7 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, "gpt-4.1"))
+		internaltest.TestCapabilities(t, getClient(t, "gpt-5.6-luna"))
 	})
 
 	t.Run("GenAsync-Text", func(t *testing.T) {
@@ -95,7 +95,8 @@ func TestClient(t *testing.T) {
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
-			models = append(models, scoreboard.Model{Model: id, Reason: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
+			reason := (strings.HasPrefix(id, "gpt-5.6") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
+			models = append(models, scoreboard.Model{Model: id, Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			provOpts := []genai.ProviderOption{
@@ -117,21 +118,15 @@ func TestClient(t *testing.T) {
 			// This will lead to spurious HTTP 500 but it is 25% of the cost.
 			tier := openaichat.ServiceTierFlex
 			res := openaichat.ReasoningEffortLow
-			if strings.Contains(model.Model, "-chat-latest") {
-				// Flex and Low are not supported.
-				tier = openaichat.ServiceTierDefault
-				res = openaichat.ReasoningEffortMedium
-			}
 			if model.Reason {
+				txt := &openaichat.GenOptionText{ServiceTier: tier}
+				if !strings.HasPrefix(model.Model, "gpt-5.6") {
+					txt.ReasoningEffort = res
+				}
 				var p genai.Provider = &injectReasoning{
 					Provider: &internaltest.InjectOptions{
 						Provider: c,
-						Opts: []genai.GenOption{
-							&openaichat.GenOptionText{
-								ReasoningEffort: res,
-								ServiceTier:     tier,
-							},
-						},
+						Opts:     []genai.GenOption{txt},
 					},
 				}
 				if tier == openaichat.ServiceTierFlex {
@@ -170,9 +165,8 @@ func TestClient(t *testing.T) {
 	t.Run("Batch", func(t *testing.T) {
 		// This is a tricky test since batch operations can take up to 24h to complete.
 		ctx := t.Context()
-		c := getClient(t, "gpt-3.5-turbo")
-		// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
-		// within a few minutes.
+		c := getClient(t, "gpt-5.6-luna")
+		// Use Luna to keep the batch recording cheap while exercising the latest text model family.
 		msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
@@ -232,7 +226,7 @@ func TestClient(t *testing.T) {
 				Name: "bad apiKey",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("bad apiKey"),
-					genai.ProviderOptionModel("gpt-4.1-nano"),
+					genai.ProviderOptionModel("gpt-5.6-luna"),
 				},
 				ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 				ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",

@@ -1,0 +1,258 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 406
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-sol","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0f2e0eb15ac1c6cd006a55397f31b08191a3b7d9a918d05996",
+              "object": "response",
+              "created_at": 1783970175,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1783970181,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.6-sol",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "ws_0f2e0eb15ac1c6cd006a55398003488191bc430665f1ae2ce8",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "site:pm.gc.ca Prime Minister of Canada"
+                    ],
+                    "query": "site:pm.gc.ca Prime Minister of Canada",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2026/05/05/prime-minister-carney-announces-kings-approval-canadas-next-governor"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet-committee-mandate-and-membership"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/backgrounders/2026/03/04/paul-mackinnon"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/05/13/prime-minister-carney-announces-new-ministry"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/statements/2026/06/08/statement-prime-minister-carney-welcome-canadas-new-governor-general-her"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet/honourable-steven-mackinnon"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_October_11_2022_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_26_October_2021.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "msg_0f2e0eb15ac1c6cd006a5539852ca48191b2c8370de8204419",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "Mark Carney"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 1
+                }
+              },
+              "tools": [
+                {
+                  "type": "web_search",
+                  "return_token_budget": "default",
+                  "search_content_types": [
+                    "text"
+                  ],
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8606,
+                "input_tokens_details": {
+                  "cache_write_tokens": 4467,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 39,
+                "output_tokens_details": {
+                  "reasoning_tokens": 32
+                },
+                "total_tokens": 8645
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1aa9efa9e1931ac-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "6329"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "496128"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 464ms
+        status: 200 OK
+        code: 200
+        duration: 6.395s

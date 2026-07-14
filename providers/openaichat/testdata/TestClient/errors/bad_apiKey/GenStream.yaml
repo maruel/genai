@@ -6,62 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 164
-        host: api.openai.com
-        body: |
-            {"model":"gpt-4.1-nano","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"stream_options":{"include_usage":true}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 260
-        body: |
-            {
-                "error": {
-                    "message": "Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-                    "type": "invalid_request_error",
-                    "param": null,
-                    "code": "invalid_api_key"
-                }
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9edcc13a0a5da2ed-YUL
-            Content-Length:
-                - "260"
-            Content-Type:
-                - application/json; charset=utf-8
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            Vary:
-                - Origin
-            X-Content-Type-Options:
-                - nosniff
-            X-Openai-Proxy-Wasm:
-                - v0.1
-        status: 401 Unauthorized
-        code: 401
-        duration: 163ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
         content_length: 177
         host: api.openai.com
         body: |
-            {"model":"gpt-4.1-nano","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"store":true,"stream_options":{"include_usage":true}}
+            {"model":"gpt-5.6-luna","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"store":true,"stream_options":{"include_usage":true}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -90,7 +38,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a03157b3ac1baacd-YYZ
+                - a19374ba182fa2cc-YUL
             Content-Length:
                 - "260"
             Content-Type:
@@ -107,4 +55,4 @@ interactions:
                 - v0.1
         status: 401 Unauthorized
         code: 401
-        duration: 68ms
+        duration: 65ms

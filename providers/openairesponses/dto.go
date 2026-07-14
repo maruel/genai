@@ -152,13 +152,14 @@ type Response struct {
 		} `json:"format"`
 		Verbosity string `json:"verbosity,omitzero"` // "low", "medium", "high"
 	} `json:"text,omitzero"`
-	TopLogprobs int64    `json:"top_logprobs,omitzero"` // [0, 20]
-	TopP        float64  `json:"top_p,omitzero"`
-	ToolChoice  string   `json:"tool_choice,omitzero"` // "none", "auto", "required"
-	Truncation  string   `json:"truncation,omitzero"`  // "disabled", "auto"
-	Tools       []Tool   `json:"tools,omitzero"`
-	User        string   `json:"user,omitzero"`    // Deprecated, use SafetyIdentifier and PromptCacheKey
-	Include     []string `json:"include,omitzero"` // "web_search_call.action.sources"
+	TopLogprobs int64     `json:"top_logprobs,omitzero"` // [0, 20]
+	TopP        float64   `json:"top_p,omitzero"`
+	ToolChoice  string    `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	ToolUsage   ToolUsage `json:"tool_usage,omitzero"`
+	Truncation  string    `json:"truncation,omitzero"` // "disabled", "auto"
+	Tools       []Tool    `json:"tools,omitzero"`
+	User        string    `json:"user,omitzero"`    // Deprecated, use SafetyIdentifier and PromptCacheKey
+	Include     []string  `json:"include,omitzero"` // "web_search_call.action.sources"
 
 	// Request only
 	Input  []Message `json:"input,omitzero"`
@@ -218,6 +219,10 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 	}
 	if len(msgs) == 0 && r.PreviousResponseID == "" {
 		return errors.New("no messages provided")
+	}
+	hasAudioVideoInput := openaibase.HasInputWithMimePrefix(msgs, "audio/") || openaibase.HasInputWithMimePrefix(msgs, "video/")
+	if strings.HasPrefix(model, "gpt-5.6") && hasAudioVideoInput {
+		unsupported = append(unsupported, "audio/video input")
 	}
 
 	for i := range msgs {
@@ -402,7 +407,28 @@ func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
 type ReasoningConfig struct {
 	Context string          `json:"context,omitzero"` // "current_turn"
 	Effort  ReasoningEffort `json:"effort,omitzero"`
+	Mode    string          `json:"mode,omitzero"`    // "standard", "pro"
 	Summary string          `json:"summary,omitzero"` // "auto", "concise", "detailed"
+}
+
+// ToolUsage represents token usage for built-in tools.
+type ToolUsage struct {
+	ImageGen struct {
+		InputTokens        int64 `json:"input_tokens"`
+		InputTokensDetails struct {
+			ImageTokens int64 `json:"image_tokens"`
+			TextTokens  int64 `json:"text_tokens"`
+		} `json:"input_tokens_details"`
+		OutputTokens        int64 `json:"output_tokens"`
+		OutputTokensDetails struct {
+			ImageTokens int64 `json:"image_tokens"`
+			TextTokens  int64 `json:"text_tokens"`
+		} `json:"output_tokens_details"`
+		TotalTokens int64 `json:"total_tokens"`
+	} `json:"image_gen,omitzero"`
+	WebSearch struct {
+		NumRequests int64 `json:"num_requests"`
+	} `json:"web_search,omitzero"`
 }
 
 // Tool represents a tool that can be called by the model.
@@ -414,6 +440,7 @@ type Tool struct {
 	// Type == "function"
 	Name              string           `json:"name,omitzero"`
 	Description       string           `json:"description,omitzero"`
+	OutputSchema      genai.JSONSchema `json:"output_schema,omitzero"`
 	Parameters        genai.JSONSchema `json:"parameters,omitzero"`
 	Strict            bool             `json:"strict,omitzero"`
 	ReturnTokenBudget string           `json:"return_token_budget,omitzero"` // "default"
@@ -425,8 +452,9 @@ type Tool struct {
 	Filters struct {
 		AllowedDomains []string `json:"allowed_domains,omitzero"`
 	} `json:"filters,omitzero"`
-	SearchContextSize string `json:"search_context_size,omitzero"` // "low", "medium", "high"
-	UserLocation      struct {
+	SearchContentTypes []string `json:"search_content_types,omitzero"`
+	SearchContextSize  string   `json:"search_context_size,omitzero"` // "low", "medium", "high"
+	UserLocation       struct {
 		Type     string `json:"type,omitzero"`    // "approximate"
 		Country  string `json:"country,omitzero"` // "GB"
 		City     string `json:"city,omitzero"`    // "London"
@@ -904,7 +932,8 @@ type ReasoningSummary struct {
 type Usage struct {
 	InputTokens        int64 `json:"input_tokens"`
 	InputTokensDetails struct {
-		CachedTokens int64 `json:"cached_tokens"`
+		CachedTokens     int64 `json:"cached_tokens"`
+		CacheWriteTokens int64 `json:"cache_write_tokens"`
 	} `json:"input_tokens_details"`
 	OutputTokens        int64 `json:"output_tokens"`
 	OutputTokensDetails struct {

@@ -766,6 +766,36 @@ interactions:
                   "object": "model",
                   "created": 1778012060,
                   "owned_by": "system"
+                },
+                {
+                  "id": "gpt-5.6-sol",
+                  "object": "model",
+                  "created": 1782228018,
+                  "owned_by": "system"
+                },
+                {
+                  "id": "gpt-5.6-terra",
+                  "object": "model",
+                  "created": 1782228459,
+                  "owned_by": "system"
+                },
+                {
+                  "id": "gpt-5.6-luna",
+                  "object": "model",
+                  "created": 1782228658,
+                  "owned_by": "system"
+                },
+                {
+                  "id": "gpt-realtime-2.1",
+                  "object": "model",
+                  "created": 1782254687,
+                  "owned_by": "system"
+                },
+                {
+                  "id": "gpt-realtime-2.1-mini",
+                  "object": "model",
+                  "created": 1782254706,
+                  "owned_by": "system"
                 }
               ]
             }
@@ -778,11 +808,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0fe1b2ed95ea2fa-YUL
+                - a1aa9eaf6e0431ac-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "587"
+                - "628"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -795,4 +825,4 @@ interactions:
                 - v0.1
         status: 200 OK
         code: 200
-        duration: 725ms
+        duration: 842ms

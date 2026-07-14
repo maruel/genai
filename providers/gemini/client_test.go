@@ -100,12 +100,13 @@ func TestClient(t *testing.T) {
 		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
-			if !strings.Contains(id, "-pro") {
-				// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
-				models = append(models, scoreboard.Model{Model: id})
-			}
 			if strings.HasPrefix(id, "gemini-") {
+				// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
 				models = append(models, scoreboard.Model{Model: id, Reason: true})
+				continue
+			}
+			if !strings.Contains(id, "-pro") {
+				models = append(models, scoreboard.Model{Model: id})
 			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {

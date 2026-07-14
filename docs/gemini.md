@@ -11,10 +11,6 @@
 | gemini-flash-lite-latest🥉                     | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | gemini-flash-lite-latest🥉                     | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | imagen-4.0-fast-generate-001🥉                 | Sync    | 💬         | 📸     | ❌     | ❌   | ❌    | ✅   | ❌   | ❌   | ❌    | ❌     | ❌    | ❌     |
-| gemini-flash-latest                           | Sync    | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-latest                           | Stream  | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-lite-latest                      | Sync    | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-lite-latest                      | Stream  | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | antigravity-preview-05-2026                   | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | aqa                                           | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deep-research-max-preview-04-2026             | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

@@ -10,9 +10,10 @@
   "scenarios": [
     {
       "models": [
-        "gpt-5.5"
+        "gpt-5.6-sol"
       ],
       "sota": true,
+      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -45,10 +46,9 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true
+        "json": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -56,7 +56,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
@@ -68,6 +68,7 @@
         "gpt-image-2"
       ],
       "sota": true,
+      "good": true,
       "in": {
         "text": {
           "inline": true
@@ -85,9 +86,10 @@
     },
     {
       "models": [
-        "gpt-5.4-mini"
+        "gpt-5.6-terra"
       ],
       "good": true,
+      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -123,9 +125,7 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true
+        "jsonSchema": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -136,16 +136,69 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true
+        "jsonSchema": true
+      }
+    },
+    {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
       }
     },
     {
       "models": [
         "gpt-image-1-mini"
       ],
-      "good": true,
+      "cheap": true,
       "in": {
         "text": {
           "inline": true
@@ -160,64 +213,6 @@
         }
       },
       "GenSync": {}
-    },
-    {
-      "models": [
-        "gpt-5.4-nano"
-      ],
-      "cheap": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true
-      }
     },
     {
       "comments": "gpt-audio supports audio output via modalities parameter",
@@ -357,10 +352,13 @@
         "gpt-5.3-codex",
         "gpt-5.4",
         "gpt-5.4-2026-03-05",
+        "gpt-5.4-mini",
         "gpt-5.4-mini-2026-03-17",
+        "gpt-5.4-nano",
         "gpt-5.4-nano-2026-03-17",
         "gpt-5.4-pro",
         "gpt-5.4-pro-2026-03-05",
+        "gpt-5.5",
         "gpt-5.5-2026-04-23",
         "gpt-5.5-pro",
         "gpt-5.5-pro-2026-04-23",
@@ -375,6 +373,8 @@
         "gpt-realtime",
         "gpt-realtime-1.5",
         "gpt-realtime-2",
+        "gpt-realtime-2.1",
+        "gpt-realtime-2.1-mini",
         "gpt-realtime-2025-08-28",
         "gpt-realtime-mini",
         "gpt-realtime-mini-2025-10-06",

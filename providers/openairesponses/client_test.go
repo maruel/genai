@@ -103,11 +103,7 @@ func TestClient(t *testing.T) {
 			}
 			// This will lead to spurious HTTP 500 but it is 25% of the cost.
 			tier := openairesponses.ServiceTierFlex
-			res := openairesponses.ReasoningEffortMedium
-			if strings.Contains(model.Model, "-chat-latest") {
-				// Flex and EffortLow are not supported.
-				tier = openairesponses.ServiceTierDefault
-			}
+			res := openairesponses.ReasoningEffortLow
 			if model.Reason {
 				var p genai.Provider = &internaltest.InjectOptions{
 					Provider: c,
@@ -156,9 +152,8 @@ func TestClient(t *testing.T) {
 		/*
 			// This is a tricky test since batch operations can take up to 24h to complete.
 			ctx := t.Context()
-			c := getClient(t, "gpt-3.5-turbo")
-			// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
-			// within a few minutes.
+			c := getClient(t, "gpt-5.6-luna")
+			// Use Luna to keep the batch recording cheap while exercising the latest text model family.
 			msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 			job, err := c.GenAsync(ctx, msgs)
 			if err != nil {
@@ -219,7 +214,7 @@ func TestClient(t *testing.T) {
 				Name: "bad apiKey",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("bad apiKey"),
-					genai.ProviderOptionModel("gpt-4.1-nano"),
+					genai.ProviderOptionModel("gpt-5.6-luna"),
 				},
 				ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 				ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
@@ -277,7 +272,7 @@ func TestPreviousResponseID(t *testing.T) {
 	msgs := genai.Messages{genai.NewTextMessage("hello")}
 	t.Run("wired", func(t *testing.T) {
 		var req openairesponses.Response
-		if err := req.Init(msgs, "gpt-4.1-nano", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
+		if err := req.Init(msgs, "gpt-5.6-luna", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
 			t.Fatal(err)
 		}
 		if req.PreviousResponseID != "resp_abc123" {
@@ -294,7 +289,7 @@ func TestPreviousResponseID(t *testing.T) {
 	})
 	t.Run("empty", func(t *testing.T) {
 		var req openairesponses.Response
-		if err := req.Init(msgs, "gpt-4.1-nano"); err != nil {
+		if err := req.Init(msgs, "gpt-5.6-luna"); err != nil {
 			t.Fatal(err)
 		}
 		if req.PreviousResponseID != "" {
@@ -311,7 +306,7 @@ func TestPreviousResponseID(t *testing.T) {
 	})
 	t.Run("empty_messages_with_prev_id", func(t *testing.T) {
 		var req openairesponses.Response
-		if err := req.Init(nil, "gpt-4.1-nano", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
+		if err := req.Init(nil, "gpt-5.6-luna", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
 			t.Fatal(err)
 		}
 		if req.PreviousResponseID != "resp_abc123" {
@@ -323,7 +318,7 @@ func TestPreviousResponseID(t *testing.T) {
 	})
 	t.Run("empty_messages_without_prev_id", func(t *testing.T) {
 		var req openairesponses.Response
-		err := req.Init(nil, "gpt-4.1-nano")
+		err := req.Init(nil, "gpt-5.6-luna")
 		if err == nil {
 			t.Fatal("expected error for empty messages without PreviousResponseID")
 		}

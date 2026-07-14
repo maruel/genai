@@ -32,7 +32,43 @@ func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Cli
 	return c
 }
 
+func setupCodexSmokeHome(t testing.TB) (string, string) {
+	src := os.Getenv("CODEX_HOME")
+	if src == "" {
+		h, err := os.UserHomeDir()
+		if err != nil {
+			t.Fatalf("find user home: %v", err)
+		}
+		src = filepath.Join(h, ".codex")
+	}
+	home := t.TempDir()
+	codexHome := filepath.Join(home, ".codex")
+	if err := os.MkdirAll(codexHome, 0o700); err != nil {
+		t.Fatalf("create temp CODEX_HOME: %v", err)
+	}
+	for _, name := range []string{"auth.json", ".credentials.json", "config.toml"} {
+		copyCodexSmokeFile(t, src, codexHome, name)
+	}
+	t.Setenv("HOME", home)
+	t.Setenv("CODEX_HOME", codexHome)
+	return home, codexHome
+}
+
+func copyCodexSmokeFile(t testing.TB, src, dst, name string) {
+	data, err := os.ReadFile(filepath.Join(src, name))
+	if os.IsNotExist(err) {
+		return
+	}
+	if err != nil {
+		t.Fatalf("read Codex %s: %v", name, err)
+	}
+	if err := os.WriteFile(filepath.Join(dst, name), data, 0o600); err != nil {
+		t.Fatalf("write temp Codex %s: %v", name, err)
+	}
+}
+
 func TestClient(t *testing.T) {
+	home, codexHome := setupCodexSmokeHome(t)
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
 		if err := testRecorder.Close(); err != nil {
@@ -43,6 +79,23 @@ func TestClient(t *testing.T) {
 	t.Run("Capabilities", func(t *testing.T) {
 		c := newTestClient(t, "TestClient_Capabilities")
 		internaltest.TestCapabilities(t, c)
+	})
+
+	t.Run("isolated_smoke_home", func(t *testing.T) {
+		if os.Getenv("HOME") != home {
+			t.Fatalf("HOME = %q, want %q", os.Getenv("HOME"), home)
+		}
+		if os.Getenv("CODEX_HOME") != codexHome {
+			t.Fatalf("CODEX_HOME = %q, want %q", os.Getenv("CODEX_HOME"), codexHome)
+		}
+		if filepath.Dir(codexHome) != home {
+			t.Fatalf("CODEX_HOME %q is not under HOME %q", codexHome, home)
+		}
+		for _, name := range []string{"AGENTS.md", "AGENTS.override.md"} {
+			if _, err := os.Stat(filepath.Join(codexHome, name)); !os.IsNotExist(err) {
+				t.Fatalf("%s copied unexpectedly: %v", name, err)
+			}
+		}
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
@@ -94,10 +147,10 @@ func TestClient(t *testing.T) {
 			opt  genai.ProviderOptionModel
 			want string
 		}{
-			{genai.ModelCheap, "gpt-5.1-codex-mini"},
-			{genai.ModelGood, "gpt-5.3-codex"},
-			{genai.ModelSOTA, "gpt-5.4"},
-			{"gpt-5.3-codex", "gpt-5.3-codex"},
+			{genai.ModelCheap, "gpt-5.6-luna"},
+			{genai.ModelGood, "gpt-5.6-terra"},
+			{genai.ModelSOTA, "gpt-5.6-sol"},
+			{"gpt-5.6-terra", "gpt-5.6-terra"},
 		}
 		for _, tc := range cases {
 			t.Run(string(tc.opt), func(t *testing.T) {
@@ -296,7 +349,7 @@ func TestClient(t *testing.T) {
 		}
 		var found bool
 		for _, m := range models {
-			if m.GetID() == "gpt-5.3-codex" {
+			if m.GetID() == "gpt-5.6-sol" {
 				found = true
 			}
 		}
@@ -305,7 +358,7 @@ func TestClient(t *testing.T) {
 			for i, m := range models {
 				ids[i] = m.GetID()
 			}
-			t.Errorf("gpt-5.3-codex not found in models: %v", ids)
+			t.Errorf("gpt-5.6-sol not found in models: %v", ids)
 		}
 	})
 }

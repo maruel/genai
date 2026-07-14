@@ -137,7 +137,7 @@ type Client struct {
 // Ping, so New succeeds even when the CLI is not installed.
 //
 // Supported ProviderOptions:
-//   - genai.ProviderOptionModel — model ID (e.g. "gpt-5.4", "gpt-5.3-codex").
+//   - genai.ProviderOptionModel — model ID (e.g. "gpt-5.6-sol", "gpt-5.6-terra").
 //     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
 //   - ReasoningEffort — reasoning depth ("none", "minimal", "low",
 //     "medium", "high", "xhigh"). Defaults to "medium".
@@ -154,11 +154,11 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		case genai.ProviderOptionModel:
 			switch v {
 			case genai.ModelCheap:
-				c.model = "gpt-5.1-codex-mini"
+				c.model = "gpt-5.6-luna"
 			case genai.ModelGood:
-				c.model = "gpt-5.3-codex"
+				c.model = "gpt-5.6-terra"
 			case genai.ModelSOTA:
-				c.model = "gpt-5.4"
+				c.model = "gpt-5.6-sol"
 			default:
 				c.model = string(v)
 			}

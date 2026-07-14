@@ -1,0 +1,103 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-terra","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_08cf9edf947db048006a5539923da081a381457af11be64c2e","object":"response","created_at":1783970194,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_08cf9edf947db048006a5539923da081a381457af11be64c2e","object":"response","created_at":1783970194,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"ws_08cf9edf947db048006a553992abc481a3b1254b1177c82657","type":"web_search_call","status":"in_progress"},"output_index":0,"sequence_number":2}
+
+            event: response.web_search_call.in_progress
+            data: {"type":"response.web_search_call.in_progress","item_id":"ws_08cf9edf947db048006a553992abc481a3b1254b1177c82657","output_index":0,"sequence_number":3}
+
+            event: response.web_search_call.searching
+            data: {"type":"response.web_search_call.searching","item_id":"ws_08cf9edf947db048006a553992abc481a3b1254b1177c82657","output_index":0,"sequence_number":4}
+
+            event: response.web_search_call.completed
+            data: {"type":"response.web_search_call.completed","item_id":"ws_08cf9edf947db048006a553992abc481a3b1254b1177c82657","output_index":0,"sequence_number":5}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"ws_08cf9edf947db048006a553992abc481a3b1254b1177c82657","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official"],"query":"current Prime Minister of Canada official","sources":[{"type":"url","url":"https://apnews.com/article/244d88ec564a3c17b6cf4bee41f24548"},{"type":"url","url":"https://apnews.com/article/80744d672ef6548a9b5c0748f1d7cc18"},{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.pm.gc.ca/en"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"},{"type":"url","url":"https://www.pm.gc.ca/"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries"},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://guide-ministries.canada.ca/en/canadian-ministries/ministry-details/34/1"},{"type":"url","url":"https://www.pm.gc.ca/?pverbp="},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries?view=tile"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_26_October_2021.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"},{"type":"url","url":"https://lop.parl.ca/About/Parliament/Education/GetToKnowTheHOC-en.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Leader_of_the_Liberal_Party_of_Canada"},{"type":"url","url":"https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"},{"type":"url","url":"https://en.wikipedia.org/wiki/30th_Canadian_Ministry"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"},{"type":"url","url":"https://www.reddit.com/r/CANUSHelp/comments/1j8cxi8"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1ucl1h1/mark_carney_named_next_uk_prime_minister/"},{"type":"url","url":"https://www.reddit.com/r/AskACanadian/comments/oas7xo"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1onhted"},{"type":"url","url":"https://www.reddit.com/r/u_IntelligentIsopod344/comments/1c7rggz"},{"type":"url","url":"https://www.reddit.com/r/AskACanadian/comments/1e45cbg/as_an_american_who_are_some_of_the_big_name_prime/"}]}},"output_index":0,"sequence_number":6}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":7}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":8}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"Mark Carney","item_id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","logprobs":[],"obfuscation":"soAVS","output_index":1,"sequence_number":9}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","logprobs":[],"output_index":1,"sequence_number":10,"text":"Mark Carney"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"},"sequence_number":11}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":12}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_08cf9edf947db048006a5539923da081a381457af11be64c2e","object":"response","created_at":1783970194,"status":"completed","background":false,"completed_at":1783970201,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[{"id":"ws_08cf9edf947db048006a553992abc481a3b1254b1177c82657","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official"],"query":"current Prime Minister of Canada official","sources":[{"type":"url","url":"https://apnews.com/article/244d88ec564a3c17b6cf4bee41f24548"},{"type":"url","url":"https://apnews.com/article/80744d672ef6548a9b5c0748f1d7cc18"},{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.pm.gc.ca/en"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"},{"type":"url","url":"https://www.pm.gc.ca/"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries"},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://guide-ministries.canada.ca/en/canadian-ministries/ministry-details/34/1"},{"type":"url","url":"https://www.pm.gc.ca/?pverbp="},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries?view=tile"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_26_October_2021.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"},{"type":"url","url":"https://lop.parl.ca/About/Parliament/Education/GetToKnowTheHOC-en.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Leader_of_the_Liberal_Party_of_Canada"},{"type":"url","url":"https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"},{"type":"url","url":"https://en.wikipedia.org/wiki/30th_Canadian_Ministry"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"},{"type":"url","url":"https://www.reddit.com/r/CANUSHelp/comments/1j8cxi8"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1ucl1h1/mark_carney_named_next_uk_prime_minister/"},{"type":"url","url":"https://www.reddit.com/r/AskACanadian/comments/oas7xo"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1onhted"},{"type":"url","url":"https://www.reddit.com/r/u_IntelligentIsopod344/comments/1c7rggz"},{"type":"url","url":"https://www.reddit.com/r/AskACanadian/comments/1e45cbg/as_an_american_who_are_some_of_the_big_name_prime/"}]}},{"id":"msg_08cf9edf947db048006a553999951881a3a8c9643f817346a0","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":1}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":8697,"input_tokens_details":{"cache_write_tokens":4467,"cached_tokens":0},"output_tokens":36,"output_tokens_details":{"reasoning_tokens":29},"total_tokens":8733},"user":null,"metadata":{}},"sequence_number":13}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1aa9f71ae4631ac-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "163"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "495227"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 572ms
+        status: 200 OK
+        code: 200
+        duration: 228ms

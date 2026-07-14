@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 245
+        content_length: 258
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-5.6-luna","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"store":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,10 +23,10 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-DVgDDOKkYYpMMYGuMXid0JSmmJOSm",
+              "id": "chatcmpl-E1DwCf7GV4dFzj7rDpA6mH0TxvyRB",
               "object": "chat.completion",
-              "created": 1776442803,
-              "model": "gpt-5.4-nano-2026-03-17",
+              "created": 1783960612,
+              "model": "gpt-5.6-luna",
               "choices": [
                 {
                   "index": 0,
@@ -45,6 +45,7 @@ interactions:
                 "total_tokens": 50,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
+                  "cache_write_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
@@ -60,16 +61,18 @@ interactions:
         headers:
             Access-Control-Expose-Headers:
                 - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edcc140efffa2ed-YUL
+                - a1a9b582994a255a-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "509"
+                - "544"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -94,100 +97,4 @@ interactions:
                 - 9ms
         status: 200 OK
         code: 200
-        duration: 634ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 258
-        host: api.openai.com
-        body: |
-            {"model":"gpt-5.4-nano","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"store":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "id": "chatcmpl-DkfHBI7sZH9HATLE9tKHFs9U3HnNz",
-              "object": "chat.completion",
-              "created": 1780014125,
-              "model": "gpt-5.4-nano-2026-03-17",
-              "choices": [
-                {
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": "The capital of **Quackiland** is **Quack**.",
-                    "refusal": null,
-                    "annotations": []
-                  },
-                  "finish_reason": "stop"
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 35,
-                "completion_tokens": 17,
-                "total_tokens": 52,
-                "prompt_tokens_details": {
-                  "cached_tokens": 0,
-                  "audio_tokens": 0
-                },
-                "completion_tokens_details": {
-                  "reasoning_tokens": 0,
-                  "audio_tokens": 0,
-                  "accepted_prediction_tokens": 0,
-                  "rejected_prediction_tokens": 0
-                }
-              },
-              "service_tier": "default",
-              "system_fingerprint": null
-            }
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Request-ID
-                - CF-Ray
-                - CF-Ray
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - a03157bb5beeaacd-YYZ
-            Content-Type:
-                - application/json
-            Openai-Processing-Ms:
-                - "240"
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Openai-Proxy-Wasm:
-                - v0.1
-            X-Ratelimit-Limit-Requests:
-                - "500"
-            X-Ratelimit-Limit-Tokens:
-                - "200000"
-            X-Ratelimit-Remaining-Requests:
-                - "499"
-            X-Ratelimit-Remaining-Tokens:
-                - "199970"
-            X-Ratelimit-Reset-Requests:
-                - 120ms
-            X-Ratelimit-Reset-Tokens:
-                - 9ms
-        status: 200 OK
-        code: 200
-        duration: 553ms
+        duration: 985ms

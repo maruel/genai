@@ -74,12 +74,18 @@ This is particularly useful when provider capabilities evolve.
 
 ### Editing scoreboard.json
 
+For most hosted providers, keep one SOTA (gold), one Good (silver), and one Cheap (bronze) tested scenario for
+each supported output modality. Good should be the balanced default model: cheaper or lower latency than SOTA,
+but more capable than Cheap. Only omit a tier when the provider does not expose a distinct model for that
+modality, and document the reason in the scenario comments or provider notes.
+
 You may manually edit the **metadata fields** in `scoreboard.json`: `country`, `dashboardURL`, and
 `warnings`. These are not derived from tests and can be corrected directly.
 
-You may also move a model between tested and untested scenarios. For example, move a model from the untested
-bucket into a tested scenario when you know it shares capabilities with the models already there, or move it
-back to untested when recordings are stale. After any such change, re-run the tests to validate.
+You may also move a model between tested and untested scenarios, or set the SOTA/Good/Cheap tier metadata. For
+example, move a model from the untested bucket into a tested scenario when you know it shares capabilities with
+the models already there, promote a balanced model to Good, or move it back to untested when recordings are
+stale. After any such change, re-run the tests to validate.
 
 **DO NOT manually edit the model feature data** (the `scenarios` array with model capabilities, supported
 modalities, etc.) **or use `jq` to update it.** Always use `go test -update-scoreboard` instead:

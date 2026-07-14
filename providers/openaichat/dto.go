@@ -18,7 +18,6 @@ import (
 	"errors"
 	"fmt"
 	"mime"
-	"path/filepath"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -188,7 +187,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		switch v := opt.(type) {
 		case *GenOptionText:
-			c.ReasoningEffort = v.ReasoningEffort
+			if v.ReasoningEffort != "" {
+				c.ReasoningEffort = v.ReasoningEffort
+			}
 			c.ServiceTier = v.ServiceTier
 		case *genai.GenOptionText:
 			u, err := c.initOptionsText(v, model)
@@ -235,6 +236,20 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 	}
 
+	// GPT-5.6 Chat Completions rejects function tools unless reasoning_effort is explicitly disabled.
+	// API error: "Function tools with reasoning_effort are not supported for gpt-5.6-sol in
+	// /v1/chat/completions. To use function tools, use /v1/responses or set reasoning_effort to 'none'."
+	if strings.HasPrefix(model, "gpt-5.6") && len(c.Tools) != 0 {
+		if c.ReasoningEffort == "" {
+			c.ReasoningEffort = ReasoningEffortNone
+		} else if c.ReasoningEffort != ReasoningEffortNone {
+			unsupported = append(unsupported, "GenOptionText.ReasoningEffort")
+		}
+	}
+	hasAudioVideoInput := openaibase.HasInputWithMimePrefix(msgs, "audio/") || openaibase.HasInputWithMimePrefix(msgs, "video/")
+	if strings.HasPrefix(model, "gpt-5.6") && hasAudioVideoInput {
+		unsupported = append(unsupported, "audio/video input")
+	}
 	if sp != "" {
 		// Starting with o1.
 		c.Messages = append(c.Messages, Message{
@@ -271,7 +286,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	}
 	// Audio models require audio in either input or output. If no audio input was provided
 	// and no output modality was set, default to text+audio output with minimal config.
-	if len(c.Modalities) == 0 && strings.Contains(model, "audio") && !hasAudioInput(msgs) {
+	if len(c.Modalities) == 0 && strings.Contains(model, "audio") && !openaibase.HasInputWithMimePrefix(msgs, "audio/") {
 		c.Modalities = []string{"text", "audio"}
 		if c.Audio.Voice == "" {
 			c.Audio.Voice = "alloy"
@@ -281,19 +296,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 	}
 	return errors.Join(errs...)
-}
-
-func hasAudioInput(msgs genai.Messages) bool {
-	for i := range msgs {
-		for j := range msgs[i].Requests {
-			if !msgs[i].Requests[j].Doc.IsZero() {
-				if strings.HasPrefix(internal.MimeByExt(filepath.Ext(msgs[i].Requests[j].Doc.GetFilename())), "audio/") {
-					return true
-				}
-			}
-		}
-	}
-	return false
 }
 
 // SetStream sets the streaming mode.
@@ -901,10 +903,11 @@ type Usage struct {
 	CompletionTokens    int64 `json:"completion_tokens"`
 	TotalTokens         int64 `json:"total_tokens"`
 	PromptTokensDetails struct {
-		CachedTokens int64 `json:"cached_tokens"`
-		AudioTokens  int64 `json:"audio_tokens"`
-		TextTokens   int64 `json:"text_tokens"`
-		ImageTokens  int64 `json:"image_tokens"`
+		CachedTokens     int64 `json:"cached_tokens"`
+		CacheWriteTokens int64 `json:"cache_write_tokens"`
+		AudioTokens      int64 `json:"audio_tokens"`
+		TextTokens       int64 `json:"text_tokens"`
+		ImageTokens      int64 `json:"image_tokens"`
 	} `json:"prompt_tokens_details"`
 	CompletionTokensDetails struct {
 		ReasoningTokens          int64 `json:"reasoning_tokens"`

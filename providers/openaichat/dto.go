@@ -258,14 +258,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		})
 	}
 	for i := range msgs {
-		if len(msgs[i].ToolCallResults) > 1 {
+		results := msgs[i].ToolCallResults
+		if len(results) > 1 {
 			// Handle messages with multiple tool call results by creating multiple messages
-			for j := range msgs[i].ToolCallResults {
-				// Create a copy of the message with only one tool call result
-				msgCopy := msgs[i]
-				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
+			msg := msgs[i]
+			for j := range results {
+				msg.ToolCallResults = []genai.ToolCallResult{results[j]}
 				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				if err := newMsg.From(&msg); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
 				} else {
 					c.Messages = append(c.Messages, newMsg)

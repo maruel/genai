@@ -30,7 +30,7 @@ import (
 // prefer their undated aliases (e.g. "gpt-5.5") when selecting the best model.
 var modelDateSuffixRE = regexp.MustCompile(`-\d{4}-\d{2}-\d{2}$`)
 
-func textModelRank(id string, cheap bool, good bool) int {
+func textModelRank(id string, cheap, good bool) int {
 	if !strings.HasPrefix(id, "gpt") {
 		return 0
 	}

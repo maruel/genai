@@ -85,6 +85,10 @@ jobs:
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
         run: |
+          # The failed regeneration may delete stale recordings before exiting.
+          # md -apply-patch requires a clean host checkout to integrate the agent's commit.
+          git reset --hard HEAD
+          git clean -fd
           branch="automation/pi-weekly-regen-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           base="${GITHUB_REF_NAME:-main}"
           git config user.name 'github-actions[bot]'

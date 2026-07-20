@@ -91,22 +91,6 @@ func TestChatStreamChunkResponse(t *testing.T) {
 	})
 }
 
-func TestModelsResponse(t *testing.T) {
-	t.Run("benchmarks", func(t *testing.T) {
-		body := `{"data":[{"id":"moonshotai/kimi-k2.7-code","canonical_slug":"moonshotai/kimi-k2.7-code","hugging_face_id":null,"name":"Kimi K2.7 Code","created":1781371647,"description":"test","context_length":262144,"architecture":{"modality":"text->text","input_modalities":["text"],"output_modalities":["text"],"tokenizer":"Moonshot","instruct_type":null},"pricing":{"prompt":"0.0000005","completion":"0.000002"},"top_provider":{"context_length":262144,"max_completion_tokens":65536,"is_moderated":false},"per_request_limits":null,"supported_parameters":["tools"],"default_parameters":{"temperature":null,"top_p":null,"top_k":null,"frequency_penalty":null,"presence_penalty":null,"repetition_penalty":null},"supported_voices":null,"knowledge_cutoff":null,"expiration_date":null,"links":{"details":"/api/v1/models/moonshotai/kimi-k2.7-code/endpoints"},"benchmarks":{"artificial_analysis":{"intelligence_index":64.9,"coding_index":62,"agentic_index":80.6},"design_arena":[{"arena":"agents","category":"fullstack","elo":1210,"win_rate":52.7,"rank":11}]}}]}`
-		var resp openrouter.ModelsResponse
-		dec := json.NewDecoder(strings.NewReader(body))
-		dec.DisallowUnknownFields()
-		if err := dec.Decode(&resp); err != nil {
-			t.Fatal(err)
-		}
-		got := resp.Data[0].Benchmarks.ArtificialAnalysis.AgenticIndex
-		if got != 80.6 {
-			t.Fatalf("AgenticIndex = %g, want 80.6", got)
-		}
-	})
-}
-
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {

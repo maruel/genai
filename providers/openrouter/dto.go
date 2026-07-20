@@ -15,6 +15,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -753,6 +754,51 @@ type Model struct {
 	SupportedVoices     []string                   `json:"supported_voices,omitzero"`
 }
 
+// GetID implements genai.Model.
+func (m *Model) GetID() string {
+	return m.ID
+}
+
+// String returns a concise model description including capabilities and pricing.
+func (m *Model) String() string {
+	id := m.ID
+	if m.Created > 1000 {
+		id += " (" + m.Created.AsTime().Format("2006-01-02") + ")"
+	}
+	details := m.Name
+	if m.Architecture.Modality != "" {
+		if details != "" {
+			details += " (" + m.Architecture.Modality + ")"
+		} else {
+			details = m.Architecture.Modality
+		}
+	}
+	if details != "" {
+		id += ": " + details
+	}
+	ctx := strconv.FormatInt(m.ContextLength, 10)
+	if m.TopProvider.MaxCompletionTokens != 0 {
+		ctx += "/" + strconv.FormatInt(m.TopProvider.MaxCompletionTokens, 10)
+	}
+	pricing := ""
+	if p := formatModelPrice(m.Pricing.Prompt); p != "" {
+		pricing = "; in: " + p
+	}
+	if p := formatModelPrice(m.Pricing.Completion); p != "" {
+		if pricing == "" {
+			pricing = "; out: " + p
+		} else {
+			pricing += " out: " + p
+		}
+	}
+	return fmt.Sprintf("%s Context: %s%s", id, ctx, pricing)
+}
+
+// Context implements genai.Model.
+func (m *Model) Context() int64 {
+	return m.ContextLength
+}
+
 // ModelBenchmarks contains OpenRouter benchmark metadata for a model.
 type ModelBenchmarks struct {
 	ArtificialAnalysis ModelArtificialAnalysisBenchmark `json:"artificial_analysis,omitzero"`
@@ -782,35 +828,48 @@ type ModelLinks struct {
 
 // ModelPricing contains the per-token pricing information.
 type ModelPricing struct {
-	Prompt            string `json:"prompt"`                        // USD per token.
-	Completion        string `json:"completion"`                    // USD per token.
-	Image             string `json:"image"`                         // USD per image.
-	Request           string `json:"request"`                       // USD per request.
-	Audio             string `json:"audio,omitzero"`                // USD per audio token.
-	InternalReasoning string `json:"internal_reasoning,omitzero"`   // USD per reasoning token.
-	InputCacheRead    string `json:"input_cache_read,omitzero"`     // USD per cached input token read.
-	InputCacheWrite   string `json:"input_cache_write,omitzero"`    // USD per cached input token write.
-	InputCacheWrite1h string `json:"input_cache_write_1h,omitzero"` // USD per cached input token write (1h).
-	WebSearch         string `json:"web_search,omitzero"`           // USD per web search.
+	Prompt            string                 `json:"prompt"`                        // USD per input token.
+	Completion        string                 `json:"completion"`                    // USD per output token.
+	Audio             string                 `json:"audio,omitzero"`                // USD per audio input token.
+	AudioOutput       string                 `json:"audio_output,omitzero"`         // USD per audio output token.
+	Discount          float64                `json:"discount,omitzero"`             // Fractional discount applied to prices.
+	Image             string                 `json:"image"`                         // USD per input image.
+	ImageOutput       string                 `json:"image_output,omitzero"`         // USD per output image.
+	ImageToken        string                 `json:"image_token,omitzero"`          // USD per image token.
+	InputAudioCache   string                 `json:"input_audio_cache,omitzero"`    // USD per cached audio input token.
+	InputCacheRead    string                 `json:"input_cache_read,omitzero"`     // USD per cached input token read.
+	InputCacheWrite   string                 `json:"input_cache_write,omitzero"`    // USD per cached input token write.
+	InputCacheWrite1h string                 `json:"input_cache_write_1h,omitzero"` // USD per cached input token write (1h).
+	InternalReasoning string                 `json:"internal_reasoning,omitzero"`   // USD per reasoning token.
+	Overrides         []ModelPricingOverride `json:"overrides,omitzero"`            // Conditional pricing overrides.
+	Request           string                 `json:"request"`                       // USD per request.
+	WebSearch         string                 `json:"web_search,omitzero"`           // USD per web search.
 }
 
-// GetID implements genai.Model.
-func (m *Model) GetID() string {
-	return m.ID
+// ModelPricingOverride contains a conditional override of base model pricing.
+type ModelPricingOverride struct {
+	Audio             string  `json:"audio,omitzero"`
+	Completion        string  `json:"completion,omitzero"`
+	InputAudioCache   string  `json:"input_audio_cache,omitzero"`
+	InputCacheRead    string  `json:"input_cache_read,omitzero"`
+	InputCacheWrite   string  `json:"input_cache_write,omitzero"`
+	InputCacheWrite1h string  `json:"input_cache_write_1h,omitzero"`
+	MinPromptTokens   float64 `json:"min_prompt_tokens,omitzero"`
+	Prompt            string  `json:"prompt,omitzero"`
+	UTCEnd            float64 `json:"utc_end,omitzero"`
+	UTCStart          float64 `json:"utc_start,omitzero"`
 }
 
-func (m *Model) String() string {
-	return fmt.Sprintf("%s (%s) Context: %d", m.ID, m.Name, m.ContextLength)
-}
-
-// Context implements genai.Model.
-func (m *Model) Context() int64 {
-	return m.ContextLength
+// ModelsLinks contains pagination links for a model listing.
+type ModelsLinks struct {
+	Next string `json:"next"`
 }
 
 // ModelsResponse represents the response structure for OpenRouter models listing.
 type ModelsResponse struct {
-	Data []Model `json:"data"`
+	Data       []Model     `json:"data"`
+	Links      ModelsLinks `json:"links"`
+	TotalCount int64       `json:"total_count"`
 }
 
 // ToModels converts OpenRouter models to genai.Model interfaces.
@@ -833,8 +892,20 @@ type ErrorResponse struct {
 	UserID string `json:"user_id,omitzero"`
 }
 
+// Error implements error.
 func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (%s): %s", rawMessageString(er.ErrorVal.Code), er.ErrorVal.Type, er.ErrorVal.Message)
+}
+
+func formatModelPrice(s string) string {
+	if s == "" {
+		return ""
+	}
+	p, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return s + "$/t"
+	}
+	return fmt.Sprintf("%.2f$/Mt", p*1_000_000)
 }
 
 func rawMessageString(v json.RawMessage) string {

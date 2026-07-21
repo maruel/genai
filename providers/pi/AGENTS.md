@@ -3,11 +3,7 @@
 Implements `genai.Provider` for the Pi coding agent CLI in RPC mode.
 Translates Pi's JSONL command/event protocol over stdin/stdout into `genai.Result` / `genai.Reply`.
 
-## Architecture
-
-- `client.go` — Provider lifecycle, subprocess management, GenSync/GenStream
-- `types.go` — JSONL type definitions: commands (input), events/responses (output)
-- `docs/implementation.md` — Detailed implementation plan, type mappings, open questions
+## Session Management
 
 Each GenSync or GenStream call spawns a fresh `pi --mode rpc --no-session` subprocess.
 

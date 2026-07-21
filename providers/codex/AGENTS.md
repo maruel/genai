@@ -22,7 +22,6 @@ Codex CLI runs in **app-server mode** -- a JSON-RPC 2.0 NDJSON protocol over std
 
 - `client.go` -- Provider lifecycle, handshake, GenSync/GenStream, helpers
 - `types.go` -- JSON-RPC 2.0 type definitions, organized as: shared -> input -> output
-- `options.go` -- GenOption parsing and validation
 
 Each GenSync or GenStream call spawns a fresh `codex app-server` subprocess.
 Thread IDs in `Reply.Opaque["thread_id"]` enable multi-turn session resumption.

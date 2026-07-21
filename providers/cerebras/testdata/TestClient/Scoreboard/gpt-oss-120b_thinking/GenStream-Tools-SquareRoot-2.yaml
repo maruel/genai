@@ -1,58 +1,80 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 794
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"441f356b0\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\n  \\\"number\\\": 132413\\n}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"441f356b0\",\"name\":\"square_root\"}],\"stream\":true,\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"chatcmpl-9f05ba0e-1e39-4bb5-9b56-e61d34c7666c\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756759470,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-9f05ba0e-1e39-4bb5-9b56-e61d34c7666c\",\"choices\":[{\"delta\":{\"content\":\"363\"},\"index\":0}],\"created\":1756759470,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-9f05ba0e-1e39-4bb5-9b56-e61d34c7666c\",\"choices\":[{\"delta\":{\"content\":\".\"},\"index\":0}],\"created\":1756759470,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-9f05ba0e-1e39-4bb5-9b56-e61d34c7666c\",\"choices\":[{\"delta\":{\"content\":\"89\"},\"index\":0}],\"created\":1756759470,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-9f05ba0e-1e39-4bb5-9b56-e61d34c7666c\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756759470,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":132,\"completion_tokens\":7,\"total_tokens\":139,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00019229,\"prompt_time\":0.006681998,\"completion_time\":0.006601215,\"total_time\":0.015098810195922852,\"created\":1756759470}}\n\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 97879b280b7f36aa-YYZ
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Inference-Id:
-      - chatcmpl-9f05ba0e-1e39-4bb5-9b56-e61d34c7666c
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14399"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Reset-Requests-Day:
-      - "11728.399536371231"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "28.39953637123108"
-      X-Request-Id:
-      - 97879b280b7f36aa-YYZ
-    status: 200 OK
-    code: 200
-    duration: 404ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 787
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"123192d93","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"123192d93","name":"square_root"}],"stream":true,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-6ebd9e63-43f7-45bc-8a7f-ae5c28917734","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-6ebd9e63-43f7-45bc-8a7f-ae5c28917734","choices":[{"delta":{"content":"363"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-6ebd9e63-43f7-45bc-8a7f-ae5c28917734","choices":[{"delta":{"content":".89"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-6ebd9e63-43f7-45bc-8a7f-ae5c28917734","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":137,"completion_tokens":7,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":130,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602499.6908746,"queue_time":0.003949057,"prompt_time":0.00455608,"completion_time":0.002578303,"total_time":0.01331329345703125}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec96bd5ddfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=70
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439985"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59985"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "985"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999949200"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119949200"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "949200"
+        status: 200 OK
+        code: 200
+        duration: 100ms

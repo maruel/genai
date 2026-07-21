@@ -1,44 +1,88 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 567
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"stream\":true,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 154
-    body: "{\"message\":\"Unsupported tool_choice: required. Expected 'auto' or 'none'.\",\"type\":\"invalid_request_error\",\"param\":\"tool_choice\",\"code\":\"wrong_api_format\"}"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9766ebc3b83f7039-EWR
-      Content-Length:
-      - "154"
-      Content-Type:
-      - application/json
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-    status: 400 Bad Request
-    code: 400
-    duration: 1.43s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 567
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"reasoning":"We"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"reasoning":" need to call the square_root tool with number 132"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"reasoning":"413."},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"tool_calls":[{"function":{"name":"square_root","arguments":""},"type":"function","id":"123192d93","index":0}]},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"tool_calls":[{"function":{"arguments":"{\"number"},"type":"function","index":0}]},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{"tool_calls":[{"function":{"arguments":"\":132413}"},"type":"function","index":0}]},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d971bd64-95d4-40ed-ae2a-58309ea9463b","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":189,"completion_tokens":39,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":14},"prompt_tokens":150,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602499.540109,"queue_time":0.012448968,"prompt_time":0.012984177,"completion_time":0.025239614,"total_time":0.05360674858093262}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec9599f6dfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=92
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439987"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59987"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "987"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999949724"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119949724"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "949724"
+        status: 200 OK
+        code: 200
+        duration: 123ms

@@ -1,59 +1,71 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 224
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-9b2b21e1-8bb9-45a1-9b82-835b6cc831a8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"The user asks: \\\"What is the capital of Quarkiland?\\\" Actually they wrote \\\"Quackiland\\\". In the initial system message they gave statement that: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\\\" So answer: capital is Quack. Probably just answer that.\",\"role\":\"assistant\"}}],\"created\":1756559152,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":106,\"completion_tokens\":89,\"total_tokens\":195,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.001238736,\"prompt_time\":0.004231921,\"completion_time\":0.050869052,\"total_time\":0.05751919746398926,\"created\":1756559152}}"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 977480941dd4a2a2-YUL
-      Content-Type:
-      - application/json
-      Inference-Id:
-      - chatcmpl-9b2b21e1-8bb9-45a1-9b82-835b6cc831a8
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14400"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Reset-Requests-Day:
-      - "39246.46892571449"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "6.468925714492798"
-      X-Request-Id:
-      - 977480941dd4a2a2-YUL
-    status: 200 OK
-    code: 200
-    duration: 337ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 224
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-7f099e94-1c14-4a14-a83a-4b9ab6d3097e","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is **Quack**.","reasoning":"The user asked: \"What is the capital of Quackiland?\" In the conversation, the system message says we are ChatGPT. The user gave a short statement earlier: \"The capital of Quarkland is Quack. The Big Canard Statue is located in Quack.\" Actually it''s \"Quackiland\". Then they ask: \"What is the capital of Quackiland?\" The answer: \"The capital of Quackiland is Quack.\" Provide a short answer.","role":"assistant"}}],"created":1784602501,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":225,"completion_tokens":119,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":97},"prompt_tokens":106,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602501.2740846,"queue_time":0.003863259,"prompt_time":0.002616477,"completion_time":0.048731732,"total_time":0.05718851089477539}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6eca08c71dfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=25,cfOrigin;dur=133
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439992"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59992"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "992"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999983144"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119983144"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "983144"
+        status: 200 OK
+        code: 200
+        duration: 166ms

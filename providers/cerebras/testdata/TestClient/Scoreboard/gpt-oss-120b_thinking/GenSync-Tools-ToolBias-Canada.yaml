@@ -1,59 +1,71 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 559
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-7f950be6-4390-480d-856f-199618875821\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"reasoning\":\"User wants to compare Canada vs USA and asks to call tool best_country. Use the tool.\",\"tool_calls\":[{\"id\":\"560465e6f\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\n  \\\"country\\\": \\\"Canada\\\"\\n}\"}}],\"role\":\"assistant\"}}],\"created\":1756421242,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":153,\"completion_tokens\":47,\"total_tokens\":200,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00025979,\"prompt_time\":0.006496128,\"completion_time\":0.038394183,\"total_time\":0.047013044357299805,\"created\":1756421242}}"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9767599d7a244fa8-EWR
-      Content-Type:
-      - application/json
-      Inference-Id:
-      - chatcmpl-7f950be6-4390-480d-856f-199618875821
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14353"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Reset-Requests-Day:
-      - "4357.212361097336"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "37.212361097335815"
-      X-Request-Id:
-      - 9767599d7a244fa8-EWR
-    status: 200 OK
-    code: 200
-    duration: 439ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 563
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-83c82d13-af1a-4c26-8c0b-2cf6e1b37923","choices":[{"finish_reason":"tool_calls","index":0,"message":{"reasoning":"User wants to compare Canada and USA and wants us to call the tool best_country with the country. The tool expects a field \"country\" which is either \"Canada\" or \"USA\". The request: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we need to call the tool with the argument \"Canada\"? Actually, the tool expects we specify which country is best; perhaps the tool will return something telling best country. Likely we need to ask which is best, so we call best_country with a country. We choose \"Canada\"? The user wants to know if Canada is better; we can call with \"Canada\". We''ll call the function.","tool_calls":[{"function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"type":"function","id":"b8bd980b3"}],"role":"assistant"}}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":327,"completion_tokens":174,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":150},"prompt_tokens":153,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602500.4280448,"queue_time":0.00433437,"prompt_time":0.004826467,"completion_time":0.102730743,"total_time":0.11407279968261719}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec9a8955dfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=317
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439997"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59997"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "997"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999977797"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119982969"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "964834"
+        status: 200 OK
+        code: 200
+        duration: 348ms

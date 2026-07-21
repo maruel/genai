@@ -1,44 +1,92 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 248
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 139
-    body: "{\"message\":\"Unsupported \\\"response_format\\\" parameter.\",\"type\":\"invalid_request_error\",\"param\":\"response_format\",\"code\":\"wrong_api_format\"}"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9766ebba5a99a5b8-IAD
-      Content-Length:
-      - "139"
-      Content-Type:
-      - application/json
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-    status: 400 Bad Request
-    code: 400
-    duration: 1.335s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":"User"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":" asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":" provided schema: {\"is_fruit\": bool}.\" The schema expects"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":" a JSON object with a key \"is"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":"_fruit\" and a boolean value. So answer: {\""},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":"is_fruit\": true}. Must be JSON only."},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"content":"{\n  \"is_fruit\": true"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"content":"\n}"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":210,"completion_tokens":88,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":68},"prompt_tokens":122,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.209547,"queue_time":0.004013568,"prompt_time":0.002557365,"completion_time":0.031589522,"total_time":0.04071402549743652}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec938bbbdfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=91
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439991"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59991"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "991"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999966506"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119966506"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "966506"
+        status: 200 OK
+        code: 200
+        duration: 122ms

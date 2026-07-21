@@ -1,0 +1,82 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 414
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-bb840a1a-5a92-4e49-91c0-fb01a360e713","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602502,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-bb840a1a-5a92-4e49-91c0-fb01a360e713","choices":[{"delta":{"content":"{\""},"index":0}],"created":1784602502,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-bb840a1a-5a92-4e49-91c0-fb01a360e713","choices":[{"delta":{"content":"is_fruit\":"},"index":0}],"created":1784602502,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-bb840a1a-5a92-4e49-91c0-fb01a360e713","choices":[{"delta":{"content":" true}"},"index":0}],"created":1784602502,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-bb840a1a-5a92-4e49-91c0-fb01a360e713","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602502,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk","usage":{"image_tokens":0,"total_tokens":188,"completion_tokens":8,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":180,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602502.3714783,"queue_time":0.002063493,"prompt_time":0.037549216,"completion_time":0.012515968,"total_time":0.054570674896240234}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6eca718f7dfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=257
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719987"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29987"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "487"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719868694"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29868694"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "368694"
+        status: 200 OK
+        code: 200
+        duration: 290ms

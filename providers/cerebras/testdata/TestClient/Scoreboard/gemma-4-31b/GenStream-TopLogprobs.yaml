@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 142
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-efa21541-4816-4c06-88d4-d3fd44b1205f","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-efa21541-4816-4c06-88d4-d3fd44b1205f","choices":[{"delta":{"content":"Hello"},"index":0,"logprobs":{"content":[{"token":"Hello","logprob":-1.5497195136049413e-6,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-1.5497195136049413e-6,"bytes":[72,101,108,108,111]},{"token":" Hello","logprob":-13.36507511138916,"bytes":[32,72,101,108,108,111]}]}]}}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-efa21541-4816-4c06-88d4-d3fd44b1205f","choices":[{"delta":{"content":""},"index":0,"logprobs":{"content":[{"token":"<turn|>","logprob":-0.03183215856552124,"bytes":[60,116,117,114,110,124,62],"top_logprobs":[{"token":"<turn|>","logprob":-0.03183215856552124,"bytes":[60,116,117,114,110,124,62]},{"token":".","logprob":-3.468567371368408,"bytes":[46]}]}]}}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-efa21541-4816-4c06-88d4-d3fd44b1205f","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk","usage":{"image_tokens":0,"total_tokens":23,"completion_tokens":2,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":21,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602501.6697173,"queue_time":0.00027913,"prompt_time":0.002375348,"completion_time":0.0002332,"total_time":0.004994869232177734}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6eca32cccdfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=53
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719995"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29995"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "495"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719934436"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29934436"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "434436"
+        status: 200 OK
+        code: 200
+        duration: 83ms

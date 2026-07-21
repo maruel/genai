@@ -1,58 +1,76 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 152
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"],\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"chatcmpl-8720ba9a-1e8d-40ae-9bea-db1d6ac402ed\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756416740,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8720ba9a-1e8d-40ae-9bea-db1d6ac402ed\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756416740,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":79,\"completion_tokens\":3,\"total_tokens\":82,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000100981,\"prompt_time\":0.003621729,\"completion_time\":0.00376719,\"total_time\":0.009180784225463867,\"created\":1756416740}}\n\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9766ebb1aaa5f965-EWR
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Inference-Id:
-      - chatcmpl-8720ba9a-1e8d-40ae-9bea-db1d6ac402ed
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14360"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "63181"
-      X-Ratelimit-Reset-Requests-Day:
-      - "8859.73569226265"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "39.735692262649536"
-      X-Request-Id:
-      - 9766ebb1aaa5f965-EWR
-    status: 200 OK
-    code: 200
-    duration: 229ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 152
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-20de152d-eca2-4c31-ad83-0e11fc69e6f2","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-20de152d-eca2-4c31-ad83-0e11fc69e6f2","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":83,"completion_tokens":2,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":79,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.0610478,"queue_time":0.010213548,"prompt_time":0.002232512,"completion_time":0.001108694,"total_time":0.016687631607055664}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec92a93adfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=83
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439992"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59992"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "992"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999982921"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119982921"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "982921"
+        status: 200 OK
+        code: 200
+        duration: 113ms

@@ -10,9 +10,11 @@ package cerebras
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"slices"
 	"strings"
 
@@ -20,6 +22,215 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 )
+
+// ReasoningEffort controls how much reasoning the model performs.
+//
+// See https://inference-docs.cerebras.ai/capabilities/reasoning
+// and https://inference-docs.cerebras.ai/api-reference/chat-completions
+// for model-specific support. Gemma 4 treats low, medium, and high identically.
+type ReasoningEffort string
+
+// Reasoning effort values.
+const (
+	// ReasoningEffortNone disables model reasoning.
+	ReasoningEffortNone ReasoningEffort = "none"
+	// ReasoningEffortLow requests low reasoning effort.
+	ReasoningEffortLow ReasoningEffort = "low"
+	// ReasoningEffortMedium requests medium reasoning effort.
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	// ReasoningEffortHigh requests high reasoning effort.
+	ReasoningEffortHigh ReasoningEffort = "high"
+)
+
+// Validate implements genai.Validatable.
+func (r ReasoningEffort) Validate() error {
+	switch r {
+	case "", ReasoningEffortNone, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+		return nil
+	default:
+		return fmt.Errorf("invalid ReasoningEffort %q", r)
+	}
+}
+
+// ReasoningFormat controls how reasoning content appears in a response.
+//
+// See https://inference-docs.cerebras.ai/capabilities/reasoning
+// for model-specific support.
+type ReasoningFormat string
+
+// Reasoning format values.
+const (
+	// ReasoningFormatParsed returns reasoning in a separate field.
+	ReasoningFormatParsed ReasoningFormat = "parsed"
+	// ReasoningFormatTextParsed returns reasoning in a separate field.
+	ReasoningFormatTextParsed ReasoningFormat = "text_parsed"
+	// ReasoningFormatRaw prepends reasoning to response content.
+	ReasoningFormatRaw ReasoningFormat = "raw"
+	// ReasoningFormatHidden omits reasoning from the response.
+	ReasoningFormatHidden ReasoningFormat = "hidden"
+	// ReasoningFormatNone uses the model default reasoning format.
+	ReasoningFormatNone ReasoningFormat = "none"
+)
+
+// Validate implements genai.Validatable.
+func (r ReasoningFormat) Validate() error {
+	switch r {
+	case "", ReasoningFormatParsed, ReasoningFormatTextParsed, ReasoningFormatRaw, ReasoningFormatHidden, ReasoningFormatNone:
+		return nil
+	default:
+		return fmt.Errorf("invalid ReasoningFormat %q", r)
+	}
+}
+
+// ServiceTier controls request prioritization.
+//
+// See https://inference-docs.cerebras.ai/capabilities/service-tiers
+// for availability and behavior.
+type ServiceTier string
+
+// Service tier values.
+const (
+	// ServiceTierPriority uses the highest request priority on dedicated endpoints.
+	ServiceTierPriority ServiceTier = "priority"
+	// ServiceTierDefault uses the standard request priority.
+	ServiceTierDefault ServiceTier = "default"
+	// ServiceTierAuto uses the highest available request priority.
+	ServiceTierAuto ServiceTier = "auto"
+	// ServiceTierFlex uses the lowest request priority.
+	ServiceTierFlex ServiceTier = "flex"
+)
+
+// Validate implements genai.Validatable.
+func (s ServiceTier) Validate() error {
+	switch s {
+	case "", ServiceTierPriority, ServiceTierDefault, ServiceTierAuto, ServiceTierFlex:
+		return nil
+	default:
+		return fmt.Errorf("invalid ServiceTier %q", s)
+	}
+}
+
+// ToolChoiceMode controls whether a model can call tools.
+type ToolChoiceMode string
+
+// Tool choice mode values.
+const (
+	// ToolChoiceNone prevents the model from calling tools.
+	ToolChoiceNone ToolChoiceMode = "none"
+	// ToolChoiceAuto lets the model decide whether to call a tool.
+	ToolChoiceAuto ToolChoiceMode = "auto"
+	// ToolChoiceRequired requires the model to call a tool.
+	ToolChoiceRequired ToolChoiceMode = "required"
+)
+
+// ToolChoice is a Cerebras tool choice wire value.
+type ToolChoice struct {
+	// Mode is used when Function is empty.
+	Mode ToolChoiceMode `json:"mode,omitzero"`
+	// Function is the required function name. It is mutually exclusive with Mode.
+	Function string `json:"function,omitzero"`
+}
+
+// IsZero reports whether no tool choice was specified.
+func (t ToolChoice) IsZero() bool {
+	return t.Mode == "" && t.Function == ""
+}
+
+// Validate implements genai.Validatable.
+func (t ToolChoice) Validate() error {
+	if t.Function != "" {
+		if t.Mode != "" {
+			return errors.New("ToolChoice.Mode and ToolChoice.Function are mutually exclusive")
+		}
+		return nil
+	}
+	switch t.Mode {
+	case "", ToolChoiceNone, ToolChoiceAuto, ToolChoiceRequired:
+		return nil
+	default:
+		return fmt.Errorf("invalid ToolChoice.Mode %q", t.Mode)
+	}
+}
+
+// MarshalJSON implements json.Marshaler.
+func (t ToolChoice) MarshalJSON() ([]byte, error) {
+	if t.Function == "" {
+		return json.Marshal(t.Mode)
+	}
+	return json.Marshal(struct {
+		Type     string `json:"type"`
+		Function struct {
+			Name string `json:"name"`
+		} `json:"function"`
+	}{
+		Type: "function",
+		Function: struct {
+			Name string `json:"name"`
+		}{Name: t.Function},
+	})
+}
+
+// PredictionContent is one predicted output content block.
+type PredictionContent struct {
+	// Type identifies the content block format. Only ContentText is supported.
+	Type ContentType `json:"type"`
+	// Text is the predicted text.
+	Text string `json:"text"`
+}
+
+// Validate implements genai.Validatable.
+func (p PredictionContent) Validate() error {
+	if p.Type != "" && p.Type != ContentText {
+		return fmt.Errorf("unsupported PredictionContent.Type %q", p.Type)
+	}
+	if p.Text == "" {
+		return errors.New("PredictionContent.Text is empty")
+	}
+	return nil
+}
+
+// Prediction is a Cerebras predicted output wire value.
+type Prediction struct {
+	// Text is a complete predicted output. It is mutually exclusive with Content.
+	Text string `json:"text,omitzero"`
+	// Content is a sequence of predicted text blocks. It is mutually exclusive with Text.
+	Content []PredictionContent `json:"content,omitzero"`
+}
+
+// IsZero reports whether no prediction was specified.
+func (p Prediction) IsZero() bool {
+	return p.Text == "" && len(p.Content) == 0
+}
+
+// Validate implements genai.Validatable.
+func (p Prediction) Validate() error {
+	if p.Text != "" && len(p.Content) != 0 {
+		return errors.New("Prediction.Text and Prediction.Content are mutually exclusive")
+	}
+	if p.Text == "" && len(p.Content) == 0 {
+		return nil
+	}
+	for i := range p.Content {
+		if err := p.Content[i].Validate(); err != nil {
+			return fmt.Errorf("Prediction.Content #%d: %w", i, err)
+		}
+	}
+	return nil
+}
+
+// MarshalJSON implements json.Marshaler.
+func (p Prediction) MarshalJSON() ([]byte, error) {
+	if p.Text != "" {
+		return json.Marshal(struct {
+			Type    string `json:"type"`
+			Content string `json:"content"`
+		}{Type: "content", Content: p.Text})
+	}
+	return json.Marshal(struct {
+		Type    string              `json:"type"`
+		Content []PredictionContent `json:"content"`
+	}{Type: "content", Content: p.Content})
+}
 
 // ChatRequest is documented at https://inference-docs.cerebras.ai/api-reference/chat-completions
 type ChatRequest struct {
@@ -43,15 +254,19 @@ type ChatRequest struct {
 		IncludeUsage bool `json:"include_usage,omitzero"` // Isn't necessary.
 	} `json:"stream_options,omitzero"`
 	Temperature       float64           `json:"temperature,omitzero"`
-	TopP              float64           `json:"top_p,omitzero"`       // [0, 1.0]
-	ToolChoice        string            `json:"tool_choice,omitzero"` // "none", "auto", "required" or a struct {"type": "function", "function": {"name": "my_function"}}
+	TopP              float64           `json:"top_p,omitzero"` // [0, 1.0]
+	ToolChoice        ToolChoice        `json:"tool_choice,omitzero"`
 	Tools             []Tool            `json:"tools,omitzero"`
 	ParallelToolCalls bool              `json:"parallel_tool_calls,omitzero"`
 	FrequencyPenalty  float64           `json:"frequency_penalty,omitzero"`
-	LogitBias         map[int64]float64 `json:"logit_bias,omitzero"`       // Token bias [-100, 100]
-	N                 int64             `json:"n,omitzero"`                // Number of choices
-	ServiceTier       complex128        `json:"service_tier,omitzero"`     // "auto", "default"
+	LogitBias         map[int64]float64 `json:"logit_bias,omitzero"` // Token bias [-100, 100]
+	N                 int64             `json:"n,omitzero"`          // Number of choices
+	Prediction        Prediction        `json:"prediction,omitzero"`
+	PromptCacheKey    string            `json:"prompt_cache_key,omitzero"`
+	ServiceTier       ServiceTier       `json:"service_tier,omitzero"`
 	PresencePenalty   float64           `json:"presence_penalty,omitzero"` // [-2, 2]
+	ReasoningEffort   ReasoningEffort   `json:"reasoning_effort,omitzero"` // "none", "low", "medium", "high"
+	ReasoningFormat   ReasoningFormat   `json:"reasoning_format,omitzero"` // "parsed", "text_parsed", "raw", "hidden", "none"
 	User              string            `json:"user,omitzero"`             // End user ID to help identify abuse
 	Logprobs          bool              `json:"logprobs,omitzero"`         // Whether to return log probabilities
 	TopLogprobs       int64             `json:"top_logprobs,omitzero"`     // [0, 20]
@@ -71,6 +286,28 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case *GenOption:
+			if !v.Prediction.IsZero() {
+				c.Prediction = v.Prediction
+				for i := range c.Prediction.Content {
+					c.Prediction.Content[i].Type = ContentText
+				}
+			}
+			if v.PromptCacheKey != "" {
+				c.PromptCacheKey = v.PromptCacheKey
+			}
+			if v.ReasoningEffort != "" {
+				c.ReasoningEffort = v.ReasoningEffort
+			}
+			if v.ReasoningFormat != "" {
+				c.ReasoningFormat = v.ReasoningFormat
+			}
+			if v.ServiceTier != "" {
+				c.ServiceTier = v.ServiceTier
+			}
+			if !v.ToolChoice.IsZero() {
+				c.ToolChoice = v.ToolChoice
+			}
 		case *genai.GenOptionText:
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -100,11 +337,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if len(v.Tools) != 0 {
 				switch v.Force {
 				case genai.ToolCallAny:
-					c.ToolChoice = "auto"
+					c.ToolChoice = ToolChoice{Mode: ToolChoiceAuto}
 				case genai.ToolCallRequired:
-					c.ToolChoice = "required"
+					c.ToolChoice = ToolChoice{Mode: ToolChoiceRequired}
 				case genai.ToolCallNone:
-					c.ToolChoice = "none"
+					c.ToolChoice = ToolChoice{Mode: ToolChoiceNone}
 				}
 				c.ParallelToolCalls = true
 				c.Tools = make([]Tool, len(v.Tools))
@@ -132,9 +369,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	for i := range msgs {
 		switch {
 		case len(msgs[i].ToolCallResults) > 1:
-			// Handle messages with multiple tool call results by creating multiple messages
+			// Handle messages with multiple tool call results by creating multiple messages.
 			for j := range msgs[i].ToolCallResults {
-				// Create a copy of the message with only one tool call result
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
 				var newMsg Message
@@ -144,10 +380,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		case len(msgs[i].Requests) > 1:
-			// Handle messages with multiple Request by creating multiple messages
+		case len(msgs[i].Requests) > 1 && !hasImageRequest(msgs[i].Requests):
+			// Cerebras prefers single-string text content. Keep text-only requests in
+			// separate messages so their wire representation remains a string.
 			for j := range msgs[i].Requests {
-				// Create a copy of the message with only one request
 				msgCopy := msgs[i]
 				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
@@ -166,6 +402,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 		}
 	}
+	if err := c.validateImageInputs(); err != nil {
+		errs = append(errs, err)
+	}
 	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
 		return &base.ErrNotSupported{Options: unsupported}
@@ -176,6 +415,38 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 // SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
+}
+
+func (c *ChatRequest) validateImageInputs() error {
+	var images, size int
+	for i := range c.Messages {
+		for j := range c.Messages[i].Content {
+			if c.Messages[i].Content[j].Type == ContentImageURL {
+				images++
+				size += len(c.Messages[i].Content[j].ImageURL.URL)
+			}
+		}
+	}
+	if images > 5 {
+		return errors.New("cerebras supports at most 5 images per request")
+	}
+	if size > 10*1024*1024 {
+		return errors.New("cerebras supports at most 10MiB of inline image payload per request")
+	}
+	return nil
+}
+
+func hasImageRequest(rs []genai.Request) bool {
+	for i := range rs {
+		if rs[i].Doc.IsZero() {
+			continue
+		}
+		mimeType := internal.MimeByExt(filepath.Ext(rs[i].Doc.GetFilename()))
+		if strings.HasPrefix(mimeType, "image/") {
+			return true
+		}
+	}
+	return false
 }
 
 // Message is completely undocumented as of May 2025.
@@ -191,9 +462,9 @@ type Message struct {
 	Name       string     `json:"name,omitzero"` // Tool call name.
 }
 
-// From must be called with at most one Request or ToolCallResults.
+// From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
-	if len(in.Requests) > 1 || len(in.ToolCallResults) > 1 {
+	if len(in.ToolCallResults) > 1 {
 		return errors.New("internal error")
 	}
 	switch r := in.Role(); r {
@@ -205,9 +476,11 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", r)
 	}
 	if len(in.Requests) > 0 {
-		m.Content = make([]Content, 1)
-		if err := m.Content[0].FromRequest(&in.Requests[0]); err != nil {
-			return err
+		m.Content = make(Contents, len(in.Requests))
+		for i := range in.Requests {
+			if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
+				return fmt.Errorf("request #%d: %w", i, err)
+			}
 		}
 	}
 	for i := range in.Replies {
@@ -264,8 +537,11 @@ func (m *Message) To(out *genai.Message) error {
 
 // Content is a provider-specific content block.
 type Content struct {
-	Type ContentType `json:"type,omitzero"`
-	Text string      `json:"text,omitzero"`
+	Type     ContentType `json:"type,omitzero"`
+	Text     string      `json:"text,omitzero"`
+	ImageURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"image_url,omitzero"`
 }
 
 // FromRequest converts from a genai request.
@@ -276,20 +552,31 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		return nil
 	}
 	if !in.Doc.IsZero() {
-		// Check if this is a text document
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return fmt.Errorf("failed to read document: %w", err)
 		}
-		if !strings.HasPrefix(mimeType, "text/") {
-			return fmt.Errorf("cerebras only supports text documents, got %s", mimeType)
+		switch {
+		case strings.HasPrefix(mimeType, "text/"):
+			if in.Doc.URL != "" {
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+			}
+			c.Type = ContentText
+			c.Text = string(data)
+			return nil
+		// https://inference-docs.cerebras.ai/capabilities/image-inputs
+		case mimeType == "image/jpeg" || mimeType == "image/png":
+			if in.Doc.URL != "" {
+				return errors.New("cerebras requires image documents to be provided inline, not as a URL")
+			}
+			c.Type = ContentImageURL
+			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			return nil
+		case strings.HasPrefix(mimeType, "image/"):
+			return fmt.Errorf("unsupported image MIME type %q; Cerebras supports image/jpeg and image/png", mimeType)
+		default:
+			return fmt.Errorf("cerebras only supports text documents and PNG or JPEG images, got %s", mimeType)
 		}
-		if in.Doc.URL != "" {
-			return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
-		}
-		c.Type = ContentText
-		c.Text = string(data)
-		return nil
 	}
 	return errors.New("unknown Request type")
 }
@@ -331,7 +618,8 @@ type ContentType string
 
 // Content type values.
 const (
-	ContentText ContentType = "text"
+	ContentText     ContentType = "text"
+	ContentImageURL ContentType = "image_url"
 )
 
 // Contents represents a slice of Content with custom unmarshalling to handle
@@ -451,6 +739,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
 		},
@@ -563,9 +852,15 @@ type Usage struct {
 	PromptTokens        int64 `json:"prompt_tokens"`
 	CompletionTokens    int64 `json:"completion_tokens"`
 	TotalTokens         int64 `json:"total_tokens"`
+	ImageTokens         int64 `json:"image_tokens"`
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details"`
+	CompletionTokensDetails struct {
+		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
+		ReasoningTokens          int64 `json:"reasoning_tokens"`
+		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
+	} `json:"completion_tokens_details"`
 }
 
 // Model is the provider-specific model metadata.

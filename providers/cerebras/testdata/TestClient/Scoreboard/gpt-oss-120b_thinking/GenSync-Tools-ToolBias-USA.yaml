@@ -1,59 +1,71 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 559
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-379af57e-4e3c-4a84-9b89-64f2622da4be\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"reasoning\":\"The user wants to compare USA vs Canada and asks to call the tool best_country with the country field? Actually tool signature: best_country takes {country: \\\"USA\\\" | \\\"Canada\\\"} and returns any. It likely returns some result indicating if that country is the best? Perhaps you can call it for each and compare? The instruction: \\\"Call the tool best_country to tell me which country is the best one.\\\" Probably just need to call best_country with one of them? But tool requires a country parameter, maybe it returns a judgement? Might need to call with USA and Canada separately? The prompt: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\" So we call the tool with maybe a list? But tool only accepts single country. Could call twice and compare results? Or maybe the tool returns a boolean indicating if given country is best? Without documentation, guess it returns something like \\\"true\\\" if best, else false. We could call with USA, get result, then with Canada, get result, and then decide.\\n\\nLet's call best_country with USA.\",\"tool_calls\":[{\"id\":\"b73fd5803\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\n  \\\"country\\\": \\\"USA\\\"\\n}\"}}],\"role\":\"assistant\"}}],\"created\":1756421261,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":153,\"completion_tokens\":260,\"total_tokens\":413,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00031782,\"prompt_time\":0.007718322,\"completion_time\":0.189979566,\"total_time\":0.20002174377441406,\"created\":1756421261}}"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 97675a108cc57ca6-EWR
-      Content-Type:
-      - application/json
-      Inference-Id:
-      - chatcmpl-379af57e-4e3c-4a84-9b89-64f2622da4be
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14352"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "63800"
-      X-Ratelimit-Reset-Requests-Day:
-      - "4338.617778778076"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "18.617778778076172"
-      X-Request-Id:
-      - 97675a108cc57ca6-EWR
-    status: 200 OK
-    code: 200
-    duration: 632ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 563
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-e26984f0-8b86-497b-9918-34f3433dd193","choices":[{"finish_reason":"tool_calls","index":0,"message":{"reasoning":"The user asks to compare USA vs Canada and wants the tool called best_country to tell which country is best. So we should invoke the tool with a parameter maybe \"USA\" or \"Canada\"? The tool expects a field \"country\" of type \"USA\" | \"Canada\". The description \"specify the best country\" implies we output which is best? It likely returns something. According to the tool signature, you provide a country, and it returns anything. Actually the tool expects a country parameter, perhaps we need to call it with the argument that we think is best? The user wants to know which is better, so we need to call the tool to decide. Probably call with one of them? But we don''t know which is best. Typically we call the tool with a guess, but maybe the tool determines and returns the best? The spec \"A tool to specify the best country\" maybe we pass a country and it returns if it''s best? Could be we need to ask the tool \"best_country\" with country: \"USA\" and see response? Might return a boolean? Not sure. Probably we call the tool with each country? But tool only takes one country. Could be we need to call it with \"USA\" and it returns something like \"USA is best\". Let''s just call with \"USA\".","tool_calls":[{"function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"type":"function","id":"685cd4bc6"}],"role":"assistant"}}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":443,"completion_tokens":290,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":266},"prompt_tokens":153,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602500.805041,"queue_time":0.004042399,"prompt_time":0.00320011,"completion_time":0.188383156,"total_time":0.1975092887878418}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec9cb89bdfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=422
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439994"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59994"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "994"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999977357"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119982529"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "964394"
+        status: 200 OK
+        code: 200
+        duration: 453ms

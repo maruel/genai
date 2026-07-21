@@ -1,6 +1,5 @@
 {
   "warnings": [
-    "Cerebras doesn't support images yet even if models could. https://discord.com/channels/1085960591052644463/1376887536072527982",
     "Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864",
     "Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing"
   ],
@@ -9,9 +8,62 @@
   "scenarios": [
     {
       "models": [
+        "gemma-4-31b"
+      ],
+      "sota": true,
+      "good": true,
+      "cheap": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
         "gpt-oss-120b"
       ],
-      "cheap": true,
       "reason": true,
       "in": {
         "text": {
@@ -24,20 +76,28 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true
       },
       "GenStream": {
+        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true
       }

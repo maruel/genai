@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 400
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-8b3ccab8-2032-40a2-a26f-c439cd8f8c95","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant"}}],"created":1784602502,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion","usage":{"image_tokens":0,"total_tokens":188,"completion_tokens":8,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":180,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602502.3461804,"queue_time":0.002415922,"prompt_time":0.005499125,"completion_time":0.012619465,"total_time":0.024407148361206055}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6eca73920dfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=246
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719986"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29986"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "486"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719852293"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29852293"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "352293"
+        status: 200 OK
+        code: 200
+        duration: 278ms

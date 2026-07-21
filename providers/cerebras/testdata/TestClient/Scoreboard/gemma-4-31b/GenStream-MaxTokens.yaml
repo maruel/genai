@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 157
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-32d42c79-9486-45c0-aadd-0e117baca9f9","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-32d42c79-9486-45c0-aadd-0e117baca9f9","choices":[{"delta":{"content":"The"},"index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-32d42c79-9486-45c0-aadd-0e117baca9f9","choices":[{"delta":{"content":" Theory of Relativity is not one single"},"index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-32d42c79-9486-45c0-aadd-0e117baca9f9","choices":[{"delta":{"content":" theory, but two interrelated theories"},"index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-32d42c79-9486-45c0-aadd-0e117baca9f9","choices":[{"delta":{"content":" published by"},"index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-32d42c79-9486-45c0-aadd-0e117baca9f9","choices":[{"delta":{},"finish_reason":"length","index":0}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk","usage":{"image_tokens":0,"total_tokens":38,"completion_tokens":16,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":22,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602501.8006308,"queue_time":0.00011701,"prompt_time":0.002419518,"completion_time":0.015514882,"total_time":0.0221560001373291}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6eca3bed6dfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=96
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719993"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29993"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "493"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719918017"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29918017"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "418017"
+        status: 200 OK
+        code: 200
+        duration: 126ms

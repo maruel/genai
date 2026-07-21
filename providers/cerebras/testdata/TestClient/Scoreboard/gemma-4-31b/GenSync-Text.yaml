@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 95
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-1d9dbffe-8e88-4d82-aa2b-d7cc0585b5ca","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","role":"assistant"}}],"created":1784602501,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion","usage":{"image_tokens":0,"total_tokens":23,"completion_tokens":2,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":21,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602501.4506836,"queue_time":0.017311579,"prompt_time":0.002132059,"completion_time":0.00014768,"total_time":0.021233797073364258}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6eca1b856dfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=98
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719998"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29998"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "498"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719983609"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29983609"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "483609"
+        status: 200 OK
+        code: 200
+        duration: 130ms

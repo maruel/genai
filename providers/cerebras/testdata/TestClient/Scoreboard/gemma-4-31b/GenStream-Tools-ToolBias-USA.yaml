@@ -1,0 +1,78 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 576
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-b5d225df-201e-4138-a990-212173e36ef2","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-b5d225df-201e-4138-a990-212173e36ef2","choices":[{"delta":{"tool_calls":[{"function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"type":"function","id":"f32d16c13","index":0},{"function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"type":"function","id":"b0cc8fb9b","index":1}]},"index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-b5d225df-201e-4138-a990-212173e36ef2","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk","usage":{"image_tokens":0,"total_tokens":129,"completion_tokens":29,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":100,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602503.6434724,"queue_time":0.002665973,"prompt_time":0.00226582,"completion_time":0.026245401,"total_time":0.03540825843811035}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ecaf1feedfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=253
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719993"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29993"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "493"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719835210"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29835210"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "335210"
+        status: 200 OK
+        code: 200
+        duration: 283ms

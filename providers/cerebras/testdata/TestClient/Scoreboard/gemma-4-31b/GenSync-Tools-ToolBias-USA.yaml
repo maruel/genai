@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-05d5378c-7d5f-483d-91df-465a27986470","choices":[{"finish_reason":"tool_calls","index":0,"message":{"tool_calls":[{"function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"type":"function","id":"eb38d2621"}],"role":"assistant"}}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion","usage":{"image_tokens":0,"total_tokens":115,"completion_tokens":15,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":100,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602503.0987685,"queue_time":0.002866203,"prompt_time":0.001141459,"completion_time":0.027159221,"total_time":0.0327908992767334}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ecabeed1dfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=240
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719996"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29996"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "496"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719835524"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29835524"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "335524"
+        status: 200 OK
+        code: 200
+        duration: 271ms

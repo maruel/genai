@@ -1,58 +1,84 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 120
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42,\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\"User\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" wants\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" a\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" hello\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" and\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" only\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" one\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" word\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\".\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" So\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" just\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\" \\\"\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\"Hello\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"reasoning\":\"\\\".\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{\"content\":\"Hello\"},\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":75,\"completion_tokens\":25,\"total_tokens\":100,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00010651,\"prompt_time\":0.003137387,\"completion_time\":0.022323769,\"total_time\":0.027193307876586914,\"created\":1756416738}}\n\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9766eba5e94757f3-IAD
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Inference-Id:
-      - chatcmpl-a4fda477-4035-4b66-9f34-3e375b7dc577
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14366"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "63886"
-      X-Ratelimit-Reset-Requests-Day:
-      - "8861.620789527893"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "41.620789527893066"
-      X-Request-Id:
-      - 9766eba5e94757f3-IAD
-    status: 200 OK
-    code: 200
-    duration: 211ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 120
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-d95e90f2-3956-49f3-950b-756234a770c6","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d95e90f2-3956-49f3-950b-756234a770c6","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d95e90f2-3956-49f3-950b-756234a770c6","choices":[{"delta":{"reasoning":" user wants: \"Say hello. Use only one word.\" So respond with a single word greeting, like"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d95e90f2-3956-49f3-950b-756234a770c6","choices":[{"delta":{"reasoning":" \"Hello\". Ensure only one word. So reply \""},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d95e90f2-3956-49f3-950b-756234a770c6","choices":[{"delta":{"content":"Hello","reasoning":"Hello\"."},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d95e90f2-3956-49f3-950b-756234a770c6","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":121,"completion_tokens":46,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":35},"prompt_tokens":75,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602498.6363635,"queue_time":0.004293934,"prompt_time":0.001708002,"completion_time":0.016532409,"total_time":0.025321483612060547}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec90099ddfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=33,cfOrigin;dur=66
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439997"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59997"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "997"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999967218"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119967218"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "967218"
+        status: 200 OK
+        code: 200
+        duration: 106ms

@@ -1,58 +1,94 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 238
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"The\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" user\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" asked\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\":\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" \\\"\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"What\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" is\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" the\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" capital\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" of\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ark\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"iland\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"?\\\"\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Actually\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" they\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" wrote\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" \\\"\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"iland\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"\\\".\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" The\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" earlier\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" statement\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" says\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\":\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" \\\"\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"The\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" capital\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" of\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"iland\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" is\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\".\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" The\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Big\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Can\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ard\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Statue\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" is\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" located\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" in\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\".\\\"\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" So\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" answer\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\":\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" The\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" capital\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" is\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\".\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" Provide\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" straightforward\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\" answer\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"reasoning\":\".\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\"The\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\" capital\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\" of\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\" Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\"iland\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\" is\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\" **\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\"Qu\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\"ack\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\"**\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{\"content\":\".\"},\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756559153,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":106,\"completion_tokens\":84,\"total_tokens\":190,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.106379738,\"prompt_time\":0.030189368,\"completion_time\":0.04571035,\"total_time\":0.1903984546661377,\"created\":1756559153}}\n\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 977480941dd9a2a2-YUL
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Inference-Id:
-      - chatcmpl-ea9babc6-b73d-4ef6-89b9-8a88f85786fc
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14399"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Reset-Requests-Day:
-      - "39246.56896686554"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "6.568966865539551"
-      X-Request-Id:
-      - 977480941dd9a2a2-YUL
-    status: 200 OK
-    code: 200
-    duration: 198ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":" user asks: \"What is the capital of Quackiland?\" From the system message,"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":" we have: \"The capital of Qu"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":"anyland is Quack.\" (Actually the"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":" line says \"The capital of"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":" Quackiland is Quack. The Big Canard Statue is located in Quack.\") So"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"reasoning":" answer: The capital is Quack. Provide answer."},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"content":"The capital of Quackiland is **Quack"},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{"content":"**."},"index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-dbb14b09-0fb0-456e-bac9-a38392185c1d","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602500,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":200,"completion_tokens":94,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":72},"prompt_tokens":106,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602500.468987,"queue_time":0.004560876,"prompt_time":0.002417884,"completion_time":0.046598408,"total_time":0.05608820915222168}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec9b7c2bdfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=72
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439995"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59995"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "995"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999977456"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119982628"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "964493"
+        status: 200 OK
+        code: 200
+        duration: 105ms

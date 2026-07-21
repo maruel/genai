@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        host: api.cerebras.ai
+        body: |
+            {"model":"gemma-4-31b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-4064b2b7-a987-4c65-94d8-e84eec5bb2b1","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-4064b2b7-a987-4c65-94d8-e84eec5bb2b1","choices":[{"delta":{"content":"The"},"index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-4064b2b7-a987-4c65-94d8-e84eec5bb2b1","choices":[{"delta":{"content":" capital of Quackiland is Quack."},"index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-4064b2b7-a987-4c65-94d8-e84eec5bb2b1","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602503,"model":"gemma-4-31b","system_fingerprint":"fp_b2c59c382b338de84cfc","object":"chat.completion.chunk","usage":{"image_tokens":0,"total_tokens":59,"completion_tokens":11,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens":48,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602503.9143627,"queue_time":0.00023138,"prompt_time":0.002182983,"completion_time":0.004930053,"total_time":0.00887441635131836}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ecb10df9dfaf-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=75
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "720000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "30000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "500"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "719991"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "29991"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "491"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719834967"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "29834967"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "334967"
+        status: 200 OK
+        code: 200
+        duration: 105ms

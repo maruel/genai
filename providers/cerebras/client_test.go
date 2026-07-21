@@ -7,6 +7,7 @@
 package cerebras_test
 
 import (
+	"io"
 	"net/http"
 	"os"
 	"slices"
@@ -38,6 +39,33 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
 	return cerebras.New(t.Context(), opts...)
+}
+
+func TestNew(t *testing.T) {
+	t.Run("environmentAPIKey", func(t *testing.T) {
+		t.Setenv("CEREBRAS_API_KEY", "environment-api-key")
+		var got string
+		c, err := cerebras.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+			return roundTripperFunc(func(r *http.Request) (*http.Response, error) {
+				got = r.Header.Get("Authorization")
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Header:     http.Header{"Content-Type": {"application/json"}},
+					Body:       io.NopCloser(strings.NewReader(`{"object":"list","data":[]}`)),
+					Request:    r,
+				}, nil
+			})
+		}))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := c.ListModels(t.Context()); err != nil {
+			t.Fatal(err)
+		}
+		if got != "Bearer environment-api-key" {
+			t.Errorf("Authorization header = %q, want %q", got, "Bearer environment-api-key")
+		}
+	})
 }
 
 func TestClient(t *testing.T) {
@@ -143,7 +171,8 @@ func TestClient(t *testing.T) {
 			}
 			return p
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		// Gemma 4 emits reasoning content even when thinking is disabled.
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{TolerateReasoning: []string{"gemma"}})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

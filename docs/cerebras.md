@@ -1,10 +1,12 @@
 # Scoreboard
 
-| Model         | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| gpt-oss-120b🥉 | Sync🧠   | 💬    | 💬     | ✅   | ❌   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
-| gpt-oss-120b🥉 | Stream🧠 | 💬    | 💬     | ✅   | ❌   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
-| zai-glm-4.7   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Model          | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| -------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| gemma-4-31b🥇🥈🥉 | Sync    | 💬📸  | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| gemma-4-31b🥇🥈🥉 | Stream  | 💬📸  | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| gpt-oss-120b   | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
+| gpt-oss-120b   | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
+| zai-glm-4.7    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -45,6 +47,5 @@
 
 ## Warnings
 
-- Cerebras doesn't support images yet even if models could. https://discord.com/channels/1085960591052644463/1376887536072527982
 - Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864
 - Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing

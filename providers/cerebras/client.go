@@ -19,7 +19,6 @@ import (
 	"os"
 	"slices"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/maruel/roundtrippers"
@@ -49,6 +48,97 @@ func Scoreboard() scoreboard.Score {
 // CompletionsResource.create() at
 // https://github.com/Cerebras/cerebras-cloud-sdk-python/blob/main/src/cerebras/cloud/sdk/resources/chat/completions.py
 
+// ProviderOptionQueueThreshold sets the default queue time at which requests using auto or flex service tiers are rejected.
+// Cerebras accepts values from 50ms through 20s.
+type ProviderOptionQueueThreshold time.Duration
+
+// Validate implements genai.ProviderOption.
+func (q ProviderOptionQueueThreshold) Validate() error {
+	return validateQueueThreshold(time.Duration(q))
+}
+
+func validateQueueThreshold(q time.Duration) error {
+	if q != 0 && (q < 50*time.Millisecond || q > 20*time.Second) {
+		return fmt.Errorf("QueueThreshold must be between 50ms and 20s, got %s", q)
+	}
+	return nil
+}
+
+// GenOption controls Cerebras-specific generation settings.
+type GenOption struct {
+	// Prediction provides known output content for the model to reuse.
+	Prediction Prediction
+	// PromptCacheKey groups requests that share a prompt prefix.
+	PromptCacheKey string
+	// ReasoningEffort controls how much reasoning the model performs.
+	ReasoningEffort ReasoningEffort
+	// ReasoningFormat controls how reasoning content appears in a response.
+	ReasoningFormat ReasoningFormat
+	// ServiceTier controls request priority.
+	ServiceTier ServiceTier
+	// ToolChoice controls how the model may call tools.
+	ToolChoice ToolChoice
+	// QueueThreshold controls the queue time at which flex or auto requests are rejected.
+	// Cerebras accepts values from 50ms through 20s.
+	QueueThreshold time.Duration
+}
+
+// Validate implements genai.Validatable.
+func (o *GenOption) Validate() error {
+	if len(o.PromptCacheKey) > 1024 {
+		return errors.New("prompt cache key exceeds the maximum length of 1024 bytes")
+	}
+	if err := o.Prediction.Validate(); err != nil {
+		return err
+	}
+	if err := o.ReasoningEffort.Validate(); err != nil {
+		return err
+	}
+	if err := o.ReasoningFormat.Validate(); err != nil {
+		return err
+	}
+	if err := o.ServiceTier.Validate(); err != nil {
+		return err
+	}
+	if err := o.ToolChoice.Validate(); err != nil {
+		return err
+	}
+	return validateQueueThreshold(o.QueueThreshold)
+}
+
+type queueThresholdContextKey struct{}
+
+func ctxWithQueueThreshold(ctx context.Context, opts []genai.GenOption) context.Context {
+	var q time.Duration
+	for _, opt := range opts {
+		if v, ok := opt.(*GenOption); ok && v.QueueThreshold != 0 {
+			q = v.QueueThreshold
+		}
+	}
+	if q == 0 {
+		return ctx
+	}
+	return context.WithValue(ctx, queueThresholdContextKey{}, q)
+}
+
+type queueThresholdHeader struct {
+	transport http.RoundTripper
+}
+
+func (q *queueThresholdHeader) RoundTrip(req *http.Request) (*http.Response, error) {
+	threshold, ok := req.Context().Value(queueThresholdContextKey{}).(time.Duration)
+	if !ok {
+		return q.transport.RoundTrip(req)
+	}
+	req = req.Clone(req.Context())
+	req.Header.Set("queue_threshold", strconv.FormatInt(threshold.Milliseconds(), 10))
+	return q.transport.RoundTrip(req)
+}
+
+func (q *queueThresholdHeader) Unwrap() http.RoundTripper {
+	return q.transport
+}
+
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
@@ -65,6 +155,7 @@ type Client struct {
 // Use one of the model from https://cerebras.ai/inference
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var apiKey, model string
+	var queueThreshold time.Duration
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
@@ -86,6 +177,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			preloadedModels = []genai.Model(v)
 		case genai.ProviderOptionTransportWrapper:
 			wrapper = v
+		case ProviderOptionQueueThreshold:
+			queueThreshold = time.Duration(v)
 		default:
 			return nil, fmt.Errorf("unsupported option type %T", opt)
 		}
@@ -96,6 +189,10 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		if apiKey = os.Getenv("CEREBRAS_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "CEREBRAS_API_KEY", URL: apiKeyURL}
 		}
+	}
+	h := http.Header{"Authorization": {"Bearer " + apiKey}}
+	if queueThreshold != 0 {
+		h.Set("queue_threshold", strconv.FormatInt(queueThreshold.Milliseconds(), 10))
 	}
 	mod := genai.Modalities{genai.ModalityText}
 	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
@@ -117,8 +214,10 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				Lenient:   internal.BeLenient,
 				Client: http.Client{
 					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
+						Header: h,
+						Transport: &queueThresholdHeader{
+							transport: &roundtrippers.RequestID{Transport: t},
+						},
 					},
 				},
 			},
@@ -128,7 +227,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = mod
@@ -140,49 +239,19 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	return c, err
 }
 
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+// selectBestTextModel selects Gemma 4 31B, Cerebras' preferred model for text generation.
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
+	const model = "gemma-4-31b"
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	var created base.TimeS
 	for _, mdl := range mdls {
-		// WARNING: This is fragile and will break in the future.
-		m := mdl.(*Model)
-		switch {
-		case cheap:
-			// That's gpt-oss-120b
-			if strings.HasPrefix(m.ID, "gpt") && (created == 0 || m.Created > created) {
-				created = m.Created
-				selectedModel = m.ID
-			}
-		case good:
-			// That's qwen-3-235b-a22b-instruct-2507, currently in preview
-			if strings.HasPrefix(m.ID, "qwen-") && strings.Contains(m.ID, "-instruct-") && (created == 0 || m.Created > created) {
-				// For the greatest, we want the newest model as it is generally better.
-				created = m.Created
-				selectedModel = m.ID
-			}
-		default:
-			// That's zai-glm-4.6, currently in preview
-			if strings.HasPrefix(m.ID, "zai-") && (created == 0 || m.Created > created) {
-				// For the greatest, we want the newest model as it is generally better.
-				created = m.Created
-				selectedModel = m.ID
-			}
+		if mdl.GetID() == model {
+			return model, nil
 		}
 	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
+	return "", fmt.Errorf("failed to find preferred model %q", model)
 }
 
 // Name implements genai.Provider.
@@ -220,7 +289,7 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts...)
+	return c.impl.GenSync(ctxWithQueueThreshold(ctx, opts), msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -230,7 +299,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return c.impl.GenStream(ctx, msgs, opts...)
+	return c.impl.GenStream(ctxWithQueueThreshold(ctx, opts), msgs, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -273,6 +342,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if pkt.Usage.TotalTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()

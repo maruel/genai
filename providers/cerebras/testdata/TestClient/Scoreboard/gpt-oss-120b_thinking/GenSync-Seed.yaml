@@ -1,59 +1,71 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 106
-    host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cerebras.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-06574102-8b97-4e8c-8294-e29150eb2169\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hello\",\"reasoning\":\"User wants a hello and only one word. So just \\\"Hello\\\".\",\"role\":\"assistant\"}}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":75,\"completion_tokens\":25,\"total_tokens\":100,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":7.016e-05,\"prompt_time\":0.003754458,\"completion_time\":0.024872535,\"total_time\":0.029706239700317383,\"created\":1756416738}}"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9766eba5d91a57f3-IAD
-      Content-Type:
-      - application/json
-      Inference-Id:
-      - chatcmpl-06574102-8b97-4e8c-8294-e29150eb2169
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=3600; includeSubDomains
-      X-Content-Type-Options:
-      - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Remaining-Requests-Day:
-      - "14366"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "63732"
-      X-Ratelimit-Reset-Requests-Day:
-      - "8861.641874074936"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "41.64187407493591"
-      X-Request-Id:
-      - 9766eba5d91a57f3-IAD
-    status: 200 OK
-    code: 200
-    duration: 211ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 106
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-2c2b1321-d611-467f-b2d4-d6a5f4b14507","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","reasoning":"The user wants: \"Say hello. Use only one word.\" So respond with a single word greeting, like \"Hello\". Ensure only one word. So reply \"Hello\".","role":"assistant"}}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":121,"completion_tokens":46,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":35},"prompt_tokens":75,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602498.8259845,"queue_time":0.003910263,"prompt_time":0.002000222,"completion_time":0.015226831,"total_time":0.023010730743408203}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a1e6ec910cbedfaf-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=23,cfOrigin;dur=145
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "2000000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "120000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439995"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59995"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "995"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "1999966982"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "119966982"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "966982"
+        status: 200 OK
+        code: 200
+        duration: 175ms

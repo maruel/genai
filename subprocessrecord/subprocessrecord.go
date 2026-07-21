@@ -16,6 +16,7 @@ package subprocessrecord
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -40,22 +41,46 @@ type Recorder struct {
 // New creates a Recorder for the given path.
 //
 // The path should not include the ".ndjson" extension; it is appended
-// automatically. If the fixture file already exists, the recorder replays it.
-// Otherwise it records.
+// automatically. A non-empty fixture is replayed. Empty fixtures are removed
+// because they are incomplete recordings, then recorded again.
 func New(path string) (*Recorder, error) {
 	fixture := path + ".ndjson"
 	r := &Recorder{fixture: fixture}
-	if _, err := os.Stat(fixture); err == nil {
+	st, err := os.Stat(fixture)
+	if err == nil && st.Size() != 0 {
 		r.replay = true
+		return r, nil
+	}
+	if err == nil {
+		if err := os.Remove(fixture); err != nil {
+			return nil, fmt.Errorf("remove empty fixture: %w", err)
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("stat fixture: %w", err)
 	}
 	return r, nil
 }
 
 // Stop is called when the recording session is done.
 //
-// It is a no-op for now but is provided for symmetry with httprecord and
-// future use (e.g. flushing, validation).
+// It discards an empty fixture because it is an incomplete recording and must
+// never be replayed.
 func (r *Recorder) Stop() error {
+	if r.replay {
+		return nil
+	}
+	st, err := os.Stat(r.fixture)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("stat fixture: %w", err)
+	}
+	if st.Size() == 0 {
+		if err := os.Remove(r.fixture); err != nil {
+			return fmt.Errorf("remove empty fixture: %w", err)
+		}
+	}
 	return nil
 }
 

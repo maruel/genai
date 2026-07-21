@@ -39,7 +39,7 @@ func TestNew(t *testing.T) {
 				t.Fatal("expected record mode")
 			}
 		})
-		t.Run("replay_when_empty_fixture", func(t *testing.T) {
+		t.Run("record_when_empty_fixture", func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
 			if err := os.WriteFile(path+".ndjson", nil, 0o644); err != nil {
@@ -49,8 +49,8 @@ func TestNew(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if !rec.replay {
-				t.Fatal("empty fixture should trigger replay mode")
+			if rec.replay {
+				t.Fatal("empty fixture should trigger record mode")
 			}
 		})
 		t.Run("replay_when_fixture_exists", func(t *testing.T) {
@@ -111,6 +111,38 @@ func TestRecorder(t *testing.T) {
 			}
 			if string(data) != want {
 				t.Fatalf("fixture: got %q, want %q", data, want)
+			}
+		})
+		t.Run("delete_empty_recording", func(t *testing.T) {
+			dir := t.TempDir()
+			path := filepath.Join(dir, "test")
+			fixture := path + ".ndjson"
+			rec, err := New(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			starter := rec.Wrap(fakeStarter(""))
+			stdin, stdout, wait, err := starter(t.Context(), []string{"fake"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := io.ReadAll(stdout); err != nil {
+				t.Fatal(err)
+			}
+			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if err := stdout.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if err := wait(); err != nil {
+				t.Fatal(err)
+			}
+			if err := rec.Stop(); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := os.Stat(fixture); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("fixture: got %v, want not exist", err)
 			}
 		})
 		t.Run("replay", func(t *testing.T) {

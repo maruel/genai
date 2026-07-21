@@ -37,6 +37,7 @@ import (
 	"io"
 	"iter"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
@@ -61,6 +62,56 @@ func Scoreboard() scoreboard.Score {
 		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
 	}
 	return s
+}
+
+// GenOption configures an OpenCode generation call.
+type GenOption struct {
+	// Effort selects the reasoning-effort model variant. Use the Effort*
+	// constants or a provider-specific variant returned by OpenCode. An empty
+	// value leaves OpenCode's current effort intact.
+	Effort Effort
+	// Mode selects an OpenCode session mode returned by ACP. An empty value
+	// leaves OpenCode's current mode intact.
+	Mode Mode
+}
+
+// Validate implements genai.GenOption.
+func (g *GenOption) Validate() error {
+	if g.Effort != "" && strings.TrimSpace(string(g.Effort)) == "" {
+		return errors.New("GenOption.Effort: level must not be whitespace")
+	}
+	if g.Mode != "" && strings.TrimSpace(string(g.Mode)) == "" {
+		return errors.New("GenOption.Mode: mode must not be whitespace")
+	}
+	return nil
+}
+
+// callOpts holds per-call options parsed from the GenOption slice.
+type callOpts struct {
+	effort Effort
+	mode   Mode
+}
+
+// parseOpts validates and collects the per-call options.
+func parseOpts(opts []genai.GenOption) (callOpts, error) {
+	var co callOpts
+	var unsupported []string
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return callOpts{}, err
+		}
+		switch v := opt.(type) {
+		case *GenOption:
+			co.effort = v.Effort
+			co.mode = v.Mode
+		default:
+			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
+		}
+	}
+	if len(unsupported) != 0 {
+		return co, &base.ErrNotSupported{Options: unsupported}
+	}
+	return co, nil
 }
 
 func marshalJSONRaw(v any) (json.RawMessage, error) {
@@ -233,7 +284,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	}()
 
 	sc := newScanner(stdout)
-	hs, err := handshake(stdin, sc, "", "")
+	hs, err := handshake(stdin, sc, "", "", "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -253,15 +304,15 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
 	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return genai.Result{}, err
+	co, optsErr := parseOpts(opts)
+	if optsErr != nil {
+		var unsupported *base.ErrNotSupported
+		if !errors.As(optsErr, &unsupported) {
+			return genai.Result{}, optsErr
 		}
-	}
-	if len(opts) > 0 {
 		defer func() {
 			if err == nil {
-				err = &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opts[0])}}
+				err = optsErr
 			}
 		}()
 	}
@@ -281,7 +332,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}()
 
 	sc := newScanner(stdout)
-	hs, err := handshake(stdin, sc, c.model, resumeSessionID)
+	hs, err := handshake(stdin, sc, c.model, co.effort, co.mode, resumeSessionID)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -299,14 +350,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return yieldNothing, errFinish(err)
+	co, optsErr := parseOpts(opts)
+	if optsErr != nil {
+		var unsupported *base.ErrNotSupported
+		if !errors.As(optsErr, &unsupported) {
+			return yieldNothing, errFinish(optsErr)
 		}
-	}
-	var optsErr error
-	if len(opts) > 0 {
-		optsErr = &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opts[0])}}
 	}
 	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
@@ -330,7 +379,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		}()
 
 		sc := newScanner(stdout)
-		hs, hsErr := handshake(stdin, sc, c.model, resumeSessionID)
+		hs, hsErr := handshake(stdin, sc, c.model, co.effort, co.mode, resumeSessionID)
 		if hsErr != nil {
 			finalErr = hsErr
 			return
@@ -365,10 +414,113 @@ type handshakeResult struct {
 	supportsImage   bool
 	nextID          int64
 	availableModels []ModelInfo
+	configOptions   []SessionConfigOption
+}
+
+func (h *handshakeResult) setConfigOptions(opts []SessionConfigOption) {
+	h.configOptions = opts
+	for i := range opts {
+		if opts[i].ID != ConfigOptionModel {
+			continue
+		}
+		h.availableModels = make([]ModelInfo, len(opts[i].Options))
+		for j := range opts[i].Options {
+			h.availableModels[j] = ModelInfo{ModelID: opts[i].Options[j].Value, Name: opts[i].Options[j].Name}
+		}
+		return
+	}
+}
+
+func (h *handshakeResult) configOption(id ConfigOptionID) *SessionConfigOption {
+	for i := range h.configOptions {
+		if h.configOptions[i].ID == id {
+			return &h.configOptions[i]
+		}
+	}
+	return nil
+}
+
+func (h *handshakeResult) setSessionConfigOption(stdin io.Writer, sc *bufio.Scanner, id ConfigOptionID, value string) error {
+	option := h.configOption(id)
+	if option == nil {
+		return fmt.Errorf("opencode ACP does not expose %q for the selected model", id)
+	}
+	if option.Type != ConfigOptionTypeSelect {
+		return fmt.Errorf("opencode ACP %q option has unsupported type %q", id, option.Type)
+	}
+	// Model selections may append a valid OpenCode variant to the advertised
+	// base model ID, so the server must validate them. Other options are exact.
+	valid := id == ConfigOptionModel
+	if !valid {
+		for i := range option.Options {
+			if option.Options[i].Value == value {
+				valid = true
+				break
+			}
+		}
+	}
+	if !valid {
+		available := make([]string, len(option.Options))
+		for i := range option.Options {
+			available[i] = option.Options[i].Value
+		}
+		return fmt.Errorf("opencode ACP %q %q is unavailable; supported values: %s", id, value, strings.Join(available, ", "))
+	}
+
+	h.nextID++
+	params, err := marshalJSONRaw(SetSessionConfigOptionParams{SessionID: h.sessionID, ConfigID: id, Value: value})
+	if err != nil {
+		return fmt.Errorf("marshal session/set_config_option params: %w", err)
+	}
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      h.nextID,
+		Method:  MethodSessionSetConfigOption,
+		Params:  params,
+	}); err != nil {
+		return fmt.Errorf("write session/set_config_option: %w", err)
+	}
+	data, err := readResponse(sc)
+	if err != nil {
+		return fmt.Errorf("read session/set_config_option response: %w", err)
+	}
+	var result SetSessionConfigOptionResult
+	if err := internal.UnmarshalJSON(data, &result); err != nil {
+		return fmt.Errorf("parse session/set_config_option response: %w", err)
+	}
+	if len(result.ConfigOptions) == 0 {
+		return errors.New("session/set_config_option response missing configOptions")
+	}
+	h.setConfigOptions(result.ConfigOptions)
+	return nil
+}
+
+func (h *handshakeResult) setSessionModel(stdin io.Writer, sc *bufio.Scanner, model string) error {
+	if h.configOption(ConfigOptionModel) != nil {
+		return h.setSessionConfigOption(stdin, sc, ConfigOptionModel, model)
+	}
+
+	h.nextID++
+	params, err := marshalJSONRaw(SetSessionModelParams{SessionID: h.sessionID, ModelID: model})
+	if err != nil {
+		return fmt.Errorf("marshal session/set_model params: %w", err)
+	}
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      h.nextID,
+		Method:  MethodSessionSetModel,
+		Params:  params,
+	}); err != nil {
+		return fmt.Errorf("write session/set_model: %w", err)
+	}
+	// Older ACP implementations reject this unstable method. The selected model
+	// remains unchanged in that case, matching the provider's prior behavior.
+	_, _ = readResponse(sc)
+	return nil
 }
 
 // handshake performs the ACP initialize → session/new sequence.
-func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) (*handshakeResult, error) {
+func handshake(stdin io.Writer, sc *bufio.Scanner, mdl string, effort Effort, mode Mode, resumeSessionID string) (*handshakeResult, error) {
 	hs := &handshakeResult{}
 
 	// 1. Send initialize request.
@@ -444,24 +596,26 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 		return nil, errors.New("session response missing sessionId")
 	}
 	hs.availableModels = snResult.Models.AvailableModels
+	hs.setConfigOptions(snResult.ConfigOptions)
 
-	// 3. Switch model if requested (best-effort).
+	// 3. Select the model and effort through ACP config options. Older OpenCode
+	// versions do not expose config options, so model selection falls back to
+	// their unstable session/set_model method. Effort requires the config option
+	// because only the server knows which variants the selected model supports.
 	if mdl != "" {
-		hs.nextID++
-		params, err := marshalJSONRaw(SetSessionModelParams{SessionID: hs.sessionID, ModelID: mdl})
-		if err != nil {
-			return nil, fmt.Errorf("marshal session/set_model params: %w", err)
+		if err := hs.setSessionModel(stdin, sc, mdl); err != nil {
+			return nil, err
 		}
-		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-			JSONRPC: "2.0",
-			ID:      hs.nextID,
-			Method:  MethodSessionSetModel,
-			Params:  params,
-		}); err != nil {
-			return nil, fmt.Errorf("write session/set_model: %w", err)
+	}
+	if effort != "" {
+		if err := hs.setSessionConfigOption(stdin, sc, ConfigOptionEffort, string(effort)); err != nil {
+			return nil, err
 		}
-		// Best-effort: ignore errors if the agent rejects session/set_model.
-		_, _ = readResponse(sc)
+	}
+	if mode != "" {
+		if err := hs.setSessionConfigOption(stdin, sc, ConfigOptionMode, string(mode)); err != nil {
+			return nil, err
+		}
 	}
 
 	return hs, nil
@@ -510,13 +664,26 @@ func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]PromptContent
 }
 
 // docToPromptContent converts a genai.Doc to a promptContent block.
-//
-// URL images are not supported: the ACP agent.ts handler only accepts http:
-// (not https:) URLs, so we reject all URLs and require inline base64.
-// See packages/opencode/src/acp/agent.ts case "image" (~line 1327).
 func docToPromptContent(doc genai.Doc, supportsImage bool) (PromptContent, error) {
 	if doc.URL != "" {
-		return PromptContent{}, errors.New("URL documents not supported by opencode ACP; inline the content")
+		mimeType, _, err := doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return PromptContent{}, fmt.Errorf("read URL document: %w", err)
+		}
+		if !supportsImage {
+			return PromptContent{}, errors.New("opencode agent does not support image input")
+		}
+		if !strings.HasPrefix(mimeType, "image/") {
+			return PromptContent{}, fmt.Errorf("unsupported URL document MIME type %q for opencode (images only)", mimeType)
+		}
+		u, err := url.ParseRequestURI(doc.URL)
+		if err != nil {
+			return PromptContent{}, fmt.Errorf("parse image URL: %w", err)
+		}
+		if u.Scheme != "http" && u.Scheme != "https" {
+			return PromptContent{}, fmt.Errorf("unsupported image URL scheme %q for opencode", u.Scheme)
+		}
+		return PromptContent{Type: ContentImage, URI: doc.URL, MimeType: mimeType}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {

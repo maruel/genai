@@ -7,6 +7,10 @@
 package opencode
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -26,6 +30,21 @@ import (
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
 	rec := internaltest.NewSubprocessRecorder(t, name, "opencode")
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
+	c, err := New(opts...)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	return c
+}
+
+func newOutputClient(t *testing.T, output string, opts ...genai.ProviderOption) *Client {
+	opts = append(opts, genai.ProviderOptionStarterWrapper(func(genai.Starter) genai.Starter {
+		return func(_ context.Context, _ []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+			pr, pw := io.Pipe()
+			go func() { _, _ = io.Copy(io.Discard, pr) }()
+			return pw, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
+		}
+	}))
 	c, err := New(opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
@@ -113,6 +132,87 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("effort_mapping", func(t *testing.T) {
+		for _, tc := range []struct {
+			name   string
+			model  string
+			effort Effort
+			mode   Mode
+			want   []SetSessionConfigOptionParams
+		}{
+			{"current_model", "", EffortHigh, "", []SetSessionConfigOptionParams{{SessionID: "session-1", ConfigID: ConfigOptionEffort, Value: "high"}}},
+			{"requested_model", "openai/gpt-5.4", EffortXHigh, "plan", []SetSessionConfigOptionParams{
+				{SessionID: "session-1", ConfigID: ConfigOptionModel, Value: "openai/gpt-5.4"},
+				{SessionID: "session-1", ConfigID: ConfigOptionEffort, Value: "xhigh"},
+				{SessionID: "session-1", ConfigID: ConfigOptionMode, Value: "plan"},
+			}},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				var written bytes.Buffer
+				responses := strings.Join([]string{
+					`{"jsonrpc":"2.0","id":1,"result":{"agentCapabilities":{"promptCapabilities":{"image":true}}}}`,
+					`{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-1","configOptions":[{"id":"model","name":"Model","category":"model","type":"select","currentValue":"openai/gpt-5.4","options":[{"value":"openai/gpt-5.4","name":"GPT-5.4"}]},{"id":"effort","name":"Effort","category":"thought_level","type":"select","currentValue":"low","options":[{"value":"low","name":"Low"},{"value":"high","name":"High"},{"value":"xhigh","name":"Extra high"}]},{"id":"mode","name":"Mode","category":"mode","type":"select","currentValue":"build","options":[{"value":"build","name":"Build"},{"value":"plan","name":"Plan"}]}]}}`,
+				}, "\n")
+				for range tc.want {
+					responses += "\n" + `{"jsonrpc":"2.0","id":3,"result":{"configOptions":[{"id":"model","name":"Model","category":"model","type":"select","currentValue":"openai/gpt-5.4","options":[{"value":"openai/gpt-5.4","name":"GPT-5.4"}]},{"id":"effort","name":"Effort","category":"thought_level","type":"select","currentValue":"low","options":[{"value":"low","name":"Low"},{"value":"high","name":"High"},{"value":"xhigh","name":"Extra high"}]},{"id":"mode","name":"Mode","category":"mode","type":"select","currentValue":"build","options":[{"value":"build","name":"Build"},{"value":"plan","name":"Plan"}]}]}}`
+				}
+				if _, err := handshake(&written, newScanner(strings.NewReader(responses)), tc.model, tc.effort, tc.mode, ""); err != nil {
+					t.Fatalf("handshake: %v", err)
+				}
+
+				var got []SetSessionConfigOptionParams
+				for _, line := range strings.Split(strings.TrimSpace(written.String()), "\n") {
+					var req JSONRPCRequest
+					if err := json.Unmarshal([]byte(line), &req); err != nil {
+						t.Fatalf("unmarshal request: %v", err)
+					}
+					if req.Method == MethodSessionSetConfigOption {
+						var params SetSessionConfigOptionParams
+						if err := json.Unmarshal(req.Params, &params); err != nil {
+							t.Fatalf("unmarshal session/set_config_option params: %v", err)
+						}
+						got = append(got, params)
+					}
+				}
+				if !slices.Equal(got, tc.want) {
+					t.Errorf("config options: got %#v, want %#v", got, tc.want)
+				}
+			})
+		}
+	})
+
+	t.Run("unsupported_effort", func(t *testing.T) {
+		responses := strings.Join([]string{
+			`{"jsonrpc":"2.0","id":1,"result":{}}`,
+			`{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-1","configOptions":[{"id":"model","name":"Model","category":"model","type":"select","currentValue":"openai/gpt-5.4","options":[{"value":"openai/gpt-5.4","name":"GPT-5.4"}]}]}}`,
+		}, "\n")
+		_, err := handshake(&bytes.Buffer{}, newScanner(strings.NewReader(responses)), "", "custom", "", "")
+		if err == nil {
+			t.Fatal("expected unsupported effort error")
+		}
+		if !strings.Contains(err.Error(), "does not expose \"effort\"") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+
+	t.Run("doc_to_prompt_content", func(t *testing.T) {
+		t.Run("url_image", func(t *testing.T) {
+			got, err := docToPromptContent(genai.Doc{URL: "https://example.com/image.png"}, true)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got.Type != ContentImage || got.URI != "https://example.com/image.png" || got.MimeType != "image/png" {
+				t.Errorf("got %#v", got)
+			}
+		})
+		t.Run("unsupported_url_scheme", func(t *testing.T) {
+			_, err := docToPromptContent(genai.Doc{URL: "file:///tmp/image.png"}, true)
+			if err == nil {
+				t.Fatal("expected unsupported URL scheme error")
+			}
+		})
+	})
+
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
 			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("opencode/big-pickle"))
@@ -163,7 +263,7 @@ func TestClient(t *testing.T) {
 		})
 		t.Run("session_resumed_from_opaque", func(t *testing.T) {
 			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("opencode/big-pickle"))
-			msgs1 := genai.Messages{genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it.")}
+			msgs1 := genai.Messages{genai.NewTextMessage("Remember this color: cerulean. Just confirm you noted it.")}
 			res1, err := c1.GenSync(t.Context(), msgs1)
 			if err != nil {
 				t.Fatalf("turn 1: %v", err)
@@ -180,9 +280,9 @@ func TestClient(t *testing.T) {
 
 			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("opencode/big-pickle"))
 			msgs2 := genai.Messages{
-				genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it."),
+				genai.NewTextMessage("Remember this color: cerulean. Just confirm you noted it."),
 				{Replies: res1.Replies},
-				genai.NewTextMessage("What was the secret code I told you?"),
+				genai.NewTextMessage("What color did I tell you?"),
 			}
 			res2, err := c2.GenSync(t.Context(), msgs2)
 			if err != nil {
@@ -193,17 +293,21 @@ func TestClient(t *testing.T) {
 			}
 			found := false
 			for _, r := range res2.Replies {
-				if strings.Contains(strings.ToLower(r.Text), "blue-fox-42") {
+				if strings.Contains(strings.ToLower(r.Text), "cerulean") {
 					found = true
 					break
 				}
 			}
 			if !found {
-				t.Errorf("turn 2: expected reply to contain 'blue-fox-42', got %v", res2.Replies)
+				t.Errorf("turn 2: expected reply to contain 'cerulean', got %v", res2.Replies)
 			}
 		})
 		t.Run("error_result", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_error")
+			c := newOutputClient(t, strings.Join([]string{
+				`{"jsonrpc":"2.0","id":1,"result":{}}`,
+				`{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-1"}}`,
+				`{"jsonrpc":"2.0","id":3,"error":{"code":429,"message":"rate limit exceeded"}}`,
+			}, "\n"))
 			msgs := genai.Messages{genai.NewTextMessage("cause error")}
 			_, err := c.GenSync(t.Context(), msgs)
 			if err == nil {
@@ -288,7 +392,11 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("error_event", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_error_event")
+			c := newOutputClient(t, strings.Join([]string{
+				`{"jsonrpc":"2.0","id":1,"result":{}}`,
+				`{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-1"}}`,
+				`{"jsonrpc":"2.0","id":3,"error":{"code":500,"message":"internal server error"}}`,
+			}, "\n"))
 			msgs := genai.Messages{genai.NewTextMessage("hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 			for range seq {
@@ -345,6 +453,27 @@ func TestExtractSessionID(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage("hi")}
 		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "" {
 			t.Errorf("got %q, want empty", got)
+		}
+	})
+}
+
+func TestGenOption(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, effort := range []Effort{"", EffortDefault, EffortNone, EffortMinimal, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax, "custom"} {
+			if err := (&GenOption{Effort: effort}).Validate(); err != nil {
+				t.Errorf("Effort %q: unexpected error: %v", effort, err)
+			}
+		}
+		if err := (&GenOption{Mode: "plan"}).Validate(); err != nil {
+			t.Errorf("Mode: unexpected error: %v", err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		if err := (&GenOption{Effort: "   "}).Validate(); err == nil {
+			t.Fatal("expected error for whitespace effort")
+		}
+		if err := (&GenOption{Mode: "   "}).Validate(); err == nil {
+			t.Fatal("expected error for whitespace mode")
 		}
 	})
 }

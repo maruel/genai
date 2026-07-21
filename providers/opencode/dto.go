@@ -25,13 +25,14 @@ type Method string
 // JSON-RPC method constants for the ACP protocol.
 const (
 	// Request methods (client → agent).
-	MethodInitialize      Method = "initialize"
-	MethodSessionNew      Method = "session/new"
-	MethodSessionLoad     Method = "session/load"
-	MethodSessionPrompt   Method = "session/prompt"
-	MethodSessionCancel   Method = "session/cancel"
-	MethodSessionSetModel Method = "session/set_model"
-	MethodSessionSetMode  Method = "session/set_mode"
+	MethodInitialize             Method = "initialize"
+	MethodSessionNew             Method = "session/new"
+	MethodSessionLoad            Method = "session/load"
+	MethodSessionPrompt          Method = "session/prompt"
+	MethodSessionCancel          Method = "session/cancel"
+	MethodSessionSetModel        Method = "session/set_model"
+	MethodSessionSetMode         Method = "session/set_mode"
+	MethodSessionSetConfigOption Method = "session/set_config_option"
 
 	// Notification methods (agent → client).
 	MethodSessionUpdate            Method = "session/update"
@@ -260,12 +261,70 @@ type SessionPromptParams struct {
 	Prompt    []PromptContent `json:"prompt"`
 }
 
-// ---------- Model switching ----------
+// ---------- Session configuration ----------
 
 // SetSessionModelParams holds the params for session/set_model.
 type SetSessionModelParams struct {
 	SessionID string `json:"sessionId"`
 	ModelID   string `json:"modelId"`
+}
+
+// ConfigOptionID identifies an ACP session configuration option.
+type ConfigOptionID string
+
+// Session configuration option IDs exposed by OpenCode.
+const (
+	ConfigOptionModel  ConfigOptionID = "model"
+	ConfigOptionEffort ConfigOptionID = "effort"
+	ConfigOptionMode   ConfigOptionID = "mode"
+)
+
+// ConfigOptionCategory groups ACP session configuration options for clients.
+type ConfigOptionCategory string
+
+// Session configuration option categories exposed by OpenCode.
+const (
+	ConfigOptionCategoryModel        ConfigOptionCategory = "model"
+	ConfigOptionCategoryThoughtLevel ConfigOptionCategory = "thought_level"
+	ConfigOptionCategoryMode         ConfigOptionCategory = "mode"
+)
+
+// ConfigOptionType is the ACP configuration-option control type.
+type ConfigOptionType string
+
+// Session configuration option control types exposed by OpenCode.
+const (
+	ConfigOptionTypeSelect ConfigOptionType = "select"
+)
+
+// Effort is an OpenCode reasoning-effort value serialized in the ACP effort
+// configuration option.
+//
+// Availability is provider- and model-specific. The provider validates it
+// against the effort values returned by the ACP session.
+type Effort string
+
+// Reasoning effort levels supported by OpenCode model variants.
+const (
+	EffortDefault Effort = "default"
+	EffortNone    Effort = "none"
+	EffortMinimal Effort = "minimal"
+	EffortLow     Effort = "low"
+	EffortMedium  Effort = "medium"
+	EffortHigh    Effort = "high"
+	EffortXHigh   Effort = "xhigh"
+	EffortMax     Effort = "max"
+)
+
+// Mode is an OpenCode session-mode value serialized in the ACP mode
+// configuration option.
+type Mode string
+
+// SetSessionConfigOptionParams holds the params for session/set_config_option.
+type SetSessionConfigOptionParams struct {
+	SessionID string         `json:"sessionId"`
+	ConfigID  ConfigOptionID `json:"configId"`
+	Value     string         `json:"value"`
 }
 
 // ============================================================
@@ -491,10 +550,34 @@ type AgentInfo struct {
 
 // SessionNewResult is the result of a session/new request.
 type SessionNewResult struct {
-	SessionID string          `json:"sessionId"`
-	Models    ModelsInfo      `json:"models,omitzero"`
-	Modes     ModesInfo       `json:"modes,omitzero"`
-	Meta      json.RawMessage `json:"_meta,omitzero"`
+	SessionID     string                `json:"sessionId"`
+	ConfigOptions []SessionConfigOption `json:"configOptions,omitzero"`
+	Models        ModelsInfo            `json:"models,omitzero"`
+	Modes         ModesInfo             `json:"modes,omitzero"`
+	Meta          json.RawMessage       `json:"_meta,omitzero"`
+}
+
+// SessionConfigOption is a configuration control returned with an ACP session.
+type SessionConfigOption struct {
+	ID           ConfigOptionID       `json:"id"`
+	Name         string               `json:"name"`
+	Description  string               `json:"description,omitzero"`
+	Category     ConfigOptionCategory `json:"category"`
+	Type         ConfigOptionType     `json:"type"`
+	CurrentValue string               `json:"currentValue"`
+	Options      []ConfigOptionValue  `json:"options,omitzero"`
+}
+
+// ConfigOptionValue is a selectable value in a SessionConfigOption.
+type ConfigOptionValue struct {
+	Value       string `json:"value"`
+	Name        string `json:"name"`
+	Description string `json:"description,omitzero"`
+}
+
+// SetSessionConfigOptionResult is returned by session/set_config_option.
+type SetSessionConfigOptionResult struct {
+	ConfigOptions []SessionConfigOption `json:"configOptions"`
 }
 
 // ModelsInfo holds the current and available models from a session response.

@@ -20,7 +20,11 @@ func Example() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	res, err := c.GenSync(context.Background(), genai.Messages{genai.NewTextMessage("Say hello")})
+	res, err := c.GenSync(
+		context.Background(),
+		genai.Messages{genai.NewTextMessage("Say hello")},
+		&opencode.GenOption{Effort: opencode.EffortXHigh},
+	)
 	if err != nil {
 		log.Fatal(err)
 	}

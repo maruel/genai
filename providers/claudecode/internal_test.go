@@ -389,6 +389,35 @@ func TestOutputMessages(t *testing.T) {
 			t.Error("ProductFeedbackDisabled = false, want true")
 		}
 	})
+	t.Run("init_2_1_214_fields", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"2.1.214","uuid":"u1","plugins":[{"name":"p","path":"/p","source":"p@market","version":"1.2.3"}],"plugin_warnings":[{"plugin":"p","type":"shadowed","message":"ignored"}],"capabilities":["interrupt_receipt_v1"]}`
+		var got OutputInitMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Plugins[0].Version != "1.2.3" {
+			t.Errorf("Plugins[0].Version = %q, want 1.2.3", got.Plugins[0].Version)
+		}
+		if len(got.PluginWarnings) != 1 || got.PluginWarnings[0].Type != "shadowed" {
+			t.Errorf("PluginWarnings = %+v", got.PluginWarnings)
+		}
+		if !slices.Equal(got.Capabilities, []string{"interrupt_receipt_v1"}) {
+			t.Errorf("Capabilities = %v", got.Capabilities)
+		}
+	})
+	t.Run("turn_duration", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"turn_duration","duration_ms":1234,"budget_tokens":100,"budget_limit":200,"budget_nudges":2,"message_count":9,"pending_background_agent_count":1,"pending_workflow_count":3,"uuid":"u1","session_id":"s1"}`
+		var got OutputTurnDurationMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Subtype != SystemTurnDuration {
+			t.Errorf("Subtype = %q, want %q", got.Subtype, SystemTurnDuration)
+		}
+		if got.Duration != base.DurationMS(1234) || got.BudgetTokens != 100 || got.PendingWorkflowCount != 3 {
+			t.Errorf("turn duration = %+v", got)
+		}
+	})
 	t.Run("stream_context_management", func(t *testing.T) {
 		const data = `{"type":"stream_event","event":{"type":"message_delta","context_management":{"applied_edits":[{"type":"clear_tool_uses_20250919","cleared_input_tokens":123,"cleared_tool_uses":4},{"type":"clear_thinking_20251015","cleared_input_tokens":456,"cleared_thinking_turns":7}]}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null}`
 		var got OutputStreamEventMsg
@@ -724,16 +753,45 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("result_latency_fields", func(t *testing.T) {
-		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"num_turns":1,"result":"ok","session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1"}`
+		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1"}`
 		var got OutputResultMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
+		if got.Subtype != ResultSuccess {
+			t.Errorf("Subtype = %q, want %q", got.Subtype, ResultSuccess)
+		}
 		if got.TtftStream != base.DurationMS(4) {
 			t.Errorf("TtftStream = %v, want 4", got.TtftStream)
 		}
-		if got.TimeToRequest != base.DurationMS(5) {
-			t.Errorf("TimeToRequest = %v, want 5", got.TimeToRequest)
+		if got.TimeToRequest != base.DurationMS(5) || got.TimeToRequestFromSpawn != base.DurationMS(6) {
+			t.Errorf("request timings = %v, %v", got.TimeToRequest, got.TimeToRequestFromSpawn)
+		}
+		if !got.WarmSpareClaimed || got.TimeOrigin != base.TimeMS(1784740000123) {
+			t.Errorf("warm spare/time origin = %v, %v", got.WarmSpareClaimed, got.TimeOrigin)
+		}
+		if string(got.StructuredOutput) != `{"answer":42}` {
+			t.Errorf("StructuredOutput = %s", got.StructuredOutput)
+		}
+	})
+	t.Run("rate_limit_2_1_214_fields", func(t *testing.T) {
+		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"overagePeriodMonthly":{"utilization":0.7},"overagePeriodChannel":{"utilization":0.6},"errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
+		var got OutputRateLimitEventMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		i := got.RateLimitInfo
+		if i.Status != RateLimitAllowedWarning || i.RateLimitType != RateLimitSevenDayOpus {
+			t.Errorf("rate limit status/type = %q, %q", i.Status, i.RateLimitType)
+		}
+		if i.OverageStatus != RateLimitRejected || i.OverageDisabledReason != OverageDisabledOutOfCredits {
+			t.Errorf("overage status/reason = %q, %q", i.OverageStatus, i.OverageDisabledReason)
+		}
+		if !i.OverageInUse || i.SurpassedThreshold != 0.8 || i.OveragePeriodMonthly.Utilization != 0.7 || i.OveragePeriodChannel.Utilization != 0.6 {
+			t.Errorf("overage fields = %+v", i)
+		}
+		if i.ErrorCode != RateLimitErrorCreditsRequired || !i.CanUserPurchaseCredits || !i.HasChargeableSavedPaymentMethod {
+			t.Errorf("credit fields = %+v", i)
 		}
 	})
 	t.Run("result_origin", func(t *testing.T) {

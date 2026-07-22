@@ -7,8 +7,8 @@
 
 The claude binary is a Bun SEA that compiles JS to native x86-64 via JSC.
 No bytecode survives but Zod schema property names are stored as string
-literals. This script extracts E.object({...}) bodies via brace-counting
-and parses the top-level field names without evaluating the code.
+literals. This script extracts Zod object bodies via brace-counting and parses
+the top-level field names without evaluating the code.
 
 Run after upgrading claude to spot new fields vs dto.go.
 
@@ -22,29 +22,35 @@ import sys
 from dataclasses import dataclass
 
 
+_ZOD_NAME = r"(?P<zod>[a-zA-Z_$][a-zA-Z0-9_$]*)"
+
+
 @dataclass
 class Schema:
     label: str
-    needle: str
+    type_name: str
+    subtype: str | None = None
+    subtype_enum_first: str | None = None
 
 
-def _needle(type_str: str, subtype: str | None = None) -> str:
-    if subtype is None:
-        return f'type:E.literal("{type_str}")'
-    return f'type:E.literal("{type_str}"),subtype:E.literal("{subtype}")'
+def _schema_pattern(schema: Schema) -> re.Pattern[str]:
+    discriminator = rf'type:(?P=zod)\.literal\("{re.escape(schema.type_name)}"\)'
+    if schema.subtype is not None:
+        discriminator += rf',subtype:(?P=zod)\.literal\("{re.escape(schema.subtype)}"\)'
+    elif schema.subtype_enum_first is not None:
+        discriminator += (
+            rf',subtype:(?P=zod)\.enum\(\["{re.escape(schema.subtype_enum_first)}"'
+        )
+    return re.compile(rf"{_ZOD_NAME}\.object\(\{{(?P<body>{discriminator})")
 
 
-# Tracked message types. result/error uses E.enum() for its subtype discriminator.
+# Tracked non-system messages. System subtypes are discovered automatically.
 SCHEMAS: list[Schema] = [
-    Schema("system/init", _needle("system", "init")),
-    Schema("stream_event", _needle("stream_event")),
-    Schema("result/success", _needle("result", "success")),
-    Schema(
-        "result/error",
-        'type:E.literal("result"),subtype:E.enum(["error_during_execution',
-    ),
-    Schema("assistant", _needle("assistant")),
-    Schema("rate_limit_event", _needle("rate_limit_event")),
+    Schema("stream_event", "stream_event"),
+    Schema("result/success", "result", subtype="success"),
+    Schema("result/error", "result", subtype_enum_first="error_during_execution"),
+    Schema("assistant", "assistant"),
+    Schema("rate_limit_event", "rate_limit_event"),
 ]
 
 
@@ -63,12 +69,12 @@ def _skip_string(data: str, i: int) -> int:
     return i
 
 
-def find_schema_body(data: str, needle: str, window: int = 4000) -> str | None:
-    """Return the E.object body starting at needle up to the closing brace."""
-    idx = data.find(needle)
-    if idx < 0:
+def find_schema_body(data: str, schema: Schema, window: int = 16_000) -> str | None:
+    """Return a Zod object body for schema up to its closing brace."""
+    match = _schema_pattern(schema).search(data)
+    if match is None:
         return None
-    chunk = data[idx : idx + window]
+    chunk = data[match.start("body") : match.start("body") + window]
     depth = 0
     i = 0
     while i < len(chunk):
@@ -105,13 +111,29 @@ def extract_top_level_keys(body: str) -> list[str]:
             i += 1
             continue
         if depth == 0:
-            m = re.match(r"([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:", body[i:])
-            if m:
-                keys.append(m.group(1))
-                i += len(m.group(0))
+            match = re.match(r"([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:", body[i:])
+            if match:
+                keys.append(match.group(1))
+                i += len(match.group(0))
                 continue
         i += 1
     return keys
+
+
+def find_system_schemas(data: str) -> list[Schema]:
+    """Discover every literal system subtype schema in binary order."""
+    pattern = re.compile(
+        rf'{_ZOD_NAME}\.object\(\{{type:(?P=zod)\.literal\("system"\),'
+        rf'subtype:(?P=zod)\.literal\("(?P<subtype>[^"]+)"\)'
+    )
+    schemas: list[Schema] = []
+    seen: set[str] = set()
+    for match in pattern.finditer(data):
+        subtype = match.group("subtype")
+        if subtype not in seen:
+            schemas.append(Schema(f"system/{subtype}", "system", subtype=subtype))
+            seen.add(subtype)
+    return schemas
 
 
 def main() -> int:
@@ -135,16 +157,22 @@ def main() -> int:
     with open(binary, "rb") as f:
         data = f.read().decode("latin-1")
 
-    for schema in SCHEMAS:
-        body = find_schema_body(data, schema.needle)
+    schemas = [*find_system_schemas(data), *SCHEMAS]
+    found = 0
+    for schema in schemas:
+        body = find_schema_body(data, schema)
         if body is None:
             print(f"\n{schema.label}: NOT FOUND")
             continue
+        found += 1
         keys = extract_top_level_keys(body)
         print(f"\n{schema.label}:")
-        for k in keys:
-            print(f"  {k}")
+        for key in keys:
+            print(f"  {key}")
 
+    if found == 0:
+        print("error: no wire-protocol schemas found", file=sys.stderr)
+        return 1
     return 0
 
 

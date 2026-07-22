@@ -545,6 +545,8 @@ const (
 	SystemBackgroundTasksChanged SystemSubtype = "background_tasks_changed"
 	// SystemThinkingTokens reports incremental estimated thinking token usage.
 	SystemThinkingTokens SystemSubtype = "thinking_tokens"
+	// SystemTurnDuration reports per-turn duration, budget, and pending-work counts.
+	SystemTurnDuration SystemSubtype = "turn_duration"
 	// SystemCompactBoundary marks where context was compacted.
 	SystemCompactBoundary SystemSubtype = "compact_boundary"
 	// SystemStatus reports idle/running/requires_action transitions.
@@ -635,6 +637,8 @@ type OutputInitMsg struct {
 	SlashCommands  []string        `json:"slash_commands,omitempty"`
 	Betas          []string        `json:"betas,omitempty"`
 	PluginErrors   []InitPluginErr `json:"plugin_errors,omitempty,omitzero"`
+	PluginWarnings []InitPluginErr `json:"plugin_warnings,omitempty,omitzero"`
+	Capabilities   []string        `json:"capabilities,omitempty"`
 	MemoryPaths    InitMemPaths    `json:"memory_paths,omitzero"`
 
 	AnalyticsDisabled       bool `json:"analytics_disabled,omitempty"`
@@ -649,9 +653,10 @@ type InitMCPServer struct {
 
 // InitPlugin is a plugin entry in the system/init message.
 type InitPlugin struct {
-	Name   string `json:"name"`
-	Path   string `json:"path"`
-	Source string `json:"source"`
+	Name    string `json:"name"`
+	Path    string `json:"path"`
+	Source  string `json:"source"`
+	Version string `json:"version,omitempty"`
 }
 
 // InitPluginErr is a plugin load error in the system/init message.
@@ -1049,25 +1054,40 @@ func (m *OutputUserMsg) DecodeToolUseResult() (OutputToolUseResult, error) {
 
 // ---------- result ----------
 
+// ResultSubtype is the terminal result discriminator.
+type ResultSubtype string
+
+// Result subtypes.
+const (
+	ResultSuccess                         ResultSubtype = "success"
+	ResultErrorDuringExecution            ResultSubtype = "error_during_execution"
+	ResultErrorMaxTurns                   ResultSubtype = "error_max_turns"
+	ResultErrorMaxBudgetUSD               ResultSubtype = "error_max_budget_usd"
+	ResultErrorMaxStructuredOutputRetries ResultSubtype = "error_max_structured_output_retries"
+)
+
 // OutputResultMsg is the wire representation of a result record.
 type OutputResultMsg struct {
-	Type             OutputType      `json:"type"`
-	Subtype          string          `json:"subtype"`
-	IsError          bool            `json:"is_error"`
-	Duration         base.DurationMS `json:"duration_ms"`
-	DurationAPI      base.DurationMS `json:"duration_api_ms"`
-	Ttft             base.DurationMS `json:"ttft_ms,omitempty"`
-	TtftStream       base.DurationMS `json:"ttft_stream_ms,omitempty"`
-	TimeToRequest    base.DurationMS `json:"time_to_request_ms,omitempty"`
-	NumTurns         int             `json:"num_turns"`
-	Result           string          `json:"result"`
-	Errors           []string        `json:"errors,omitempty"`
-	SessionID        string          `json:"session_id"`
-	TotalCostUSD     float64         `json:"total_cost_usd"`
-	Usage            MsgUsage        `json:"usage"`
-	UUID             string          `json:"uuid"`
-	StructuredOutput string          `json:"structured_output"`
-	Timestamp        string          `json:"timestamp,omitempty"`
+	Type                   OutputType      `json:"type"`
+	Subtype                ResultSubtype   `json:"subtype"`
+	IsError                bool            `json:"is_error"`
+	Duration               base.DurationMS `json:"duration_ms"`
+	DurationAPI            base.DurationMS `json:"duration_api_ms"`
+	Ttft                   base.DurationMS `json:"ttft_ms,omitempty"`
+	TtftStream             base.DurationMS `json:"ttft_stream_ms,omitempty"`
+	TimeToRequest          base.DurationMS `json:"time_to_request_ms,omitempty"`
+	TimeToRequestFromSpawn base.DurationMS `json:"time_to_request_from_spawn_ms,omitempty"`
+	WarmSpareClaimed       bool            `json:"warm_spare_claimed,omitempty"`
+	TimeOrigin             base.TimeMS     `json:"time_origin_ms,omitempty"`
+	NumTurns               int             `json:"num_turns"`
+	Result                 string          `json:"result"`
+	Errors                 []string        `json:"errors,omitempty"`
+	SessionID              string          `json:"session_id"`
+	TotalCostUSD           float64         `json:"total_cost_usd"`
+	Usage                  MsgUsage        `json:"usage"`
+	UUID                   string          `json:"uuid"`
+	StructuredOutput       json.RawMessage `json:"structured_output,omitempty"`
+	Timestamp              string          `json:"timestamp,omitempty"`
 
 	FastModeState     string                     `json:"fast_mode_state,omitempty"`
 	ModelUsage        map[string]ModelUsageEntry `json:"modelUsage,omitempty"`
@@ -1088,7 +1108,7 @@ func (m *OutputResultMsg) AsError() error {
 	if errMsg == "" && len(m.Errors) > 0 {
 		errMsg = strings.Join(m.Errors, "; ")
 	}
-	return errors.New("claude error (" + m.Subtype + "): " + errMsg)
+	return errors.New("claude error (" + string(m.Subtype) + "): " + errMsg)
 }
 
 // ResultOriginKind identifies why a result was emitted.
@@ -1301,17 +1321,80 @@ type OutputRateLimitEventMsg struct {
 	RateLimitInfo RateLimitInfo `json:"rate_limit_info"`
 }
 
+// RateLimitStatus is the current availability of a rate-limited resource.
+type RateLimitStatus string
+
+// Rate limit statuses.
+const (
+	RateLimitAllowed        RateLimitStatus = "allowed"
+	RateLimitAllowedWarning RateLimitStatus = "allowed_warning"
+	RateLimitRejected       RateLimitStatus = "rejected"
+)
+
+// RateLimitType identifies the quota window that produced a rate-limit event.
+type RateLimitType string
+
+// Rate limit types.
+const (
+	RateLimitFiveHour        RateLimitType = "five_hour"
+	RateLimitSevenDay        RateLimitType = "seven_day"
+	RateLimitSevenDayOpus    RateLimitType = "seven_day_opus"
+	RateLimitSevenDaySonnet  RateLimitType = "seven_day_sonnet"
+	RateLimitSevenDayOverage RateLimitType = "seven_day_overage_included"
+	RateLimitOverage         RateLimitType = "overage"
+)
+
+// OverageDisabledReason explains why overage spending is unavailable.
+type OverageDisabledReason string
+
+// Overage disabled reasons.
+const (
+	OverageDisabledNotProvisioned    OverageDisabledReason = "overage_not_provisioned"
+	OverageDisabledOrg               OverageDisabledReason = "org_level_disabled"
+	OverageDisabledOrgUntil          OverageDisabledReason = "org_level_disabled_until"
+	OverageDisabledOutOfCredits      OverageDisabledReason = "out_of_credits"
+	OverageDisabledSeatTier          OverageDisabledReason = "seat_tier_level_disabled"
+	OverageDisabledMember            OverageDisabledReason = "member_level_disabled"
+	OverageDisabledSeatTierZeroLimit OverageDisabledReason = "seat_tier_zero_credit_limit"
+	OverageDisabledGroupZeroLimit    OverageDisabledReason = "group_zero_credit_limit"
+	OverageDisabledMemberZeroLimit   OverageDisabledReason = "member_zero_credit_limit"
+	OverageDisabledOrgService        OverageDisabledReason = "org_service_level_disabled"
+	OverageDisabledNoLimits          OverageDisabledReason = "no_limits_configured"
+	OverageDisabledFetchError        OverageDisabledReason = "fetch_error"
+	OverageDisabledUnknown           OverageDisabledReason = "unknown"
+)
+
+// RateLimitErrorCode identifies an actionable rate-limit error.
+type RateLimitErrorCode string
+
+// Rate limit error codes.
+const (
+	RateLimitErrorCreditsRequired RateLimitErrorCode = "credits_required"
+)
+
+// RateLimitPeriod reports utilization for one overage spending period.
+type RateLimitPeriod struct {
+	Utilization float64 `json:"utilization"`
+}
+
 // RateLimitInfo is the nested rate limit info inside a rate_limit_event.
 // Wire format uses camelCase (matches Claude Code CLI JSON output).
 type RateLimitInfo struct {
-	Status                string  `json:"status"`
-	ResetsAt              float64 `json:"resetsAt,omitempty"`
-	RateLimitType         string  `json:"rateLimitType,omitempty"`
-	Utilization           float64 `json:"utilization,omitempty"`
-	OverageStatus         string  `json:"overageStatus,omitempty"`
-	OverageResetsAt       float64 `json:"overageResetsAt,omitempty"`
-	OverageDisabledReason string  `json:"overageDisabledReason,omitempty"`
-	IsUsingOverage        bool    `json:"isUsingOverage,omitempty"`
+	Status                          RateLimitStatus       `json:"status"`
+	ResetsAt                        float64               `json:"resetsAt,omitempty"`
+	RateLimitType                   RateLimitType         `json:"rateLimitType,omitempty"`
+	Utilization                     float64               `json:"utilization,omitempty"`
+	OverageStatus                   RateLimitStatus       `json:"overageStatus,omitempty"`
+	OverageResetsAt                 float64               `json:"overageResetsAt,omitempty"`
+	OverageDisabledReason           OverageDisabledReason `json:"overageDisabledReason,omitempty"`
+	IsUsingOverage                  bool                  `json:"isUsingOverage,omitempty"`
+	OverageInUse                    bool                  `json:"overageInUse,omitempty"`
+	SurpassedThreshold              float64               `json:"surpassedThreshold,omitempty"`
+	OveragePeriodMonthly            RateLimitPeriod       `json:"overagePeriodMonthly,omitzero"`
+	OveragePeriodChannel            RateLimitPeriod       `json:"overagePeriodChannel,omitzero"`
+	ErrorCode                       RateLimitErrorCode    `json:"errorCode,omitempty"`
+	CanUserPurchaseCredits          bool                  `json:"canUserPurchaseCredits,omitempty"`
+	HasChargeableSavedPaymentMethod bool                  `json:"hasChargeableSavedPaymentMethod,omitempty"`
 }
 
 // ---------- tool_progress ----------
@@ -1434,6 +1517,21 @@ type OutputCommandsChangedMsg struct {
 	Commands  []CommandWire `json:"commands"`
 	UUID      string        `json:"uuid"`
 	SessionID string        `json:"session_id"`
+}
+
+// OutputTurnDurationMsg reports per-turn duration, budget, and pending work.
+type OutputTurnDurationMsg struct {
+	Type                        OutputType      `json:"type"`    // OutputSystem
+	Subtype                     SystemSubtype   `json:"subtype"` // SystemTurnDuration
+	Duration                    base.DurationMS `json:"duration_ms"`
+	BudgetTokens                int             `json:"budget_tokens,omitempty"`
+	BudgetLimit                 int             `json:"budget_limit,omitempty"`
+	BudgetNudges                int             `json:"budget_nudges,omitempty"`
+	MessageCount                int             `json:"message_count,omitempty"`
+	PendingBackgroundAgentCount int             `json:"pending_background_agent_count,omitempty"`
+	PendingWorkflowCount        int             `json:"pending_workflow_count,omitempty"`
+	UUID                        string          `json:"uuid"`
+	SessionID                   string          `json:"session_id"`
 }
 
 // OutputLocalCommandOutputMsg is output from a local slash command (e.g. /cost).

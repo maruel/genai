@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Immediate Response to the Input**\n\nOkay, let's break this down. The instruction is incredibly simple: \"Say hello.\" But, the constraint, \"Do not emit other words,\" is what makes it interesting, and forces me to consider edge cases. I need to deliver *exactly* the word \"Hello\". Nothing else. No introductory phrase, no ending punctuation, no implied politeness, nothing. It’s all about the word itself. The target is definitively \"Hello\" (or “hello”) - the essential linguistic unit of greeting. Any deviation, even a simple period, would violate the constraint. Therefore, my output must be precisely: Hello\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello",
+                        "thoughtSignature": "ErgECrUEARFNMg+zPhQ04qegoWV2AbseEO7LjsDmUO5oiH4TmydapxRWyLkzXgQGQ2ptlptej/dA3HbdJZOd05a2yaQRjL4166jCTAfKoKpoCwpk4pWocZjsCiWptYWEjNqttJPH19/7lq8Wpo5Fn5aRgadwwepvuf0FENBLSbkRS2mrKHlaL1GPWzGNt4Wzg36e0hQ4jteAvSydt3SxLRq1FvoSlBQjfhaNrBwJbYWorUQZFCSJItwHgDrwICHt8FTs/eIpbPPNrts+Ji6M5qpU8ZKXurD5+zB03tPndejB0xcEoaB0keKoReTGfLDsJ8dQ5bT5YvB0UOAitc5hkBqXdH/8JyElr6RN4UVs9MTi5glTeNMAd2tkBjzXTFNXojlosJ5Vv5T0tPIbytkv5n/71ZR5zALQ6BNcb5Xg2lp7kPLvfeb27kWNM7CX8livpFpAidRdllpdMcOyfgBsc0lrA0sSO3cWeOLnkfjOStj/Pg7k1D5t59TF8/jVV5/xLzUQe48Fi+FjYytIFo5HPMbdofGaayogiYMdDKrcTxdmeaNQ77EoYiVxjRo7xStndCJnpxoe0UByQMMHUAE7dnQ/Vmd346/KlDlhrKBLq7QHycR+4x4NjEvcq8kATUtAa3hsVgwuoe7EE7Z2xx6bjxhLxAMF7ZnC30XD1ILX6k5pKR5vUpudEadhGM5OHZjHaTGzq419aRrGEo3G0oOASo983z43LrPlYZv5DtMD067ARVba2I5pA5dXGQ=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 141,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 130,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.6-flash",
+              "responseId": "sfBgasjpGr-w1MkP_6GumQc"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2503
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.511s

@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Concise Approach to a Simple Greeting**\n\nOkay, so the prompt is straightforward: I need to output a greeting. The crucial thing is I can *only* say \"hello\". No other words or additions. Alright, the target action is crystal clear - a \"hello\". I should think, \"Hello.\" and only that. No extra verbiage. Let's make sure it's just that. \"Hello\". Done.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello",
+                        "thoughtSignature": "Eo8DCowDARFNMg9EWyLp8oCzbrwh+2v8A2UMtJ+3vIOrxUuCQvMWByKmZHwdV+MyJ6PK8zu1XBIjVCb94f6bxx/qCVhaQzMRn/ytmkwPRfBKcAwqYDvK83+w0gBb+ivvrhrNJYmSDkhm01hYG+hF+JeN3faotMdvcGjODoE++LpR28F1DFwluPsjrQheJ2+ceerJ5WheIuPzegdbt3G2Co6pTCEVMv/k4Drc8kvWIbd/WOoTbaLyYZeXvXEJCExvOFSSW7HGih+lBdP6xyzO7nCYHU5vP6EuriE7uvZcmVjvQ37tYEUrlOb4+cLNRDRXfR9OhOOj0BZTEEQfT3IWPNahpWm9gQI5DW0iU0GpLZPSdCkYzRZM4zmEsBwhRyMe8B+cmwO7Ka9wKKqqvIPNUZbXNSVAqD+vchX1KmZAW/J+G2WMbAvM8Kd3sHKXqjCAbLenBTDvBV8wTqg7l+UPUJXaNsxUTx2WYy4WA+1BEY1SPNmRE+UFU0SiRUVFFisIV20EFIXOX53/iuN0iWun2Mmq"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 108,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 97,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "r_BgavyPNoaa1MkP6OevkAo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1540
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.548s

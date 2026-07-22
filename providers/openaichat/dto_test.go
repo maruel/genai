@@ -40,8 +40,8 @@ func TestChatRequest(t *testing.T) {
 	t.Run("Init/tools/gpt-5.6 rejects explicit reasoning", func(t *testing.T) {
 		var r ChatRequest
 		err := r.Init(genai.Messages{genai.NewTextMessage("calculate")}, "gpt-5.6-luna", testToolOption(), &GenOptionText{ReasoningEffort: ReasoningEffortLow})
-		var uerr *base.ErrNotSupported
-		if !errors.As(err, &uerr) {
+		uerr, ok := errors.AsType[*base.ErrNotSupported](err)
+		if !ok {
 			t.Fatalf("got %v, want ErrNotSupported", err)
 		}
 		if len(uerr.Options) != 1 || uerr.Options[0] != "GenOptionText.ReasoningEffort" {

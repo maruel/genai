@@ -348,8 +348,7 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryRes
 	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/results"
 	err := c.impl.DoRequest(ctx, "GET", u, nil, &resp)
 	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == http.StatusNotFound {
+		if herr, ok := errors.AsType[*httpjson.Error](err); ok && herr.StatusCode == http.StatusNotFound {
 			er := ErrorResponse{}
 			if json.Unmarshal(herr.ResponseBody, &er) == nil {
 				if er.ErrorVal.Type == "not_found_error" {

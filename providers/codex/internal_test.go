@@ -70,8 +70,8 @@ func TestParseOpts(t *testing.T) {
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				_, err := parseOpts(tc.opts)
-				var uerr *base.ErrNotSupported
-				if !errors.As(err, &uerr) {
+				uerr, ok := errors.AsType[*base.ErrNotSupported](err)
+				if !ok {
 					t.Fatalf("expected ErrNotSupported, got %v", err)
 				}
 				if !slices.Contains(uerr.Options, tc.want) {

@@ -240,8 +240,7 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		if err := srv.Close(); err != nil && !errors.Is(err, context.Canceled) {
 			// llama-server may exit with code 1 on SIGINT; ignore ExitError
 			// since we intentionally stopped it.
-			var exitErr *exec.ExitError
-			if !errors.As(err, &exitErr) {
+			if _, ok := errors.AsType[*exec.ExitError](err); !ok {
 				l.t.Error(err)
 			}
 		}

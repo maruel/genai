@@ -60,15 +60,14 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 					}
 					t.Fatal(err)
 				}
-				var unsupported *base.ErrNotSupported
 				if _, err = c.GenSync(t.Context(), msgs); line.ErrGenSync == "" {
-					if !errors.As(err, &unsupported) {
+					if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 						t.Fatal("expected unsupported")
 					}
 				} else {
 					if err == nil {
 						t.Fatal("expected error")
-					} else if errors.As(err, &unsupported) {
+					} else if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 						t.Fatal("should not be structured")
 					} else if got := err.Error(); got != line.ErrGenSync {
 						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenSync, got)
@@ -87,15 +86,14 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 				fragments, finish := c.GenStream(t.Context(), msgs)
 				for range fragments {
 				}
-				var unsupported *base.ErrNotSupported
 				if _, err = finish(); line.ErrGenStream == "" {
-					if !errors.As(err, &unsupported) {
+					if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 						t.Fatal("expected unsupported")
 					}
 				} else {
 					if err == nil {
 						t.Fatal("expected error")
-					} else if errors.As(err, &unsupported) {
+					} else if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 						t.Fatal("should not be structured")
 					} else if got := err.Error(); got != line.ErrGenStream {
 						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenStream, got)
@@ -111,8 +109,8 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 						}
 						t.Fatal(err)
 					}
-					var unsupported *base.ErrNotSupported
-					if _, err = c.ListModels(t.Context()); errors.As(err, &unsupported) {
+					_, err = c.ListModels(t.Context())
+					if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 						if line.ErrListModel != "" {
 							t.Fatal("expected error")
 						}
@@ -134,26 +132,24 @@ func TestCapabilities(t *testing.T, c genai.Provider) {
 	caps := c.Capabilities()
 	msgs := genai.Messages{genai.NewTextMessage("test")}
 	t.Run("GenAsync", func(t *testing.T) {
-		var notSupported *base.ErrNotSupported
 		if _, err := c.GenAsync(t.Context(), msgs); caps.GenAsync {
-			if errors.As(err, &notSupported) {
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 				t.Error("GenAsync capability declared but returned ErrNotSupported")
 			}
 		} else {
-			if !errors.As(err, &notSupported) {
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 				t.Errorf("GenAsync should return ErrNotSupported, got %T: %v", err, err)
 			}
 		}
 	})
 
 	t.Run("Caching", func(t *testing.T) {
-		var notSupported *base.ErrNotSupported
 		if _, err := c.CacheAddRequest(t.Context(), msgs, "test", "test", time.Hour); caps.Caching {
-			if errors.As(err, &notSupported) {
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 				t.Error("Caching capability declared but CacheAddRequest returned ErrNotSupported")
 			}
 		} else {
-			if !errors.As(err, &notSupported) {
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 				t.Errorf("CacheAddRequest should return ErrNotSupported, got %T: %v", err, err)
 			}
 		}
@@ -175,8 +171,7 @@ func TestCapabilitiesGenAsync(t *testing.T, c genai.Provider, msgs ...genai.Mess
 		}
 	}
 	id, err := c.GenAsync(t.Context(), msgs)
-	var notSupported *base.ErrNotSupported
-	if errors.As(err, &notSupported) {
+	if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		t.Error("GenAsync capability declared but returned ErrNotSupported")
 	} else if err != nil {
 		t.Errorf("GenAsync returned error: %v", err)
@@ -192,8 +187,8 @@ func TestCapabilitiesCaching(t *testing.T, c genai.Provider, msgs ...genai.Messa
 	if len(msgs) == 0 {
 		msgs = genai.Messages{genai.NewTextMessage("test")}
 	}
-	var notSupported *base.ErrNotSupported
-	if _, err := c.CacheAddRequest(t.Context(), msgs, "", "test", time.Hour); errors.As(err, &notSupported) {
+	_, err := c.CacheAddRequest(t.Context(), msgs, "", "test", time.Hour)
+	if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		t.Error("Caching capability declared but CacheAddRequest returned ErrNotSupported")
 	} else if err != nil {
 		t.Errorf("CacheAddRequest returned error: %v", err)

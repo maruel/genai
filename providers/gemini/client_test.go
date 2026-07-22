@@ -710,8 +710,7 @@ func TestClient(t *testing.T) {
 			genai.NewTextMessage("Say hello. Do not emit other words."),
 		}
 		_, err := c.GenSync(t.Context(), msgs)
-		var er *gemini.ErrorResponse
-		if !errors.As(err, &er) {
+		if _, ok := errors.AsType[*gemini.ErrorResponse](err); !ok {
 			t.Fatalf("Expected ErrorResponse, got %T", err)
 		}
 	})

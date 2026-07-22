@@ -32,8 +32,7 @@ func Example_all_ListModel() {
 			continue
 		}
 		models, err := c.ListModels(context.Background())
-		var ent *base.ErrNotSupported
-		if errors.As(err, &ent) {
+		if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 			continue
 		}
 		fmt.Printf("%s:\n", name)
@@ -154,8 +153,7 @@ func Example_available() {
 	opts := genai.GenOptionText{}
 	resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionSeed(42))
 	if err != nil {
-		var ent *base.ErrNotSupported
-		if errors.As(err, &ent) && slices.Contains(ent.Options, "GenOptionSeed") {
+		if ent, ok := errors.AsType[*base.ErrNotSupported](err); ok && slices.Contains(ent.Options, "GenOptionSeed") {
 			if resp, err = c.GenSync(ctx, msgs, &opts); err != nil {
 				fmt.Fprintf(os.Stderr, "error: %v\n", err)
 				return

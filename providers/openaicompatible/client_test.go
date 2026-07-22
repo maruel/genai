@@ -72,8 +72,7 @@ func TestClient(t *testing.T) {
 				ctx := t.Context()
 				resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionSeed(1))
 				if err != nil {
-					var ent *base.ErrNotSupported
-					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "GenOptionSeed") {
+					if ent, ok := errors.AsType[*base.ErrNotSupported](err); !ok || !slices.Contains(ent.Options, "GenOptionSeed") {
 						t.Fatal(err)
 					}
 					// Try again without seed.
@@ -102,8 +101,7 @@ func TestClient(t *testing.T) {
 				}
 				res, err := finish()
 				if err != nil {
-					var ent *base.ErrNotSupported
-					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "GenOptionSeed") {
+					if ent, ok := errors.AsType[*base.ErrNotSupported](err); !ok || !slices.Contains(ent.Options, "GenOptionSeed") {
 						t.Fatal(err)
 					}
 					// Try again without seed.

@@ -119,8 +119,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	done := make(chan error)
 	go func() {
 		err2 := cmd.Wait()
-		var er *exec.ExitError
-		if errors.As(err2, &er) {
+		if er, ok := errors.AsType[*exec.ExitError](err2); ok {
 			s, ok := er.Sys().(syscall.WaitStatus)
 			if ok && s.Signaled() {
 				// It was simply killed.

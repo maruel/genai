@@ -249,8 +249,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
-	var uerr *base.ErrNotSupported
-	if errors.As(err, &uerr) {
+	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		f.Seed = !slices.Contains(uerr.Options, "GenOptionSeed")
 	} else if err == nil {
 		f.Seed = true
@@ -263,7 +262,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
-	if errors.As(err, &uerr) {
+	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		f.TopLogprobs = !slices.Contains(uerr.Options, "GenOptionText.TopLogprobs")
 	} else if err == nil {
 		// TODO: We'll need to be more detailed than that. Most don't report the ID or bytes, some only report
@@ -418,7 +417,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
-	if errors.As(err, &uerr) {
+	if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
 			err = nil
@@ -472,7 +471,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
-	if errors.As(err, &uerr) {
+	if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
 			err = nil
@@ -893,8 +892,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
-	var uerr *base.ErrNotSupported
-	if errors.As(err, &uerr) {
+	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		if slices.Contains(uerr.Options, "GenOptionSeed") {
 			out.GenSync.Seed = false
 			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionImage{})
@@ -982,8 +980,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
-	var uerr *base.ErrNotSupported
-	if errors.As(err, &uerr) {
+	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		if slices.Contains(uerr.Options, "GenOptionSeed") {
 			out.GenSync.Seed = false
 			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionAudio{})
@@ -1073,27 +1070,23 @@ func isBadError(ctx context.Context, err error) bool {
 		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "cassette", "err", err)
 		return true
 	}
-	var uerr *httpjson.UnknownFieldError
-	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
+	if _, ok := errors.AsType[*httpjson.UnknownFieldError](err); errors.Is(err, cassette.ErrInteractionNotFound) || ok {
 		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "UnknownFieldError", "err", err)
 		return true
 	}
-	var be *internal.BadError
-	if errors.As(err, &be) {
+	if _, ok := errors.AsType[*internal.BadError](err); ok {
 		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "BadError", "err", err)
 		return true
 	}
 
 	// API error are never 'bad'.
-	var ua base.ErrAPI
-	if errors.As(err, &ua) && ua.IsAPIError() {
+	if ua, ok := errors.AsType[base.ErrAPI](err); ok && ua.IsAPIError() {
 		internal.Logger(ctx).DebugContext(ctx, "isBadError", "type", "ErrAPI")
 		return false
 	}
 	// Tolerate HTTP 400 as when a model is passed something that it doesn't accept, e.g. sending audio input to
 	// a text-only model, the provider often respond with 400. 500s should not be tolerated at all.
-	var herr *httpjson.Error
-	if errors.As(err, &herr) && herr.StatusCode >= 500 {
+	if herr, ok := errors.AsType[*httpjson.Error](err); ok && herr.StatusCode >= 500 {
 		internal.Logger(ctx).DebugContext(ctx, "isBadError", "status", herr.StatusCode)
 		return true
 	}

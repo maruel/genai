@@ -60,8 +60,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "resp", res)
 	flaky := false
 	f.ToolCallRequired = true
-	var uerr *base.ErrNotSupported
-	if errors.As(err, &uerr) {
+	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		if slices.Contains(uerr.Options, "GenOptionTools.Force") {
 			// Do not mark the test as flaky since it worked. Remember about ToolCallRequired not being supported
 			// though.
@@ -133,7 +132,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		return err
 	}
-	if errors.As(err, &uerr) && slices.Contains(uerr.Options, "GenOptionTools.Force") {
+	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok && slices.Contains(uerr.Options, "GenOptionTools.Force") {
 		// The provider doesn't support ToolCallNone. Retry without forcing.
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err, "msg", "trying toolany")
 		optsTools.Force = genai.ToolCallAny

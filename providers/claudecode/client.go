@@ -490,8 +490,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...ge
 	}
 	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
-		var uerr *base.ErrNotSupported
-		if !errors.As(optsErr, &uerr) {
+		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return nil, optsErr
 		}
 		// Proceed with the call; return ErrNotSupported after getting results.
@@ -556,8 +555,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	}
 	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
-		var uerr *base.ErrNotSupported
-		if !errors.As(optsErr, &uerr) {
+		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
 		}
 	}

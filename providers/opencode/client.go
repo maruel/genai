@@ -306,8 +306,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
-		var unsupported *base.ErrNotSupported
-		if !errors.As(optsErr, &unsupported) {
+		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
 		}
 		defer func() {
@@ -352,8 +351,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	}
 	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
-		var unsupported *base.ErrNotSupported
-		if !errors.As(optsErr, &unsupported) {
+		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
 		}
 	}

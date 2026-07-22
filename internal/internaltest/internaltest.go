@@ -307,8 +307,7 @@ func (r *RetryOnRateLimit) Unwrap() genai.Provider {
 }
 
 func isRateLimited(err error) bool {
-	var herr *httpjson.Error
-	if errors.As(err, &herr) {
+	if herr, ok := errors.AsType[*httpjson.Error](err); ok {
 		if herr.StatusCode == http.StatusTooManyRequests || herr.StatusCode == http.StatusInternalServerError {
 			return true
 		}
@@ -331,8 +330,7 @@ func (h *HideHTTPCode) Unwrap() genai.Provider {
 func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	resp, err := h.Provider.GenSync(ctx, msgs, opts...)
 	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == h.StatusCode {
+		if herr, ok := errors.AsType[*httpjson.Error](err); ok && herr.StatusCode == h.StatusCode {
 			err = errors.New("hiding a HTTP error")
 		}
 	}
@@ -345,8 +343,7 @@ func (h *HideHTTPCode) GenStream(ctx context.Context, msgs genai.Messages, opts 
 	return fragments, func() (genai.Result, error) {
 		res, err := finish()
 		if err != nil {
-			var herr *httpjson.Error
-			if errors.As(err, &herr) && herr.StatusCode == h.StatusCode {
+			if herr, ok := errors.AsType[*httpjson.Error](err); ok && herr.StatusCode == h.StatusCode {
 				err = errors.New("hiding a HTTP error")
 			}
 		}

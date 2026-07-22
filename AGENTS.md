@@ -12,6 +12,14 @@
   - It installs `cmd/list-models` and `cmd/scoreboard`, writes `docs/MODELS.md`, then runs `go generate ./...`.
   - If a provider fails after the env check, inspect the `list-models -strict -provider <provider>` error. The script deletes that provider's `Warmup.yaml` and runs `go test ./providers/<provider>/...` to expose stale recording issues. Never use `RECORD=all`.
 
+## Gating Checks
+
+Before submitting changes, run:
+
+1. `gofmt -w -s .`
+2. `go test ./...`
+3. `golangci-lint run ./...`
+
 ## Directory Structure
 
 - Shared client implementation: `base/`
@@ -165,9 +173,7 @@ func (o *Options) Validate() error {
 1. **Before making changes**: Understand the existing patterns and conventions
 2. **Write tests first**: Test-driven development is preferred
 3. **Update documentation**: Keep README.md and code comments current
-4. **Run the full test suite**: Ensure all tests pass before submitting
-5. **Follow Go conventions**: Use `gofmt`, `golint`, `go vet -vettool=shadow`, `staticcheck` and `gosec`
-6. **Add examples**: Include usage examples for new features
+4. **Add examples**: Include usage examples for new features
 
 ---
 

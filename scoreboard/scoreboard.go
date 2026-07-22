@@ -383,7 +383,7 @@ func (t Reason) Validate() error {
 	case ReasonNone, ReasonInline, ReasonAuto:
 		return nil
 	default:
-		return fmt.Errorf("invalid Reason: %q", t)
+		return fmt.Errorf("invalid Reason: %d", t)
 	}
 }
 
@@ -398,7 +398,7 @@ func (t Reason) MarshalJSON() ([]byte, error) {
 	case ReasonAuto:
 		return []byte(`"auto"`), nil
 	default:
-		return nil, fmt.Errorf("invalid Reason: %q", t)
+		return nil, fmt.Errorf("invalid Reason: %d", t)
 	}
 }
 

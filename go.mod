@@ -1,6 +1,6 @@
 module github.com/maruel/genai
 
-go 1.25.10
+go 1.26.5
 
 require (
 	github.com/google/go-cmp v0.7.0

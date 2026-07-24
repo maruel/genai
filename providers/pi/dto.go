@@ -139,6 +139,7 @@ const (
 	ThinkingMedium  ThinkingLevel = "medium"
 	ThinkingHigh    ThinkingLevel = "high"
 	ThinkingXHigh   ThinkingLevel = "xhigh"
+	ThinkingMax     ThinkingLevel = "max"
 )
 
 // ExtensionUIMethod is the method discriminator for extension UI requests.
@@ -639,16 +640,18 @@ type CompactData struct {
 //
 // It implements genai.Model.
 type Model struct {
-	ID            string    `json:"id"`
-	Name          string    `json:"name"`
-	API           string    `json:"api"`
-	Provider      string    `json:"provider"`
-	BaseURL       string    `json:"baseUrl"`
-	Reasoning     bool      `json:"reasoning"`
-	Input         []string  `json:"input"`
-	ContextWindow int64     `json:"contextWindow"`
-	MaxTokens     int64     `json:"maxTokens"`
-	Cost          ModelCost `json:"cost"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	API       string `json:"api"`
+	Provider  string `json:"provider"`
+	BaseURL   string `json:"baseUrl"`
+	Reasoning bool   `json:"reasoning"`
+	// ThinkingLevelMap maps Pi thinking levels to provider-specific values. JSON null values decode as empty strings.
+	ThinkingLevelMap map[ThinkingLevel]string `json:"thinkingLevelMap,omitzero"`
+	Input            []string                 `json:"input"`
+	ContextWindow    int64                    `json:"contextWindow"`
+	MaxTokens        int64                    `json:"maxTokens"`
+	Cost             ModelCost                `json:"cost"`
 }
 
 // GetID returns the provider-qualified model ID (e.g. "cerebras/gpt-oss-120b").

@@ -11,6 +11,24 @@ import (
 	"testing"
 )
 
+func TestModelThinkingLevelMap(t *testing.T) {
+	var m Model
+	if err := json.Unmarshal([]byte(`{"reasoning":true,"thinkingLevelMap":{"off":null,"high":"high","max":"max"}}`), &m); err != nil {
+		t.Fatal(err)
+	}
+
+	off, ok := m.ThinkingLevelMap[ThinkingOff]
+	if !ok || off != "" {
+		t.Fatalf("ThinkingLevelMap[off] = %q, %t; want empty string, true", off, ok)
+	}
+	for level, want := range map[ThinkingLevel]string{ThinkingHigh: "high", ThinkingMax: "max"} {
+		got, ok := m.ThinkingLevelMap[level]
+		if !ok || got != want {
+			t.Fatalf("ThinkingLevelMap[%q] = %q, %t; want %q, true", level, got, ok, want)
+		}
+	}
+}
+
 func TestToolExecResult(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		data := []struct {

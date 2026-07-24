@@ -1,0 +1,128 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 452
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_search_20250305","name":"web_search"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-5","id":"msg_011CdMh2UPxnTf87sAin1kz5","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":2783,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":57,"service_tier":"standard","inference_geo":"global"}}   }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"server_tool_use","id":"srvtoolu_01QkMqAyCdYboNC77C51Y6s8","name":"web_search","input":{}}            }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"quer"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"y\": \"curren"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"t Prime Mini"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"ster o"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"f Canada\"}"}           }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0 }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"web_search_tool_result","tool_use_id":"srvtoolu_01QkMqAyCdYboNC77C51Y6s8","content":[{"type":"web_search_result","title":"Prime Minister of Canada - Premier ministre du Canada","url":"https://www.pm.gc.ca/en/about","encrypted_content":"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","page_age":null},{"type":"web_search_result","title":"Prime Minister of Canada Justin Trudeau | UN Office for Partnerships","url":"https://unpartnerships.un.org/prime-minister-canada-justin-trudeau","encrypted_content":"EuAQCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDOaLUMO0GF8Cg0zKQBoMlwljYQl6D9JgbNGRIjBM18NrStoke/Fz69/loz9gXldk+7rVD9hpWrT7Vj8tgTekBUH8R5Cu1gevYJfPnVgq4w9nyRE4OpjNjBa1rT+YKPboEBsvh5UBrbl8F/WsT7/txJUKmGDeye16RZZ+sWMNohjygRfsQnu/b8weyjK1f/HeJiEJjeYZarVbaHYrbp43GoIIMJtxgfsw+gMLrzSd52SkDHQnUvbVLc+yYsOlbu1WCWhmQJQEAjZowANZ1Xk5+1qyPzpe4Zwsw/K9iWW1rXIO1f+OK5/7Ujv3jkJ/WA8jKfkJ0PYeLgkkCsXQL/ymMQVHIdnRbce912CDCHZEQKLTfOyogx+wkksP6TuyuJi6IeMYSaGj74pcJUFtRbASQvmyGh1+bDz9CKY6sHhuhcbIgyBXtbqle5LsoqHUtmREWq7nCDAM2V/3yW4lSJgWJDRPTW1zPAxiVoSWdJbCnf1lrnvPzropORl6gTkIuwREucyxAicNhkIMYMMKRdwco+NSQo7u/gbV8vpOq0jO4/leTpxACeYN0nutfF8BBJ4I/pXA/98AmtHFEoo1YcBwozAiCV2L3NbORplvU9T1aLIOizNcq11qfPitkvCKdWiezi8iOYTwsHt71ibXRblZtNEX3qogqG2Ih9QEr+Hdqd5U6rQo4DL5Lf6+TlmTcV9muOu/P7XdUGS6DpxS53Ww51pJHAyLqNsVwEbDqigRAIwlBAUmhUD4q+04fOL7b0+TZbK80MAxydASyaKvUtc1zXhpq3sYLh39MOPJAjJi0liYNsjUt8OLpjFAu2NCLmyod3H/P/WFyE6fAspYUgZc6D3KYn/bh5Gi/4b2r3Ifr6lXdbd/fuSbA15XWHXVNPyIXGsnBwdrEmrWCacI2ib1aglYCZJDEMfcBzQ9Q2SxGK6gQC4olO5/5xiybzCWgeWEAcJqHM2qunuOl3dP1fLMqpOckj/bJPBOOAEDUR/BeckJ04ya8r5kIFA9USC69AFddHC4jT5KA/UIalXB8laoRsmTXvkPEVWi5DKrwkIxNoRqzRz4KjbWnhlCly4VqZKirUwbkPwEe9GNeBj0amAQ/iLRREaOJtrQ1DXE+PjZTMouGHvT6Hu0wyDNLXv1+823uUjXnhA3DV0024c/fHhhhYBY7gd6D+Lp+1EKP7uzsH2+NaApE3g8xKM5UDzmRl2F1Fc7wISaCUwmdxc7SMeXC4kWiAk9FPKnHRyrnCk0puoviHZ7OgkfGMFJFd7h5+eyyRZQ9KTe+iJj1ox+GeQR/AHzIJapuEcwR/Y9TmTdDXqpse9RoiA1GFYKO3i/HWyAehDS21sGQXhwRWqWWzp/jkZlcFkZFnb/SSm/3RdBnkyf/TAAF5M3Mi6ol0LcOnr2DE7m8mplAzTPRVQjTVCajJYf2Kxe7M3TIztl90e7zN+DTNsenUMGHS5Ez0FJ/JesajOpaOZBCYhtF82wV2oWh9qM9P0emBOug/xy/BtM1YwkpNYa2r1yKO+HxIFM+LffvY70FbeNUXvZgc/MfqNf9Kr0425RbcZux2Z2JCT4CUPeO6FCRO1CBdBCXsU5ujhfTM6/yEpN9K/PuZGI12azkD33QzDmjdBoxjInvgmpLKuJXESKOVD0LfV2r32rEgeoUMO0vSqj0Ck5+/OSv3R1LBza+O5dz+aGZY9iOPwKZqeubR96TZneVdpAIw2xsOosAd8baRVhgEn1kDRScRv3Vy8bZ+9B4RxXGJuEIus5yVEwYc3blCoqmwp9t6DuL3Yx+e+gNkaXd4HYAOxOWX6xTcYeJYIrwFcu87CSAwebJE/7CWN3inv30qRatLgZ0AlrKu1hqqdMYKnMsHXvOBLmwEWb2Bi2c1H3U0PXnDM6i7niQbtM7p3Gl/aWcv2oS8lLZEEfpUQ16pyx8OOwWzuBj0ACNHUFdy5tD8vVOyY6ytDs2siKQgXjU05zU+6zPAJprqFWDCgCZ2yK8HJyjszy0VjeZ1jnXaCPr1JdbBx3k+Vl0JrafFrR2JdpcDkMXCsEOtLIkAUsmaRK51iqiAKnlpKrv1gqzIDM6mMXyxK7IevrLksFpntyVQwurtmuAjjnjU4IhAy0ZeCxuVnjR8wWTPo+QAInviq7sMJey6/gxnH3YjrYkc9bjH1xvH+6HwpyOPHq9ZNafnVVZu1Sh2y3NAQ0YYVF4GPeQkXKiJ3JtFFa3WPg/YaAkucs3WouaJxndBL8DZs0ssQlJjGkJB+GyQL6umW52UQslb5oF0jcA/sYa5OC2dozSiB3sGsYpgm2tfYvZCb5HtjCHOnYs1qfyqcMT+tAR/HgwyXz8n7tpU7yZLHrtiiMwQZFgYx6ZWqvxcTRAg1OjubxbyJEWBnK3SBqD76MiBmNIqp7dVOCRE8DZSlBGCCOEDAWWlYhp0x+CwNqlKWowPyitVYvqP2PB4vca35FirAxh7b7XRPRI1bT20EIj56iIftedua7ZlVIXoCszZ60wOBczgvH95crxwf1Ms1HDgc6hzrfRCKia0Whnjswev62/xbIJifkTaVVUfbrLfCIVLglLWKK0sFKD8+HcZqu1SkrDl63DxSTacmgEmLbPIRem3IO8DmGV+iwkyRA96BJzZji43ExUW4n09t8NMlIfGcOdZnKI5MKKYzxjCrydn5fwj8dpmxrYPrenk4o2DhGLZKkaJ5klbKsy5/GtcSKSEe5ZCpT2qOzvOmq+VGpZqLYdcRw9bmPCVZn5tOLqV4e56p3keN7GkJoqZNSxps19H/aGjR9HrIqEP/Z89wYAw==","page_age":null},{"type":"web_search_result","title":"Justin Trudeau","url":"https://en.wikipedia.org/wiki/Justin_Trudeau","encrypted_content":"Eu4ICioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDHRsdb/+Nuo1XK+rBxoMiGZDAqCVX/AGxwPWIjAJptHTLgj+m0/y7LDHSNniskM4nk5MAVSaCA04AZBFwKntFKs/ReFNTZsEhtOY7KIq8Qf/UPDi7fwoa0OQmZwH9FkH1mhhPcUlnpwVuoli1nQ5J0OiSgaPtLqytU3RiK4kiBLI4p87Z4A9TRYrD+XhoI+Af1CyBwvVnoLv0MLmTZl/IURO1HcQ6IeAAS2PZDbIDRJyGYzESZaxnxS/NPljJbqBRIHyh55F3LI9EXjqCKuMmDNjhu9iHss8uf5PV1BpRiEjMMbQiH0wklHHJwnAX917YVQ24lkzJeM01EYLyeLEUEZcpMroKi02IlX5IQ2PsvUNkHgIO1U+w1sKv6o4oboilGtvAiPKAqm+lx3qZdmN1pottxZzt6vn1LKt3hVApJio2zAfNdujBPDT2pv6/DTf/5X1dZWuhG+fMJeBbbilNCQn/GYvRH16TZknWjdn6hE3NSHDEq9WzeczHRM/rSvmMUrkm5N78RgDlCEwdzaHNqoG0hb4IaXqo8w/9QAh9cUyqtqPrgvdBUXKttM2JdWB8ra2KGupL4KHcv2RlBFLj6tJbPaLbffX25xsWmvDuyQAw+A8TBkvr9qdTU7cq5Ql4pDlbrINdErQVqIT5XLt2lTXhRTOvzhCaaLlzoMTBbGiYs0G8kE4LKyADTCYBtgpcQSsJ1+IOkdCT50c2ONsq4FfZQI5/8GkHiLtqUrXo3GThEd899qDGWvJs/mac3h5LLh3I2ZgVkrvC2mr2Q+3T8IVztyqhFfyrWvJK0xsHnVvfoYtpC4DxJ/dLDVjbYYz1m5HW29PeFbYE26z3BSTPZQtY12MYh2Aqh0kgPFSLyl4zrf7wCNgTMkYc/3XgIDESG3ynz5CDXkl2THtWKYTBVQmb8MUZl7wM4WiPqcm5YTDDKeF6QUsU+ZbXvvS6sNm2KXPP3VQ4od2yJaVLJdlNKw8PxW5ltZAnnd+evcTqDlIrC5hS+tgNlL3gQi4EicbicZZXsLkzKXJopoOjYBuW5Cw+5NRs33/eScAkuHKTu4JDWR7+JCcRIr4GH3cykdcBcOpguPGv2/QPDA3+piJgIuCXwIYX4+RaB/uJUI4hhUiiKyyX7O1yM7hRXw+DzHZVhEZNuRsZIOSbhcSScHB88UrJlf529XSAFUHBkQJQUVC0FRPDIDNV5Vw9JphrxtSFOB0dYfWhUeesboI+XRzQdbqPmQ7ka6SbfmprzanAm6J+z6+QnG11cO2203tCiW1mzif575nTpn8kOnXZbOwmhgyuTY4a0wWBXkgywOx9gFii7sNn3IXOe/BXV8Pzfi/yMaRcBB8Vl8Xv1QZE69p8V5ioUB9FvNNWWu3Xov5zYCCKIdXVKQ9j8y0z8SZgu9EeDmQe9uhHFx94oES79daFEIOpFwUR/JRBiD5e9c3/U+WGAM=","page_age":null},{"type":"web_search_result","title":"Premiership of Mark Carney","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney","encrypted_content":"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","page_age":null},{"type":"web_search_result","title":"Mark Carney - Prime Minister of Canada | Prime Minister of Canada","url":"https://www.pm.gc.ca/en","encrypted_content":"EuMCCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDJ82MQle+6KLEe/a9xoMjt/UKNKzVsFlmduNIjAxZ5HGcxKYVkgdnD9IMqMIGI0qKVfn8LzUPpqDEYolrRNs4EjCk+PGCAKzYmERV+0q5gGSNLjcZVO1VyNMMnxrzqFDcsTDE8j/7i5rgs5ULWblHuihL/CJitUgr0c3z2QgLlocC67CUqxuNKcrJwIANsF9lkbdS1ZR8EQNzz0f8NYFUgM/pUZq59qHb1ZCFk27U3xGsx+B55RkYKfmmJ44/UdamwR0tXbXq6FEchx3Mszw7rpE7qnXk8MgL6IZC2eQ8QIvHJ1fsc3XyPXn2NYaBibUXM3ovbYETBE+1B5MYhKQ4X273LL7yyi61P/V5sLkcdEnrkAOGohJz+7A9MCb5/eUY/Zug+/iLEWpMN5xnAFHDflO0yKgxxgD","page_age":"1 day ago"},{"type":"web_search_result","title":"Prime Minister of Canada | Ottawa ON | Facebook","url":"https://www.facebook.com/CanadianPM/","encrypted_content":"Ep0CCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDFUXQSvC/jaX+A/1cBoMHyKNFNs+008ncYRHIjCvuFq01swp1SBGHwi4PK/u1weqw2TS28W3aVTkPaSK/ZkSLtiymYOWCv1FJa5PIOEqoAH/24XLsfNnXhOhKZ2zyRuhyzzKgz4BYk/Fyu3CY/yXn+QaC6uiywTW3Adwv4IzjJR1NcNS6X8/Uz5tAIfm0miXiDsFXk8apIfnP1ZKmyZHnJFG2Iav1LRiBP1HWel4+EYCDDaMSJqGaHd68qN956ioIrkS/M1m6TqjPzoIRllM20mA57grxE0GU+5FyyPcS7E5Jr/NoBMJlmJPb6Bz51fuGAM=","page_age":null},{"type":"web_search_result","title":"Prime Minister of Canada (@CanadianPM) / X","url":"https://x.com/CanadianPM?lang=en","encrypted_content":"ErgJCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDErf2VAG+xfVHLZqcBoMQ6e7Fb/ySV2gpYXxIjDJiBs0CVtbPbdgqN0HThGgKLpQ0x73t4m1HiQCvMPmtdBNS2Yk+A3DNnxMVhsiGDsquwiXE7ChLVxSwJGwtTfpJsu+yWxDzfU1tq1W/qORdudLyXUDTh33nqvS2VkNXqaXVu0WgP8XWyVb83hSxUBV+Giiw2eQPj4fUTUsVz6JCtQLzdEmRWtIdMYACHx0bxcAloYkNLHD0d9sz8EYSUO1jGey+PO1gy6qCFueWQsAoLafj2iEylP+XXhxK/NGKGqPy+qed3WfGS3UsM02zEv+5sFnkwG7DiYBl532rEOffGVt92CiQMwy8vLOrEISm2nmaSkEv48uiLzBjaxKCGED4eziIi2AaV1xEGVDen3gdXTfYT9usWrs9MkQRczybT7wE+AoqO/Xghrix+phHmGdW/Z8+4fE1e4Ewl+lVNsV5uj/8H4zMpIizjMe8f0FK33wD7jNc38x9sw8hZD2RDt8tY9Oa94HQngFP8x0x/QKNfb7IRLa1uqyLsBgQfLz9zfxrKhHhxwIf9zCVI5hknkw0hoH1t7u7BsQy0UtXcgvGZSIbDviXwtvYx2Q+DtNmqKKWSHCmhEEEh1Gi1KOKXdr+YWi2Z3eLFy8r1hFE0aG+fofwkFiaGEYcvcq0xaMP3qApciQ1AkemzetFemIW+X97BQrvctP3z9O6KRChBxQhoDfmM9jcg6vghzQAMK6SdfQrHQCxvdipOar9SLLVu8REhk4CFgVklhhw1+jyZ4nbjEe7ssGEYyPV+2HnK4qrIhQN70om1UpFIK5og1Iv5VMIVCII2osSctpark8o9bCAGp6802S6uJ0+lnTlGZcsDVl8karnTiMvMzOjVDfUlsy6/DKzliG6Bu19RVIftxjcKPTsEn+v7MOH012YOldPSwDSrUpyyoY50LsDAzhyt6uDjbhqgnQ3MfOz2KaUB2MwOQk0lobezAwgp4wa4uZAFvXstX5AKSS+DQvaeOwggNuAoVo8jC8FrAG/SvGQIaCoWYiTdsdDn9eXhYy3sr8iNlxaIWIKFpOOtxjEmInce17Ttom6CFNMp+/OelGbfAB5NAEMxwq3merDf/J8mtP6zTv1nsRfIc79UjepIIYCC9A8DMxcz8WeaNbzqUVtM18U/h6m9Op79Xi/eTMncm3uvc7JJFNYnS0BYQrUx2K0ngsnLQgploeuaKdSu8cajXnDVbWRVK5nsYrSjGidJT87HEe7OckBWEVINqDU/YOMqAIXGPht//Ve70uSMXOe35iB7WRsYggY5ZMlkAsqsc0lQO1puhCYa5HgQ9OK8VR7EtB4416ll1DSo4MbvNUgGcV6w46cVkujrA1dRJXQlhE/umEnE5/bpS6V54qEku2q+XhwxKwSCi10AAfxuXwgxze+VnAnv7LZuENZ/XI1xlh2FvvtLJkfRvG9nSraqljaVHEXtowV4BssJ5QQQ6KCsaLu0O7Gxy9WJU6HUVvHrv6UM7nglI77WpAZ/2uVaH6CMAytE868M6IVfq/WnanAeIYAw==","page_age":"May 9, 2008"},{"type":"web_search_result","title":"Mark Carney - Wikipedia","url":"https://en.wikipedia.org/wiki/Mark_Carney","encrypted_content":"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","page_age":"4 hours ago"},{"type":"web_search_result","title":"Prime Minister of Canada - YouTube","url":"https://www.youtube.com/@CanadianPM","encrypted_content":"EvkGCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDG0TcRuKJEW+2AP0YxoM60NqPmqR5zmP301EIjB5GVZf8W4RUTNr+koGQR8V2AGWEgQzIAZlmharVdECwohi3nxlLSaOS/nvRzEs7Y0q/AXAuTHJfQWaj5wydnnaTEhx/Uu+PcKDPz0y4xLUDPtTJYcWUtufQpjpWPG+Xa9curS8I1iZLvTdlXMDqLCknH2bjGPZmHq6OGcd7B0fQyNs9ep0K/KiOUOLhVfAHyZP/t/Q3oZejaroOjW+dJmiRR8JN9sSwSsyYZHZF1kAn3IK8iOGKAhEEoXmgL5yH+knEYy4fwtQhz22Kw+HpRr2VTVyFJosvQ0SdQ5bMnP/kVsvZaVwgys9fOKQwwRrZavH5WbAQmPqQcYhU9a9C9deoUAqmppbGkZcXNwXBGTF3dPJQmjxs92mgdgb3kxV6L7MsURw6fOz2cz4Ad9nJ5WGFLRyQqEuLCEEZJBLM+bbmg88ELFy2Mc1v4y+dbOUscWhudqayupT58rZvIIgNQc1sVdQyBfrQVljqptKZyHy32z3mMjf76HXPbiymLDVMGrJwOJmJ+g61WWTQa2dfq6oibvSb8VNUF+V3ZtzWKiokuhwYybDLm9X0TdUdTnsggoO2b0ueDiTKjClLga26iYSkldrV4lYdcidT/1B3302kgv7kBDmvbOX4ccMvWG6R8drOb7r2M8oJzoAZkTyvYaoxxb7oAdqf1QSawyBo5pzLClBYqxw56pNQhjy2PZunrBnOBAkSfC3HY6hP3PsqijmqTt2lgkpcdTBHCxP8EmVMlC3LixPzdBpAYBITMpw+ADeF1SSxLR78Vg1yaRVomfBu8y21SawKwfjZk/CXXJ7D0gpSwNrSlMQDJdnandEBFYoY4fN3V8nqvu3vk57qd6zIrYJarxS8yxWmzYFeH0hZ4jkW6/EOVC4qVmp1qUniFXrgb61RFcprgoGprhXrjpiPum0SnoWjMvaA5L7Wn5njllhD6Hui+FKzsgMJ2XLTI6zQbLqIIWfoj2bHTIPkRmPWmBmceydWCOi9FgZT9QLQJ1ygMvfodgdXFet29PG21kqH9w54r5o3hwlMsq+4OiXUutOzAD7gJVtBh6sWFrYsTTxBWp4tUbvo5J1tzEdLBgD","page_age":null},{"type":"web_search_result","title":"Prime Ministers of Canada","url":"https://lop.parl.ca/sites/ParlInfo/default/en_CA/People/primeMinisters","encrypted_content":"Et0BCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDIQOBrBqohRTSEGoxhoMnmj0iHH/YWjYTaxcIjAZvK3yQOcqzdnsikFcoQ9QaD9mCBIwRX6eY9DG5AXTT65T0Mnw59IcO658sWbT5J8qYZlgqPmVBqt58H7HBjMvfkQzmErZ8o9s2azafcl6IirL5FSYYulD7c1E2pK5dTh5bTjcbcowdHwLxUL/HibzyujlwDsgv00BIjHQGVmET/hqS4mz2fXdpQ1dPDFBl8ABL2IYAw==","page_age":null}],"caller":{"type":"direct"}}   }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"citations":[],"type":"text","text":""}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"citations_delta","citation":{"type":"web_search_result_location","cited_text":"Mark Joseph Carney (born March 16, 1965) is a Canadian politician and economist who has served as the 24th prime minister of Canada since 2025. ","url":"https://en.wikipedia.org/wiki/Mark_Carney","title":"Mark Carney - Wikipedia","encrypted_index":"Eo8BCioIEhgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDKTHflil84qb6vr6GRoM4Me7DJS3kmxs98W0IjBzoe5AHfLlAXbW0sshk5crU/u0phN3tUS6pHfKYUO6RnhGsCjGif52bRy9bDZPyg8qE32aFYqlH5iIX6y6JbJWN3zI5GUYBA=="}} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Mark Carney"} }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2               }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":12177,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":84,"output_tokens_details":{"thinking_tokens":0},"server_tool_use":{"web_search_requests":1,"web_fetch_requests":0}}              }
+
+            event: message_stop
+            data: {"type":"message_stop"            }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9998000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-24T22:43:15Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-24T22:43:15Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-24T22:43:15Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11998000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-24T22:43:15Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a2067156f8e4c521-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-eb68817d54eeeef837d7ac09c81705da-02b30193fd1c049a-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.91s

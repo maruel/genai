@@ -1,0 +1,817 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 311
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-5","id":"msg_011CdMgrqbeQSniQ8KfXT32C","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":4,"service_tier":"standard","inference_geo":"global"}}}
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}         }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'m planning to write a comprehensive overview of Canada, covering its geography, history, government, demographics, economy, and culture in an"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" organized way."}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"CAIS1AMKhwEIEBgCKkCQL6C7VZqwkUbdbLvblFOTaaEehURTIuAXCFqFJwET0gtL1C6vl85LGYj+M8qfkegx9AoHLyaebwPmsKrrKricMg1jbGF1ZGUtb3B1cy01OAFCCHRoaW5raW5nWiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDO5sPlGysfR/jtJHUhoM4/SWx0RborVMAgwtIjCGBUVML8Oqqoj5TkK3l1iffMmBfMLmoMUTvxwdmPgqV/v9ixxoYbZBJLNns61eTLcq+QG8r4FYj9qO4FeyzJl4N0kIEDqOiQxHScj+KTgMKSHj11tfAxbFbEL1Ck/lExJRXQNJCbMpTvT448J35Oun2MZHoNTve4+RO/z+Dtn+nJ8u7+TGlSFfMChfQNT67j3IOqWx86FKCTXfDL2dhi9cSeuy4qk4J1v3dcKN2LS1tJpwq6oCjOU0PVLuTzm5LguOcxJpffW5WTf13vuW9RD412Thul+1wBYyoS6WbAFiiypaEn8bgYa27dm2kGn+PVrxNqofFDreT4zrxmss8PdibLQRLul8L5pIslJg8IpQ8FXi15+G47FLQuBCzfyG3E08GV2Rauf2CojEFH0YAQ=="}            }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0               }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Canada is the world"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"'s second-largest country by total area, spanning approximately 9.98 million square kilometres (3.85 million square miles) across the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" northern portion of North America. Only Russia is larger. Despite this immense size, Canada's"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" population is roughly 41 million people — a density of about four people per square kilometre, one of the lowest in the world —"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with the overwhelming majority (around 90%) living within about 160 kilometres of the border with the United States, which at"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 8,891 km is the longest international land border on Earth.\n\n## Geography and Environ"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ment\n\nCanada stretches from the Atlantic Ocean in the east to the Pacific in the west and northward into the Arctic Ocean — a"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" fact reflected in the national motto, *A Mari Usque Ad Mare"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"* (\"From Sea to Sea\"), though it is now often noted that the country in fact touches three o"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ceans. It has the longest coastline of any nation, roughly 243,000 km when its"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" many Arctic islands are included.\n\nThe country's physiography is diverse:\n\n- **The Canadian Shield**"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", an ancient expanse of Precambrian rock, covers nearly half the country, w"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"rapping around Hudson Bay. It is thin-soiled, lake-pocked, and mineral-rich.\n-"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" **The Interior Plains** of Alberta, Saskatchewan, and Manitoba form the northern extension of the Great"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Plains — prairie grassland, parkland, and vast agricultural belts under"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"lain by oil and gas.\n- **The Western Cordillera** includes the Rocky Mountains, the Coast"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Mountains, and interior ranges and plateaus. Mount Logan in the Yukon, at 5,959"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" m, is Canada's highest peak and the second-highest in North America.\n- **The Great Lakes–St. Lawrence Lowlands**, the sm"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"allest region, is the industrial and demographic heartland, home to a majority of Canad"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ians.\n- **The Appalachian region** covers the Atlantic provinces and the Gaspé — older, e"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"roded mountains and rugged coasts.\n- **The Arctic Archipelago and north"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ern tundra**, including Baffin, Victoria, and Ellesmere Islands, comprise permafrost,"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" ice caps, and polar desert.\n\nCanada holds roughly 20% of the world's freshwater and about"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 7% of its renewable supply, with an estimated two million lakes. Bo"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"real forest — the taiga — is the dominant biome, forming one of the largest intact forest ecosystems rem"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"aining on the planet and a globally significant carbon sink. Climate ranges from the mild, r"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ainy Pacific coast (Vancouver rarely sees hard freezes) to the hum"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"id continental southeast, the semi-arid prairie, and the polar north,"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" where winter temperatures can drop below −40 °C. Canada is warming at roughly twice the global average rate, and its Arctic at n"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"early three times, making climate change an acute national issue: melting permafrost, retreating s"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ea ice, and increasingly severe wildfire seasons — the 2023 season burned an unprecedented "}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"~18 million hectares.\n\n## Indigenous Peoples and Early History\n\nHuman presence in what is now Canada dates back at least 12,000–"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"15,000 years, and possibly considerably longer, with peoples arriving via Beringia and co"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"astal routes. Today the Constitution recognizes three groups of Aboriginal peoples: **First Nations** (over 630"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" recognized bands speaking dozens of languages from families including Algonquian, Iroquo"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ian, Athabaskan, Siouan, Salishan, and Wakashan), **Inuit** ("}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"in Inuit Nunangat — the Arctic regions of Nunavut, Nunavik, Nunatsiavut, and"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the Inuvialuit Settlement Region), and **Métis** (a distinct people emerging from unions of Ind"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"igenous women and European fur traders, especially in the Red River region).\n\nNorse explorers established"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" a short-lived settlement at L'Anse aux Meadows in Newfoundland around 1000 CE. Sustained European contact began with John Cabot's "}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"1497 voyage and Jacques Cartier's explorations of the St. Lawrence in the 1530s. Samuel de Champlain founded Qu"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ebec City in 1608, anchoring **New France**, a colony built around the fur trade, Catholic mission"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ary work, and alliances (and conflicts) with Indigenous nations. The Hudson's Bay Company, chartered in 1670, claimed the v"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ast watershed of Hudson Bay (\"Rupert's Land\") and became a commercial empire in its own right.\n\nAnglo-French rivalry cul"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"minated in the Seven Years' War; the Battle of the Plains of Abraham (1759) and the Treaty of"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Paris (1763) transferred New France to Britain. The Quebec Act of 1774 preserved French civil law, the"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" seigneurial system, and Catholic rights — a pragmatic accommodation that helped ke"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ep Quebec from joining the American Revolution and that established the enduring principle of French-language"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" survival within a British-dominated polity. The Revolution then sent some 40,000–"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"50,000 **Loyalists** north, reshaping the demography of Nova Scotia and creating New Brunswick and Upper Canada ("} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Ontario).\n\nThe **War of 1812** — in which invading American forces were repelled with"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" British, Canadian militia, and crucial Indigenous support under le"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"aders like Tecumseh — became foundational to English-Canadian identity. Rebellions in Upper and Lower Canada"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in 1837–38 prompted the Durham Report and, eventually, **responsible government** in the 1840"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"s, achieved without revolution.\n\n## Confederation and Nation-Building\n\nOn **1"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" July 1867**, the British North America Act united the Province of Canada (split into Ontario and Quebec), Nova Scotia, and New Brunswick into the"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Dominion of Canada, a federal state under the Crown. Sir John A. Macdonald was the first prime minister. Exp"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ansion followed rapidly: Rupert's Land purchased from the HBC (1870), Manitoba (1870, following the Red River Res"}          }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"istance led by Louis Riel), British Columbia (1871, lured by the promise of a railway), Prince Edward Island (1873), Alberta and"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Saskatchewan (1905), and finally Newfoundland (1949).\n\nThe **Canadian Pacific Railway**, completed in 1885, was the"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" physical spine of the new country — built at enormous cost, including the ex"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ploitation and deaths of thousands of Chinese labourers, later follow"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ed by a discriminatory head tax and the 1923 Chinese Immigration Act. The National"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Policy of protective tariffs, western settlement, and railway construction defined early econom"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ic strategy. Waves of immigration — British, Ukrainian, Polish, German, Sc"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"andinavian, and others — settled the prairies under Clifford Sifton's a"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ggressive recruitment.\n\nThis nation-building came at devastating cost to Indigenous peoples: the numbered tre"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"aties (often signed under duress or misunderstanding), the reserve system, the Indian Act of"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 1876 with its paternalistic controls, the suppression of the pot"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"latch and Sun Dance, the pass system, the near-extermination of the bison, and the **residential school system**"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", which forcibly removed roughly 150,000 Indigenous children from their families between the 1880s and "}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"1996. The Truth and Reconciliation Commission (2008–2015) documented widespread abuse and thousands of deaths, charac"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"terizing the system as **cultural genocide**, and issued 94 Calls to Action. The 2021 ident"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ification of probable unmarked graves at former school sites in Kamloops and elsewhere triggered a national"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" reckoning. A separate National Inquiry (2019) addressed Missing and Murdered Indigenous Women and Girls.\n\n## The Twentieth Century\n\nCan"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ada's autonomy grew through war and diplomacy. In the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" **First World War**, over 600,000 Canadians served from a population of eight million; roughly 61,000 died. The capture of **"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Vimy Ridge** in April 1917 by all four Canadian divisions fighting together became a powerful national"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" symbol. The war also produced the divisive Conscription Crisis of 1917, de"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"epening the French-English rift. Canada signed the Treaty of Versailles independently and joined the League of"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Nations.\n\nThe **Statute of Westminster (1931)** granted legislative independence. In the **Second World War**, Canada declared war"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" separately from Britain (one week later, in September 1939), mobilized over a million service members, "}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ran the British Commonwealth Air Training Plan, fought at Hong Kong, Dieppe, in the Batt"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"le of the Atlantic, in Italy, at Juno Beach on D-Day, and in the liberation of the Netherlands — a b"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ond the Dutch still commemorate with annual tulip gifts to Ottawa. Domestically, the war years also saw the internment and dispossession of some"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" 22,000 Japanese Canadians.\n\nPostwar Canada built a middle power's identity: a founding member of the U"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"N and NATO, architect (through Lester B. Pearson, Nobel Peace Prize 1957) of U"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"N peacekeeping during the Suez Crisis. Domestically it constructed a welfare state — old age"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" pensions, unemployment insurance, and, above all, **universal public health insurance**, pioneered in Saskatchewan by Tommy Douglas and made"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" national through the Medical Care Act (1966) and the Canada Health Act (1984).\n\nQuebec's **Qu"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iet Revolution** of the 1960s secularized and modernized the province and energized nationalism, le"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ading to the 1970 October Crisis (FLQ kidnappings and the invocation of the War Measures Act), the election of René"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Lévesque's Parti Québécois in 1976, Bill 101 establishing French as"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the official language of Quebec, and sovereignty referendums in **1980** (59.6% \""}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"No\") and **1995** (50.58% \"No\" — a margin of about 54,000 votes).\n\nUnder"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Pierre Elliott Trudeau, Canada **patriated its constitution** in 1982, adding the **Canadian Charter of Rights and Freedo"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ms** and an amending formula. Quebec's government did not consent, and subsequent attempts at reconciliation — the Meech L"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ake Accord (1987–90) and the Charlottetown Accord (1992) — both failed, leaving a l"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ingering constitutional impasse. The Oka Crisis of 1990 highlighted unresolved Indigenous land rights.\n\n## Government and Politics\n\nCanada"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" is a **federal parliamentary democracy and constitutional monarchy**. King Charles III is head of state, represented federally by the Governor General and"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" provincially by Lieutenant Governors; the role is largely ceremonial, with real execut"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ive power exercised by the Prime Minister and Cabinet, who must maintain the"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" confidence of the elected House of Commons (338 seats, now 343). The **Senate** is appointed"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", regionally apportioned, and since 2016 filled through an independent adv"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"isory process. The **Supreme Court of Canada**, with nine justices (three from Quebec by"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" law), is the final court of appeal and interprets the Charter.\n\nFederalism divides powers between Ottawa and "}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ten provinces (Ontario, Quebec, Nova Scotia, New Brunswick, Manitoba, British Columbia, Prince Edward Island, Saskatchewan,"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Alberta, Newfoundland and Labrador) and three territories (Yukon, Northwest Territories, Nunavut — the last created in 1"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"999 from the eastern NWT, with a predominantly Inuit population and government). Provinces control"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" health, education, natural resources, and property and civil rights, making Canada one of the most decentralized feder"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ations in the world. **Quebec uses civil law** derived from French tradition for private matters,"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" while the rest of the country uses common law — a bijural system.\n\nThe dominant federal parties histor"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ically are the **Liberals** (often called the \"natural governing party\" for their"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" long stretches in power) and the **Conservatives**, with the social-democratic **NDP**, the s"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"overeigntist **Bloc Québécois**, and the **Green Party** also holding seats. Minority governments are common. Recent polit"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ics have been shaped by Justin Trudeau's tenure (2015–2025), succeeded by Mark Carney as Liberal leader and pr"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ime minister in 2025 amid a period of severe trade and sovereignty tension with the United States under a"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" second Trump administration — tariffs, annexation rhetoric, and a resulting surge of Canadian n"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ationalism and \"elbows up\" sentiment.\n\nNotable constitutional features include the **not"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"withstanding clause** (Section 33), allowing legislatures to override certain Charter rights for renewable five-year terms — controversially used in rec"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ent years by Quebec (Bill 21 on religious symbols) and other provinces. Canada legalized same-sex marriage nationally in 2005"}    }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", medical assistance in dying in 2016, and recreational cannabis in 2018.\n\n## Demographics and Society\n\nCanada is among the most ethnically diverse countries"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" on earth, largely by design. It adopted **official multiculturalism**"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" in 1971 (the first country to do so) and enshrined it in the Charter and the 1988 Multi"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"culturalism Act. Roughly 23% of residents are foreign-born — one of the highest shares in the developed world — and immigration now accounts for nearly all"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" population growth given a fertility rate around 1.3. Recent annual permanent-"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"resident admissions exceeded 450,000 before targets were trimmed in 2024–25 amid housing afford"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ability pressures and strain on services; large numbers of temporary residents ("}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"students and workers) also became a political flashpoint.\n\nMajor sources of immigration are"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" India, China, the Philippines, Nigeria, and Pakistan, alongside earlier European and Caribbean waves. Canada also"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" has a strong refugee tradition — Hungarians (1956), "}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Ugandan Asians (1972), Vietnamese \"boat people\" (1979–80, for which Canad"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ians collectively received the UNHCR Nansen Medal), Syrians (2015–16), Afghans, and Uk"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"rainians.\n\n**Official bilingualism** (English and French) dates to the Official Languages Act of 1969. About 75% of Qu"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ebecers speak French as a first language; New Brunswick is the only officially bilingual province; francophone min"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ority communities exist across the country, notably in Ontario and Manitoba. Indigenous languages —"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Cree, Inuktitut, Ojibwe, and dozens more — are under revitalization efforts, several"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" officially recognized in the territories.\n\nReligiously, Canada has secularized rapidly: those reporting no religion have gr"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"own to over one-third, Christianity has declined to just over half, and Islam,"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Hinduism, Sikhism, Buddhism, and Judaism are significant minority faiths. Canada has"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" one of the largest Sikh populations outside India, concentrated in British Columbia and Ontario.\n\nCities dominate: the"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" **Greater Toronto Area** (~6.5 million) is the largest, followed by Montreal, Vancouver, Cal"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"gary, Edmonton, and Ottawa–Gatineau (the capital, chosen by Queen Vict"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"oria in 1857 as a compromise). Toronto is among the most multicultural cities in the world,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" with roughly half its residents born abroad.\n\n## Economy\n\nCanada has a highly developed mixed econom"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"y, typically ranking around ninth or tenth globally by nominal GDP ("}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"roughly US$2.2 trillion), and a member of the G7, G20, OECD, and NATO. Services account"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" for about 70% of output. Key sectors:\n\n- **Energy**: Canada is a top"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"-five global oil producer, with the Alberta **oil sands** holding the third-largest pro"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ven reserves; it is also a major producer of natural gas, hydroelectricity (about 60% of domestic power), and uranium. P"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ipeline politics — Keystone XL, Trans Mountain (completed 2024"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"), Northern Gateway, Energy East — are perennially contentious, pitting economic interests against environ"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"mental and Indigenous rights concerns.\n- **Mining**: nickel, potash (the world's largest produc"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"er), gold, copper, diamonds, and increasingly critical minerals for batteries.\n- **Agriculture and forestry**: wheat, canola,"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" pulses, dairy (under supply management), maple syrup (Quebec sup"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"plies the large majority of world production), and lumber, subject to a decades-long softwood dispute with the U.S.\n- **Man"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ufacturing**: automotive (integrated with U.S. supply chains via Ontario), aerospace (B"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ombardier, CAE, Pratt & Whitney Canada), and food processing.\n- **Finance**"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":": a heavily concentrated, well-regulated banking sector — the \"Big Six\" — which weathered the 2008 cr"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"isis without failures or bailouts.\n- **Technology**: Toronto–Waterloo corridor, Montreal ("}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"a global AI research hub built around Yoshua Bengio and Mila), and Vancouver. Can"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ada's early national AI strategy and the work of Geoffrey Hinton in"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Toronto were formative for deep learning.\n\nTrade is overwhelmingly oriented south"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ward: roughly three-quarters of Canadian exports go to the United States, governed by CUSMA/USMCA (which replaced N"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"AFTA in 2020). This dependence makes Canada acutely vulnerable to American protectionism, a f"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"act starkly illustrated by the 2025 tariff conflicts, which have acc"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"elerated talk of diversifying trade and dismantling internal interprovincial trade barriers.\n\nPersistent economic challenges include weak product"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ivity growth relative to the U.S., a severe **housing affordability crisis** (Vancouver and Toronto r"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ank among the world's least affordable markets), high household debt, health-care system strain and family-doctor shortages, and regional grievances — partic"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ularly Western alienation in Alberta and Saskatchewan over energy and equ"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"alization policy.\n\n## Culture\n\nCanadian culture is often described as a \"mosaic\" rather than a mel"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ting pot, and is shaped by the interplay of Indigenous, French, British, American, and global immigrant influ"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ences, plus the pervasive question of distinguishing itself from the United States.\n\n**Liter"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ature** is unusually strong for the country's size: Margaret Atwood, Alice Munro (Nobel "}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"2013), Michael Ondaatje, Mordecai Richler, Robertson Dav"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ies, Gabrielle Roy, Leonard Cohen, Yann Martel, Th"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"omas King, Esi Edugyan, and Lucy"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Maud Montgomery, whose *Anne of Green Gables* remains a global cultural export.\n\n**Visual art** includes the **Group of Seven** and Tom Th"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"omson, who forged a distinctly Canadian landscape idiom in the 1920s; Emily Carr,"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" working with West Coast forests and Indigenous themes; Jean-Paul Riopel"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"le and the Automatistes in Quebec; and internationally celebrated Indigenous artists such as Norval Mor"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"risseau, Bill Reid, Kenojuak Ashev"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ak, and Kent Monkman.\n\n**Music** ranges from Glen"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"n Gould and Oscar Peterson to Joni Mitchell, Neil Young, Gordon Lightfoot, Rush, Cé"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"line Dion, Shania Twain, Arcade Fire, Drake, The Weeknd, Just"}   }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"in Bieber, and Tanya Tagaq. Canadian content"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" (\"CanCon\") broadcast quotas, instituted in 1971, are credited with building"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" this domestic industry.\n\n**Film, television, and comedy**: the National Film Board (founded 1939"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":") pioneered documentary and animation; directors include David Cronenberg, Atom Egoyan, Denys"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Arcand, Sarah Polley, Denis Villeneuve, and X"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"avier Dolan. Canada has an outsized comedic tradition — SCTV, *"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Kids in the Hall*, Jim Carrey, Mike Myers, John"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Candy, Catherine O'Hara, Samantha Bee, and *Schitt's"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Creek*. Vancouver and Toronto are major production centres for American film and television.\n\n**Sport**"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":": **ice hockey** is the national winter sport and a genuine cultural touchstone — the 1972"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Summit Series, Paul Henderson's goal, Sidney Crosby's 2010"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" \"golden goal,\" the Montreal Canadiens' 24 Stanley Cups, Wayne Gretzky. **Lacrosse**"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":", of Indigenous origin, is the official summer sport. Canadian football, curling, soccer (r"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ising fast, with the 2026 World Cup co-hosted in Toronto and Vancouver), basketball (inv"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ented by Canadian James Naismith; the Raptors' 2019 NBA title), and the Vancouver 2010 and"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Calgary 1988 Winter Olympics are all significant.\n\n**Cuisine** is regional: poutine and t"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ourtière in Quebec, Montreal bagels and smoked meat, N"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ova Scotia lobster and donair, Alberta beef, BC salmon, Saskato"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"on berries, bannock, Nanaimo bars, butter"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" tarts, ketchup chips, and Tim Hortons as an unlikely national"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" institution.\n\n**Symbols**: the maple leaf flag, adopted only in 1965 after a b"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"itter \"Great Flag Debate,\" the beaver, the Mountie (RCMP), the loonie and"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" toonie, the canoe, and \"O Canada,\" which became the official anthem in 1980"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":".\n\n## Canada in the World\n\nCanada's foreign policy has traditionally emphasized multilateralism, peacekeeping, human rights, and"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the rules-based international order. It is a member of NATO, NORAD (jointly def"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ending North American airspace with the U.S.), the Commonwealth, La Francophonie, the G7, and the Five Eyes intelligence al"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"liance. It contributed combat forces in Korea, the Balkans, and"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Afghanistan (158 military deaths, its longest war), and has led on init"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iatives such as the Ottawa Treaty banning landmines (1997), the Responsibility to Protect doctrine, and the International Criminal"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Court.\n\nContemporary priorities include Arctic sovereignty (contested transit"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" rights in the Northwest Passage, Russian and Chinese interest in the region), meeting NATO's "}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"2% defence-spending benchmark after decades of underinvestment, managing a deteriorated"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" relationship with China (the Meng Wanzhou aff"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"air and detention of the \"two Michaels,\" 2018–2021) and with India (allegations of state involvement in the "}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"2023 killing of Hardeep Singh Nijjar), str"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ong support for Ukraine (home to the world's second-largest Ukrainian diaspora), and — most"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" consequentially — renegotiating its relationship with an unpredictable United States.\n\n## Identity\n\nCanad"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ians often define themselves by contrast — not American, not British, not French — and by a set of civ"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ic values: peace, order, and good government (the constitutional phrase); tolerance and accommodation; \"de"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ep diversity\"; universal health care; and a certain self-deprecating modesty. The country consistently ranks near"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" the top of global indices for quality of life, education (among the highest tertiary attainment rates in the OECD), safety, and press"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" freedom, while grappling honestly, if incompletely, with the colonial fo"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"undations of its prosperity.\n\nIt remains, as the historian and politician have"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" variously described it, an improbable country: a bilingual, multicultural, sparsely populated federation st"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"retched thin across a continent, held together less by geography or ethnicity than by neg"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"otiated compromise, institutional pragmatism, and a shared preference for muddling through"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"."} }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1            }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":35,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":7816,"output_tokens_details":{"thinking_tokens":74}}  }
+
+            event: message_stop
+            data: {"type":"message_stop"        }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-24T22:41:05Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-24T22:41:05Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-24T22:41:05Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-24T22:41:05Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a2066e26a91dc521-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=1534
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-6ff899b38332a58c0c1ed514697cf27a-e9ae26aa3a8c264b-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.575s

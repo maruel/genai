@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 685
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5","id":"msg_011CdMh7r94JX4tRAqRGPWPw","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking me to use a tool that forces a binary choice between USA and Canada, but this is inherently subjective. I''ll call the tool and pick one option while being transparent that there''s no objectively correct answer here—I''m making an arbitrary choice and can explain the reasoning behind it.","signature":"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"},{"type":"text","text":"I''ll call the tool, though I want to flag upfront that \"best country\" isn''t something with an objective answer — the tool forces a binary choice where the honest answer is \"it depends entirely on what you value.\""},{"type":"tool_use","id":"toolu_01R4BxzehbtTE5sBQzo8kES1","name":"best_country","input":{"country":"Canada"},"caller":{"type":"direct"}}],"stop_reason":"tool_use","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":459,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":535,"output_tokens_details":{"thinking_tokens":423},"service_tier":"standard","inference_geo":"global"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-24T22:44:29Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-24T22:44:38Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-24T22:44:28Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-24T22:44:29Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a206731e785fc521-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-30a0555a4d268497431ae308a651421f-56b817f7fa27384f-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 9.739s

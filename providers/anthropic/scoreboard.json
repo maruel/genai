@@ -8,9 +8,9 @@
   "dashboardURL": "https://console.anthropic.com/settings/billing",
   "scenarios": [
     {
-      "comments": "Claude Fable 5 is more capable, but it is much more expensive. Keep Opus 4.8 as SOTA default for now.",
+      "comments": "Claude Fable 5 is more capable, but it is much more expensive. Keep Opus 5 as SOTA default for now.",
       "models": [
-        "claude-opus-4-8"
+        "claude-opus-5"
       ],
       "sota": true,
       "reason": true,
@@ -46,7 +46,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": true,
@@ -312,7 +312,6 @@
         "claude-opus-4-5-20251101",
         "claude-opus-4-6",
         "claude-opus-4-7",
-        "claude-opus-5",
         "claude-sonnet-4-20250514",
         "claude-sonnet-4-5-20250929",
         "claude-sonnet-4-6"

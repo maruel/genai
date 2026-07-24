@@ -1,0 +1,137 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 699
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-5","id":"msg_011CdMh1duw58EoFTv8jpKoB","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":459,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"service_tier":"standard","inference_geo":"global"}}               }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}           }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user is asking me to use a tool that requires choosing between Canada and USA. Since there's no obj"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ectively correct answer, I'll make a choice and acknowledge the subjectivity — I'm"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" leaning toward Canada based on the framing, but I should be transparent that \"best\" here"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" is inherently subjective."}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"CAIS9QkKhwEIEBgCKkAgjTt2TKwp2SuC1wCd9Ann/stYEMeqe09nPAK/2K6BH6XoIgSYs1DdXWA8txOU23KRH6fM9O5DBhmxsArHbqJBMg1jbGF1ZGUtb3B1cy01OAFCCHRoaW5raW5nWiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDPY9RxHbc59IE08ApBoMpTeMUKZINjPHlPslIjCWwX4WObUvsqjPJ10OAyaP+yL3VmPoJJTqF69wmhfWlMhE40GRC/E35lDqUkd35R0qmgiUvyU3W1Sa0vgkIpPHSQXJHkFExxYMEVc3H7Iyt0RvqYPVl9PN72XOuNVPwTRuAWKakXlkoPtL3hQtKB5VhBb+/dV8YgdgKpzhS4J3rhLnGw3emFZh5DZRqY/SSvTFEKDrfFI3M8bHtgo/ySyMcZxtYK0S9T+95Z+5ptWbJtezedeqCGhbsHB9H/zic+16N/7277bM37oA6AMxvCY31OJv+JIg+KkPiKt6x1fPR5Lxz3PywhOYRe7tv9koC5GrBS45zehRj8ahXQg71VDDvn5JrQahiz5QL+jfuJoTWSN3zTALHUBkRCXz3YwplXWP15lf0SVui5PcrWeLQKX3RGwe2Bgf3eZuczgQ4DVEybkofonlOPfFTeLVz0d8eTPF/8PC1qzvZcB0XdYyylyu8igKsYgj0ak3QLg6yllrQF9iZG3ENSH5DZq56dOmG/pXKxpYiyqOSg9l0xtPwvtgO6LrVH/r2Bhib0O4r2dHoJxtTH6TH0xf/bh/T37GKTYXC3aqcT6jwXciDRtPQiDL1/87qOmEF0v+MEao2EinSrXMzco08q0Kk9+1O+tg/rqKy+nKIQe0EjOlGitJIUOABEbA+hpBSo012QeKyi6Y9FWlMoM8RXmkfdkLEdzvDlxjyn/70KCGDQHwahJx21SgDvDNoR34xYSufR8wSOqPmrNkHtE6aPpo5tSW3Uyk7uDSn67NuV4jRNPhrQwYgTL07Hn95FD7MuHcpbAp5X4+eEb/mIaPJfnwoQ6HXeMlcsfFNKepXMnrIyqwdcuMB5BjEqfbv0vbFr98picfMNHWKtad5gbwtV60ct9cwzguxtXq/9HDEk9JawxwyackM5Hspml5sI75iLGaaHa0DppaZpf6qJUQCo4OJX8J8eL2qWTHygfKbKE8NRP0ZEhvsKFqhbtjuTgEIP0l66oey1w6pqDZF6I38Fzaa7ZWafzZm8ZiXJclCkX7S/3jOjcrpMHQNm5Rs1s3TWXe6OmqS5S2K0vyqiCX/qYErp2z8lgOainAi1IpKyPe54Wy7RuEWMSlF7tz/O2L6I7IlvyQB4IgydhV9emg8MRyJF04MtfjCan3wNFtdwtZbJGZIiRvCporVFXGdIAiAEu34bsG0OfA8wfXgEH9SaPFQ15CFR8sHqUIp4Zc3IeFUxUh30ITRr5K/eZ7MmclEhz6N6MqRWBDqx7g7MEluvr4MYrWcDk2jrfzlj4XgKm21MNTgoeQofNzKH0/T18lcuqRKtk36DQ2BjRLV29SkqUKrPaUpEjxYZVNgJAh17vjxS7VmnsoLq1HfNndBP57ckUyAhDTdMHXlurBjh2RmDgE5Xjvt819bqyl2QOP49tWJjwrIm9XtNc5/l45IGk48m52FIhSToPKSUGDLxPDWcPFZ4YuS7gYAQ=="}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"I'll call the tool, though I should flag up front that \"best country\" isn't something with an objective answer — it dep"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"ends entirely on what you value."} }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1          }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"toolu_01RzmVd78PhTsPCQULTe7GvY","name":"best_country","input":{},"caller":{"type":"direct"}}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":""} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":"{\"country\""}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"input_json_delta","partial_json":": \"Canada\"}"} }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2             }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":459,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":440,"output_tokens_details":{"thinking_tokens":348}}     }
+
+            event: message_stop
+            data: {"type":"message_stop"}
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-24T22:43:04Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-24T22:43:04Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-24T22:43:04Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-24T22:43:04Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a2067110a89dc521-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-5101c403cb7fc93d89a152931d2c63c3-3174ca4289e3ff70-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.034s

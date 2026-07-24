@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 343
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5","id":"msg_011CdMh8rEYQKjvu4G7DeKM5","type":"message","role":"assistant","content":[{"type":"text","text":"I''ll fetch that page for you."},{"type":"server_tool_use","id":"srvtoolu_014gGjHLY9uKo1rGLe6zrEeR","name":"web_fetch","input":{"url":"https://perdu.com"}},{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_014gGjHLY9uKo1rGLe6zrEeR","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-07-24T14:12:49.043000+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"---\ntitle: Vous Etes Perdu ?\n---\n\n# Perdu sur l''Internet ?\n\n## Pas de panique, on va vous aider\n\n**```\n* <----- vous êtes ici\n```**"},"title":"Vous Etes Perdu ?"}},"caller":{"type":"direct"}},{"type":"thinking","thinking":"I''m creating a simple, minimal page layout.","signature":"CAISiwIKhwEIEBgCKkC71KVyXMHLQX35WOvBf0YJUQEpmAY6B+v94We85MdCrQqEvjjNrUI9RXg++2xDKCPRnzPyPi3tT81x8+0j61G1Mg1jbGF1ZGUtb3B1cy01OAFCCHRoaW5raW5nWiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDA5QpNRayVQ+f2et9BoMMZ1PY2xStXpOHolUIjCNgVNuZhasl+G5y57feYNzwqFikyDJAmUgN+t7XukKYORMXJAh3q4gjspPEBD4qs0qMUYGKEZ1ZQ97GVyxOBictfHXLbfbRnz3K8ZZLvbBWYYnt3OSLolKc3ZkVatVB1a9qlgYAQ=="},{"type":"text","text":"The page at perdu.com is a famous minimalist French joke website. Here''s what it contains:\n\n- **Page title:** \"Vous Etes Perdu ?\" (\"Are you lost?\")\n- **Heading:** \"Perdu sur l''Internet ?\" (\"Lost on the Internet?\")\n- **Subheading:** \"Pas de panique, on va vous aider\" (\"Don''t panic, we''re going to help you\")\n- **Then, in monospaced text:** an asterisk followed by an arrow pointing to it and the words \"vous êtes ici\" (\"you are here\")\n\nThat''s the entire page — a bare-bones HTML document that jokingly locates you at a single point on the internet. It''s something of a French internet landmark, well known for its deliberately primitive design (it looks like a webpage from the mid-1990s), and it''s often used as a test URL or a punchline when someone seems lost online."}],"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":2356,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":368,"output_tokens_details":{"thinking_tokens":15},"service_tier":"standard","inference_geo":"global","server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-07-24T22:44:44Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-07-24T22:44:49Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-07-24T22:44:42Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-07-24T22:44:44Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a20673735f42c521-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-14df0f9808fb30bbb97fcbece28ca778-c4e2ccd8c3be2068-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 7.153s

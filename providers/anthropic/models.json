@@ -98,6 +98,22 @@
         "max": true
       }
     },
+    "claude-opus-5": {
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
+    },
     "claude-sonnet-4-5-20250929": {
       "max_input_tokens": 1000000,
       "max_output_tokens": 64000,

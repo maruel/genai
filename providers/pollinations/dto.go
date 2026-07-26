@@ -649,7 +649,9 @@ type ImageModel struct {
 	Brand              string   `json:"brand"`
 	Capabilities       []string `json:"capabilities,omitzero"`
 	Category           string   `json:"category"`
+	Community          bool     `json:"community,omitzero"`
 	Description        string   `json:"description"`
+	FlatRate           bool     `json:"flat_rate,omitzero"`
 	InputModalities    []string `json:"input_modalities"`
 	MaxReferenceImages int64    `json:"max_reference_images,omitzero"`
 	Name               string   `json:"name"`

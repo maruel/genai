@@ -2,9 +2,14 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
-# Run tests and linters on push.
+# Run tests and linters on main and release changes, pull requests, and automation requests.
 
-on: [push]
+on:
+  push:
+    branches: [main, "v*"]
+  pull_request:
+    branches: [main, "v*"]
+  workflow_dispatch:
 name: Run tests
 jobs:
   # Runs go test both with code coverage sent to codecov, race detector and

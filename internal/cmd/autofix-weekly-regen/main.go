@@ -73,7 +73,7 @@ func main() {
 }
 
 func mainImpl(ctx context.Context) error {
-	push := flag.Bool("push", false, "push the current branch and open or update a draft PR")
+	push := flag.Bool("push", false, "push the current branch and open or update a PR")
 	provider := flag.String("provider", "deepseek", "pi provider")
 	model := flag.String("model", "deepseek-v4-flash", "pi model")
 	thinking := flag.String("thinking", "high", "pi thinking level")
@@ -129,9 +129,16 @@ func pushPR(ctx context.Context) error {
 	if err := run(ctx, "git", "push"); err != nil {
 		return err
 	}
-	if _, err := output(ctx, "gh", "pr", "view", "--json", "number", "--jq", ".number"); err == nil {
+	draft, err := output(ctx, "gh", "pr", "view", "--json", "isDraft", "--jq", ".isDraft")
+	if err == nil {
+		if strings.TrimSpace(draft) == "true" {
+			if err := run(ctx, "gh", "pr", "ready"); err != nil {
+				return err
+			}
+		}
 		return run(ctx, "gh", "pr", "edit", "--title", title, "--body", prBody)
-	} else if createErr := run(ctx, "gh", "pr", "create", "--draft", "--title", title, "--body", prBody); createErr != nil {
+	}
+	if createErr := run(ctx, "gh", "pr", "create", "--title", title, "--body", prBody); createErr != nil {
 		return errors.Join(fmt.Errorf("checking current branch PR: %w", err), createErr)
 	}
 	return nil

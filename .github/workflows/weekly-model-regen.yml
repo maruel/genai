@@ -16,6 +16,7 @@ jobs:
   regenerate-models:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       models: read
       pull-requests: write
@@ -98,6 +99,7 @@ jobs:
           git push --set-upstream origin "${branch}"
           go install github.com/caic-xyz/md/cmd/md@latest
           go run ./internal/cmd/autofix-weekly-regen -push
+          gh workflow run test.yml --ref "${branch}"
       - name: Check for changes
         id: git-check
         run: |

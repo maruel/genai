@@ -748,10 +748,20 @@ type Model struct {
 	Reasoning           ModelReasoning             `json:"reasoning,omitzero"`
 	Benchmarks          ModelBenchmarks            `json:"benchmarks,omitzero"`
 	CanonicalSlug       string                     `json:"canonical_slug"`
+	AliasTarget         ModelAliasTarget           `json:"alias_target,omitzero"`
 	KnowledgeCutoff     string                     `json:"knowledge_cutoff,omitzero"`
 	ExpirationDate      string                     `json:"expiration_date"`
 	Links               ModelLinks                 `json:"links,omitzero"` // Provider-specific links
 	SupportedVoices     []string                   `json:"supported_voices,omitzero"`
+}
+
+// ModelAliasTarget identifies the canonical model an alias redirects to.
+//
+// OpenRouter serves "latest" aliases (e.g. "~anthropic/claude-opus-latest") whose
+// id starts with "~" and that redirect to a canonical model.
+type ModelAliasTarget struct {
+	Name string `json:"name,omitzero"`
+	Slug string `json:"slug,omitzero"`
 }
 
 // GetID implements genai.Model.

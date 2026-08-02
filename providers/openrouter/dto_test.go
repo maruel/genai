@@ -72,6 +72,19 @@ func TestModelsResponse(t *testing.T) {
 			t.Fatalf("AgenticIndex = %g, want 80.6", got)
 		}
 	})
+	t.Run("alias target", func(t *testing.T) {
+		body := `{"data":[{"id":"~anthropic/claude-opus-latest","canonical_slug":"~anthropic/claude-opus-latest","alias_target":{"name":"Claude Opus 5","slug":"anthropic/claude-opus-5"},"hugging_face_id":null,"name":"Anthropic: Claude Opus Latest","created":1776795361,"description":"test","context_length":1000000,"architecture":{"modality":"text+image+file->text","input_modalities":["text","image","file"],"output_modalities":["text"],"tokenizer":"Router","instruct_type":null},"pricing":{"prompt":"0.000005","completion":"0.000025"},"top_provider":{"context_length":1000000,"max_completion_tokens":128000,"is_moderated":true},"per_request_limits":null,"supported_parameters":[],"default_parameters":{"temperature":null,"top_p":null,"top_k":null,"frequency_penalty":null,"presence_penalty":null,"repetition_penalty":null},"supported_voices":null,"knowledge_cutoff":null,"expiration_date":null,"links":{"details":"/api/v1/models/~anthropic/claude-opus-latest/endpoints"}}]}`
+		var resp openrouter.ModelsResponse
+		dec := json.NewDecoder(strings.NewReader(body))
+		dec.DisallowUnknownFields()
+		if err := dec.Decode(&resp); err != nil {
+			t.Fatal(err)
+		}
+		want := openrouter.ModelAliasTarget{Name: "Claude Opus 5", Slug: "anthropic/claude-opus-5"}
+		if got := resp.Data[0].AliasTarget; got != want {
+			t.Fatalf("AliasTarget = %#v, want %#v", got, want)
+		}
+	})
 	t.Run("pricing and pagination", func(t *testing.T) {
 		body := `{"data":[{"pricing":{"prompt":"0.000001","completion":"0.000002","audio":"0.000003","audio_output":"0.000004","discount":0.1,"image":"0.000005","image_output":"0.000006","image_token":"0.000007","input_audio_cache":"0.000008","input_cache_read":"0.000009","input_cache_write":"0.000010","input_cache_write_1h":"0.000011","internal_reasoning":"0.000012","overrides":[{"audio":"0.000013","completion":"0.000014","input_audio_cache":"0.000015","input_cache_read":"0.000016","input_cache_write":"0.000017","input_cache_write_1h":"0.000018","min_prompt_tokens":200000,"prompt":"0.000019","utc_start":100,"utc_end":400}],"request":"0.02","web_search":"0.03"}}],"total_count":1,"links":{"next":null}}`
 		var resp openrouter.ModelsResponse

@@ -894,10 +894,14 @@ func deltaMessages(msgs genai.Messages, sentMsgs int) genai.Messages {
 }
 
 // emitMeta returns a Reply carrying session metadata for delta tracking.
-func emitMeta(respID string, msgCount int) genai.Reply {
+//
+// inputMsgCount is the number of messages provided to the request. The response
+// is appended as the next assistant message by callers, but is already stored
+// server-side under respID, so the next delta must skip it too.
+func emitMeta(respID string, inputMsgCount int) genai.Reply {
 	return genai.Reply{Opaque: map[string]any{
 		opaqueResponseID: respID,
-		opaqueSentMsgs:   float64(msgCount),
+		opaqueSentMsgs:   float64(inputMsgCount + 1),
 	}}
 }
 

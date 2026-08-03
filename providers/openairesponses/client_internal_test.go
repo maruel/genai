@@ -45,6 +45,33 @@ func TestFindPrevMeta(t *testing.T) {
 	})
 }
 
+func TestPrepareDelta(t *testing.T) {
+	const inputMsgCount = 1
+	msgs := genai.Messages{
+		genai.NewTextMessage("What is the weather?"),
+		{Replies: []genai.Reply{
+			{ToolCall: genai.ToolCall{ID: "call_123", Name: "get_weather", Arguments: `{"city":"Paris"}`}},
+			emitMeta("resp_123", inputMsgCount),
+		}},
+		{ToolCallResults: []genai.ToolCallResult{{
+			ID:     "call_123",
+			Name:   "get_weather",
+			Result: "sunny",
+		}}},
+	}
+
+	got, respID := (&Client{}).prepareDelta(msgs, nil)
+	if respID != "resp_123" {
+		t.Errorf("response ID = %q, want %q", respID, "resp_123")
+	}
+	if len(got) != 1 {
+		t.Fatalf("got %d messages, want only the tool result", len(got))
+	}
+	if len(got[0].ToolCallResults) != 1 {
+		t.Errorf("got %#v, want one tool result", got[0])
+	}
+}
+
 func TestStreamWithRespID(t *testing.T) {
 	t.Run("completed", func(t *testing.T) {
 		events := []ResponseStreamChunkResponse{

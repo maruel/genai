@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 758
+        content_length: 636
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"previous_response_id":"resp_0a741bb85a1154b6006a5539906ea0819f96cfe9dfc947f94e","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call","arguments":"{\"number\":132413}","name":"square_root","call_id":"call_2E73A9KI57ZqG6m1eaot1IZg"},{"type":"function_call_output","call_id":"call_2E73A9KI57ZqG6m1eaot1IZg","output":"363.89"}]}
+            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"previous_response_id":"resp_0a741bb85a1154b6006a5539906ea0819f96cfe9dfc947f94e","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_2E73A9KI57ZqG6m1eaot1IZg","output":"363.89"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0a741bb85a1154b6006a5539917944819f9d3e335c63e76c27",
+              "id": "resp_0a741bb85a1154b6006a70db04f6d8819fa338e6f1026ecc85",
               "object": "response",
-              "created_at": 1783970193,
+              "created_at": 1785780997,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970194,
+              "completed_at": 1785780997,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +42,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0a741bb85a1154b6006a553991ef84819f949aa7909f2f2681",
+                  "id": "msg_0a741bb85a1154b6006a70db05dce8819f99f71d28cb98aae8",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -123,7 +123,7 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 137,
+                "input_tokens": 106,
                 "input_tokens_details": {
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
@@ -132,7 +132,7 @@ interactions:
                 "output_tokens_details": {
                   "reasoning_tokens": 0
                 },
-                "total_tokens": 144
+                "total_tokens": 113
               },
               "user": null,
               "metadata": {}
@@ -147,11 +147,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9f6cdb8c31ac-YUL
+                - a257507e8e72f449-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "676"
+                - "1218"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -174,4 +174,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 742ms
+        duration: 1.293s

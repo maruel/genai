@@ -165,6 +165,78 @@ func TestDurationMS(t *testing.T) {
 	})
 }
 
+func TestCommandExecutionItem(t *testing.T) {
+	t.Run("nullable_plugin_fields", func(t *testing.T) {
+		const input = `{"id":"cmd_1","type":"commandExecution","pluginId":null,"scriptPath":null}`
+		var got CommandExecutionItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.PluginID != "" {
+			t.Errorf("PluginID = %q, want empty", got.PluginID)
+		}
+		if got.ScriptPath != "" {
+			t.Errorf("ScriptPath = %q, want empty", got.ScriptPath)
+		}
+	})
+	t.Run("plugin_fields", func(t *testing.T) {
+		const input = `{"id":"cmd_1","type":"commandExecution","pluginId":"canva@openai-curated-remote","scriptPath":"scripts/create-design.sh"}`
+		var got CommandExecutionItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.PluginID != "canva@openai-curated-remote" {
+			t.Errorf("PluginID = %v, want canva@openai-curated-remote", got.PluginID)
+		}
+		if got.ScriptPath != "scripts/create-design.sh" {
+			t.Errorf("ScriptPath = %v, want scripts/create-design.sh", got.ScriptPath)
+		}
+	})
+}
+
+func TestThreadItemExtensions(t *testing.T) {
+	t.Run("mcp_tool_call_app_context", func(t *testing.T) {
+		const input = `{"id":"mcp_1","type":"mcpToolCall","appContext":{"connectorId":"canva","linkId":"link_1","resourceUri":"canva://design/1","appName":"Canva","actionName":"Create design"},"readOnlyHint":true,"durationMs":12.25}`
+		var got McpToolCallItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.AppContext.ConnectorID != "canva" || got.AppContext.ActionName != "Create design" || !got.ReadOnlyHint || got.Duration != base.DurationMS(12.25) {
+			t.Errorf("McpToolCallItem = %+v, want populated app context and read-only hint", got)
+		}
+	})
+	t.Run("sub_agent_activity", func(t *testing.T) {
+		const input = `{"id":"activity_1","type":"subAgentActivity","kind":"interacted","agentThreadId":"thread_1","agentPath":"/agents/research"}`
+		var got SubAgentActivityItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Kind != SubAgentActivityKindInteracted || got.AgentThreadID != "thread_1" || got.AgentPath != "/agents/research" {
+			t.Errorf("SubAgentActivityItem = %+v, want populated activity", got)
+		}
+	})
+	t.Run("sleep", func(t *testing.T) {
+		const input = `{"id":"sleep_1","type":"sleep","durationMs":250}`
+		var got SleepItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Duration != base.DurationMS(250) {
+			t.Errorf("Duration = %v, want 250", got.Duration)
+		}
+	})
+	t.Run("web_search_results", func(t *testing.T) {
+		const input = `{"id":"search_1","type":"webSearch","results":[{"title":"Codex"}]}`
+		var got WebSearchItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if len(got.Results) != 1 || string(got.Results[0]) != `{"title":"Codex"}` {
+			t.Errorf("Results = %s, want one result", got.Results)
+		}
+	})
+}
+
 func TestDurationS(t *testing.T) {
 	const input = `{"threadId":"t1","objective":"ship","status":"active","tokensUsed":12,"timeUsedSeconds":3.25,"createdAt":1,"updatedAt":2}`
 	var got ThreadGoal

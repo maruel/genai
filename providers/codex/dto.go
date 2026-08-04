@@ -215,8 +215,12 @@ const (
 	ItemTypeDynamicToolCall ItemType = "dynamicToolCall"
 	// ItemTypeCollabAgentToolCall identifies collaborative agent tool call items.
 	ItemTypeCollabAgentToolCall ItemType = "collabAgentToolCall"
+	// ItemTypeSubAgentActivity identifies a sub-agent lifecycle activity item.
+	ItemTypeSubAgentActivity ItemType = "subAgentActivity"
 	// ItemTypeHookPrompt identifies hook prompt items.
 	ItemTypeHookPrompt ItemType = "hookPrompt"
+	// ItemTypeSleep identifies an interruptible sleep item.
+	ItemTypeSleep ItemType = "sleep"
 	// ItemTypeEnteredReviewMode identifies review-mode entry items.
 	ItemTypeEnteredReviewMode ItemType = "enteredReviewMode"
 	// ItemTypeExitedReviewMode identifies review-mode exit items.
@@ -1091,6 +1095,8 @@ type ReasoningItem struct {
 type CommandExecutionItem struct {
 	ID               string                 `json:"id"`
 	Type             ItemType               `json:"type"`
+	PluginID         string                 `json:"pluginId,omitzero"`
+	ScriptPath       string                 `json:"scriptPath,omitzero"`
 	Command          string                 `json:"command,omitzero"`
 	Cwd              string                 `json:"cwd,omitzero"`
 	ProcessID        string                 `json:"processId,omitzero"`
@@ -1112,17 +1118,28 @@ type FileChangeItem struct {
 
 // McpToolCallItem is an MCP tool call item.
 type McpToolCallItem struct {
-	ID                string             `json:"id"`
-	Type              ItemType           `json:"type"`
-	Server            string             `json:"server,omitzero"`
-	Tool              string             `json:"tool,omitzero"`
-	Status            McpToolCallStatus  `json:"status,omitzero"`
-	Arguments         json.RawMessage    `json:"arguments,omitzero"`
-	McpAppResourceURI string             `json:"mcpAppResourceUri,omitzero"`
-	PluginID          string             `json:"pluginId,omitzero"`
-	Result            *McpToolCallResult `json:"result,omitzero"`
-	Error             *McpToolCallError  `json:"error,omitzero"`
-	Duration          *base.DurationMS   `json:"durationMs,omitzero"`
+	ID                string                `json:"id"`
+	Type              ItemType              `json:"type"`
+	Server            string                `json:"server,omitzero"`
+	Tool              string                `json:"tool,omitzero"`
+	Status            McpToolCallStatus     `json:"status,omitzero"`
+	Arguments         json.RawMessage       `json:"arguments,omitzero"`
+	AppContext        McpToolCallAppContext `json:"appContext,omitzero"`
+	McpAppResourceURI string                `json:"mcpAppResourceUri,omitzero"`
+	PluginID          string                `json:"pluginId,omitzero"`
+	ReadOnlyHint      bool                  `json:"readOnlyHint,omitzero"`
+	Result            *McpToolCallResult    `json:"result,omitzero"`
+	Error             *McpToolCallError     `json:"error,omitzero"`
+	Duration          base.DurationMS       `json:"durationMs,omitzero"`
+}
+
+// McpToolCallAppContext identifies the installed app context for an MCP tool call.
+type McpToolCallAppContext struct {
+	ConnectorID string `json:"connectorId,omitzero"`
+	LinkID      string `json:"linkId,omitzero"`
+	ResourceURI string `json:"resourceUri,omitzero"`
+	AppName     string `json:"appName,omitzero"`
+	ActionName  string `json:"actionName,omitzero"`
 }
 
 // DynamicToolCallItem is a dynamically registered tool call item.
@@ -1152,6 +1169,28 @@ type CollabAgentToolCallItem struct {
 	AgentsStates      map[string]CollabAgentState `json:"agentsStates,omitzero"`
 }
 
+// SubAgentActivityKind identifies a sub-agent lifecycle activity.
+type SubAgentActivityKind string
+
+// Sub-agent activity kind constants.
+const (
+	// SubAgentActivityKindStarted identifies a newly started sub-agent.
+	SubAgentActivityKindStarted SubAgentActivityKind = "started"
+	// SubAgentActivityKindInteracted identifies an interaction with a sub-agent.
+	SubAgentActivityKindInteracted SubAgentActivityKind = "interacted"
+	// SubAgentActivityKindInterrupted identifies an interrupted sub-agent.
+	SubAgentActivityKindInterrupted SubAgentActivityKind = "interrupted"
+)
+
+// SubAgentActivityItem reports a sub-agent lifecycle activity.
+type SubAgentActivityItem struct {
+	ID            string               `json:"id"`
+	Type          ItemType             `json:"type"`
+	Kind          SubAgentActivityKind `json:"kind,omitzero"`
+	AgentThreadID string               `json:"agentThreadId,omitzero"`
+	AgentPath     string               `json:"agentPath,omitzero"`
+}
+
 // CollabAgentState describes the state of a collaborative agent.
 type CollabAgentState struct {
 	Status  CollabAgentStatus `json:"status"`
@@ -1174,10 +1213,11 @@ type MemoryCitationEntry struct {
 
 // WebSearchItem is a web search item.
 type WebSearchItem struct {
-	ID     string           `json:"id"`
-	Type   ItemType         `json:"type"`
-	Query  string           `json:"query,omitzero"`
-	Action *WebSearchAction `json:"action,omitzero"`
+	ID      string            `json:"id"`
+	Type    ItemType          `json:"type"`
+	Query   string            `json:"query,omitzero"`
+	Action  *WebSearchAction  `json:"action,omitzero"`
+	Results []json.RawMessage `json:"results,omitzero"`
 }
 
 // ImageViewItem is an image viewing item.
@@ -1185,6 +1225,13 @@ type ImageViewItem struct {
 	ID   string   `json:"id"`
 	Type ItemType `json:"type"`
 	Path string   `json:"path,omitzero"`
+}
+
+// SleepItem is an interruptible sleep tool item.
+type SleepItem struct {
+	ID       string          `json:"id"`
+	Type     ItemType        `json:"type"`
+	Duration base.DurationMS `json:"durationMs,omitzero"`
 }
 
 // ImageGenerationItem is an image generation item.

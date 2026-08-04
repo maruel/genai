@@ -33,6 +33,9 @@ Type names in `types.go` match the upstream Rust definitions:
 When updating wire types, clone https://github.com/openai/codex and diff
 against these files to find new fields, item types, or notification methods.
 
+The DTOs were last synced against `openai/codex` commit
+`fcf636a41dbcd8372ad64301b7092621a155747b`.
+
 ## References
 
 Source code:

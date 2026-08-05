@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_06c75be4d9097af6006a5539951cfc819eab0148180b82ac13",
+              "id": "resp_0c9c7516a35e2beb006a73489bba0881a288a58288fc87269f",
               "object": "response",
-              "created_at": 1783970197,
+              "created_at": 1785940123,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970206,
+              "completed_at": 1785940127,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,43 +42,19 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_06c75be4d9097af6006a5539958b3c819e983f5694dce027cf",
+                  "id": "ws_0c9c7516a35e2beb006a73489c927481a2b9faa5ec89f1de06",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
                     "type": "search",
                     "queries": [
-                      "current Prime Minister of Canada official government"
+                      "current Prime Minister of Canada official"
                     ],
-                    "query": "current Prime Minister of Canada official government",
+                    "query": "current Prime Minister of Canada official",
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://apnews.com/article/244d88ec564a3c17b6cf4bee41f24548"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://apnews.com/article/80744d672ef6548a9b5c0748f1d7cc18"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://www.pm.gc.ca/en/about"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet-committee-mandate-and-membership"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en?lang=en"
                       },
                       {
                         "type": "url",
@@ -86,7 +62,11 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
+                        "url": "https://www.pm.gc.ca/en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet"
                       },
                       {
                         "type": "url",
@@ -94,19 +74,31 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/?pverbp="
-                      },
-                      {
-                        "type": "url",
                         "url": "https://www.ourcommons.ca/Members/en/ministries"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/Members/en/ministries?gender=M&ministryNumber=27"
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/members/en/ministries?view=tile"
+                        "url": "https://guide-ministries.canada.ca/en/canadian-ministries/ministry-details/34/1"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?pverbp="
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/Members/en/ministries?view=List"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers.html?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council/corporate/transparency/briefing-documents/prime-minister-2025-b/cabinet-formtion.html"
                       },
                       {
                         "type": "url",
@@ -114,11 +106,15 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_26_October_2021.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
                       },
                       {
                         "type": "url",
@@ -126,7 +122,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Government_of_Canada"
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
                       },
                       {
                         "type": "url",
@@ -138,27 +134,27 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://lop.parl.ca/about/parliament/education/GetToKnowTheHOC-en.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Leader_of_the_Liberal_Party_of_Canada"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://en.wikipedia.org/wiki/30th_Canadian_Ministry"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.canada.ca/content/dam/pco-bcp/images/camp/er/er-toolkit-en.pdf"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://lop.parl.ca/About/Parliament/Education/GetToKnowTheHOC-en.pdf"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/2019-03/Canadian_Ministry_List_March_18_2019.pdf"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://publications.gc.ca/collections/collection_2013/cic/Ci4-60-1-2013-eng.pdf"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/canada/comments/1jb6kj3"
                       },
                       {
                         "type": "url",
@@ -170,25 +166,25 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://arxiv.org/abs/2604.15514"
+                        "url": "https://www.reddit.com/r/AskACanadian/comments/oas7xo"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/cmhoc/comments/1ke4jgq"
+                        "url": "https://www.reddit.com/r/canada/comments/1onhted"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/canada/comments/1ucl1h1/mark_carney_named_next_uk_prime_minister/"
+                        "url": "https://www.reddit.com/r/AskACanadian/comments/1e45cbg/as_an_american_who_are_some_of_the_big_name_prime/"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/u_IntelligentIsopod344/comments/1c7rggz"
+                        "url": "https://www.reddit.com/r/cmhoc/comments/1jpes6p"
                       }
                     ]
                   }
                 },
                 {
-                  "id": "msg_06c75be4d9097af6006a55399ec76c819eaa4c930e98850b05",
+                  "id": "msg_0c9c7516a35e2beb006a73489f579881a2b09300cf5173629b",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -264,16 +260,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8727,
+                "input_tokens": 8448,
                 "input_tokens_details": {
                   "cache_write_tokens": 0,
-                  "cached_tokens": 4467
+                  "cached_tokens": 4427
                 },
-                "output_tokens": 37,
+                "output_tokens": 36,
                 "output_tokens_details": {
-                  "reasoning_tokens": 30
+                  "reasoning_tokens": 29
                 },
-                "total_tokens": 8764
+                "total_tokens": 8484
               },
               "user": null,
               "metadata": {}
@@ -288,11 +284,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9f83acb131ac-YUL
+                - a2667d6ccd0fa29a-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "10042"
+                - "4427"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -308,11 +304,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "496009"
+                - "496329"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 478ms
+                - 440ms
         status: 200 OK
         code: 200
-        duration: 10.098s
+        duration: 4.524s

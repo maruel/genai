@@ -204,8 +204,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 		case *genai.GenOptionWeb:
 			if v.Search {
-				c.WebSearchOptions = &WebSearchOptions{
-					SearchContextSize: "high",
+				if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
+					c.WebSearchOptions = &WebSearchOptions{SearchContextSize: "high"}
+				} else {
+					unsupported = append(unsupported, "GenOptionWeb.Search")
 				}
 			}
 			if v.Fetch {
@@ -374,7 +376,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) er
 	return nil
 }
 
-// WebSearchOptions is "documented" at https://platform.openai.com/docs/guides/tools-web-search
+// WebSearchOptions configures legacy Chat Completions web search models.
 type WebSearchOptions struct {
 	SearchContextSize string `json:"search_context_size,omitzero"` // "low", "medium", "high"
 	UserLocation      struct {

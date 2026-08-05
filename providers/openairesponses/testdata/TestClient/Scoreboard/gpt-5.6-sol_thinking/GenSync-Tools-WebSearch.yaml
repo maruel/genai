@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0f2e0eb15ac1c6cd006a55397f31b08191a3b7d9a918d05996",
+              "id": "resp_01c570c36bd51b8b006a734896b830819288ae7f92a8d40ac7",
               "object": "response",
-              "created_at": 1783970175,
+              "created_at": 1785940118,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970181,
+              "completed_at": 1785940122,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,35 +42,19 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_0f2e0eb15ac1c6cd006a55398003488191bc430665f1ae2ce8",
+                  "id": "ws_01c570c36bd51b8b006a734897ec308192a8dada55d06d1f2a",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
                     "type": "search",
                     "queries": [
-                      "site:pm.gc.ca Prime Minister of Canada"
+                      "site:pm.gc.ca Prime Minister of Canada current"
                     ],
-                    "query": "site:pm.gc.ca Prime Minister of Canada",
+                    "query": "site:pm.gc.ca Prime Minister of Canada current",
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/about"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2026/05/05/prime-minister-carney-announces-kings-approval-canadas-next-governor"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en?lang=en"
+                        "url": "https://www.pm.gc.ca/"
                       },
                       {
                         "type": "url",
@@ -78,27 +62,43 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://www.pm.gc.ca/en/news/backgrounders/2026/03/04/paul-mackinnon"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/05/13/prime-minister-carney-announces-new-ministry"
+                        "url": "https://www.pm.gc.ca/en/news/backgrounders/2026/03/04/christopher-maclennan"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/statements/2026/06/08/statement-prime-minister-carney-welcome-canadas-new-governor-general-her"
+                        "url": "https://www.pm.gc.ca/en/news/backgrounders/2026/07/06/honourable-patrick-j-boucher"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet/honourable-steven-mackinnon"
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2026/07/06/prime-minister-carney-announces-appointment-new-chief-justice-federal"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
+                        "url": "https://www.pm.gc.ca/en/news/statements/2026/07/01/statement-prime-minister-carney-canada-day"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/media-advisories/2026/07/02/update-thursday-july-2-2026"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/media-advisories/2026/06/15/tuesday-june-16-2026"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2026/07/02/canada-and-british-columbia-strike-new-cooperative-prosperity"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/06/13/prime-minister-carney-meets-taoiseach-ireland-micheal-martin"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/05/04/prime-minister-carney-meets-president-ukraine-volodymyr-zelenskyy"
                       },
                       {
                         "type": "url",
@@ -110,11 +110,11 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
                       },
                       {
                         "type": "url",
@@ -128,7 +128,7 @@ interactions:
                   }
                 },
                 {
-                  "id": "msg_0f2e0eb15ac1c6cd006a5539852ca48191b2c8370de8204419",
+                  "id": "msg_01c570c36bd51b8b006a73489a17688192b2ba80b5305b8e41",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -204,16 +204,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8606,
+                "input_tokens": 8503,
                 "input_tokens_details": {
-                  "cache_write_tokens": 4467,
-                  "cached_tokens": 0
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4427
                 },
-                "output_tokens": 39,
+                "output_tokens": 40,
                 "output_tokens_details": {
-                  "reasoning_tokens": 32
+                  "reasoning_tokens": 33
                 },
-                "total_tokens": 8645
+                "total_tokens": 8543
               },
               "user": null,
               "metadata": {}
@@ -228,11 +228,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9efa9e1931ac-YUL
+                - a2667d492b40a29a-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "6329"
+                - "4496"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -248,11 +248,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "496128"
+                - "496270"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 464ms
+                - 447ms
         status: 200 OK
         code: 200
-        duration: 6.395s
+        duration: 5.301s

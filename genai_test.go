@@ -1344,6 +1344,10 @@ func TestCitationSource(t *testing.T) {
 					in:   CitationSource{URL: "https://example.com", Type: CitationWeb},
 				},
 				{
+					name: "valid web query",
+					in:   CitationSource{Snippet: "latest Go release", Type: CitationWebQuery},
+				},
+				{
 					name: "valid with both ID and URL",
 					in:   CitationSource{ID: "doc1", URL: "https://example.com", Type: CitationDocument},
 				},

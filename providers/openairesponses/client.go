@@ -430,19 +430,15 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					// Perfect place to handle web search, since the "pending" has no data.
 					switch pkt.Item.Type {
 					case MessageWebSearchCall:
-						// TODO: Check for pkt.Item.Status == "completed"
-						switch pkt.Item.Action.Type {
-						case "search":
-							f.Citation.Sources = make([]genai.CitationSource, len(pkt.Item.Action.Sources)+1)
-							f.Citation.Sources[0].Type = genai.CitationWebQuery
-							f.Citation.Sources[0].Snippet = pkt.Item.Action.Query
-							for i, src := range pkt.Item.Action.Sources {
-								f.Citation.Sources[i+1].Type = genai.CitationWeb
-								f.Citation.Sources[i+1].URL = src.URL
+						if pkt.Item.Status == "" || pkt.Item.Status == "completed" {
+							c, ok, err := pkt.Item.Action.toCitation()
+							if err != nil {
+								finalErr = err
+								return
 							}
-						default:
-							finalErr = &internal.BadError{Err: fmt.Errorf("implement action type %q", pkt.Item.Action.Type)}
-							return
+							if ok {
+								f.Citation = c
+							}
 						}
 					case MessageFileSearchCall:
 						// File search completed; yield results as citations.

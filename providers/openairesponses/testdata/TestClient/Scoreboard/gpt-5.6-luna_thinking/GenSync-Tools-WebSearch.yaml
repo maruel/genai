@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0e3db840ed963b40006a5539ab7cc8819d907bcd5803f9dfa5",
+              "id": "resp_0cd9cdaab6d121ac006a7348a1448081a1ac9900d41f55ed20",
               "object": "response",
-              "created_at": 1783970219,
+              "created_at": 1785940129,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970230,
+              "completed_at": 1785940133,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +42,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_0e3db840ed963b40006a5539ac2bf8819da98372068ac724dd",
+                  "id": "ws_0cd9cdaab6d121ac006a7348a1d1fc81a1893ce44d0ea0a321",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
@@ -54,47 +54,7 @@ interactions:
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://apnews.com/article/244d88ec564a3c17b6cf4bee41f24548"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://apnews.com/article/80744d672ef6548a9b5c0748f1d7cc18"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.thedailybeast.com/obsessed/maga-melts-down-over-justin-trudeaus-katy-perry-dance-video/"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/about"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en?lang=en"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.canada.ca/en/privy-council.html"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/03/08/prime-minister-carney-speaks-president-united-states-donald-j-trump"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://guide-ministries.canada.ca/en/canadian-ministries/ministry-details/34/1"
+                        "url": "https://www.thedailybeast.com/trump-sounds-alarm-on-revenge-plot-against-canada-for-wildfire-smoke/"
                       },
                       {
                         "type": "url",
@@ -102,7 +62,23 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/backgrounders/2026/03/04/paul-mackinnon"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/Members/en/ministries?view=List"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/06/13/prime-minister-carney-meets-taoiseach-ireland-micheal-martin"
                       },
                       {
                         "type": "url",
@@ -110,7 +86,11 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/?pverbp="
+                        "url": "https://www.pm.gc.ca/en/news/media-advisories/2026/06/15/tuesday-june-16-2026"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/05/04/prime-minister-carney-meets-president-ukraine-volodymyr-zelenskyy"
                       },
                       {
                         "type": "url",
@@ -118,7 +98,19 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/members/en/ministries?view=tile"
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/04/14/prime-minister-carney-meets-president-finland-alexander-stubb"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.mofa.go.jp/mofaj/na/na1/ca/page25_000308.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/fr/propos"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/members/en/mark-carney%2828286%29"
                       },
                       {
                         "type": "url",
@@ -142,6 +134,10 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
                       },
                       {
@@ -150,7 +146,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                        "url": "https://bdp.parl.ca/about/parliament/education/GetToKnowTheHOC-en.pdf"
                       },
                       {
                         "type": "url",
@@ -162,7 +158,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://lop.parl.ca/About/Parliament/Education/GetToKnowTheHOC-en.pdf"
+                        "url": "https://www.reddit.com/r/canada/comments/1jb6kj3"
                       },
                       {
                         "type": "url",
@@ -176,7 +172,7 @@ interactions:
                   }
                 },
                 {
-                  "id": "msg_0e3db840ed963b40006a5539b691c4819d88c768a1dc71cc86",
+                  "id": "msg_0cd9cdaab6d121ac006a7348a4cd0081a1b5a1107c8385d095",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -252,16 +248,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8473,
+                "input_tokens": 8548,
                 "input_tokens_details": {
-                  "cache_write_tokens": 0,
-                  "cached_tokens": 4467
+                  "cache_write_tokens": 4427,
+                  "cached_tokens": 0
                 },
                 "output_tokens": 35,
                 "output_tokens_details": {
                   "reasoning_tokens": 28
                 },
-                "total_tokens": 8508
+                "total_tokens": 8583
               },
               "user": null,
               "metadata": {}
@@ -276,11 +272,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aaa00f5eb131ac-YUL
+                - a2667d8f8e1ca29a-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "11611"
+                - "4428"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -296,11 +292,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "196265"
+                - "196230"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 1.12s
+                - 1.131s
         status: 200 OK
         code: 200
-        duration: 11.691s
+        duration: 4.496s

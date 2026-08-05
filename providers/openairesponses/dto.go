@@ -493,6 +493,69 @@ const (
 	MessageItemReference        MessageType = "item_reference"
 )
 
+// WebSearchActionType describes an action performed by the web search tool.
+type WebSearchActionType string
+
+const (
+	// WebSearchActionSearch performs a web search query.
+	WebSearchActionSearch WebSearchActionType = "search"
+	// WebSearchActionOpenPage opens a URL from the search results.
+	WebSearchActionOpenPage WebSearchActionType = "open_page"
+	// WebSearchActionFindInPage finds text in an opened page.
+	WebSearchActionFindInPage WebSearchActionType = "find_in_page"
+)
+
+// WebSearchSource is a source returned by a web search action.
+type WebSearchSource struct {
+	Type string `json:"type,omitzero"` // "url"
+	URL  string `json:"url,omitzero"`
+}
+
+// WebSearchAction describes the action performed by a web search tool call.
+type WebSearchAction struct {
+	Type WebSearchActionType `json:"type,omitzero"`
+
+	// Search only. Query is deprecated by OpenAI in favor of Queries.
+	Queries []string          `json:"queries,omitzero"`
+	Query   string            `json:"query,omitzero"`
+	Sources []WebSearchSource `json:"sources,omitzero"`
+
+	// OpenPage and FindInPage only.
+	URL string `json:"url,omitzero"`
+	// FindInPage only.
+	Pattern string `json:"pattern,omitzero"`
+}
+
+func (a *WebSearchAction) toCitation() (genai.Citation, bool, error) {
+	switch a.Type {
+	case WebSearchActionSearch:
+		n := len(a.Queries)
+		if n == 0 && a.Query != "" {
+			n = 1
+		}
+		s := make([]genai.CitationSource, 0, n+len(a.Sources))
+		for _, q := range a.Queries {
+			s = append(s, genai.CitationSource{Type: genai.CitationWebQuery, Snippet: q})
+		}
+		if n == 1 && len(a.Queries) == 0 {
+			s = append(s, genai.CitationSource{Type: genai.CitationWebQuery, Snippet: a.Query})
+		}
+		for _, src := range a.Sources {
+			if src.URL != "" {
+				s = append(s, genai.CitationSource{Type: genai.CitationWeb, URL: src.URL})
+			}
+		}
+		return genai.Citation{Sources: s}, len(s) != 0, nil
+	case WebSearchActionOpenPage, WebSearchActionFindInPage:
+		if a.URL == "" {
+			return genai.Citation{}, false, nil
+		}
+		return genai.Citation{Sources: []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL}}}, true, nil
+	default:
+		return genai.Citation{}, false, &internal.BadError{Err: fmt.Errorf("implement action type %q", a.Type)}
+	}
+}
+
 // Message represents a message input or output to the model.
 //
 // In OpenAI Responses API, Message is a mix of Message and Content because the tool call type is in the
@@ -539,15 +602,7 @@ type Message struct {
 	Summary          []ReasoningSummary `json:"summary,omitzero"`
 
 	// Type == MessageWebSearchCall
-	Action struct {
-		Type    string   `json:"type,omitzero"` // "search"
-		Queries []string `json:"queries,omitzero"`
-		Query   string   `json:"query,omitzero"`
-		Sources []struct {
-			Type string `json:"type,omitzero"` // "url"
-			URL  string `json:"url,omitzero"`
-		} `json:"sources,omitzero"`
-	} `json:"action,omitzero"`
+	Action WebSearchAction `json:"action,omitzero"`
 }
 
 // From must be called with at most one ToolCallResults.
@@ -628,17 +683,16 @@ func (m *Message) To(out *genai.Message) error {
 	case MessageFunctionCall:
 		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
 	case MessageWebSearchCall:
-		if m.Action.Type != "search" {
-			return &internal.BadError{Err: fmt.Errorf("implement action type %q", m.Action.Type)}
+		if m.Status != "" && m.Status != "completed" {
+			return nil
 		}
-		c := genai.Citation{Sources: make([]genai.CitationSource, len(m.Action.Sources)+1)}
-		c.Sources[0].Type = genai.CitationWebQuery
-		c.Sources[0].Snippet = m.Action.Query
-		for i, src := range m.Action.Sources {
-			c.Sources[i+1].Type = genai.CitationWeb
-			c.Sources[i+1].URL = src.URL
+		c, ok, err := m.Action.toCitation()
+		if err != nil {
+			return err
 		}
-		out.Replies = append(out.Replies, genai.Reply{Citation: c})
+		if ok {
+			out.Replies = append(out.Replies, genai.Reply{Citation: c})
+		}
 	case MessageFileSearchCall:
 		for _, q := range m.Queries {
 			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{

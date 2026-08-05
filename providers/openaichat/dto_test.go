@@ -26,6 +26,30 @@ func testToolOption() *genai.GenOptionTools {
 }
 
 func TestChatRequest(t *testing.T) {
+	t.Run("Init/web search", func(t *testing.T) {
+		msgs := genai.Messages{genai.NewTextMessage("search")}
+		t.Run("legacy model", func(t *testing.T) {
+			var r ChatRequest
+			if err := r.Init(msgs, "gpt-4o-search-preview", &genai.GenOptionWeb{Search: true}); err != nil {
+				t.Fatal(err)
+			}
+			if r.WebSearchOptions == nil || r.WebSearchOptions.SearchContextSize != "high" {
+				t.Fatalf("WebSearchOptions = %#v, want high context", r.WebSearchOptions)
+			}
+		})
+		t.Run("unsupported model", func(t *testing.T) {
+			var r ChatRequest
+			err := r.Init(msgs, "gpt-5.6-luna", &genai.GenOptionWeb{Search: true})
+			uerr, ok := errors.AsType[*base.ErrNotSupported](err)
+			if !ok {
+				t.Fatalf("got %v, want ErrNotSupported", err)
+			}
+			if len(uerr.Options) != 1 || uerr.Options[0] != "GenOptionWeb.Search" {
+				t.Fatalf("got unsupported options %#v, want GenOptionWeb.Search", uerr.Options)
+			}
+		})
+	})
+
 	t.Run("Init/tools/gpt-5.6 defaults to no reasoning", func(t *testing.T) {
 		var r ChatRequest
 		err := r.Init(genai.Messages{genai.NewTextMessage("calculate")}, "gpt-5.6-luna", testToolOption(), &GenOptionText{ServiceTier: ServiceTierFlex})

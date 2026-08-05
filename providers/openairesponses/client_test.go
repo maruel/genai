@@ -328,6 +328,107 @@ func TestPreviousResponseID(t *testing.T) {
 	})
 }
 
+func TestWebSearchActions(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name string
+			in   openairesponses.WebSearchAction
+			want []genai.CitationSource
+		}{
+			{
+				name: "search",
+				in: openairesponses.WebSearchAction{
+					Type:    openairesponses.WebSearchActionSearch,
+					Queries: []string{"latest Go release"},
+					Sources: []openairesponses.WebSearchSource{{URL: "https://go.dev/dl/"}},
+				},
+				want: []genai.CitationSource{
+					{Type: genai.CitationWebQuery, Snippet: "latest Go release"},
+					{Type: genai.CitationWeb, URL: "https://go.dev/dl/"},
+				},
+			},
+			{
+				name: "open page",
+				in:   openairesponses.WebSearchAction{Type: openairesponses.WebSearchActionOpenPage, URL: "https://go.dev/dl/"},
+				want: []genai.CitationSource{{Type: genai.CitationWeb, URL: "https://go.dev/dl/"}},
+			},
+			{
+				name: "find in page",
+				in:   openairesponses.WebSearchAction{Type: openairesponses.WebSearchActionFindInPage, URL: "https://go.dev/dl/", Pattern: "go1.26"},
+				want: []genai.CitationSource{{Type: genai.CitationWeb, URL: "https://go.dev/dl/"}},
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				m := openairesponses.Message{
+					Type:   openairesponses.MessageWebSearchCall,
+					Status: "completed",
+					Action: tt.in,
+				}
+				res, err := (&openairesponses.Response{Output: []openairesponses.Message{m}}).ToResult()
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := res.Validate(); err != nil {
+					t.Fatal(err)
+				}
+				if len(res.Replies) != 1 {
+					t.Fatalf("replies = %d, want 1", len(res.Replies))
+				}
+				assertCitationSources(t, res.Replies[0].Citation.Sources, tt.want)
+
+				fragments, finish := openairesponses.ProcessStream(slices.Values([]openairesponses.ResponseStreamChunkResponse{{
+					Type: openairesponses.ResponseOutputItemDone,
+					Item: m,
+				}}))
+				got := slices.Collect(fragments)
+				_, _, err = finish()
+				if err != nil {
+					t.Fatal(err)
+				}
+				if len(got) != 1 {
+					t.Fatalf("fragments = %d, want 1", len(got))
+				}
+				if err := got[0].Validate(); err != nil {
+					t.Fatal(err)
+				}
+				assertCitationSources(t, got[0].Citation.Sources, tt.want)
+			})
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		m := openairesponses.Message{
+			Type:   openairesponses.MessageWebSearchCall,
+			Status: "completed",
+			Action: openairesponses.WebSearchAction{Type: "visit"},
+		}
+		if _, err := (&openairesponses.Response{Output: []openairesponses.Message{m}}).ToResult(); err == nil || err.Error() != `implement action type "visit"` {
+			t.Fatalf("ToResult() error = %v, want implement action type", err)
+		}
+		fragments, finish := openairesponses.ProcessStream(slices.Values([]openairesponses.ResponseStreamChunkResponse{{
+			Type: openairesponses.ResponseOutputItemDone,
+			Item: m,
+		}}))
+		for range fragments {
+		}
+		if _, _, err := finish(); err == nil || err.Error() != `implement action type "visit"` {
+			t.Fatalf("ProcessStream() error = %v, want implement action type", err)
+		}
+	})
+}
+
+func assertCitationSources(t *testing.T, got, want []genai.CitationSource) {
+	if len(got) != len(want) {
+		t.Fatalf("sources = %#v, want %#v", got, want)
+	}
+	for i := range got {
+		if got[i].Type != want[i].Type || got[i].URL != want[i].URL || got[i].Snippet != want[i].Snippet {
+			t.Errorf("source %d = %#v, want %#v", i, got[i], want[i])
+		}
+	}
+}
+
 func init() {
 	internal.BeLenient = false
 }

@@ -18,7 +18,6 @@ jobs:
     permissions:
       actions: write
       contents: write
-      models: read
       pull-requests: write
     steps:
       - name: Checkout repository
@@ -44,7 +43,6 @@ jobs:
           DASHSCOPE_API_KEY_INTL: ${{ secrets.DASHSCOPE_API_KEY_INTL }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
@@ -73,7 +71,6 @@ jobs:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GH_TOKEN: ${{ github.token }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}

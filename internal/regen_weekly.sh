@@ -11,7 +11,7 @@ cd "$(dirname "$0")"
 cd ..
 
 go install ./cmd/list-models ./cmd/scoreboard
-# Providers that can't run in CI: local servers or CLI wrappers.
+# Providers that can't run in CI: local servers, or CLI wrappers.
 EXCLUDE="bfl claudecode codex llamacpp ollama openaicompatible opencode openaibase openaichat openairesponses perplexity pi"
 PROVIDERS=()
 for d in providers/*/; do
@@ -45,7 +45,6 @@ require_all cloudflare CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_KEY
 require_all cohere COHERE_API_KEY
 require_all deepseek DEEPSEEK_API_KEY
 require_all gemini GEMINI_API_KEY
-require_all github GITHUB_TOKEN
 require_all groq GROQ_API_KEY
 require_all huggingface HUGGINGFACE_API_KEY
 require_all mistral MISTRAL_API_KEY
@@ -63,12 +62,19 @@ list_models() {
 	local provider=$1
 	local out=$2
 	local delay=10
+	local err="$out.err"
 	local attempt
 	for attempt in {1..3}; do
-		if list-models -strict -provider "$provider" >"$out"; then
+		if list-models -strict -provider "$provider" >"$out" 2>"$err"; then
+			rm -f "$err"
 			return 0
 		fi
+		cat "$err" >&2
 		rm -f "$out"
+		if grep -Fq "http 410" "$err"; then
+			echo "list-models returned HTTP 410 for $provider; not retrying" >&2
+			return 1
+		fi
 		if [[ $attempt == 3 ]]; then
 			break
 		fi
@@ -76,6 +82,7 @@ list_models() {
 		sleep "$delay"
 		delay=$((delay * 2))
 	done
+	rm -f "$err"
 	return 1
 }
 

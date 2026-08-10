@@ -74,8 +74,8 @@ func main() {
 
 func mainImpl(ctx context.Context) error {
 	push := flag.Bool("push", false, "push the current branch and open or update a PR")
-	provider := flag.String("provider", "deepseek", "pi provider")
-	model := flag.String("model", "deepseek-v4-flash", "pi model")
+	provider := flag.String("provider", "openrouter", "pi provider")
+	model := flag.String("model", "deepseek/deepseek-v4-flash", "pi model")
 	thinking := flag.String("thinking", "high", "pi thinking level")
 	flag.Parse()
 	if flag.NArg() != 0 {

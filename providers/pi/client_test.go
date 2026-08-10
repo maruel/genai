@@ -207,6 +207,16 @@ func TestClient(t *testing.T) {
 	})
 }
 
+func TestBuildResult(t *testing.T) {
+	res, err := buildResult([]byte(`{"type":"agent_end","messages":[{"role":"assistant","content":[{"type":"text","text":"Hello."}],"usage":{"input":10,"output":8,"cacheRead":4,"cacheWrite":2,"cacheWrite1h":1,"reasoning":3,"totalTokens":24,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop"}]}`), "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Usage.ReasoningTokens != 3 {
+		t.Errorf("ReasoningTokens = %d, want 3", res.Usage.ReasoningTokens)
+	}
+}
+
 func TestScoreboard(t *testing.T) {
 	s := Scoreboard()
 	if s.Scenarios == nil {

@@ -14,7 +14,10 @@
 //   - packages/agent/src/types.ts — AgentEvent types
 //   - packages/ai/src/types.ts — AssistantMessage, AssistantMessageEvent, Model
 //
-// Source: https://github.com/badlogic/pi-mono
+// These DTOs are defined against Pi Coding Agent v0.84.1
+// (commit 53fa77ccd8a279eb87e92294ef3687b03ff80112).
+//
+// Source: https://github.com/earendil-works/pi
 
 package pi
 
@@ -46,7 +49,10 @@ const (
 	CmdExportHTML           CommandType = "export_html"
 	CmdSwitchSession        CommandType = "switch_session"
 	CmdFork                 CommandType = "fork"
+	CmdClone                CommandType = "clone"
 	CmdGetForkMessages      CommandType = "get_fork_messages"
+	CmdGetEntries           CommandType = "get_entries"
+	CmdGetTree              CommandType = "get_tree"
 	CmdGetLastAssistantText CommandType = "get_last_assistant_text"
 	CmdSetSessionName       CommandType = "set_session_name"
 	CmdGetMessages          CommandType = "get_messages"
@@ -58,8 +64,9 @@ const (
 	CmdGetModels  CommandType = "get_available_models"
 
 	// Thinking.
-	CmdSetThinking   CommandType = "set_thinking_level"
-	CmdCycleThinking CommandType = "cycle_thinking_level"
+	CmdSetThinking       CommandType = "set_thinking_level"
+	CmdCycleThinking     CommandType = "cycle_thinking_level"
+	CmdGetThinkingLevels CommandType = "get_available_thinking_levels"
 
 	// Queue modes.
 	CmdSetSteeringMode CommandType = "set_steering_mode"
@@ -121,11 +128,13 @@ type StopReason string
 
 // Stop reason constants.
 const (
-	StopReasonStop    StopReason = "stop"
-	StopReasonLength  StopReason = "length"
-	StopReasonToolUse StopReason = "toolUse"
-	StopReasonError   StopReason = "error"
-	StopReasonAborted StopReason = "aborted"
+	StopReasonPending  StopReason = "pending"
+	StopReasonStop     StopReason = "stop"
+	StopReasonLength   StopReason = "length"
+	StopReasonToolUse  StopReason = "toolUse"
+	StopReasonError    StopReason = "error"
+	StopReasonAborted  StopReason = "aborted"
+	StopReasonDeferred StopReason = "deferred"
 )
 
 // ThinkingLevel controls reasoning depth.
@@ -393,6 +402,12 @@ type CycleThinkingCmd struct {
 	Type CommandType `json:"type"`
 }
 
+// GetThinkingLevelsCmd requests the thinking levels available for the active model.
+type GetThinkingLevelsCmd struct {
+	ID   string      `json:"id,omitzero"`
+	Type CommandType `json:"type"`
+}
+
 // ---------- Queue modes ----------
 
 // SetSteeringModeCmd sets the steering queue mode.
@@ -444,9 +459,29 @@ type AbortRetryCmd struct {
 
 // BashCmd executes a bash command.
 type BashCmd struct {
-	ID      string      `json:"id,omitzero"`
-	Type    CommandType `json:"type"`
-	Command string      `json:"command"`
+	ID                 string      `json:"id,omitzero"`
+	Type               CommandType `json:"type"`
+	Command            string      `json:"command"`
+	ExcludeFromContext bool        `json:"excludeFromContext,omitzero"`
+}
+
+// CloneCmd clones the current session.
+type CloneCmd struct {
+	ID   string      `json:"id,omitzero"`
+	Type CommandType `json:"type"`
+}
+
+// GetEntriesCmd gets session entries, optionally after the given entry ID.
+type GetEntriesCmd struct {
+	ID    string      `json:"id,omitzero"`
+	Type  CommandType `json:"type"`
+	Since string      `json:"since,omitzero"`
+}
+
+// GetTreeCmd gets the session-entry tree.
+type GetTreeCmd struct {
+	ID   string      `json:"id,omitzero"`
+	Type CommandType `json:"type"`
 }
 
 // AbortBashCmd aborts the current bash command.
@@ -534,6 +569,11 @@ type CycleThinkingData struct {
 	Level ThinkingLevel `json:"level"`
 }
 
+// ThinkingLevelsData is the data payload for get_available_thinking_levels response.
+type ThinkingLevelsData struct {
+	Levels []ThinkingLevel `json:"levels"`
+}
+
 // BashData is the data payload for bash response. Fields are opaque.
 type BashData struct {
 	json.RawMessage
@@ -555,6 +595,11 @@ type ForkData struct {
 	Cancelled bool   `json:"cancelled"`
 }
 
+// CloneData is the data payload for clone response.
+type CloneData struct {
+	Cancelled bool `json:"cancelled"`
+}
+
 // ForkMessagesData is the data payload for get_fork_messages response.
 type ForkMessagesData struct {
 	Messages []ForkMessage `json:"messages"`
@@ -574,6 +619,19 @@ type LastAssistantTextData struct {
 // GetMessagesData is the data payload for get_messages response.
 type GetMessagesData struct {
 	Messages []AgentMessage `json:"messages"`
+}
+
+// EntriesData is the data payload for get_entries response. Session entry
+// details are protocol-defined extension data and are retained as raw JSON.
+type EntriesData struct {
+	Entries []SessionEntry `json:"entries"`
+	LeafID  *string        `json:"leafId"`
+}
+
+// TreeData is the data payload for get_tree response.
+type TreeData struct {
+	Tree   []SessionTreeNode `json:"tree"`
+	LeafID *string           `json:"leafId"`
 }
 
 // GetCommandsData is the data payload for get_commands response.
@@ -647,11 +705,14 @@ type Model struct {
 	BaseURL   string `json:"baseUrl"`
 	Reasoning bool   `json:"reasoning"`
 	// ThinkingLevelMap maps Pi thinking levels to provider-specific values. JSON null values decode as empty strings.
-	ThinkingLevelMap map[ThinkingLevel]string `json:"thinkingLevelMap,omitzero"`
-	Input            []string                 `json:"input"`
-	ContextWindow    int64                    `json:"contextWindow"`
-	MaxTokens        int64                    `json:"maxTokens"`
-	Cost             ModelCost                `json:"cost"`
+	ThinkingLevelMap map[ThinkingLevel]string   `json:"thinkingLevelMap,omitzero"`
+	Input            []string                   `json:"input"`
+	ContextWindow    int64                      `json:"contextWindow"`
+	MaxTokens        int64                      `json:"maxTokens"`
+	Cost             ModelCost                  `json:"cost"`
+	SamplingParams   map[string]json.RawMessage `json:"samplingParams,omitzero"`
+	Headers          map[string]string          `json:"headers,omitzero"`
+	Compat           json.RawMessage            `json:"compat,omitzero"`
 }
 
 // GetID returns the provider-qualified model ID (e.g. "cerebras/gpt-oss-120b").
@@ -665,10 +726,20 @@ func (m *Model) Context() int64 { return m.ContextWindow }
 
 // ModelCost holds per-million-token costs.
 type ModelCost struct {
-	Input      float64 `json:"input"`
-	Output     float64 `json:"output"`
-	CacheRead  float64 `json:"cacheRead"`
-	CacheWrite float64 `json:"cacheWrite"`
+	Input      float64         `json:"input"`
+	Output     float64         `json:"output"`
+	CacheRead  float64         `json:"cacheRead"`
+	CacheWrite float64         `json:"cacheWrite"`
+	Tiers      []ModelCostTier `json:"tiers,omitzero"`
+}
+
+// ModelCostTier is a pricing tier that applies when input use exceeds its threshold.
+type ModelCostTier struct {
+	InputTokensAbove int64   `json:"inputTokensAbove"`
+	Input            float64 `json:"input"`
+	Output           float64 `json:"output"`
+	CacheRead        float64 `json:"cacheRead"`
+	CacheWrite       float64 `json:"cacheWrite"`
 }
 
 // ---------- Agent events ----------
@@ -856,30 +927,84 @@ type ExtensionUIRequest struct {
 // AgentMessage is the union of user/assistant/toolResult messages.
 // We only care about assistant messages for building genai.Result.
 type AgentMessage struct {
-	Role         Role          `json:"role"`
-	Content      ContentBlocks `json:"content,omitzero"`
-	API          string        `json:"api,omitzero"`
-	Provider     string        `json:"provider,omitzero"`
-	Model        string        `json:"model,omitzero"`
-	ResponseID   string        `json:"responseId,omitzero"`
-	Usage        MessageUsage  `json:"usage,omitzero"`
-	StopReason   StopReason    `json:"stopReason,omitzero"`
-	ErrorMessage string        `json:"errorMessage,omitzero"`
-	Timestamp    float64       `json:"timestamp,omitzero"`
-	// ToolResult-specific fields.
-	ToolCallID string `json:"toolCallId,omitzero"`
-	ToolName   string `json:"toolName,omitzero"`
-	IsError    bool   `json:"isError,omitzero"`
+	Role           Role              `json:"role"`
+	Content        ContentBlocks     `json:"content,omitzero"`
+	API            string            `json:"api,omitzero"`
+	Provider       string            `json:"provider,omitzero"`
+	Model          string            `json:"model,omitzero"`
+	ResponseModel  string            `json:"responseModel,omitzero"`
+	ResponseID     string            `json:"responseId,omitzero"`
+	Diagnostics    []json.RawMessage `json:"diagnostics,omitzero"`
+	Usage          MessageUsage      `json:"usage,omitzero"`
+	StopReason     StopReason        `json:"stopReason,omitzero"`
+	Deferred       *DeferredHandle   `json:"deferred,omitzero"`
+	ErrorMessage   string            `json:"errorMessage,omitzero"`
+	RawStopReason  string            `json:"rawStopReason,omitzero"`
+	Timestamp      float64           `json:"timestamp,omitzero"`
+	ToolCallID     string            `json:"toolCallId,omitzero"`
+	ToolName       string            `json:"toolName,omitzero"`
+	Details        json.RawMessage   `json:"details,omitzero"`
+	AddedToolNames []string          `json:"addedToolNames,omitzero"`
+	IsError        bool              `json:"isError,omitzero"`
+}
+
+// DeferredHandle identifies a provider-managed deferred response.
+type DeferredHandle struct {
+	Provider    string          `json:"provider"`
+	ModelID     string          `json:"modelId"`
+	API         string          `json:"api"`
+	ID          string          `json:"id"`
+	ExpiresAt   int64           `json:"expiresAt,omitzero"`
+	PollAfterMS int64           `json:"pollAfterMs,omitzero"`
+	Data        json.RawMessage `json:"data,omitzero"`
 }
 
 // MessageUsage holds token usage from an AssistantMessage.
 type MessageUsage struct {
-	Input       int64     `json:"input"`
-	Output      int64     `json:"output"`
-	CacheRead   int64     `json:"cacheRead"`
-	CacheWrite  int64     `json:"cacheWrite"`
-	TotalTokens int64     `json:"totalTokens"`
-	Cost        UsageCost `json:"cost,omitzero"`
+	Input        int64     `json:"input"`
+	Output       int64     `json:"output"`
+	CacheRead    int64     `json:"cacheRead"`
+	CacheWrite   int64     `json:"cacheWrite"`
+	CacheWrite1h int64     `json:"cacheWrite1h,omitzero"`
+	Reasoning    int64     `json:"reasoning,omitzero"`
+	TotalTokens  int64     `json:"totalTokens"`
+	Cost         UsageCost `json:"cost,omitzero"`
+}
+
+// SessionEntry is a session-history entry. Details are protocol-defined
+// extension data and are retained as raw JSON.
+type SessionEntry struct {
+	Type                 string          `json:"type"`
+	ID                   string          `json:"id"`
+	ParentID             *string         `json:"parentId"`
+	Timestamp            string          `json:"timestamp"`
+	Message              *AgentMessage   `json:"message,omitzero"`
+	Content              ContentBlocks   `json:"content,omitzero"`
+	ThinkingLevel        ThinkingLevel   `json:"thinkingLevel,omitzero"`
+	Provider             string          `json:"provider,omitzero"`
+	ModelID              string          `json:"modelId,omitzero"`
+	Summary              string          `json:"summary,omitzero"`
+	FirstKeptEntryID     string          `json:"firstKeptEntryId,omitzero"`
+	TokensBefore         int64           `json:"tokensBefore,omitzero"`
+	EstimatedTokensAfter int64           `json:"estimatedTokensAfter,omitzero"`
+	Details              json.RawMessage `json:"details,omitzero"`
+	FromHook             bool            `json:"fromHook,omitzero"`
+	FromID               string          `json:"fromId,omitzero"`
+	CustomType           string          `json:"customType,omitzero"`
+	Data                 json.RawMessage `json:"data,omitzero"`
+	TargetID             string          `json:"targetId,omitzero"`
+	Label                *string         `json:"label"`
+	Name                 string          `json:"name,omitzero"`
+	Display              bool            `json:"display,omitzero"`
+	Usage                *MessageUsage   `json:"usage,omitzero"`
+}
+
+// SessionTreeNode is one node in the session-entry tree.
+type SessionTreeNode struct {
+	Entry          SessionEntry      `json:"entry"`
+	Children       []SessionTreeNode `json:"children"`
+	Label          string            `json:"label,omitzero"`
+	LabelTimestamp string            `json:"labelTimestamp,omitzero"`
 }
 
 // UsageCost holds cost information.

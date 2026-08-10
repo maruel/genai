@@ -29,6 +29,31 @@ func TestModelThinkingLevelMap(t *testing.T) {
 	}
 }
 
+func TestV0841DTOs(t *testing.T) {
+	t.Run("usage", func(t *testing.T) {
+		var m AgentMessage
+		if err := json.Unmarshal([]byte(`{"role":"assistant","usage":{"input":8,"output":5,"cacheRead":3,"cacheWrite":2,"cacheWrite1h":1,"reasoning":4,"totalTokens":18},"deferred":{"provider":"test","modelId":"model","api":"api","id":"response","data":{"key":"value"}}}`), &m); err != nil {
+			t.Fatal(err)
+		}
+		if m.Usage.CacheWrite1h != 1 || m.Usage.Reasoning != 4 {
+			t.Errorf("usage = %#v, want cacheWrite1h=1 and reasoning=4", m.Usage)
+		}
+		if got := string(m.Deferred.Data); got != `{"key":"value"}` {
+			t.Errorf("deferred data = %s, want object", got)
+		}
+	})
+
+	t.Run("session tree", func(t *testing.T) {
+		var d TreeData
+		if err := json.Unmarshal([]byte(`{"tree":[{"entry":{"type":"custom_message","id":"entry","parentId":null,"timestamp":"2026-08-07T00:00:00Z","content":"note"},"children":[]}],"leafId":null}`), &d); err != nil {
+			t.Fatal(err)
+		}
+		if len(d.Tree) != 1 || len(d.Tree[0].Entry.Content) != 1 || d.Tree[0].Entry.Content[0].Text != "note" {
+			t.Errorf("tree = %#v, want custom-message text", d.Tree)
+		}
+	})
+}
+
 func TestToolExecResult(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		data := []struct {

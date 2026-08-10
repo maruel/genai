@@ -8,8 +8,8 @@
 // --no-session` as a subprocess and communicates over stdin/stdout using Pi's
 // custom JSONL protocol.
 //
-// See https://github.com/badlogic/pi-mono for source and
-// https://www.npmjs.com/package/@mariozechner/pi-coding-agent for the npm
+// See https://github.com/earendil-works/pi for source and
+// https://www.npmjs.com/package/@earendil-works/pi-coding-agent for the npm
 // package.
 //
 // # Protocol
@@ -559,6 +559,7 @@ func buildResult(line []byte, text, thinking string) (genai.Result, error) {
 		r.Usage.InputTokens = msg.Usage.Input
 		r.Usage.OutputTokens = msg.Usage.Output
 		r.Usage.InputCachedTokens = msg.Usage.CacheRead
+		r.Usage.ReasoningTokens = msg.Usage.Reasoning
 		r.Usage.TotalTokens = msg.Usage.TotalTokens
 		r.Usage.FinishReason = stopReasonToFinishReason(msg.StopReason)
 

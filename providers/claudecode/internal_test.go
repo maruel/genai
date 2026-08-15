@@ -377,7 +377,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("init_flags", func(t *testing.T) {
-		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"1.0","uuid":"u1","analytics_disabled":true,"product_feedback_disabled":true}`
+		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"1.0","uuid":"u1","analytics_disabled":true,"product_feedback_disabled":true,"messaging_socket_path":"/tmp/cc.sock","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required"}`
 		var got OutputInitMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -387,6 +387,12 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if !got.ProductFeedbackDisabled {
 			t.Error("ProductFeedbackDisabled = false, want true")
+		}
+		if got.MessagingSocketPath != "/tmp/cc.sock" {
+			t.Errorf("MessagingSocketPath = %q, want /tmp/cc.sock", got.MessagingSocketPath)
+		}
+		if got.FastModeDisabledReason != FastModeDisabledSDKOptInRequired {
+			t.Errorf("FastModeDisabledReason = %q, want %q", got.FastModeDisabledReason, FastModeDisabledSDKOptInRequired)
 		}
 	})
 	t.Run("init_2_1_214_fields", func(t *testing.T) {
@@ -403,6 +409,19 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if !slices.Equal(got.Capabilities, []string{"interrupt_receipt_v1"}) {
 			t.Errorf("Capabilities = %v", got.Capabilities)
+		}
+	})
+	t.Run("vcs_state_changed", func(t *testing.T) {
+		const data = `{"type":"system","subtype":"vcs_state_changed","kind":"commit","branch":"caic-14","cwd":"/repo","uuid":"u1","session_id":"s1"}`
+		var got OutputVCSStateChangedMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Subtype != SystemVCSStateChanged || got.Kind != VCSStateCommit {
+			t.Errorf("subtype/kind = %q/%q, want %q/%q", got.Subtype, got.Kind, SystemVCSStateChanged, VCSStateCommit)
+		}
+		if got.Branch != "caic-14" || got.Cwd != "/repo" {
+			t.Errorf("branch/cwd = %q/%q, want caic-14//repo", got.Branch, got.Cwd)
 		}
 	})
 	t.Run("turn_duration", func(t *testing.T) {
@@ -731,10 +750,13 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("stream_message_delta_usage", func(t *testing.T) {
-		const data = `{"type":"stream_event","event":{"type":"message_delta","usage":{"input_tokens":2,"output_tokens":192,"cache_read_input_tokens":409477,"output_tokens_details":{"thinking_tokens":49},"iterations":[{"input_tokens":2,"output_tokens":192,"cache_read_input_tokens":409477,"cache_creation_input_tokens":0,"type":"message"},{"input_tokens":3,"output_tokens":4,"cache_read_input_tokens":5,"cache_creation_input_tokens":6,"model":"claude-opus-4-8","type":"advisor_message"}]}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null}`
+		const data = `{"type":"stream_event","event":{"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null,"stop_details":null},"usage":{"input_tokens":2,"output_tokens":192,"cache_read_input_tokens":409477,"output_tokens_details":{"thinking_tokens":49},"iterations":[{"input_tokens":2,"output_tokens":192,"cache_read_input_tokens":409477,"cache_creation_input_tokens":0,"type":"message"},{"input_tokens":3,"output_tokens":4,"cache_read_input_tokens":5,"cache_creation_input_tokens":6,"model":"claude-opus-4-8","type":"advisor_message"}]}},"uuid":"u1","session_id":"s1","parent_tool_use_id":null}`
 		var got OutputStreamEventMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
+		}
+		if got.Event.Delta.StopReason != "tool_use" {
+			t.Errorf("Delta.StopReason = %q, want tool_use", got.Event.Delta.StopReason)
 		}
 		if got.Event.Usage.OutputTokens != 192 {
 			t.Errorf("Usage.OutputTokens = %d, want 192", got.Event.Usage.OutputTokens)
@@ -753,7 +775,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("result_latency_fields", func(t *testing.T) {
-		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1"}`
+		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","fast_mode_disabled_reason":"sdk_opt_in_required","modelUsage":{"claude-sonnet-5":{"canonicalModel":"claude-sonnet-5","provider":"firstParty"}}}`
 		var got OutputResultMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -772,6 +794,13 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if string(got.StructuredOutput) != `{"answer":42}` {
 			t.Errorf("StructuredOutput = %s", got.StructuredOutput)
+		}
+		if got.FastModeDisabledReason != FastModeDisabledSDKOptInRequired {
+			t.Errorf("FastModeDisabledReason = %q, want %q", got.FastModeDisabledReason, FastModeDisabledSDKOptInRequired)
+		}
+		mu := got.ModelUsage["claude-sonnet-5"]
+		if mu.CanonicalModel != "claude-sonnet-5" || mu.Provider != "firstParty" {
+			t.Errorf("ModelUsage = %+v", mu)
 		}
 	})
 	t.Run("rate_limit_2_1_214_fields", func(t *testing.T) {
@@ -852,6 +881,16 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if string(got.JSONSchema["type"]) != `"object"` {
 			t.Errorf("json schema type = %v, want object", got.JSONSchema["type"])
+		}
+	})
+	t.Run("can_use_tool_decision_reason_type", func(t *testing.T) {
+		const data = `{"subtype":"can_use_tool","decision_reason_type":"subcommandResults"}`
+		var got ControlReqCanUseTool
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.DecisionReasonType != CanUseToolDecisionReasonSubcommandResults {
+			t.Errorf("DecisionReasonType = %q, want %q", got.DecisionReasonType, CanUseToolDecisionReasonSubcommandResults)
 		}
 	})
 	t.Run("hook_callback_input", func(t *testing.T) {

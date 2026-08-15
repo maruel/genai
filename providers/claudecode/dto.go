@@ -129,18 +129,28 @@ type ControlReqInterrupt struct {
 
 // ControlReqCanUseTool requests permission to use a tool.
 type ControlReqCanUseTool struct {
-	Subtype               ControlSubtype             `json:"subtype"` // ControlCanUseTool
-	ToolName              string                     `json:"tool_name"`
-	Input                 map[string]json.RawMessage `json:"input"`
-	PermissionSuggestions []PermissionUpdate         `json:"permission_suggestions,omitempty"`
-	BlockedPath           string                     `json:"blocked_path,omitempty"`
-	DecisionReason        string                     `json:"decision_reason,omitempty"`
-	Title                 string                     `json:"title,omitempty"`
-	DisplayName           string                     `json:"display_name,omitempty"`
-	ToolUseID             string                     `json:"tool_use_id"`
-	AgentID               string                     `json:"agent_id,omitempty"`
-	Description           string                     `json:"description,omitempty"`
+	Subtype               ControlSubtype               `json:"subtype"` // ControlCanUseTool
+	ToolName              string                       `json:"tool_name"`
+	Input                 map[string]json.RawMessage   `json:"input"`
+	PermissionSuggestions []PermissionUpdate           `json:"permission_suggestions,omitempty"`
+	BlockedPath           string                       `json:"blocked_path,omitempty"`
+	DecisionReason        string                       `json:"decision_reason,omitempty"`
+	DecisionReasonType    CanUseToolDecisionReasonType `json:"decision_reason_type,omitempty"`
+	Title                 string                       `json:"title,omitempty"`
+	DisplayName           string                       `json:"display_name,omitempty"`
+	ToolUseID             string                       `json:"tool_use_id"`
+	AgentID               string                       `json:"agent_id,omitempty"`
+	Description           string                       `json:"description,omitempty"`
 }
+
+// CanUseToolDecisionReasonType identifies why Claude Code requested tool approval.
+type CanUseToolDecisionReasonType string
+
+// Can-use-tool decision reason types.
+const (
+	CanUseToolDecisionReasonOther             CanUseToolDecisionReasonType = "other"
+	CanUseToolDecisionReasonSubcommandResults CanUseToolDecisionReasonType = "subcommandResults"
+)
 
 // ControlCanUseToolBehavior is the can_use_tool control response behavior.
 type ControlCanUseToolBehavior string
@@ -580,6 +590,8 @@ const (
 	// SystemModelRefusalNoFallback reports that Claude Code has no further
 	// fallback after a model refusal.
 	SystemModelRefusalNoFallback SystemSubtype = "model_refusal_no_fallback"
+	// SystemVCSStateChanged reports a version-control state change.
+	SystemVCSStateChanged SystemSubtype = "vcs_state_changed"
 )
 
 // ---------- envelope probe ----------
@@ -626,20 +638,22 @@ type OutputInitMsg struct {
 	UUID      string        `json:"uuid"`
 	Timestamp string        `json:"timestamp,omitempty"`
 
-	Agents         []string        `json:"agents,omitempty"`
-	APIKeySource   string          `json:"apiKeySource,omitempty"`
-	FastModeState  string          `json:"fast_mode_state,omitempty"`
-	MCPServers     []InitMCPServer `json:"mcp_servers,omitempty"`
-	OutputStyle    string          `json:"output_style,omitempty"`
-	PermissionMode string          `json:"permissionMode,omitempty"`
-	Plugins        []InitPlugin    `json:"plugins,omitempty,omitzero"`
-	Skills         []string        `json:"skills,omitempty"`
-	SlashCommands  []string        `json:"slash_commands,omitempty"`
-	Betas          []string        `json:"betas,omitempty"`
-	PluginErrors   []InitPluginErr `json:"plugin_errors,omitempty,omitzero"`
-	PluginWarnings []InitPluginErr `json:"plugin_warnings,omitempty,omitzero"`
-	Capabilities   []string        `json:"capabilities,omitempty"`
-	MemoryPaths    InitMemPaths    `json:"memory_paths,omitzero"`
+	Agents                 []string               `json:"agents,omitempty"`
+	APIKeySource           string                 `json:"apiKeySource,omitempty"`
+	FastModeState          string                 `json:"fast_mode_state,omitempty"`
+	FastModeDisabledReason FastModeDisabledReason `json:"fast_mode_disabled_reason,omitempty"`
+	MCPServers             []InitMCPServer        `json:"mcp_servers,omitempty"`
+	OutputStyle            string                 `json:"output_style,omitempty"`
+	PermissionMode         string                 `json:"permissionMode,omitempty"`
+	Plugins                []InitPlugin           `json:"plugins,omitempty,omitzero"`
+	Skills                 []string               `json:"skills,omitempty"`
+	SlashCommands          []string               `json:"slash_commands,omitempty"`
+	MessagingSocketPath    string                 `json:"messaging_socket_path,omitempty"`
+	Betas                  []string               `json:"betas,omitempty"`
+	PluginErrors           []InitPluginErr        `json:"plugin_errors,omitempty,omitzero"`
+	PluginWarnings         []InitPluginErr        `json:"plugin_warnings,omitempty,omitzero"`
+	Capabilities           []string               `json:"capabilities,omitempty"`
+	MemoryPaths            InitMemPaths           `json:"memory_paths,omitzero"`
 
 	AnalyticsDisabled       bool `json:"analytics_disabled,omitempty"`
 	ProductFeedbackDisabled bool `json:"product_feedback_disabled,omitempty"`
@@ -671,6 +685,14 @@ type InitMemPaths struct {
 	Auto string `json:"auto,omitempty"`
 	Team string `json:"team,omitempty"`
 }
+
+// FastModeDisabledReason explains why fast mode is unavailable.
+type FastModeDisabledReason string
+
+// Fast mode disabled reasons.
+const (
+	FastModeDisabledSDKOptInRequired FastModeDisabledReason = "sdk_opt_in_required"
+)
 
 // ---------- system (non-init) ----------
 
@@ -723,10 +745,34 @@ type OutputSystemMsg struct {
 	CompactResult   string              `json:"compact_result,omitempty"`
 	Prompt          json.RawMessage     `json:"prompt,omitempty"`
 
+	// vcs_state_changed fields.
+	VCSKind VCSStateKind `json:"kind,omitempty"`
+	Branch  string       `json:"branch,omitempty"`
+	Cwd     string       `json:"cwd,omitempty"`
+
 	// thinking_tokens fields.
 	EstimatedTokens      int64 `json:"estimated_tokens,omitzero"`
 	EstimatedTokensDelta int64 `json:"estimated_tokens_delta,omitzero"`
 }
+
+// OutputVCSStateChangedMsg reports a version-control state change.
+type OutputVCSStateChangedMsg struct {
+	Type      OutputType    `json:"type"`    // OutputSystem
+	Subtype   SystemSubtype `json:"subtype"` // SystemVCSStateChanged
+	Kind      VCSStateKind  `json:"kind"`
+	Branch    string        `json:"branch"`
+	Cwd       string        `json:"cwd"`
+	UUID      string        `json:"uuid"`
+	SessionID string        `json:"session_id"`
+}
+
+// VCSStateKind identifies the version-control state change.
+type VCSStateKind string
+
+// VCS state change kinds.
+const (
+	VCSStateCommit VCSStateKind = "commit"
+)
 
 // PatchWire is the patch object on task system messages.
 type PatchWire struct {
@@ -1089,14 +1135,15 @@ type OutputResultMsg struct {
 	StructuredOutput       json.RawMessage `json:"structured_output,omitempty"`
 	Timestamp              string          `json:"timestamp,omitempty"`
 
-	FastModeState     string                     `json:"fast_mode_state,omitempty"`
-	ModelUsage        map[string]ModelUsageEntry `json:"modelUsage,omitempty"`
-	PermissionDenials []json.RawMessage          `json:"permission_denials,omitempty"`
-	StopReason        string                     `json:"stop_reason,omitempty"`
-	TerminalReason    string                     `json:"terminal_reason,omitempty"`
-	APIErrorStatus    int                        `json:"api_error_status,omitzero"`
-	DeferredToolUse   DeferredToolUse            `json:"deferred_tool_use,omitzero"`
-	Origin            ResultOrigin               `json:"origin,omitzero"`
+	FastModeState          string                     `json:"fast_mode_state,omitempty"`
+	FastModeDisabledReason FastModeDisabledReason     `json:"fast_mode_disabled_reason,omitempty"`
+	ModelUsage             map[string]ModelUsageEntry `json:"modelUsage,omitempty"`
+	PermissionDenials      []json.RawMessage          `json:"permission_denials,omitempty"`
+	StopReason             string                     `json:"stop_reason,omitempty"`
+	TerminalReason         string                     `json:"terminal_reason,omitempty"`
+	APIErrorStatus         int                        `json:"api_error_status,omitzero"`
+	DeferredToolUse        DeferredToolUse            `json:"deferred_tool_use,omitzero"`
+	Origin                 ResultOrigin               `json:"origin,omitzero"`
 }
 
 // AsError returns the Claude Code error represented by m, if any.
@@ -1139,6 +1186,8 @@ type ModelUsageEntry struct {
 	CostUSD                  float64 `json:"costUSD"`
 	ContextWindow            int64   `json:"contextWindow"`
 	MaxOutputTokens          int64   `json:"maxOutputTokens"`
+	CanonicalModel           string  `json:"canonicalModel,omitempty"`
+	Provider                 string  `json:"provider,omitempty"`
 }
 
 // DeferredToolUse is a tool call deferred from a previous turn in the result message.
@@ -1305,8 +1354,10 @@ type StreamDelta struct {
 	Signature            []byte `json:"signature"`
 	EstimatedTokens      int64  `json:"estimated_tokens,omitzero"`
 	EstimatedTokensDelta int64  `json:"estimated_tokens_delta,omitzero"`
-	// message_delta carries stop_reason.
-	StopReason string `json:"stop_reason,omitempty"`
+	// message_delta carries terminal message metadata.
+	StopReason   string                       `json:"stop_reason,omitempty"`
+	StopSequence string                       `json:"stop_sequence,omitempty"`
+	StopDetails  anthropic.RefusalStopDetails `json:"stop_details,omitzero"`
 }
 
 // ---------- rate_limit_event ----------

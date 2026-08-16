@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1458
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the provided `square_root` tool and return only the result.\n\n1.  **Identify the intent:** The user wants a mathematical calculation (square root).\n2.  **Identify the tool:** The available tool is `square_root(number)`.\n3.  **Determine the input:** The number to calculate the square root of is 132413.\n4.  **Construct the tool call:** `square_root(number=132413)`.\n5.  **Execute the tool call and process the result:** (Simulated execution)\n6.  **Format the output:** The user explicitly requested *only the result*, with no explanation.\n\nI need to call the tool first.","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"Ht3GT5F84cw6ywCdTZIPlUYaidid6DmX"}]}}],"created":1782171084,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":195,"prompt_tokens":95,"total_tokens":290,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-fxn5cGC8T7W5t6q7XQMKaRbU4A4cFLSE","timings":{"cache_n":0,"prompt_n":95,"prompt_ms":102.509,"prompt_per_token_ms":1.0790421052631578,"prompt_per_second":926.7478953067535,"predicted_n":195,"predicted_ms":2663.997,"predicted_per_token_ms":13.661523076923077,"predicted_per_second":73.1982806286944}}'
+        content_length: 1316
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the `square_root` tool and return only the result.\n\n1.  **Identify the goal:** Calculate $\\sqrt{132413}$.\n2.  **Identify the tool:** The available tool is `square_root(number)`.\n3.  **Determine the input:** The number is 132413.\n4.  **Formulate the tool call:** `square_root(number=132413)`.\n5.  **Execute the tool call and wait for the result.**\n6.  **Format the output:** Reply with *only* the result.\n\nLet''s call the tool.","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"yCIbzND15k2RHuWTthO2WveYaV3zT9tM"}]}}],"created":1786884652,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":180,"prompt_tokens":95,"total_tokens":275,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-MFFJcJzxWwEeGwbfwSMGavcKqCcEZAid","timings":{"cache_n":0,"prompt_n":95,"prompt_ms":106.368,"prompt_per_token_ms":1.1196631578947367,"prompt_per_second":893.1257521058966,"predicted_n":180,"predicted_ms":2394.718,"predicted_per_token_ms":13.378312849162011,"predicted_per_second":74.7478408731216}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1458"
+                - "1316"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.778s
+        duration: 2.513s

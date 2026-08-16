@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1517
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to use the best_country tool to determine if the USA is a better country than Canada. They specifically want me to call the tool to find out which country is the best.\n\nLooking at the available tool, it has a parameter called \"country\" which can be either \"USA\" or \"Canada\". The user wants me to find out which is better, so I should call this tool to get an answer. I don''t need to make separate calls to both - I can just call the tool once and it should tell me which is better.\n\nThe tool takes a \"country\" parameter with an enum of [\"USA\", \"Canada\"], and the user wants to know which one is better, so I should call it with either one to get the answer.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"cQrFVfMhKE68bIenMJiJZoxJnjl6frAW"}]}}],"created":1779999155,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":188,"prompt_tokens":333,"total_tokens":521,"prompt_tokens_details":{"cached_tokens":296}},"id":"chatcmpl-E3fTHAwqPAUVEaNeJWkmxc32cjToTy3R","timings":{"cache_n":296,"prompt_n":37,"prompt_ms":48.193,"prompt_per_token_ms":1.3025135135135135,"prompt_per_second":767.7463532048223,"predicted_n":188,"predicted_ms":1367.563,"predicted_per_token_ms":7.274271276595745,"predicted_per_second":137.4708148728797}}'
+        content_length: 1078
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to tell them which country is better - USA or Canada. They want me to use the tool to compare them, but I should note that this tool only has two country options: USA and Canada. I should call it to see the comparison.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"l9zs7xpPDESDz07PVHGO18b5z89gmhHR"}]}}],"created":1786884104,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":90,"prompt_tokens":333,"total_tokens":423,"prompt_tokens_details":{"cached_tokens":329}},"id":"chatcmpl-XYbCJ7Cjsgx25KUa3BQ80XZk0oz5Fhhu","timings":{"cache_n":329,"prompt_n":4,"prompt_ms":15.557,"prompt_per_token_ms":3.88925,"prompt_per_second":257.118981808832,"predicted_n":90,"predicted_ms":698.869,"predicted_per_token_ms":7.852460674157304,"predicted_per_second":127.34861612119009}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1517"
+                - "1078"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.427s
+        duration: 722ms

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 716
-        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"language English<asr_text>The theory of relativity is a set of principles that describe how"}}],"created":1779999259,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":19,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":3}},"id":"chatcmpl-2qC6ouTEUWuldkOGBtfP4Afl7whwxofC","timings":{"cache_n":3,"prompt_n":16,"prompt_ms":36.772,"prompt_per_token_ms":2.29825,"prompt_per_second":435.1136734471881,"predicted_n":16,"predicted_ms":122.183,"predicted_per_token_ms":7.6364375,"predicted_per_second":130.95111431213834}}'
+        content_length: 715
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"language English<asr_text>The theory of relativity is a set of principles that describe how"}}],"created":1786884748,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":19,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":3}},"id":"chatcmpl-0vSWvDfU0wFwmI1UNZi5YMJNUoJx0wVG","timings":{"cache_n":3,"prompt_n":16,"prompt_ms":12.474,"prompt_per_token_ms":0.779625,"prompt_per_second":1282.667949334616,"predicted_n":16,"predicted_ms":127.098,"predicted_per_token_ms":8.4732,"predicted_per_second":118.01916631260916}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "716"
+                - "715"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 171ms
+        duration: 145ms

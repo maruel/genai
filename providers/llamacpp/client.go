@@ -131,12 +131,16 @@ func (t *TokenPerformance) Rate() float64 {
 
 // Metrics represents the metrics for the LLM server.
 type Metrics struct {
-	Prompt             TokenPerformance
-	Generated          TokenPerformance
-	KVCacheUsage       float64
-	KVCacheTokens      int
-	RequestsProcessing int
-	RequestedPending   int
+	Prompt                    TokenPerformance
+	PromptCachedTokens        int
+	Generated                 TokenPerformance
+	SpeculativeDraftTokens    int
+	SpeculativeAcceptedTokens int
+	SpeculativeDrafts         int
+	KVCacheUsage              float64
+	KVCacheTokens             int
+	RequestsProcessing        int
+	RequestedPending          int
 }
 
 //
@@ -505,6 +509,8 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		switch parts[0] {
 		case "llamacpp:prompt_tokens_total":
 			m.Prompt.Count = i
+		case "llamacpp:prompt_tokens_cached_total":
+			m.PromptCachedTokens = i
 		case "llamacpp:prompt_seconds_total":
 			m.Prompt.Duration = time.Duration(f*1000) * time.Millisecond
 		case "llamacpp:tokens_predicted_total":
@@ -521,6 +527,12 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 			m.RequestsProcessing = i
 		case "llamacpp:requests_deferred":
 			m.RequestedPending = i
+		case "llamacpp:spec_decode_num_draft_tokens_total":
+			m.SpeculativeDraftTokens = i
+		case "llamacpp:spec_decode_num_accepted_tokens_total":
+			m.SpeculativeAcceptedTokens = i
+		case "llamacpp:spec_decode_num_drafts_total":
+			m.SpeculativeDrafts = i
 		case "llamacpp:n_decode_total":
 		case "llamacpp:n_busy_slots_per_decode":
 		case "llamacpp:n_past_max":

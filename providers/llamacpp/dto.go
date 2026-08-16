@@ -597,6 +597,8 @@ type Timings struct {
 	Predicted          base.DurationMS `json:"predicted_ms"`
 	PredictedPerToken  base.DurationMS `json:"predicted_per_token_ms"`
 	PredictedPerSecond float64         `json:"predicted_per_second"`
+	DraftN             int64           `json:"draft_n"`
+	DraftNAccepted     int64           `json:"draft_n_accepted"`
 }
 
 // CompletionStreamChunkResponse is a single chunk in a streaming completion response.
@@ -996,13 +998,14 @@ type ModelOpenAI struct {
 	Created base.TimeS `json:"created"`  // Dummy
 	OwnedBy string     `json:"owned_by"` // "llamacpp"
 	Meta    struct {
-		VocabType int64 `json:"vocab_type"` // 1
-		NVocab    int64 `json:"n_vocab"`
-		NCtx      int64 `json:"n_ctx"`
-		NCtxTrain int64 `json:"n_ctx_train"`
-		NEmbd     int64 `json:"n_embd"`
-		NParams   int64 `json:"n_params"`
-		Size      int64 `json:"size"`
+		VocabType int64  `json:"vocab_type"` // 1
+		NVocab    int64  `json:"n_vocab"`
+		NCtx      int64  `json:"n_ctx"`
+		NCtxTrain int64  `json:"n_ctx_train"`
+		NEmbd     int64  `json:"n_embd"`
+		NParams   int64  `json:"n_params"`
+		FType     string `json:"ftype"` // "Q4_K - Medium"
+		Size      int64  `json:"size"`
 	} `json:"meta"`
 	Aliases []string `json:"aliases,omitzero"`
 	Tags    []string `json:"tags,omitzero"`

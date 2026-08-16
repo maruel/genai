@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 733
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}}],"created":1779999260,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":25,"prompt_tokens":43,"total_tokens":68,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-GBgsQ7bvmtdZDeYOuI0QJfvHVLpHVgNy","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":15.215,"prompt_per_token_ms":0.3538372093023256,"prompt_per_second":2826.1583963194216,"predicted_n":25,"predicted_ms":124.023,"predicted_per_token_ms":4.96092,"predicted_per_second":201.5755142191368}}'
+        content_length: 747
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}}],"created":1786884749,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":25,"prompt_tokens":43,"total_tokens":68,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-wtwQ9kgWgX1WwU1rdYKibPvnToRneorh","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":13.283,"prompt_per_token_ms":0.30890697674418605,"prompt_per_second":3237.2205074154936,"predicted_n":25,"predicted_ms":130.922,"predicted_per_token_ms":5.4550833333333335,"predicted_per_second":183.31525641221492}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "733"
+                - "747"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 145ms
+        duration: 150ms

@@ -14,52 +14,64 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1661
+        content_length: 2553
         body: |
-            # HELP llamacpp:prompt_tokens_total Number of prompt tokens processed.
+            # HELP llamacpp:prompt_tokens_total Number of prompt tokens processed, excluding cached tokens
             # TYPE llamacpp:prompt_tokens_total counter
-            llamacpp:prompt_tokens_total 2088
-            # HELP llamacpp:prompt_seconds_total Prompt process time
+            llamacpp:prompt_tokens_total 0
+            # HELP llamacpp:prompt_tokens_cached_total Number of prompt tokens reused from the cache
+            # TYPE llamacpp:prompt_tokens_cached_total counter
+            llamacpp:prompt_tokens_cached_total 0
+            # HELP llamacpp:prompt_seconds_total Total time spent processing prompts
             # TYPE llamacpp:prompt_seconds_total counter
-            llamacpp:prompt_seconds_total 3.426
-            # HELP llamacpp:tokens_predicted_total Number of generation tokens processed.
+            llamacpp:prompt_seconds_total 0
+            # HELP llamacpp:tokens_predicted_total Number of generation tokens processed
             # TYPE llamacpp:tokens_predicted_total counter
-            llamacpp:tokens_predicted_total 11982
-            # HELP llamacpp:tokens_predicted_seconds_total Predict process time
+            llamacpp:tokens_predicted_total 0
+            # HELP llamacpp:tokens_predicted_seconds_total Total time spent generating tokens
             # TYPE llamacpp:tokens_predicted_seconds_total counter
-            llamacpp:tokens_predicted_seconds_total 127.67
-            # HELP llamacpp:n_decode_total Total number of llama_decode() calls
+            llamacpp:tokens_predicted_seconds_total 0
+            # HELP llamacpp:n_decode_total Total number of llama_decode() calls, excluding speculative decoding and multimodal decoding
             # TYPE llamacpp:n_decode_total counter
-            llamacpp:n_decode_total 6851
-            # HELP llamacpp:n_tokens_max Largest observed n_tokens.
+            llamacpp:n_decode_total 0
+            # HELP llamacpp:n_tokens_max Largest observed sequence length (prompt + generation)
             # TYPE llamacpp:n_tokens_max counter
-            llamacpp:n_tokens_max 1582
-            # HELP llamacpp:prompt_tokens_seconds Average prompt throughput in tokens/s.
+            llamacpp:n_tokens_max 0
+            # HELP llamacpp:spec_decode_num_draft_tokens_total Speculative: Total draft tokens generated
+            # TYPE llamacpp:spec_decode_num_draft_tokens_total counter
+            llamacpp:spec_decode_num_draft_tokens_total 0
+            # HELP llamacpp:spec_decode_num_accepted_tokens_total Speculative: Total draft tokens accepted by the target model
+            # TYPE llamacpp:spec_decode_num_accepted_tokens_total counter
+            llamacpp:spec_decode_num_accepted_tokens_total 0
+            # HELP llamacpp:spec_decode_num_drafts_total Speculative: Total speculative decoding verification steps
+            # TYPE llamacpp:spec_decode_num_drafts_total counter
+            llamacpp:spec_decode_num_drafts_total 0
+            # HELP llamacpp:prompt_tokens_seconds Average prompt throughput in tokens/s
             # TYPE llamacpp:prompt_tokens_seconds gauge
-            llamacpp:prompt_tokens_seconds 609.457
-            # HELP llamacpp:predicted_tokens_seconds Average generation throughput in tokens/s.
+            llamacpp:prompt_tokens_seconds 0
+            # HELP llamacpp:predicted_tokens_seconds Average generation throughput in tokens/s
             # TYPE llamacpp:predicted_tokens_seconds gauge
-            llamacpp:predicted_tokens_seconds 93.8513
-            # HELP llamacpp:requests_processing Number of requests processing.
+            llamacpp:predicted_tokens_seconds 0
+            # HELP llamacpp:requests_processing Number of requests processing
             # TYPE llamacpp:requests_processing gauge
             llamacpp:requests_processing 0
-            # HELP llamacpp:requests_deferred Number of requests deferred.
+            # HELP llamacpp:requests_deferred Number of requests deferred
             # TYPE llamacpp:requests_deferred gauge
             llamacpp:requests_deferred 0
             # HELP llamacpp:n_busy_slots_per_decode Average number of busy slots per llama_decode() call
             # TYPE llamacpp:n_busy_slots_per_decode gauge
-            llamacpp:n_busy_slots_per_decode 1.75347
+            llamacpp:n_busy_slots_per_decode 0
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1661"
+                - "2553"
             Content-Type:
                 - text/plain; version=0.0.4
             Keep-Alive:
                 - timeout=5, max=100
             Process-Start-Time-Unix:
-                - "1447804240795"
+                - "1378786002586"
             Server:
                 - llama.cpp
         status: 200 OK

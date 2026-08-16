@@ -23,13 +23,11 @@ interactions:
             - chunked
         content_length: -1
         body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1779999356,"id":"chatcmpl-RdeSCGMGSXoBj6mhxhBwox0dOU3ulOAX","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1786884874,"id":"chatcmpl-uFt6gDYo1O63Jn6pmGuN3exAK9XVNSQV","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Ban"}}],"created":1779999356,"id":"chatcmpl-RdeSCGMGSXoBj6mhxhBwox0dOU3ulOAX","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"banana"}}],"created":1786884874,"id":"chatcmpl-uFt6gDYo1O63Jn6pmGuN3exAK9XVNSQV","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"ana"}}],"created":1779999356,"id":"chatcmpl-RdeSCGMGSXoBj6mhxhBwox0dOU3ulOAX","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1779999356,"id":"chatcmpl-RdeSCGMGSXoBj6mhxhBwox0dOU3ulOAX","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":115,"prompt_ms":154.101,"prompt_per_token_ms":1.340008695652174,"prompt_per_second":746.2638139921221,"predicted_n":3,"predicted_ms":142.191,"predicted_per_token_ms":47.397,"predicted_per_second":21.09838175411946}}
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1786884874,"id":"chatcmpl-uFt6gDYo1O63Jn6pmGuN3exAK9XVNSQV","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion.chunk","timings":{"cache_n":111,"prompt_n":4,"prompt_ms":22.767,"prompt_per_token_ms":5.69175,"prompt_per_second":175.6928888303246,"predicted_n":2,"predicted_ms":8.744,"predicted_per_token_ms":8.744,"predicted_per_second":114.36413540713633}}
 
             data: [DONE]
 
@@ -42,6 +40,8 @@ interactions:
                 - timeout=5, max=100
             Server:
                 - llama.cpp
+            X-Accel-Buffering:
+                - "no"
         status: 200 OK
         code: 200
-        duration: 316ms
+        duration: 185ms

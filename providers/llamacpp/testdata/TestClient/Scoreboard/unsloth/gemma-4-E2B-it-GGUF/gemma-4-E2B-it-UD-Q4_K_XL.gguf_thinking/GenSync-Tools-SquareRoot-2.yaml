@@ -9,7 +9,7 @@ interactions:
         content_length: 933
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"Ht3GT5F84cw6ywCdTZIPlUYaidid6DmX","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"Ht3GT5F84cw6ywCdTZIPlUYaidid6DmX"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"yCIbzND15k2RHuWTthO2WveYaV3zT9tM","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"yCIbzND15k2RHuWTthO2WveYaV3zT9tM"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 649
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89"}}],"created":1782171084,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":7,"prompt_tokens":131,"total_tokens":138,"prompt_tokens_details":{"cached_tokens":54}},"id":"chatcmpl-qfuy0bVn6OfdJm1jKurMs6roTGicA5Zt","timings":{"cache_n":54,"prompt_n":77,"prompt_ms":76.191,"prompt_per_token_ms":0.9894935064935065,"prompt_per_second":1010.6180520008924,"predicted_n":7,"predicted_ms":79.746,"predicted_per_token_ms":11.392285714285714,"predicted_per_second":87.77869736413112}}'
+        content_length: 903
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89","reasoning_content":"The user wants me to use the `square_root` tool to calculate the square root of 132413 and return only the result.\nThe tool call has been made, and the response is `363.89`.\nI need to reply with only this result, as requested."}}],"created":1786884653,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":73,"prompt_tokens":134,"total_tokens":207,"prompt_tokens_details":{"cached_tokens":90}},"id":"chatcmpl-E6fJQdbceY11CGPyeepjWAXTXz6V3mU1","timings":{"cache_n":90,"prompt_n":44,"prompt_ms":62.493,"prompt_per_token_ms":1.4202954545454547,"prompt_per_second":704.0788568319651,"predicted_n":73,"predicted_ms":965.851,"predicted_per_token_ms":13.414597222222222,"predicted_per_second":74.54565973426543}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "649"
+                - "903"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 167ms
+        duration: 1.04s

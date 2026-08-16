@@ -187,23 +187,23 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 }
 
 // ensureExe downloads the llama-server binary once. Must be called with l.mu held.
-func (l *lazyServer) ensureExe() string {
+func (l *lazyServer) ensureExe(ctx context.Context) (string, error) {
 	if l.exe != "" {
-		return l.exe
+		return l.exe, nil
 	}
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
-		l.t.Fatal(err)
+		return "", err
 	}
-	if err = os.MkdirAll(cache, 0o755); err != nil {
-		l.t.Fatal(err)
+	if err := os.MkdirAll(cache, 0o755); err != nil {
+		return "", err
 	}
-	exe, err := llamacppsrv.DownloadRelease(l.t.Context(), cache, llamacppsrv.BuildNumber)
+	exe, err := llamacppsrv.DownloadRelease(ctx, cache, llamacppsrv.BuildNumber)
 	if err != nil {
-		l.t.Fatal(err)
+		return "", err
 	}
 	l.exe = exe
-	return exe
+	return exe, nil
 }
 
 // lazyStartModel starts a server for the given model key, reusing an existing one if already running.
@@ -230,10 +230,14 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		return u
 	}
 	t.Logf("Starting server for %s", model.Model)
-	exe := l.ensureExe()
+	exe, err := l.ensureExe(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
 	parts := strings.Split(model.Model, "/")
-	// Use the context of the parent for server lifecycle management.
-	srv := startServerTest(l.t, exe, parts[0], parts[1], parts[2], l.apiKey)
+	// Use the parent context for server lifecycle management, but report
+	// startup failures to the subtest that requested the server.
+	srv := startServerTest(t, l.t.Context(), exe, parts[0], parts[1], parts[2], l.apiKey)
 	u := srv.URL()
 	l.servers[model.Model] = u
 	l.t.Cleanup(func() {
@@ -248,14 +252,25 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	return u
 }
 
-func startServerTest(t testing.TB, exe, author, repo, modelfile, apiKey string) *llamacppsrv.Server {
+func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, modelfile, apiKey string) *llamacppsrv.Server {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx := t.Context()
 	// Use llama-server's built-in HuggingFace download; mmproj is auto-detected.
-	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--jinja", "--flash-attn", "on", "--ctx-size", "16384", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--api-key", apiKey}
+	extraArgs := []string{
+		"-hf", author + "/" + repo,
+		"-hff", modelfile,
+		"--jinja",
+		"--flash-attn", "on",
+		"--ctx-size", "32768", // Thinking models can generate a lot of tokens. Fails on TopLogprob and Citations-text-plain.
+		"--cache-type-k", "q8_0",
+		"--cache-type-v", "q8_0",
+		"--reasoning-preserve",
+		"--spec-default",
+		// "--spec-type", "draft-mtp",
+		"--api-key", apiKey,
+	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1344
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user provided an image (implied, as the description points to a specific object) and a prompt: \"What fruit is it? Reply with only one word.\" The image description is \"It is a banana.\" (The text \"It is a banana\" is implied by the image content and the context of the question).\n2.  **Identify the object:** The object described is a banana.\n3.  **Determine the required output format:** The instruction is \"Reply with only one word.\"\n4.  **Formulate the answer:** The fruit is \"banana.\"\n5.  **Final check against constraints:**\n    *   Is it the correct answer? Yes.\n    *   Is it only one word? Yes. (Banana)"}}],"created":1782171108,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":174,"prompt_tokens":71,"total_tokens":245,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-k6bEEqv50vcXYxLBjL1hYP7eYqBcIu8k","timings":{"cache_n":7,"prompt_n":64,"prompt_ms":267.037,"prompt_per_token_ms":4.172453125,"prompt_per_second":239.66716222845525,"predicted_n":174,"predicted_ms":2313.655,"predicted_per_token_ms":13.296867816091956,"predicted_per_second":75.2056810544355}}'
+        content_length: 1438
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image (or a description implying an image) and asked \"What fruit is it?\" The response must be \"only one word.\"\n2.  **Analyze the Input:** The input is an image/description of a curved, yellow, edible item. The text \"bmj\" seems like noise/a typo, but the visual context is clear.\n3.  **Identify the Object:** The object is clearly a banana.\n4.  **Determine the Output Format:** The required output is a single word.\n5.  **Formulate the Answer:** The fruit is \"banana\".\n\n6.  **Final Check:** Does \"banana\" meet the constraints? Yes, it is one word. (Self-Correction: Although the user provided a seemingly corrupted string at the end, the core task is identifying the fruit shown.)"}}],"created":1786884674,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":193,"prompt_tokens":71,"total_tokens":264,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-3KxSYHA15ivNomtdi9QlvC75bD6p2Bty","timings":{"cache_n":7,"prompt_n":64,"prompt_ms":164.37,"prompt_per_token_ms":2.56828125,"prompt_per_second":389.36545598345197,"predicted_n":193,"predicted_ms":2676.823,"predicted_per_token_ms":13.941786458333333,"predicted_per_second":71.72681944230158}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1344"
+                - "1438"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.592s
+        duration: 2.853s

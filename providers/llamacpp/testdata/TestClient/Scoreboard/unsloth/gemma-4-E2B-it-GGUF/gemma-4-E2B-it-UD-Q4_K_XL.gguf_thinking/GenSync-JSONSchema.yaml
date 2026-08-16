@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1231
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user is asking \"Is a banana a fruit?\"\n2.  **Constraint Check:** \"Do not include an explanation. Reply ONLY as JSON.\"\n3.  **Determine the Answer:** Botanically and culinarily, a banana is classified as a fruit.\n4.  **Format the Output:** The output must be a JSON object.\n\n5.  **Construct the JSON:**\n    *   Key: A relevant identifier (e.g., \"is_fruit\").\n    *   Value: The answer (True/False).\n\n6.  **Final Output Generation:** (Ensure strict adherence to JSON format.)"}}],"created":1782171081,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":163,"prompt_tokens":33,"total_tokens":196,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-eOC1YSMFhOSp1X8GJ83k28avUO5ww6IL","timings":{"cache_n":7,"prompt_n":26,"prompt_ms":68.635,"prompt_per_token_ms":2.6398076923076923,"prompt_per_second":378.8154731550958,"predicted_n":163,"predicted_ms":2205.947,"predicted_per_token_ms":13.533417177914112,"predicted_per_second":73.89116782950813}}'
+        content_length: 1455
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking \"Is a banana a fruit?\" and explicitly instructing: \"Do not include an explanation. Reply ONLY as JSON.\"\n2.  **Determine the Fact:** A banana is botanically classified as a fruit (specifically, a berry).\n3.  **Format the Output:** The output must be valid JSON and contain only the answer.\n4.  **Construct the JSON:**\n    *   Key should reflect the question or the subject.\n    *   Value should be the answer (True/False, or the statement itself).\n\n5.  **Final Output Generation (Constraint Check):**\n    *   Is it JSON? Yes.\n    *   Is there an explanation? No.\n    *   Is the answer correct? Yes.\n\n6.  **Result:** {\"is_banana_a_fruit\": true} (or similar valid structure)."}}],"created":1786884649,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":215,"prompt_tokens":33,"total_tokens":248,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-MPc6dx9MHcg2sHmskvuj827OTriNtIh8","timings":{"cache_n":7,"prompt_n":26,"prompt_ms":70.363,"prompt_per_token_ms":2.7062692307692306,"prompt_per_second":369.51238577093073,"predicted_n":215,"predicted_ms":2770.652,"predicted_per_token_ms":12.946971962616823,"predicted_per_second":77.23813744923577}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1231"
+                - "1455"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.286s
+        duration: 2.853s

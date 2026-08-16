@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1270
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user is asking if a banana is a fruit.\n2.  **Constraint 1:** Do not include an explanation.\n3.  **Constraint 2:** Reply ONLY as JSON according to the schema: `{\"is_fruit\": bool}`.\n4.  **Determine the Fact:** Botanically and culinarily, a banana is classified as a fruit (specifically, a berry, though sometimes debated depending on the exact definition used, it is universally treated as a fruit).\n5.  **Format the Output:** Create the required JSON structure.\n\n6.  **Final Output Generation:** `{\"is_fruit\": true}`"}}],"created":1782171079,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":165,"prompt_tokens":45,"total_tokens":210,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-cI00Tg4EK8OWI6w8FWQuOliOT9McmtzL","timings":{"cache_n":7,"prompt_n":38,"prompt_ms":144.105,"prompt_per_token_ms":3.792236842105263,"prompt_per_second":263.6966101106832,"predicted_n":165,"predicted_ms":2227.003,"predicted_per_token_ms":13.49698787878788,"predicted_per_second":74.09060517655342}}'
+        content_length: 1197
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking if a banana is a fruit.\n2.  **Constraint Check:** The response must *only* be a JSON object following the schema: `{\"is_fruit\": bool}`. No explanation is allowed.\n3.  **Determine the Fact:** Is a banana a fruit? Yes, botanically speaking, it is a fruit (specifically, a berry).\n4.  **Format the Output:** Convert the truth value (True) into the required JSON structure.\n\n5.  **Final Output Generation:** `{\"is_fruit\": true}`"}}],"created":1786884646,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":150,"prompt_tokens":45,"total_tokens":195,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-6F487geRcUM8jxm3jan9O0qLKdX7Ziyi","timings":{"cache_n":7,"prompt_n":38,"prompt_ms":72.705,"prompt_per_token_ms":1.9132894736842105,"prompt_per_second":522.6600646447974,"predicted_n":150,"predicted_ms":1958.684,"predicted_per_token_ms":13.145530201342282,"predicted_per_second":76.07148473158509}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1270"
+                - "1197"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.382s
+        duration: 2.043s

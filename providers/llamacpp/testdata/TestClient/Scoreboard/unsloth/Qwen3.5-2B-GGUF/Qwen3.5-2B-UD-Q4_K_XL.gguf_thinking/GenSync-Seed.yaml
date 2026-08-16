@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1633
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n\n2.  **Identify the Goal:**\n    *   Respond to the greeting \"hello\" or acknowledge it in a single word.\n\n3.  **Brainstorm One-Word Responses:**\n    *   Hello (Too many words if counting \"Hello\" as one word, but it''s the command).\n    *   Hi (One word).\n    *   Hey (One word).\n    *   Yes (No).\n    *   No (No).\n    *   Hello (One word).\n    *   Hello there. (Two words).\n\n4.  **Select the Best Option:**\n    *   \"Hello\" is the most direct response to the command to say hello, and it fits the one-word constraint.\n    *   \"Hi\" is also valid.\n    *   Usually, for \"Say hello\", repeating \"Hello\" is the most appropriate action.\n\n5.  **Final Decision:**\n    *   \"Hello\" (It is the word itself).\n\n6.  **Review Constraints:**\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n\n7.  **Output:** Hello.cw\n"}}],"created":1779999113,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":290,"prompt_tokens":18,"total_tokens":308,"prompt_tokens_details":{"cached_tokens":14}},"id":"chatcmpl-3T7Kl0KsI8fnnypTRbP7AZYUyH1RBurK","timings":{"cache_n":14,"prompt_n":4,"prompt_ms":21.28,"prompt_per_token_ms":5.32,"prompt_per_second":187.96992481203006,"predicted_n":290,"predicted_ms":2846.256,"predicted_per_token_ms":9.814675862068965,"predicted_per_second":101.88823493037872}}'
+        content_length: 1450
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n    *   Input: \"Say hello. Use only one word.\"\n\n2.  **Evaluate the Constraint:**\n    *   The user explicitly asked for a single word.\n    *   The standard greeting \"Hello\" is a single word.\n    *   Other single word greetings: \"Hi\", \"Hey\", \"Greeting\".\n\n3.  **Select the Best Option:**\n    *   \"Hello\" is the most direct and common response to \"Say hello\".\n    *   It fits the constraint perfectly.\n\n4.  **Final Output Formulation:**\n    *   Output: \"Hello\".\n\n5.  **Review against constraints:**\n    *   One word? Yes.\n    *   Say hello? Yes.\n    *   Is it too verbose? No.\n    *   Is it correct? Yes.\n\n6.  **Final Decision:** Hello.cw\n"}}],"created":1786883969,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":226,"prompt_tokens":18,"total_tokens":244,"prompt_tokens_details":{"cached_tokens":14}},"id":"chatcmpl-7XhKcjkXwQh1WHMY4bwgQAybEeA81iOC","timings":{"cache_n":14,"prompt_n":4,"prompt_ms":21.849,"prompt_per_token_ms":5.46225,"prompt_per_second":183.07474026271225,"predicted_n":226,"predicted_ms":2169.948,"predicted_per_token_ms":9.644213333333333,"predicted_per_second":103.68912066095594}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1633"
+                - "1450"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.879s
+        duration: 2.202s

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 661
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>Say hello."}}],"created":1779999259,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":7,"prompt_tokens":16,"total_tokens":23,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-JLYlE51Fr3ZIpZYkgxUhRrNLTToyycA1","timings":{"cache_n":0,"prompt_n":16,"prompt_ms":132.38,"prompt_per_token_ms":8.27375,"prompt_per_second":120.86417887898475,"predicted_n":7,"predicted_ms":33.264,"predicted_per_token_ms":4.752000000000001,"predicted_per_second":210.4377104377104}}'
+        content_length: 652
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>Say hello."}}],"created":1786884748,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":7,"prompt_tokens":16,"total_tokens":23,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-QhRIPoYlhHEYQ8UkJYdPjlBwskzDvyyl","timings":{"cache_n":0,"prompt_n":16,"prompt_ms":152.59,"prompt_per_token_ms":9.536875,"prompt_per_second":104.85615046857592,"predicted_n":7,"predicted_ms":30.231,"predicted_per_token_ms":5.0385,"predicted_per_second":198.4717673910886}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "661"
+                - "652"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 169ms
+        duration: 185ms

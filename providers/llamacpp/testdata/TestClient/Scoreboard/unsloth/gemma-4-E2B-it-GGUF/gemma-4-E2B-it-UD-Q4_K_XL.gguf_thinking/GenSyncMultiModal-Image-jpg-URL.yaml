@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1757
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user has provided an image (or a description leading to an image) and asked to identify the fruit.\n    *   The visual context is a yellow, curved, elongated fruit.\n    *   The text snippet \"It is a banana\" is present, although the input actually ends with \"It is a banana\" (or similar, the last part is \"It is a banana\" in the original prompt structure, but the provided text is \"It is a banana\"). Wait, let me re-read the provided prompt.\n    *   The prompt is: \"What fruit is it? Reply with only one word. [Image/Description] It is a banana\".\n    *   The image (implicitly described by the context) is clearly a banana.\n\n2.  **Determine the required output format:** \"Reply with only one word.\"\n\n3.  **Identify the fruit:** The fruit shown is a banana.\n\n4.  **Formulate the response:** The single word answer is \"Banana\". (or potentially \"Fruit\", but the question asks \"What fruit is it?\", implying the specific identification).\n\n5.  **Final check:** Does \"Banana\" meet the constraint? Yes, it is one word."}}],"created":1782171113,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9763-dec5ca557","object":"chat.completion","usage":{"completion_tokens":270,"prompt_tokens":71,"total_tokens":341,"prompt_tokens_details":{"cached_tokens":7}},"id":"chatcmpl-vHkW4bSv3hSpmFwFBmWLMGv6ERtjUfVO","timings":{"cache_n":7,"prompt_n":64,"prompt_ms":157.719,"prompt_per_token_ms":2.464359375,"prompt_per_second":405.7849720071773,"predicted_n":270,"predicted_ms":3179.8,"predicted_per_token_ms":11.777037037037038,"predicted_per_second":84.9110006918674}}'
+        content_length: 1510
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user has provided an image description/context (implied by the image content, though the image itself is missing in the prompt, the text \"It is a banana\" is usually implied by such a query format, and the final part of the input is \"It is a banana\" or similar, often presented as an image description). The input ends with \"It is a banana\" (or similar context) and the final text fragment is \"It is a banana\" (implied by the image/context, or the prompt itself is flawed and expects me to identify the fruit shown).\n2.  **Identify the object:** The context strongly points to a banana.\n3.  **Determine the required output format:** \"Reply with only one word.\"\n4.  **Formulate the answer:** The fruit is \"banana\".\n5.  **Final check against constraints:** One word? Yes. (Banana)."}}],"created":1786884677,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":206,"prompt_tokens":71,"total_tokens":277,"prompt_tokens_details":{"cached_tokens":66}},"id":"chatcmpl-FCrWOlVURezXhGXRFD3p85X2HuOxXHVB","timings":{"cache_n":66,"prompt_n":5,"prompt_ms":30.898,"prompt_per_token_ms":6.1796,"prompt_per_second":161.82277170043366,"predicted_n":206,"predicted_ms":2770.287,"predicted_per_token_ms":13.51359512195122,"predicted_per_second":73.99955311489389}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1757"
+                - "1510"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 4.988s
+        duration: 2.904s

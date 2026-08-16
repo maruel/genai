@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1028
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single, curved yellow fruit with a brownish tip at the stem. It has the characteristic shape of a banana.\n2.  **Identify the fruit:** The fruit is a banana.\n3.  **Format the output:** The user requested only one word.\n4.  **Final Answer Formulation:** \"Banana\"\n"}}],"created":1779999165,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":101,"prompt_tokens":113,"total_tokens":214,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-A56nAPuEp9TIkxKL8tK39TDEuNhWoRJJ","timings":{"cache_n":109,"prompt_n":4,"prompt_ms":28.354,"prompt_per_token_ms":7.0885,"prompt_per_second":141.0735698666855,"predicted_n":101,"predicted_ms":729.882,"predicted_per_token_ms":7.226554455445544,"predicted_per_second":138.37853242030903}}'
+        content_length: 1051
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single yellow fruit curving upwards. It has a stem end at the top and a blossom end (tips) at the bottom. The skin is yellow.\n2.  **Identify the fruit:** This is a classic banana.\n3.  **Format the output:** The user requested \"Reply with only one word\".\n4.  **Final Answer:** banana.\n"}}],"created":1786884153,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":107,"prompt_tokens":113,"total_tokens":220,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-HEi4QayREwesva4nFay5nyrWOFoNjcax","timings":{"cache_n":109,"prompt_n":4,"prompt_ms":27.712,"prompt_per_token_ms":6.928,"prompt_per_second":144.3418013856813,"predicted_n":107,"predicted_ms":859.416,"predicted_per_token_ms":8.107698113207547,"predicted_per_second":123.33957012669067}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1028"
+                - "1051"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 885ms
+        duration: 1.288s

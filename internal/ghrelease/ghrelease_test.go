@@ -365,6 +365,35 @@ func TestGetLatestRelease(t *testing.T) {
 			t.Fatalf("asset[0].URL: got %q, want %q", rel.Assets[0].URL, "https://example.com/foo.tar.gz")
 		}
 	})
+	t.Run("InvalidTokenRetriesUnauthenticated", func(t *testing.T) {
+		calls := 0
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			calls++
+			if calls == 1 {
+				if got := r.Header.Get("Authorization"); got != "Bearer invalid-token" {
+					t.Errorf("Authorization = %q, want invalid token", got)
+				}
+				http.Error(w, "bad credentials", http.StatusUnauthorized)
+				return
+			}
+			if got := r.Header.Get("Authorization"); got != "" {
+				t.Errorf("Authorization = %q, want empty", got)
+			}
+			_, _ = w.Write([]byte(`{"tag_name":"v1.2.3"}`))
+		}))
+		t.Cleanup(srv.Close)
+		old := apiBaseURL
+		apiBaseURL = srv.URL
+		t.Cleanup(func() { apiBaseURL = old })
+		t.Setenv("GITHUB_TOKEN", "invalid-token")
+
+		if _, err := GetLatestRelease(t.Context(), "testowner", "testrepo"); err != nil {
+			t.Fatal(err)
+		}
+		if calls != 2 {
+			t.Fatalf("requests = %d, want 2", calls)
+		}
+	})
 	t.Run("NotFound", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
@@ -425,6 +454,34 @@ func TestGetRelease(t *testing.T) {
 }
 
 func TestDownloadFile(t *testing.T) {
+	t.Run("InvalidTokenRetriesUnauthenticated", func(t *testing.T) {
+		calls := 0
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			calls++
+			if calls == 1 {
+				if got := r.Header.Get("Authorization"); got != "Bearer invalid-token" {
+					t.Errorf("Authorization = %q, want invalid token", got)
+				}
+				http.Error(w, "bad credentials", http.StatusUnauthorized)
+				return
+			}
+			if got := r.Header.Get("Authorization"); got != "" {
+				t.Errorf("Authorization = %q, want empty", got)
+			}
+			_, _ = w.Write([]byte("file content"))
+		}))
+		t.Cleanup(srv.Close)
+		t.Setenv("GITHUB_TOKEN", "invalid-token")
+
+		dst := filepath.Join(t.TempDir(), "downloaded.bin")
+		if err := DownloadFile(t.Context(), srv.URL+"/file.bin", dst); err != nil {
+			t.Fatal(err)
+		}
+		if calls != 2 {
+			t.Fatalf("requests = %d, want 2", calls)
+		}
+		assertFileContent(t, dst, "file content")
+	})
 	t.Run("Valid", func(t *testing.T) {
 		want := "file content here"
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

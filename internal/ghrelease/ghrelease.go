@@ -25,7 +25,9 @@ import (
 
 // DownloadFile downloads a file from url and writes it to dst.
 //
-// Uses GITHUB_TOKEN from the environment for Bearer auth if set.
+// Uses GITHUB_TOKEN from the environment for Bearer auth if set. If GitHub
+// rejects the token, retries without authentication so public assets remain
+// available.
 func DownloadFile(ctx context.Context, url, dst string) error {
 	resp, err := doGet(ctx, url)
 	if err != nil {
@@ -51,10 +53,7 @@ func doGet(ctx context.Context, url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
-		req.Header.Set("Authorization", "Bearer "+token)
-	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := doGitHub(req)
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +62,25 @@ func doGet(ctx context.Context, url string) (*http.Response, error) {
 		return nil, fmt.Errorf("unexpected http status code %d", resp.StatusCode)
 	}
 	return resp, nil
+}
+
+// doGitHub sends req with GITHUB_TOKEN authentication when configured. A
+// rejected token is retried without authentication, so a stale local token
+// does not block downloads of public GitHub releases.
+func doGitHub(req *http.Request) (*http.Response, error) {
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		return http.DefaultClient.Do(req)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil || resp.StatusCode != http.StatusUnauthorized {
+		return resp, err
+	}
+	_ = resp.Body.Close()
+	retry := req.Clone(req.Context())
+	retry.Header.Del("Authorization")
+	return http.DefaultClient.Do(retry)
 }
 
 // apiBaseURL is the GitHub API base URL. Overridden in tests.
@@ -83,7 +101,9 @@ type Release struct {
 // GetRelease returns a specific GitHub release by tag for the given owner/repo,
 // including the tag name and the list of downloadable assets.
 //
-// Uses GITHUB_TOKEN from the environment for Bearer auth if set.
+// Uses GITHUB_TOKEN from the environment for Bearer auth if set. If GitHub
+// rejects the token, retries without authentication so public releases remain
+// available.
 func GetRelease(ctx context.Context, owner, repo, tag string) (*Release, error) {
 	u := apiBaseURL + "/repos/" + owner + "/" + repo + "/releases/tags/" + tag
 	return getRelease(ctx, u, owner, repo, tag)
@@ -92,7 +112,9 @@ func GetRelease(ctx context.Context, owner, repo, tag string) (*Release, error) 
 // GetLatestRelease returns the latest GitHub release for the given owner/repo,
 // including the tag name and the list of downloadable assets.
 //
-// Uses GITHUB_TOKEN from the environment for Bearer auth if set.
+// Uses GITHUB_TOKEN from the environment for Bearer auth if set. If GitHub
+// rejects the token, retries without authentication so public releases remain
+// available.
 func GetLatestRelease(ctx context.Context, owner, repo string) (*Release, error) {
 	u := apiBaseURL + "/repos/" + owner + "/" + repo + "/releases/latest"
 	return getRelease(ctx, u, owner, repo, "latest")
@@ -103,11 +125,8 @@ func getRelease(ctx context.Context, u, owner, repo, label string) (*Release, er
 	if err != nil {
 		return nil, err
 	}
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
-		req.Header.Set("Authorization", "Bearer "+token)
-	}
 	req.Header.Set("Accept", "application/json")
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := doGitHub(req)
 	if err != nil {
 		return nil, err
 	}

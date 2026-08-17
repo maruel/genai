@@ -184,6 +184,9 @@ func TestClient(t *testing.T) {
 }
 
 func getAPIKeyTest(t testing.TB) string {
+	if v := internaltest.GetEnv("HUGGINGFACE_API_KEY"); v != "" {
+		return v
+	}
 	apiKey, err := getAPIKey()
 	if err != nil {
 		t.Fatal(err)

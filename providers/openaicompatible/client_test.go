@@ -9,7 +9,6 @@ package openaicompatible_test
 import (
 	"errors"
 	"net/http"
-	"os"
 	"slices"
 	"testing"
 
@@ -33,7 +32,7 @@ func TestClient(t *testing.T) {
 	getClient := func(t *testing.T, provider string) genai.Provider {
 		t.Parallel()
 		p := providers[provider]
-		apiKey := os.Getenv(p.envAPIKey)
+		apiKey := internaltest.GetEnv(p.envAPIKey)
 		if apiKey == "" {
 			apiKey = "<insert_api_key_here>"
 		}

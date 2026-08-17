@@ -10,7 +10,6 @@ import (
 	"context"
 	"iter"
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 	"testing"
@@ -27,8 +26,11 @@ import (
 )
 
 func getClientInner(t *testing.T, apiKey string, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if apiKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" && !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {
-		apiKey = "<insert_api_key_here>"
+	if apiKey == "" && !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {
+		apiKey = internaltest.GetEnv("PERPLEXITY_API_KEY")
+		if apiKey == "" {
+			apiKey = "<insert_api_key_here>"
+		}
 	}
 	if apiKey != "" {
 		opts = append(opts, genai.ProviderOptionAPIKey(apiKey))
@@ -84,9 +86,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				o = append(o, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("PERPLEXITY_API_KEY") == "" {
-				o = append(o, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("PERPLEXITY_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			o = append(o, genai.ProviderOptionAPIKey(key))
 			c, err := perplexity.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				// Perplexity is quick to ban users. It first start with 429 and then Cloudflare blocks it with a
 				// javascript challenge. It's extra dumb because it is an API endpoint.

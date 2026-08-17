@@ -31,7 +31,7 @@ import (
 )
 
 func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, opts ...genai.ProviderOption) (genai.Provider, error) {
-	hasAPIKey := os.Getenv("ANTHROPIC_API_KEY") != ""
+	hasAPIKey := false
 	for _, opt := range opts {
 		if _, ok := opt.(genai.ProviderOptionAPIKey); ok {
 			hasAPIKey = true
@@ -39,7 +39,11 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 		}
 	}
 	if !hasAPIKey {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+		key := internaltest.GetEnv("ANTHROPIC_API_KEY")
+		if key == "" {
+			key = "<insert_api_key_here>"
+		}
+		opts = append(opts, genai.ProviderOptionAPIKey(key))
 	}
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
@@ -193,9 +197,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				popts = append(popts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("ANTHROPIC_API_KEY") == "" {
-				popts = append(popts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("ANTHROPIC_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			popts = append(popts, genai.ProviderOptionAPIKey(key))
 			if fn != nil {
 				popts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, popts...)
 			}
@@ -447,7 +453,7 @@ func TestClient(t *testing.T) {
 		}
 		// Get a Smithery service token from the API key.
 		// See https://smithery.ai/docs/use/connect#service-tokens
-		token, err := getSmitheryServiceToken(os.Getenv("SMITHERY_API_KEY"), "@simonfraserduncan/echo-mcp")
+		token, err := getSmitheryServiceToken(internaltest.GetEnv("SMITHERY_API_KEY"), "@simonfraserduncan/echo-mcp")
 		if err != nil {
 			t.Fatal(err)
 		}

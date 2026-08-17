@@ -24,7 +24,49 @@ import (
 
 // hasRegionKey reports whether any region-specific DASHSCOPE_API_KEY_* env var is set.
 func hasRegionKey() bool {
-	return os.Getenv("DASHSCOPE_API_KEY_INTL") != "" || os.Getenv("DASHSCOPE_API_KEY_US") != "" || os.Getenv("DASHSCOPE_API_KEY_CN") != ""
+	return internaltest.GetEnv("DASHSCOPE_API_KEY_INTL") != "" || internaltest.GetEnv("DASHSCOPE_API_KEY_US") != "" || internaltest.GetEnv("DASHSCOPE_API_KEY_CN") != ""
+}
+
+// resolveAPIKey picks the DASHSCOPE API key value to pass explicitly,
+// mirroring the resolution order in Client.New: the region key matching the
+// backend requested in opts (or, with no explicit backend, the first region
+// key found), else the generic key, else a placeholder for cassette
+// playback.
+func resolveAPIKey(opts []genai.ProviderOption) string {
+	var backend alibaba.ProviderOptionBackend
+	for _, opt := range opts {
+		if b, ok := opt.(alibaba.ProviderOptionBackend); ok {
+			backend = b
+		}
+	}
+	switch backend {
+	case alibaba.BackendIntl:
+		if v := internaltest.GetEnv("DASHSCOPE_API_KEY_INTL"); v != "" {
+			return v
+		}
+	case alibaba.BackendUS:
+		if v := internaltest.GetEnv("DASHSCOPE_API_KEY_US"); v != "" {
+			return v
+		}
+	case alibaba.BackendCN:
+		if v := internaltest.GetEnv("DASHSCOPE_API_KEY_CN"); v != "" {
+			return v
+		}
+	default:
+		if v := internaltest.GetEnv("DASHSCOPE_API_KEY_INTL"); v != "" {
+			return v
+		}
+		if v := internaltest.GetEnv("DASHSCOPE_API_KEY_US"); v != "" {
+			return v
+		}
+		if v := internaltest.GetEnv("DASHSCOPE_API_KEY_CN"); v != "" {
+			return v
+		}
+	}
+	if v := internaltest.GetEnv("DASHSCOPE_API_KEY"); v != "" {
+		return v
+	}
+	return "<insert_api_key_here>"
 }
 
 func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, opts ...genai.ProviderOption) (genai.Provider, error) {
@@ -38,16 +80,16 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 			hasBackend = true
 		}
 	}
-	if !hasAPIKey && os.Getenv("DASHSCOPE_API_KEY") == "" && !hasRegionKey() {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
-	}
 	if !hasBackend {
-		if u := os.Getenv("DASHSCOPE_BASE_URL"); u != "" {
+		if u := internaltest.GetEnv("DASHSCOPE_BASE_URL"); u != "" {
 			opts = append(opts, genai.ProviderOptionRemote(u))
 		} else if !hasRegionKey() {
 			// Default to US for recording playback.
 			opts = append(opts, alibaba.BackendUS)
 		}
+	}
+	if !hasAPIKey {
+		opts = append(opts, genai.ProviderOptionAPIKey(resolveAPIKey(opts)))
 	}
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
@@ -79,7 +121,7 @@ func TestClient(t *testing.T) {
 		t.Run(b.name, func(t *testing.T) {
 			// Skip if no recordings and no API key.
 			warmupPath := filepath.Join("testdata", t.Name(), "Warmup.yaml")
-			hasKey := os.Getenv(b.envKey) != "" || os.Getenv("DASHSCOPE_API_KEY") != ""
+			hasKey := internaltest.GetEnv(b.envKey) != "" || internaltest.GetEnv("DASHSCOPE_API_KEY") != ""
 			if _, err := os.Stat(warmupPath); err != nil && !hasKey {
 				t.Skipf("no recordings and no API key for %s", b.name)
 			}
@@ -151,9 +193,7 @@ func TestClient(t *testing.T) {
 					if model.Model != "" {
 						opts = append(opts, genai.ProviderOptionModel(model.Model))
 					}
-					if os.Getenv("DASHSCOPE_API_KEY") == "" && !hasRegionKey() {
-						opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
-					}
+					opts = append(opts, genai.ProviderOptionAPIKey(resolveAPIKey(opts)))
 					if fn != nil {
 						opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 					}

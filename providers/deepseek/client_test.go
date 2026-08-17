@@ -8,7 +8,6 @@ package deepseek_test
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -27,8 +26,12 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 			break
 		}
 	}
-	if !hasAPIKey && os.Getenv("DEEPSEEK_API_KEY") == "" {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	if !hasAPIKey {
+		key := internaltest.GetEnv("DEEPSEEK_API_KEY")
+		if key == "" {
+			key = "<insert_api_key_here>"
+		}
+		opts = append(opts, genai.ProviderOptionAPIKey(key))
 	}
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
@@ -91,9 +94,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("DEEPSEEK_API_KEY") == "" {
-				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("DEEPSEEK_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			opts = append(opts, genai.ProviderOptionAPIKey(key))
 			if fn != nil {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 			}

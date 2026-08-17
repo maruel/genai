@@ -34,9 +34,11 @@ func getClientInner(t *testing.T, model string, modalities genai.Modalities, pre
 	if model != "" {
 		opts = append(opts, genai.ProviderOptionModel(model))
 	}
-	if os.Getenv("GEMINI_API_KEY") == "" {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	key := internaltest.GetEnv("GEMINI_API_KEY")
+	if key == "" {
+		key = "<insert_api_key_here>"
 	}
+	opts = append(opts, genai.ProviderOptionAPIKey(key))
 	if len(modalities) > 0 {
 		opts = append(opts, genai.ProviderOptionModalities(modalities))
 	}
@@ -116,9 +118,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("GEMINI_API_KEY") == "" {
-				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("GEMINI_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			opts = append(opts, genai.ProviderOptionAPIKey(key))
 			if fn != nil {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 			}

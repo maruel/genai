@@ -8,7 +8,6 @@ package cloudflare_test
 
 import (
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 	"testing"
@@ -33,11 +32,19 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 			hasAccountID = true
 		}
 	}
-	if !hasAPIKey && os.Getenv("CLOUDFLARE_API_KEY") == "" {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	if !hasAPIKey {
+		key := internaltest.GetEnv("CLOUDFLARE_API_KEY")
+		if key == "" {
+			key = "<insert_api_key_here>"
+		}
+		opts = append(opts, genai.ProviderOptionAPIKey(key))
 	}
-	if !hasAccountID && os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
-		opts = append(opts, cloudflare.AccountID("ACCOUNT_ID"))
+	if !hasAccountID {
+		id := internaltest.GetEnv("CLOUDFLARE_ACCOUNT_ID")
+		if id == "" {
+			id = "ACCOUNT_ID"
+		}
+		opts = append(opts, cloudflare.AccountID(id))
 	}
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
@@ -98,12 +105,16 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("CLOUDFLARE_API_KEY") == "" {
-				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("CLOUDFLARE_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
-			if os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
-				opts = append(opts, cloudflare.AccountID("ACCOUNT_ID"))
+			opts = append(opts, genai.ProviderOptionAPIKey(key))
+			id := internaltest.GetEnv("CLOUDFLARE_ACCOUNT_ID")
+			if id == "" {
+				id = "ACCOUNT_ID"
 			}
+			opts = append(opts, cloudflare.AccountID(id))
 			if fn != nil {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 			}

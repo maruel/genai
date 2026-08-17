@@ -9,7 +9,6 @@ package cerebras_test
 import (
 	"io"
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 	"testing"
@@ -31,8 +30,12 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 			break
 		}
 	}
-	if !hasAPIKey && os.Getenv("CEREBRAS_API_KEY") == "" {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	if !hasAPIKey {
+		key := internaltest.GetEnv("CEREBRAS_API_KEY")
+		if key == "" {
+			key = "<insert_api_key_here>"
+		}
+		opts = append(opts, genai.ProviderOptionAPIKey(key))
 	}
 	// Use internaltest.Log(t) and roundtrippers.Log{} for debug logging.
 	if fn != nil {
@@ -130,9 +133,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				provOpts = append(provOpts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("CEREBRAS_API_KEY") == "" {
-				provOpts = append(provOpts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("CEREBRAS_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			provOpts = append(provOpts, genai.ProviderOptionAPIKey(key))
 			ctx := t.Context()
 			// Use internaltest.Log(t) and roundtrippers.Log{} for debug logging.
 			fnWithLog := func(h http.RoundTripper) http.RoundTripper {

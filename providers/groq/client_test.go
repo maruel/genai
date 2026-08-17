@@ -11,7 +11,6 @@ import (
 	_ "embed"
 	"iter"
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 	"testing"
@@ -26,8 +25,12 @@ import (
 )
 
 func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if os.Getenv("GROQ_API_KEY") == "" && !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	if !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {
+		key := internaltest.GetEnv("GROQ_API_KEY")
+		if key == "" {
+			key = "<insert_api_key_here>"
+		}
+		opts = append(opts, genai.ProviderOptionAPIKey(key))
 	}
 	if fn != nil {
 		opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
@@ -95,9 +98,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("GROQ_API_KEY") == "" {
-				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("GROQ_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			opts = append(opts, genai.ProviderOptionAPIKey(key))
 			if fn != nil {
 				opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
 			}

@@ -34,8 +34,12 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 			break
 		}
 	}
-	if !hasAPIKey && os.Getenv("OPENAI_API_KEY") == "" {
-		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	if !hasAPIKey {
+		key := internaltest.GetEnv("OPENAI_API_KEY")
+		if key == "" {
+			key = "<insert_api_key_here>"
+		}
+		opts = append(opts, genai.ProviderOptionAPIKey(key))
 	}
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
@@ -105,9 +109,11 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				provOpts = append(provOpts, genai.ProviderOptionModel(model.Model))
 			}
-			if os.Getenv("OPENAI_API_KEY") == "" {
-				provOpts = append(provOpts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			key := internaltest.GetEnv("OPENAI_API_KEY")
+			if key == "" {
+				key = "<insert_api_key_here>"
 			}
+			provOpts = append(provOpts, genai.ProviderOptionAPIKey(key))
 			if fn != nil {
 				provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, provOpts...)
 			}

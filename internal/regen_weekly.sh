@@ -10,6 +10,13 @@ set -euo pipefail
 cd "$(dirname "$0")"
 cd ..
 
+if [[ -f "./.env" ]]; then
+	set -a
+	# shellcheck disable=SC1091
+	source "./.env"
+	set +a
+fi
+
 go install ./cmd/list-models ./cmd/scoreboard
 # Providers that can't run in CI: local servers, or CLI wrappers.
 EXCLUDE="bfl claudecode codex llamacpp ollama openaicompatible opencode openaibase openaichat openairesponses perplexity pi"

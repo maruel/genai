@@ -230,10 +230,11 @@ func HasInputWithMimePrefix(msgs genai.Messages, prefix string) bool {
 // https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
 // "Modalities:", then extract the modalities from the text.
 type Model struct {
-	ID      string     `json:"id"`
-	Object  string     `json:"object"`
-	Created base.TimeS `json:"created"`
-	OwnedBy string     `json:"owned_by"`
+	ID           string     `json:"id"`
+	Object       string     `json:"object"`
+	Created      base.TimeS `json:"created"`
+	OwnedBy      string     `json:"owned_by"`
+	ShutdownDate string     `json:"shutdown_date"`
 }
 
 // GetID implements genai.Model.

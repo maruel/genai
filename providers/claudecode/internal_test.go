@@ -377,7 +377,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("init_flags", func(t *testing.T) {
-		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"1.0","uuid":"u1","analytics_disabled":true,"product_feedback_disabled":true,"messaging_socket_path":"/tmp/cc.sock","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required"}`
+		const data = `{"type":"system","subtype":"init","cwd":"/tmp","session_id":"s1","tools":[],"model":"m","claude_code_version":"1.0","uuid":"u1","analytics_disabled":true,"product_feedback_disabled":true,"messaging_socket_path":"/tmp/cc.sock","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","slash_commands":["compact","context"],"terminal_slash_commands":["doctor","color"]}`
 		var got OutputInitMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -393,6 +393,12 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.FastModeDisabledReason != FastModeDisabledSDKOptInRequired {
 			t.Errorf("FastModeDisabledReason = %q, want %q", got.FastModeDisabledReason, FastModeDisabledSDKOptInRequired)
+		}
+		if !slices.Equal(got.SlashCommands, []string{"compact", "context"}) {
+			t.Errorf("SlashCommands = %v, want [compact context]", got.SlashCommands)
+		}
+		if !slices.Equal(got.TerminalSlashCommands, []string{"doctor", "color"}) {
+			t.Errorf("TerminalSlashCommands = %v, want [doctor color]", got.TerminalSlashCommands)
 		}
 	})
 	t.Run("init_2_1_214_fields", func(t *testing.T) {
@@ -891,6 +897,19 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.DecisionReasonType != CanUseToolDecisionReasonSubcommandResults {
 			t.Errorf("DecisionReasonType = %q, want %q", got.DecisionReasonType, CanUseToolDecisionReasonSubcommandResults)
+		}
+	})
+	t.Run("can_use_tool_requires_user_interaction", func(t *testing.T) {
+		const data = `{"subtype":"can_use_tool","tool_name":"AskUserQuestion","input":{"questions":[{"question":"Which?","options":[{"label":"A"}]}]},"requires_user_interaction":true,"tool_use_id":"toolu_1"}`
+		var got ControlReqCanUseTool
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if !got.RequiresUserInteraction {
+			t.Error("RequiresUserInteraction = false, want true")
+		}
+		if got.ToolName != "AskUserQuestion" {
+			t.Errorf("ToolName = %q, want AskUserQuestion", got.ToolName)
 		}
 	})
 	t.Run("hook_callback_input", func(t *testing.T) {

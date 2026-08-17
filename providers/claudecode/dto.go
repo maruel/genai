@@ -129,18 +129,21 @@ type ControlReqInterrupt struct {
 
 // ControlReqCanUseTool requests permission to use a tool.
 type ControlReqCanUseTool struct {
-	Subtype               ControlSubtype               `json:"subtype"` // ControlCanUseTool
-	ToolName              string                       `json:"tool_name"`
-	Input                 map[string]json.RawMessage   `json:"input"`
-	PermissionSuggestions []PermissionUpdate           `json:"permission_suggestions,omitempty"`
-	BlockedPath           string                       `json:"blocked_path,omitempty"`
-	DecisionReason        string                       `json:"decision_reason,omitempty"`
-	DecisionReasonType    CanUseToolDecisionReasonType `json:"decision_reason_type,omitempty"`
-	Title                 string                       `json:"title,omitempty"`
-	DisplayName           string                       `json:"display_name,omitempty"`
-	ToolUseID             string                       `json:"tool_use_id"`
-	AgentID               string                       `json:"agent_id,omitempty"`
-	Description           string                       `json:"description,omitempty"`
+	Subtype  ControlSubtype             `json:"subtype"` // ControlCanUseTool
+	ToolName string                     `json:"tool_name"`
+	Input    map[string]json.RawMessage `json:"input"`
+	// RequiresUserInteraction is true when the tool needs an interactive user
+	// response (e.g. AskUserQuestion).
+	RequiresUserInteraction bool                         `json:"requires_user_interaction,omitempty"`
+	PermissionSuggestions   []PermissionUpdate           `json:"permission_suggestions,omitempty"`
+	BlockedPath             string                       `json:"blocked_path,omitempty"`
+	DecisionReason          string                       `json:"decision_reason,omitempty"`
+	DecisionReasonType      CanUseToolDecisionReasonType `json:"decision_reason_type,omitempty"`
+	Title                   string                       `json:"title,omitempty"`
+	DisplayName             string                       `json:"display_name,omitempty"`
+	ToolUseID               string                       `json:"tool_use_id"`
+	AgentID                 string                       `json:"agent_id,omitempty"`
+	Description             string                       `json:"description,omitempty"`
 }
 
 // CanUseToolDecisionReasonType identifies why Claude Code requested tool approval.
@@ -648,12 +651,15 @@ type OutputInitMsg struct {
 	Plugins                []InitPlugin           `json:"plugins,omitempty,omitzero"`
 	Skills                 []string               `json:"skills,omitempty"`
 	SlashCommands          []string               `json:"slash_commands,omitempty"`
-	MessagingSocketPath    string                 `json:"messaging_socket_path,omitempty"`
-	Betas                  []string               `json:"betas,omitempty"`
-	PluginErrors           []InitPluginErr        `json:"plugin_errors,omitempty,omitzero"`
-	PluginWarnings         []InitPluginErr        `json:"plugin_warnings,omitempty,omitzero"`
-	Capabilities           []string               `json:"capabilities,omitempty"`
-	MemoryPaths            InitMemPaths           `json:"memory_paths,omitzero"`
+	// TerminalSlashCommands is the subset of slash commands available in the
+	// terminal UI (e.g. ["doctor", "color"]).
+	TerminalSlashCommands []string        `json:"terminal_slash_commands,omitempty"`
+	MessagingSocketPath   string          `json:"messaging_socket_path,omitempty"`
+	Betas                 []string        `json:"betas,omitempty"`
+	PluginErrors          []InitPluginErr `json:"plugin_errors,omitempty,omitzero"`
+	PluginWarnings        []InitPluginErr `json:"plugin_warnings,omitempty,omitzero"`
+	Capabilities          []string        `json:"capabilities,omitempty"`
+	MemoryPaths           InitMemPaths    `json:"memory_paths,omitzero"`
 
 	AnalyticsDisabled       bool `json:"analytics_disabled,omitempty"`
 	ProductFeedbackDisabled bool `json:"product_feedback_disabled,omitempty"`

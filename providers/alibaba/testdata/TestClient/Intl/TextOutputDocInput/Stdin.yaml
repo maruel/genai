@@ -9,7 +9,7 @@ interactions:
         content_length: 268
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.7-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,24 +21,28 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Based on the information provided in your statement, the capital of Quackiland is **Quack**.","role":"assistant"}}],"created":1780193919,"id":"chatcmpl-66cbf8af-2646-940b-a5dc-89df8476da0f","model":"qwen3.7-max","object":"chat.completion","usage":{"completion_tokens":20,"prompt_tokens":41,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":61}}'
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is **Quack**.","role":"assistant"}}],"created":1786984578,"id":"chatcmpl-aaf72821-ba6c-943f-aa74-c94e004fd492","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":11,"prompt_tokens":41,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":41},"total_tokens":52}}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1780193919067"
+                - "1786984578467"
             Req-Cost-Time:
-                - "1430"
+                - "679"
             Resp-Start-Time:
-                - "1780193920498"
+                - "1786984579146"
             Server:
                 - istio-envoy
             Vary:
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
             X-Dashscope-Call-Gateway:
                 - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
             X-Envoy-Upstream-Service-Time:
-                - "1430"
+                - "678"
         status: 200 OK
         code: 200
-        duration: 2.435s
+        duration: 925ms

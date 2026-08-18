@@ -27,7 +27,7 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - a2c9ae8b7e2da2ee-YUL
+                - a2c9f64c9e8cd7a3-YUL
             Content-Length:
                 - "0"
             Deprecation:
@@ -39,16 +39,16 @@ interactions:
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=13XTsvoQ7k7VQcL8zoyWOET5HReD5%2BtB72k6WFgs5r5FJIc1YLqoGI8ynljlUOI3GFbeHjHLj98IT13J5UU%2BKhtyru0%2FO4Vua6aCdjsOke3EZcX3EDuOtHYto8i1yx3SqDVgLddZl%2Bc%3D"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=S9pvVK5nKX4HokNx69OYM%2BUSl3k0gdXdN3Y4vB7O2yFEFOQGGsoy%2F3LKlwZf63Y9k2LlRYeCkZnq3qcDr4vKFBXuQoGa9UPvRZxmuDbtjrXrY5U90JdyWkkjeVvNBDspCeuYe9dpUmo%3D"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=14,cfOrigin;dur=0,cfWorker;dur=0
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=0
             X-Robots-Tag:
                 - noindex, nofollow
         status: 308 Permanent Redirect
         code: 308
-        duration: 74ms
+        duration: 44ms
     - id: 1
       request:
         proto: ""
@@ -78,22 +78,22 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - a2c9ae8bcc4f97bf-YUL
+                - a2c9f64ccb451fde-YUL
             Content-Type:
                 - application/json
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=SkVL8SJhf7RX2PIP3UMXI5xUdfa7fZTdxsX8htUEe68TTwyqg894nP3zFzcbAZio21sgNidwizp1%2FDpkCZMDyu4H%2FdUYb%2BqUblVWfqxTMThu5aiEerfmraTQ9599jfX7exqHYaZ0"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=SBIEwB1QjLCQ684OEzrRKheD5otfbpuTgF%2Fyk%2FwNYOpPNtyJP5YFETtJD9HiBbx0VWI%2FS3TGd6NDbnQD3X%2F6wJ%2BHgTJHaUewK29hYK85YuIzgHTKwZ3ETS%2FQqZmsmZ4fjS1X0Rhw"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=10,cfOrigin;dur=0,cfWorker;dur=438
+                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=270
             X-Robots-Tag:
                 - noindex, nofollow
         status: 200 OK
         code: 200
-        duration: 476ms
+        duration: 302ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -120,7 +120,7 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - a2c9ae8e9a16a2ee-YUL
+                - a2c9f64e9d7cd7a3-YUL
             Content-Length:
                 - "0"
             Deprecation:
@@ -132,16 +132,16 @@ interactions:
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=7I7G2myH3LjmxG1V1lSShLbL4n8sil%2Flx7eBhj5pK7Q4o4IUNxm30iWR8CoUvfGCmlex0O%2BHXvem61bn4SHZ%2F0iokq%2Bbaj0v%2BAXmXyVltY1Gj15DWPP9dZ4uwMxu%2F%2BsSuVH15H1rAno%3D"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=vL75OH9NG9aNJkE4U2QM6pjGjQgxWfg52ZXdO%2Bfx1ZP5R0HY5hqgpZlmhq37hw1WUHu6P8DtijtXQjAqeB4EG3XSOGdxn%2FfCZbxF20WysBVI%2FaHNyIiLBa408p2T5BrOplFqiqhXSyc%3D"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=13,cfOrigin;dur=0,cfWorker;dur=0
+                - cfEdge;dur=7,cfOrigin;dur=0,cfWorker;dur=0
             X-Robots-Tag:
                 - noindex, nofollow
         status: 308 Permanent Redirect
         code: 308
-        duration: 21ms
+        duration: 14ms
     - id: 3
       request:
         proto: ""
@@ -171,19 +171,19 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - a2c9ae8ec9ee97bf-YUL
+                - a2c9f64eaa2f1fde-YUL
             Content-Type:
                 - application/json
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=bPLlsPc%2FNlhVBcjDvc5igbJ%2FcHPeudTI3kGrAirdG9ImM4MyteigdHZOD0Y%2BpIj6xHCj5MpwoYAr7wJVRw6ERv%2FbvzH0NMQhghQsa%2B1AMJ%2FqtIAkTjAgmPJQnLUtncZkYM6e6zS7"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=WA3G31JMkgFcrClHrTNSwWxiPq0eAmNOyN%2FX7oMvhL6E6SPr9IqTN0%2B%2Bo6Oeu9nFXDMG59iaZgj8IJnyFeevGk5OmD8jNIKJvstkkceL553Pn2zKCy7Kao4bP2ksyAtB0I9kF%2BI9"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=208
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=243
             X-Robots-Tag:
                 - noindex, nofollow
         status: 200 OK
         code: 200
-        duration: 224ms
+        duration: 257ms

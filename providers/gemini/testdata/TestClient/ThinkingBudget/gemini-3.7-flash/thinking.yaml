@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Thought Process: Delivering a Simple Greeting**\n\nOkay, so the instruction is incredibly straightforward: I need to output \"hello\" and absolutely nothing else. That's the core action. There's a hard constraint, no other words. This requires very little complex reasoning, which is exactly how I like it.\n\nMy first thought is simply, \"Hello,\" or \"hello\". But then I need to consider the constraints again. I'm going to take the final refined output, `Hello`.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello",
+                        "thoughtSignature": "Es0DCsoDARFNMg/R9rXdTsXynslJVXSIcNMEKEP5wSCpxAOYdtPQzUw2CYsKUPpyw5lZ1SXILyTia0EE/wUfa4cYzjeWt16VTz84McSJrZgwdIHs5txupD5KF4ij8VhmpZLGYB+JC6cZsPBbObnudqEFqJHc2+D4FF6YvvCbVwQ/ncvzJAsfIIeX2b6ERtOCpXB0RvZMjCuoIkE39KvLu8nFNt9zN2PhLZtU87zM2dGBvgEtNn+9tMPBO82cBuPH05z1p7gNofcr5Wx6YZDj26ZSJyyr1qTgm3z/mqnM1P3nIbAxHmSwZhIMx0iiFIQTEz7YYVXQ5OyPnDnpveHQrMuBuQPYSG0NJZww95g/m2XTlgAu27Xbq/oCWA6Zd8huQKsvGV4iDd0q2GGJfQTXbNr5Y2VLw71oPtJ9ng0lGR5UsA7uRjCrhtCjbgqGww5F4ADtMD2cFStjamfMFw+78mb1GZUydbGe1CuIfzqtj2z46eLQiMBK1er6rg890Jz4sZnZvv7eOBvVg67677TELvyobv5UHqZpxJcPkgFYzXgg/ZOJzAe8h9NN0R2XrILRY7bbSJmzjvLeX5XypFq4IrlbUfW7YKI3BSXE6F++b5E="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 116,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 105,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.7-flash",
+              "responseId": "_TKDau2oAabU_uMP7OzgsQo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2197
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.204s

@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"That''s a fun question! Let me use the tool to give you an answer.\n\n","reasoning_content":"The user is asking me to call the \"best_country\" tool to determine whether the USA or Canada is better.\n\nThis tool only accepts \"USA\" or \"Canada\" as values for the \"country\" parameter. The user is asking me which country is best, but the tool requires me to specify the country. This is a subjective question, and there isn''t really an objectively \"best\" country between the USA and Canada.\n\nHowever, the user has explicitly asked me to call the tool and tell them which is best. I need to make a judgment call here. Since this is inherently subjective and depends on individual values and criteria, I should pick one. Both countries are great in different ways.\n\nSince the tool requires me to choose one, and this is a fun/hypothetical scenario, I''ll just pick one. I don''t want to overthink this. The user is simply asking for a tool call. I''ll go with \"Canada\" — well, actually, let me think about whether there''s any reason to pick one over the other.\n\nThere''s no objectively correct answer. Either choice is arbitrary. Let me just pick one. I''ll go with Canada. No, wait, let me not put too much thought into this. The point is to make the tool call. Either one will work.\n\nLet''s go with Canada.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_6432bb20dc724477b3e42f3d","index":0,"type":"function"}]}}],"created":1786984487,"id":"chatcmpl-2c0b6dec-5196-99b3-bfb1-6d4946a536da","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":325,"completion_tokens_details":{"reasoning_tokens":276,"text_tokens":325},"prompt_tokens":367,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":367},"total_tokens":692}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984487818"
+            Req-Cost-Time:
+                - "6916"
+            Resp-Start-Time:
+                - "1786984494734"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "6916"
+        status: 200 OK
+        code: 200
+        duration: 7.162s

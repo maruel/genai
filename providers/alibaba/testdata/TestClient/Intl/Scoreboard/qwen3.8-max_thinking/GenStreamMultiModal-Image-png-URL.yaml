@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 347
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","created":1786984553,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":"The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" user"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" is asking to identify"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" the fruit in"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" the image and answer"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" with just"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" one word. The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" image clearly"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" shows a banana."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" The answer should be"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":" one word: \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"reasoning_content":"Banana\".\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"content":"Banana"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","choices":[{"delta":{"content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1786984553,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1786984553,"id":"chatcmpl-6f92a37a-425a-9bd1-908d-f0fa1b641f28","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":42,"completion_tokens_details":{"reasoning_tokens":37,"text_tokens":5},"prompt_tokens":113,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":21},"total_tokens":155}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1786984552999"
+            Req-Cost-Time:
+                - "9691"
+            Resp-Start-Time:
+                - "1786984562690"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "9691"
+        status: 200 OK
+        code: 200
+        duration: 9.937s

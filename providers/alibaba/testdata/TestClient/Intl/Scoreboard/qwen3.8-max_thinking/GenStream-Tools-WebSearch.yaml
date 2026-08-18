@@ -1,0 +1,185 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 301
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","created":1786984508,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"We"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" need to answer user"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":": \"Search the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" web to tell who"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" is currently the Prime"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Minister of Canada."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Only search for one"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" result. Give only"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" the name with no"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" explanation.\"\n\nNeed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" use web search?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Need likely call search"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" tool."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" We have to only"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" search for one result"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":". Need"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" output only name."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Need"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" ensure current as of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" date"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" 202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"6? Current date"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" 2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"026-"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"06-1"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"5. Canada PM"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Mark Carney became"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" PM in March "},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"20"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"25? Let"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"'s verify. Justin"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Trudeau resigned, Mark"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Carney elected Liberal"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" leader and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" became PM March "},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"14, "},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"5. As of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" 20"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"26 likely still"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" PM? There was"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" "},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"2025"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" election? In April"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" 202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"5 Canadian federal election"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"? Actually 4"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"5th"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Canadian federal election was"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" held April 2"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"8,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" 202"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"5? Liberals won"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Mark Carney became"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" PM after election?"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Need search one result"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":". Let"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"'s call search with"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" query \"Prime Minister"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" of Canada\"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":" Then final only name"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"Mark Carney","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1786984508,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1786984508,"id":"chatcmpl-91a20779-d626-9417-b869-ed923f3f6ba7","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":224,"completion_tokens_details":{"reasoning_tokens":216,"text_tokens":224},"prompt_tokens":76,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":76},"total_tokens":300}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1786984508347"
+            Req-Cost-Time:
+                - "1381"
+            Resp-Start-Time:
+                - "1786984509728"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1380"
+        status: 200 OK
+        code: 200
+        duration: 1.627s

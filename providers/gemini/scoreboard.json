@@ -92,26 +92,6 @@
       }
     },
     {
-      "models": [
-        "imagen-4.0-ultra-generate-001"
-      ],
-      "sota": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {}
-    },
-    {
       "comments": "It supports inputs via URL but only when uploaded to its own storage.",
       "models": [
         "gemini-flash-latest"
@@ -192,26 +172,6 @@
         "maxTokens": true,
         "stopSequence": true
       }
-    },
-    {
-      "models": [
-        "imagen-4.0-generate-001"
-      ],
-      "good": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {}
     },
     {
       "models": [
@@ -296,30 +256,12 @@
     },
     {
       "models": [
-        "imagen-4.0-fast-generate-001"
-      ],
-      "cheap": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {}
-    },
-    {
-      "models": [
-        "gemini-3.1-flash-lite-image",
         "gemini-3.5-flash-lite",
         "gemini-3.6-flash",
-        "gemini-omni-flash-preview"
+        "gemini-3.7-flash",
+        "gemini-omni-flash-preview",
+        "gemini-robotics-er-2-preview",
+        "gemini-robotics-er-2-streaming-preview"
       ],
       "reason": true
     },
@@ -359,6 +301,7 @@
         "gemini-3.1-flash-image",
         "gemini-3.1-flash-image-preview",
         "gemini-3.1-flash-lite",
+        "gemini-3.1-flash-lite-image",
         "gemini-3.1-flash-lite-preview",
         "gemini-3.1-flash-live-preview",
         "gemini-3.1-flash-tts-preview",

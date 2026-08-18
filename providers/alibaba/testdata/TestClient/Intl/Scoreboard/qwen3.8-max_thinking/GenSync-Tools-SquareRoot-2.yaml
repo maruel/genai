@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 803
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_052dd62cd43c4a5fbe305a29","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_052dd62cd43c4a5fbe305a29"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"363.89","reasoning_content":"We need answer user: \"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\" We called tool, got 363.89. Need final only result. Ensure no explanation. Maybe just 363.89. Final only result.","role":"assistant"}}],"created":1786984472,"id":"chatcmpl-9d2c56b1-7ab4-95a5-bf1f-944c60ff83d6","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":84,"completion_tokens_details":{"reasoning_tokens":73,"text_tokens":84},"prompt_tokens":134,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":134},"total_tokens":218}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984472096"
+            Req-Cost-Time:
+                - "2557"
+            Resp-Start-Time:
+                - "1786984474653"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "2556"
+        status: 200 OK
+        code: 200
+        duration: 2.803s

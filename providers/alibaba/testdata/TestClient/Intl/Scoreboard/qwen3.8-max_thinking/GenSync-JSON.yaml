@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","reasoning_content":"We need to answer user''s request: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nNeed output only JSON. Need final. Ensure valid JSON: {\"is_fruit\": true}. No explanation.","role":"assistant"}}],"created":1786984465,"id":"chatcmpl-7f04395f-e9d9-91bd-a793-a0abf0ec83e6","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":73,"completion_tokens_details":{"reasoning_tokens":62,"text_tokens":73},"prompt_tokens":79,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":79},"total_tokens":152}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984465280"
+            Req-Cost-Time:
+                - "3161"
+            Resp-Start-Time:
+                - "1786984468441"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "3160"
+        status: 200 OK
+        code: 200
+        duration: 3.407s

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","reasoning_content":"The user is asking me to call the \"best_country\" tool to tell them which country is the best one, in the context of comparing Canada and the USA.\n\nThe tool has a required parameter \"country\" with enum values [\"Canada\", \"USA\"]. The user is asking which is best between Canada and the USA, but they haven''t definitively told me which one they think is best — they''re asking me to decide.\n\nThe tool requires me to specify a single country. The user says \"Call the tool best_country to tell me which country is the best one.\" I need to pick one. \n\nThis is a subjective question. However, the tool forces a choice between Canada and USA. I should make a choice. The user is leaning toward wondering if Canada is better. \n\nLet me just pick one. I''ll go with Canada since the user framed the question around Canada, but honestly either is valid. The tool requires a definitive answer. Let me call it with one of the values.\n\nI''ll go with Canada.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_0ffc24dd8b4046649c23072f","index":0,"type":"function"}]}}],"created":1786984273,"id":"chatcmpl-4797f2ec-bf3b-4279-94d9-fa860d41b238","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":241,"completion_tokens_details":{"reasoning_tokens":210,"text_tokens":241},"prompt_tokens":380,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":380},"total_tokens":621}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984272912"
+            Req-Cost-Time:
+                - "6088"
+            Resp-Start-Time:
+                - "1786984279000"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Accel-Buffering:
+                - "no"
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "6087"
+        status: 200 OK
+        code: 200
+        duration: 6.107s

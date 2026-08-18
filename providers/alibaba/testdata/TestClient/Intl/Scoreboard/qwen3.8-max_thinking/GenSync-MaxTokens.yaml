@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 170
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"content":"# The Theory of Relativity: A Detailed Explanation\n\nThe **theory of relativity","reasoning_content":"We need answer user''s request: \"Explain the theory of relativity in great details.\" Now produce final detailed explanation. Need likely cover special and general relativity, historical context, postulates, Lorentz transformations, simultaneity, time dilation, length contraction, spacetime, Minkowski, energy-momentum, equivalence principle, curvature, Einstein field equations, experimental evidence, applications, misconceptions. Need great detail but accessible. We can structure. Need be accurate. Let''s craft comprehensive. Include equations with explanations. Ensure not too overboard but detailed. Mention Newtonian background, Maxwell, Michelson-Morley maybe. Special relativity: postulates, Lorentz transform derivation maybe not full, consequences. Relativistic dynamics: four-vectors, invariant interval, proper time, four-velocity/momentum, E^2 = p^2c^2 + m^2c^4, massless photons. Causality light cones. General relativity: equivalence principle, gravity as geometry, metric, geodesics, curvature tensors maybe summarized, EFE, Schwarzschild solution, black holes, cosmology. Tests: perihelion Mercury, light deflection, gravitational redshift, Shapiro delay, GPS, gravitational waves, black hole imaging. Relation to quantum, limits. Maybe philosophical implications. Need final only. Use headings. Could include analogies. Need \"great details\". Let''s write long. Ensure formulas correct.\n\nDouble-check details:\nLorentz transformations: x'' = gamma (x - vt), t'' = gamma (t - vx/c^2). Inverse sign. gamma=1/sqrt(1-v^2/c^2). Time dilation: Δt = gamma Δτ for moving clock (observer sees moving clock run slow). Length contraction: L = L0/gamma along motion. Relativity of simultaneity: Δt'' = gamma(Δt - v Δx/c^2). If simultaneous in S Δt=0 separated by Δx, then Δt''=-gamma v Δx/c^2.\nVelocity addition: u''=(u-v)/(1-uv/c^2), inverse etc. Speed limit.\nSpacetime interval: s^2 = c^2 Δt^2 - Δx^2 - Δy^2 - Δz^2 (signature +---). Timelike, null, spacelike. Proper time dτ^2 = dt^2 - dx^2/c^2... \nFour-momentum p^μ = m dx^μ/dτ = (E/c, p). Invariant p_μ p^μ = m^2 c^2? Depending units: with x^μ=(ct, x), p^μ=(E/c, p), p^μ p_μ = (E/c)^2 - p^2 = m^2 c^2. Then E^2 = p^2 c^2 + m^2 c^4. Rest energy E0=mc^2. Kinetic K=(γ-1)mc^2.\nMass: clarify invariant rest mass vs relativistic mass optional. Use rest mass.\nAcceleration: proper acceleration; no object with mass reaches c due energy divergence.\nDoppler: maybe include.\n\nGR: equivalence principle: local inertial frames, free-fall. Metric g_μν, line element ds^2 = g_μν dx^μ dx^ν. Geodesic equation: d^2 x^μ/dτ^2 + Γ^μ_{αβ} dx^α/dτ dx^β/dτ=0. Curvature: Riemann tensor; Ricci tensor, scalar; Einstein tensor G_μν = R_μν - 1/2 R g_μν. EFE: G_μν + Λ g_μν = (8πG/c^4) T_μν. Interpret. Newtonian limit: g00 approx -(1+2Φ/c^2)? Depending sign. Could avoid sign.\nSchwarzschild metric: ds^2 = -(1 - 2GM/(rc^2)) c^2 dt^2 + (1 - 2GM/(rc^2))^{-1} dr^2 + r^2 dΩ^2 (signature -+++ maybe). Need consistent. If use +--- earlier, could present as alternative. Just state in common signature (-+++). Mention Schwarzschild radius r_s=2GM/c^2. Event horizon, black holes, singularities.\nGravitational time dilation: weak field Δf/f ≈ ΔΦ/c^2; near Schwarzschild dτ = dt sqrt(1-2GM/rc^2). Light bending angle ~4GM/(bc^2). Perihelion precession: Δφ ≈ 6πGM/(a(1-e^2)c^2) per orbit. Shapiro delay. Gravitational waves: ripples propagate at c, quadrupole, detected LIGO. Frame dragging, geodetic effect.\nCosmology: FLRW metric, expansion, Friedmann equations, Big Bang, dark energy Λ.\nPrinciple of general covariance.\nMach? no need.\nInclude limitations: not complete quantum gravity; singularities; at Planck scale.\n\nNeed ensure answer is not too terse. Include example: twin paradox explanation. Maybe mention not paradox due asymmetry/paths proper time. Bell spaceship? no.\n\nCould include \"relativity\" meaning: measurements depend on frame; invariants remain. Maybe start with summary.\n\nNeed maybe include mathematical depth but accessible. Let''s produce final with sections. Ensure no hallucination. Good.","role":"assistant"}}],"created":1786984435,"id":"chatcmpl-f8865b3f-894c-9065-a848-0c03af71ec65","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":1203,"completion_tokens_details":{"reasoning_tokens":1181,"text_tokens":1203},"prompt_tokens":59,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":59},"total_tokens":1262}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984435697"
+            Req-Cost-Time:
+                - "25517"
+            Resp-Start-Time:
+                - "1786984461214"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "25516"
+        status: 200 OK
+        code: 200
+        duration: 25.763s

@@ -506,53 +506,6 @@
       }
     },
     {
-      "comments": "Untested",
-      "models": [
-        "mistral-tiny-latest"
-      ],
-      "in": {
-        "document": {
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "models": [
         "mistral-vibe-cli-latest"
       ],
@@ -660,6 +613,9 @@
         "devstral-medium-latest",
         "devstral-small-2507",
         "devstral-small-latest",
+        "glm-5-2",
+        "labs-leanstral-1-5",
+        "labs-leanstral-1-5-1",
         "labs-leanstral-2603",
         "labs-mistral-small-creative",
         "magistral-medium-2509",
@@ -687,6 +643,9 @@
         "mistral-ocr-2505",
         "mistral-ocr-3",
         "mistral-ocr-3-0",
+        "mistral-ocr-4",
+        "mistral-ocr-4-0",
+        "mistral-ocr-4-1",
         "mistral-ocr-latest",
         "mistral-small-2501",
         "mistral-small-2506",
@@ -712,7 +671,8 @@
         "voxtral-mini-transcribe-realtime-2602",
         "voxtral-mini-tts-2603",
         "voxtral-mini-tts-latest",
-        "voxtral-small-2507"
+        "voxtral-small-2507",
+        "zai-glm-5-2"
       ]
     },
     {

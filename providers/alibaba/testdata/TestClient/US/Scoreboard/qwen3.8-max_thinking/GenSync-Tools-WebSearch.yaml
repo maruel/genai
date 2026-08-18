@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Mark Carney","reasoning_content":"We need answer user''s request. Need search web? User says search web to tell current PM Canada, only search for one result, give only name no explanation. We have browsing tool? Need call. Search one result. Need likely current date 2026? System current date 2026-06-22. Need know current Prime Minister of Canada. As of 2025 Mark Carney became PM March 2025. In 2026 likely still Mark Carney? Let''s verify with one search. Need call browser. Search query maybe \"Prime Minister of Canada\". Only one result. Then final only name.","role":"assistant"}}],"created":1786984287,"id":"chatcmpl-9bb16595-db39-4175-b5fd-bb17d9f57803","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":146,"completion_tokens_details":{"reasoning_tokens":138,"text_tokens":146},"prompt_tokens":89,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":89},"total_tokens":235}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984287726"
+            Req-Cost-Time:
+                - "4058"
+            Resp-Start-Time:
+                - "1786984291785"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Accel-Buffering:
+                - "no"
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "4058"
+        status: 200 OK
+        code: 200
+        duration: 4.078s

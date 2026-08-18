@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"I appreciate the question, but I can''t honestly call one country \"the best\" over the other, as this is a subjective matter that depends entirely on individual values and priorities. Both Canada and the USA have unique strengths:\n\n**Canada** is often praised for its universal healthcare, lower crime rates, and strong social safety nets.\n\n**The USA** is often noted for its economic dynamism, cultural influence, innovation, and diverse opportunities.\n\nWhich is \"better\" depends on what you value most — whether that''s healthcare access, economic opportunity, climate, culture, taxation, or many other factors.\n\nRather than using the tool to present a subjective opinion as a definitive answer, I''d encourage you to think about what matters most to *you* and weigh the pros and cons of each based on your own priorities. Is there a specific aspect of either country you''d like to explore?","reasoning_content":"The user is asking me to call the best_country tool to tell them which country is better - Canada or the USA. They''re asking me to make a subjective judgment about which country is \"better.\"\n\nHowever, I need to think about this carefully. The tool requires me to pick a country and declare it \"the best.\" This is a subjective opinion - there''s no objective answer to which country is \"better.\" Both countries have their strengths and weaknesses, and the answer depends entirely on individual preferences and values.\n\nThe user is explicitly asking me to call the tool. But I should be careful about presenting subjective opinions as objective facts. \n\nLet me think about how to handle this. The tool exists and the user wants me to call it. But making a definitive declaration that one country is \"the best\" would be presenting a subjective opinion as fact. I could either:\n\n1. Decline to call the tool and explain why I can''t make that judgment\n2. Call the tool with a caveat that it''s subjective\n3. Refuse and explain that both countries have merits\n\nActually, I should be straightforward. I don''t have a basis to declare one country objectively better than another. This is a matter of personal opinion and depends on what criteria you value. I should explain this rather than arbitrarily picking one.\n\nHowever, the user is directly asking me to use the tool. Let me reconsider - the tool is there and the user wants me to use it. But using it would mean endorsing one country as \"best\" which isn''t something I can do honestly.\n\nI think the best approach is to politely explain that I can''t objectively declare one country better than another, as it depends on individual preferences and priorities. I''ll note that both countries have their own strengths. I won''t call the tool because doing so would require me to state a subjective opinion as if it were a definitive answer.\n\nActually, let me reconsider once more. Some people might argue I should just pick one since the user asked. But that would be dishonest - I genuinely don''t have a basis to say one is objectively better. I''ll explain my reasoning politely.","role":"assistant"}}],"created":1786984474,"id":"chatcmpl-a3b591a3-cf70-9640-95f3-09ba9d35dbcb","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":622,"completion_tokens_details":{"reasoning_tokens":436,"text_tokens":622},"prompt_tokens":367,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":367},"total_tokens":989}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984474900"
+            Req-Cost-Time:
+                - "12672"
+            Resp-Start-Time:
+                - "1786984487572"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "12671"
+        status: 200 OK
+        code: 200
+        duration: 12.918s

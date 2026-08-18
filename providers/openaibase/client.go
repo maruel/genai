@@ -233,7 +233,7 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// Do not select the specialized models automatically.
-		if strings.Contains(m.ID, "audio") || strings.Contains(m.ID, "codex") || strings.Contains(m.ID, "deep") || strings.Contains(m.ID, "image") || strings.Contains(m.ID, "realtime") || strings.Contains(m.ID, "search") {
+		if strings.Contains(m.ID, "audio") || strings.Contains(m.ID, "codex") || strings.Contains(m.ID, "deep") || strings.Contains(m.ID, "image") || strings.Contains(m.ID, "realtime") || strings.Contains(m.ID, "search") || strings.Contains(m.ID, "transcribe") {
 			continue
 		}
 		// The o family of models is not usable with completion API.

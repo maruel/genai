@@ -25,6 +25,8 @@ func TestClient(t *testing.T) {
 			&Model{ID: "gpt-5.6-sol-2026-07-09", Created: base.TimeS(400)},
 			&Model{ID: "gpt-5.6-pro", Created: base.TimeS(400)},
 			&Model{ID: "gpt-5.6-codex", Created: base.TimeS(400)},
+			&Model{ID: "gpt-transcribe", Created: base.TimeS(500)},
+			&Model{ID: "gpt-live-transcribe", Created: base.TimeS(500)},
 		}
 		c := &Client{PreloadedModels: models}
 		data := []struct {

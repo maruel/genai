@@ -1,17 +1,17 @@
 # Scoreboard
 
-| Model                             | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| --------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| deepseek-ai/DeepSeek-V4-Pro🥇      | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4-Pro🥇      | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| Qwen/Qwen3.5-397B-A17B🥈           | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| Qwen/Qwen3.5-397B-A17B🥈           | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| meta-llama/Llama-3.1-8B-Instruct🥉 | Sync    | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| meta-llama/Llama-3.1-8B-Instruct🥉 | Stream  | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| Qwen/Qwen3-4B                     | Sync🧠   | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| Qwen/Qwen3-4B                     | Stream🧠 | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| meta-llama/Llama-3.3-70B-Instruct | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| meta-llama/Llama-3.3-70B-Instruct | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Model                                | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| deepseek-ai/DeepSeek-V4-Pro-0813🥇    | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4-Pro-0813🥇    | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| Qwen/Qwen3-Coder-480B-A35B-Instruct🥈 | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Qwen/Qwen3-Coder-480B-A35B-Instruct🥈 | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| meta-llama/Llama-3.1-8B-Instruct🥉    | Sync    | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| meta-llama/Llama-3.1-8B-Instruct🥉    | Stream  | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Qwen/Qwen3-4B                        | Sync🧠   | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| Qwen/Qwen3-4B                        | Stream🧠 | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| meta-llama/Llama-3.3-70B-Instruct    | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| meta-llama/Llama-3.3-70B-Instruct    | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

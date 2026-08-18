@@ -1,0 +1,99 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 598
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","created":1786984451,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":"We"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" need answer"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" user"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":": Use square_root"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" tool to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" calculate sqrt(1"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":"324"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":"13) and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" reply with only result"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":", no explanation."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" Need call tool."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" Then final only"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" result. Need maybe"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" exact decimal from tool"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":". Let's"},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"content":"","reasoning_content":" call."},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"tool_calls":[{"index":0,"id":"call_fda6dcf07e794c979290024b","type":"function","function":{"name":"square_root","arguments":""}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"{\"number\": "}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"1324"}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"13"}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"}"}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{"tool_calls":[{"function":{"arguments":""},"index":0,"id":"","type":"function"}],"content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","choices":[{"delta":{},"index":0,"finish_reason":"tool_calls","logprobs":null}],"created":1786984451,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1786984451,"id":"chatcmpl-2e0b8204-1b7f-9668-8792-7ee68cd3cb42","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":85,"completion_tokens_details":{"reasoning_tokens":49,"text_tokens":85},"prompt_tokens":365,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":365},"total_tokens":450}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1786984451548"
+            Req-Cost-Time:
+                - "668"
+            Resp-Start-Time:
+                - "1786984452217"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "667"
+        status: 200 OK
+        code: 200
+        duration: 914ms

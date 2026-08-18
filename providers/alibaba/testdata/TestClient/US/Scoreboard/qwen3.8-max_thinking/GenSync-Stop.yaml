@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 175
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Canada ","reasoning_content":"We need to respond to user: \"Talk about Canada in great details. Start with: Canada is\". User in English. Need final answer starting with \"Canada is\". Need likely detailed overview. Ensure no weird constraints? Need maybe long. Let''s craft comprehensive but not overly massive. Start exactly \"Canada is\". Include geography, history, government, provinces, economy, demographics, culture, foreign policy, environment, etc. Ensure factual. Current date 2026 but knowledge up to 2024-06. Could mention as of early 2020s. Avoid uncertain beyond cutoff. Need maybe not mention cutoff. Need answer only. Let''s compose detailed.","role":"assistant"}}],"created":1786984260,"id":"chatcmpl-4bf645b8-d9f2-4a3c-b92d-99c31343ebbb","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":149,"completion_tokens_details":{"reasoning_tokens":140,"text_tokens":149},"prompt_tokens":73,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":73},"total_tokens":222}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984260685"
+            Req-Cost-Time:
+                - "4106"
+            Resp-Start-Time:
+                - "1786984264791"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Accel-Buffering:
+                - "no"
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "4105"
+        status: 200 OK
+        code: 200
+        duration: 4.125s

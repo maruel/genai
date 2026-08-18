@@ -103,6 +103,11 @@ func TestClient(t *testing.T) {
 		for _, m := range mdls {
 			id := m.GetID()
 			if strings.HasPrefix(id, "gemini-") {
+				// Image generation models do not support the thinking budget.
+				if strings.HasSuffix(id, "-image") {
+					models = append(models, scoreboard.Model{Model: id})
+					continue
+				}
 				// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
 				models = append(models, scoreboard.Model{Model: id, Reason: true})
 				continue

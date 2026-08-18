@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 175
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Canada ","reasoning_content":"We need to respond to user: \"Talk about Canada in great details. Start with: Canada is\". Need final in English, starting exactly \"Canada is\". Great details. Need likely comprehensive overview. Ensure starts with Canada is. Could be long. Need maybe no markdown? It''s okay. Must start with Canada is. Let''s craft detailed essay covering geography, history, government, demographics, economy, culture, etc. Ensure first words \"Canada is\". No preface. Need maybe avoid bullet starting not Canada? It can start paragraph. Final only content.","role":"assistant"}}],"created":1786984461,"id":"chatcmpl-b5267797-24d8-9106-9a0c-3a0c50a2bc40","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":122,"completion_tokens_details":{"reasoning_tokens":113,"text_tokens":122},"prompt_tokens":60,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":60},"total_tokens":182}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984461462"
+            Req-Cost-Time:
+                - "3571"
+            Resp-Start-Time:
+                - "1786984465033"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "3571"
+        status: 200 OK
+        code: 200
+        duration: 3.818s

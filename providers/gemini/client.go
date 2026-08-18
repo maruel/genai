@@ -280,6 +280,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
 	// It's tricky because modalities are not directly returned by ListModels.
 	switch {
+	case strings.HasPrefix(model, "gemini-") && strings.HasSuffix(model, "-image"):
+		return genai.Modalities{genai.ModalityImage}, nil
 	case strings.HasPrefix(model, "gem"):
 		return genai.Modalities{genai.ModalityText}, nil
 	case strings.HasPrefix(model, "ima"):
@@ -454,8 +456,9 @@ func compareVersions(a, b string) int {
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
 //
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
+// Image generation models are the gemini-*-image models (a.k.a. Nano Banana).
+// The SOTA tier is the pro model, the good tier is the flash model, and the cheap tier is the flash-lite model.
+// Preview models are skipped. The newest version wins.
 func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
@@ -466,27 +469,29 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
-		if !slices.Contains(m.SupportedGenerationMethods, "predict") || strings.Contains(m.Name, "tts") {
+		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") {
 			continue
 		}
-		// TODO: Do numerical comparison? There are version numbers and tokens limits we can test against.
-		if name := strings.TrimPrefix(m.Name, "models/"); selectedModel == "" || name > selectedModel {
-			isFast := strings.Contains(name, "fast")
-			isUltra := strings.Contains(name, "ultra")
-			switch {
-			case cheap:
-				if isFast {
-					selectedModel = name
-				}
-			case good:
-				if !isFast && !isUltra {
-					selectedModel = name
-				}
-			default:
-				if isUltra {
-					selectedModel = name
-				}
+		name := strings.TrimPrefix(m.Name, "models/")
+		if !strings.HasSuffix(name, "-image") || strings.Contains(name, "-preview") {
+			continue
+		}
+		switch {
+		case cheap:
+			if !strings.Contains(name, "flash-lite") {
+				continue
 			}
+		case good:
+			if !strings.Contains(name, "flash") || strings.Contains(name, "flash-lite") {
+				continue
+			}
+		default:
+			if !strings.Contains(name, "pro") {
+				continue
+			}
+		}
+		if selectedModel == "" || compareVersions(name, selectedModel) > 0 {
+			selectedModel = name
 		}
 	}
 	if selectedModel == "" {

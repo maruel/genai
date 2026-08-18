@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 143
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","reasoning_content":"We need to respond to user: \"Say hello. Use only one word.\" Need only one word final. Need final one word: Hello. Ensure only one word.","role":"assistant"}}],"created":1786984182,"id":"chatcmpl-cbb5a44c-6c77-42ba-afc2-16432fb9305c","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":40,"completion_tokens_details":{"reasoning_tokens":34,"text_tokens":40},"prompt_tokens":69,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":69},"total_tokens":109}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1786984182545"
+            Req-Cost-Time:
+                - "1604"
+            Resp-Start-Time:
+                - "1786984184150"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Accel-Buffering:
+                - "no"
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1604"
+        status: 200 OK
+        code: 200
+        duration: 1.624s

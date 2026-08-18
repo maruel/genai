@@ -1,36 +1,28 @@
 # Scoreboard
 
-| Model                                     | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ----------------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| openai/gpt-oss-120b🥈                      | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-120b🥈                      | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-20b🥉                       | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-20b🥉                       | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| groq/compound                             | Sync🧠   | 💬    | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| groq/compound                             | Stream🧠 | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| groq/compound-mini                        | Sync🧠   | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| groq/compound-mini                        | Stream🧠 | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-safeguard-20b              | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-safeguard-20b              | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| qwen/qwen3-32b                            | Sync🧠   | 💬    | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| qwen/qwen3-32b                            | Stream🧠 | 💬    | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.1-8b-instant                      | Sync    | 💬    | 💬     | ✅     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.1-8b-instant                      | Stream  | 💬    | 💬     | ✅     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.3-70b-versatile                   | Sync    | 💬    | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.3-70b-versatile                   | Stream  | 💬    | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| meta-llama/llama-4-scout-17b-16e-instruct | Sync    | 💬📸  | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| meta-llama/llama-4-scout-17b-16e-instruct | Stream  | 💬📸  | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| allam-2-7b                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| canopylabs/orpheus-arabic-saudi           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| canopylabs/orpheus-v1-english             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/llama-guard-4-12b              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/llama-prompt-guard-2-22m       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/llama-prompt-guard-2-86m       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| playai-tts                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| playai-tts-arabic                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| qwen/qwen3.6-27b                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| whisper-large-v3                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| whisper-large-v3-turbo                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Model                               | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ----------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| openai/gpt-oss-120b🥈                | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-120b🥈                | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-20b🥉                 | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-20b🥉                 | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| groq/compound                       | Sync🧠   | 💬    | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
+| groq/compound                       | Stream🧠 | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
+| groq/compound-mini                  | Sync🧠   | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
+| groq/compound-mini                  | Stream🧠 | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-safeguard-20b        | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-safeguard-20b        | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| allam-2-7b                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| canopylabs/orpheus-arabic-saudi     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| canopylabs/orpheus-v1-english       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/llama-guard-4-12b        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/llama-prompt-guard-2-22m | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/llama-prompt-guard-2-86m | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| playai-tts                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| playai-tts-arabic                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen/qwen3.6-27b                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| whisper-large-v3                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| whisper-large-v3-turbo              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

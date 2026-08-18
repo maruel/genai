@@ -4,11 +4,21 @@
   "scenarios": [
     {
       "models": [
-        "qwen3.7-max"
+        "qwen3.8-max"
       ],
       "sota": true,
       "reason": true,
       "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -22,8 +32,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
         "webSearch": true,
         "json": true,
         "topLogprobs": true,
@@ -32,8 +42,8 @@
       },
       "GenStream": {
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
+        "tools": "flaky",
+        "webSearch": true,
         "json": true,
         "topLogprobs": true,
         "maxTokens": true,
@@ -112,9 +122,14 @@
       "comments": "Translation models.",
       "models": [
         "deepseek-v4-flash",
+        "deepseek-v4-flash-0731",
+        "deepseek-v4-flash-us",
         "deepseek-v4-pro",
+        "deepseek-v4-pro-0813",
+        "deepseek-v4-pro-us",
         "glm-5.1",
         "glm-5.2",
+        "glm-5.2-us",
         "kimi-k2.5",
         "kimi-k2.7-code",
         "pre-qwen-mt-lite",
@@ -122,6 +137,7 @@
         "qwen-mt-flash",
         "qwen-mt-lite",
         "qwen-mt-plus",
+        "qwen-plus-character",
         "qwen3-vl-flash-2026-01-22-us",
         "qwen3-vl-plus-2025-12-19",
         "qwen3-vl-plus-2025-12-19-us",
@@ -136,11 +152,17 @@
         "qwen3.6-35b-a3b",
         "qwen3.6-flash",
         "qwen3.6-flash-2026-04-16",
+        "qwen3.6-flash-us",
         "qwen3.6-plus-2026-04-02",
+        "qwen3.7-flash",
+        "qwen3.7-flash-2026-07-15",
+        "qwen3.7-max",
         "qwen3.7-max-2026-05-20",
         "qwen3.7-max-2026-06-08",
+        "qwen3.7-max-us",
         "qwen3.7-plus",
-        "qwen3.7-plus-2026-05-26"
+        "qwen3.7-plus-2026-05-26",
+        "qwen3.7-plus-us"
       ]
     },
     {

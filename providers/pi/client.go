@@ -437,10 +437,12 @@ func readResponseForCommand(sc *bufio.Scanner, cmd CommandType) (*Response, erro
 	return nil, fmt.Errorf("pi exited without %s response", cmd)
 }
 
-// readUntilDone reads events until agent_end, building a genai.Result.
+// readUntilDone reads events until the agent settles, building a genai.Result.
 // For each text or reasoning delta, onDelta is called; returning false stops early.
 func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reasoning string) bool) (genai.Result, error) {
 	var textBuf, thinkBuf strings.Builder
+	var finalAgentEnd []byte
+	var retryErr error
 	for sc.Scan() {
 		line := sc.Bytes()
 		var probe LineProbe
@@ -461,7 +463,41 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 			}
 
 		case EventAgentEnd:
-			return buildResult(line, textBuf.String(), thinkBuf.String())
+			var ev AgentEndEvent
+			if err := json.Unmarshal(line, &ev); err != nil {
+				return genai.Result{}, fmt.Errorf("unmarshal agent_end: %w", err)
+			}
+			if ev.WillRetry {
+				// The completed attempt failed and its partial content must not
+				// become part of the retried result.
+				textBuf.Reset()
+				thinkBuf.Reset()
+				finalAgentEnd = nil
+			} else {
+				finalAgentEnd = append(finalAgentEnd[:0], line...)
+			}
+
+		case EventAgentSettled:
+			if finalAgentEnd == nil {
+				continue
+			}
+			if retryErr != nil {
+				return genai.Result{}, retryErr
+			}
+			return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String())
+
+		case EventAutoRetryEnd:
+			var ev AutoRetryEndEvent
+			if err := json.Unmarshal(line, &ev); err != nil {
+				return genai.Result{}, fmt.Errorf("unmarshal auto_retry_end: %w", err)
+			}
+			if !ev.Success {
+				if ev.FinalError == "" {
+					retryErr = errors.New("pi auto retry failed")
+				} else {
+					retryErr = errors.New("pi auto retry failed: " + ev.FinalError)
+				}
+			}
 
 		case EventExtensionUI:
 			if err := handleExtensionUI(stdin, line); err != nil {
@@ -481,6 +517,14 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 	}
 	if err := sc.Err(); err != nil {
 		return genai.Result{}, fmt.Errorf("read stdout: %w", err)
+	}
+	if retryErr != nil {
+		return genai.Result{}, retryErr
+	}
+	// Pi v0.84.1 and earlier exit after agent_end without an agent_settled
+	// event. Preserve compatibility while newer Pi versions wait for settlement.
+	if finalAgentEnd != nil {
+		return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String())
 	}
 	return genai.Result{}, errors.New("pi exited without agent_end")
 }

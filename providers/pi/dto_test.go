@@ -54,6 +54,56 @@ func TestV0841DTOs(t *testing.T) {
 	})
 }
 
+func TestV0842DTOs(t *testing.T) {
+	t.Run("session lifecycle", func(t *testing.T) {
+		var end AgentEndEvent
+		if err := json.Unmarshal([]byte(`{"type":"agent_end","messages":[],"willRetry":true}`), &end); err != nil {
+			t.Fatal(err)
+		}
+		if !end.WillRetry {
+			t.Error("WillRetry = false, want true")
+		}
+
+		var retry AutoRetryStartEvent
+		if err := json.Unmarshal([]byte(`{"type":"auto_retry_start","attempt":1,"maxAttempts":3,"delayMs":2000,"errorMessage":"502"}`), &retry); err != nil {
+			t.Fatal(err)
+		}
+		if retry.DelayMS != 2000 || retry.MaxAttempts != 3 {
+			t.Errorf("retry = %#v, want delay 2000 and max attempts 3", retry)
+		}
+
+		var queue QueueUpdateEvent
+		if err := json.Unmarshal([]byte(`{"type":"queue_update","steering":["revise"],"followUp":["summarize"]}`), &queue); err != nil {
+			t.Fatal(err)
+		}
+		if len(queue.Steering) != 1 || len(queue.FollowUp) != 1 {
+			t.Errorf("queue = %#v, want one item in each queue", queue)
+		}
+	})
+
+	t.Run("compaction", func(t *testing.T) {
+		var event CompactionEndEvent
+		input := `{"type":"compaction_end","reason":"overflow","result":{"summary":"summary","firstKeptEntryId":"entry","tokensBefore":100,"estimatedTokensAfter":20,"usage":{"input":10,"output":2,"totalTokens":12},"details":{"source":"test"}},"aborted":false,"willRetry":true}`
+		if err := json.Unmarshal([]byte(input), &event); err != nil {
+			t.Fatal(err)
+		}
+		if event.Reason != CompactionOverflow || event.Result == nil || event.Result.EstimatedTokensAfter != 20 || event.Result.Usage == nil || event.Result.Usage.TotalTokens != 12 || !event.WillRetry {
+			t.Errorf("compaction event = %#v, want decoded compaction result", event)
+		}
+	})
+
+	t.Run("message update", func(t *testing.T) {
+		var event MessageUpdateDeltaEvent
+		input := `{"type":"message_update","usage":{"input":10,"output":2,"totalTokens":12},"assistantMessageEvent":{"type":"thinking_end","contentIndex":1,"content":"reasoning"}}`
+		if err := json.Unmarshal([]byte(input), &event); err != nil {
+			t.Fatal(err)
+		}
+		if event.Usage.TotalTokens != 12 || event.AssistantMessageEvent.ContentIndex != 1 || event.AssistantMessageEvent.Content != "reasoning" {
+			t.Errorf("message update = %#v, want usage and content metadata", event)
+		}
+	})
+}
+
 func TestToolExecResult(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		data := []struct {

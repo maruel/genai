@@ -7,6 +7,7 @@
 package pi
 
 import (
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -203,6 +204,64 @@ func TestClient(t *testing.T) {
 		}
 		if len(models) == 0 {
 			t.Fatal("expected at least one model")
+		}
+	})
+}
+
+func TestReadUntilDone(t *testing.T) {
+	t.Run("retries", func(t *testing.T) {
+		input := strings.Join([]string{
+			`{"type":"message_update","assistantMessageEvent":{"type":"text_delta","delta":"failed attempt"}}`,
+			`{"type":"agent_end","willRetry":true,"messages":[]}`,
+			`{"type":"message_update","assistantMessageEvent":{"type":"text_delta","delta":"retry succeeded"}}`,
+			`{"type":"agent_end","willRetry":false,"messages":[{"role":"assistant","usage":{"input":10,"output":2,"totalTokens":12},"stopReason":"stop"}]}`,
+			`{"type":"agent_settled"}`,
+		}, "\n")
+		var deltas strings.Builder
+		res, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(text, reasoning string) bool {
+			deltas.WriteString(text)
+			return true
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := deltas.String(); got != "failed attemptretry succeeded" {
+			t.Errorf("streamed text = %q, want both streamed attempts", got)
+		}
+		if len(res.Replies) != 1 || res.Replies[0].Text != "retry succeeded" {
+			t.Errorf("Replies = %#v, want retried response only", res.Replies)
+		}
+		if res.Usage.TotalTokens != 12 {
+			t.Errorf("TotalTokens = %d, want 12", res.Usage.TotalTokens)
+		}
+	})
+
+	t.Run("waits for settlement", func(t *testing.T) {
+		input := strings.Join([]string{
+			`{"type":"message_update","assistantMessageEvent":{"type":"text_delta","delta":"first"}}`,
+			`{"type":"agent_end","willRetry":false,"messages":[]}`,
+			`{"type":"message_update","assistantMessageEvent":{"type":"text_delta","delta":" follow-up"}}`,
+			`{"type":"agent_end","willRetry":false,"messages":[{"role":"assistant","usage":{"input":10,"output":3,"totalTokens":13},"stopReason":"stop"}]}`,
+			`{"type":"agent_settled"}`,
+		}, "\n")
+		res, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true })
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(res.Replies) != 1 || res.Replies[0].Text != "first follow-up" {
+			t.Errorf("Replies = %#v, want all settled output", res.Replies)
+		}
+	})
+
+	t.Run("terminal retry failure", func(t *testing.T) {
+		input := strings.Join([]string{
+			`{"type":"agent_end","willRetry":false,"messages":[]}`,
+			`{"type":"auto_retry_end","success":false,"attempt":3,"finalError":"502 status code"}`,
+			`{"type":"agent_settled"}`,
+		}, "\n")
+		_, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true })
+		if err == nil || err.Error() != "pi auto retry failed: 502 status code" {
+			t.Errorf("error = %v, want terminal retry failure", err)
 		}
 	})
 }

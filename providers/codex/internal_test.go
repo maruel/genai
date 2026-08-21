@@ -82,6 +82,113 @@ func TestParseOpts(t *testing.T) {
 	})
 }
 
+func TestJSONRPCMessage(t *testing.T) {
+	t.Run("notification", func(t *testing.T) {
+		var m JSONRPCMessage
+		if err := json.Unmarshal([]byte(`{"method":"thread/started","params":{},"emittedAtMs":1787231281472}`), &m); err != nil {
+			t.Fatal(err)
+		}
+		if m.EmittedAt != base.TimeMS(1787231281472) {
+			t.Errorf("EmittedAt = %v, want 1787231281472", m.EmittedAt)
+		}
+		if m.IsResponse() {
+			t.Error("IsResponse() = true, want false")
+		}
+	})
+	t.Run("response ID", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			data string
+			want string
+			ok   bool
+		}{
+			{name: "omitted", data: `{}`, want: "", ok: false},
+			{name: "null", data: `{"id":null}`, want: "null", ok: true},
+			{name: "value", data: `{"id":1}`, want: "1", ok: true},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				var m JSONRPCMessage
+				if err := json.Unmarshal([]byte(tc.data), &m); err != nil {
+					t.Fatal(err)
+				}
+				if string(m.ID) != tc.want || m.IsResponse() != tc.ok {
+					t.Errorf("message = %#v, want ID %q and IsResponse %t", m, tc.want, tc.ok)
+				}
+			})
+		}
+	})
+}
+
+func TestRecordedNotificationFields(t *testing.T) {
+	t.Run("thread", func(t *testing.T) {
+		var notification ThreadStartedNotification
+		input := `{"thread":{"id":"thread","forkedFromId":null,"parentThreadId":"parent","section":null,"sectionEnteredAt":null,"canAcceptDirectInput":true}}`
+		if err := json.Unmarshal([]byte(input), &notification); err != nil {
+			t.Fatal(err)
+		}
+		if !notification.Thread.CanAcceptDirectInput || notification.Thread.ForkedFromID != "" || notification.Thread.ParentThreadID != "parent" {
+			t.Errorf("Thread = %#v, want direct input and value optional IDs", notification.Thread)
+		}
+	})
+	t.Run("token usage", func(t *testing.T) {
+		var notification ThreadTokenUsageUpdatedNotification
+		input := `{"threadId":"thread","turnId":"turn","tokenUsage":{"total":{"cacheWriteInputTokens":1},"last":{"cacheWriteInputTokens":2}}}`
+		if err := json.Unmarshal([]byte(input), &notification); err != nil {
+			t.Fatal(err)
+		}
+		if notification.TokenUsage.Total.CacheWriteInputTokens != 1 || notification.TokenUsage.Last.CacheWriteInputTokens != 2 {
+			t.Errorf("TokenUsage = %#v, want cache-write token counts", notification.TokenUsage)
+		}
+	})
+	t.Run("MCP startup", func(t *testing.T) {
+		var notification McpServerStatusUpdatedNotification
+		input := `{"threadId":"thread","name":"node","status":"starting","error":null,"failureReason":null}`
+		if err := json.Unmarshal([]byte(input), &notification); err != nil {
+			t.Fatal(err)
+		}
+		if notification.ThreadID != "thread" || notification.Error != "" || notification.FailureReason != "" {
+			t.Errorf("notification = %#v, want empty optional errors", notification)
+		}
+	})
+	t.Run("rate limit", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			data string
+			want bool
+		}{
+			{name: "omitted", data: `{}`, want: false},
+			{name: "null", data: `{"spendControlReached":null}`, want: false},
+			{name: "value", data: `{"spendControlReached":true}`, want: true},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				var snapshot RateLimitSnapshot
+				if err := json.Unmarshal([]byte(tc.data), &snapshot); err != nil {
+					t.Fatal(err)
+				}
+				if snapshot.SpendControlReached != tc.want {
+					t.Errorf("SpendControlReached = %t, want %t", snapshot.SpendControlReached, tc.want)
+				}
+			})
+		}
+	})
+	t.Run("MCP startup value errors", func(t *testing.T) {
+		var notification McpServerStatusUpdatedNotification
+		input := `{"threadId":"thread","name":"node","status":"failed","error":"failed","failureReason":"missing binary"}`
+		if err := json.Unmarshal([]byte(input), &notification); err != nil {
+			t.Fatal(err)
+		}
+		if notification.Error != "failed" || notification.FailureReason != "missing binary" {
+			t.Errorf("notification = %#v, want value optional errors", notification)
+		}
+	})
+	t.Run("skills changed", func(t *testing.T) {
+		var notification SkillsChangedNotification
+		if err := json.Unmarshal([]byte(`{}`), &notification); err != nil {
+			t.Fatal(err)
+		}
+	})
+}
+
 func TestNotificationTimeMS(t *testing.T) {
 	t.Run("item_started", func(t *testing.T) {
 		const input = `{"item":{"id":"u1","type":"userMessage"},"threadId":"t1","turnId":"turn_1","startedAtMs":1780832660165}`

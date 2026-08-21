@@ -606,18 +606,19 @@ const (
 )
 
 // JSONRPCMessage is the JSON-RPC 2.0 envelope for codex app-server messages.
-// Notifications have Method set and ID nil. Responses have ID set.
+// Notifications have Method set. Responses have a non-empty ID.
 type JSONRPCMessage struct {
-	JSONRPC string           `json:"jsonrpc"`
-	Method  Method           `json:"method,omitzero"`
-	ID      *json.RawMessage `json:"id,omitzero"`
-	Params  json.RawMessage  `json:"params,omitzero"`
-	Result  json.RawMessage  `json:"result,omitzero"`
-	Error   *JSONRPCError    `json:"error,omitzero"`
+	JSONRPC   string          `json:"jsonrpc"`
+	EmittedAt base.TimeMS     `json:"emittedAtMs,omitzero"`
+	Method    Method          `json:"method,omitzero"`
+	ID        json.RawMessage `json:"id,omitzero"`
+	Params    json.RawMessage `json:"params,omitzero"`
+	Result    json.RawMessage `json:"result,omitzero"`
+	Error     *JSONRPCError   `json:"error,omitzero"`
 }
 
 // IsResponse returns true if this is a response (has an ID).
-func (m *JSONRPCMessage) IsResponse() bool { return m.ID != nil }
+func (m *JSONRPCMessage) IsResponse() bool { return len(m.ID) != 0 }
 
 // JSONRPCError is a JSON-RPC 2.0 error object.
 type JSONRPCError struct {
@@ -926,29 +927,32 @@ type ThreadStartedNotification struct {
 
 // Thread describes a thread in thread/started params.
 type Thread struct {
-	ID             string          `json:"id"`
-	SessionID      string          `json:"sessionId,omitzero"`
-	ForkedFromID   *string         `json:"forkedFromId,omitzero"`
-	ParentThreadID *string         `json:"parentThreadId,omitzero"`
-	CLIVersion     string          `json:"cliVersion,omitzero"`
-	CreatedAt      base.TimeS      `json:"createdAt,omitzero"`
-	CWD            string          `json:"cwd,omitzero"`
-	Ephemeral      bool            `json:"ephemeral,omitzero"`
-	GitInfo        *GitInfo        `json:"gitInfo,omitzero"`
-	ModelProvider  string          `json:"modelProvider,omitzero"`
-	Path           *string         `json:"path,omitzero"`
-	Preview        string          `json:"preview,omitzero"`
-	Source         json.RawMessage `json:"source,omitzero"`
-	ThreadSource   ThreadSource    `json:"threadSource,omitzero"`
-	UpdatedAt      base.TimeS      `json:"updatedAt,omitzero"`
-	RecencyAt      base.TimeS      `json:"recencyAt,omitzero"`
-	Status         ThreadStatus    `json:"status,omitzero"`
-	Name           string          `json:"name,omitzero"`
-	Extra          json.RawMessage `json:"extra,omitzero"`
-	HistoryMode    string          `json:"historyMode,omitzero"`
-	AgentNickname  string          `json:"agentNickname,omitzero"`
-	AgentRole      string          `json:"agentRole,omitzero"`
-	Turns          []Turn          `json:"turns,omitzero"`
+	ID                   string          `json:"id"`
+	SessionID            string          `json:"sessionId,omitzero"`
+	ForkedFromID         string          `json:"forkedFromId,omitzero"`
+	ParentThreadID       string          `json:"parentThreadId,omitzero"`
+	CLIVersion           string          `json:"cliVersion,omitzero"`
+	CreatedAt            base.TimeS      `json:"createdAt,omitzero"`
+	CWD                  string          `json:"cwd,omitzero"`
+	Ephemeral            bool            `json:"ephemeral,omitzero"`
+	GitInfo              *GitInfo        `json:"gitInfo,omitzero"`
+	ModelProvider        string          `json:"modelProvider,omitzero"`
+	Path                 string          `json:"path,omitzero"`
+	Preview              string          `json:"preview,omitzero"`
+	Source               json.RawMessage `json:"source,omitzero"`
+	ThreadSource         ThreadSource    `json:"threadSource,omitzero"`
+	UpdatedAt            base.TimeS      `json:"updatedAt,omitzero"`
+	RecencyAt            base.TimeS      `json:"recencyAt,omitzero"`
+	Status               ThreadStatus    `json:"status,omitzero"`
+	Name                 string          `json:"name,omitzero"`
+	Extra                json.RawMessage `json:"extra,omitzero"`
+	Section              json.RawMessage `json:"section,omitzero"`
+	SectionEnteredAt     json.RawMessage `json:"sectionEnteredAt,omitzero"`
+	CanAcceptDirectInput bool            `json:"canAcceptDirectInput,omitzero"`
+	HistoryMode          string          `json:"historyMode,omitzero"`
+	AgentNickname        string          `json:"agentNickname,omitzero"`
+	AgentRole            string          `json:"agentRole,omitzero"`
+	Turns                []Turn          `json:"turns,omitzero"`
 }
 
 // GitInfo is optional Git metadata captured for a thread.
@@ -1377,6 +1381,7 @@ type TokenUsageBreakdown struct {
 	TotalTokens           int64 `json:"totalTokens"`
 	InputTokens           int64 `json:"inputTokens"`
 	CachedInputTokens     int64 `json:"cachedInputTokens"`
+	CacheWriteInputTokens int64 `json:"cacheWriteInputTokens"`
 	OutputTokens          int64 `json:"outputTokens"`
 	ReasoningOutputTokens int64 `json:"reasoningOutputTokens"`
 }
@@ -1723,6 +1728,7 @@ type RateLimitSnapshot struct {
 	Secondary            *RateLimitWindow           `json:"secondary,omitzero"`
 	Credits              *CreditsSnapshot           `json:"credits,omitzero"`
 	IndividualLimit      *SpendControlLimitSnapshot `json:"individualLimit,omitzero"`
+	SpendControlReached  bool                       `json:"spendControlReached,omitzero"`
 	PlanType             PlanType                   `json:"planType,omitzero"`
 	RateLimitReachedType RateLimitReachedType       `json:"rateLimitReachedType,omitzero"`
 }
@@ -1919,7 +1925,12 @@ type McpServerOauthLoginCompletedNotification struct {
 
 // McpServerStatusUpdatedNotification holds params for mcpServer/startupStatus/updated.
 type McpServerStatusUpdatedNotification struct {
-	Name   string                `json:"name"`
-	Status McpServerStartupState `json:"status"`
-	Error  *string               `json:"error,omitzero"`
+	ThreadID      string                `json:"threadId"`
+	Name          string                `json:"name"`
+	Status        McpServerStartupState `json:"status"`
+	Error         string                `json:"error,omitzero"`
+	FailureReason string                `json:"failureReason,omitzero"`
 }
+
+// SkillsChangedNotification holds params for skills/changed notifications.
+type SkillsChangedNotification struct{}

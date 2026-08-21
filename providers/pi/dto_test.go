@@ -81,6 +81,17 @@ func TestV0842DTOs(t *testing.T) {
 		}
 	})
 
+	t.Run("entry appended", func(t *testing.T) {
+		var event EntryAppendedEvent
+		input := `{"type":"entry_appended","entry":{"type":"custom","customType":"web-search-results","data":{"id":"search"},"id":"entry","parentId":"parent","timestamp":"2026-08-20T19:40:10.328Z"}}`
+		if err := json.Unmarshal([]byte(input), &event); err != nil {
+			t.Fatal(err)
+		}
+		if event.Type != EventEntryAppended || event.Entry.CustomType != "web-search-results" || string(event.Entry.Data) != `{"id":"search"}` {
+			t.Errorf("entry appended = %#v, want custom web-search entry", event)
+		}
+	})
+
 	t.Run("compaction", func(t *testing.T) {
 		var event CompactionEndEvent
 		input := `{"type":"compaction_end","reason":"overflow","result":{"summary":"summary","firstKeptEntryId":"entry","tokensBefore":100,"estimatedTokensAfter":20,"usage":{"input":10,"output":2,"totalTokens":12},"details":{"source":"test"}},"aborted":false,"willRetry":true}`
@@ -100,6 +111,16 @@ func TestV0842DTOs(t *testing.T) {
 		}
 		if event.Usage.TotalTokens != 12 || event.AssistantMessageEvent.ContentIndex != 1 || event.AssistantMessageEvent.Content != "reasoning" {
 			t.Errorf("message update = %#v, want usage and content metadata", event)
+		}
+	})
+
+	t.Run("custom message", func(t *testing.T) {
+		var message AgentMessage
+		if err := json.Unmarshal([]byte(`{"role":"custom","customType":"subagent-notify","content":"completed","display":false}`), &message); err != nil {
+			t.Fatal(err)
+		}
+		if message.CustomType != "subagent-notify" || message.Display {
+			t.Errorf("message = %#v, want custom type with display=false", message)
 		}
 	})
 }
@@ -164,13 +185,16 @@ func TestToolExecResult(t *testing.T) {
 	})
 
 	t.Run("unmarshal_end_event", func(t *testing.T) {
-		raw := `{"type":"tool_execution_end","toolCallId":"call_1","toolName":"read","result":{"content":[{"type":"text","text":"# README\nHello"}]}}`
+		raw := `{"type":"tool_execution_end","toolCallId":"call_1","toolName":"read","result":{"content":[{"type":"text","text":"# README\nHello"}],"isError":true,"details":{"source":"tool"}},"isError":true}`
 		var ev ToolExecEndEvent
 		if err := json.Unmarshal([]byte(raw), &ev); err != nil {
 			t.Fatal(err)
 		}
 		if got := ev.Result.Text(); got != "# README\nHello" {
 			t.Errorf("Result.Text() = %q", got)
+		}
+		if !ev.IsError || !ev.Result.IsError || string(ev.Result.Details) != `{"source":"tool"}` {
+			t.Errorf("result = %#v, want error details", ev.Result)
 		}
 	})
 }

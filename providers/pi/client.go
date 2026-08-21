@@ -63,6 +63,11 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+// commandDiscriminator is a command without parameters or a correlation ID.
+type commandDiscriminator struct {
+	Type EventType `json:"type"`
+}
+
 // cmdExecutor is the production executor backed by exec.Cmd.
 type cmdExecutor struct{ bin string }
 
@@ -215,7 +220,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	}()
 
 	sc := newScanner(stdout)
-	if err := msgutil.WriteNDJSON(stdin, GetModelsCmd{Type: CmdGetModels}); err != nil {
+	if err := msgutil.WriteNDJSON(stdin, commandDiscriminator{Type: CmdGetModels}); err != nil {
 		return nil, fmt.Errorf("write get_available_models: %w", err)
 	}
 	resp, err := readResponseForCommand(sc, CmdGetModels)
@@ -410,7 +415,7 @@ func msgToPromptParts(msg *genai.Message) (string, []ImageContent, error) {
 }
 
 // readResponseForCommand reads lines until a response for the given command is found.
-func readResponseForCommand(sc *bufio.Scanner, cmd CommandType) (*Response, error) {
+func readResponseForCommand(sc *bufio.Scanner, cmd EventType) (*Response, error) {
 	for sc.Scan() {
 		var probe LineProbe
 		if json.Unmarshal(sc.Bytes(), &probe) != nil {

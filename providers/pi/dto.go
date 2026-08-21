@@ -30,62 +30,60 @@ import (
 // Shared types: enums, routing probes.
 // ============================================================
 
-// CommandType is the type discriminator for commands sent to Pi on stdin.
-type CommandType string
+// EventType is Pi's wire type discriminator for events emitted on stdout and
+// commands sent on stdin.
+type EventType string
 
 // Command type constants.
 const (
 	// Prompting.
-	CmdPrompt   CommandType = "prompt"
-	CmdSteer    CommandType = "steer"
-	CmdFollowUp CommandType = "follow_up"
-	CmdAbort    CommandType = "abort"
+	CmdPrompt   EventType = "prompt"
+	CmdSteer    EventType = "steer"
+	CmdFollowUp EventType = "follow_up"
+	CmdAbort    EventType = "abort"
 
 	// Session.
-	CmdNewSession           CommandType = "new_session"
-	CmdGetState             CommandType = "get_state"
-	CmdGetSessionStats      CommandType = "get_session_stats"
-	CmdExportHTML           CommandType = "export_html"
-	CmdSwitchSession        CommandType = "switch_session"
-	CmdFork                 CommandType = "fork"
-	CmdClone                CommandType = "clone"
-	CmdGetForkMessages      CommandType = "get_fork_messages"
-	CmdGetEntries           CommandType = "get_entries"
-	CmdGetTree              CommandType = "get_tree"
-	CmdGetLastAssistantText CommandType = "get_last_assistant_text"
-	CmdSetSessionName       CommandType = "set_session_name"
-	CmdGetMessages          CommandType = "get_messages"
-	CmdGetCommands          CommandType = "get_commands"
+	CmdNewSession           EventType = "new_session"
+	CmdGetState             EventType = "get_state"
+	CmdGetSessionStats      EventType = "get_session_stats"
+	CmdExportHTML           EventType = "export_html"
+	CmdSwitchSession        EventType = "switch_session"
+	CmdFork                 EventType = "fork"
+	CmdClone                EventType = "clone"
+	CmdGetForkMessages      EventType = "get_fork_messages"
+	CmdGetEntries           EventType = "get_entries"
+	CmdGetTree              EventType = "get_tree"
+	CmdGetLastAssistantText EventType = "get_last_assistant_text"
+	CmdSetSessionName       EventType = "set_session_name"
+	CmdGetMessages          EventType = "get_messages"
+	CmdGetCommands          EventType = "get_commands"
 
 	// Model.
-	CmdSetModel   CommandType = "set_model"
-	CmdCycleModel CommandType = "cycle_model"
-	CmdGetModels  CommandType = "get_available_models"
+	CmdSetModel   EventType = "set_model"
+	CmdCycleModel EventType = "cycle_model"
+	CmdGetModels  EventType = "get_available_models"
 
 	// Thinking.
-	CmdSetThinking       CommandType = "set_thinking_level"
-	CmdCycleThinking     CommandType = "cycle_thinking_level"
-	CmdGetThinkingLevels CommandType = "get_available_thinking_levels"
+	CmdSetThinking       EventType = "set_thinking_level"
+	CmdCycleThinking     EventType = "cycle_thinking_level"
+	CmdGetThinkingLevels EventType = "get_available_thinking_levels"
 
 	// Queue modes.
-	CmdSetSteeringMode CommandType = "set_steering_mode"
-	CmdSetFollowUpMode CommandType = "set_follow_up_mode"
+	CmdSetSteeringMode EventType = "set_steering_mode"
+	CmdSetFollowUpMode EventType = "set_follow_up_mode"
 
 	// Compaction.
-	CmdCompact           CommandType = "compact"
-	CmdSetAutoCompaction CommandType = "set_auto_compaction"
+	CmdCompact           EventType = "compact"
+	CmdSetAutoCompaction EventType = "set_auto_compaction"
 
 	// Retry.
-	CmdSetAutoRetry CommandType = "set_auto_retry"
-	CmdAbortRetry   CommandType = "abort_retry"
+	CmdSetAutoRetry EventType = "set_auto_retry"
+	CmdAbortRetry   EventType = "abort_retry"
 
 	// Bash.
-	CmdBash      CommandType = "bash"
-	CmdAbortBash CommandType = "abort_bash"
+	CmdBash      EventType = "bash"
+	CmdAbortBash EventType = "abort_bash"
 )
-
-// EventType is the type discriminator for events emitted by Pi on stdout.
-type EventType string
 
 // Event type constants.
 const (
@@ -109,6 +107,7 @@ const (
 	EventSummarizationRetryAttemptStart EventType = "summarization_retry_attempt_start"
 	EventSummarizationRetryFinished     EventType = "summarization_retry_finished"
 	EventThinkingLevelChanged           EventType = "thinking_level_changed"
+	EventEntryAppended                  EventType = "entry_appended"
 	EventResponse                       EventType = "response"
 	EventExtensionUI                    EventType = "extension_ui_request"
 )
@@ -251,10 +250,10 @@ const ExtensionUIResponseType = "extension_ui_response"
 
 // LineProbe extracts routing fields from a JSONL line to determine its kind.
 type LineProbe struct {
-	Type    EventType   `json:"type"`
-	Command CommandType `json:"command,omitzero"`
-	ID      string      `json:"id,omitzero"`
-	Success *bool       `json:"success,omitzero"`
+	Type    EventType `json:"type"`
+	Command EventType `json:"command,omitzero"`
+	ID      string    `json:"id,omitzero"`
+	Success *bool     `json:"success,omitzero"`
 }
 
 // ============================================================
@@ -266,7 +265,7 @@ type LineProbe struct {
 // PromptCmd sends a user message.
 type PromptCmd struct {
 	ID                string            `json:"id,omitzero"`
-	Type              CommandType       `json:"type"`
+	Type              EventType         `json:"type"`
 	Message           string            `json:"message"`
 	Images            []ImageContent    `json:"images,omitzero"`
 	StreamingBehavior StreamingBehavior `json:"streamingBehavior,omitzero"`
@@ -282,7 +281,7 @@ type ImageContent struct {
 // SteerCmd sends a steering message mid-run.
 type SteerCmd struct {
 	ID      string         `json:"id,omitzero"`
-	Type    CommandType    `json:"type"`
+	Type    EventType      `json:"type"`
 	Message string         `json:"message"`
 	Images  []ImageContent `json:"images,omitzero"`
 }
@@ -290,110 +289,110 @@ type SteerCmd struct {
 // FollowUpCmd sends a follow-up message after the agent finishes.
 type FollowUpCmd struct {
 	ID      string         `json:"id,omitzero"`
-	Type    CommandType    `json:"type"`
+	Type    EventType      `json:"type"`
 	Message string         `json:"message"`
 	Images  []ImageContent `json:"images,omitzero"`
 }
 
 // AbortCmd cancels the current generation.
 type AbortCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ---------- Session ----------
 
 // NewSessionCmd starts a fresh session.
 type NewSessionCmd struct {
-	ID            string      `json:"id,omitzero"`
-	Type          CommandType `json:"type"`
-	ParentSession string      `json:"parentSession,omitzero"`
+	ID            string    `json:"id,omitzero"`
+	Type          EventType `json:"type"`
+	ParentSession string    `json:"parentSession,omitzero"`
 }
 
 // GetStateCmd requests current session state.
 type GetStateCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // GetSessionStatsCmd requests session statistics.
 type GetSessionStatsCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ExportHTMLCmd exports the session as HTML.
 type ExportHTMLCmd struct {
-	ID         string      `json:"id,omitzero"`
-	Type       CommandType `json:"type"`
-	OutputPath string      `json:"outputPath,omitzero"`
+	ID         string    `json:"id,omitzero"`
+	Type       EventType `json:"type"`
+	OutputPath string    `json:"outputPath,omitzero"`
 }
 
 // SwitchSessionCmd switches to a different session.
 type SwitchSessionCmd struct {
-	ID          string      `json:"id,omitzero"`
-	Type        CommandType `json:"type"`
-	SessionPath string      `json:"sessionPath"`
+	ID          string    `json:"id,omitzero"`
+	Type        EventType `json:"type"`
+	SessionPath string    `json:"sessionPath"`
 }
 
 // ForkCmd forks the session at a specific entry.
 type ForkCmd struct {
-	ID      string      `json:"id,omitzero"`
-	Type    CommandType `json:"type"`
-	EntryID string      `json:"entryId"`
+	ID      string    `json:"id,omitzero"`
+	Type    EventType `json:"type"`
+	EntryID string    `json:"entryId"`
 }
 
 // GetForkMessagesCmd gets messages available for forking.
 type GetForkMessagesCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // GetLastAssistantTextCmd gets the last assistant message text.
 type GetLastAssistantTextCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // SetSessionNameCmd sets the session name.
 type SetSessionNameCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
-	Name string      `json:"name"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
+	Name string    `json:"name"`
 }
 
 // GetMessagesCmd gets all messages in the session.
 type GetMessagesCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // GetCommandsCmd gets available slash commands.
 type GetCommandsCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ---------- Model ----------
 
 // SetModelCmd switches the active model.
 type SetModelCmd struct {
-	ID       string      `json:"id,omitzero"`
-	Type     CommandType `json:"type"`
-	Provider string      `json:"provider"`
-	ModelID  string      `json:"modelId"`
+	ID       string    `json:"id,omitzero"`
+	Type     EventType `json:"type"`
+	Provider string    `json:"provider"`
+	ModelID  string    `json:"modelId"`
 }
 
 // CycleModelCmd cycles to the next model.
 type CycleModelCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // GetModelsCmd requests the list of available models.
 type GetModelsCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ---------- Thinking ----------
@@ -401,102 +400,102 @@ type GetModelsCmd struct {
 // SetThinkingCmd sets the thinking level.
 type SetThinkingCmd struct {
 	ID    string        `json:"id,omitzero"`
-	Type  CommandType   `json:"type"`
+	Type  EventType     `json:"type"`
 	Level ThinkingLevel `json:"level"`
 }
 
 // CycleThinkingCmd cycles to the next thinking level.
 type CycleThinkingCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // GetThinkingLevelsCmd requests the thinking levels available for the active model.
 type GetThinkingLevelsCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ---------- Queue modes ----------
 
 // SetSteeringModeCmd sets the steering queue mode.
 type SetSteeringModeCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
-	Mode QueueMode   `json:"mode"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
+	Mode QueueMode `json:"mode"`
 }
 
 // SetFollowUpModeCmd sets the follow-up queue mode.
 type SetFollowUpModeCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
-	Mode QueueMode   `json:"mode"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
+	Mode QueueMode `json:"mode"`
 }
 
 // ---------- Compaction ----------
 
 // CompactCmd triggers compaction with optional custom instructions.
 type CompactCmd struct {
-	ID                 string      `json:"id,omitzero"`
-	Type               CommandType `json:"type"`
-	CustomInstructions string      `json:"customInstructions,omitzero"`
+	ID                 string    `json:"id,omitzero"`
+	Type               EventType `json:"type"`
+	CustomInstructions string    `json:"customInstructions,omitzero"`
 }
 
 // SetAutoCompactionCmd enables or disables automatic compaction.
 type SetAutoCompactionCmd struct {
-	ID      string      `json:"id,omitzero"`
-	Type    CommandType `json:"type"`
-	Enabled bool        `json:"enabled"`
+	ID      string    `json:"id,omitzero"`
+	Type    EventType `json:"type"`
+	Enabled bool      `json:"enabled"`
 }
 
 // ---------- Retry ----------
 
 // SetAutoRetryCmd enables or disables automatic retry.
 type SetAutoRetryCmd struct {
-	ID      string      `json:"id,omitzero"`
-	Type    CommandType `json:"type"`
-	Enabled bool        `json:"enabled"`
+	ID      string    `json:"id,omitzero"`
+	Type    EventType `json:"type"`
+	Enabled bool      `json:"enabled"`
 }
 
 // AbortRetryCmd aborts the current retry.
 type AbortRetryCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ---------- Bash ----------
 
 // BashCmd executes a bash command.
 type BashCmd struct {
-	ID                 string      `json:"id,omitzero"`
-	Type               CommandType `json:"type"`
-	Command            string      `json:"command"`
-	ExcludeFromContext bool        `json:"excludeFromContext,omitzero"`
+	ID                 string    `json:"id,omitzero"`
+	Type               EventType `json:"type"`
+	Command            string    `json:"command"`
+	ExcludeFromContext bool      `json:"excludeFromContext,omitzero"`
 }
 
 // CloneCmd clones the current session.
 type CloneCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // GetEntriesCmd gets session entries, optionally after the given entry ID.
 type GetEntriesCmd struct {
-	ID    string      `json:"id,omitzero"`
-	Type  CommandType `json:"type"`
-	Since string      `json:"since,omitzero"`
+	ID    string    `json:"id,omitzero"`
+	Type  EventType `json:"type"`
+	Since string    `json:"since,omitzero"`
 }
 
 // GetTreeCmd gets the session-entry tree.
 type GetTreeCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // AbortBashCmd aborts the current bash command.
 type AbortBashCmd struct {
-	ID   string      `json:"id,omitzero"`
-	Type CommandType `json:"type"`
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
 }
 
 // ---------- Extension UI responses (stdin) ----------
@@ -532,7 +531,7 @@ type ExtensionUIResponseCancelled struct {
 type Response struct {
 	ID      string          `json:"id,omitzero"`
 	Type    EventType       `json:"type"`
-	Command CommandType     `json:"command"`
+	Command EventType       `json:"command"`
 	Success bool            `json:"success"`
 	Error   string          `json:"error,omitzero"`
 	Data    json.RawMessage `json:"data,omitzero"`
@@ -1001,7 +1000,9 @@ type SubagentToolChainStep struct {
 //
 // It contains an array of content blocks with the tool output.
 type ToolExecResult struct {
-	Content ContentBlocks `json:"content"`
+	Content ContentBlocks   `json:"content"`
+	IsError bool            `json:"isError,omitzero"`
+	Details json.RawMessage `json:"details,omitzero"`
 }
 
 // Text extracts and concatenates all text content from the result blocks.
@@ -1063,6 +1064,8 @@ type AgentMessage struct {
 	Details        json.RawMessage   `json:"details,omitzero"`
 	AddedToolNames []string          `json:"addedToolNames,omitzero"`
 	IsError        bool              `json:"isError,omitzero"`
+	CustomType     string            `json:"customType,omitzero"`
+	Display        bool              `json:"display,omitzero"`
 }
 
 // DeferredHandle identifies a provider-managed deferred response.
@@ -1086,6 +1089,12 @@ type MessageUsage struct {
 	Reasoning    int64     `json:"reasoning,omitzero"`
 	TotalTokens  int64     `json:"totalTokens"`
 	Cost         UsageCost `json:"cost,omitzero"`
+}
+
+// EntryAppendedEvent reports an entry added to Pi's session history.
+type EntryAppendedEvent struct {
+	Type  EventType    `json:"type"`
+	Entry SessionEntry `json:"entry"`
 }
 
 // SessionEntry is a session-history entry. Details are protocol-defined
@@ -1150,6 +1159,8 @@ type ContentBlock struct {
 	ID               string                     `json:"id,omitzero"`
 	Name             string                     `json:"name,omitzero"`
 	Arguments        map[string]json.RawMessage `json:"arguments,omitzero"`
+	PartialArgs      string                     `json:"partialArgs,omitzero"`
+	StreamIndex      int                        `json:"streamIndex,omitzero"`
 	ThoughtSignature string                     `json:"thoughtSignature,omitzero"`
 	// image block
 	Data     string `json:"data,omitzero"`

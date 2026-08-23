@@ -931,6 +931,7 @@ type Thread struct {
 	SessionID            string          `json:"sessionId,omitzero"`
 	ForkedFromID         string          `json:"forkedFromId,omitzero"`
 	ParentThreadID       string          `json:"parentThreadId,omitzero"`
+	ProjectID            string          `json:"projectId,omitzero"`
 	CLIVersion           string          `json:"cliVersion,omitzero"`
 	CreatedAt            base.TimeS      `json:"createdAt,omitzero"`
 	CWD                  string          `json:"cwd,omitzero"`
@@ -1623,7 +1624,26 @@ type ModelInfo struct {
 	AdditionalSpeedTiers      []string             `json:"additionalSpeedTiers,omitzero"`
 	ServiceTiers              []ModelServiceTier   `json:"serviceTiers,omitzero"`
 	DefaultServiceTier        string               `json:"defaultServiceTier,omitzero"`
+	ModelSpecialty            ModelSpecialty       `json:"modelSpecialty,omitzero"`
+	MultiAgentVersion         MultiAgentVersion    `json:"multiAgentVersion,omitzero"`
 }
+
+// ModelSpecialty identifies a model optimized for a specialized workload.
+type ModelSpecialty string
+
+// Model specialty values.
+const (
+	ModelSpecialtyCyber ModelSpecialty = "cyber"
+)
+
+// MultiAgentVersion identifies the multi-agent protocol supported by a model.
+type MultiAgentVersion string
+
+// Multi-agent protocol versions.
+const (
+	MultiAgentVersionV1 MultiAgentVersion = "v1"
+	MultiAgentVersionV2 MultiAgentVersion = "v2"
+)
 
 // ModelAvailabilityNux holds a new-user-experience announcement for a model.
 type ModelAvailabilityNux struct {
@@ -1632,10 +1652,11 @@ type ModelAvailabilityNux struct {
 
 // ModelUpgradeInfo holds upgrade migration information for a model.
 type ModelUpgradeInfo struct {
-	MigrationMarkdown string  `json:"migrationMarkdown,omitzero"`
-	Model             string  `json:"model,omitzero"`
-	ModelLink         *string `json:"modelLink,omitzero"`
-	UpgradeCopy       *string `json:"upgradeCopy,omitzero"`
+	MigrationMarkdown string     `json:"migrationMarkdown,omitzero"`
+	Model             string     `json:"model,omitzero"`
+	ModelLink         string     `json:"modelLink,omitzero"`
+	UpgradeCopy       string     `json:"upgradeCopy,omitzero"`
+	RetirementAt      base.TimeS `json:"retirementAt,omitzero"`
 }
 
 // ModelReasoningOpt describes a supported reasoning effort level.

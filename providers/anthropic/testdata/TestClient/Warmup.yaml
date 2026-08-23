@@ -31,7 +31,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a2c9f64b1d90a2d6-YUL
+                - a2fa8030484588df-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
@@ -39,7 +39,7 @@ interactions:
             Server:
                 - cloudflare
             Server-Timing:
-                - x-originResponse;dur=170
+                - x-originResponse;dur=147
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
             Vary:
@@ -48,4 +48,4 @@ interactions:
                 - none
         status: 200 OK
         code: 200
-        duration: 241ms
+        duration: 223ms

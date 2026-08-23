@@ -19,14 +19,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"object":"list","data":[{"id":"zai-glm-4.7","object":"model","created":0,"owned_by":"Cerebras"},{"id":"gemma-4-31b","object":"model","created":0,"owned_by":"Cerebras"},{"id":"gpt-oss-120b","object":"model","created":0,"owned_by":"Cerebras"}]}'
+        body: '{"object":"list","data":[{"id":"gpt-oss-120b","object":"model","created":0,"owned_by":"Cerebras"},{"id":"gemma-4-31b","object":"model","created":0,"owned_by":"Cerebras"}]}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a2c9f64b2f74530b-YUL
+                - a2fa80618f02f867-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -35,11 +35,11 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=5,cfOrigin;dur=67
+                - cfEdge;dur=23,cfOrigin;dur=13
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 122ms
+        duration: 94ms

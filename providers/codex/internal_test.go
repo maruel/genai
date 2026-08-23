@@ -7,9 +7,12 @@
 package codex
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -80,6 +83,37 @@ func TestParseOpts(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestHandshake(t *testing.T) {
+	responses := strings.Join([]string{
+		`{"id":1,"result":{}}`,
+		`{"id":2,"result":{"data":[]}}`,
+		`{"id":3,"result":{"thread":{"id":"thread"}}}`,
+	}, "\n")
+	var out bytes.Buffer
+	threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", "write commit messages")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if threadID != "thread" {
+		t.Errorf("thread ID = %q, want thread", threadID)
+	}
+	lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+	if len(lines) != 4 {
+		t.Fatalf("wrote %d messages, want 4", len(lines))
+	}
+	var req JSONRPCRequest
+	if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
+		t.Fatal(err)
+	}
+	var params ThreadStartParams
+	if err := json.Unmarshal(req.Params, &params); err != nil {
+		t.Fatal(err)
+	}
+	if params.DeveloperInstructions != "write commit messages" {
+		t.Errorf("developer instructions = %q, want write commit messages", params.DeveloperInstructions)
+	}
 }
 
 func TestJSONRPCMessage(t *testing.T) {

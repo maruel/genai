@@ -325,7 +325,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
 	}
-	_, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
@@ -352,7 +352,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}()
 
 	sc := newScanner(stdout)
-	newThreadID, err := handshake(stdin, sc, c.model, threadID)
+	newThreadID, err := handshake(stdin, sc, c.model, threadID, co.systemPrompt)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -369,7 +369,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	_, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -397,7 +397,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		}()
 
 		sc := newScanner(stdout)
-		newThreadID, hsErr := handshake(stdin, sc, c.model, threadID)
+		newThreadID, hsErr := handshake(stdin, sc, c.model, threadID, co.systemPrompt)
 		if hsErr != nil {
 			finalErr = hsErr
 			return
@@ -542,7 +542,7 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) 
 
 // handshake performs the JSON-RPC initialize → initialized → model/list →
 // thread/start (or thread/resume) sequence. Returns the thread ID.
-func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (string, error) {
+func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPrompt string) (string, error) {
 	if _, err := initAndListModels(stdin, sc); err != nil {
 		return "", err
 	}
@@ -550,7 +550,10 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 	// Send thread/start or thread/resume.
 	var threadReq JSONRPCRequest
 	if resumeThreadID != "" {
-		params, err := marshalJSONRaw(ThreadResumeParams{ThreadID: resumeThreadID})
+		params, err := marshalJSONRaw(ThreadResumeParams{
+			ThreadID:              resumeThreadID,
+			DeveloperInstructions: systemPrompt,
+		})
 		if err != nil {
 			return "", fmt.Errorf("marshal thread/resume params: %w", err)
 		}
@@ -561,7 +564,10 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 			Params:  params,
 		}
 	} else {
-		params, err := marshalJSONRaw(ThreadStartParams{Model: mdl})
+		params, err := marshalJSONRaw(ThreadStartParams{
+			Model:                 mdl,
+			DeveloperInstructions: systemPrompt,
+		})
 		if err != nil {
 			return "", fmt.Errorf("marshal thread/start params: %w", err)
 		}

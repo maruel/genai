@@ -17,13 +17,13 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 156
-        body: '{"object":"list","data":[{"id":"deepseek-v4-flash","object":"model","owned_by":"deepseek"},{"id":"deepseek-v4-pro","object":"model","owned_by":"deepseek"}]}'
+        content_length: 233
+        body: '{"object":"list","data":[{"id":"deepseek-v4-flash","object":"model","owned_by":"deepseek"},{"id":"deepseek-v4-pro","object":"model","owned_by":"deepseek"},{"id":"deepseek-v4-flash-vision-exp","object":"model","owned_by":"deepseek"}]}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Content-Length:
-                - "156"
+                - "233"
             Content-Type:
                 - application/json
             Server:
@@ -33,15 +33,15 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 a3644f9cdea7a7e9efd1f62c9d972932.cloudfront.net (CloudFront)
+                - 1.1 f0f239c25f8c987fec1b377e81642e4e.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - 4zz1O8hbpw6AVweShrn9g-fCMzVQ4LFhv3fPOr2ODa-rps1EM1RgjQ==
+                - ZOtINl-vJ3hRePNAfz8qjAgf9Qkljw73ZVsT7zXnpCt26Yn4JvyujQ==
             X-Amz-Cf-Pop:
-                - YUL62-P2
+                - YUL62-P4
             X-Cache:
                 - Miss from cloudfront
             X-Content-Type-Options:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 358ms
+        duration: 381ms

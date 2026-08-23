@@ -16,9 +16,10 @@
 
 Before submitting changes, run:
 
-1. `gofmt -w -s .`
-2. `go test ./...`
-3. `golangci-lint run ./...`
+1. `go generate ./...`
+2. `gofmt -w -s .`
+3. `go test ./...`
+4. `golangci-lint run ./...`
 
 ## Directory Structure
 

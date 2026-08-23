@@ -14,6 +14,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
@@ -61,7 +62,7 @@ func getClientInner(t *testing.T, opts *providerOptions, fn func(http.RoundTripp
 
 func TestImageModelsResponse(t *testing.T) {
 	t.Run("metadata fields", func(t *testing.T) {
-		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000}]`
+		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000,"min_duration":6,"max_duration":120,"default_duration":6,"duration_step":6}]`
 		var resp pollinations.ImageModelsResponse
 		dec := json.NewDecoder(strings.NewReader(body))
 		dec.DisallowUnknownFields()
@@ -73,6 +74,18 @@ func TestImageModelsResponse(t *testing.T) {
 		}
 		if resp[0].AddedDate != 1768608000000 {
 			t.Fatalf("AddedDate = %d, want 1768608000000", resp[0].AddedDate)
+		}
+		if got := resp[0].MaxDuration.AsDuration(); got != 2*time.Minute {
+			t.Fatalf("MaxDuration = %s, want 2m", got)
+		}
+		if got := resp[0].MinDuration.AsDuration(); got != 6*time.Second {
+			t.Fatalf("MinDuration = %s, want 6s", got)
+		}
+		if got := resp[0].DefaultDuration.AsDuration(); got != 6*time.Second {
+			t.Fatalf("DefaultDuration = %s, want 6s", got)
+		}
+		if got := resp[0].DurationStep.AsDuration(); got != 6*time.Second {
+			t.Fatalf("DurationStep = %s, want 6s", got)
 		}
 	})
 }

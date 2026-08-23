@@ -717,11 +717,11 @@ type ImageModel struct {
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
 	Title               string              `json:"title"`
 	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
-	// Video generation duration limits, in seconds. Only set on video models.
-	MaxDuration     int64 `json:"max_duration,omitzero"`
-	MinDuration     int64 `json:"min_duration,omitzero"`
-	DefaultDuration int64 `json:"default_duration,omitzero"`
-	DurationStep    int64 `json:"duration_step,omitzero"`
+	// Video generation duration limits. Only set on video models.
+	MaxDuration     base.DurationS `json:"max_duration,omitzero"`
+	MinDuration     base.DurationS `json:"min_duration,omitzero"`
+	DefaultDuration base.DurationS `json:"default_duration,omitzero"`
+	DurationStep    base.DurationS `json:"duration_step,omitzero"`
 	Pricing         struct {
 		AudioInputPrice        base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice       base.Float64 `json:"audio_output_price,omitzero"`

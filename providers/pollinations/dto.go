@@ -711,13 +711,18 @@ type ImageModel struct {
 	Name                string              `json:"name"`
 	OutputModalities    []string            `json:"output_modalities"`
 	PaidOnly            bool                `json:"paid_only"`
-	PerUserRPM          int64               `json:"per_user_rpm,omitzero"`
+	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
 	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
 	Title               string              `json:"title"`
 	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
-	Pricing             struct {
+	// Video generation duration limits, in seconds. Only set on video models.
+	MaxDuration     int64 `json:"max_duration,omitzero"`
+	MinDuration     int64 `json:"min_duration,omitzero"`
+	DefaultDuration int64 `json:"default_duration,omitzero"`
+	DurationStep    int64 `json:"duration_step,omitzero"`
+	Pricing         struct {
 		AudioInputPrice        base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice       base.Float64 `json:"audio_output_price,omitzero"`
 		AudioTokenPrice        base.Float64 `json:"audio_token_price,omitzero"`
@@ -809,7 +814,7 @@ type TextModel struct {
 	OriginalName        string              `json:"original_name"`
 	OutputModalities    []string            `json:"output_modalities"` // "text", "image", "audio"
 	PaidOnly            bool                `json:"paid_only"`
-	PerUserRPM          int64               `json:"per_user_rpm,omitzero"`
+	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
 	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`

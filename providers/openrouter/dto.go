@@ -858,16 +858,17 @@ type ModelPricing struct {
 
 // ModelPricingOverride contains a conditional override of base model pricing.
 type ModelPricingOverride struct {
-	Audio             string  `json:"audio,omitzero"`
-	Completion        string  `json:"completion,omitzero"`
-	InputAudioCache   string  `json:"input_audio_cache,omitzero"`
-	InputCacheRead    string  `json:"input_cache_read,omitzero"`
-	InputCacheWrite   string  `json:"input_cache_write,omitzero"`
-	InputCacheWrite1h string  `json:"input_cache_write_1h,omitzero"`
-	MinPromptTokens   float64 `json:"min_prompt_tokens,omitzero"`
-	Prompt            string  `json:"prompt,omitzero"`
-	UTCEnd            float64 `json:"utc_end,omitzero"`
-	UTCStart          float64 `json:"utc_start,omitzero"`
+	Audio             string   `json:"audio,omitzero"`
+	Completion        string   `json:"completion,omitzero"`
+	InputAudioCache   string   `json:"input_audio_cache,omitzero"`
+	InputCacheRead    string   `json:"input_cache_read,omitzero"`
+	InputCacheWrite   string   `json:"input_cache_write,omitzero"`
+	InputCacheWrite1h string   `json:"input_cache_write_1h,omitzero"`
+	MinPromptTokens   float64  `json:"min_prompt_tokens,omitzero"`
+	Prompt            string   `json:"prompt,omitzero"`
+	UtcDays           []string `json:"utc_days,omitzero"`
+	UTCEnd            float64  `json:"utc_end,omitzero"`
+	UTCStart          float64  `json:"utc_start,omitzero"`
 }
 
 // ModelsLinks contains pagination links for a model listing.

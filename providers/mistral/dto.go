@@ -569,6 +569,7 @@ type Model struct {
 	Deprecation                 string   `json:"deprecation"`
 	DeprecationReplacementModel string   `json:"deprecation_replacement_model,omitzero"`
 	DefaultModelTemperature     float64  `json:"default_model_temperature"`
+	BillingModelName            string   `json:"billing_model_name,omitzero"`
 	Type                        string   `json:"type"` // "base"
 }
 

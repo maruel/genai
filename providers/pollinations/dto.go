@@ -694,6 +694,23 @@ type VariantPrice struct {
 	PromptVideoTokens      base.Float64 `json:"promptVideoTokens,omitzero"`
 }
 
+// PendingChange represents a pending change to a model's configuration.
+type PendingChange struct {
+	EffectiveAt string                    `json:"effective_at,omitzero"`
+	PaidOnly    bool                      `json:"paid_only,omitzero"`
+	Pricing     ModelPendingChangePricing `json:"pricing,omitzero"`
+}
+
+// ModelPendingChangePricing represents the pricing part of a pending change.
+type ModelPendingChangePricing struct {
+	CompletionReasoningTokens string `json:"completionReasoningTokens,omitzero"`
+	CompletionTextTokens      string `json:"completionTextTokens,omitzero"`
+	Currency                  string `json:"currency,omitzero"`
+	PromptCachedTokens        string `json:"promptCachedTokens,omitzero"`
+	PromptImageTokens         string `json:"promptImageTokens,omitzero"`
+	PromptTextTokens          string `json:"promptTextTokens,omitzero"`
+}
+
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
 	AddedDate           int64               `json:"added_date,omitzero"`
@@ -710,6 +727,7 @@ type ImageModel struct {
 	MaxReferenceImages  int64               `json:"max_reference_images,omitzero"`
 	Name                string              `json:"name"`
 	OutputModalities    []string            `json:"output_modalities"`
+	PendingChange       *PendingChange      `json:"pending_change,omitzero"`
 	PaidOnly            bool                `json:"paid_only"`
 	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
@@ -813,6 +831,7 @@ type TextModel struct {
 	Name                string              `json:"name"`
 	OriginalName        string              `json:"original_name"`
 	OutputModalities    []string            `json:"output_modalities"` // "text", "image", "audio"
+	PendingChange       *PendingChange      `json:"pending_change,omitzero"`
 	PaidOnly            bool                `json:"paid_only"`
 	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`

@@ -357,13 +357,16 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("task_started_subagent_metadata", func(t *testing.T) {
-		const data = `{"type":"system","subtype":"task_started","task_id":"task-1","tool_use_id":"toolu_1","description":"Find harness/model selection logic","subagent_type":"Explore","task_type":"local_agent","prompt":"Find harness/model selection logic","uuid":"u1","session_id":"s1"}`
+		const data = `{"type":"system","subtype":"task_started","task_id":"task-1","tool_use_id":"toolu_1","description":"Find harness/model selection logic","is_backgrounded":true,"subagent_type":"Explore","task_type":"local_agent","prompt":"Find harness/model selection logic","uuid":"u1","session_id":"s1"}`
 		var got OutputSystemMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
 		if got.SubagentType != "Explore" {
 			t.Errorf("SubagentType = %q, want Explore", got.SubagentType)
+		}
+		if !got.IsBackgrounded {
+			t.Error("IsBackgrounded = false, want true")
 		}
 	})
 	t.Run("status_compact_result", func(t *testing.T) {
@@ -781,7 +784,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("result_latency_fields", func(t *testing.T) {
-		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","fast_mode_disabled_reason":"sdk_opt_in_required","modelUsage":{"claude-sonnet-5":{"canonicalModel":"claude-sonnet-5","provider":"firstParty"}}}`
+		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","fast_mode_disabled_reason":"sdk_opt_in_required","modelUsage":{"claude-sonnet-5":{"thinkingTokens":3970,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"subagent_stats":{"spawned":3,"requested":{"background":1,"foreground":1,"unset":1},"started_in_background":1,"max_depth":2,"spawned_by_subagents":1,"completed":2,"failed":1,"killed":{"parent":1,"user":0,"system":0},"refused":{"depth_limit":1,"concurrency_limit":0,"budget":0},"by_type":{"Explore":3}},"queued_turn_count":2}`
 		var got OutputResultMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -805,12 +808,18 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("FastModeDisabledReason = %q, want %q", got.FastModeDisabledReason, FastModeDisabledSDKOptInRequired)
 		}
 		mu := got.ModelUsage["claude-sonnet-5"]
-		if mu.CanonicalModel != "claude-sonnet-5" || mu.Provider != "firstParty" {
+		if mu.ThinkingTokens != 3970 || mu.CanonicalModel != "claude-sonnet-5" || mu.Provider != "firstParty" || mu.CostBasis != "list" {
 			t.Errorf("ModelUsage = %+v", mu)
+		}
+		if got.SubagentStats.Spawned != 3 || got.SubagentStats.Requested.Background != 1 || got.SubagentStats.ByType["Explore"] != 3 {
+			t.Errorf("SubagentStats = %+v", got.SubagentStats)
+		}
+		if got.QueuedTurnCount != 2 {
+			t.Errorf("QueuedTurnCount = %d, want 2", got.QueuedTurnCount)
 		}
 	})
 	t.Run("rate_limit_2_1_214_fields", func(t *testing.T) {
-		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"overagePeriodMonthly":{"utilization":0.7},"overagePeriodChannel":{"utilization":0.6},"errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
+		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"overagePeriodMonthly":{"utilization":0.7},"overagePeriodChannel":{"utilization":0.6},"unifiedWindows":{"five_hour":{"utilization":0.1,"resetsAt":1788359400},"seven_day":{"utilization":0.2,"resetsAt":1788490800}},"errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
 		var got OutputRateLimitEventMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -828,6 +837,9 @@ func TestOutputMessages(t *testing.T) {
 		if i.ErrorCode != RateLimitErrorCreditsRequired || !i.CanUserPurchaseCredits || !i.HasChargeableSavedPaymentMethod {
 			t.Errorf("credit fields = %+v", i)
 		}
+		if i.UnifiedWindows[RateLimitFiveHour].Utilization != 0.1 || i.UnifiedWindows[RateLimitSevenDay].ResetsAt != 1788490800 {
+			t.Errorf("unified windows = %+v", i.UnifiedWindows)
+		}
 	})
 	t.Run("result_origin", func(t *testing.T) {
 		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"num_turns":1,"result":"ok","session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","origin":{"kind":"task-notification"}}`
@@ -840,7 +852,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("tool_progress", func(t *testing.T) {
-		const data = `{"type":"tool_progress","tool_use_id":"toolu_1","tool_name":"Bash","parent_tool_use_id":null,"elapsed_time_seconds":1.5,"uuid":"u1","session_id":"s1"}`
+		const data = `{"type":"tool_progress","tool_use_id":"toolu_1","tool_name":"Bash","parent_tool_use_id":null,"elapsed_time_seconds":1.5,"heartbeat":true,"uuid":"u1","session_id":"s1"}`
 		var got OutputToolProgressMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -850,6 +862,9 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.ElapsedTime.AsDuration() != 1500*time.Millisecond {
 			t.Errorf("ElapsedTime.AsDuration() = %v", got.ElapsedTime.AsDuration())
+		}
+		if !got.Heartbeat {
+			t.Error("Heartbeat = false, want true")
 		}
 	})
 	t.Run("tool_result_string_content", func(t *testing.T) {

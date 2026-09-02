@@ -23,9 +23,9 @@ Pi uses a custom JSONL protocol (not JSON-RPC 2.0). `type` field dispatch, optio
 
 ## Upstream Source
 
-The DTOs in `dto.go` are defined against **Pi Coding Agent v0.84.2**
-([release notes](https://pi.dev/news/releases/0.84.2)), tag
-[`v0.84.2`](https://github.com/earendil-works/pi/tree/v0.84.2).
+The DTOs in `dto.go` are defined against **Pi Coding Agent v0.84.4**
+([release notes](https://pi.dev/news/releases/0.84.4)), tag
+[`v0.84.4`](https://github.com/earendil-works/pi/tree/v0.84.4).
 
 Type definitions live in https://github.com/earendil-works/pi:
 
@@ -46,4 +46,4 @@ npm package:
 - https://www.npmjs.com/package/@earendil-works/pi-coding-agent
 
 Documentation:
-- [RPC protocol for v0.84.2](https://github.com/earendil-works/pi/blob/v0.84.2/packages/coding-agent/docs/rpc.md)
+- [RPC protocol for v0.84.4](https://github.com/earendil-works/pi/blob/v0.84.4/packages/coding-agent/docs/rpc.md)

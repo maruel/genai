@@ -9,6 +9,8 @@ package pi
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/maruel/genai/internal"
 )
 
 func TestModelThinkingLevelMap(t *testing.T) {
@@ -121,6 +123,19 @@ func TestV0842DTOs(t *testing.T) {
 		}
 		if message.CustomType != "subagent-notify" || message.Display {
 			t.Errorf("message = %#v, want custom type with display=false", message)
+		}
+	})
+}
+
+func TestV0844DTOs(t *testing.T) {
+	t.Run("tool call start", func(t *testing.T) {
+		var event MessageUpdateEvent
+		input := `{"type":"message_update","usage":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":0},"assistantMessageEvent":{"type":"toolcall_start","contentIndex":1,"id":"call_1","toolName":"read"}}`
+		if err := internal.UnmarshalJSON([]byte(input), &event); err != nil {
+			t.Fatal(err)
+		}
+		if event.AssistantMessageEvent.ID != "call_1" || event.AssistantMessageEvent.ToolName != "read" {
+			t.Errorf("message update = %#v, want tool call ID and name", event)
 		}
 	})
 }

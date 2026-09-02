@@ -906,6 +906,8 @@ type MessageUpdateDeltaEvent struct {
 type MessageUpdateDelta struct {
 	Type         DeltaType              `json:"type"`
 	ContentIndex int                    `json:"contentIndex,omitzero"`
+	ID           string                 `json:"id,omitzero"`
+	ToolName     string                 `json:"toolName,omitzero"`
 	Delta        string                 `json:"delta,omitzero"`
 	Content      string                 `json:"content,omitzero"`
 	Reason       StopReason             `json:"reason,omitzero"`
@@ -1196,6 +1198,8 @@ func (c *ContentBlocks) UnmarshalJSON(data []byte) error {
 type AssistantMessageEvent struct {
 	Type         DeltaType     `json:"type"`
 	ContentIndex int           `json:"contentIndex,omitzero"`
+	ID           string        `json:"id,omitzero"`
+	ToolName     string        `json:"toolName,omitzero"`
 	Delta        string        `json:"delta,omitzero"`
 	Content      string        `json:"content,omitzero"`
 	Reason       StopReason    `json:"reason,omitzero"`

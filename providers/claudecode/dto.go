@@ -711,17 +711,18 @@ type OutputSystemMsg struct {
 	Timestamp string        `json:"timestamp,omitempty"`
 
 	// task_started / task_progress / task_notification fields.
-	Description  string        `json:"description,omitempty"`
-	SubagentType string        `json:"subagent_type,omitempty"`
-	TaskID       string        `json:"task_id,omitempty"`
-	TaskType     string        `json:"task_type,omitempty"`
-	ToolUseID    string        `json:"tool_use_id,omitempty"`
-	LastToolName string        `json:"last_tool_name,omitempty"`
-	Status       string        `json:"status,omitempty"`
-	UsageExtra   TaskUsageWire `json:"usage,omitzero"`
-	OutputFile   string        `json:"output_file,omitempty"`
-	Summary      string        `json:"summary,omitempty"`
-	Tasks        []TaskWire    `json:"tasks,omitempty"`
+	Description    string        `json:"description,omitempty"`
+	SubagentType   string        `json:"subagent_type,omitempty"`
+	TaskID         string        `json:"task_id,omitempty"`
+	TaskType       string        `json:"task_type,omitempty"`
+	ToolUseID      string        `json:"tool_use_id,omitempty"`
+	IsBackgrounded bool          `json:"is_backgrounded,omitempty"`
+	LastToolName   string        `json:"last_tool_name,omitempty"`
+	Status         string        `json:"status,omitempty"`
+	UsageExtra     TaskUsageWire `json:"usage,omitzero"`
+	OutputFile     string        `json:"output_file,omitempty"`
+	Summary        string        `json:"summary,omitempty"`
+	Tasks          []TaskWire    `json:"tasks,omitempty"`
 
 	// api_retry fields.
 	Attempt     int             `json:"attempt,omitempty"`
@@ -1150,6 +1151,8 @@ type OutputResultMsg struct {
 	APIErrorStatus         int                        `json:"api_error_status,omitzero"`
 	DeferredToolUse        DeferredToolUse            `json:"deferred_tool_use,omitzero"`
 	Origin                 ResultOrigin               `json:"origin,omitzero"`
+	SubagentStats          SubagentStats              `json:"subagent_stats,omitzero"`
+	QueuedTurnCount        int                        `json:"queued_turn_count,omitempty"`
 }
 
 // AsError returns the Claude Code error represented by m, if any.
@@ -1182,10 +1185,46 @@ func (r ResultOrigin) IsZero() bool {
 	return r.Kind == ""
 }
 
+// SubagentStats summarizes subagent activity during a result.
+type SubagentStats struct {
+	Spawned             int                    `json:"spawned"`
+	Requested           SubagentRequestedStats `json:"requested"`
+	StartedInBackground int                    `json:"started_in_background"`
+	MaxDepth            int                    `json:"max_depth"`
+	SpawnedBySubagents  int                    `json:"spawned_by_subagents"`
+	Completed           int                    `json:"completed"`
+	Failed              int                    `json:"failed"`
+	Killed              SubagentKilledStats    `json:"killed"`
+	Refused             SubagentRefusedStats   `json:"refused"`
+	ByType              map[string]int         `json:"by_type"`
+}
+
+// SubagentRequestedStats counts requested subagents by execution mode.
+type SubagentRequestedStats struct {
+	Background int `json:"background"`
+	Foreground int `json:"foreground"`
+	Unset      int `json:"unset"`
+}
+
+// SubagentKilledStats counts subagents killed by each source.
+type SubagentKilledStats struct {
+	Parent int `json:"parent"`
+	User   int `json:"user"`
+	System int `json:"system"`
+}
+
+// SubagentRefusedStats counts subagents refused by each limit.
+type SubagentRefusedStats struct {
+	DepthLimit       int `json:"depth_limit"`
+	ConcurrencyLimit int `json:"concurrency_limit"`
+	Budget           int `json:"budget"`
+}
+
 // ModelUsageEntry holds per-model usage metadata in a result message.
 type ModelUsageEntry struct {
 	InputTokens              int64   `json:"inputTokens"`
 	OutputTokens             int64   `json:"outputTokens"`
+	ThinkingTokens           int64   `json:"thinkingTokens"`
 	CacheReadInputTokens     int64   `json:"cacheReadInputTokens"`
 	CacheCreationInputTokens int64   `json:"cacheCreationInputTokens"`
 	WebSearchRequests        int64   `json:"webSearchRequests"`
@@ -1194,6 +1233,7 @@ type ModelUsageEntry struct {
 	MaxOutputTokens          int64   `json:"maxOutputTokens"`
 	CanonicalModel           string  `json:"canonicalModel,omitempty"`
 	Provider                 string  `json:"provider,omitempty"`
+	CostBasis                string  `json:"costBasis,omitempty"`
 }
 
 // DeferredToolUse is a tool call deferred from a previous turn in the result message.
@@ -1432,26 +1472,28 @@ const (
 // RateLimitPeriod reports utilization for one overage spending period.
 type RateLimitPeriod struct {
 	Utilization float64 `json:"utilization"`
+	ResetsAt    float64 `json:"resetsAt,omitempty"`
 }
 
 // RateLimitInfo is the nested rate limit info inside a rate_limit_event.
 // Wire format uses camelCase (matches Claude Code CLI JSON output).
 type RateLimitInfo struct {
-	Status                          RateLimitStatus       `json:"status"`
-	ResetsAt                        float64               `json:"resetsAt,omitempty"`
-	RateLimitType                   RateLimitType         `json:"rateLimitType,omitempty"`
-	Utilization                     float64               `json:"utilization,omitempty"`
-	OverageStatus                   RateLimitStatus       `json:"overageStatus,omitempty"`
-	OverageResetsAt                 float64               `json:"overageResetsAt,omitempty"`
-	OverageDisabledReason           OverageDisabledReason `json:"overageDisabledReason,omitempty"`
-	IsUsingOverage                  bool                  `json:"isUsingOverage,omitempty"`
-	OverageInUse                    bool                  `json:"overageInUse,omitempty"`
-	SurpassedThreshold              float64               `json:"surpassedThreshold,omitempty"`
-	OveragePeriodMonthly            RateLimitPeriod       `json:"overagePeriodMonthly,omitzero"`
-	OveragePeriodChannel            RateLimitPeriod       `json:"overagePeriodChannel,omitzero"`
-	ErrorCode                       RateLimitErrorCode    `json:"errorCode,omitempty"`
-	CanUserPurchaseCredits          bool                  `json:"canUserPurchaseCredits,omitempty"`
-	HasChargeableSavedPaymentMethod bool                  `json:"hasChargeableSavedPaymentMethod,omitempty"`
+	Status                          RateLimitStatus                   `json:"status"`
+	ResetsAt                        float64                           `json:"resetsAt,omitempty"`
+	RateLimitType                   RateLimitType                     `json:"rateLimitType,omitempty"`
+	Utilization                     float64                           `json:"utilization,omitempty"`
+	OverageStatus                   RateLimitStatus                   `json:"overageStatus,omitempty"`
+	OverageResetsAt                 float64                           `json:"overageResetsAt,omitempty"`
+	OverageDisabledReason           OverageDisabledReason             `json:"overageDisabledReason,omitempty"`
+	IsUsingOverage                  bool                              `json:"isUsingOverage,omitempty"`
+	OverageInUse                    bool                              `json:"overageInUse,omitempty"`
+	SurpassedThreshold              float64                           `json:"surpassedThreshold,omitempty"`
+	OveragePeriodMonthly            RateLimitPeriod                   `json:"overagePeriodMonthly,omitzero"`
+	OveragePeriodChannel            RateLimitPeriod                   `json:"overagePeriodChannel,omitzero"`
+	UnifiedWindows                  map[RateLimitType]RateLimitPeriod `json:"unifiedWindows,omitempty"`
+	ErrorCode                       RateLimitErrorCode                `json:"errorCode,omitempty"`
+	CanUserPurchaseCredits          bool                              `json:"canUserPurchaseCredits,omitempty"`
+	HasChargeableSavedPaymentMethod bool                              `json:"hasChargeableSavedPaymentMethod,omitempty"`
 }
 
 // ---------- tool_progress ----------
@@ -1463,6 +1505,7 @@ type OutputToolProgressMsg struct {
 	ToolName        string         `json:"tool_name"`
 	ParentToolUseID string         `json:"parent_tool_use_id"` // nullable
 	ElapsedTime     base.DurationS `json:"elapsed_time_seconds"`
+	Heartbeat       bool           `json:"heartbeat,omitempty"`
 	TaskID          string         `json:"task_id,omitempty"`
 	UUID            string         `json:"uuid"`
 	SessionID       string         `json:"session_id"`

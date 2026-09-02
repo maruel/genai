@@ -34,6 +34,7 @@ Constraints:
 - Prefer deterministic schema, DTO, test, fixture, or regeneration fixes over broad refactors.
 - If the failure is an unknown provider JSON field, update the typed DTO and tests.
 - Run the failing command or the smallest relevant provider test after changes.
+- Run commands with "go run" or write build output outside the repository; do not leave compiled binaries behind.
 - Run gofmt when changing Go files.
 - Do not commit, push, create a PR, inspect secrets, or print secret environment variables.`
 )

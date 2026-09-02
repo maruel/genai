@@ -86,7 +86,7 @@ func TestModelsResponse(t *testing.T) {
 		}
 	})
 	t.Run("pricing and pagination", func(t *testing.T) {
-		body := `{"data":[{"pricing":{"prompt":"0.000001","completion":"0.000002","audio":"0.000003","audio_output":"0.000004","discount":0.1,"image":"0.000005","image_output":"0.000006","image_token":"0.000007","input_audio_cache":"0.000008","input_cache_read":"0.000009","input_cache_write":"0.000010","input_cache_write_1h":"0.000011","internal_reasoning":"0.000012","overrides":[{"audio":"0.000013","completion":"0.000014","input_audio_cache":"0.000015","input_cache_read":"0.000016","input_cache_write":"0.000017","input_cache_write_1h":"0.000018","min_prompt_tokens":200000,"prompt":"0.000019","utc_start":100,"utc_end":400}],"request":"0.02","web_search":"0.03"}}],"total_count":1,"links":{"next":null}}`
+		body := `{"data":[{"pricing":{"prompt":"0.000001","completion":"0.000002","audio":"0.000003","audio_output":"0.000004","discount":0.1,"image":"0.000005","image_output":"0.000006","image_token":"0.000007","input_audio_cache":"0.000008","input_cache_read":"0.000009","input_cache_write":"0.000010","input_cache_write_1h":"0.000011","internal_reasoning":"0.000012","overrides":[{"audio":"0.000013","completion":"0.000014","input_audio_cache":"0.000015","input_cache_read":"0.000016","input_cache_write":"0.000017","input_cache_write_1h":"0.000018","min_prompt_tokens":200000,"prompt":"0.000019","utc_days":["saturday","sunday"],"utc_start":100,"utc_end":400}],"request":"0.02","web_search":"0.03"}}],"total_count":1,"links":{"next":null}}`
 		var resp openrouter.ModelsResponse
 		dec := json.NewDecoder(strings.NewReader(body))
 		dec.DisallowUnknownFields()
@@ -116,6 +116,7 @@ func TestModelsResponse(t *testing.T) {
 				InputCacheWrite1h: "0.000018",
 				MinPromptTokens:   200000,
 				Prompt:            "0.000019",
+				UTCDays:           []string{"saturday", "sunday"},
 				UTCStart:          100,
 				UTCEnd:            400,
 			}},

@@ -735,6 +735,8 @@ type ImageModel struct {
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
 	Title               string              `json:"title"`
 	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
+	RequiredSafety      []string            `json:"required_safety,omitzero"`
+	SupportedEndpoints  []string            `json:"supported_endpoints,omitzero"`
 	// Video generation duration limits. Only set on video models.
 	MaxDuration     base.DurationS `json:"max_duration,omitzero"`
 	MinDuration     base.DurationS `json:"min_duration,omitzero"`
@@ -866,6 +868,8 @@ type TextModel struct {
 	Uncensored             bool     `json:"uncensored"`
 	Vision                 bool     `json:"vision"`
 	Voices                 []string `json:"voices"`
+	RequiredSafety         []string `json:"required_safety,omitzero"`
+	SupportedEndpoints     []string `json:"supported_endpoints,omitzero"`
 }
 
 // GetID implements genai.Model.

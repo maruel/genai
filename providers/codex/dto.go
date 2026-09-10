@@ -696,8 +696,10 @@ type ThreadStartParams struct {
 	DeveloperInstructions string                     `json:"developerInstructions,omitzero"`
 	Personality           Personality                `json:"personality,omitzero"`
 	Ephemeral             *bool                      `json:"ephemeral,omitzero"`
+	HistoryMode           string                     `json:"historyMode,omitzero"`
 	SessionStartSource    ThreadStartSource          `json:"sessionStartSource,omitzero"`
 	ThreadSource          ThreadSource               `json:"threadSource,omitzero"`
+	ProjectID             string                     `json:"projectId,omitzero"`
 	Environments          []TurnEnvironmentParams    `json:"environments,omitzero"`
 	DynamicTools          []DynamicToolSpec          `json:"dynamicTools,omitzero"`
 	ExperimentalRawEvents bool                       `json:"experimentalRawEvents,omitzero"`
@@ -927,17 +929,21 @@ type ThreadStartedNotification struct {
 
 // Thread describes a thread in thread/started params.
 type Thread struct {
-	ID                   string          `json:"id"`
-	SessionID            string          `json:"sessionId,omitzero"`
-	ForkedFromID         string          `json:"forkedFromId,omitzero"`
-	ParentThreadID       string          `json:"parentThreadId,omitzero"`
-	ProjectID            string          `json:"projectId,omitzero"`
-	CLIVersion           string          `json:"cliVersion,omitzero"`
-	CreatedAt            base.TimeS      `json:"createdAt,omitzero"`
-	CWD                  string          `json:"cwd,omitzero"`
-	Ephemeral            bool            `json:"ephemeral,omitzero"`
-	GitInfo              *GitInfo        `json:"gitInfo,omitzero"`
-	ModelProvider        string          `json:"modelProvider,omitzero"`
+	ID             string     `json:"id"`
+	SessionID      string     `json:"sessionId,omitzero"`
+	ForkedFromID   string     `json:"forkedFromId,omitzero"`
+	ParentThreadID string     `json:"parentThreadId,omitzero"`
+	ProjectID      string     `json:"projectId,omitzero"`
+	CLIVersion     string     `json:"cliVersion,omitzero"`
+	CreatedAt      base.TimeS `json:"createdAt,omitzero"`
+	CWD            string     `json:"cwd,omitzero"`
+	Ephemeral      bool       `json:"ephemeral,omitzero"`
+	GitInfo        *GitInfo   `json:"gitInfo,omitzero"`
+	// Model is the current configured model or the latest persisted model. It is empty when unavailable.
+	Model         string `json:"model,omitzero"`
+	ModelProvider string `json:"modelProvider,omitzero"`
+	// ReasoningEffort is the current configured effort or the latest persisted effort. It is empty when unavailable.
+	ReasoningEffort      ReasoningEffort `json:"reasoningEffort,omitzero"`
 	Path                 string          `json:"path,omitzero"`
 	Preview              string          `json:"preview,omitzero"`
 	Source               json.RawMessage `json:"source,omitzero"`
@@ -1888,6 +1894,7 @@ type ThreadSettings struct {
 	Effort                  *ReasoningEffort         `json:"effort,omitzero"`
 	Summary                 *ReasoningSummary        `json:"summary,omitzero"`
 	CollaborationMode       json.RawMessage          `json:"collaborationMode"`
+	MultiAgentMode          string                   `json:"multiAgentMode,omitzero"`
 	Personality             *Personality             `json:"personality,omitzero"`
 }
 

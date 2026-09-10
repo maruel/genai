@@ -156,12 +156,27 @@ func TestJSONRPCMessage(t *testing.T) {
 func TestRecordedNotificationFields(t *testing.T) {
 	t.Run("thread", func(t *testing.T) {
 		var notification ThreadStartedNotification
-		input := `{"thread":{"id":"thread","forkedFromId":null,"parentThreadId":"parent","section":null,"sectionEnteredAt":null,"canAcceptDirectInput":true}}`
+		input := `{"thread":{"id":"thread","forkedFromId":null,"parentThreadId":"parent","section":null,"sectionEnteredAt":null,"canAcceptDirectInput":true,"model":"gpt-5.6-terra","reasoningEffort":"high"}}`
 		if err := json.Unmarshal([]byte(input), &notification); err != nil {
 			t.Fatal(err)
 		}
 		if !notification.Thread.CanAcceptDirectInput || notification.Thread.ForkedFromID != "" || notification.Thread.ParentThreadID != "parent" {
 			t.Errorf("Thread = %#v, want direct input and value optional IDs", notification.Thread)
+		}
+		if notification.Thread.Model != "gpt-5.6-terra" {
+			t.Errorf("Model = %v, want gpt-5.6-terra", notification.Thread.Model)
+		}
+		if notification.Thread.ReasoningEffort != ReasoningEffortHigh {
+			t.Errorf("ReasoningEffort = %v, want high", notification.Thread.ReasoningEffort)
+		}
+	})
+	t.Run("thread missing settings", func(t *testing.T) {
+		var notification ThreadStartedNotification
+		if err := json.Unmarshal([]byte(`{"thread":{"id":"thread","model":null,"reasoningEffort":null}}`), &notification); err != nil {
+			t.Fatal(err)
+		}
+		if notification.Thread.Model != "" || notification.Thread.ReasoningEffort != "" {
+			t.Errorf("Thread settings = %#v, want empty settings", notification.Thread)
 		}
 	})
 	t.Run("token usage", func(t *testing.T) {

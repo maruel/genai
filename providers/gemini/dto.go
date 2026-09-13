@@ -501,23 +501,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	for _, opt := range opts {
 		switch v := opt.(type) {
 		case *GenOption:
-			// Accept both positive numbers and -1 (dynamic thinking)
-			if v.ThinkingBudget != 0 {
-				// https://ai.google.dev/gemini-api/docs/thinking
-				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
-					IncludeThoughts: true,
-					ThinkingBudget:  v.ThinkingBudget,
-				}
-			} else if strings.HasPrefix(model, "gemini-flash") &&
-				!strings.Contains(model, "-pro") &&
-				!strings.Contains(model, "image") &&
-				!strings.Contains(model, "live") &&
-				!strings.Contains(model, "tts") {
-				// We need to set it to disable thinking on recent gemini models.
-				//
-				// Most models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview. Setting the
-				// struct to empty will fail the RPC. :(
-				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+			if err := v.Validate(); err != nil {
+				errs = append(errs, err)
+				continue
+			}
+			if v.ThinkingLevel != "" {
+				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{ThinkingLevel: v.ThinkingLevel}
 			}
 			if v.CodeExecution {
 				c.Tools = append(c.Tools, Tool{CodeExecution: &struct{}{}})
@@ -673,13 +662,17 @@ func (c *Content) To(out *genai.Message) error {
 	for i := range c.Parts {
 		part := &c.Parts[i]
 		if part.Thought {
-			out.Replies = append(out.Replies, genai.Reply{Reasoning: part.Text})
+			r := genai.Reply{Reasoning: part.Text}
+			addThoughtSignature(part, &r)
+			out.Replies = append(out.Replies, r)
 			continue
 		}
 		// There's no signal as to what it is, we have to test its content.
 		// We need to split out content from tools.
 		if part.Text != "" {
-			out.Replies = append(out.Replies, genai.Reply{Text: part.Text})
+			r := genai.Reply{Text: part.Text}
+			addThoughtSignature(part, &r)
+			out.Replies = append(out.Replies, r)
 			continue
 		}
 		if part.InlineData.MimeType != "" {
@@ -690,9 +683,11 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Replies = append(out.Replies, genai.Reply{
+			r := genai.Reply{
 				Doc: genai.Doc{Filename: "content" + exts[0], Src: &bb.BytesBuffer{D: part.InlineData.Data}},
-			})
+			}
+			addThoughtSignature(part, &r)
+			out.Replies = append(out.Replies, r)
 			continue
 		}
 		if part.FileData.MimeType != "" {
@@ -703,7 +698,9 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.FileData.MimeType)}
 			}
-			out.Replies = append(out.Replies, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
+			r := genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}}
+			addThoughtSignature(part, &r)
+			out.Replies = append(out.Replies, r)
 			continue
 		}
 		if part.FunctionCall.Name != "" {
@@ -737,6 +734,12 @@ func (c *Content) To(out *genai.Message) error {
 		return &internal.BadError{Err: fmt.Errorf("implement support for part %#v", part)}
 	}
 	return nil
+}
+
+func addThoughtSignature(p *Part, r *genai.Reply) {
+	if len(p.ThoughtSignature) != 0 {
+		r.Opaque = map[string]any{"signature": p.ThoughtSignature}
+	}
 }
 
 // Part is a union that only has one of the field set.
@@ -804,7 +807,11 @@ func (p *Part) FromRequest(in *genai.Request) error {
 // FromReply converts from a genai reply.
 func (p *Part) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+		b, ok := in.Opaque["signature"].([]byte)
+		if !ok || len(in.Opaque) != 1 {
+			return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+		}
+		p.ThoughtSignature = b
 	}
 	if in.Reasoning != "" {
 		p.Thought = true
@@ -927,10 +934,7 @@ type VideoMetadata struct {
 // ThinkingConfig is documented at https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
 // See https://ai.google.dev/gemini-api/docs/thinking#rest
 type ThinkingConfig struct {
-	// IncludeThoughts has no effect since January 2025 according to
-	// https://discuss.ai.google.dev/t/thoughts-are-missing-cot-not-included-anymore/63653/13
-	IncludeThoughts bool  `json:"includeThoughts"` // Must not be omitted.
-	ThinkingBudget  int64 `json:"thinkingBudget"`  // Must not be omitted. [0, 24576]
+	ThinkingLevel ThinkingLevel `json:"thinkingLevel,omitzero"`
 }
 
 // ChatResponse is documented at https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse

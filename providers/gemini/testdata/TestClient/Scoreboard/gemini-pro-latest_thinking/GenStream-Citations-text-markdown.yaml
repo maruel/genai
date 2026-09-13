@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 286
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Identifying the Core Task**\\n\\nI've zeroed in on the central task: a question about \\\"Quackiland's\\\" capital, derived from a short text. The initial text has been carefully analyzed, specifically focusing on the sentence indicating the capital. I'm moving toward an answer by cross-referencing that critical information.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 36,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"AtcZapaOIsOR-8YPqK3g-QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is **\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 8,\"totalTokenCount\": 202,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 158,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"AtcZapaOIsOR-8YPqK3g-QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Quack**.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 205,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 158,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"AtcZapaOIsOR-8YPqK3g-QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvgFCvUFAQw51scJydJcqJCti5gt3oJTJfBt8Nsl89FrvRLNSOyHhViojAVrCSYe08b+K6cQ4b5X9/VgG75QzPdSY5NE9VHm9xT3kL5ZyXIMOrBJI4ypd13aZeIlT/MkRkAty7Cn4TIqcmczi9KtJ51jsQcIzuk4CX7GB06gtAlK5sMXDYyFGbHfF7JZtSqCTMzWzxw1jUZsKva/9ZiBhCWgqkXrQpvtZMcFVYOM4GCXpK/FPWqJ5OEvxWQjMQTW4LmHEJ/pe0koXKOZ/KsOh+6ktukexEYO8q/Ik8FMxvv4sPbGhJQTVOmSrMBIhM+9zME9jk2tTC0qWGq7J0v4HcfS9DFMUoLD9fSe+LfGPNMlq9E3t/idQbfpTs4MiMHdfVTReT9xc+j4WTVMdQleAeRhFTHPnOmPv9Tv0UWXxz4lhXqzfrlRZM5Z6oWe788BJuWxbuw7kkVAqE4ngrQx1JxheKT3KXwVFWR0LTo0C8/Pp0490Vbhsu7e2t5yF9/Zs5BUF9ht2yxfmFi0joD3h5NXRa57rFs6fWkC0rwc8APMxcWtfX+I/1P7J23BI2uwcZmJWHyp4tHWJWvjOaEWy7ZkGtFKtxr9OtiTDvdHOM6+qMtv+rYA/rdUTpOiT/N2aDstrdpwS19OZfrRkWTloOXXP1JXnv1OExdH0w7fYCzPUiZE5OK4/5yJgTqEc+2r99zzLEflS7HUOxCgNRDsS5yBRtHhH/huZxsoYnfjxrK/P/NWkkTpUJuE1wRRX1Hg2ht8unnxm8CPAn1kSMqgTLqo+7VWPKo+UBQb19deaSpquclC7zL0HapkfCYBi70Q6sSlfx6QDc4FZ26qnYFrVSxghsXaU2Iy9qb5bfRkYdv06rjS33G9R1Bpni741WRnXier20XsBuRjII7qAMuWozWZWLIEHZJ1zNb+9NiqjVjrE3tRzuYCUKVVjxFTRYcc4WyfWaWLWrAsdJYgNOl4Rxcq/GJMh4gHS8wJy293winFPWJZ3PA6HRPiVQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 205,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 158,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"AtcZapaOIsOR-8YPqK3g-QE\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is Quack.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 10,\"totalTokenCount\": 225,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 179,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"xB-naqDvEPGc_uMPmtP4mAI\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EpEHCo4HARFNMg9RrlHkMEvJ+I5jaW2iUIaG2L/2glEFSBSKas+EghGupcMlyX0oFnMhKKMFq+sTztX5ExQkp3hIrM3OlnFPBW8Ym8YoCyz/z4IsiJmWmkXtt7O5hkFlQUNaUQ62rPK+Y70ipL40ULsS7gmhqbOa4erKLPErsCJvw0Z6jHx4LPSbsK1tX0tJiPTn1x/OmOg4P1NlzC1fRd3iQC2L6OBwU1hFTlKMQskQUwcX9XICJzeGo1hZPvdRjMaPwIhLVDSbRtIRdEFazd8WNCq+tMd0jDk4ibg7Ht//HNbsGibqW/2wOgjqtZaGnQB3lJuZ+CoJJ1u7PYw7tzwYnviUGTXo9kHnlga09Pg+prEiYj1yxYvM7hyN54Ug3EFCXIjPEYnOwQjXDB9peSSgt8dDBcuZ0UrwO5mt8h0t/FkWnUI5Ya1J2AoNueXoNkHjc6QsJ2ySn8EPNlT2R9CavzaI9bKrE9v+oqd4hQh9SFX5ZoaDCI/zbCTQ0MfJi4GLVbeRJduyuRKb3LzFDDAUIYjB4kJgdhcQIiIKDlvuTg/8FpmR55FINs4VvpQRXzLyDZpSoYIbs84+TdRJXJh+WNmsWg9VsojXjFtShaTIxwmWCeKDjxVU4sRg5rkLzunA2vVv0EZFfX8r6OuxhEWq95ebkcEhyNVddR2zs0Ph5bOcTIPyE+Sy6l/zRfmIwrRJS0h1MLLI5tDTdePED/i2gdtXqRn8wbe3k/aW320LqT9R47+eir+V4mhEBHJdIiHthMxB7ONBYmVf6qF+HNXMIqSmwDyB2OA4zhZs1Moip8humuZn+Xh+7JKc/mn59TuuPaidvk9YG90jKx+WfeEoJnFgHXC5SX9tfcFmZT7YPfkplAGjqjJWppWTs3FlEnnoZ7Wx95zRVgk+Xllsg4zd7Jw2sAvM6chHcE6N3kRdoVW4t3FojldWN//sWTeSn3jT6cbF2WQGF/HtQXk1qLpOEGmmct0y1iEXPmXqj4z2KLhO/IpBbmwLjUCH1I0emkjzvMypJtwsDjOObdQV7x6UXrpJNfPMr/IqqU9L9zetacZB5+gpmSbAtHjqsdD6lwR2zALt4BTkYPfnOfCJWGSw6S4WDvHadNyWihEPaGPFIjf/0zC6hYI28uzYmTRildI2wa7+PE9U7eEdyMXcFtZFl7Zk0Xop22l3aAJ8T0l0Liv9TGaxZeeymBWETSYyf5cjzA==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 10,\"totalTokenCount\": 225,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 179,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"xB-naqDvEPGc_uMPmtP4mAI\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2321
+                - gfet4t7; dur=2577
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.327s
+        duration: 2.582s

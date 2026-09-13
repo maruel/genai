@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 201
+        content_length: 139
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,8 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Hello.",
-                        "thoughtSignature": "EjQKMgEMOdbHQDTjRl+RgNbfNxRlREJUiGtcJsc3f0CHNARX+3Pi/uZLI2ml5GUv77KgE+hv"
+                        "text": "Hello",
+                        "thoughtSignature": "EpUFCpIFARFNMg9xGv0iFzA/JoQp3t64NngfkXHhC9lFPe7zqt7ryYs/xhMWZ0C/ZM/ls6Ybw2+6xE61rJtrXU72w8DrpiHqrb/XlyhwWkM1kGLiuKu3FnTsr63X4xW0Z36ZPJYjJS68OTsMZPZiTqr6SbLcIlYalMj/MvfbOw9gsZwN+9HSPwzeA81KgcyZXeFquACrbyASCfGoMuVNNTCygt6oKQgKzsZhRUJibRMT7tdEeGzvMUxdpL06Fj776MqGiLXzM7IeKr8NvFHka37bFJWxZBOwNDm0JUemxCbwxuZp4w0574Xj3NAbCN3HlDMt8zJZCW2ZZPUqwEAAeaoZjKmofLy6p3wylNN2Y3RFj+Rj5qWHRvXsD39rcvTUMUWjELfO6kJl+4N7fZg2IcRR3vNgqyI2o20rkacACJw8UMFdAX23i+1iUCjpGA0NxCIO4CAamS4ahoOn87mvOZM0mNgolgEAQsyti3+pNzcK8AVnk/J7IqW3anHwNWoNrq15+BncZSSh9SHHOINArQxXetqsHCfRvn4H8w6ARVYAxQn5feYr54WGVTnR3yfKO3wtvCfW8Q2otnyBaAej2fX8IGfcFV5Rw1QfyXKRsstWB0OaH1qS4QWcCDIrNpk4kI7M8F1ijcLDmigaBZ55g4u/l8u3loeR8QuOVE8TJdpNPc4LIYe2wjbpdW5jecIt+qkCOL6cUKJbAHHrQQn2qPCieWDek6Fu9qfFRrn2J5qui612fnUgm7trSD99VjfR8+btpTJf9AmEyyDHJxs1E2CvHmPHmNVVJ5k4c69BOxcA/+zt+dmKIQDyBWqcYCyiliZRos3NY4VY+8mip14BKgIq+RIRyNEJ8I9zwX314fHTUueOrxEIsQ=="
                       }
                     ],
                     "role": "model"
@@ -40,18 +40,19 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 10,
-                "candidatesTokenCount": 2,
-                "totalTokenCount": 12,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 167,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
+                "thoughtsTokenCount": 156,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "1CwaatfFA7CY9MoP4d6FgQ8"
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "hhqnatOTEdGMjMcP0tnZ-Q0"
             }
         headers:
             Alt-Svc:
@@ -61,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=600
+                - gfet4t7; dur=3285
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 611ms
+        duration: 3.291s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 331
+        content_length: 310
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Thought Process on This Question**\n\nOkay, let's break this down. First, I see the core question: \"Is a banana a fruit?\". Simple enough. But there are a few very specific instructions I need to follow, and as an expert I'll make sure to get them all right. I have to deliver the answer ONLY as JSON, and I need to make sure the JSON adheres precisely to this schema: `{\"is_fruit\": bool}`. No explanations, no extra fluff – just that JSON. It also needs to be valid, parseable JSON.\n\nSo, step one is determining the fact. Is a banana a fruit? Yes, botanically speaking, a banana is indeed a fruit – specifically, a berry. Alright, that establishes that `is_fruit` should be set to `true`.\n\nNext up, I construct the JSON output: `{\"is_fruit\": true}`.\n\nFinally, I do a quick, final check: Does it match the schema? Yep. Is it valid JSON? Absolutely. No extra text? Nope, it's just the JSON string, and it's perfect. Ready to go.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "{\n  \"is_fruit\": true\n}",
-                        "thoughtSignature": "ErwFCrkFAQw51seHOED5WD8MCBpgMmOkfywKAqkj6bBe3SkDSwUA622JqKtiQErhnoQx8v0evLJTXH9rKrGMMjDGsTa6DlPaneFJ2b469LvpRXkhtws/KbnCwdGAokwPNBI6y00cgxmHth8L9yp56tsnyP0rDqWTko3DMwZUs4BC98I9FnkPiq4kwYtKcmW6bGmGM+x3uXg8B+2Jraz3F5Futo39WnAlHuANP+5X2lrA1a8iYVei7Vu4B4/N6SUvrg238nnZd9qnUgi3odCAMPQixmgWWRUPsAXxCy5jsEDvVfjZS/mZrkqjGjBGec4FVyvTNpesirMiaHUuAe6rQkoMuzYuYkl/eJyl2iAb8wAx3X3u6xBFss62+M3Z7rggUuxtkdN6+ziYwNQlCK29WNmt7eOHMbZSXm+VsXj0yBcHHqDKJC5XNCwN2P9UsHAvz6wCG7rhHNmSHKgmhcvgrd/+CUb9iXthB8/IRE6HSoh73OPA5ORocG6uAx9hYW7RVHLCxkeJRsWQuDsSeGVCDvKA+oO2BQa9VzC5hntsfHL8Q70v9t18Y0zOFbJhJgiOJ1eWSUFowemPesGGzeGcnHxv/CTuyF7J9siZbwLlzNTir7P/ZS+fKRzHh2ebf4a+RcTC+txD4PW+u4K3GW3GD/UfTsuDMe4tHpd6Kgik5yl5nwFY1IWbjyG+hsYXq4vnnrAE/tKlXwsHWrKehgddjBwyxNW6PrO4/B/9tWh5A5upAHokxTfRB2P6pB4M6ZpWtkLkrFwMJbupyyVsAu98bFWAR34KLRA6CjMMDf6GRUAJLQZ3+vEn5DdxX5Q4qjZ89l85AAIP2vm2qlHS/v1R9oLuDzqbVLnelghXd+El4m2a1kmFC2y/2YaJH+6SLkU1D1eSEJgexM+rGViCQvstD+N6ox2uYx41PIvJ6jW/uw=="
+                        "thoughtSignature": "EqwGCqkGARFNMg+FWtk5WO3rxKbVzugqg9bk+Yl2RcJXYPjK9RlAYWaR4s8fvvdVMMlCS2s4Cengsgfp4lb1hsBPGyb6yopSLnosG/hPA1Td75lpWk9Ko2aj6zDBGaVjamiFWn0Y8jYpdj6DMLkwjk7kPoPmlNR827CADNfrt2eFdwzU8LjuQfrL9A1b9YbaYXT8yjQAbsJRixVNQCTLg2txWUKnQbskDU9BX65UtlKEfvO20ay5O3gZfUey4LnZuUy+VNNS5fjndOBm91jF9MhV0rR/aQn3tbVbHz6zbLmqJaZcDgw1/i+tucsq14D0mFpP9b8EUORPuACqECpL6mB4M9t+IjygKYmgP7E84J6qh8qb+95VLndgyQyfHdt8o5F1qIgSl+NCOjIu+M2RqUpLmAyYAw0J6+M7LCNUJX5PNe7Q+H3mzQptKbZStkW0qY6DqNShvRsNCrbUByPcbr971FawYkogsPK9HwmJ28qmFKoUNvomvQODoqLZaXzw7DBjAsBxt2JnVTqYH1kt5FXi0Lg3WrA9aLR6sq0XD7F3CxF6RrZo01BdRz9PoZm0TZpkx4skcRwYttsq8MWeZXhjNFvvsHsPYEtyVLXs7pMgDw57h/nB7jyO/4vgFZy4sTjkKpfbbIyBqD2WNUlj2qzEGJyYndFG+Poh+9k5deTnyvzEBEAdNAlSP7dw6zJeSKlEYfd+uSm05mjfztUgeUzcfO1efKU+3T1S0o8cG1SFcfvLCNTX0Z1Vnh2r+26lpSH+acUHzSfzylssl1tjJ89ZoX1l9oGNLlG+1InhVWBMYrL+JrmyUHSzkdZR8xrEoYcj2PYzNFEOkw5PKVkToIJP02zonHosZ14NUW35GWLN6EOhGPnC299mu06pOaVKWtVNHAOilatYa7YVJQr62OKouDzENwpV80V/0sYm/TEUee1Qpb8OUuL9Y8QtEbSH/Bppw/TYvhr3+pz2MpvjkAvASTFEJY7d6SLPPFNvinRX9YpgOABAinKOUQBovNUO89Jfm1lxlE4hm2XtAu5gxZBispuPwPd68idOx2Unx4Niceg5uff+14aYyAnwRYg="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 30,
                 "candidatesTokenCount": 11,
-                "totalTokenCount": 230,
+                "totalTokenCount": 237,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 30
                   }
                 ],
-                "thoughtsTokenCount": 189,
+                "thoughtsTokenCount": 196,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "9dYZarPpFeW5sOIPopjogQc"
+              "responseId": "rB-naob6Jdyx_PUPyYPMuAk"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4249
+                - gfet4t7; dur=3053
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.256s
+        duration: 3.059s

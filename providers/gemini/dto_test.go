@@ -267,6 +267,51 @@ func TestSchema(t *testing.T) {
 	})
 }
 
+func TestContentThoughtSignature(t *testing.T) {
+	t.Run("round trip", func(t *testing.T) {
+		want := []byte("thought signature")
+		in := Content{
+			Parts: []Part{{Text: "hello", ThoughtSignature: want}},
+		}
+		m := genai.Message{}
+		if err := in.To(&m); err != nil {
+			t.Fatal(err)
+		}
+		if len(m.Replies) != 1 {
+			t.Fatalf("got %d replies, want 1", len(m.Replies))
+		}
+		got, ok := m.Replies[0].Opaque["signature"].([]byte)
+		if !ok {
+			t.Fatalf("got Opaque %#v, want signature", m.Replies[0].Opaque)
+		}
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Errorf("signature mismatch (-want +got):\n%s", diff)
+		}
+
+		out := Content{}
+		if err := out.From(&m); err != nil {
+			t.Fatal(err)
+		}
+		if diff := cmp.Diff(in.Parts, out.Parts); diff != "" {
+			t.Errorf("parts mismatch (-want +got):\n%s", diff)
+		}
+	})
+}
+
+func TestChatRequestThinkingLevel(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		in := ChatRequest{}
+		msgs := genai.Messages{genai.NewTextMessage("hello")}
+		if err := in.Init(msgs, "gemini-3.8-flash", &GenOption{ThinkingLevel: ThinkingLevelHigh}); err != nil {
+			t.Fatal(err)
+		}
+		want := &ThinkingConfig{ThinkingLevel: ThinkingLevelHigh}
+		if diff := cmp.Diff(want, in.GenerationConfig.ThinkingConfig); diff != "" {
+			t.Errorf("thinking config mismatch (-want +got):\n%s", diff)
+		}
+	})
+}
+
 func TestImageParametersDurationS(t *testing.T) {
 	got, err := json.Marshal(ImageParameters{Duration: base.DurationS(8)})
 	if err != nil {

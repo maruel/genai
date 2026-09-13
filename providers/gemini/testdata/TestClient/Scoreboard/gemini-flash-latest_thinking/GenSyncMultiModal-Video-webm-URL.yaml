@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 360
+        content_length: 297
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,44 +23,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My Immediate Response**\n\nOkay, the goal here is crystal clear. I need to identify *the* word spoken in this video and reply with just that single word. No embellishment, no explanation, just the word itself. The visual cue, that rotating \"BANANA\" text, is interesting, but secondary. The *audio* is the key. I hear the word \"Banana\". Therefore, my response is, and can only be, \"Banana\".\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "Banana",
-                        "thoughtSignature": "EvgBCvUBAQw51sfnXWcgJrBfwMkAldY0evuRwsEnNm+wLUpOyMPW/G+9ZoW6mDpFMecXd5kxzjorni5fx8+KntszcJey5Tc5CpLTamcVr273cmoCxrjJ8zYR3w7iLfKpozKHHWZv9j3Hgep0XclWGAoJPDojIVND1YzGUHZFBrFILmCNhtfhvMaXwUVkGYb7iUEXO5NlNoZtdncdzD3q0Yx2Z4zCdBczC0oM1EY3E3puHZ8VEBZfibOhYABAGqgj0kUHaGKVrqDykhqbCWJIAyihtjHwZ9dSMWE6a6rq95B0OoOCYYly83yMJuShxmdMebxTfqUWbGWpI30="
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 277,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 325,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 13
-                  },
-                  {
-                    "modality": "VIDEO",
-                    "tokenCount": 264
-                  }
-                ],
-                "thoughtsTokenCount": 47,
-                "serviceTier": "standard"
-              },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "pCYaaqWlLuO2_uMPzveOyQw"
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
             }
         headers:
             Alt-Svc:
@@ -70,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=5047
+                - gfet4t7; dur=8659
             Vary:
                 - Origin
                 - X-Origin
@@ -83,6 +50,6 @@ interactions:
                 - standard
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 5.059s
+        status: 403 Forbidden
+        code: 403
+        duration: 8.665s

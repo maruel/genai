@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 360
+        content_length: 339
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,44 +23,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My Analytical Approach to the User's Request**\n\nOkay, so the user's looking for the word presented in this video. They're very clear – \"Reply with only the word.\" No fluff, no interpretation, just the *word* itself. I appreciate the directness; it cuts down on potential ambiguity.\n\nLet's break down the visual data. The video element is straightforward: big, bright yellow text against a black backdrop, and the text rotates. The rotation is a dynamic element, but it's clearly a visual flourish. The core information – the word itself – needs to be isolated. And the word itself is, quite explicitly, \"BANANA\". No need to overthink it; no need to interpret symbolism, no need to consider context... the task is simple. I can confidently present that word to the user.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "BANANA",
-                        "thoughtSignature": "EtADCs0DAQw51sdPynP92rXNA/jAn7rmYDEEPUGiTima9DCi8hS2F6tzC3He+o0Fc3uBRfC2XqJs0Vk/Vlqlditb2eYgaRuGY4/nJn57MoKROf7jNKEQMBKdHSUwWpPlJZ5n3fDsKjmBzXMjDofw+OR4AcJKW69u30yuuUO0IgGkVOQcfQ15e5wsYlEa2II1rw4+fE4Fn75x1gDl+FIcQxnntz/w0AsuQNgouUFrHNEOKggIcAwEePskNccGPnJb8IVurBnEwjYgyq0Xys+JVPG3CIDRnS+HwrLrja0YXDnHspg24nLPqcAQ8tWaK+Xj6VP3Hy3/dvBGvwK+uMf6HImwP+WI8sn8qwqXLa0Nt6eysSuV0vTtQ6HmNFUDKOQQcse9kKJJbHQB+mbdICgvCpo4tc99JZF/IeUQDYF1qqR6IM9Tp2EluLmULT2JXXlxJTMcofyiur6xFJOw3Ry0/NW/rF3m59J7IJDnzvI64/ZdwR8Up0rzsJtwDQLT3qVIQydRw7UqnISj7xLZdqWhnUOOTJ1RxYBKFpy54X/ws13yeC1z+himpB+SLeHvRY1reUFZHPu0VKsq0j/AZZSlf6At67t1/p8w2tIo7GugYRtLT6w="
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 277,
-                "candidatesTokenCount": 2,
-                "totalTokenCount": 374,
-                "promptTokensDetails": [
-                  {
-                    "modality": "VIDEO",
-                    "tokenCount": 264
-                  },
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 13
-                  }
-                ],
-                "thoughtsTokenCount": 95,
-                "serviceTier": "standard"
-              },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "GicaatPrIPW6_uMP4b2pkQQ"
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
             }
         headers:
             Alt-Svc:
@@ -70,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=5475
+                - gfet4t7; dur=5586
             Vary:
                 - Origin
                 - X-Origin
@@ -83,6 +50,6 @@ interactions:
                 - standard
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 5.486s
+        status: 403 Forbidden
+        code: 403
+        duration: 5.592s

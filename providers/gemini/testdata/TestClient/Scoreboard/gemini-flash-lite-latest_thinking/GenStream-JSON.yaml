@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 331
+        content_length: 310
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_fruit\\\": true\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 9,\"totalTokenCount\": 143,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 104,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"riYaasTWFsO9jrEP0qap-AU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 11,\"totalTokenCount\": 145,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 104,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"riYaasTWFsO9jrEP0qap-AU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvkDCvYDAQw51sdGjmiax+B6Onmmtf8ZCaqXKxpRo8hnENhRoDERd3zcg2GSj6JD7VQhqAXg7t4sFJhoqYjszQPo4L4N/ANZ19A1Ac9KwcIHaN7XN4pUzoTGU9OX2g79YNrJLB03NrAtBtlnMCCJV78P7Gh9kIOcywPhkrcc606VIOQBXI8CE+mce8iiPsIs1KWwav+jT4UaRDV9vzoP3syhug/rwoh35CLnDRgBAdKbdscpbU9plE76Hs8qZ0FHgPATDt0wZdOPdAXKDP7cVCaBU9bjnBDyIt0z6VLkfpz1q08OQHvJbp5XViXSJFxkz9BtT5zc6Hri6MRCYBBUlvB6cqP5DE/utMcRhvxcyE+RblTUH0ABifpgSYffr2eIx1M96V+3CsZbIuq/C2v3b1fm+MQADBnki5TJvxw0tyDg2KcTVzYwoVrjKekPYB4cyNyUguumec4nIypoQGZO5EonO25akT2g5sBX9T951ZzhBcxqAxLrRvhcyvWLFguhnLv075lzeSzo7TOGU6Oi8DFb2w1iekSvusLHEKPlVcGCm3dy+/nyl/ouWHlhiFkAeJu+uqJvlCe72BofhWRGzi3+8s6vSmn4GPibCmeXY7HdxPTwYRm+hkPBJjQAdfsEvuLnLcD0XjB812jxCrQKqa+irnXUQmYYsFEpjQ==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 11,\"totalTokenCount\": 145,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 104,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"riYaasTWFsO9jrEP0qap-AU\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"is_fruit\\\": true\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 6,\"totalTokenCount\": 256,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 220,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"TR-nauOFDcuj_PUPmsOfOA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 7,\"totalTokenCount\": 257,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 220,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"TR-nauOFDcuj_PUPmsOfOA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EuAHCt0HARFNMg+1rbXOw68Np0SkwzWJb2nq+JkJzERlO0slYk6ylFef8XKBBtMnLh6A0eDrr5BAiBhd9NRFB5rr6iTtPC5957nPh1P8wBRnlkD9bBjEqPabcwhVvtp14amtaB9KPfNG4FpXo69dfT78Imq4LgDn/eY5Bnh6zsQ/71/nMLC0NbdFOzya48dvNOqocdybnve6AMAhUMmXFmD3cxXrB4FyHC5QWG1+85a7POri5bLibopNwEu7K7htexrNypeAgUvI6M22W01weWN713ekcbrXHAsKBxgjh9JuQHh87VbkMuSOjE7hMM7Je1VJ+PSXwBZr13/NteJFY738oMgvIwnyOPTN/z9IXabPQcKC1hmcjXQQaDVhknuXWpsPaURv3NHp4FoJsVCA2STW6LwP5klem3T+356YLtHZxl6c4Ny1rmdFW26De/jA3NdFBLICxO/xkolO+PtSYRzU+tlGxYFoPnhqHTR74hy46aW3VWXVwwIYrIB9T6oAUQehwdqqKhAQljMdGttv4sdSM5/fQXkT/ExcIzypHIph8tmSc6nWRmqAkF2JDsQ8f2nC98Ov71yqW6qlKFYly+PYEMV7u1MSQxqgfEXaFeoToZcUgty2d3/sqoVOIIdq/FqhSN9mTYW5oGWBj+wVulLiNc3LN5EElLCszmOXMVG3PvWMwhwuKUwEXNtq6wJtTAnsP+op1sfd1KWzmNd9qor2vpAr+VqvAYGFKz4xNBbv9Ds3sB7Y7mi7Dz3zCw3yfZ/au4emPQLbyqG+bN3NPlhGdClwbZqRsQm2FUT5mrIZWWJ+bUkqfPX2HZgVorVprSsEMaYabTFUsu6mdkikDI4JA9bhDoQgmx0591YIeNf9urbZvH4AKyf0kTkcy1p07TeVjBdIbTym33y7cGUUn+hkMCAsXo0zaAug8CD/V7MqZZGF8qBNzmcAT6LF6E4FP7E+GJ7UKM8ert6AgC9Dr7W9z40t8Uq9d1HpxFfqKGeThK1mzpI6xClIxpNuoScvtqRymSPsmIT4W3W9WXRqi00GuMQlOWaJbcqWLmXmjimmuME8C7ZE+j5RLmdZiwmh6JNHSKCu7V3TQSfbS6F8BZcIXZ2AvSN0kTtsMQy/b1RNCEkm+h+HUJkuc6E9sGUUfRooulrtXZ0lMN3ZvjvQpzyZECQnji4qrRytHWK7pbXDmvf1yz+WTFv7Iw2FusiAKyEquGncVbRKbJFomHFTJkrK2nJkINwxkVVVDpDZvWUbLSqgMxrTUNGJ8GWMtxKCcagHBYkVH/iDeAfnMkJlzZJ9R5F9SNnlzE11W2Y7NwDVcpg=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 7,\"totalTokenCount\": 257,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 220,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"TR-nauOFDcuj_PUPmsOfOA\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=843
+                - gfet4t7; dur=1040
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 856ms
+        duration: 1.047s

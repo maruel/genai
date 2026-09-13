@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 286
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Immediate Assessment of the Task**\n\nOkay, here's the deal. A user—presumably someone who understands basic textual analysis—has presented me with a very straightforward prompt. They've given me a tiny bit of text about a fictional place called \"Quackiland,\" and they're asking me, point-blank, \"What is the capital of Quackiland?\" No ambiguity, no complex layers of inference. This is about as direct as it gets.\n\nI need to quickly process this. First, I'll break down the given text: I see two sentences. The first definitively states, \"The capital of Quackiland is Quack.\" The second sentence mentions that \"The Big Canard Statue is located in Quack.\" While the second sentence is interesting to note, it does not provide any further information regarding the query.\n\nClearly, the text directly answers the question. Therefore, my response is equally direct and concise: \"The capital of Quackiland is Quack.\" No need for elaborate explanations or hedging. This is a matter of factual retrieval, not interpretive analysis. Done.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "The capital of Quackiland is Quack.",
-                        "thoughtSignature": "ErsECrgEAQw51sfDDB9HddNoNUcMKoyx9fY2+iwpsgOB+t2PUgUMjr7NPvVsrWjmsNPneMrGxNs0QmWFG2t2+3jyMe8bwoFyie/WXo0E7HFaVx+V/Yib4r2775i8d+5YxHtqDwIWSvyWgw8TbUWkcBGg9RAi73egw5Kqnz9bYxsA2vysn0eKbfwwsquNcmEhBogzf9F9g+JFFHy5cVBulrx2i4+nbKW8Px0DCAgFj4xeS1O4dbAdC6yUCrWh9pBke8DgquS7MKvY7AtBx+gWmpieoQ1kElXwL20KQJIIwIdbyYFwKYUOisu7H7e0OX4/hfa+rfU9uS2Y8tbMEW0F9UN8wyXWm3JSIVpx/mCPzTZu+fH7YEYViCYEmYqy5dW7EOwqVJXYXCu3qAOo++tdDrRJCTvgQz8gP4wHNnBB+CRaQr4abmAQr1UfMo8INcvNRsun6Wb3D67DThOejq3RK7PPRfCfGPWZ3OByGfZpAFdJ1d21juHSz0z9KW5bb0AJfvX30A9rSMQf4LsilfxY1hQI3FlJw7QNUWtTsrThGSsV2KXNXBhi/1f9fORI9I9kHqQTXX77HyLxgLsw8NF+w4+79aY7mwIa6nrHexDiCcW0OngDG9n0ayDSgMvGujUttf6W0cFNlSSAihfJcKjGfzayCJHc+3VW/1rIGIGdqSjxiPbI5FwroDLHA1rAwAI7QrsRYTUh3Ox/RMjA2jtXwT0hn+DKTd1CAWNM6eA0458yRiVIplr9egTQyU+RKA=="
+                        "thoughtSignature": "EuMECuAEARFNMg8zS+0uHXM1ZyjSY3JYgg5vKw452ucJukBMYpOhVCEkTU17NjwMCDz7t0bl6X2iyNVxW+ALRobtZcrJogzaJ7tF/xHapS5CRb2NDdou9PNH25SiZFpF27kQwF53wzBMMZs2j1vjWi2LaRuTjvxIEMmKZmtA3Po62+AvSx1Pertg5jVqqx68V0wGPOorsgIR2msbwmwu4K4h6DHFkXnT18AmNlMgTG3Jwy7gQAeBEqZZOTq2cY7z6MdX9F6CYDErB73/2InRLD7QjveI45UXEAbrh44g5NX83lEzfm7y285a39KQYnfceYucw4kJYj9VmJtxmOv3GsMmeJ+in3hK4eTTgiJOrHFioMkdoh5Gbr6/+PZhNIMT7Ixn5lK76hyA1GvKkTl4ji2kQjtPNUWtjibOvJdzisPg4fsYyFmT5+9gM8GA04El6QncU4nnEYEjrQ0yIstakUqWoUi2sTV0WX75CDe2oK2jZGyW5I/N1V78q5BrZRrsHJWc/b8gZpH+tdCkGxVeIPQTn1B7oloVVaT9pjlmNWvCX4DAJe6O6aEx61myDoTZb+HWZygVFs8Ayz4M+2vZlZIUmIU7qr2REfRJZjmkr9fVo3mZvIeRPHSgzan1UeYli9qlXdjz7DZZg/4PRB9cOT+gThb47UDRxP996XIFLCYvaHSsQBxawZewbhS9zuCJ8mFxhYF/yBO4Tgi2D7jBS8eJwZHqvXduJ6w2fiHHbuQAuqgpxqEmDycI4UsKGFZwPFOQCtSm5hcOzfzRL9GS3sIkokOILQLVygfMK5PjvupnVgqDE78="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 36,
                 "candidatesTokenCount": 10,
-                "totalTokenCount": 186,
+                "totalTokenCount": 187,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 36
                   }
                 ],
-                "thoughtsTokenCount": 140,
+                "thoughtsTokenCount": 141,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "JtcZavDtNK-d-8YPteyZ6Qc"
+              "responseId": "zB-naoLZNtSK_uMPzIKx-Qs"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=3834
+                - gfet4t7; dur=2420
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 3.842s
+        duration: 2.426s

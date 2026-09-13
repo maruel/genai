@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 353
+        content_length: 332
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/png","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What fruit is it? Reply with only one word."},{"fileData":{"mimeType":"image/png","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,44 +23,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My Analytical Process**\n\nOkay, the user wants a quick one-word answer about what's in the image. Straightforward. First, I need to look at the image. Right, a yellow, curved fruit. It has a stem and a dark tip. And those subtle ridges. Easy. That's a banana. Now, the instructions are clear: *one* word. Therefore, I'll format the response with the single word that correctly identifies the object. Done.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "Banana",
-                        "thoughtSignature": "ErwECrkEAQw51scRlfFTw72J1kqw+ODe64e0FupmyuSm3PVokVJI3uM0kCrpM9pgUGEVRr4uV63cQpSTT6MD0VT74W3B97J/7qYlXsfu8zhP0AElRJFeFcaCweUGlB6ZzNL48DXGtBGno90AaM5FRs/451gmp4dwtroX9eQVGig/x0FINJJ05zTsm1zglAqrGgkhWrwksi0d0eOKSRGqEoHB6tqTbq4WwE0/8PS7TeSVp8D5hQjrPL2x9wlKqk1J8SQ09dwfneOGols9ZgyjxLzRcuBivtNyfR7AK1vffqk7ZGg/lkmApn7qYIw30vtNOfjb2q3OYDm0uazLTJhuOKxeS2h05WAs3Z4i317QU/6rrGgcU6fkv85dCZGc3kbq4y6hkFke4t5whIozroY2+TbN5D6ccMJ9sx5EpO/YCE1dFudDMnFtgwSVsVFCud1XdXuZJ/y8yIfQLDY++1bpJji+hF+Qdq8YC+Em/UEzLXmnGZK1OslVyV7xAEcO/tiX4GyKL2J5Eo7Bft3gakmUvCRrh5mgkvJ1dVAKEM1ERv9nWOv873RXVUbfvXgZwZD1jU8F4lrKr0QVsFr7rkMiWX45g8KOR6zVnxfMnuGP81MJ1AmUyoE8dgjwKuvo27hb1dbb2UfFIwBnrHIjLJ9V1Ci1nFQ5chefp8UseNJIB1LNEKJX9UOYl0urlHgRyt0v+tM2TGg8KmyJ1/FT0JOhM5QkwXbpZ0OudpwAmzyD6cTK55zu+4clRereyB3JSKw="
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 1097,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 1228,
-                "promptTokensDetails": [
-                  {
-                    "modality": "IMAGE",
-                    "tokenCount": 1085
-                  },
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 12
-                  }
-                ],
-                "thoughtsTokenCount": 130,
-                "serviceTier": "standard"
-              },
-              "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "SNcZap7TG8L3jrEPqoXEoAQ"
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
             }
         headers:
             Alt-Svc:
@@ -70,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=6574
+                - gfet4t7; dur=2547
             Vary:
                 - Origin
                 - X-Origin
@@ -83,6 +50,6 @@ interactions:
                 - standard
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 6.581s
+        status: 403 Forbidden
+        code: 403
+        duration: 2.552s

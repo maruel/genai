@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,8 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Hello.",
-                        "thoughtSignature": "EjQKMgEMOdbHApQCq0juKFS990qS38S7Yfgu9nqZDeRODOHbFRPtp0G80onnEZqqTnzZvGvu"
+                        "text": "Hello",
+                        "thoughtSignature": "EuIFCt8FARFNMg/9rVgqrn59Za8Rb82PTZekcKyu5ms0CGhyJjusNZIQsXNyrXkg6drnYQ3CGpaUhOOmZJzeSTM+sPCyHPgBqqm3f+3HJL9ANER2TIpRKTpaAXzCM1Nyoc+D/fWiCE4ztMnw7mRPAPq/qksZDjiGijMtVEZZ/JlMyQSlp6QR/PTl/B98J8oyrADm9Q3z+N6H+X4TBlae53Eukq86ZXb7Lh1MsRftBcYm116+F3a5S0c/qqLw3xkUNiJ5wK+ZXBlkmH3J1IFAECCEFTJ8CDsgxjFr9AYmq1Ns0BBKI5yicFf9Ch2usggpCTYji5dLI/WTvtlryFvRaVzatewR+cn5EBkXd2buDGvo46J9E+jedWXta0Y4uBWsUk4BvCw2ZLIrDKPBHOHq2r3RQTGSLLg+R0xc1nN3ozrulUPR+PqrCb9Xi0mDFigsKicxe7qRvSL0Y5eMP9uaayGBeM9sCDQN4ziH/o85sxMAfGjFgAdGhpRnSLc2jWWGMH1E4cRoOFDe3JeTGpyC96SFOO7m23mLS3pLVe3dwh9QDgFASrZM6hvI6fssjkRENnGn1oQx+2sfQyipn6MWJFsP5OKURKIhmt27uZ54Jme+euhcqHaGc64GX3CL7H23HZhWzL6p3tl7xGDdANFn2EPYAOPerC9onD6nH844IXONQ5v/YY/eETKZP23vF2X85H9sr8sG34/s/gft7TvPVJUK0uPFrXYAk0/4AWKgmKolD7d7LzNzUmDj+Bn+6wAhq1uSbxaLdvuM3kIgcwyWPAvJ86vndsJRp95sjuRQ8nkypoxICzNIBxaJpBLcLYr7Se13S/NgXBQo57S37uoVFvim89L8QNegQjBuuv4HulZ4IzQ90hjBE84vcf77LQeDJrSJK2rIuULj104xWj6Rin4lXAUpkGbopOnj+pV2Plo5jdtTJD6w4kMudpO9xHdN5x0LsISevjES54tRvyHNbyvSI8SJ"
                       }
                     ],
                     "role": "model"
@@ -40,18 +40,19 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 10,
-                "candidatesTokenCount": 2,
-                "totalTokenCount": 12,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 181,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
+                "thoughtsTokenCount": 170,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "J9YZaviONYHJ-8YP-vqR8Qg"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "gxqnaoebKrnVjMcPiIy82Ag"
             }
         headers:
             Alt-Svc:
@@ -61,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=575
+                - gfet4t7; dur=1280
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 582ms
+        duration: 1.338s

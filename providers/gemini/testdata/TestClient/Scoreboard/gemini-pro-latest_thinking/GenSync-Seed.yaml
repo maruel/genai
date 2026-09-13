@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 206
+        content_length: 185
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Response to the Prompt**\n\nOkay, here's what I'm thinking. The request is straightforward: I need to produce a greeting, a salutation. But there's a critical constraint: it has to be *exactly* one word. No more, no less. So, let's break this down.\n\nFirst, I need to come up with some possibilities. I could go with \"Hello,\" that's pretty standard, right? \"Hi\" is also a perfectly acceptable greeting, it's concise. Then there's \"Greetings,\" a little more formal, but still fits the bill.\n\nNow, for formatting, I'll stick with a simple one-word response; however, I'm going to include the punctuation, like a period, because this helps ensure strict one-word compliance. If I simply used \"Hello,\" without any punctuation, it may be possible for someone to interpret the response as a fragment. Therefore, the safest bet is to include the punctuation.\n\nFinally, I need to verify, double-check, and triple-check, that I am adhering to the one-word rule. \"Hello.\" That's one word. It satisfies the constraint perfectly. I am certain that my response, the word \"Hello.\", is accurate and appropriate.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "Hello.",
-                        "thoughtSignature": "EpkECpYEAQw51sf1x+m87ntT4R+tq6hk4KbqLDpILJqBuOgSGHy5PVVUGmpXwBpJ0bpHUriaUeV/xgf2O9TvRHu9BGeXI5+93vtmD8JtrTeKh6RyamicE6PGiTrAwTblyeXaJXOeWpvYp3Zv7eDAwZ4uxrTH3oVOYwRrkV9nVPzh+3KeQ5t628A+3ub4FaE12ANKACMtTB2PDORScCD/Riz9NSk9anNc7YCihKxL+uVMw2iarnbx0ZGAi2GRi66LZIAFzOmxcAVZSWSTv/L1xfM2Q2W7TIJBGs4thhoaapQbUDI6nDuM54t+cBo55p9vzf+NjB2HMZgwkI+IUjLyI/JZptwCrT/qAWZWc7+HDx94qVPNiZ4jr55/OXe0r93Y/s8kSzl82p7HGT3Cqs/F0wekzdQ0mtxI9ZTZpKc6yoZ2IF6QLi/TQTlTNBZIv2+Etj+5rTxsQA/1j51bRr86yOT+2Fiqa1yREfFl0vjIK39Yy5BCB23M3FnqDPTsFpIFpBjONboFwHgwl2pveq07VROpsHkhAobZbpt1oALXetibnQ8OSC+sHSVopG0+W7UU15iRZGY5NslWGUy5LMWt46G0ZePw9PqYk7HNQxJSuHXSN9JCZTQpe31W9UiY37tvi6vHi7IVEz+SPP7iXAcM+rXy6RYJWmoBfFgW/Jn/2jdM7wvMw/57W9Sbnk5gzJz8zsNAbiklXqmyO2SI"
+                        "thoughtSignature": "EpIHCo8HARFNMg91hio61gJ4aMneaJIDJfmA6kZergSjUJn61LOeKC5nJNMZmHvs7AuuT8MTSD6Dym+yxDJOZbNWdqmwGYabw0j/04Xd4PTHX/HoO4QVSnEZzlAZ0IttehxkfHwG6NjszailzZ+t3yAxPhLo7bxiBVndGT/Vu2gckFV/sD96wzibGJfJ6CjhCYLE61w0oASw5MzfcYKDAtPXn8KqxsQXmAK1ucFwzXcK0v5OQD2IjzWHCMFoT0XVoiwXDvQBP6UtKhad0FCIcbM4l7hZ6IjgL2c/eUaHXMwh0KHDGDPF73J3V8dg4cowLPok9yuqlqeEVrxxvaumSse1JuguzBF84UXv6TYha88hnQw1qbDaAPZZOaFEM3p2FUYEgBp2sGw2GWyCO1YMgC4pbEYh24QlstGjbqQ7+yDA+hDvtVU/s780V+w3wcg7Eo5PcHKh2rq6Q7m9smOwn6pu390vPDr0w3BUxGyZKjJT5KK7qhs8bWfMdEwSy2WAKj45Qaj2w8R0MGWQcduyem1wAqwTmQg865GqvYEuZ+aE7oTpvjWPQndjiJpSsONhJ7VvJn4HOand1IZ4DlCVN2RhUKtvyzqUWbGQcD2nNMaAg9PKG4ETcd6z7psE0nY7k48cu8nrtd6Klb5XY23jMkyWQQbCoAGX2QOu50HhhzaBrDQAcd8YP6HwmV21J3u/ICoay27BqpxbeWPT1DzPs88YSVIzUJyYWxc0+bu6/NEShk7RNeCekY1i8SQSAReO4T/IKqeaRb3ThAWgwlQaQqWycg1Mkb1X39ZG817zxw8iJD4ZGkOvaAItAwoSjNak3cXuNwHx4CO71ewQ+RNbP7R5r8jVzCQtT+Jswv5xlQK3CeXhbEvGeH6AQrEJuIePK/2bW90WpUghaDDgjK5Cv7v1YX3nEEpWpUErI3BJXfIXj44ODJ5iZOum00kxJOoHWMvO1+g/3zdoFH8rW5kFqZH2itAbI9BRcG4sZ17+KtO3lsTxxtIRtxEFF5osgLPdNz312Yplz+OJbCS3YkxHzRgEOSuzhwXQK1lAz3kjx/0XOuTDwqT9PN+pKtvY9d6RaHdbUYtg9dbLkICba1ReR4Tc6UnMMDMAa3Icdk/tB3sfV4wkbNBaxYpY2A2ycbu2u8PST6gK2rQFOV/jNaA2Zm+M7WEbwfhFZjktrfXfwBfOgKQ1YL2VWAhIfJ+swoeDIitobdw="
                       }
                     ],
                     "role": "model"
@@ -44,19 +40,19 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 9,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 152,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 211,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 9
                   }
                 ],
-                "thoughtsTokenCount": 142,
+                "thoughtsTokenCount": 200,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "1NYZarr_Cby8jrEPvOOP4AE"
+              "responseId": "iR-nat_sGYS9_uMPsuau-AY"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4255
+                - gfet4t7; dur=3115
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.265s
+        duration: 3.12s

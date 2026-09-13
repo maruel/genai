@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2097
+        content_length: 1583
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**My Calculation Process**\n\nOkay, the user wants the square root of 132413. My task is straightforward: deliver *just* the answer. No preamble, no explanation, just the number. First, I need to identify the correct tool. That would be the `default_api:square_root` tool. The parameter to input is clearly the number provided by the user, which is 132413. Now, let's execute the tool. Once I have the result from the `square_root` tool, I simply extract it and present it. That's it!\n\n\n"},{"thoughtSignature":"EvADCu0DAQw51sf7WVQ51p6ZkFSDjTLbcHmzLPJTiWi9bJl1xP1PuoxfQQcQSSdbjEC3wznsHd8UBUjZIgeM3BI+TwkNSYOuWmJLBhdLIXIjk5G6DVgD2oHb3F8b1do7/wED+lUb3YAtRQhYc7WeW2Dz/GaB4jJGYcvkuWuGumlAMsRCMweskux3VshdToz3+Ocp/uS+qAyPWwXvqYxvhY7uB4nkmzn8JkgvlT/2lD3VyFlYzumu8QFuYdNi8vL3w8v+Pgkhu5OGrfP/zn75geqighUcCC01cUMAdqaf5Zhyy9naU09Pid7yj3jyvakfR+kXPLPOpT4vglF0Ax1yhQggP12CFCNjsiWavZE7DrLCbPrJ5W8onXrhk1Hnr4jqbTgK4ur159Xnonb/oiqOdfNWapaSXN7slN6kMSUMf4aPIh1ld92c953f9xr6O8ndwEYZsEUzQZMU5bStJrcAogr2pY1r2kEbe869bA01k9oXW1cb47Dw9ux9IXbqQ/ZqGRe6T+N1AWPxI6gOlkgOEw1qDsT4As6lKiQZ629jczckGqx+4uilvUtsKLGYz7siNoZHds9QcMy2NZZcvUO5E/LZnq/+B0/bYJEjUOU5FRw666B5nEhMxKUHl+JuY7PTud0fO4nYTfb9djOINhpCKlihMg==","functionCall":{"id":"5ojpgd21","name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"id":"5ojpgd21","name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thoughtSignature":"Ev4DCvsDARFNMg9a1SZmi5uiQxpKJ4YlbFwdnf7HO2bHsof7zWVWw7scIOpxDOVeR9Ezt2Slq+LpP5UGuh5s1U9SZw6VtbQ/OIlm8qfUCEcWdnLrMitXHlp/T0QLPNw8dUTimRZ2bUzWAX0X7xnswLPtsS1DWxt24gnSX8+0BXKWZ6WLWbMx4caEKnKuQlHmszLzCRILb72NnvnSceTE6XIyGSfbHZPttwQ2Tn4P4//jFyJ/Z6TfgfZqzWQd57YMaYyyxXODZmLDCUusFNAjR/dj4XwFYZnkv2VVIruQBjXObKn+aQRr6DN59wGy+dZGCBx/ZDd09utpyXrx/LlxeW5T0ARlL60B6+JOQc/qyS11RIHzxQq+lT0Pno6PyAguyWGBwhZnQAlKN2iDhlOz1GrBxHm7rj3S0IQJ9lGpVwcusiJ/fCCCusoEnE4WupqGrcGRjazqzO9PLDrXcnWK/Y+T84ADDhd9cxvyJci7vygrLGwL+KUhUNlOMX4KtB5/SFl/ExAs4y2XX7ZssJ5IDaXLff+X8ToTC1Y3tKhqmIAAD1ZAcJMneZ4bvERQeAg7cxpWNC9imoYDvCb+TknfC7IYt1j8tMa6/xWvbZaRQ5wjbwY50fwQb1+TeS4aWCLe5uZ71J88dEjAqS+ywH4iKtXbrAC6YGf1URHwE486E638","functionCall":{"id":"call_4403201","name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_4403201","name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Okay, here's my interpretation of that thought process, tailored for an expert audience:\n\n**Focusing on the Numerical Output**\n\nRight, so the tool's run. I've got the result: 363.89. Now, the critical thing here is that I need to filter out *everything else*. I need to output *only* that specific, numerical value. No fluff, no surrounding text, no explanation. Just the number itself. My focus is entirely on isolating and presenting that single datum. It's about data extraction and format control, and that's the bottom line.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "363.89",
-                        "thoughtSignature": "EnIKcAEMOdbH1vHMbAKxtw1U4v7eeAemdmHC1RA41JWHDU4hnAruFAVYSn5ERqB23wkulnIXi6k9Ao6rhJ3okkeroAf8r6dfw3e5saQCTWyaCVZNPtDevO8niFYhDwh8k2OeWb4WZz74hHG+7Xw+7xENNc0="
+                        "thoughtSignature": "EqACCp0CARFNMg8z/tHmWkG6YCkV2UX7gUnGwrQXMjBqQY2q5ZL4GIiXObVESyytTBPIBhhvqrzfGyiiAXwe+MCLa+ibOtsfwVIveMSX6f45APv7irAnN/XMvVKiXE2nSVEpzi+ZY7XTxZc/y0iTIre6rZ4e1I8KeYPpcMYoD6nbcjJDdOuo0DmlLsiDdEtXAUITA/gwBsh3wl0mer4+aPA2K9Zb/HRDMeQyt0xn9uThF/IIEy7J1mPupfn8oC1RXJY3wAu/jCVruUNdmQOuh2HVLTzj5pgUSj7rJO2W6Dzi4dL2B+sY2oKYVNMftqnxsB3WuLHpFHOZqfP3ouQMpfSydsLrubKAcIA6BR5O3VPqUnq3nyk5Dl1NAxMskKDR1mHK"
                       }
                     ],
                     "role": "model"
@@ -43,20 +39,20 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 394,
+                "promptTokenCount": 261,
                 "candidatesTokenCount": 6,
-                "totalTokenCount": 421,
+                "totalTokenCount": 321,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 394
+                    "tokenCount": 261
                   }
                 ],
-                "thoughtsTokenCount": 21,
+                "thoughtsTokenCount": 54,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "ANcZau6mMpKD-8YPsbSZmQU"
+              "responseId": "tR-natyCD4G1_PUPhOu2qQo"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=3010
+                - gfet4t7; dur=1616
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 3.018s
+        duration: 1.623s

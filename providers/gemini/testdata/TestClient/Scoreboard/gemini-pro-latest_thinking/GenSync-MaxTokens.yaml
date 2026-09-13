@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 217
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -25,33 +25,25 @@ interactions:
             {
               "candidates": [
                 {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "Okay, I'm ready. Let's get this done. I will summarize the thought process as if it were my own.\n\n**Deconstructing the Explanation**\n\nAlright, I'm presented with a situation where I need to explain something. The first thing I'm doing is to understand the context. What's the core concept that needs clarifying? What are the key elements I need to address? I'm breaking down the explanation into its fundamental parts. What's the audience I'm addressing? What are their knowledge gaps? I need to tailor the explanation to their level of expertise, making it rigorous but accessible.\n\nNow, I'm mapping out a logical structure. Should I start with a simple analogy? Is a definition necessary? What's the optimal sequence of presenting the information? I need to ensure a clear flow of ideas. I'm considering all possible interpretations and looking for areas where a misconception might arise. How can I preemptively address potential misunderstandings?\n\nNext, I'm thinking about the method of explanation. Should I use examples? Diagrams? Mathematical models? I have a deep well of knowledge to draw from, but choosing the right approach is vital. The precision and thoroughness of my explanations is paramount. I'm focusing on the clarity of each component. How can I ensure that each step logically connects to the next? I need to make the process transparent. How can I communicate the nuance of the concept? \n\nFinally, I'm aiming for elegance. The best explanations are not just correct; they are also concise, insightful, and memorable. Can I synthesize the information into a more intuitive form? I'm essentially building a cohesive narrative that makes the unfamiliar, familiar, and the complex, comprehensible.\n\n\n",
-                        "thought": true
-                      }
-                    ],
-                    "role": "model"
-                  },
+                  "content": {},
                   "finishReason": "MAX_TOKENS",
                   "index": 0
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 10,
-                "totalTokenCount": 22,
+                "totalTokenCount": 23,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
-                "thoughtsTokenCount": 12,
+                "thoughtsTokenCount": 13,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "2NYZat_GI5u4sOIPlofduAg"
+              "responseId": "jB-naqKkJ7Th_uMP88mg6Q0"
             }
         headers:
             Alt-Svc:
@@ -61,7 +53,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=3473
+                - gfet4t7; dur=1403
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +68,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 3.481s
+        duration: 1.411s

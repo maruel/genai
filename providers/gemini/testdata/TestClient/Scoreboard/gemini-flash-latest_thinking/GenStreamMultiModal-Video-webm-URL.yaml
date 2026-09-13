@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 360
+        content_length: 297
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/webm","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm"}}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         form:
             alt:
                 - sse
@@ -22,19 +22,26 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Banana\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 64,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 50,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"cyYaasSlH-ff_uMPxYrHWA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Eq8CCqwCAQw51sfZAlhl9aKvzG3o0DroBDAzM3rEFcARUwyXvX9IIQ1bpfIZRu4x/xXXReT7Qy08NiEjeN0h9ITSOlf1pAdfp2gf8fGHE8uAZAcMJ2vVRmUnjI3OadEIjq61c0fA2CnTxnXmqyt9gUUT6qfAApicgfysaS6IS32/XvmYAIAurqcsmG4PwHM2JppHhKWYU+/co8GTYiv1yvQYnhdBbWQgG7Kfc+W0pZj/n4kKuBYNVWD5K+ClZpsGWssOw82HLibwPD9yDwNGEOBalRgCIlNjh432m0bN+5eywnXty4iwggxLyhQotQorff/4HkyDJsmRGBP1CQONlZsGP+4BIXjchYkh2G/PwKwvIhxAeq2LlPeKg2ahs1S0sZ7p1GOGIPwPMfUol82P7kCF\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 277,\"candidatesTokenCount\": 1,\"totalTokenCount\": 328,\"promptTokensDetails\": [{\"modality\": \"VIDEO\",\"tokenCount\": 264},{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 50,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"cyYaasSlH-ff_uMPxYrHWA\"}\r\n\r\n"
+        content_length: 126
+        body: |
+            {
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
+            }
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
+            Content-Length:
+                - "126"
             Content-Type:
                 - text/event-stream
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4347
+                - gfet4t7; dur=103
             Vary:
                 - Origin
                 - X-Origin
@@ -45,6 +52,6 @@ interactions:
                 - SAMEORIGIN
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 4.358s
+        status: 403 Forbidden
+        code: 403
+        duration: 108ms

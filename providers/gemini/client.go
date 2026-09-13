@@ -59,33 +59,28 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+// ThinkingLevel controls the depth of Gemini 3's internal reasoning.
+//
+// See https://ai.google.dev/gemini-api/docs/generate-content/thinking
+type ThinkingLevel string
+
+const (
+	// ThinkingLevelHigh enables the deepest available reasoning.
+	ThinkingLevelHigh ThinkingLevel = "high"
+	// ThinkingLevelLow minimizes reasoning latency.
+	ThinkingLevelLow ThinkingLevel = "low"
+	// ThinkingLevelMedium enables the default reasoning depth for many Gemini 3 models.
+	ThinkingLevelMedium ThinkingLevel = "medium"
+	// ThinkingLevelMinimal minimizes reasoning for models that support it.
+	//
+	// It does not guarantee that a model will not reason.
+	ThinkingLevelMinimal ThinkingLevel = "minimal"
+)
+
 // GenOption defines Gemini specific options.
 type GenOption struct {
-	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer.
-	//
-	// From https://ai.google.dev/gemini-api/docs/thinking#set-budget
-	//
-	// # gemini-2.5-pro
-	//
-	// - Default: Dynamic thinking, model decides when and how much to think
-	// - Range: 128 to 32768
-	// - Cannot disable thinking
-	// - Dynamic thinking: -1
-	//
-	// # gemini-2.5-flash
-	//
-	// - Default: Dynamic thinking, model decides when and how much to think
-	// - Range: 0 to 24576
-	// - Disable thinking with 0
-	// - Dynamic thinking: -1
-	//
-	// # gemini-2.5-flash-lite
-	//
-	// - Default: Model does not think
-	// - Range: 512 to 24576
-	// - Disable thinking with 0
-	// - Dynamic thinking: -1
-	ThinkingBudget int64
+	// ThinkingLevel controls Gemini 3 reasoning.
+	ThinkingLevel ThinkingLevel
 
 	// CodeExecution enables the code execution tool, allowing the model to generate and run Python code.
 	//
@@ -105,7 +100,12 @@ type GenOption struct {
 
 // Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
-	return nil
+	switch o.ThinkingLevel {
+	case "", ThinkingLevelHigh, ThinkingLevelLow, ThinkingLevelMedium, ThinkingLevelMinimal:
+		return nil
+	default:
+		return fmt.Errorf("unsupported thinking level %q", o.ThinkingLevel)
+	}
 }
 
 // functionResponseSchema is the fixed JSON Schema for the tool function response wrapper.
@@ -1445,6 +1445,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 
 				for i := range pkt.Candidates[0].Content.Parts {
 					part := &pkt.Candidates[0].Content.Parts[i]
+					if len(part.ThoughtSignature) != 0 {
+						f.Opaque = map[string]any{"signature": part.ThoughtSignature}
+					}
 					if part.Thought {
 						f.Reasoning += part.Text
 					} else {

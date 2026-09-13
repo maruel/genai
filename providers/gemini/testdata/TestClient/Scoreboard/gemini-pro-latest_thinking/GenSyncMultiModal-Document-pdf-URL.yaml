@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 362
+        content_length: 341
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,33 +23,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My Immediate Response to the Query**\n\nOkay, so the user wants the \"word\" from this document, and they're being very specific - *just* the word. No fluff, no explanation. I need to be precise. Let's see... the document is a single page PDF, and it contains the word \"orange\" along with a page number, \"1\". It's pretty straightforward, really. The requested information is undoubtedly the word \"orange.\" Therefore, I'll comply with the explicit instructions and respond *only* with that word. No need for further interpretation or embellishment.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "orange",
-                        "thoughtSignature": "ErEDCq4DAQw51sftn9U71uwWBcVdBZ/SBqVRN208AUxSusWUpQ/tIsjIPnnshio0mjslkoLa0zbD6jJ9l7HabcPYXQn2EMCaxQ18dqx3NVoje+CMkC4joAA5bhDssOFj4+Y+bR8Iz7jMrkNtyiqSzKRwjqvRj8Z3MHE7zz+IYFtOnpQvesxLi6CR0GAxwVVqEE41U/Hy/ivjqsLKm/INmLG1gkqHMCKI4f1xiLYHFneZ63LIo2qqLBmlQyQEITz+vcrMDFxDS1FmthRu/W63jLLs2Pd81/P+RDdbsJSpG0THBsAZ5q+2rTBErspTegqNEkdI2iRag9jJJY3sSPOm8vSqy5FL/Pn35f6Fxy7is8cSiltqnm3SUHTa9LSxYqBEuBPePCcv6wW5plksniFM9T5cDwBKnN+waom58jjoZNz78nWpaasTz10BhVqaymc3rmiNsis6fJ1WtWQ8U59EsHn28WlwS+o9LsFgZDDfSz6J4hrkmpF0JrgER4oAQWiWYh2+VfzPSOuDjcDfjt9aMadJ8jr+Wulrz0tVhS3FS1G6myvFi2ZwBiAPCsVg9t0c3VJoeg=="
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 672,
-                "thoughtsTokenCount": 96,
-                "serviceTier": "standard"
-              },
-              "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "L9cZasj-AYidjrEP3cS5wAE"
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
             }
         headers:
             Alt-Svc:
@@ -59,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4757
+                - gfet4t7; dur=11230
             Vary:
                 - Origin
                 - X-Origin
@@ -72,6 +50,6 @@ interactions:
                 - standard
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 4.764s
+        status: 403 Forbidden
+        code: 403
+        duration: 11.236s

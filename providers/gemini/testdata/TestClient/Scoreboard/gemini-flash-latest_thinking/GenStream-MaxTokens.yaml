@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 175
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"candidatesTokenCount\": 1,\"totalTokenCount\": 22,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 11,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JSYaap7QC7Kc-8YPnLuh8Ac\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"En4KfAEMOdbHGv7/tmTL1Kcz+Ygvi3LTfgJ99KloL/yQP8WorS8trIaJP5nPP5smcEQ9DF5DbFV8sou/+hqv0eWHG30Nlu/S7DJbUCd2eleksf7CnymecHv1O4TzbT6cmCa88RIXe7FMKNnz5xdMX2mLAHFE1jh/lRS+qSSHOFU=\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"candidatesTokenCount\": 1,\"totalTokenCount\": 22,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 11,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"JSYaap7QC7Kc-8YPnLuh8Ac\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EsEBCr4BARFNMg+MBxyRZsv53MjEzdswgTDZVc/FfqMzxbpSd1y4vdgdgekZ+uwZxK1Iq1eeCMK4ogYHDhVYARhCaL5166DB3PjJG1ik0JsK6rjKLGhU2+0p3DyQ2aAjXM9nvm1MLTpZF7x96X5YTDPYUTMH1MRbiWWV2Jvk6+VBCs7YzOSloUPE2/vpNQRVOTzSz1SHiNOOi+o3XX8Iwu3wcqb3RaUFkWeOzxtlcVSd47P3jpAEglqko3auavfr8QRZ+A==\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 23,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 13,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"7x6nap3XFbu2_uMPjf6G8Q0\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=817
+                - gfet4t7; dur=441
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 828ms
+        duration: 447ms

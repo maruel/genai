@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 175
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -25,33 +25,25 @@ interactions:
             {
               "candidates": [
                 {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "Okay, I'm ready. Let's see what we've got. Bring on the text! I'll break it down with the perspective you've requested.\n\n\n",
-                        "thought": true
-                      }
-                    ],
-                    "role": "model"
-                  },
+                  "content": {},
                   "finishReason": "MAX_TOKENS",
                   "index": 0
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 10,
-                "totalTokenCount": 22,
+                "totalTokenCount": 23,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
-                "thoughtsTokenCount": 12,
+                "thoughtsTokenCount": 13,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "JyYaavaqBeXBsOIPgvry2Ag"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "7x6naoH2F_e0_PUPu9rWuA8"
             }
         headers:
             Alt-Svc:
@@ -61,7 +53,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1372
+                - gfet4t7; dur=529
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +68,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.384s
+        duration: 534ms

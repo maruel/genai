@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 672
+        content_length: 651
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["USA","Canada"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,18 +28,14 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Analytical Framework**\n\nAlright, let's break this down. My core function is to facilitate information exchange and problem-solving, so I need to translate this user's query into an actionable plan. The user seems to be asking a comparative question, a classic one at that, \"Is the USA better than Canada?\". This sets the stage for how I will approach this.\n\nFirst, I need to recognize the implicit directive. It's not just a question; it's a call for *action*. The user wants a judgment, even if it's based on some underlying criteria I might need to extrapolate. They are asking me to use a defined tool, specifically, the `best_country` tool. This is excellent; it provides structure.\n\nMy next step is to examine the constraints imposed by this tool. The `best_country` tool requires a `country` argument. I need to ensure that argument is correctly formatted - it must be either \"USA\" or \"Canada\", no room for ambiguity there. The user wants the response to flow from my thought process, so I can only use these two arguments. This also allows me to respond back to the user with confidence.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "functionCall": {
                           "name": "best_country",
                           "args": {
                             "country": "USA"
                           },
-                          "id": "sznFBVRe"
+                          "id": "call_3994663"
                         },
-                        "thoughtSignature": "EuwDCukDAQw51sfuB+4MdrwelwsFk7h40g2fmdqfxdr4VO67s6jCs+4Agj2IXn7WLuuV/YRRmzHx/nrmz/1kfJycw36J4Wtzu73sSTUJPmN08M3OlM/Z/gZrh0KInfMIPyeHU+NWiOwNGtAjjVEVTaOtput7F57755OE1WifrVj7FyercMOUxlqSRIT3CYvokId/RPIcdh3JcxZ835Wc8g0APuZe1dbXSImYzK7U3U65wau92IPk8LHy4SAwLedPdMStRhtQblVeqPmBUAMt5Qv+shjTP2sBl2A7K3SBnet/+TOjsglCz7HNPd+JkFxZXQr18V8hMI0F4MGaD7bg3BhOjRiSoe03oPOnKxoRAnzVqEtR0nqH6YgT/IOCUFu9VLZR2cY03pGBREw3HlY17rPKe2B6Y0f4lENmI0tg+oUnFqNBykwKVz/ukG7LFzzyGonNSmdeo/5rV+hCFNH7qUImwjj/tWD82Jv4Ki9hms4Tl1cbfAaRCmau6YsIck3nrV8nfBn2YNu44zVyUTvixiIDg3g7YzCHJCWx6c34PbzGS3esLeF34TilXnM/vgE9IOJGXhs2+wPgLjk1L481O1PJmnjAC5FMneFxVMwA72Z4e3tFEeXATXYGEFngWJFkfWvzeViEIL7ZndlNCtM4"
+                        "thoughtSignature": "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"
                       }
                     ],
                     "role": "model"
@@ -52,18 +48,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 107,
                 "candidatesTokenCount": 16,
-                "totalTokenCount": 245,
+                "totalTokenCount": 558,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 107
                   }
                 ],
-                "thoughtsTokenCount": 122,
+                "thoughtsTokenCount": 435,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "wCYaauOaLYidjrEP3cS5wAE"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "WB-naj-Btfz1D4TrtqkK"
             }
         headers:
             Alt-Svc:
@@ -73,7 +69,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2304
+                - gfet4t7; dur=2084
             Vary:
                 - Origin
                 - X-Origin
@@ -88,4 +84,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.315s
+        duration: 2.09s

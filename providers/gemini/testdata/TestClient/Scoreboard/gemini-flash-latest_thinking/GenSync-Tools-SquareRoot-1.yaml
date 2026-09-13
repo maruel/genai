@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 662
+        content_length: 599
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,18 +28,14 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**Calculating the Square Root**\n\nOkay, the user wants the square root of 132413. That's straightforward enough. My plan is to utilize the `square_root` tool. I'll execute the tool call immediately, specifying the number they provided: 132413. The user specifically requested only the result, no explanation. Therefore, I'll keep it simple: I will await the response from the tool call, and then, once I have the number, I will output *only* that number. This aligns perfectly with the user's explicit instructions and their clear understanding of the process – they are likely expert users and require efficiency.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "functionCall": {
                           "name": "square_root",
                           "args": {
                             "number": 132413
                           },
-                          "id": "e9n7w531"
+                          "id": "call_4172721"
                         },
-                        "thoughtSignature": "Eu4CCusCAQw51sdIpiRhG5x8vTdQvYSZXbDLRGC/fP1b1VApYviilU5nE9EgjYxr3PpvGlZkVmzMXTmZORSUYY8Lcr6hZVtMFVKkW6fng6NmxIBu0GH8xzmaRiQDmzwNYJWTOrzu9nLQ28DRF1I13fpfGO7MZuTjCWbgBIJ0sclYIT2b+L8nIdGFyhtY0zCzz9qq4iBncATCqEOMj2pk+pr62jEFWMO1RSGPhQqbhS9rSSv9yXNpMNbIqd3dTwciO43f76dnvU6x/4XhYUBTG17kTbAMIkXZTX2Mt9ybJ8mNVoFFUt0VsF8xU0z3ysiYMr1I3cSGH93ngwxZzS11INJfJJoZXdnYtUSoMN+yJBB6b9G37L9863EOL1sZ/vlGVUYyjz/4TNdE++ag/2M2/4DBBIoaYOxRRsn0dKJ0uV3vtme/gtx79XxM1H2LY3E0dpPH9AzEkth6mChWjdqDyK6i+Hi3qrMpCLGjo4rzxBs+"
+                        "thoughtSignature": "EvABCu0BARFNMg/UrmwXJQkrkGe90Crej9AK13ib8l5//g6OgXJsCBU6HgZj3gCGO+/x1AMutDJ+8pVXMIcDwOvBHtt5uzTpYorJDD48zuaZyUWV9FmHf3wgOjkmjK/OCq14DLgi3O7nRHXdh+bkCaJ+PZnK9WmXdEq8bHQBvH7b4bLMNmWCqndVAvL69nESTlE3ZwS+M7/z0CKEq/lQ5YhRfc890Gf8MThlc6O2hHXaS8vRfURfYQj1uCMKSPmkNxI1uo0FXoED1R4roOu0PirS7vRemp9+NtVUUfxWJbleGceOj2Gv0yIbJ45Ztgu8ebF0"
                       }
                     ],
                     "role": "model"
@@ -52,18 +48,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 104,
                 "candidatesTokenCount": 19,
-                "totalTokenCount": 210,
+                "totalTokenCount": 159,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 104
                   }
                 ],
-                "thoughtsTokenCount": 87,
+                "thoughtsTokenCount": 36,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "QCYaauasCdGr_uMPn4XSsAw"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "Ah-nat6VFeuw_PUP7uGCiAk"
             }
         headers:
             Alt-Svc:
@@ -73,7 +69,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2075
+                - gfet4t7; dur=776
             Vary:
                 - Origin
                 - X-Origin
@@ -88,4 +84,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.087s
+        duration: 781ms

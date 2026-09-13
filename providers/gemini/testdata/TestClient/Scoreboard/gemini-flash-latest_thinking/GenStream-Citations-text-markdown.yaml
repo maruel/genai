@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 244
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 3,\"totalTokenCount\": 156,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"OiYaatSOKZWj_uMP9eGlsQw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" Quackiland is **Quack**.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 164,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"OiYaatSOKZWj_uMP9eGlsQw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EqMECqAEAQw51sdcdgeF1appZqlvUihKVJaFJbdU8TqfGo8hQ1Qx0LhL+EMxuKvm9Pr8EWUCXcGyWKUUfHmuSmCIx/SG6QdZMu6eV+4Hmh3ULkOrjz9sguxxJsXvk7kGS1tj72MJlVT/HycJ0g+NwpkFuGROVnQXUqIB6SbHu4xv65BCf2XkjUONZDgZl+BIAJys4T9hIFIUGJQmWOILjcH36TXNILGKWH3GnPstXd1a+xG3NKprey4ld0vjITX/vqAnmm2eNhWEMqiisyXYBzD9xCa3vPFlj9qo+xmzi7i8L1nq2An96KQBXI2sITSQQCCc6ZIOhro9QIllApOGrIrZvFqfN3Eo8q5bylRtPQs85kgzMS6oY3JetHWO6Pa7v4Me2msbaM1Ifj96l8HyWiurop5/xUZRknKWdWCEG3YLl/Mv1ax0Ka2CpgVx1Qxca5rld5TtVsxFIsYm4w8wAeP14h5kQ6z2VpD/wtbfm7KFcUcNj8SEK/mmLZ2KK9pBJtYJgTVn3u8nxLwaQJDMaHxqaRIgv5BZ2Xz/VpM1rNvnNIa5dPkiJZf7FBhNuU0iOhSX3FCL8hrWtHH4jT9mj5UuoU10HUdGrZz/debU5hV8g4ILxcny3oiMJbhYOZvJPVlzMzyACE7FcUDIsPyeyONKC6PJAb4PWfV7Gn3mhsgO9NcVMjCaoU6ci5SWzpLCsZ94etLUxWV3jW7N65LZX4JxUASZYw==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 164,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"OiYaatSOKZWj_uMP9eGlsQw\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 7,\"totalTokenCount\": 208,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 165,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"Bh-narvGJIG1_PUPhOu2qQo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" **Quack**.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 212,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 165,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"Bh-narvGJIG1_PUPhOu2qQo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EqYGCqMGARFNMg9JJVOKO9yc9EgpSINqQmLscTh2VQtJRKQy+iG+Mtnf3Y978iXLAEJAWSj/oVEd0V0ON4vjlODK6ErtMQyW7/Wzyu2yPBfnBdlhMV9L3wGRit5Lg+r3X7Fb9lZoUL1dbUuBnvOSaZH1DTjO+aKHeJ86xfG++TTaI2cG7HHsT9n5BmbU9txjL4EC8XF3ExkROswlVlk/RR+M3Kf20AFoqXG9fCmaiD2dDfZtgVdHtE5/2oDLBVndMMGlmfiPCXymrn4ephbBbzB6AAcbsL5C0x1AGKfuilf4fJF45KNfIeBt2SkvHRpSRnu9sgfhHRbJDoJwSIqiPLn1VoUn/a+Qnw/UcfQ4SvX8P3AN8xPs5j62ykgM9dASFWFefKc48ofeTKPfOKOGdDnsWpqahBTw46XOtKXujbJowxGv7n0NBpINXv0F0RPJxJbP5+lDbRRhDawdLRG6rMmB7uPu+duUa0UWmKSvLNrzNn3Fp9UqO51t9ogpOapP+jh6RuoGDM8H5w951tcWOASPcKIMkfsRRkhklVPdKWLci1MNPCbZCs8vJNwVic9DKy8dc3m2ukNM5wn+yOV7f3zaWx+1/+h0ftclloObSXvfxn1iMqN1+E9L4ciPgTpZw7zFQWJhRdRtEUSWo2IFX8qPI1t7hCPKxphBcU/a0CQRyMyweo+1vAk1D5pF/mbzK5HRyRs/Oj/L2Xk7CEImWhQiEJe2TbQs29sN533AlliY7M1Yc6q3bYTbWjdx7hqdthIV75aKbDVTLL+VYekTyUvIbWEtGPDKPM20hT41lC8Czn761BJw5rBSt7GOPbcprExONmdmYkDeyxJtBZzqB6I+w1x9tu3z+xkcv45g+QO9NDZm/LW9O9Gjpokv6e885BejNsgBVqVmptiCFVpF5d44zrMyc7ayZBfL1crgPEfJ1dL4PaqPO05qDzTYfuNjfdpuA5PX6LqIAkCvqGLUv5lv/nU1hiIJ8AYT2gbPqw0We9tsCaVOEQtM2t59KmTePt9JA5vnKNoWrmSUAfcF8XqI6uSZmTrfyStXnezzUKzTDhJ0wfvFtPQ=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 11,\"totalTokenCount\": 212,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 165,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"Bh-narvGJIG1_PUPhOu2qQo\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1053
+                - gfet4t7; dur=747
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.066s
+        duration: 753ms

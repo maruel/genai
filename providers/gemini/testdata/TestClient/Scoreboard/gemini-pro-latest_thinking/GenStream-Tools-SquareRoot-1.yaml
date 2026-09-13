@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 662
+        content_length: 641
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating the Calculation**\\n\\nI've got the objective firmly in mind: compute the square root of 132413. The `square_root` tool from `default_api` is the designated instrument for the task. The numerical input is clear - that's where the focus is now.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"totalTokenCount\": 104,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"5tYZav_2J6ic-8YPnMzQkAo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"123rgs2b\"},\"thoughtSignature\": \"EuoDCucDAQw51seyL2zahnZon0G4oeG99PhCNv+A2UF7raslkSP7PNQkHbr1TbGbM5CzZhm331FfvGb1lGGrfCEsF7ok2YQMJOcEllRD1m+djPtQxwqeZnwxgLUxttsw7u38+JWcvrHx0vQ58hm0ZNuA0F14hcW3E7pIVBzknh761+bc7NND2qnoqYQONB9i+TDeWh6PEh/CzFGtLVHlSY3Z0AYgPDyExQetKlioE4hXs5YxXkzcan+e6ScHyV+VbsbXCoBxG8jPqTQsp00dfEWvaoMeIFfLWVBSOeFF1uSVEz04J3w8BvSkUiHqp/VxoMYKDGfcsLFnY9WuRUtu+t0WCrEyAV6DIrf6yTJq4U8Z8SitVcqIpOGvT3Mk9DrZs6tDUxChGFGdtNtkoNKgJBcee6lj/XywcVrzy3a5wEwLWRXmuWcT0MVPs72vevi/tGtqiMpdDE4Xw3GsP0k9tmlAhYqUqfTz4odwAOWDqBeaALofblQXBt8i0/yTEovf2Q5S78wO7LIMpGMUK68m5rZl/4dj9nZJ4b0VACyCWzfxlWlKYAmwt//BMYMpYR8x7e1FjpLVjXnEo0niTqq7QlHBbOZb6p20dSYUKN3usEnL7yyAvqxhdgwkaFviTcFbf84K6o4jwPJpVgViSg==\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 236,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 113,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"5tYZav_2J6ic-8YPnMzQkAo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 236,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 113,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"5tYZav_2J6ic-8YPnMzQkAo\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"call_2204907\"},\"thoughtSignature\": \"EskFCsYFARFNMg9ImOLNbpvO+h8sJF8cIrBYNSRwtbivXGYGz6J/nQKvadGBW6jkUoJ2vh/zDWEwwusvewQId0jKpL8teoChNedAMoYZCrNe+DX0VMnPLmjehu+jiM0CYA2adRkC2qy04sf10tUuLH2L8FHKgyjZtplTpNYpAi1no2M01RvbPpvWMQ40OWROE+z93Oo2wHl6KL8+7M1gGWiBmMOipIdOkxVbbTBxNZZ6O7TRTocXoL/5jTvafDAYI9Z4xEyiZpDfWts6AzMaVJHqtqQl3o2GVZTWm741kLxK7GqKatcerME3Qgusm8MAiCmbs7PTa7JhbQbJzAuInlBvnTvO2IwlP888sABQqcnAYZJEkMTbVtTvYqzkKmZYi2M7S5CePIUyx/j2TE5HEESpNut9UZeUgW4FnEYeyBC0juametvtedsiouaZgznnPOhp/+qhx2/N6+GwCF6G65tG/r01H1fi54d8hb5fa/JNFAi22DK/D5RPXO0MJSMzydOEdemooqEyrj6+uxzDGsj5XOdgof2dpTw15Y2dp5ogXQqeirVwlWemsBBvl6kvL4cJP+rNNNK3QvyGeVtYUFb6lB7N7bqoqg7sE5wHbCsB5OY8gFMU/UikO8YO+fa+NZvU9cqtQJpFlSxn4dSwFjiYhJ2UBvCGbfGvoXS+klza2hFYj0rgC1mg1oyzmbM9G3wml8oG17bqFi881n9B78EZqd2dr5H4nE9siWkHXLMZVPQbG0AoHsNtdnaRAviRs1OwDQi3M3PJwMzDAVqIU85EMy7cN9g4Wfx1KRPaRGs6miT4F1e06C4I23Lz6VPWttbdmEomqb6tESnDAr0AuwB4qO7QMAXm58TzgLsEAJyDV6lwMjv3j+R0lHMs9otrLzCNNbQA33NPbkc3teTZMOeK0CHMkUqLc8wij34EaWB64dHcLk7EzlnEkLE=\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 266,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 143,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"ph-narqVF-uw_PUP7uGCiAk\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 266,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 143,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"ph-narqVF-uw_PUP7uGCiAk\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2321
+                - gfet4t7; dur=3223
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.329s
+        duration: 3.228s

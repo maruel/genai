@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 286
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Analysis of the User's Query**\n\nOkay, let's break this down. A user has given me a simple text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" And then the user wants to know \"What is the capital of Quackiland?\" This is straightforward. I need to focus on extracting the pertinent information from the provided text to fulfill the user's information request. The task is to accurately and succinctly answer the user's question, given the limited context. I'll need to go through the text provided and ascertain whether it directly answers the user's query.\n\nNow, let's assess the text. Sentence one: \"The capital of Quackiland is Quack.\" Aha! This sentence directly addresses the question. There is no need to dig any deeper.\n\nOkay, let's formulate the answer from the analysis I just undertook.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "The capital of Quackiland is Quack.",
-                        "thoughtSignature": "EoMECoAEAQw51seRtGlZGYVhfdN++qjd6SgKEYv0nO6XX8MduAXPVyQmEpaWIJXUbXJX5gco0n120EPiS6/TCYN/JYZzQJ+rgtO/gLbOW8FTK7qL9j0N3E+UWbaMwLd7tLer17Mlv2btEJF1fHwY/wCYMC7xVeOAsKLc++ZN5wn19c2T6Bwold9b10+WA9S9KS235a1nkeBeL528NUBMM1JZfQXf+LG9bjF8VVsqo5cXoHAbMQJiNaAaRclGXyGliRZAsRuGsjNuOO8M7YYTlyDlUCUsKmsLjbyP2HRpTIp11dLQJ0KLzQl9aT2tMSiXT/92ZvAu9KKUg5kR1Jv0VJRQCbqkHW8tjJuIAYcu4BtnCAKJ7o/8V8jwdULumrobwkIJzBEXrs6kQz7VFuR3EaRMTpsxLtyTL9AqM5+ze8WFH6lah32tLDyIeJMKSyiWDpE//mc59jexNeP+ymxFIInoh7hR3JNqrwMLXQ6nUJcujIWgYJXLLwaCD62OGqUooIO3NPG2d5sIy5R+E+tK5M25X90UW4M7WoZc3mOt17xDeRN2QCeAxECni+KeE9VdPphkdr5B57rZF51Zf5i7YJEEHOW+cPWVZDPT+XHQN0zxxHWaet2p2EQ5A4GiBr2VZfJo7P/y2q9fpdrbniap3aUaZBmvOt1bEfsTdC+5hTjP0PHqDFk="
+                        "thoughtSignature": "EqIFCp8FARFNMg+H9wDhDyzFHkpd0+60Ou6cwjkDAC2Ofd9R9imsdquUSGEEJVO0OWzqq/XP6rgie2+7jtFgZqe1JAwopeH9eEBV+1IDfsi1ybMYdE7bvRZwk8+XcD0GpmrBCGo6F1CQr8aLwEQ/fyK9Ortru4omSrDNUI0C7MtdUX8l7V0XolWH9oEDcaTkXWdI+oGLUpt4xAqHrhfDI2vyEfQUDT/xQYB2+0XkGkGbubqbn9pLIf5WvL5qj1aLoYbpBaZehMCvlajbBzjD21jbvCl8dTTnJlE7te37bQZyM1/SJVZhyfuFong2aB1MBrUdJM4WP5uiJzuSNt4p0EOm+KK2vuJiOsOJdvNQ4ZsSdALDiksb+3JztF6G6gYCiZNO0uzseXCnfuHcMqKfCMs00fnz8Xhqu6nepVjtBU8/Jiins3To3uS0lieubw4An+dAVRKCCosaFEy33BkPztMd0WOtl7+BUxZoHQRu19uGze02eLj3nXeR8wPjQGUBkw2LmUxoPxZLwmklReWg3E9bkUuavDebmc9babH2ZtcwMvDWEOsw5KehQktxr1vypT8RvqZ21OpB9feIp6pNNFmgQWy4dSb1Omtvv4H0Y46R5niAi7zHnt9fkpnKyZ0rKz3Pb7cwLoFJCDrcrELYWSXJnTIhlH/R16L1/F0aEP6acxD2hL8FosGk21+83+MLJcAWSP20VKgAN02om3JiPYzouuz5av9pEsZSVZDvJchIzrBFSE3SIs2AjZUY14ElPLJZte3/F8Jotre4kO5M4wpFvshwAz0SjVxxWLUFjM/02aoWEFJLUQNxePKTeBlFU70mprMjQmLbZSJuRQkTJfN5FDeJZEKmRQDeFzASkhLS/+dQ7yXQVz6tIzmqg50piJVDrGo="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 36,
                 "candidatesTokenCount": 10,
-                "totalTokenCount": 168,
+                "totalTokenCount": 212,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 36
                   }
                 ],
-                "thoughtsTokenCount": 122,
+                "thoughtsTokenCount": 166,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "zSYaapaFMcHO-8YP0cnrqAQ"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "Xx-nare0C4CK_uMPmqHB4QQ"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2053
+                - gfet4t7; dur=832
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.064s
+        duration: 838ms

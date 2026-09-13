@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 362
+        content_length: 341
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word? Reply with only the word."},{"fileData":{"mimeType":"application/pdf","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -22,19 +22,26 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"orange\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 118,\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"B9cZaqrtM7yW-8YPsM7fwQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Ep4ECpsEAQw51sf3G0sAqUU4C1JDrb+rIMWz7iV4Aocv+9W2GtSmMsr1u13yHXIsVHR6dg1yH+gESXQvojZa4kNPxhRHfqmptHqvixhpy4wA4CNnEUva+OEgCzepNYK3hjtbB/kVzswMpnT6iCBe00aho+I/djkjjPSt+U/GbB4gJSYafRXrhT7+CUE9F8nH8/SiqNUC3uCRabAf8uRWrNsd8Qk0e6GP30ZOWCoqXq1UTk4LFNAC5whOxA1pAgmW83OJkkFK3vr8DwxDJ8ducaFmWxDnBQ2kqHA4olSXusA36gYj4kmlY5BfdXqz/vc/YWCzblcJpGiqj4esDwFc0UsF6ypmPAn0AcfA6zwWViyDfqj8DYgkJJ4hsfaB59BwUehUyUWH7By6hEAWSt4Whm4U2XD01IyM9UsIkYKoj6ieQ5hQeSo3Kl0m10gfLcerg5wVx4+oeSzKtqVnkVf/1f32UgsYgDkujNWEhpZ5x5IGm7l4Sv9JG1OnGrzkrzqAkXS1uc3P4HcwCIahxTwKRh5cEaMO9Lv8PUYXXw18muqKSAVvBI3Fo+oQuIcBWUOd+dwcz6tcuwnZyzogH5kM8qSNPgOa/AKzeTZ4/QKgVwkJGx+rP5F7OjOKYCWB01Mzm8G+ezfOxnie69PO2px2keZ8XVRQTlT7JmHrq7czEM+j/tv6/AyEd8bn2XlUHDuB6tBOu/naTIhNxzW7CZiliFk=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"candidatesTokenCount\": 1,\"totalTokenCount\": 693,\"thoughtsTokenCount\": 117,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"B9cZaqrtM7yW-8YPsM7fwQM\"}\r\n\r\n"
+        content_length: 126
+        body: |
+            {
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
+            }
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
+            Content-Length:
+                - "126"
             Content-Type:
                 - text/event-stream
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=3752
+                - gfet4t7; dur=98
             Vary:
                 - Origin
                 - X-Origin
@@ -45,6 +52,6 @@ interactions:
                 - SAMEORIGIN
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 3.759s
+        status: 403 Forbidden
+        code: 403
+        duration: 104ms

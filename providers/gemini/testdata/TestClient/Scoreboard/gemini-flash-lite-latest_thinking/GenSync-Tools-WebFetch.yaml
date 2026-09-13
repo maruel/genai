@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 239
+        content_length: 218
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,16 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Approach to Fetching Website Content**\n\nOkay, here's the situation: the user wants the content from `https://perdu.com`. Right, straightforward enough. Let me break down how I'll handle this.\n\nFirst, I need to clearly identify what's being asked. It's a direct, content-retrieval request for a specific URL. Nothing complex.\n\nNow, let's formulate a plan. The most efficient way to get this done is to leverage the `google_browse` tool. I'll instruct it to fetch the content directly from `https://perdu.com`.\n\nOnce I have the content, I will analyze it.",
-                        "thought": true
-                      },
-                      {
-                        "text": "\n\n\nOkay, here's my interpretation of that snippet, delivered as a professional in my field:\n\n**Initial Assessment of a Digital \"Lost\" State**\n\nRight, so I've been given a bit of a breadcrumb to follow. The URL `perdu.com` – immediately that suggests a state of being \"lost.\" And the content? It's even more minimal than I'd anticipated. Essentially, it boils down to: \"Are You Lost?: Are You Lost? Lost on the Internet? Don't panic, we'll help you * \u003c----- you are here.\"\n\nFrankly, it's almost comically direct. The formatting highlights the repetitive question and anxiety associated with digital navigation challenges. It's a classic example of a simple, almost meta, message. The \"you are here\" marker is a pretty obvious attempt at offering reassurance and context for the user.\n\nNow, I can address the implied user question directly. They're likely wondering what \"perdu.com\" is all about or if there's any important content. I've got a quick, straightforward translation or description. Let's get them back on track.",
-                        "thought": true
-                      },
-                      {
-                        "text": "\n\n\nThe website **perdu.com** is a well-known, humorous French site. Its content consists of a simple message:\n\n*   **\"Vous Etes Perdu ?\"** (Are you lost?)\n*   **\"Perdu sur l'Internet ?\"** (Lost on the Internet?)\n*   **\"Pas de panique, on va vous aider\"** (Don't panic, we will help you)\n*   **\"* \u003c----- vous êtes ici\"** (* \u003c----- you are here)\n\nThe joke is that if you find yourself on that page, it confirms that you are indeed \"lost\" on the internet.",
-                        "thoughtSignature": "Er4CCrsCAQw51sfhkaUb7le29BGIdPMQxMhufxp3DMaGwOTQKTkj/REvej8hMyhu1P2KNHlP2GjU39o1BgCGKL6U0002IgRQro+inzfcaYGuU78/1juQ9jEJodSaE5ykVMzH71fDUqji0AM8h/bZVueofy3k6I/e6EFGqhp30VSP2Tj9cdxrF1o02eAhKvGfwslX6hjUEcolPHC4Ig7aggv74JFkvaqvP0tScmbYXZViHMLcYtniQT/9BTezEwln6qiNWhzhMLUDsYuHdH7zCVeoZf4LC10myfCM7bYj4zEEKle2gdThNnCfS3/F4ivnmvEn4ayXeYP0fLTOxYvFZeFIe2VeJlcdG2pzOwHsqTywn74fJlTyPC8OtDZJiODrdzxTA6XvhN4WL0q18DHMPOWOYf0aXwqL17cUMHxm85TE"
+                        "text": "The website [perdu.com](https://perdu.com) (which means \"lost.com\" in French) features the following text:\n\n\u003e **Vous Etes Perdu ?**\n\u003e \n\u003e Perdu sur l'Internet ?\n\u003e \n\u003e Pas de panique, on va vous aider\n\u003e \n\u003e * \u003c----- vous êtes ici\n\n**English translation:**\n\u003e **Are you lost?**\n\u003e \n\u003e Lost on the Internet?\n\u003e \n\u003e Don't panic, we'll help you\n\u003e \n\u003e * \u003c----- you are here",
+                        "thoughtSignature": "EpoFCpcFARFNMg+/iOfmDWKePUHKWL55ntwzqtAJktnmiBbw6r3asXuv9kKRb7aFucnibV9Qd7DSXOwMq1gkb8Ka/6IynFOoldRwpYPDE1nRNcQ739dSOzCW+quYMhXU71rfssYgQ+vIVLfHvi/wES/0KaJ3pRrlrofrY8yBYfZpAlj5sYNg0qnRlJQhvkYMAvkPZu56Jq0MpCaenJro2L3iIJmDNw3QALjnp+aUgHE0ghoTEocP6wYO/cKz/J5O77zewOl3XaCIZCQl4j6FHN7puQPJSLSxorIkQgRMOvjDHfbMrge6GsmfL/5WAYuqqp0Nj4Q3e8+uYy9YVhnzLnHmflNl0EulqmKmT4q+wzoW4Bh3e7SWXPRu2MykozCN3ngm6+eflKw8kX/UvlI0i7do9ZIg21M2rDIf5ZxPRZAcjmiotL3ZwCSg/zAPDbF4YsCip+DkYTpbj88MTj0xPdU0sJ4b6gHelPSWtfRpk32yiljYHLg5geyUNhzSOdOBt8xBg0J+LHMHmlMs6Oo7q0t5gr4h7uEM4E325trcSwQfP5ujYxUsUg5ZAdgcIioXhKTfkZi9YfTNERp8S2dufxKDr4JEusVjmesFiKm272NEzQbETgatr/UslfykyXFzoTAvc+MZbXvCWUQHnQR8DGh3ma9rwsEI+jNscncHkDbDEDOf4FFUkT51hRGmhdcIso5D6zi/Q10yqGUaRfhzXOq5a+8PB5TLrUhG8neUQGq7YjMudb/X32AOwFVEZbTqE0WyDL7QIqh8Jj0Ab1qTwIhFzVk8puyKCQNnBmasgbJ4HrmTSdVdam38XBw+08r1wpzNKGndMT4qugHfOqkn6ULQMI+1m4BwTta0DJt1/3wqqQ1OMfuJcIuvGljD"
                       }
                     ],
                     "role": "model"
@@ -48,7 +40,7 @@ interactions:
                     "groundingChunks": [
                       {
                         "web": {
-                          "uri": "https://perdu.com",
+                          "uri": "https://www.perdu.com/",
                           "title": "Vous Etes Perdu ?"
                         }
                       }
@@ -56,9 +48,8 @@ interactions:
                     "groundingSupports": [
                       {
                         "segment": {
-                          "startIndex": 346,
-                          "endIndex": 452,
-                          "text": "The joke is that if you find yourself on that page, it confirms that you are indeed \"lost\" on the internet"
+                          "endIndex": 105,
+                          "text": "The website [perdu.com](https://perdu.com) (which means \"lost.com\" in French) features the following text"
                         },
                         "groundingChunkIndices": [
                           0
@@ -69,7 +60,7 @@ interactions:
                   "urlContextMetadata": {
                     "urlMetadata": [
                       {
-                        "retrievedUrl": "https://perdu.com",
+                        "retrievedUrl": "https://www.perdu.com/",
                         "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
                       }
                     ]
@@ -77,27 +68,27 @@ interactions:
                 }
               ],
               "usageMetadata": {
-                "promptTokenCount": 154,
-                "candidatesTokenCount": 155,
-                "totalTokenCount": 721,
+                "promptTokenCount": 128,
+                "candidatesTokenCount": 148,
+                "totalTokenCount": 809,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 154
+                    "tokenCount": 128
                   }
                 ],
-                "toolUsePromptTokenCount": 234,
+                "toolUsePromptTokenCount": 257,
                 "toolUsePromptTokensDetails": [
                   {
                     "modality": "TEXT",
-                    "tokenCount": 234
+                    "tokenCount": 257
                   }
                 ],
-                "thoughtsTokenCount": 178,
+                "thoughtsTokenCount": 276,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "xyYaauLxCLGhjrEP1JCjiAg"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "XB-naqmxDorv_uMPwIXpgAo"
             }
         headers:
             Alt-Svc:
@@ -107,7 +98,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4551
+                - gfet4t7; dur=2124
             Vary:
                 - Origin
                 - X-Origin
@@ -122,4 +113,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.562s
+        duration: 2.129s

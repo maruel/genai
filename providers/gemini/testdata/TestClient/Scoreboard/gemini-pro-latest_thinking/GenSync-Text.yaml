@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 196
+        content_length: 175
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Concise Greeting**\n\nOkay, so the task is simple: say hello, but with the tightest constraint possible – a single word. Alright, let's break this down. My mind immediately jumps to the obvious contenders: \"Hello,\" \"Hi,\" or \"Greetings.\" Now, I need to be absolutely certain I comply with the constraint, so let's use the word \"Hello.\"\n\nI'll double check my work. I have the single word. It conveys a greeting. Excellent. This should be straightforward.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "Hello.",
-                        "thoughtSignature": "EsgDCsUDAQw51sc4t+4xLbdJw4jWFFgsoOBK4mvfNIgCDCyZtQvSS/UQU8q3reIXskdh7j04AE6eCi+zNYgE+0KiJsSn1yBVk5DWE803Uqs/waMlxvtSwcdK6vKsSF1XGSw4PMo6SQ/UYqCtNBkL35fm1WHlrWtZCwg/PF7bQt3OAbzZF1d+xqqecMP7r1CQHm10X/k4Fu+iJ7WKhfjHw0Lrpk+s/0m9U91qVpO+kjm+Qv6Cz+NI0xqMVM+cNnao0fi8zsgFc9yhMcMkI2AWUSojoNwQO60eVji0BfeQf4MHbX6NMqKTRjXZFpgqzb3yQil/dDDCL7HXMX6yQnNyn7GzUSmS9+SpKmCehLtc4KVA11PM7t2e26SAXkaDjvw+aoFzFWm2KDQY8Umb6nLbyqxl73ErETyumJhvXIkFMXNfX7RuomjzXo+ISoYHjvA6G4E8GekHH4oLEzxO2uSWYEWc1h8WdC2Rvu5tAAGCcKB2mTJ26a8kW6+k4yClm2VY1kW1LRwHwKDddFXi5BdorOnU2omDVcerf4TJongfqn0k5OCTFx21JGIXRuV8zDnMMS4sZOP1MbZynUGD8IXAH7Y1KiFfbHKGV7qr"
+                        "thoughtSignature": "Et8FCtwFARFNMg85NVnKnMonfE7lGbGeC0n/r6zUv6SPcLyIDCf7llV+YAe7G/uE28olsjqSwgnpjrnKQlLM393rfRAzLZRzI83R5NTVakGf9JwjmDT36JImQdnFDz5yUD4ij669FE+Z4BNmZRkLDsIieEINvgUMk235jj6Nrt7uROoa0v8WyaAf8gm/zFbGQ1kJzAPme5MfUpUZtpExQokYpx5ZAazn5pCXNwumjA/l5Qt3I7d7jKjXHWqGziO73Oj6gefLAcyDtEK25wZQLWY6cbTQuOKuGMIT7wYKN1V73k2o8aye19dWUMkKTHuXzW7kE8Oqdtum7iXwZZ6p89KGFV0R4/ipGche3ei+a9Wy6hEy59VJoFcoeYtCIsm8IJpmX8byO2RjEr5nGYSGIoYAFjZH4AvQwdEHK4tmbGJA2PZ5GePt4XHRNJLsdM8VGyzNwa/SvQh2d+MmHUe8PWb1Uuz2hpw7lJYf78MaISdHv168nMxat7OcP6FwFXhZ97xMyB6NF7dgtbf0b5ugpmgxLE8QGCsLAfetSnwV0v+H3evxv63RPBeU2DbkCsE7xI6OApkix5XGEv9h5dtNBXNLLe8KWuGoeEszHE4svmj0lZYojxSWKQldCJqz3/ZtpEgrHfsLoqY176hYVSnDyFInNhGFa5LUrFSk+FJh0103BF3sCAWweswGQszKXeCHrGKyFZgJP/WHzY04kIWsixBQI1QWkbt8PoYOE34WTJOYiW3KsESza2uO62UHJaB2TEmRRXVi7NSp0XkEbDHsAesyNO7UvqAZHdnfwIeUpVR5lI9KvgpJjVxxvLchmvADNCsslFFF2z2HxQLrNF61jmDyvNbYssmKxjyBn6EVW/w4pyWIIwfRyrorZUXS7obXCJc2JbZGvGpuDZ0Z+dt6Uk4NTbyP9XnXH1KRBNqb7fGsNFKXnwlcY663Hs5CJXGHx26qlv0tEROvGMz2LeHo25x1"
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 9,
                 "candidatesTokenCount": 2,
-                "totalTokenCount": 135,
+                "totalTokenCount": 197,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 9
                   }
                 ],
-                "thoughtsTokenCount": 124,
+                "thoughtsTokenCount": 186,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "0dYZapO_C5-6jrEP_rzAuAw"
+              "responseId": "hx-naodY3pT-4w_fyaHYCQ"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2967
+                - gfet4t7; dur=2416
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.974s
+        duration: 2.423s

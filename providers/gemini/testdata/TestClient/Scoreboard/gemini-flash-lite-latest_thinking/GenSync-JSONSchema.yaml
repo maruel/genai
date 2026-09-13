@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 380
+        content_length: 359
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Processing of the Banana Question**\n\nOkay, so the user wants a definitive \"yes\" or \"no\" answer on whether a banana is a fruit. Simple enough, but with some very specific constraints. I need to be precise. The user *doesn't* want an explanation, just the answer formatted as JSON. I'm provided with the exact schema I need to use for the JSON output: `{ \"type\": \"object\", \"properties\": { \"is_fruit\": { \"type\": \"boolean\" } }, \"required\": [ \"is_fruit\" ] }`. That's critical, because I can't just throw out any old JSON; it has to be perfectly structured or the whole process fails. I have to deliver valid and parseable JSON. My primary task is clearly to determine the correct boolean value and package it in the required format. Let's get this right.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "{\n  \"is_fruit\": true\n}",
-                        "thoughtSignature": "Er0DCroDAQw51scRmK3+O/fUnEFPNlv1Fvm7DWezRRflPUVBVnJ7jESrd0eoNMvq1TUM3vI/hww/g86M05vgNCNvTacstSH4q6GnEvms9Uafm6rPUlBh5hrUgopQvBtnYUUPjBGJWPZyCTfbRUSrTZ0YBFGAgJP1w+guQIIvxQuAHa5n64HbEqP2LWgdlEn/ufmCNBwOdsMjXIZCgzJyjJ4wok0D206PaveEuRRkg0BYkpfRYkWvGxM16O55Em2UNZ8QPKWqQwKQZJSnb3t/UfO5TJPOh4kFc0y6pk8ZEITglfoR8PfZdsVV7H1oY6MebVsMpQUtHKJsj+MASoCqJejRMNvXRoohcPjvy8hfceRYIEuo1QEWP2V4HKbatQ+IOoNXseA7w61vKWMI7Pj7OCtEUDwsHr1fvWozJXKuJqf1aOqA/jFggHc2l2sXe0l9kWrmrXwo90jEF1Nz/cYgi/4AmaPniQqGxKDsxfGv+fUPUImc/xmXtVJFNF738MtdF/z8pUa8C3YU0nRjYPK/xeXAROu6XZTuEg1uJucNNrYs8oSC8z8DKj0xNohHx89wZPZ7aA6b3RdDCkMtSoRBHQ=="
+                        "text": "{\"is_fruit\":true}",
+                        "thoughtSignature": "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"
                       }
                     ],
                     "role": "model"
@@ -44,19 +40,19 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 18,
-                "candidatesTokenCount": 11,
-                "totalTokenCount": 143,
+                "candidatesTokenCount": 7,
+                "totalTokenCount": 424,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 18
                   }
                 ],
-                "thoughtsTokenCount": 114,
+                "thoughtsTokenCount": 399,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "uCYaav-PPO2Z-8YPqeOA-A4"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "Ux-naqdLmM_-4w_b9Z_ZAw"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2384
+                - gfet4t7; dur=1582
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.396s
+        duration: 1.588s

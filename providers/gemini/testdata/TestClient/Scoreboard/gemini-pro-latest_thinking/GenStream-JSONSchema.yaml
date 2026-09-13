@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 380
+        content_length: 359
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining the Scope**\\n\\nI've scoped the task: determine if the user's query (\\\"is a banana a fruit\\\") aligns with the JSON schema's need for a `is_fruit` boolean. My focus is now on ensuring a correct output format. I will now examine how to determine a fruit from a non-fruit, and how this relates to bananas.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 18,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"49YZauq7OM6ajrEPxMqeEQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"is_fruit\\\":true}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 210,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 185,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"49YZauq7OM6ajrEPxMqeEQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EvMGCvAGAQw51sfgBHHrqUrklEN6/hiMwYknYk+xbcmi9jJtej1PvOE6rWfPsE1Zc44CkoWOoMskt9JTqUdcd8O8UeSMeg7VyR9IOoseNBVhe5edZ/q1Bf7ZO1qLA4kYwg+QFUZdRqi/0lu8DLBNF07C14EVToEv/zqFOv5MRRVUK9z63f6FFPdsrvi26wTTOONfLYBFTmmHyRXPU4R3Um9iBrC3DRqCR//kMihzaSkyAGX/jGx+HyoDXLbPQJpsOLLcNjbEjDOKX9/e5KQ/RtougmRMI+9ohTtK/a/Oy6H4qNuPqx7zX1imJmafd/TtN13KIOCqr48voDhCP1WHPb5AgjOpFIyFHFuebkIwWObh6oFttZBuQPle4Lz6ENUcKlXRBGFPxXxIzHVIeaNUZR9MYSVBfgfJfh49aVOZqzFWXxzEvHiyWo8d9xENrOhLpa7jkXaHlN8hYIQH9agIWcYCB0Vs+DohfEURX5VFKClPYnwnIsFJogYc5jG3v2b/bIbpTjTg88PnJ+4mGW4GHhTnd4ITHEF1wXsjXsu6LzvNi5t+2CT8TkD9fkE6tDSyUnKr8kCLJoIvoAxbr70UNcyAls8+SEl9taorr0eSEsWnN0+6LA5Yt73m+2GmcrNXJE3RBKUnw80ywNc2k2hpcnMxPLq0aqLjOBQWyWW/0mTNssIyPjHg4nSW9jE4tGQLhQLqNrXAQ8F+sCEZt3c7RAdGiu/1Zwy8TkxINi3KcZUwxgeK8fLffoiVWqP//r/042mPtC6OgbAT8LxDYHh7zIZEtkNGbPtST+jG0iYB3TUWjMM503yhQ3kU4JCTKAEUNqOWvQG/1T4fUDC2s+ah3JWn67ZlOKY+CjxNncLIoR/jh7Fv4uM6zCJdZF2lNsCLLSCPfEusGRIr23o9VUq2EBVk7pIByJcpbDz+XMiEph7kFKDs/wucXPfWJjcDroOD1FqOKA1IueAbAjr4kSq80ysDDgAbpndF32GykmE0aP6NCTi0vLnlkN1TzKRsddMHFOQFWwzR4sLz6Ttzv+6kRkLH6QcQKySXlufA1XodUtcFmRq2VN9u7i5zWCB5n1QPz3qfjfC3H1kSruFhnGOhMpmqi7XXBnFIj+PCO5JUu+1i8yOAXPMdMO2TOum5yTuhCemHKLjoA55x7Cf/R8hEwi88aCSvug==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 210,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 185,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"49YZauq7OM6ajrEPxMqeEQ\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 1,\"totalTokenCount\": 264,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 245,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"oh-natWBONyg_PUPi-7dgA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"is_fruit\\\":true}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 270,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 245,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"oh-natWBONyg_PUPi-7dgA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Es0ICsoIARFNMg/TS0TDWiNIqj27EMqWeJk6TdjeJRz957JBzcOmynUnKoTTUFKs+nEK1QOMtJUtxMpfvR4eZekFnV+peK7L0PbEUVdwqN99izDsf8sN6fqeX4SeE4VeS1A4AZ2Jrqz6osMeRZtVXqgMXC4tAhG6Qq+DljocdadQDLOwVurmqTBb0wR0rSqPb8ZRq3KETXLMGvIE7BvYMJPh7IW/0vvbQvc7IvK8M+19TQ+ob/91AWetPm/hsZ9Hyw9FAcrnwg4nXaycr/8thZFMlLC8YtzaIRdDBL+vr6DndYcPbAb1IB3mQmPEl/WJrIDuTFOhkcpwydz/Ll+6QhfvZtwj9P6Nbx52QdFneMXKnpXwtOXeGTVEUspCf3hVfyiLVlvo7gJtV9yD0uV0PkCoiK49HoZQ5FyUYKD+VqJYLTT1EatyrG4QbeH1s9n5hH/5lHv7fagwVLLPrdM3p6fk9DkOKpZQsaGvNkIfrAMtP/Qk2STpBxJaY1Zrm+nPsWlMKFgwZNd1JwhQOdJ6KPlipqJ84ehX5mYZ5p6aTBf02XYqiE+oX/LcDyV5z+ehkZtG8NtJVGZPoI2LAYaD8K/PLRyacQ23r1cSChFDIY+kTHytdB/wVoBM5HBcLYwv+qBHkC800TqKdO8pV+EYt33whNSlpL5xAXUT5swZiIQHsB4+Yn9Rw5CIgqO2lYbJ2RYQEe8dBeUzg+QsL8VxYakdg6/uShSslJIzczeYfV8GTSuwEP1wmMLqJBOQbs8qzJTiNxs59lIshYOdIejS2N6FaRipGijiZ2Cn6n4YKLcg6UZvxQd8zq/wuWPdldTi4JYPl1P0OWMBKQIiMsQv5f5nU96m+1FNTPuTwJM+188JZd3a6ucumT2hzW9Ko/2O6/A5noFNtgQXRnicjrfog0RHnzNQT5pkjrQxW36GbRtTGEa102uFwlLOzbc0B8d5tbOlhSWS92Y3wft0zY87FIDdEVkFa+LH7X81GaY/dn96HUKXxKBzUiT8AzeiJlQG/DpyRzK8C0wQPrT+YuJk7bzrxGpzcS7EKMzeKlgrpdFTmWmlW+byLHccPLrsLcHqV4zH8IJx4OxESIdrc/G7a6BCAPcQbatKN4ffjZ0tUUKHa+c9ATpEJisircV9HUY4E9IY8IX7kAPPvhASNZ9SkyqdnEAdlHOBGrUA4rxT7rECAIaKjujbFMi2cd9xu5BLHi0B1gCyD7gf1iJjkzej5RFSX88m/L2pNl/8SgBFLvTF3lOU9+6bxnZQVoQlgoCduXU9hNI+qYuxUqCTF6/ZdUwvQv5RxvzVyskG1CQCzwluN6ZCCOpc56uUNETQ/eGre7F0xuGXE6quqxp9rjFRz4hH5aeRQVUC7I3je1qXj+0MhKY3WALNfz89vGuzu6jGoTjftdrfzU12ucV4qnGzSYfEbpvAQYgDyWAWD3m4ck7WnD+1U7H2/Ah64vBflmnV\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 270,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 245,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"oh-natWBONyg_PUPi-7dgA8\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2389
+                - gfet4t7; dur=3376
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.396s
+        duration: 3.382s

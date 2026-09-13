@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 291
+        content_length: 228
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"text":"What is the capital of Quackiland?"}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Analytical Response**\n\nOkay, let me break this down. First, I'm presented with some factual premises and a direct question. My approach will be straightforward, focusing on logical deduction.\n\n*   I've got two premises: \"The capital of Quackiland is Quack\" and \"The Big Canard Statue is located in Quack.\" The second one, while true, is irrelevant to answering the *specific* question.\n*   The question is: \"What is the capital of Quackiland?\" This is a direct retrieval task, relying solely on the first premise. No inference is required; the answer is explicitly stated.\n*   Therefore, the response is a simple extraction: \"Quack.\" It's a clean, direct answer, avoiding any unnecessary elaboration or secondary connections. No need to overthink it; the answer is right there.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "The capital of Quackiland is **Quack**.",
-                        "thoughtSignature": "EsQDCsEDAQw51sd85XkqMRtfpMwgRPKKnGEFInXTZIlgMtbKxaGiNbUpf3MLhJ7pYEZalPWe01xAnv4/WI3GW18AiTQmJtr220HXwMug0kBFP/Q6bKyPhOmfypB6zbYUg+5HhNQ2+6/PcRhL5rzuNR7mcWmMPtsHK82WbFHR6+Suw11JFsYVdj7kafd/sg7yJq4aV56v0Ngsv48cJYewFeCxuXoYhwyrXMBUBWBzHk8s6c56sX4jxFofAktG661P4XVYbT5v2kv2aIvWuJgA1CHe/dbxu2a3ooL7ajnhnTaJANQZ9TxswfTYyHhVBhIYtRRZAvRgYeSTrrrIucahJRgLogB5YxCjSwMFkxm/FLUWxrFVT1B4/6vg2jq3EHFhyD26pRpHcWHnWmE7GzMvstfAnowxGCeBZV0uTUmjJ6sUv200A2bA7QjxA8KFjUyhD1MPmIwvQw9LkMFel2mhS/0/pw00XJGsE8IJIwHqwsrxgx33ySy3wMIdfs3unlfgaKt/y/ei3Pd5z6BUx5m6CLW8W/LtVEZRVro/od5wDgkCm2bYDHMlWOTjowpNuTLQ9v1x131LSBBHYxNHnsvgo0bTG1oADsQ="
+                        "thoughtSignature": "EosECogEARFNMg8QOI2Yh+FGwHZmh8mnkIqGqiq0ba7xbYWxCLYmfqiREss+jpjGrp4bvPKf8RziyFIs9/eRGUfE9ukX1UXofDuXE6dXkiHk9Kv9mA7y2ylw35tIQiRAKw0lWmgUfHSKdhAbGt6fqZSc/Q8svJ5kg8U7p8HXd3shBOnumsq9HhAuIf98LqlWk271hhWe54dZuFoLqbbru/ZmDm92ESZC44p9IJzzcbq3WdjUywyml/Gh60mQzsznbbFynFBhNu8nFyqShhWYbu/LbZvRgJpkDO079apGsmHo/f+q/eDvagsmvoehfSvioDTfybh6Q7g8TCJU05rEmercGQoMLQ72ALqzhvHeQLuWXry73fDWMJUTsiCWgbhOetMI9V1zQ3eRejN6fDz+gZ0TewoueYIKbsbUMIsSkRnBCUuyXMRn9A439Su8Tw5FxewUUE0N8uNHmm+gEG/y3kriftawCblxSdrOmrPkQ9VdexUSGEQJkiAn8fvazDPiNZTfLSOroVoPOyvWeN3oBYcGaIMhk0VeIDlx3XbVZ0pLJZL39q791bbuLBt48tBnOtsFFRlja2Gigyf8yk5GAOMjHJ/6ZmpGCrTY1CIsP+lmkPG+48ZAcj1VfGPF/weGhBTUMtA4AsEg3aiZ0JQJRUXwyg/pnHRZ3s9rf9UI/U5SrlTx9aoavc+PdvLkbg=="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 31,
                 "candidatesTokenCount": 11,
-                "totalTokenCount": 163,
+                "totalTokenCount": 164,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 31
                   }
                 ],
-                "thoughtsTokenCount": 121,
+                "thoughtsTokenCount": 122,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "VSYaao7QN8vU_uMPhMqukAk"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "EB-napPJAeub_uMP-PuHyQ8"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2504
+                - gfet4t7; dur=1849
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.515s
+        duration: 1.854s

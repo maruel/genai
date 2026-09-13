@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 247
+        content_length: 226
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "Okay, here's my process:\n\n**Structuring a Comprehensive Essay on Canada**\n\nAlright, let me break this down. First, I need to really understand what's being asked. So, \"Canada\" is the topic, but it's not just a surface-level overview. The request specifically demands *great* detail. That means I need to touch on pretty much everything – geography, history, culture, economy, and politics. Got it.\n\nThen, there's the constraint: the response *must* begin with \"Canada is...\" Okay, that sets the stage. Now, how do I actually structure something this complex in a way that feels cohesive and logical? Thinking about it, the best approach is to build it layer by layer, almost like a pyramid. We start with a foundation, an introduction to frame the country itself: its basic definition, its sheer geographical scale, and its basic national ethos. This starting point also addresses the \"Canada is...\" prompt to meet the constraints set. From there, I can build into all the different aspects in a logical order to explore the detailed topics.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "Canada ",
-                        "thoughtSignature": "Eq4ECqsEAQw51sfIVV2Wj51Ysnuf3I8L+zLpp7yyOaupSWaACKsLRNJd3SPGOGTB4qnMdtwLbAaDdfvkZgUJAgbEHUnR6G8a//64Nquhv++vtbi0pTP0jEW2Izl6/0wySvgsL42yV2LZnkPJ0do2M8PmDhcBEZdUWvFddeon3KjqsXzsGViAGYCPteW4DewahPQLemRq0tKMO4cjbQPXROBGoi1ZHK+W8yjI9T/0STEbZiMJdyyogarEg1DsH+w0CTYF8JTnqQw84yhoXsKuSQhtjQQP1fI1xuI3eu8DodJwunt64gxoNEOzFzQ8HoSY/NHOXoWOEBRwYwYkJMGLZvMAekm71R7Q8WQkC4GfwJL/J5JRBrx06HMhtmE0Q7BbA81k4LZPw7P1Evq2DCnp7vdgRirtYF8HwqBjNagnJk3aZv4wHDLZOE5pRcq2AaRZ6a8II6se6E1Mk6Oz2XwxY4B4XrAiG+gLMDepY1brwNWocIbLSJLPxHuYkyvg2WjnbS1LgsbP2Gkv9bdzqwD/Jz0pOl/2kqGLwNs/OleLF1AG16zmU7r67Rev4LMWAHeu4Gm/qCzS5+uSByDb8swt3J/k9SCtJPr+2HmMv3KB9MQOxLBFgnLmuuqNoHur1XzU6GKBqatR7fUBOrIDRPwNis7DN7fbmFMUR/f7RLlTvJqr8vYdIikpTYPMICYUBQ1LFw5yjmuQ9V5L1gAGyP9l+J0JmNToXUj5p8XoNJbGOix7"
+                        "thoughtSignature": "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"
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 13,
                 "candidatesTokenCount": 1,
-                "totalTokenCount": 135,
+                "totalTokenCount": 901,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
                 ],
-                "thoughtsTokenCount": 121,
+                "thoughtsTokenCount": 887,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "sCYaat-bCaS4sOIPgcnmyQI"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "SB-narf5LLTh_uMP88mg6Q0"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=6916
+                - gfet4t7; dur=9192
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 6.928s
+        duration: 9.199s

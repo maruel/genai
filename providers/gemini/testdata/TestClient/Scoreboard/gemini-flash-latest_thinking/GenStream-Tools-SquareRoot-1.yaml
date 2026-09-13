@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 662
+        content_length: 599
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"]}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"2nte4526\"},\"thoughtSignature\": \"EpIDCo8DAQw51sfWcg+FQA3vsjLx4xmQyIPa8p2ddsuEoMqqVTQ08K/oCKvZT772XGmGqAdeNekXpm2YsU94jmZPHXoXxNXhmF5uJivaB9/96Xix07bmPlqmEkM+uCVFnImLfVoqRpjViLOVK3D5xVRO94B4+7ZD9rsP04g3Ta566Y7OlCgmi5wC4xZ9/Cp16XVXvp+r36kFVsNBTGMDiX4VUpxHJLyfQuUJID3LbPHSKDr2amawaauENfqefq+9ebireQgr1+mil3jEtI+I+DFVcwijtdu2WrfSU0TyEtqkh770NBjegsAEI0ujxnt0pcubOBEiGyj+WjTAGBjmMTG7tLfr2eXYQuTKw8eUH2hO4gQe07x385L2aX4h1rLMADLqGYKjSUdzYAKsvCXRHAkgVHhza1OMO6gq+7if2qySmmIPVMCcc9DSL0Yq6DY59hmd9nShh+FMnYlIpWhgbTzbuMq6gfnZrTCv5UdJDEpjM9v4pUmgPpRt3pP8JbZ/XnDFQtJDJS8p9WJjP3m7uxptyWn3\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 203,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 80,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"LSYaav29OI_h_uMP95-a6AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 203,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 80,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"LSYaav29OI_h_uMP95-a6AM\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"call_4840802\"},\"thoughtSignature\": \"EvACCu0CARFNMg+V3MchWlrdIWO8FejctzWVtn77QrVoXqPoDjPo55qkmBpkYSO3x410UqTwfs24SDbfwuPl7h5L2TG7QQyliJe2NoxkxBaJrjCqe56kw9qt0HHBHlGUus0qydjJ3hwQ1/s6FNmthr3D6QrqB1pk5GfySwz/iDPL8xsA2qqRmuuvrZHKD2bhe8THrsWoazgGpMe6BupVtkIisuaefDFszB88aPMFCBDbfGqB2egH8EaevNlJNZlSHnizxAh5IgTLYjlo8AyFufQAyLTVWXNP5m2e89TUMNKYpitl4pY2naHDrLDuOh9i9ZKmBq1IJe71ZOHCxsSJ/uwLMN02TDrhpTtTl5+75EEly6+Qrx7Nz1zu24GG7XPqISvAl3lSgf0pwcc1ZqaJ1tokKa6qjXFZr66zbE1lVidDu6HSmm/wjE4NDPDIbkx7RX4znN//T9o/B5FSWeeX9UYr36fU0bg/dbzcbu7PMCivoC0=\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 190,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 67,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"-R6nar24DLTh_uMP88mg6Q0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 190,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 67,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"-R6nar24DLTh_uMP88mg6Q0\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=943
+                - gfet4t7; dur=836
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 954ms
+        duration: 842ms

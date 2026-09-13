@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 217
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating the Explanation**\\n\\nI'm now starting a thinking process focused on crafting an explanation. I've begun to outline the key components. The aim is to create a structure that is logical and clear. I need to make sure the explanation is accessible.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 10,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"1tYZaqhFx62OsQ_y9oqwDA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"En8KfQEMOdbHvXOiJeUiv+dV4x1gAa1TOitdt0+x9F/cswkZHgFeTiJcMbE8ElsUHbR4A3LJQJMVv33QMDY8bNz2HdLS56GEHWC/5iB8OxhcB7zCLIKt0LAe37siMqKhXBFHCgRfrBxyUy1rtcFR9KL2we1WcAXyoMqo6pvm92sa\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 22,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 12,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"1tYZaqhFx62OsQ_y9oqwDA\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Es0BCsoBARFNMg8iQEqn79JQDXs8rCa4L1YMMcHeYYu2rLla5SmjQkANDX3OtS0L6lpX0T2J8s3bgTTVisg6KlHMZZVbQGH2MDVci4qr2KjfpZHjsT+MWrdGHfb5ZIF7i1b8ZqyJHUYRS1P6Ua6+CCP+p+7qtBD1E+AR+UHXpXL5XbtomY24HnVoS3RsahcJ1QCv3dqeryL/5cKkp5ZO0px5lF8ceQBZbsyUlooEnAl4EvuDyCAx/YfyZclpwmkfBqW9wMgaVaDQr0PfditaAA==\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 23,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 13,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"jx-naq7OOrrW_uMP-J-m0Qk\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1929
+                - gfet4t7; dur=1850
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.935s
+        duration: 1.856s

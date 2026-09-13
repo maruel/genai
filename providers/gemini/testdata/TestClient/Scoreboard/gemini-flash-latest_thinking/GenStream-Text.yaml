@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 196
+        content_length: 133
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 115,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 105,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"IiYaau_fNqqajrEP2K2QqQU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Et8DCtwDAQw51sfTNgizk3LEfV1lAMMglD0KgE8CkpXqI+rshQc8O3JRhLQfCkiQQVBEmzmGAHpPtxH6rpyijkOnLaUI6+lOlhOshnmOInGRGMrEXThQDxF4QkVh2ZdgPNGj3kT5tDJq8Enr/HDYmmrXzbJClOAcKi/22cpQCSV0cHnxiVqyKKmtADRcjEBp1T2xpPI9A7cLyW0N9tRh9/Lct4110XSCWm16vEF+fChd1kmjf5XkqbfhLgva4sMJgjDfniIcNcN31OMmnHHpQeL2hRUNDRJfYwe0FQlgpoddL2xlItKO9GEB4JxwLO9Lw8oHTzsIY4E9VJ0A7WuL7xC09qnjFuHOXEIXqvkPMpermMP15FB5S6hVPC6N1qYBo8a7QwXHtV7eozkHxD8Cwwcmjb7KRAFxBFM5TalcJ0JZU2QAlLaEmIFKrx7GwH+8/hMKCcZ+G3Zkw4T0EmEpBm88YiazleJ96fcWhwGD7bQ7mwQktF4r2lyS5l8FgQ9lJJ/mAvknFOWZhb4oFLys857MpmCsCl+Xf8Ex8fwVvjfd0OGtxOfSArxzkVoxOI1UBox1TwiWSmjvISejx1ihbic6LqTFsueDX/t6etpAelPIhmAa2a5KVY1UWwbgJLdpNQk=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 115,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 105,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"IiYaau_fNqqajrEP2K2QqQU\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 126,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"7R6nasKZJoSN_uMPp_bvmA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Er0ECroEARFNMg/PUAiFgshZFgxBsZuaZA8JPbRqlrERHOsBDrsi2hy6Vrxq2PofU8UmmflFpVjuz6MWmLlDJosrFElX/M5EcEVIgUqOf68y6+7nah2+b+CVDRAKRdRZ/rb9sp2pz0YmpZldyHNF95W+5fmAc+qWhwYPCzDrEKreiAhwbphTQv1kvkuv28dfzEejDFIDWbu14miZWm3YiCOGHB0T8oW/DuyGf2MgFxLQZEVyLDYLIO27HbnBpY/M4nF98eQ0TmibU63RaJuIN5VAGqL1RpeY3xHIkDLH3guibAGNa/43c9QDvpnkYDwD2+m/sFy5g24PySGw9f/mlZMdYG1eolq3FGd2XID0QcpzEKaQ3sN21poWzkpp9lpkxsfOxF82WXlSbVVwKXJGSAQpfdQ1JljAhNj4QMtKdtYcuUKJ22e9+JXe6NReI/VQKyEBW3XZR/jKWt4uPIjpF7kWe7M6noZ0TXJDbZ7u6xAfIs2VqWbS22PlHsxv/dZxt3EA7rr+UxIrTDZ9i+dUohknuL0UBzaE3JLaOJOBDr4zh5hdlTHB9xnInpNTerU2jg65/hZ9qTOpNLdR/OSWNoBSceOj8jOZcAHMAvDLkDHBqo5buaTMOIyddIUUYnrvLE/OMeupubUmmSdeYF7oxlcXo9BcyxrJSOgOlBlXvS076jVZQ8exF+MMtmfe3M0HOCF9oVfZP39hMnHxGcSgGqmXxA2iM+TiCpmVg5gfHMJufOwnj9FJp215e0+jMyZO\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 126,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"7R6nasKZJoSN_uMPp_bvmA8\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1056
+                - gfet4t7; dur=835
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.139s
+        duration: 840ms

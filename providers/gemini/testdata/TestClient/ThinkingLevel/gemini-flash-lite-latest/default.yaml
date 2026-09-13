@@ -13,7 +13,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -29,7 +29,7 @@ interactions:
                     "parts": [
                       {
                         "text": "Hello.",
-                        "thoughtSignature": "EjQKMgERTTIP9/11Skuw1J7abTT3gNdbSpDI9ZVEUQinRnChwlniqYAWR/OGVoyzSJ/E0VDn"
+                        "thoughtSignature": "El4KXAERTTIPsdQXqjMIOOiE/vcENJCLqdfB18/SaDm4Yzt2W6NPFAnTaCOEiHZKYb9Bnx3bFOYTVTaYWjp96h/JZErokcd43MURgFJ1r1BmfALreDNs0GjgqNOG4TJ7"
                       }
                     ],
                     "role": "model"
@@ -51,7 +51,7 @@ interactions:
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.5-flash-lite",
-              "responseId": "r_BgaoroNsus1MkPps_fyQ4"
+              "responseId": "hRqnatWRBtnRjMcPpKzoiA4"
             }
         headers:
             Alt-Svc:
@@ -61,7 +61,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=484
+                - gfet4t7; dur=470
             Vary:
                 - Origin
                 - X-Origin
@@ -76,4 +76,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 493ms
+        duration: 477ms

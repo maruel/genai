@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 380
+        content_length: 317
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Approach to Answering \"Is a Banana a Fruit?\"**\n\nOkay, here's how I'm tackling this. The user wants a very specific JSON response: nothing more, nothing less. First, I need to nail down the goal: a definitive answer to \"Is a banana a fruit?\" expressed as valid JSON that adheres to that precise schema. No room for ambiguity, formatting quirks, or extra fluff.\n\nSecond, I need to establish the core truth: yes, a banana is botanically classified as a fruit. That means the `is_fruit` key will be `true`.\n\nThird, I'll construct the JSON itself. It has to be *exactly* `{\"is_fruit\": true}`. No extra spaces, no comments, no arrays, no anything except that single key-value pair.\n\nFinally, the constraints are paramount. I’m focusing on delivering *only* the JSON and ensuring its validity, with nothing else. It has to be valid JSON, no mistakes. Let's get it right and keep it clean and minimal.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "{\"is_fruit\": true}",
-                        "thoughtSignature": "Eo0ECooEAQw51seBu2sNxAjItA0+FwDMzFIHtuy0wAjIRCQCNhi0Nkv3pkLjA+ZMsW09P4YhFCrdsd1Ot+s01zPWwCqq8MK1JUv3KUi22tDwYI87EmveAx3b7q8G4kBwwofyB5nsPsOKUvfCAkzVQy45wnf9e7AKS3Wznh8goXSTD/AbZWlehSZe2eTCnS3Gw2fMl0PNgHU6yqIoD/UXDFt8P3NUnXCCPLOcOFiDO9wnOYrm2NBhW4WoStLh6az93c0/TEXa7wQryyTAnvKaEvkPqC3bOARmt4Oy4+KxRV8TbFiuyY4r5bVqYwVcnYsguMuRpp6Xrc8kmCRisCtM9lgyez+dUOGEcGbKsXQHPFqvg5h8wv6WHMguXXNJa22Lh2QfuWn5FsL99UXmukOr8dmnPL45dHJvjlDJ6aG0qBhZ/ql1vvRL4AVJ1wcPTWHX/mtkpGDOOAP30Dl+KWB1x0H5D5vvA9r+nheeqP28O9sqgUpVIwK/2bxKHItusnd/kZVfu6p23zWDWLcdxgrFR876K1NRXXjPqfG5+wLic5q0Bvh9CO/8sQsFLHBojsQunHQGh6d0HeQ7yyD4+2Wxk5+6/9sEu/zsu3/KGJ07dpMXhNqxaMyoeDh+h5QNszBSQtTn48fkPqPRD5v1WPOPnN3AjQ9zs6CrncF+svVcfB8dJp/x9mKjlADweU/5Ql6r"
+                        "text": "{\"is_fruit\":true}",
+                        "thoughtSignature": "EuQCCuECARFNMg8m0W5gmhwPPkKNjIAr7kZbeqwTF1x5hIL6EKK0drWdHUBHML1p6QaWzzkpUUXI6gcZFjbRL38bIta99zn24EK26KdnutW/chkqzG8bwLQWX/tsAm6XrFrRSk8IyEje7lGI5tGFkFx0VuWD3zbxkp2TK+iwJsKjTkhl2+09mASr374+lZ9ieWbh6rA8T8a32ZJC/I8a6RIWae7HyvKjRdzzqZ/GT8CzYiwToCDW6EAI5Od/jsfw1lO1KhV+1+HzHxxpVAQyU/+Vfje541vWJ9QfEi4udkI8jYp4l4iiyrzASjDrGkHXVXD8C0imfcxhfHaJ9JmNj51mCoRUbWVgI/PkO3vSEijcIo9ETGLVvgVoZP9uPV7yQhqu+DA3c+SgsGd8q/6L+9rkqyotWuRHvnCLq328SeW7ETosT7a/nqn7v2kvU+98/194s/uZofLgM4Y3qg+GfTKCWLkFctU="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 18,
                 "candidatesTokenCount": 7,
-                "totalTokenCount": 156,
+                "totalTokenCount": 89,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 18
                   }
                 ],
-                "thoughtsTokenCount": 131,
+                "thoughtsTokenCount": 64,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "PSYaap3IIoXP_uMPgOvJ4QM"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "_x6navXpFf-i_PUPjOn1iQ4"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2569
+                - gfet4t7; dur=2960
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.581s
+        duration: 2.966s

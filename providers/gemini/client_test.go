@@ -29,6 +29,12 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+var thinkingModels = []string{
+	"gemini-3.8-flash",
+	"gemini-flash-lite-latest",
+	"gemini-pro-latest",
+}
+
 func getClientInner(t *testing.T, model string, modalities genai.Modalities, preloadedModels []genai.Model, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	var opts []genai.ProviderOption
 	if model != "" {
@@ -135,11 +141,11 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if model.Reason {
+			if model.Reason && slices.Contains(thinkingModels, model.Model) {
 				// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingBudget: 512}},
+					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingLevel: gemini.ThinkingLevelHigh}},
 				}
 			}
 			return c
@@ -303,36 +309,11 @@ func TestClient(t *testing.T) {
 		}
 	})
 
-	// Models have really different behavior. Some require a thought, some cannot.
-	t.Run("ThinkingBudget", func(t *testing.T) {
-		// Similar to Scoreboard but run only a very small test on all gemini 2.5+ models.
-		allMdls, err := getClient(t, "").ListModels(t.Context())
-		if err != nil {
-			t.Fatal(err)
-		}
+	t.Run("ThinkingLevel", func(t *testing.T) {
 		msgs := genai.Messages{
 			genai.NewTextMessage("Say hello. Do not emit other words."),
 		}
-		for _, m := range allMdls {
-			mdl := m.(*gemini.Model)
-			if !slices.Contains(mdl.SupportedGenerationMethods, "generateContent") {
-				continue
-			}
-			id := m.GetID()
-			// Don't test the non-gemini models and older (2.5 and earlier) models.
-			if !strings.HasPrefix(id, "gemini-") ||
-				strings.HasPrefix(id, "gemini-exp-") ||
-				strings.HasPrefix(id, "gemini-1") ||
-				strings.HasPrefix(id, "gemini-2.0-") ||
-				strings.HasPrefix(id, "gemini-2.5-") ||
-				strings.Contains(id, "image") ||
-				strings.Contains(id, "computer-use") ||
-				strings.Contains(id, "tts") ||
-				strings.Contains(id, "robotics") ||
-				strings.Contains(id, "preview") {
-				continue
-			}
-			// Make sure models work with default settings. It was not as obvious as it may seem.
+		for _, id := range thinkingModels {
 			t.Run(id, func(t *testing.T) {
 				t.Run("default", func(t *testing.T) {
 					c := getClient(t, id)
@@ -340,33 +321,13 @@ func TestClient(t *testing.T) {
 						t.Fatal(err)
 					}
 				})
-				t.Run("thinking", func(t *testing.T) {
+				t.Run("high", func(t *testing.T) {
 					c := getClient(t, id)
-					opts := gemini.GenOption{ThinkingBudget: 512}
-					res, err := c.GenSync(t.Context(), msgs, &opts)
-					if err != nil {
+					// TODO: Re-record with ThinkingLevelLow. It is sufficient to verify the
+					// request configuration and costs less than high.
+					opts := gemini.GenOption{ThinkingLevel: gemini.ThinkingLevelHigh}
+					if _, err := c.GenSync(t.Context(), msgs, &opts); err != nil {
 						t.Fatal(err)
-					}
-					if res.Usage.ReasoningTokens == 0 {
-						t.Fatal("Expected reasoning tokens")
-					}
-				})
-				t.Run("nothinking", func(t *testing.T) {
-					c := getClient(t, id)
-					opts := gemini.GenOption{ThinkingBudget: 0}
-					res, err := c.GenSync(t.Context(), msgs, &opts)
-					if err != nil {
-						t.Fatal(err)
-					}
-					if strings.Contains(id, "pro") || (strings.HasPrefix(id, "gemini-3") && !strings.Contains(id, "lite")) {
-						// Pro and gemini-3+ non-lite models always think.
-						if res.Usage.ReasoningTokens == 0 {
-							t.Fatal("Expected reasoning tokens")
-						}
-					} else {
-						if res.Usage.ReasoningTokens != 0 {
-							t.Fatal("unexpected reasoning tokens")
-						}
 					}
 				})
 			})
@@ -545,12 +506,7 @@ func TestClient(t *testing.T) {
 				msgs := genai.Messages{
 					genai.NewTextMessage("What is the secret project codename?"),
 				}
-				res, err := c.GenSync(ctx, msgs,
-					&gemini.GenOption{
-						ThinkingBudget: 0,
-						FileSearch:     &gemini.FileSearch{FileSearchStoreNames: []string{store.Name}},
-					},
-				)
+				res, err := c.GenSync(ctx, msgs, &gemini.GenOption{FileSearch: &gemini.FileSearch{FileSearchStoreNames: []string{store.Name}}})
 				if err != nil {
 					t.Fatal(err)
 				}

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 331
+        content_length: 310
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Response to the Banana Question**\n\nOkay, let's break this down. First, I have to analyze the request. They're asking, essentially, \"Is a banana a fruit?\" Straightforward enough. But I see the constraints. No explanation, just a JSON response. The schema is specified: `{\"is_fruit\": bool}`. And critically, no extraneous text, just the JSON, and ensure it is parseable. Alright, got it.\n\nNow for the *actual* answer. Is a banana a fruit? Yes, of course. So now I assemble the JSON object according to the schema. That should be a simple matter of returning `{\"is_fruit\": true}`. The request is simple and the constraints are clear.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "{\"is_fruit\": true}",
-                        "thoughtSignature": "Eq8ECqwEAQw51sfc/JtLv3TdkR+uiDjSoVKsJus5kmsz01OF8RqWZ4z0c204YKJskgVo3i4VFvwFCczJI1m6GQinYJBdF/Q6kCBAKpM6kUW5/Sr5xYMFcOGYmJE50FdyoGQgbmJNtFZH7Agvc9VxJXjGckj1LhY/JGuVDEXBpSw0Oq5FZi6NhdtBCDNdjhzHncJl70G/kIDa2EcB92VTJHYOSr+d6Qnf2ev6tLFG8vhygMKf0pGjqxtDrzSKGoFOeC0W9nb9VUeeLVor5VZM23B9ot8sn4wiwNmvAZUPD7VpZIcfL/Mep3QCv5EmjGe68w9mgoPtrzEFcc+yKRxDNyHUvBzGszbWP73rOg156hUZbZ1GtmBOtdJxD5Af5+IE+7r73XLwUQzQVWCccxKbxwsWf4ihMkFzcO/Uma63cHcJisNYaV03GHefsVIl68uGGJfeEuXEao/t22Ncp/dY2e7z98Zue/z0bCuGgCZo+o4a30Xnttn0VdS2rXqWU2sXrsjvnH2KQI3+bX0nXT2tTIiAu81LYMr3tX/YX0VGwoz1+gybxkGwyk6aHUUVzvyGqvSaZgqPQpGa3ASZOqZ5YkZtJJBHK/AT7yEEo8vvUddh2oUihffo/3hCai6bN3gmULaPM/IG4qVD60Jlq2XYv9lKves+B4IGhFLkm46wuj1CKFgrcukztVSFoukLMxJz3n+IlGStfgbKczao/z/UCMTX6Rw62AFGmcLI1OqHxTr4DA=="
+                        "thoughtSignature": "EtoGCtcGARFNMg/3RUDxsRAz9lS0WHG1V9IUZWD5G56DG2NAQtxBg/oRONPHjX1tBE66KFYVthW/gUkUKAfolQfFqFSVmbrhhyQw2Iz3owAYeGHhZm4nvpOJLubQxWEvUwG7PcKC623vIUSzgbfbRNLy+4SsZLTkx/+H0tjojqOLRuMdP0t/PU/8o7kGkt0DHY17QunMHchEy8khxznrwf+OtpbAhWXcBjh6ws/vrHYy0A4i7l602BH385+Zw/vVHtRUw/rvCCdytzJXZRdIsGXSnRuj20NtkHLCPwI5Izev3CvCEccLElyajBEHWHNfR6X8CQuuNt6YBecKVy1VlXQWqeKkD5kMxZaJUgYCZRBUy09vvbvVKJOSSHsfFGKGvKLMNMnF45djk8nfiAeYtoyo23dHjkI/KTBGVoY2XWjVAxI7wJbcmOoY7B6q8bXGKtMhJynQqjOwAOIESzYfh2MRgJstHC4Ni389qdvlJjAubWAdEk9ZgfaHmMWhs9n1dSCUQFMNMb3uzXgXf7XWPGEIfLb+Wr+YOgUxWuf4QTjgqOtVjCJE3/02AdF7iMDCtqy6zrV8lo5eaaVXOE3lqPx8pKoBM5L063+QA46cuT+tWWkbE0heOUMQLTehBGe3KQ9mu01M6Mns0BhEhdQ9csd7Ge407ElMDa4k7CcNW0H7I+b+gRnaYWrxD0b3vUZ4czGBR0FF7jyJ8+zU1GjYxyF00loRVIvWEFMjHadgdjmjj8GdbQpLPTT84fqT6YUur9+TEssvkGf9+MlkC6QD9NRzqvXBLj/tAw7j7NF3V3/lO4EXLjhBRiZZToy0oknSU/FeVzdoHqFHXt95wqLVcMIZMfZU+XBjpaAq4+pmJfKZwsS2KtsAqMTVnaNACvwylPZyCWcPJelraCgj/yeaSir9zB2tI6701aPS+NSNG80xr5KkRdTccOu9QnJz6y8pU52cHAgz1iej1Z8Guh7qfB3lNCG3mvHrYAV+zi4+56JzhvzQdTm3SWLAEG8GHxUmrIEUbrP5a0vVPf0sx4kK1ShER7mxDGvyfAtR3Yvxx4pEhDOI7OKCylchEWj8tPGz/kqlxcpZk2ZB4xWjmz99zqiPrM+0GKMi5gfStEfkOYK+6p57Vgrck4TONRSh"
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 30,
                 "candidatesTokenCount": 7,
-                "totalTokenCount": 179,
+                "totalTokenCount": 270,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 30
                   }
                 ],
-                "thoughtsTokenCount": 142,
+                "thoughtsTokenCount": 233,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "tyYaapfyBM-D-8YP8diQiQQ"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "UR-nauy-Otyg_PUPi-7dgA8"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1788
+                - gfet4t7; dur=1054
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.799s
+        duration: 1.061s

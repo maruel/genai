@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 238
+        content_length: 217
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Deep Comprehension**\\n\\nI'm starting a comprehensive explanation. I've begun mapping the framework, defining key concepts and relationships. Now I am dissecting the essential components. I'm aiming for clarity. I'm making progress identifying potential sticking points, so I can ensure thorough coverage.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 10,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"rCYaaszgCufQ-8YPkuGY2QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Eo4BCosBAQw51sf7U32eZV9mTwWaTMzv/gkYBdu47C42HGjFvXccroMdNgQ1S1D1Yz7WBUMEIZYw5zXulf83QwOxgDNrZ3bVdT1f27aXJpkvqSODHaT4/5ChAC35/+akiMmHacw+JYmU1XhqIUH1Np/7HtolVqGuzA3ikEKHNWjqGOMhKfTerWEL4ZD+ndtsbA==\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 23,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 13,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"rCYaaszgCufQ-8YPkuGY2QE\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"ErgBCrUBARFNMg8DI+sRmkJGt6dfgmQaV9Qr20/FxKN4lXTGdoidMbyY1CxqTTRRXMxFiq6ZzPnJVPhCLBp8vErvV3a/+lMtB+Mb1/fbebql8oQehwUkKlbdTcZ8gulF0iscdaV4sj91HsCfXLcM/mfY64UoOOj/QjLkzBfJ0Hm0AZz97QT8D67DcGSvRQwrITbNo3MIUKeNvKyeuZR/OJlXOuKUddj6DNFGU+wIpzfb4ow1E9T8SZShsg==\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 23,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 13,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"Rx-nar34Nt6U_uMP38mh2Ak\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1103
+                - gfet4t7; dur=387
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.114s
+        duration: 394ms

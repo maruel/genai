@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 662
+        content_length: 641
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"uwFCN0ep\"},\"thoughtSignature\": \"EoUECoIEAQw51sdejYe4NTvEGmzbPmjjXtZnJd3Xwi0sxjO0Hu8daHE6any58xmMkbKJqEqtWCzzuPITVNjdI7na2sd9F7H5IamD6g0kiraplAIxQ29mNAGG4ewdZhJ4ZM/eHOq+434WxOdlmMhu6PSszRcLqc+0ckt4wHxFqV40p9wwYkfNVF5XS76z2eb0bE9C1P3tVwgr/+3ChDEwKHkMdRTkzsk6xBZECBcYTgCXJXQv/+h2qup87vKKq492YmiTIUNdNAjyYBUSgzAGgeLMrMWEPmPQkcP6H1yYrm9e2DTGLZSu3VdNyE4BQ0vqaVsBLZqWJK1kTUM7d18mJxSGRGDxGGAoueqTDa4uctg2Ot/A/+PqgWvUt4UiWDKBq1GDQNEocfC3+3QuUw7QVslgQvjwmI8rDfvk90JHeZk9yzSM2rqM9RpuBioQ9LRrowvixXnY6XO3CBHdBFzgOpUXLC1UBDceQKknZ9peQ/I59kMXAWmRqA/4R4G5KoZXJJ/i/wJxtTeixevwt/V+yp2W+D3BwbyuF/GIEXefM/i1nZFlKwsmfC5fZqBNhHnLapg3UGz4f2xEc1IbOFj0zb0Gf0ne8zg5YFb2zE8r1KmQFPkZqTcpNMYDpD7WoUvlULF5o9jjlq8l8Qh7+LS2ci+7Vi+EtxnaiZvFCc6ICGJUWvEsscasCQ==\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 239,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"sCYaatLxD96BjrEPwLzpsAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 239,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 116,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"sCYaatLxD96BjrEPwLzpsAQ\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"square_root\",\"args\": {\"number\": 132413},\"id\": \"call_3085342\"},\"thoughtSignature\": \"EuMECuAEARFNMg/tVlukisBT46gxMGen7R1+xStOQuRlCKaFf9BS/KALBhUUygZkvU9PnsRPsUU3cpA/08c6fZ6KsuC2aVj/v6oW/FL8Kjm4gT3nhWfzH1ZHSg22oclFri0Q5Oixs5MKvNG7Ko/ECXCxYgKC7rtrcIedFZUVwg5ubrxZHzF9vcW27du1ZhzWQDDCAyMPKWhL7J16rn67fWSKiYFtB+R7IMsVpNhcx2l10ebj6N+NYPMVe6xFcSXxumtT/URDEHaf703A7nlVK/RxhkgwNMZY9A8/PSPewui3pcm1ByxsIw3yvmc8vMJP8oI2fvBLtRlwwr6DynrEMTNlXoVvxOTi/AwBYvmxYosWwll5U3rIdl4VdyVlNZVt2m/evtcjel5VjsvB+3tP0r62GdaNLdcEIFc/vYw92QTe+u9n0A4TOUE+u/RmCLa2cCz0n1EyTVR+XNkHRWhTS5dqBYgdYpzrJtAyZOLPtBZopTbF8YwUld4QSzHlPLt25uDLODb6q7RbwqN4bS6jLdSJYc+Ixm701zS2DN3Gfw/4lzaipEwnso3JXAS/mncmZHO43KrYGVSrYFyJQeIRoFkL0euhwEWwyfdRkfjZgJrFs1DJatWn8/9+hFEN7jy1cvAyqO/Q9rGTAXsZyUB+FlStF7ldF/mMGW5A/qCsG4p93I4Uwf0JMokq3lLzlKLvrUSWwEX6uEOmGG5+FePulTK3I4jHyMl3UGru0CaCmia1KaC44DJxQVJCJXeDTmHwFGR11hh4++Zv/cnK2m8Os8b/G6zl5+ngl+KzDJdfpmFQ8D+INe8=\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 251,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 128,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"Tx-natb-LbrW_uMP-J-m0Qk\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 104,\"candidatesTokenCount\": 19,\"totalTokenCount\": 251,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 104}],\"thoughtsTokenCount\": 128,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"Tx-natb-LbrW_uMP-J-m0Qk\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1004
+                - gfet4t7; dur=873
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.015s
+        duration: 880ms

@@ -46,7 +46,7 @@ of Go across `client.go` (request/response types, API methods) and `schema.go`
 ### Thinking / Extended Reasoning
 - Dynamic thinking (model decides when to think)
 - Configurable budget: 0 (disabled), -1 (dynamic), 128-32768 (fixed)
-- Provider-specific `GenOption.ThinkingBudget`
+- Provider-specific `GenOption.ThinkingLevel`
 
 ### Prompt Caching
 - Create, list, extend TTL, delete cached content

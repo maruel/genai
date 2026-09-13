@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 380
+        content_length: 359
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"is_fruit\\\": true}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 136,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 111,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"ryYaaq6eDp2s-8YPr4668AM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Ep4ECpsEAQw51sdOjZZNPu87ZEQM47Q6ZByV7eKM7l8doVMn/KFmx59NcYSoqo9fONu4vxkv+9Z9OlAeV6wMwbf6UVzUJylqfIRreA3AKF3m1G69qaKZoTvJsmnGAaNIV4sxSHnbDhr8druRn0dqDC5NRwxyXXzTT7pLvjPE3XqDVp9yhPsN48rdnrz6aXsp6McMp9iGrVP580xqasSXbnEiaYjzpEVciE32cUHnXD4qKLLzWAg9Yi15HBDD6tRtHY6HuQWLYYkgBNtE4513g2aZWsz/mFPHnbBPEBTLIWlEPaU4HHMNsrL9lzOPKD1LqypgzJ0TLDJ1RHNhlezN6AzZG4UiaLJokLAWEUSJ+6bO38mUUqOnaEgPEDbzTBgZR0EeVk211zEvtZKcmYAq/K6GUYFMwuBvjBMlst7mw0kUPBgqYSie7l9RIHY1o2/NUzRiBKKWWbmCz6xQjwSp0YV+Ii+P1oJpeNL+EJn/7dPTV6NLLE57a1NZm6VZ23EHnqSWgez/eNao8P/xeKUfntX/CQkB2tPucSUU6qSUHuYkE9yET8SmwHsJ/fN4wqciNSNZjieaHVo+Z/S5zfRiQfA5nMpuXnVyBUJeizLKkT5gvlAMnelHT9wi4Kj7y4rNEa3qKIfJkEZXcLecUGwDMSpKsAe7HQHozgNO9dLCX3H6Pk8ldJ/Cz+65NnB0Np/ziFdednygx/6OswUXqd6kqc4=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 136,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 111,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-flash-lite\",\"responseId\": \"ryYaaq6eDp2s-8YPr4668AM\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"is_\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 3,\"totalTokenCount\": 343,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 322,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"Th-napj3D82d_uMPpIvY8Q0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"fruit\\\": true}\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 347,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 322,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"Th-napj3D82d_uMPpIvY8Q0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EoILCv8KARFNMg/k0SGRtFFcTOXAdhXf5cgULFK9C7i9cT/nfVkyNk4TfM84JIb5skydHjRrn2turc2G8VZFXDxdK1zoUKbnnp8BON9oYHevNkrWTU7wVCjWq3c3RT06ccVM3RGrRuYlL8BddSCSsKZsCyYqFnX8aYIuW3wEQlClpydwht/qOzcojPQjVNKevpZhs/xxLgbhjcBq+DCz6WOxW/XA1JieUgpvZoJfoMyULiRXGodMZ1a8w8p0G5YObHL8Gwlupa/EfEbCXV+NuS6feQakb0tzGf3wjZwTz9Pzsm5j1UpAVPpOOp4tMCf5hunp87/ZA2sfsb77KhGSUnk8MPlH4p3O549cjGLH2dUOlMQLVOEWBNfbx6fE9ir9bueH6L9J94Z67S7plfRMoNf5YuFsdASPhIPWLfESB3vv4oBqqCxKtLu3e4UMWhd/+w/32yE8oGeG0rJ1QA+wLea1ZwILDxTFdO/9f6WJOXKtVwYvg0NeUXafamDOwkYUk2bCihh7mJ4TO6a4bxlPtN9mGyixylgKMw1NZxWxmUd1L/fF5q1ZkN5AyMgUEDbJAC+qqFXSKeNkNgYaTrxne9iAI6T2OB0BDSUC++ShdSbWKuOjbUs0T4IesavV+ZneznZWE4WNxipH+lIVcbEsvBydwQqAri/n5ok+KmjZF17Tm+DdWMG/UyIkZdqaZ+QiFuqUv1q59IlzDHNI8eAIZtfplCHsEblEEIfpDoiPTHobgkwrGqy7LKuv822YMZl8UtO+v9TeKonIZajjijKbUIbWOl6ye8rj7NJRB0QYcyW5k6FA4oM4GlG4qV+rKuGAGDWYVJP65mLdE1r7nawaCfIGNrDONDX3mvBhv+ONhbArle9oH1VD/9JBZ9wc0aZcG8/LJZcBJGLuVLWdidm6Cq0Uh26Ee4ayybb1oRmfijI5XUGqAc+b+iC8neaDaUgD6HOiBqDAGoOaJFwmB4Im70edB+23iTFKymAhNjZvg378NXXrFb/i87hZ1Q71ja9OAKN+NRSDNpq1HGS3aLhg35vi7vNCMEJ1IQU7ulPb4PoIv6GSDKQTymAoe3s0cXfl8H9CVd9+lKM8Drax6cbqIjhiwL26V7U8etIjJx7FXywDoLHmBW/HrJgl0D/CXPhjtmYyChsFGHFfu3ciViwYSYZEn7B4k9HBn8E2aXyTDJlXIQj6e/zHh400WoyyyKhB7pMzrhLHrqFlJft/wr1Qdwq6yRwsVmA8yEYAKVx0siY4NNcSw1I7YfrDqi+iqmUbq2CCZwXRAkfxns0EzETuPm8hQtXzVSwsyD7o38AayyWPp79kzN5KZZ1SUgXoOu6HgTSzJ6t5LejxXxl0Y1jwZmRPbksqKE3zFc6fgoCLHXcXncfocIdZ+pe5vLXajkpLyE1lRzHPvBVHN//8fpxrDa54c9ZCUwHh/Bw/ULqZvF55bbOKrCEQ+JFebTCXrOEfYKsk9f2O4A1lpLQHd/XyiB2qmkIdQ8rXUUYHVMV9UjsJZ+0Fb9C4QIxyVbxJW+5jYXQ+ULxjqKDvnccO/OXEUdPOpXAv88TxDk1woUgmKBOj2ILo9cHvafVt9mZrZN/lVC39v0H5nRAJ+TujPcTmwrpIOULQa1wJ1AYJUdd88QAt23Aqj+SbaEYPA180z2kI7H2ccfgACKcTxIg1DNQ5bsOY1IvHGFCqobRk0VjVXNgtWWES4v07+SEaE1XNN9fnk2Olz5abf07tLt1dFl3XqABd82vyy4rbjFrWs7Tj8JBXp1VaYjWKPLRyIbnAkD7pcFZxpYEa3nLvn7g8Oq5w44rbSQTJIP4a/AAMTzlewuK2zMcqsanQ4dnBOtBjJQVtqJl/J6NsGMbKYM/BtnINuc0vr4Vi\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 7,\"totalTokenCount\": 347,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 322,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"Th-napj3D82d_uMPpIvY8Q0\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=905
+                - gfet4t7; dur=1435
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 917ms
+        duration: 1.441s

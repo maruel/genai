@@ -2,15 +2,19 @@
 
 | Model                                         | Mode    | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | --------------------------------------------- | ------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| gemini-pro-latest🥇                            | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-pro-latest🥇                            | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-latest🥈                          | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-latest🥈                          | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-lite-latest🥉                     | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-lite-latest🥉                     | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| gemini-pro-latest🥇                            | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| gemini-pro-latest🥇                            | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
+| gemini-flash-latest🥈                          | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| gemini-flash-latest🥈                          | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
+| gemini-flash-lite-latest🥉                     | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| gemini-flash-lite-latest🥉                     | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
 | gemini-3.5-flash-lite                         | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.5-transcribe                         | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.5-transcribe-live                    | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.6-flash                              | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.7-flash                              | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-flash                              | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-omni-1.1-flash                         | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-omni-flash-preview                     | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-2-preview                  | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-2-streaming-preview        | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -73,6 +77,8 @@
 | gemma-4-26b-a4b-it                            | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemma-4-31b-it                                | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | lyria-3-clip-preview                          | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| lyria-3.5                                     | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| lyria-realtime-exp                            | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | text-embedding-004                            | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | veo-2.0-generate-001                          | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | veo-3.0-fast-generate-001                     | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

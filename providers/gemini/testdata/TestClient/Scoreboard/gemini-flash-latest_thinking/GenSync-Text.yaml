@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 196
+        content_length: 133
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Concise Response**\n\nAlright, let's break this down. The task is straightforward: I need to greet someone, and it has to be with a single word. Okay, that's not hard. \"Hello\" immediately springs to mind as the obvious candidate. It's the most direct and universally understood greeting, and it's definitely only one word. Let's confirm it's a one-word answer. Yes, it's one word. And does it convey a greeting? Absolutely. Perfect. The answer is \"Hello.\"\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "Hello",
-                        "thoughtSignature": "EpoDCpcDAQw51sdXUUNWpZ0PmMNKuqz2FJhsWfACrMHsgj/uOK7DoZvEqKMUaUuFOYKuA4fbmFqBnyAUhp7YL/AQ1OClxcgqn+SRDGpAlnt8pXODmkRM6LkZQe+F+hmws3sDWmptUR4ah+Ygokzs5byc3EJHLmNPMLuhHkqNPhvKCalV0mZP453dduSy1mUK3/vGHUz7BteaXJIAWKc2tz7ItfgMdVkzEOVjiwzUiWQqISU77XiqIN4cpZepeJ0FOE49NTM4PgTSws5vbNY02gh+jrVJYEQFhljP/NB0iE/m5YaR9KZAMky8rntsduwyrJMIwmmGlGr8nVHgumJqGcFz0/LGckTTIVs8S55r7hYTTnosFAvlevfUTIw8hY6V+M8kH98PzG9/REKq58tAsPadVUGEFvkbgfubUhUYWR+No7S/QQTnwN2G3WxfMRpErtlvrH3Tk1BZndpXyYlNf/EF4bcCRNA9Ox3P9GKE+MSrsHHNONegyp2TofCuXWim6kMiiog1tdY1+RI6SW1pXFM2RXKDFQgnqq3nYc8="
+                        "thoughtSignature": "Eo0DCooDARFNMg+ZIHToaNRBLdB839lrafVYXyX6VNw6Qgab4y9cO6jGAbfeJhJQ32GdHKZvBhpbTe2kJqjS7GnCxd6Vqk6ci12IG2n6QHDJWuC8XFWTHak2woeDCBoKlF3GPDFI5Pv+xLZrdEje2D0ZAkFX2fxtUjxwS9wOmlx75DQ6QzuozKUHqB+sjEw9Qtp3MLh8JgOpANkFM+GLjQXWSWRfZfdHjVAGRVfyb9JfX7omH3EB6g7YhbO4E4OurqgWJG8gNWmXjNAWWPSYe1KufwXUualH+3L1Au3rNwPoPAYQPxp7RgSOMOAmYqGUpeRoYZEFT4ZbDHYlkZydTDpS5DUcqvt1RxQUrcj5lImKqzIUq9b8xU2yLvO6njL1FkkOkGD82PQcn3ICCT77jfih7vMeQ3ddlUNggD83ZBwEJUDw6fnK4Tkg6+PuWDiOUqJZQaSlUQxuLr5wXClkXp3UAeFLc0cA3WadL6mKOtFDOdkt+/YBak7y88Qxi+30v0adtrS0D0OE2BMaLGfAgw=="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 9,
                 "candidatesTokenCount": 1,
-                "totalTokenCount": 112,
+                "totalTokenCount": 103,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 9
                   }
                 ],
-                "thoughtsTokenCount": 102,
+                "thoughtsTokenCount": 93,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "IyYaapJ9wveOsQ-qhcSgBA"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "7R6nav6fJ9fi_uMPzpfkuAk"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2031
+                - gfet4t7; dur=783
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.114s
+        duration: 789ms

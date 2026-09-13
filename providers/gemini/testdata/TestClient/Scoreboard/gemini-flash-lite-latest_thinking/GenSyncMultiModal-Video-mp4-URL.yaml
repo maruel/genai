@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 358
+        content_length: 337
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"video/mp4","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,32 +23,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**Analyzing the Video's Audio**\n\nOkay, so the user wants me to identify the word *spoken* in this video. My initial thought is to break it down. First, I need to analyze the video itself. It seems to be displaying the text \"BANANA\" rotating against a dark background, nothing too complex. But that doesn't necessarily tell me anything about the spoken word, so my next step is to examine the audio. The prompt is very specific; it is asking what word is *said*. So, I need to listen very, very closely to the audio. There's a strong chance the answer is in the auditory data and that the visual is supplementary.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "Banana",
-                        "thoughtSignature": "EpgDCpUDAQw51seQf57Uj+FodQIlhWbToI0JNGl3Pujo8alkXVh3bQayBIgzotwhJrbDiFt7f8bXsth0zFwzkGwH1IcY5NFV55sCZjrg3U54Q800t1asN/dqZWPYaKacI/tZ+cgNAUWUdmQOj+L8yj5ybC4WRNcCYAM5CTH7Ef/jcZjiQBtN84AwD7AZ5z4LQfuTC2pVdNa3O6PMhfKsmSHX9S82Gajd64AUeXNAFFMGzy/jrrDFWW4bGqCvBkgm+15BvE6iq4Sdld/CiMtYvGydnzPpVt7zet1p1vPFWskM+h/DgEpjgTqQ5E6iF3Ztz27NKxKl0IwQQy1N3bQL9hau1/XxdDuFdH1XLQQyb20zgc7VccxgUZr2LvZZu5K06SxuSsWLY8uCm1D+ftWrUZkmm2O2Ur+Y5p7wQkza5ZFVqpm2slzEeSMsJkWpIXpGV6dlXb4LMAIJAf7E/p6Bl9Pc0ir31stpi6lHH2CJvb+ZilvTrQIdamTaonfztksikoj1gNTjhM8chAHO0tgEJUdftfihGvR/ghxc"
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "totalTokenCount": 390,
-                "thoughtsTokenCount": 94,
-                "serviceTier": "standard"
-              },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "EicaatGJHOKl_PUPkMmJoQw"
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
             }
         headers:
             Alt-Svc:
@@ -58,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4276
+                - gfet4t7; dur=4830
             Vary:
                 - Origin
                 - X-Origin
@@ -71,6 +50,6 @@ interactions:
                 - standard
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 4.287s
+        status: 403 Forbidden
+        code: 403
+        duration: 4.838s

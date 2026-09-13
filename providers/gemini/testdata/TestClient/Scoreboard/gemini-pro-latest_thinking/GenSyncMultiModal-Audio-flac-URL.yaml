@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 360
+        content_length: 339
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/flac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.flac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/flac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.flac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,44 +23,11 @@ interactions:
         uncompressed: true
         body: |
             {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My Analysis of the \"Audio\" Identification Task**\n\nOkay, so the user wants me to distill the essence of this simulated audio. The goal is pinpoint the spoken word from this text snippet. The input is \"00:00 orange,\" which, if it were true audio, is likely a timestamp followed by the word spoken. My understanding is that the goal is to *solely* identify the spoken word.\n\nThe request is very specific - return just the word and nothing else. I need to ignore the timestamp, and I must not add any unnecessary punctuation or introductory phrases, as the prompt specifies a \"word only\" response.\n\nTherefore, the obvious response is \"orange\". Let's capitalize it, as it is a single word response. Thus, I will return \"Orange.\"\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "Orange",
-                        "thoughtSignature": "EuUECuIEAQw51sf8AB5tXGX662B87IPh/3G/7E0qt2fIbrqZDYkk7Ke9jx4D94nyNUYBsyN4scUctS1rkTmWXn/xrSvs6BzmqE94H1QQj/+piSDwbZ6t/LP1dLX3tHg5p9QhRVyX8UADqblCDy7eIPIcC4UqofNRNP/95Q57AZ/YGeJu11G6h+t9P8OyPFZgtO/97OBPcu5NJv1a7purIZluWMhxLlfsnxeIQHE83Z6ApzMlDwg/vn94Y4IHPQ67DIlGHjuNH2DE+65gdbQAiL7Zh6V7cbHkSYGln8HAMbtyIoX1RP8pz+jem4C224+iX1iAqOM8etltKaaqAIQpH1RHauPISkxjvlCG9zSaPBE9QhaScsCdH4NUa72+cGEJVewEJj98AfgIs9a1pFMrwDP6tBxnlZvXmplaZvEbExWoBhUXxTj25efLRCdodO+h4/94nYJvVG/Rahd+wk/3JMKCgH4ZPQMj7ka1YWVa+yiUiyGxsSWB4P7c2068e5Brv7whPHvNdiGi0qKRCtTzIZicY7VB1LkdybY30Q5/kyb6bZHs5V3GsGM2R2nNtjBuL7bfFKQlipYoKxg9Jdc8kCU7+mU4/bKUfR2FaWwatScmoiyNH1NLZk0Bif1xgWfn5lKehY7sAtsALq6eRPU138EYtNia8qag74qStGFoAlfputillu4L+LH88gkYja7dRbzohLW7qAuQCs9bHeqvl6XnYNTHNScGKDtLFC2p8mkL8dbcpH3kx0gdQ/ww2BGmvo7/CqbhSlDjvdp7OGq1xiFR8I7yiZJulDsoBeHZh7W2CtAnqQvlsw=="
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 32,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 174,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 13
-                  },
-                  {
-                    "modality": "AUDIO",
-                    "tokenCount": 19
-                  }
-                ],
-                "thoughtsTokenCount": 141,
-                "serviceTier": "standard"
-              },
-              "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "c9cZavrpBdT5jrEPztWlgAg"
+              "error": {
+                "code": 403,
+                "message": "The caller does not have permission",
+                "status": "PERMISSION_DENIED"
+              }
             }
         headers:
             Alt-Svc:
@@ -70,7 +37,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=7488
+                - gfet4t7; dur=1566
             Vary:
                 - Origin
                 - X-Origin
@@ -83,6 +50,6 @@ interactions:
                 - standard
             X-Xss-Protection:
                 - "0"
-        status: 200 OK
-        code: 200
-        duration: 7.496s
+        status: 403 Forbidden
+        code: 403
+        duration: 1.572s

@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 202
+        content_length: 181
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Concise Approach to a Simple Greeting**\n\nOkay, so the prompt is straightforward: I need to output a greeting. The crucial thing is I can *only* say \"hello\". No other words or additions. Alright, the target action is crystal clear - a \"hello\". I should think, \"Hello.\" and only that. No extra verbiage. Let's make sure it's just that. \"Hello\". Done.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "Hello",
-                        "thoughtSignature": "Eo8DCowDARFNMg9EWyLp8oCzbrwh+2v8A2UMtJ+3vIOrxUuCQvMWByKmZHwdV+MyJ6PK8zu1XBIjVCb94f6bxx/qCVhaQzMRn/ytmkwPRfBKcAwqYDvK83+w0gBb+ivvrhrNJYmSDkhm01hYG+hF+JeN3faotMdvcGjODoE++LpR28F1DFwluPsjrQheJ2+ceerJ5WheIuPzegdbt3G2Co6pTCEVMv/k4Drc8kvWIbd/WOoTbaLyYZeXvXEJCExvOFSSW7HGih+lBdP6xyzO7nCYHU5vP6EuriE7uvZcmVjvQ37tYEUrlOb4+cLNRDRXfR9OhOOj0BZTEEQfT3IWPNahpWm9gQI5DW0iU0GpLZPSdCkYzRZM4zmEsBwhRyMe8B+cmwO7Ka9wKKqqvIPNUZbXNSVAqD+vchX1KmZAW/J+G2WMbAvM8Kd3sHKXqjCAbLenBTDvBV8wTqg7l+UPUJXaNsxUTx2WYy4WA+1BEY1SPNmRE+UFU0SiRUVFFisIV20EFIXOX53/iuN0iWun2Mmq"
+                        "thoughtSignature": "EuwECukEARFNMg/fLb8EZbp5dSHfl/WhaQ1OqrPQcN6JNlxzoPjzStfQ71vHECAAVRMe4spyL+GYjL9F4eEsGOcKDgai+rnqCggwQRMqNPx1HLiAFAHDHZQMWqqajof8a+RE8oXNZenvHnga5ja3VBPEmGvdTVCcQ3eBEaQhEpGFCfNWMRcbF9olWJ41eZcpsoox/xRI+uz7twQczYWbeQBg4NVma3TDM1vtd3RyICiMaSTPf0MU0cT2+19cPFrK6SYAmIkeiaOV/7BgkV21q4GLx3+HPhohWjTImbLqc6Po3DEPxJw348EVeACTjcPVpOgt03RJRypImzmMjJUhTNCeg1wH8BEd1UDpJzmxDEfuQ/PiDUac3WnQt2u3mFy1V5+8FjzIDXx8EzOXmwOGfdgyAa3xjMHaaJWH15jW5P5Vg8DxPR/Jjxbv8KofOWraF6RgotO/05+U0zcQ6Cvso9MwWoEeRWCDO4Rsezt72vumbUz/4LzvTAINcESz7XuKgHYDJKTcRIEJQGECWr7sMZimoShaAyGAZsJXRc1Q5ekm+uX2hkyonlXmO286ga01q6LOYo4bU34osJwD2zaYl6O3l3diTkZuA/iAxtPxnTGiovPyKqMsPfaKq5ha67GZV3icztyZDEODig+3ps9PzJhBI350u1IqDYMDsRSnFZqwewg+LV/8Upy7NoU2k9KgUYO3Q1osW3EkPevQMpFBZgsN+08L++1z9XwSyFzLBFWfyTNAFeBcDmQu2orMNqGSja8jNudMEWvXLzutSdHvEDUtoWYlljqtYfJ3IkZCVYRdWnjclx52wDpJPmQtT7o="
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 10,
                 "candidatesTokenCount": 1,
-                "totalTokenCount": 108,
+                "totalTokenCount": 161,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 10
                   }
                 ],
-                "thoughtsTokenCount": 97,
+                "thoughtsTokenCount": 150,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.5-flash-lite",
-              "responseId": "r_BgavyPNoaa1MkP6OevkAo"
+              "responseId": "hRqnaozTD92ijMcP24TzmAo"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1540
+                - gfet4t7; dur=1182
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.548s
+        duration: 1.189s

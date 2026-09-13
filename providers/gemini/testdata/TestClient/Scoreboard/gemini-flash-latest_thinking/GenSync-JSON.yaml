@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 331
+        content_length: 268
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Response to the Banana Question**\n\nOkay, let's break this down. First, the prompt is straightforward: \"Is a banana a fruit?\" But I need to be precise, and I'm dealing with several constraints. No explanation, just JSON. The output has to strictly adhere to the provided schema: `{\"is_fruit\": bool}`. And critically, it must be valid JSON, no extras.\n\nThe answer itself is simple: yes, a banana is botanically a fruit. Now, the trick is generating *exactly* the prescribed JSON. Based on that, I'll construct the JSON: `{\"is_fruit\": true}`.\n\nNow, a quick verification. Is it valid JSON? Yes. Does it fit the schema? Absolutely. No extraneous comments, filler, or anything else. Perfect.\n\n\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "{\n  \"is_fruit\": true\n}",
-                        "thoughtSignature": "EvsECvgEAQw51sfd3LbKhxGw17roDd0qMitGfxgR1qvwSaN4XVgITgnsRfzLk62qVkydgqxllV6KSa6jqLGJCxsydPa1wRtNDjLUzyZZMTx2lKaEtOQTDiznYa7FTavOzfU679CWX1wGg5ev0pwKlUenvvXT18l3PT3EhjiinrqxBVW2WhyGL+oIk5SPRXiMCJpt0plbNMfSbu1hR9GC6rhL1y2qoglhv/WFHnj72SGRBNEvkJsPd8zZsGMeMgUr9PWoyaFpXoFHElPsQtrP7d/FbaMGNrWLSo/JN7OxaDhazTo8jTzTmjqWkturfSR3f+A+LLgqKKONkjtVSSGPTxifPJZOTC3MCs3QOzhlHDEQb4Ndua/VrikjSNZ6yTV5TriabzeRGo3Z9dInj8LvFwrTIi4CA9M5L8LfjQ2LpFsJbTnIbyR/1AOgelibb2URGCkZNslwxsUyupvq3TWxMc0aA4pISOsWdyPg/GWdXxJsMIXNv8lp3JIgDN0DE+rJ2ulutfX8f26OhnpkA0ntYUmVibGtVY9CXzEjhn/cuH2FgXmjfIz3kHPatUGr6u8uYk4eUOMXJ3WbT39ySDpYnImlITCKI0QuS2tMf49U6OHVl4J8fWvlXc4OioWpKr9A1awHHtAzRZ20NXaZYs7QU1A5Z/u9GUqnF66GzrjzFiJyv20t2Rian7fXZRhVMIbMCjIIX4C50lpnZyL0naL1UNSBD5WSaV5uogngrNZ+/RCrLq/9pO0yGwkqFFpTrJZRZD0EPntpw88L3AMWI1EfY9PSOy2X1sE5suMH+IifPijizxMyHE+zUYlUGnG8PlF1NWkAn4I04BXPNn5CDzc="
+                        "text": "{\"is_fruit\": true}",
+                        "thoughtSignature": "EuIFCt8FARFNMg+rk4FMBSraHPNg4RbnTxwRs63C6rzXh01/JDiy8rddP5ytZKo3MI+yBZ/xHk09nHhEKx97ItLjrAo/lMa/kCPnMzJ8qVJ9RCStuwelSu9qHtuEq0UhWNfBnU8flAUPxSPz1FpGv1b5sQkjZepb0gANXQ0za8er5a0LANmVloGjRvKG+diWSF25ovwBgNhzB4iyyUWTbtGziDnukcXqWpIZAAph6yylVqXYYLkmO/iaz8n6uVSeDyFk0HboJnkXZd0jeN5ManXe8EA8ECsCpBEDBxLGrNBA7HZwpxZucafZZ5ay45BZtCsZ+ZmktGL9BAYqQ4E5a6NnWX6XMtQt6QvuevylB7F73VpXWmreAS48sa5t3jncNQk6ClaVp/R/I/tnsiwaua1ndSyZtugPedu2UgHMFEW2LSUDGrMcrrHgktKoegm3QngzZl9wbG7oGYtxluoKS28hVhYDjau2X6AbGUO13Ap7uJkgqTJc0me1H4cxadKKegFxmz+mW4tF/Bys+DDGT9s4FVhK78P5acpRVmRToZMtoyXnASwmJnlJtBmCM+kjHVsNeMbIwNKICtlpbC6bUwjrYfewc0m0/thMhpHzhYUqr8RRobK6TUFyqub/oZ42cK0UN7PggGcS2NtUs0J7ZDQQHegMrUM0wM7ufKHR0xnUPnvvNdhPzXHqwu/vZ0LRv4Ma40pjCn60Bvw2FJcjnM11XyG3jIgWHy5/r8D0Af0J38OFtkRnPMtRzznNRgleqhNC3c1pN5FmsgBw4FNOiQr9k8wrSB5Q/TJxIddUZtnGhZvKqGcyy00Ey66gvYWWy0Zn6nKKSkHa+LOSvUHLWrEW+TEUuMcNBS1hOUxoX7EqK/UuRZEpAlaYKQe7L40LeDu+WWMm+4i5/l1iQlzE7HBZTenW4M4ebUiz/FtNGgJy2pQs9lT8BkghlmC5ghznhFM2fx+VlPSoLvPc3O8WDySyp1OM"
                       }
                     ],
                     "role": "model"
@@ -44,19 +40,19 @@ interactions:
               ],
               "usageMetadata": {
                 "promptTokenCount": 30,
-                "candidatesTokenCount": 11,
-                "totalTokenCount": 217,
+                "candidatesTokenCount": 7,
+                "totalTokenCount": 226,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 30
                   }
                 ],
-                "thoughtsTokenCount": 176,
+                "thoughtsTokenCount": 189,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.5-flash",
-              "responseId": "OiYaasfrPOK0_uMPopTO-QM"
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "_h6nasXjHLrW_uMP-J-m0Qk"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2568
+                - gfet4t7; dur=876
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.579s
+        duration: 882ms

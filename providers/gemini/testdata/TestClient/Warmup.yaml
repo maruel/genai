@@ -482,6 +482,40 @@ interactions:
                   "thinking": true
                 },
                 {
+                  "name": "models/gemini-omni-1.1-flash",
+                  "version": "001",
+                  "displayName": "Gemini Omni 1.1 Flash",
+                  "description": "Gemini Omni 1.1 Flash ",
+                  "inputTokenLimit": 131072,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
+                  "name": "models/gemini-3.5-transcribe",
+                  "version": "3.5-transcribe-08-2026",
+                  "displayName": "Gemini 3.5 Transcribe",
+                  "description": "Gemini 3.5 Transcribe",
+                  "inputTokenLimit": 98304,
+                  "outputTokenLimit": 32768,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
                   "name": "models/gemini-3.6-flash",
                   "version": "3.6-flash-07-2026",
                   "displayName": "Gemini 3.6 Flash",
@@ -505,6 +539,25 @@ interactions:
                   "version": "3.7-flash-08-2026",
                   "displayName": "Gemini 3.7 Flash",
                   "description": "Gemini 3.7 Flash",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
+                  "name": "models/gemini-3.8-flash",
+                  "version": "3.0",
+                  "displayName": "Gemini 3.8 Flash",
+                  "description": "Gemini 3.8 Flash",
                   "inputTokenLimit": 1048576,
                   "outputTokenLimit": 65536,
                   "supportedGenerationMethods": [
@@ -552,6 +605,22 @@ interactions:
                   "maxTemperature": 2
                 },
                 {
+                  "name": "models/lyria-3.5",
+                  "version": "3.5",
+                  "displayName": "Lyria 3.5",
+                  "description": "Music Generation model",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2
+                },
+                {
                   "name": "models/gemini-3.1-flash-tts-preview",
                   "version": "3.1-flash-tts-preview",
                   "displayName": "Gemini 3.1 Flash TTS Preview",
@@ -561,25 +630,6 @@ interactions:
                   "supportedGenerationMethods": [
                     "generateContent",
                     "countTokens",
-                    "batchGenerateContent"
-                  ],
-                  "temperature": 1,
-                  "topP": 0.95,
-                  "topK": 64,
-                  "maxTemperature": 2,
-                  "thinking": true
-                },
-                {
-                  "name": "models/gemini-robotics-er-1.6-preview",
-                  "version": "1.6-preview",
-                  "displayName": "Gemini Robotics-ER 1.6 Preview",
-                  "description": "Gemini Robotics-ER 1.6 Preview",
-                  "inputTokenLimit": 131072,
-                  "outputTokenLimit": 65536,
-                  "supportedGenerationMethods": [
-                    "generateContent",
-                    "countTokens",
-                    "createCachedContent",
                     "batchGenerateContent"
                   ],
                   "temperature": 1,
@@ -777,6 +827,21 @@ interactions:
                   ]
                 },
                 {
+                  "name": "models/gemini-3.5-transcribe-live",
+                  "version": "3.5-transcribe-live-08-2026",
+                  "displayName": "Gemini 3.5 Transcribe Live",
+                  "description": "Gemini 3.5 Transcribe Live",
+                  "inputTokenLimit": 131072,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "bidiGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2
+                },
+                {
                   "name": "models/gemini-2.5-flash-native-audio-latest",
                   "version": "Gemini 2.5 Flash Native Audio Latest",
                   "displayName": "Gemini 2.5 Flash Native Audio Latest",
@@ -871,6 +936,17 @@ interactions:
                   "topP": 0.95,
                   "topK": 64,
                   "maxTemperature": 2
+                },
+                {
+                  "name": "models/lyria-realtime-exp",
+                  "version": "lyria-realtime-exp",
+                  "displayName": "Lyria Realtime Experimental",
+                  "description": "Lyria Realtime Experimental",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "bidiGenerateMusic"
+                  ]
                 }
               ]
             }
@@ -882,7 +958,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=85
+                - gfet4t7; dur=77
             Vary:
                 - Origin
                 - X-Origin
@@ -895,4 +971,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 154ms
+        duration: 126ms

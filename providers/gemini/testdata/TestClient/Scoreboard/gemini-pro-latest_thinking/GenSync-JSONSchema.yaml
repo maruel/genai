@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 380
+        content_length: 359
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,12 +28,8 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Thought Process: Is a Banana a Fruit?**\n\nOkay, the user wants a simple JSON response: is a banana a fruit? Strict JSON, boolean `is_fruit` property, no extra fluff. First things first: understand the request. It's a binary question. Let's see... a schema dictates a single boolean field, named `is_fruit`. Got it.\n\nNext, I need to determine the answer. Botanically, yes, a banana *is* a fruit. Case closed.\n\nNow for the output. It needs to be precise JSON: `{\"is_fruit\":true}`. No explanations, no extra characters, especially no newlines or tabs. The directive is crystal clear. I need a single line of JSON. Let me double-check... Yes. `{\"is_fruit\":true}` it is. Perfect.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "text": "{\"is_fruit\":true}",
-                        "thoughtSignature": "EoQGCoEGAQw51sfBkRSPoHv97JNB3+mlX5UiVD2dvwC5yTgI1bkhe5mMPeyZU3cnYP+pjUa/VPHnB3d1OUvNp3+4e9pGbZNqRZeAqziWpvuVBQr0pnFhgxGDeOtBTk8nqppeqt4MamkdsMN4d730RCp1SspI07eN0if0fW/+J88bIoILTj2rKfUdtfCFtQP9clyX8ZD809ZclW+H7DNQ16yhcqnST7qBk0CFzH5OtXkFt5KYb25vi5RnQKSeBu0N2wlJo0AUfu6rzReYs5DlmWRgi0Gg4Mik/BgUBZiqnTdoYJBrYqgSjw1lyNiaYoZB8yD/evkwttbbEw54IcqIh94bWhn0Pcz5LcqHB3n+7qKGbglbOZ5R/cLiPxdQV0JFZ2atVnYuIl7aEmKhmJ04wtqYlBxj2YZwqIFtgpWECiJkkt4MiZPavmAZA4bappztVYCJvBDeCk8hFwIBVfBw8AkMo9NkeIwSZw2NIWMeaFuFYFCa7qIwCV0T9YEh0m5BCvqLoHeRLK006H72NnEVWb258a3E8hpipiCQWyNlKIIsCWzmCnwoRc5zVndKHQR5Ujez9pAQ4s1XSVPKgd763IEXNyzEZRenLqT1pA7N1bdWymf3RBcvQ8fW2MvPeYkJ6WPpcCMqY1i+IA03H1dplZQev/5SGmTlQqMz0tYYCCM3GLLZZdI2gmOuzLOPf+XSbsM/U08cE0nH2MNLax9u6RTRDO+iQZqgzIZNuiQHy6jqNvHMyCys6yDEhxSHGlgtrhg9gEep20MdLPHZIIKLab4/d11fAHO9U616PojQJuNAsAkYkrB4sBajDbKmyF+MZC43R4b4LkNPDpAxWcseUca6N3a2BTa6EI6AbP5pXNhEGJVI+zEe3yvj5ORGUlZ0rYty/f7XcUCZiDDmo6oX2bP8D3p/mBP5Tm9q3M/FqOViwxD+N1D2KHBsL8ULTzCiYJ3/OFo0AAYCs+Phcpjz8Fp2hXC9xma09vY4AT8uHwPwh9TpEnBVVQepe0QijaP180z3RYZznw=="
+                        "thoughtSignature": "Eu4FCusFARFNMg/L8wJgZQh7lm1DKnniJmtlcI5EJS0c9T5n4exzDjKhvRGs8ptAG+mvAF5Lp6MLInnbDdsMVkwtnVlwkbriF52pU3xEgw25iG3w0ApNUHJk8SupuIpiCGfBLtkI9lzZZtM8oS2nsRnanhhilMxcQ+g8/+lMR5FITnQNN97gYAlEHjWgqaXoYciSr3WIOg2rIeHW5TZrfen77a/7RXrbCSaVmMx/cE/uoVnUkZ0sEoLCmGdoIy96RSGfLFb8sMWqAH1vDqv1xuFBwfrRYiwqVqlrPiHg1oRBQKJxfiIDs3LfT/fYiEi6QIvecptRKI4QT9whKFhN7eKClROylK3sm52Z+9rZB96JYZ+jE9q57oh8XOuV2GMsZxAZJViQ607WzmUsT5YS+5MigXlkUpIjcVd+UNF0QqeOP59OaCwCUyneT5ykRXqwB3dc8PzapG4IKCTdn7bUepfCHgVYcyGKf3P5jqPiOe8RUDRxRqwCv3D0tSjASRx3mFk3DZCooyrd2whC17jOv4pdLYCZaIxW7MceJaH9M2XQdW5gZ1W3u1UG3F/Fahgl0Uz/077tAkyqzx9O/YIR5idZZG3zvkheLBL+kDxxadx1rqFTqhjkEw4NketphviNxQ6lWvK8m4iP51t/LHVOgBWw/xJENNx529cEGrO2XJIqrxGqOag3mFnw6f9MPeBkQrU7ZjohrMMhDGQmBVrKBeeQhrza/riCzEM70/zfVUEcRpNSyCNsmw62O99/V4TqDwsdbCeYoZD+l+96Yn37FtIZi4sTrEhYfG9OeQ9cmHtWEXlvrPIu2Aat7Um5ARp9AtbOtkAxdL5mWozlfYM5+iSJ+g9JJZtHv5Xwz1Fd6ToWtcfwus46yH/C3EtjH57Wp0uVDxa8zZS5iDm/uTNK0d3urnIalYaeWwT9tUkD/f+AN09oxZowjwz6zTYxL0V3mQvhqCRe3ts+r6kRYSQ6fN2emOO+OO7WCISvdG/nkYL+"
                       }
                     ],
                     "role": "model"
@@ -45,18 +41,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 18,
                 "candidatesTokenCount": 7,
-                "totalTokenCount": 222,
+                "totalTokenCount": 192,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 18
                   }
                 ],
-                "thoughtsTokenCount": 197,
+                "thoughtsTokenCount": 167,
                 "serviceTier": "standard"
               },
               "modelVersion": "gemini-3.1-pro-preview",
-              "responseId": "-dYZav7QJbiZ-8YPopuuiAg"
+              "responseId": "rx-natChKeXg_uMP4ZGVmQg"
             }
         headers:
             Alt-Svc:
@@ -66,7 +62,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=4073
+                - gfet4t7; dur=2778
             Vary:
                 - Origin
                 - X-Origin
@@ -81,4 +77,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 4.08s
+        duration: 2.784s

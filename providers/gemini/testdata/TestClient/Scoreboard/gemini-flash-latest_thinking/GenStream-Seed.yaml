@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 206
+        content_length: 143
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 84,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 73,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"IyYaapnxO9T5jrEPztWlgAg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Eu4CCusCAQw51sfZYIqYhN/K4VUhTspr+CaAILyUUXYjxobusGnWwl9HMUWn35ylb+zpF2ldZhRnQDrPHquygpjTM73pi7bAFkgiS+51FG4A/xSnqxNhrQVVhepI6poep22By2V80LAZElfuyIccLV7ZMHiWBkMC4oNPrcX8XJzc8VuNiAbDiNTv2HXNid/HLGkkHIpZH7EOHxZspJvChZ0bOw66ocT+4BRE8a9+w6EBW/QZTiRSQX65yLmkPhJeqsh3ekK7w8otwAxx9o9dtamfPSDwyOU1hWR/IiX82Bu+CgSaBbjg9psA6xEyL0O3WevAb7Tip6PsWrWTbBZ/lLr1ZZCI4eciTJdW/H7vjTFsGvoyikbgX1tmQsZZLmmMQiFcCu4egXFbp5bIs7eif7z3guMkllaMEpJwpEAtemYrBJIPDbqLz2LuhuNzEFtI2LUMmW/hOfHpivKN9rmae42Lcl8jh6XHxw2HEgjtgLrR\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 84,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 73,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash\",\"responseId\": \"IyYaapnxO9T5jrEPztWlgAg\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 122,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 112,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"7h6naszgHYuR_uMP4eqYuAg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EqgECqUEARFNMg/HZRVuiYuB00rTYtD3q6FLUIKKdFOmw5kAJkd8QDO8E8TJCAZ7OkNtQwyMTYxSLlEXdeKInk2kFK4HJ4RuHBVVE2bQxZ9kdUeu7XCJyzn/o/UFIjbyAHAniT1FATE9MwhwkWtz43jk0gDPUFso/MJ89PI0bTwn6vz1k/hwVLcZ+jxDTr1zHwklk45SwJ2MNAilQVi6l8VL4B01TG54QjIHocLTwKucgMiOzeaIMQlN8aEWgX0L74GNbX5F5ayB6p37cgNIhZgr2QinPzi96Dsw/XGk1CdIpFHX9/kwc3/VllD3tk83c8lmiUS9AJcvTFd95BEbQoonEo7V9Zr+z0eaYK3SJ+yVFce15yZw32IzmSRJPoT7w07PdRsVD6rb81Q4Y9HoGK7h16z9heNlQBBKHGzI+aRZ/2RNNZE1U9GMMjG+lC41wGXjj6PH0eQ8DwGAHs1nyYYTxv0mv1S/1mKXF5CqUJWPZN7Lc+TJHOWA72CaB5rJv4yKxoLDl5OALvdVIoaNI42r3qt25t5JzFlVm2Vl+mUOvkJY4LjQIUncEmi7ChMGGSQ4Kd+CFeUVOhs37DacGYvbwwniAj8gmoDTI4S/Wr3WzC21cKHIkbm3CZOkad3bhiJkg5X4c05N4zn9M6qfCGytBgyznxaEo1IYGq3CXS3CTXawSnbZrIiOScaAuOkkJTb3OM2m0ihT+zyOiRtsnt5Qc74M22iJdasL\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 122,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 112,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"7h6naszgHYuR_uMP4eqYuAg\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=994
+                - gfet4t7; dur=733
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.006s
+        duration: 738ms

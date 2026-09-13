@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 672
+        content_length: 651
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"functionDeclarations":[{"name":"best_country","description":"A tool to specify the best country","parameters":{"properties":{"country":{"enum":["Canada","USA"],"type":"STRING"}},"required":["country"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"ANY"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,18 +28,14 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Analytical Process for the Canada vs. USA Question**\n\nOkay, here's how I'm approaching this request. First, I need to understand exactly what's being asked. It's a direct comparison: is Canada better than the USA? Not a vague \"which is nicer\" but a comparative judgement. The user is also specifically telling me to leverage the `best_country` tool. That's a key piece of information. I need to ensure I use that tool properly.\n\nTherefore, I need to evaluate this `best_country` tool and what it's capable of. The prompt clearly states it exists and that it takes the name of a country. Good. Looks like I just need to plug \"Canada\" and \"USA\" into that tool and then look at the output from there to give the user the information they have requested.\n\n\n",
-                        "thought": true
-                      },
-                      {
                         "functionCall": {
                           "name": "best_country",
                           "args": {
                             "country": "Canada"
                           },
-                          "id": "DJoZthUG"
+                          "id": "call_1806323"
                         },
-                        "thoughtSignature": "EoAECv0DAQw51sdHfEdLzq3hkxY41E63iA/nfoOI3FcZitZCfoJ28q5FHPHC34zX9yH5oB+p3MQmJdBAi9WX7OYxYMoPaPTX95jSCBncg4tFMv/Fvdorz4jPAj2mxbiwTEYr7fJK4OqhAm7IU6m9L1Ku3vj6wtETG3dqajXT4QlTm7rYT9kYIGjM9fj20lpCyhaxzGCubmUA2eyBJdcnkl3c982I7RrfrCsA2hVrXAzRy/inQ4wChK8xAcwX5o/kDt+F0Df3W/NIydg1Jq89vhsUj2MWlaFholON1EFTVNTsPPreZmyjjfArdKuhPGFu2QVI/X+m1D5FkRVfIggUakxZTkQhQpDG4WV9J6Uh31I6XmesPpfEfLjIDSLAM/Vx+EaK/pks3tBkhW8FsOo4GKA8uwdex/6LxfAKRZrSprqsOOKkOYElLEY57u/Ys91T7iBsdXueBuePRoGpu7mZ//5ItzEPYR3cWcX0uSOotkrdgeG0W8hJouNvGGlXkcC/vsSBjKcVITBIJoH+0B3zMda/9NAToD4F4N+eQjcsTdul/4Esckx8/k5S4jxBVvw4wk2aRfjxFZ6hszmJBE7RSEv6y7Y6l+isukuvVPRlIY2Q8ZbOu6e3Sf2PRjKJ6O1eHNlyZ9N2UGygAaXUu7Tl588VnpKegFz+VSFVCt+fmDxwXJ8="
+                        "thoughtSignature": "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"
                       }
                     ],
                     "role": "model"
@@ -52,18 +48,18 @@ interactions:
               "usageMetadata": {
                 "promptTokenCount": 107,
                 "candidatesTokenCount": 16,
-                "totalTokenCount": 238,
+                "totalTokenCount": 501,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 107
                   }
                 ],
-                "thoughtsTokenCount": 115,
+                "thoughtsTokenCount": 378,
                 "serviceTier": "standard"
               },
-              "modelVersion": "gemini-3.1-flash-lite",
-              "responseId": "viYaatT4J5KD-8YPsbSZmQU"
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "Vh-nau_gAt7O_uMP28ejuQg"
             }
         headers:
             Alt-Svc:
@@ -73,7 +69,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2070
+                - gfet4t7; dur=1944
             Vary:
                 - Origin
                 - X-Origin
@@ -88,4 +84,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.082s
+        duration: 1.95s

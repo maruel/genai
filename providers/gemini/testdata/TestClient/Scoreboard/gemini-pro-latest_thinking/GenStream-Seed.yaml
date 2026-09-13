@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 206
+        content_length: 185
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"seed":42,"thinkingConfig":{"thinkingLevel":"high"}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Choosing the Optimal Response**\\n\\nOkay, I've narrowed it down. Analyzing the request, I focused on the command, then the constraint of using only one word. Next, I generated a list of possible responses. Now, I'm at the point of making my final selection, and choosing the most appropriate.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 9,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"09YZapnKFKGljrEPy9OP-AQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 166,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 155,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"09YZapnKFKGljrEPy9OP-AQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"ErgFCrUFAQw51sdq8jo2dfQ1CPkNvtfeJd+hPFyoJ/LGJ5xctRCj13Rst/r596tNFOEOlnx579fC7Yc+6MDkkjHNG+6iP34PBLLPMzpQztClVjH52e5fH3/fdYtjZTP/MQHhR4xINJRExBkARuuk9Yi+xm6Amt5yQaKxBi5cN61Lb2m0q2pWHCfoaXWK1g2Mu/n1a3z9+JLtQyct60V/YUGSKkW3h4h6arjqeVxN6+dbq+Jck0q9oI5vrcclusG+uH52mFtjYg0vSOHQKq/n/wq5mDa5rndxyKujejwYpQiQokgwgOnOx93+x8BXnZQ7G6dgmnqVo2XkhT0iskDHA/KcwTIg2X/ltZTtfIXFwHKqDXJEiBd1dIbiSLc+3XYI6SGUfviE3RmpJQwQvBg2/X+PrITXN1asfFsgEqJqpOU0dXJDI4cogZ0gpny5xqJNDOA/eNy4Ggjb840eoRAOBsMEdOq8VAlzUzvkdhl2mhuptOEXcS+IBI7rUiyVEFKFXxyaigptAseZBeRE/cyJGr7pRbX2aOCcHhiJzekil+Ux6ueOVL50S2xGs5vXbliRNhHweZ6qDzI/EwKpLMFwMvT6wJTV2QUEH23sLUVgpH8FcE1+F4v9sX1W/NPXVml3fTKmLUlzkbrOTS9gBxPz4szbY9GwDEe9hax15U9h3icX/7f+q5ep5fcXdpCyC5IZsiNxon9za4PsB0zYR8mkqKf0bmePEs0lXy+qi7fNFzW42D7tpXDopjBziYBnU0i2wxEUY+6DMypjiKZkK5BXgtVmLNivWFzoAblmew1mGLrZkRBg5HLaSbBHOAtwJh9L5lLukbzQyPhykfxPNNl3F+yD4rogWbqbMAGqa52bXzW7NUa4J8SQcyXq5izgHKtAU0meN2QVGIucyjPWuMluh/mITJKCVQlX/PRe\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 166,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 155,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"09YZapnKFKGljrEPy9OP-AQ\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 211,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 200,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"iR-nap6GLeqq_PUPiaHToQk\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EpsICpgIARFNMg9EniuE0hBz7zXNNnROs9MpFZlLy8hAyhwPvTpTiyXU05732SuoGeCzlx2pfRtpL34NYlBR+PcT9xgM3FsEEPCxu97Fa9snZsgMgvsyq5xmvlBqLGYIB+lJaFaqJez9rR42rekeJC8k8Py2YnAnDe5lq0i79PWofwq064rMtVpWBbZML66CAW+5hezlws1wVx6V+DDYvcVl1zbGO3e/9urY0kVplT3lIEWsUXG5XerkKxROYwGZrLj2Lkk//8Ayad+AkCUVYoBWN8+/OeFSqV+dgz6NY6emQPDFLSKta9r5zKgufdNvaHItFzhdvja8v8AvVVALOXlk+fihbVCD90WmCNHQ3FQAN34PRdjeWeuiYyU2602v8NugAq+b37uhtrW6mQxSfp1Kf6JXv9rFvl1LZZfNX/05nIc7F5Z5C1sY57ZIcgy6fjP82n47j0XNewfvaiaLglUTpItDfbSue+k69nrEl1M7uTHjs9v7u19EC4sbr2aAWpTngiEZJ6ojaLzp8cJ6MvogrCk2/ek7Xnalpmjq44dtGVNsrM5/RGPKjlAXYnPJ7tLCEC26IAhp7KLL6MPGwsEqtLOAMKs2EB43nnViUiJGhV6hLisSpby73T68q02q+i/TZnK5qmpKOEGeGYLlBc1orrI0Kejj/UrjfvXgwPJVGnL/FvyEZtAtOmkSgMHafveZ2hwlpOupHkHaW5AUAx/2PGMBsYNYQVlNL37LGu74rFacOvykv0q1DDT4QpBLx6eNo37oCZzmrfjMtbYRAFbold43lFhxuZlPfnn3LPx8pL8RsLXFVZZKoiaCBLTVhjS8IaDMAsszOZnHgmrrB53Kdjd22gx27+8FxGEQ94Wqv0MtQbr0FD0/+QzVGVMmuKC5oM/wjVgmFA+9G7hUPj4AUvNk/piAHsRD/7TBd7tKWpdJ99KkD4km+JeGtKfI5ZXsAuhx3OhXRxNFfJV/F9JpPE0xye43+pJFcCxgwQOTPgctRl5V4ZCM8paSHzAOhnhbgzxPEp3/A/6NsaIFAaErMkP2VMpUf6nUEtUPpP/owotOMPc5LoTqTeNm07F/JNyuBYiW+QarJeykqBPIzlM43a9PXBo4cezMY3wO9wnV7bx5CF2YaXfcUI/OEH41QLCQIq9jM4cZ/FK8/I0AhKZII8l8I860hZyC0ppHZ+09J6BooU1IZlSWJOv1eRPbRsd3MNbZ3xDFKTjCfF1auL2D1ZTvyjcAyFianl06gNsoioMtqAt2MWKnyB+/O/Qb7ujfNwFzQ2gSZJJXf9zUkE+g6Yip7UrSNsJ5v7LSv1EbPnMkT8LCYy296K9z1rAdV/9NjUJYgYuO77B0s23CCVv20swYSLl32Lu7LPfrsTsABSwQcfyYo59PoHLP8g==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 2,\"totalTokenCount\": 211,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 200,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"iR-nap6GLeqq_PUPiaHToQk\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=2494
+                - gfet4t7; dur=6128
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 2.501s
+        duration: 6.133s

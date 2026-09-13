@@ -39,13 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9cb37ddf992ef-YUL
+                - a3aac6102d7a5933-YUL
             Content-Length:
                 - "204"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "15"
+                - "48"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -70,4 +70,4 @@ interactions:
                 - 1ms
         status: 400 Bad Request
         code: 400
-        duration: 97ms
+        duration: 180ms

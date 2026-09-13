@@ -122,8 +122,9 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 	usage := genai.Usage{}
 	updatedScenarios := []scoreboard.Scenario{}
+	failed := false
 	for _, m := range models {
-		t.Run(m.String(), func(t *testing.T) {
+		if !t.Run(m.String(), func(t *testing.T) {
 			// First try to find exact match with the requested Reason value
 			var want scoreboard.Scenario
 			for _, sc := range sb.Scenarios {
@@ -181,9 +182,16 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			if got != nil {
 				updatedScenarios = append(updatedScenarios, *got)
 			}
-		})
+		}) {
+			failed = true
+		}
 	}
 	t.Logf("Usage: %#v", usage)
+	// A failed model has no generated scenario. Do not replace the complete
+	// scoreboard with the partial successes from a live refresh.
+	if failed {
+		return
+	}
 
 	staleModels := map[scoreboard.Model]struct{}{}
 	if !filtered {

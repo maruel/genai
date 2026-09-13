@@ -1,67 +1,68 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 295
-    host: api.mistral.ai
-    body: "{\"model\":\"mistral-medium-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.mistral.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"2cde434a415d4c42ac650f2692a6878c\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":157,\"total_tokens\":160,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Banana\"}}]}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9addc5dc5ca4a2e2-YUL
-      Content-Type:
-      - application/json
-      Mistral-Correlation-Id:
-      - 019b1ce0-e5f3-79e5-9954-10b21dee3015
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "253"
-      X-Kong-Proxy-Latency:
-      - "12"
-      X-Kong-Request-Id:
-      - 019b1ce0-e5f3-79e5-9954-10b21dee3015
-      X-Kong-Upstream-Latency:
-      - "254"
-      X-Ratelimit-Limit-Req-60-Second:
-      - "360"
-      X-Ratelimit-Limit-Tokens-5-Minute:
-      - "600000"
-      X-Ratelimit-Limit-Tokens-Month:
-      - "200000000000"
-      X-Ratelimit-Remaining-Req-60-Second:
-      - "331"
-      X-Ratelimit-Remaining-Tokens-5-Minute:
-      - "593636"
-      X-Ratelimit-Remaining-Tokens-Month:
-      - "199999985125"
-      X-Ratelimit-Tokens-Query-Cost:
-      - "160"
-    status: 200 OK
-    code: 200
-    duration: 385ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 295
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-medium-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2cde434a415d4c42ac650f2692a6878c","created":1765716059,"model":"mistral-medium-latest","usage":{"prompt_tokens":157,"total_tokens":160,"completion_tokens":3},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"Banana"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9addc5dc5ca4a2e2-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 019b1ce0-e5f3-79e5-9954-10b21dee3015
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "253"
+            X-Kong-Proxy-Latency:
+                - "12"
+            X-Kong-Request-Id:
+                - 019b1ce0-e5f3-79e5-9954-10b21dee3015
+            X-Kong-Upstream-Latency:
+                - "254"
+            X-Ratelimit-Limit-Req-60-Second:
+                - "360"
+            X-Ratelimit-Limit-Tokens-5-Minute:
+                - "600000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "200000000000"
+            X-Ratelimit-Remaining-Req-60-Second:
+                - "331"
+            X-Ratelimit-Remaining-Tokens-5-Minute:
+                - "593636"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "199999985125"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "160"
+        status: 200 OK
+        code: 200
+        duration: 385ms

@@ -1,67 +1,68 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 269
-    host: api.mistral.ai
-    body: "{\"model\":\"mistral-small-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.mistral.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"87c12685556247bca237d2395b74cc8a\",\"created\":1765716080,\"model\":\"mistral-small-latest\",\"usage\":{\"prompt_tokens\":38,\"total_tokens\":531,\"completion_tokens\":493},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Alright, let's tackle this problem step by step. I'm going to read the given information carefully and see if I can figure out the answer.\\n\\n### Given Information:\\n1. The capital of Quackiland is Quack.\\n2. The Big Canard Statue is located in Quack.\\n\\n### Question:\\nWhat is the capital of Quackiland?\\n\\nAt first glance, this seems straightforward. The first piece of information directly states that the capital of Quackiland is Quack. The second piece of information provides additional detail about Quack, mentioning that the Big Canard Statue is located there, but it doesn't seem to change the fact that Quack is the capital.\\n\\n### Possible Confusion:\\nI wonder if the mention of the Big Canard Statue is meant to distract or if it's a hint that I'm missing something. Maybe \\\"Canard\\\" is a French word that means something in English, which could be relevant.\\n\\nLet me look up \\\"Canard\\\" in French:\\n- \\\"Canard\\\" in French means \\\"duck.\\\"\\n\\nSo, \\\"Big Canard Statue\\\" translates to \\\"Big Duck Statue.\\\"\\n\\nNow, the name \\\"Quackiland\\\" sounds like it's related to ducks because \\\"quack\\\" is the sound a duck makes. So, Quackiland is a place named after ducks, and its capital is Quack, which also sounds like a duck-related name.\\n\\n### Verifying the Answer:\\nGiven that, the first statement is clear: the capital of Quackiland is Quack. The second statement supports that by locating the Big Duck Statue in Quack, reinforcing that Quack is indeed a place within Quackiland.\\n\\nIs there any reason to think that the capital might be something else? The name \\\"Quack\\\" seems to fit the duck theme, and there's no other information suggesting a different capital.\\n\\n### Potential Trick:\\nSometimes, questions are phrased in a way that makes you overthink. Here, the answer seems to be directly provided in the first sentence. The second sentence might just be extra information to confirm or add context, not to change the answer.\\n\\n### Conclusion:\\nAfter considering all this, the most straightforward answer is that the capital of Quackiland is Quack. The additional information about the Big Duck Statue doesn't contradict this; it just adds detail about the capital city.\\n\\n### Final Answer:\\nThe capital of Quackiland is **Quack**.\"}}]}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9addc65eee25a2bc-YUL
-      Content-Type:
-      - application/json
-      Mistral-Correlation-Id:
-      - 019b1ce1-3794-70d4-90ea-e8f03bcffc93
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "3238"
-      X-Kong-Proxy-Latency:
-      - "10"
-      X-Kong-Request-Id:
-      - 019b1ce1-3794-70d4-90ea-e8f03bcffc93
-      X-Kong-Upstream-Latency:
-      - "3239"
-      X-Ratelimit-Limit-Req-60-Second:
-      - "360"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "2000000"
-      X-Ratelimit-Limit-Tokens-Month:
-      - "10000000000"
-      X-Ratelimit-Remaining-Req-60-Second:
-      - "222"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "1992803"
-      X-Ratelimit-Remaining-Tokens-Month:
-      - "9999876269"
-      X-Ratelimit-Tokens-Query-Cost:
-      - "531"
-    status: 200 OK
-    code: 200
-    duration: 3.372s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"87c12685556247bca237d2395b74cc8a","created":1765716080,"model":"mistral-small-latest","usage":{"prompt_tokens":38,"total_tokens":531,"completion_tokens":493},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"Alright, let''s tackle this problem step by step. I''m going to read the given information carefully and see if I can figure out the answer.\n\n### Given Information:\n1. The capital of Quackiland is Quack.\n2. The Big Canard Statue is located in Quack.\n\n### Question:\nWhat is the capital of Quackiland?\n\nAt first glance, this seems straightforward. The first piece of information directly states that the capital of Quackiland is Quack. The second piece of information provides additional detail about Quack, mentioning that the Big Canard Statue is located there, but it doesn''t seem to change the fact that Quack is the capital.\n\n### Possible Confusion:\nI wonder if the mention of the Big Canard Statue is meant to distract or if it''s a hint that I''m missing something. Maybe \"Canard\" is a French word that means something in English, which could be relevant.\n\nLet me look up \"Canard\" in French:\n- \"Canard\" in French means \"duck.\"\n\nSo, \"Big Canard Statue\" translates to \"Big Duck Statue.\"\n\nNow, the name \"Quackiland\" sounds like it''s related to ducks because \"quack\" is the sound a duck makes. So, Quackiland is a place named after ducks, and its capital is Quack, which also sounds like a duck-related name.\n\n### Verifying the Answer:\nGiven that, the first statement is clear: the capital of Quackiland is Quack. The second statement supports that by locating the Big Duck Statue in Quack, reinforcing that Quack is indeed a place within Quackiland.\n\nIs there any reason to think that the capital might be something else? The name \"Quack\" seems to fit the duck theme, and there''s no other information suggesting a different capital.\n\n### Potential Trick:\nSometimes, questions are phrased in a way that makes you overthink. Here, the answer seems to be directly provided in the first sentence. The second sentence might just be extra information to confirm or add context, not to change the answer.\n\n### Conclusion:\nAfter considering all this, the most straightforward answer is that the capital of Quackiland is Quack. The additional information about the Big Duck Statue doesn''t contradict this; it just adds detail about the capital city.\n\n### Final Answer:\nThe capital of Quackiland is **Quack**."}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9addc65eee25a2bc-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 019b1ce1-3794-70d4-90ea-e8f03bcffc93
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "3238"
+            X-Kong-Proxy-Latency:
+                - "10"
+            X-Kong-Request-Id:
+                - 019b1ce1-3794-70d4-90ea-e8f03bcffc93
+            X-Kong-Upstream-Latency:
+                - "3239"
+            X-Ratelimit-Limit-Req-60-Second:
+                - "360"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "10000000000"
+            X-Ratelimit-Remaining-Req-60-Second:
+                - "222"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1992803"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "9999876269"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "531"
+        status: 200 OK
+        code: 200
+        duration: 3.372s

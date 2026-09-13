@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-E1EAfT3oSIal6bqEfgVVMrydSa8M5","object":"chat.completion.chunk","created":1783961509,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"e"}
+            data: {"id":"chatcmpl-ENnUhwPMIuiKBwlvNJ8mX5swODPJd","object":"chat.completion.chunk","created":1789340507,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"P"}
 
-            data: {"id":"chatcmpl-E1EAfT3oSIal6bqEfgVVMrydSa8M5","object":"chat.completion.chunk","created":1783961509,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":""}
+            data: {"id":"chatcmpl-ENnUhwPMIuiKBwlvNJ8mX5swODPJd","object":"chat.completion.chunk","created":1789340507,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":""}
 
-            data: {"id":"chatcmpl-E1EAfT3oSIal6bqEfgVVMrydSa8M5","object":"chat.completion.chunk","created":1783961509,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":""}
+            data: {"id":"chatcmpl-ENnUhwPMIuiKBwlvNJ8mX5swODPJd","object":"chat.completion.chunk","created":1789340507,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":""}
 
-            data: {"id":"chatcmpl-E1EAfT3oSIal6bqEfgVVMrydSa8M5","object":"chat.completion.chunk","created":1783961509,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"O4Bjzdq2fdUVz"}
+            data: {"id":"chatcmpl-ENnUhwPMIuiKBwlvNJ8mX5swODPJd","object":"chat.completion.chunk","created":1789340507,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"tnBpZzsWmCoth"}
 
-            data: {"id":"chatcmpl-E1EAfT3oSIal6bqEfgVVMrydSa8M5","object":"chat.completion.chunk","created":1783961509,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":150,"completion_tokens":5,"total_tokens":155,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"c"}
+            data: {"id":"chatcmpl-ENnUhwPMIuiKBwlvNJ8mX5swODPJd","object":"chat.completion.chunk","created":1789340507,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":149,"completion_tokens":5,"total_tokens":154,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"c"}
 
             data: [DONE]
 
@@ -43,11 +43,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9cb6a2d8892ef-YUL
+                - a3aac69cb98c5933-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "478"
+                - "426"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -63,19 +63,19 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Input-Images:
                 - "49999"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199222"
+                - "499222"
             X-Ratelimit-Reset-Input-Images:
                 - 1ms
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 233ms
+                - 93ms
         status: 200 OK
         code: 200
-        duration: 558ms
+        duration: 574ms

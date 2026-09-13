@@ -1,52 +1,63 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 161
-    host: api.mistral.ai
-    body: "{\"model\":\"mistral-medium-latest\",\"stream\":true,\"random_seed\":42,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.mistral.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"1b602e8f28ff44e59ccff581df9efce6\",\"object\":\"chat.completion.chunk\",\"created\":1765716053,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"1b602e8f28ff44e59ccff581df9efce6\",\"object\":\"chat.completion.chunk\",\"created\":1765716053,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hi\"},\"finish_reason\":null}],\"p\":\"abc\"}\n\ndata: {\"id\":\"1b602e8f28ff44e59ccff581df9efce6\",\"object\":\"chat.completion.chunk\",\"created\":1765716053,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"!\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"id\":\"1b602e8f28ff44e59ccff581df9efce6\",\"object\":\"chat.completion.chunk\",\"created\":1765716053,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"total_tokens\":14,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: [DONE]\n\n"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9addc5b85970a2e2-YUL
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Mistral-Correlation-Id:
-      - 019b1ce0-cf76-7868-9a26-6eacd73c0adc
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "60"
-      X-Kong-Proxy-Latency:
-      - "15"
-      X-Kong-Request-Id:
-      - 019b1ce0-cf76-7868-9a26-6eacd73c0adc
-      X-Kong-Upstream-Latency:
-      - "61"
-    status: 200 OK
-    code: 200
-    duration: 221ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 161
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-medium-latest","stream":true,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"1b602e8f28ff44e59ccff581df9efce6","object":"chat.completion.chunk","created":1765716053,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"1b602e8f28ff44e59ccff581df9efce6","object":"chat.completion.chunk","created":1765716053,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"Hi"},"finish_reason":null}],"p":"abc"}
+
+            data: {"id":"1b602e8f28ff44e59ccff581df9efce6","object":"chat.completion.chunk","created":1765716053,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"!"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz012345678"}
+
+            data: {"id":"1b602e8f28ff44e59ccff581df9efce6","object":"chat.completion.chunk","created":1765716053,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3},"p":"abcdefghijklmnopqrstuvwxyz0123"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9addc5b85970a2e2-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 019b1ce0-cf76-7868-9a26-6eacd73c0adc
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "60"
+            X-Kong-Proxy-Latency:
+                - "15"
+            X-Kong-Request-Id:
+                - 019b1ce0-cf76-7868-9a26-6eacd73c0adc
+            X-Kong-Upstream-Latency:
+                - "61"
+        status: 200 OK
+        code: 200
+        duration: 221ms

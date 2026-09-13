@@ -1,52 +1,65 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 456
-    host: api.mistral.ai
-    body: "{\"model\":\"mistral-large-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"response\",\"strict\":true,\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.mistral.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"d66aff0a59804b3480981ea2c522b94b\",\"object\":\"chat.completion.chunk\",\"created\":1765716098,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d66aff0a59804b3480981ea2c522b94b\",\"object\":\"chat.completion.chunk\",\"created\":1765716098,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d66aff0a59804b3480981ea2c522b94b\",\"object\":\"chat.completion.chunk\",\"created\":1765716098,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"is\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d66aff0a59804b3480981ea2c522b94b\",\"object\":\"chat.completion.chunk\",\"created\":1765716098,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"_fruit\\\": true\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d66aff0a59804b3480981ea2c522b94b\",\"object\":\"chat.completion.chunk\",\"created\":1765716098,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":20,\"total_tokens\":28,\"completion_tokens\":8}}\n\ndata: [DONE]\n\n"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9addc6cfc9bea2bc-YUL
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Mistral-Correlation-Id:
-      - 019b1ce1-7e25-7c46-8510-59e62db90108
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "215"
-      X-Kong-Proxy-Latency:
-      - "8"
-      X-Kong-Request-Id:
-      - 019b1ce1-7e25-7c46-8510-59e62db90108
-      X-Kong-Upstream-Latency:
-      - "216"
-    status: 200 OK
-    code: 200
-    duration: 357ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 456
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"d66aff0a59804b3480981ea2c522b94b","object":"chat.completion.chunk","created":1765716098,"model":"mistral-large-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"d66aff0a59804b3480981ea2c522b94b","object":"chat.completion.chunk","created":1765716098,"model":"mistral-large-latest","choices":[{"index":0,"delta":{"content":"{\""},"finish_reason":null}]}
+
+            data: {"id":"d66aff0a59804b3480981ea2c522b94b","object":"chat.completion.chunk","created":1765716098,"model":"mistral-large-latest","choices":[{"index":0,"delta":{"content":"is"},"finish_reason":null}]}
+
+            data: {"id":"d66aff0a59804b3480981ea2c522b94b","object":"chat.completion.chunk","created":1765716098,"model":"mistral-large-latest","choices":[{"index":0,"delta":{"content":"_fruit\": true"},"finish_reason":null}]}
+
+            data: {"id":"d66aff0a59804b3480981ea2c522b94b","object":"chat.completion.chunk","created":1765716098,"model":"mistral-large-latest","choices":[{"index":0,"delta":{"content":"}"},"finish_reason":"stop"}],"usage":{"prompt_tokens":20,"total_tokens":28,"completion_tokens":8}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9addc6cfc9bea2bc-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 019b1ce1-7e25-7c46-8510-59e62db90108
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "215"
+            X-Kong-Proxy-Latency:
+                - "8"
+            X-Kong-Request-Id:
+                - 019b1ce1-7e25-7c46-8510-59e62db90108
+            X-Kong-Upstream-Latency:
+                - "216"
+        status: 200 OK
+        code: 200
+        duration: 357ms

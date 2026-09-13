@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-Dkt14Ba9lhru74ZWR5vtSIdUrQAjr","object":"chat.completion.chunk","created":1780066942,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"role":"assistant","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"SCTm49mp"}
+            data: {"id":"chatcmpl-ENnTb8PTMJVrh9tNY6yWzZ5CEz3CL","object":"chat.completion.chunk","created":1789340439,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_c7b55dc93c","choices":[{"index":0,"delta":{"role":"assistant","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"viVKpsfz"}
 
-            data: {"id":"chatcmpl-Dkt14Ba9lhru74ZWR5vtSIdUrQAjr","object":"chat.completion.chunk","created":1780066942,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"content":null,"audio":{"id":"audio_6a19aa7eba5c81919f6c069462f279b0","transcript":"Canada"}},"finish_reason":null}],"usage":null,"obfuscation":"556L2unFuZmEk"}
+            data: {"id":"chatcmpl-ENnTb8PTMJVrh9tNY6yWzZ5CEz3CL","object":"chat.completion.chunk","created":1789340439,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_c7b55dc93c","choices":[{"index":0,"delta":{"content":null,"audio":{"id":"audio_6aa72b1776ec8191b41be34ae10f5ba3","transcript":"Canada"}},"finish_reason":null}],"usage":null,"obfuscation":"Vqflw8DuysVaz"}
 
-            data: {"id":"chatcmpl-Dkt14Ba9lhru74ZWR5vtSIdUrQAjr","object":"chat.completion.chunk","created":1780066942,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"audio":{"transcript":" "}},"finish_reason":null}],"usage":null,"obfuscation":"Gt31E4738XBIKeN"}
+            data: {"id":"chatcmpl-ENnTb8PTMJVrh9tNY6yWzZ5CEz3CL","object":"chat.completion.chunk","created":1789340439,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_c7b55dc93c","choices":[{"index":0,"delta":{"audio":{"transcript":" "}},"finish_reason":null}],"usage":null,"obfuscation":"ukAIxQh19QzEyqK"}
 
-            data: {"error":{"message":"Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens.","type":"invalid_request_error","param":null,"code":null},"detail":{"message":"Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens.","code":null},"obfuscation":"2yrCkl"}
+            data: {"error":{"message":"Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens.","type":"invalid_request_error","param":null,"code":null},"detail":{"message":"Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens.","code":null},"obfuscation":"3M1kgG"}
 
-            data: {"id":"chatcmpl-Dkt14Ba9lhru74ZWR5vtSIdUrQAjr","object":"chat.completion.chunk","created":1780066942,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_f116be6bc4","choices":[{"index":0,"delta":{"audio":{"expires_at":1780070542}}}],"usage":null,"obfuscation":"47GAdlvrcjdstcO"}
+            data: {"id":"chatcmpl-ENnTb8PTMJVrh9tNY6yWzZ5CEz3CL","object":"chat.completion.chunk","created":1789340439,"model":"gpt-audio-2025-08-28","service_tier":"default","system_fingerprint":"fp_c7b55dc93c","choices":[{"index":0,"delta":{"audio":{"expires_at":1789344039}}}],"usage":null,"obfuscation":"k32MvEFA8AugjWc"}
 
             data: [DONE]
 
@@ -43,11 +43,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a03661363c7ede04-YYZ
+                - a3aac4f09e895933-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "249"
+                - "247"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -67,9 +67,9 @@ interactions:
             X-Ratelimit-Remaining-Tokens:
                 - "39983"
             X-Ratelimit-Reset-Requests:
-                - 1h8m26.585s
+                - 1h7m57.587s
             X-Ratelimit-Reset-Tokens:
                 - 25ms
         status: 200 OK
         code: 200
-        duration: 317ms
+        duration: 334ms

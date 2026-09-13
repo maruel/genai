@@ -1,84 +1,111 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 268
-    host: router.huggingface.co
-    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://router.huggingface.co/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "{\n  \"id\": \"oPmDUy8-zqrih-9b02650b5b41207b\",\n  \"object\": \"chat.completion\",\n  \"created\": 1766100067,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 38,\n    \"total_tokens\": 49,\n    \"completion_tokens\": 11\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Expose-Headers:
-      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9b02650b5b41207b-IAD
-      Content-Type:
-      - application/json; charset=utf-8
-      Cross-Origin-Opener-Policy:
-      - same-origin
-      Etag:
-      - W/"22c-g8F9JyN4xajjKntrI01m1/0vWFM"
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Retry-After:
-      - "2"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      Via:
-      - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
-      X-Amz-Cf-Id:
-      - e_TOhLkcaoGrI3-8TgxmLRsYS_RSW245Bbh0XX8gz7ccWYnPokmeJA==
-      X-Amz-Cf-Pop:
-      - YTO50-P1
-      X-Api-Call-End:
-      - "2025-12-18T23:21:07.734Z"
-      X-Api-Call-Start:
-      - "2025-12-18T23:21:07.182Z"
-      X-Api-Received:
-      - "2025-12-18T23:21:07.172Z"
-      X-Cache:
-      - Miss from cloudfront
-      X-Inference-Provider:
-      - together
-      X-Inference-Version:
-      - v2
-      X-Powered-By:
-      - huggingface-moon
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "100"
-      X-Ratelimit-Limit-Tokens:
-      - "33333.333333333336"
-      X-Ratelimit-Remaining:
-      - "198"
-      X-Ratelimit-Remaining-Tokens:
-      - "33333.333333333336"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 810ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 268
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-Coder-480B-A35B-Instruct","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |-
+            {
+              "id": "oPmDUy8-zqrih-9b02650b5b41207b",
+              "object": "chat.completion",
+              "created": 1766100067,
+              "model": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "The capital of Quackiland is Quack.",
+                    "tool_calls": [],
+                    "reasoning": null
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 38,
+                "total_tokens": 49,
+                "completion_tokens": 11
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9b02650b5b41207b-IAD
+            Content-Type:
+                - application/json; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Etag:
+                - W/"22c-g8F9JyN4xajjKntrI01m1/0vWFM"
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            Via:
+                - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - e_TOhLkcaoGrI3-8TgxmLRsYS_RSW245Bbh0XX8gz7ccWYnPokmeJA==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Api-Call-End:
+                - "2025-12-18T23:21:07.734Z"
+            X-Api-Call-Start:
+                - "2025-12-18T23:21:07.182Z"
+            X-Api-Received:
+                - "2025-12-18T23:21:07.172Z"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - together
+            X-Inference-Version:
+                - v2
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "100"
+            X-Ratelimit-Limit-Tokens:
+                - "33333.333333333336"
+            X-Ratelimit-Remaining:
+                - "198"
+            X-Ratelimit-Remaining-Tokens:
+                - "33333.333333333336"
+            X-Ratelimit-Reset:
+                - "2"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 810ms

@@ -1,0 +1,139 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 344
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"The"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":1,"total_tokens":239,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":2,"total_tokens":240,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":2,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" wants me to identify the fruit"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":8,"total_tokens":246,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":8,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" in the image and"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":12,"total_tokens":250,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" reply"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":13,"total_tokens":251,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":13,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with only one word.\n"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":18,"total_tokens":256,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":18,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The image shows a yellow,"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":24,"total_tokens":262,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":24,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" curved fruit with a stem at"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":30,"total_tokens":268,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":30,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the top and"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":33,"total_tokens":271,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":33,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" a"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":34,"total_tokens":272,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":34,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" slightly"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":35,"total_tokens":273,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":35,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" pointed"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":36,"total_tokens":274,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":36,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" bottom"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":37,"total_tokens":275,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":37,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":","}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":38,"total_tokens":276,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":38,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" which is clearly"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":41,"total_tokens":279,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":41,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" a banana.\nThe instruction"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":46,"total_tokens":284,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":46,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is to reply with only"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":51,"total_tokens":289,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":51,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" one word. So"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":55,"total_tokens":293,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":55,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" I"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":56,"total_tokens":294,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":56,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":" will output \"Banana\"."}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":62,"total_tokens":300,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":62,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop"}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":66,"total_tokens":304,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":46,"audio_tokens":0,"reasoning_tokens":62,"rejected_prediction_tokens":54}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":238,"completion_tokens":66,"total_tokens":304,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":46,"audio_tokens":0,"reasoning_tokens":62,"rejected_prediction_tokens":54}}}
+
+            data: {"id":"chatcmpl-abeb18d07cfe4e58a13c5e8638572748","choices":[{"index":0,"delta":{"content":"Banana"}}],"created":1789339986,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin, Origin
+            Via:
+                - 1.1 google, 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - ITbspyl6pSpqrrEJc49OVLcqQzHKwuvy_Mrz-hZ_k6pGmyE1VZtqXw==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Baseten-Accepted-At:
+                - "1789339986190"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "4610454111693922380"
+            X-Baseten-Dyn-Worker-Id:
+                - "4610454111693922380"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789339986190"
+            X-Baseten-Request-Id:
+                - 54ca701a09cf9690e78f98758f18e7355b1d5
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789339987092"
+            X-Baseten-Session-Id:
+                - 54ca701a09cf9690e78f98758f18e7355b1d5
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "480"
+            X-Ratelimit-Remaining-Tokens:
+                - "694295"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 988ms

@@ -1,57 +1,59 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 118
-    host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"openai/gpt-oss-120b\",\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.groq.com/openai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-b5f8ccc0-1713-4164-a9cb-818c101cca19\",\"object\":\"chat.completion\",\"created\":1765638707,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"User wants: \\\"Say hello. Use only one word.\\\" So respond with a single word greeting, like \\\"Hello\\\". Must be one word. So output \\\"Hello\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.00400475,\"prompt_tokens\":79,\"prompt_time\":0.003908881,\"completion_tokens\":45,\"completion_time\":0.098495856,\"total_tokens\":124,\"total_time\":0.102404737,\"completion_tokens_details\":{\"reasoning_tokens\":35}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_c5da83ab22\",\"x_groq\":{\"id\":\"req_01kcc495taeh8t7yvxayvaqe9g\",\"seed\":342393701},\"service_tier\":\"on_demand\"}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cache-Control:
-      - private, max-age=0, no-store, no-cache, must-revalidate
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ad6655ecdf6a316-YUL
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=2592000
-      Vary:
-      - Origin
-      X-Groq-Region:
-      - yul
-      X-Ratelimit-Limit-Requests:
-      - "500000"
-      X-Ratelimit-Limit-Tokens:
-      - "250000"
-      X-Ratelimit-Remaining-Requests:
-      - "499999"
-      X-Ratelimit-Remaining-Tokens:
-      - "249920"
-      X-Ratelimit-Reset-Requests:
-      - 172ms
-      X-Ratelimit-Reset-Tokens:
-      - 19ms
-    status: 200 OK
-    code: 200
-    duration: 125ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 118
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"openai/gpt-oss-120b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-b5f8ccc0-1713-4164-a9cb-818c101cca19","object":"chat.completion","created":1765638707,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"User wants: \"Say hello. Use only one word.\" So respond with a single word greeting, like \"Hello\". Must be one word. So output \"Hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.00400475,"prompt_tokens":79,"prompt_time":0.003908881,"completion_tokens":45,"completion_time":0.098495856,"total_tokens":124,"total_time":0.102404737,"completion_tokens_details":{"reasoning_tokens":35}},"usage_breakdown":null,"system_fingerprint":"fp_c5da83ab22","x_groq":{"id":"req_01kcc495taeh8t7yvxayvaqe9g","seed":342393701},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ad6655ecdf6a316-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=2592000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249920"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 19ms
+        status: 200 OK
+        code: 200
+        duration: 125ms

@@ -1,67 +1,68 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 270
-    host: api.mistral.ai
-    body: "{\"model\":\"mistral-medium-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.mistral.ai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"b05993b1e743458d9b3d5968f9ed2a8c\",\"created\":1765716058,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":38,\"total_tokens\":50,\"completion_tokens\":12},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The capital of Quackiland is **Quack**.\"}}]}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9addc5d468a6a2e2-YUL
-      Content-Type:
-      - application/json
-      Mistral-Correlation-Id:
-      - 019b1ce0-e10e-7d46-8afb-b6f449385491
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains; preload
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "184"
-      X-Kong-Proxy-Latency:
-      - "7"
-      X-Kong-Request-Id:
-      - 019b1ce0-e10e-7d46-8afb-b6f449385491
-      X-Kong-Upstream-Latency:
-      - "184"
-      X-Ratelimit-Limit-Req-60-Second:
-      - "360"
-      X-Ratelimit-Limit-Tokens-5-Minute:
-      - "600000"
-      X-Ratelimit-Limit-Tokens-Month:
-      - "200000000000"
-      X-Ratelimit-Remaining-Req-60-Second:
-      - "337"
-      X-Ratelimit-Remaining-Tokens-5-Minute:
-      - "594073"
-      X-Ratelimit-Remaining-Tokens-Month:
-      - "199999985600"
-      X-Ratelimit-Tokens-Query-Cost:
-      - "50"
-    status: 200 OK
-    code: 200
-    duration: 323ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 270
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-medium-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b05993b1e743458d9b3d5968f9ed2a8c","created":1765716058,"model":"mistral-medium-latest","usage":{"prompt_tokens":38,"total_tokens":50,"completion_tokens":12},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"The capital of Quackiland is **Quack**."}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9addc5d468a6a2e2-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 019b1ce0-e10e-7d46-8afb-b6f449385491
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "184"
+            X-Kong-Proxy-Latency:
+                - "7"
+            X-Kong-Request-Id:
+                - 019b1ce0-e10e-7d46-8afb-b6f449385491
+            X-Kong-Upstream-Latency:
+                - "184"
+            X-Ratelimit-Limit-Req-60-Second:
+                - "360"
+            X-Ratelimit-Limit-Tokens-5-Minute:
+                - "600000"
+            X-Ratelimit-Limit-Tokens-Month:
+                - "200000000000"
+            X-Ratelimit-Remaining-Req-60-Second:
+                - "337"
+            X-Ratelimit-Remaining-Tokens-5-Minute:
+                - "594073"
+            X-Ratelimit-Remaining-Tokens-Month:
+                - "199999985600"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "50"
+        status: 200 OK
+        code: 200
+        duration: 323ms

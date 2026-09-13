@@ -1,0 +1,121 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 169
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"We"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":1,"total_tokens":40,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need answer user"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":4,"total_tokens":43,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":4,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":":"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":5,"total_tokens":44,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":5,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":" \"Say hello. Use only"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":11,"total_tokens":50,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":11,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":" one word.\" Need comply"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":16,"total_tokens":55,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":". One word."}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":20,"total_tokens":59,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":20,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Hello"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":21,"total_tokens":60,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":21,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Ensure"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":23,"total_tokens":62,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":23,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":24,"total_tokens":63,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":24,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":" one word. Final"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":28,"total_tokens":67,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":28,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":29,"total_tokens":68,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":29,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop"}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":32,"total_tokens":71,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":21,"audio_tokens":0,"reasoning_tokens":29,"rejected_prediction_tokens":34}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":32,"total_tokens":71,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":21,"audio_tokens":0,"reasoning_tokens":29,"rejected_prediction_tokens":34}}}
+
+            data: {"id":"chatcmpl-c5c2948826a74e2980d34c5fff10432a","choices":[{"index":0,"delta":{"content":"Hello"}}],"created":1789339931,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin, Origin
+            Via:
+                - 1.1 google, 1.1 df34ce5bf73c140dc63a22fa17a4dcda.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - Wjt5QMy6h2NmoGr4veX9-UyxTYY5KuNBYbOtfPVahjuR0stLj1dVcQ==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Baseten-Accepted-At:
+                - "1789339931981"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "4610454111693922442"
+            X-Baseten-Dyn-Worker-Id:
+                - "4610454111693922442"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789339931981"
+            X-Baseten-Request-Id:
+                - 54ca701a09cf8954d7145b96c6e5a2b9a9110
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789339932219"
+            X-Baseten-Session-Id:
+                - 54ca701a09cf8954d7145b96c6e5a2b9a9110
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "461"
+            X-Ratelimit-Remaining-Tokens:
+                - "2071"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.553s

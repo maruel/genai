@@ -1,0 +1,127 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 303
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"We"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":1,"total_tokens":63,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need answer. Need be"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":6,"total_tokens":68,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":6,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" careful. User gives"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":10,"total_tokens":72,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":10,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":": \"The"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":13,"total_tokens":75,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":13,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" capital of Quackiland is"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":19,"total_tokens":81,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":19,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Quack. The Big"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":24,"total_tokens":86,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":24,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Canard Statue is located"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":30,"total_tokens":92,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":30,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" in Quack. What is"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":36,"total_tokens":98,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":36,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the capital of Quackiland"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":42,"total_tokens":104,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":42,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":"?\" It"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":44,"total_tokens":106,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":44,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":"'s"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":45,"total_tokens":107,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":45,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":" straightforward: Qu"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":48,"total_tokens":110,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":48,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ack. Need maybe mention"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":53,"total_tokens":115,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":53,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Final concise"}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":56,"total_tokens":118,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":56,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."}}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":59,"total_tokens":121,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":57,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[{"index":0,"delta":{"content":"Quack."},"finish_reason":"stop"}],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":62,"total_tokens":124,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":47,"audio_tokens":0,"reasoning_tokens":57,"rejected_prediction_tokens":28}}}
+
+            data: {"id":"chatcmpl-c4368b2651c24f569bd0e8ba3f9048d3","choices":[],"created":1789339984,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":62,"completion_tokens":62,"total_tokens":124,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":47,"audio_tokens":0,"reasoning_tokens":57,"rejected_prediction_tokens":28}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin, Origin
+            Via:
+                - 1.1 google, 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - lWsv1epJeYUb0sTNnZBCu7VMnFfNeb1RbmcXAcWszHH0EJQs3Y--Gg==
+            X-Amz-Cf-Pop:
+                - YTO50-P1
+            X-Baseten-Accepted-At:
+                - "1789339984572"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755212817928918786"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755212817928918786"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789339984572"
+            X-Baseten-Request-Id:
+                - 54ca701a09cf962bc72c4be3a5b0fc014f8ab
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789339984830"
+            X-Baseten-Session-Id:
+                - 54ca701a09cf962bc72c4be3a5b0fc014f8ab
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "494"
+            X-Ratelimit-Remaining-Tokens:
+                - "722134"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 353ms

@@ -383,10 +383,11 @@ type ChatResponse struct {
 		StopReason           string               `json:"stop_reason"`
 		Logprobs             Logprobs             `json:"logprobs,omitzero"`
 		Seed                 int64                `json:"seed,omitzero"`
+		TokenIDs             []int64              `json:"token_ids,omitzero"`
 	} `json:"choices"`
 	Usage          Usage    `json:"usage"`
 	PromptLogprobs struct{} `json:"prompt_logprobs"`
-	ServiceTier    struct{} `json:"service_tier"`
+	ServiceTier    string   `json:"service_tier,omitzero"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -501,9 +502,10 @@ const (
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	PromptTokens        int64 `json:"prompt_tokens"`
-	CompletionTokens    int64 `json:"completion_tokens"`
-	TotalTokens         int64 `json:"total_tokens"`
+	PromptTokens        int64       `json:"prompt_tokens"`
+	CompletionTokens    int64       `json:"completion_tokens"`
+	TotalTokens         int64       `json:"total_tokens"`
+	EstimatedCost       json.Number `json:"estimated_cost,omitzero"`
 	PromptTokensDetails struct {
 		AudioTokens              int64 `json:"audio_tokens"`
 		CachedTokens             int64 `json:"cached_tokens"`
@@ -545,6 +547,7 @@ type ContentFilterResults struct {
 // MessageResponse uses a different structure than the request Message. :(.
 type MessageResponse struct {
 	Role             string          `json:"role"`
+	Name             string          `json:"name,omitzero"`
 	Content          string          `json:"content"`
 	ToolCallID       string          `json:"tool_call_id"`
 	ToolCalls        []ToolCall      `json:"tool_calls"`
@@ -558,11 +561,14 @@ type MessageResponse struct {
 
 // To converts to the genai equivalent.
 func (m *MessageResponse) To(out *genai.Message) error {
+	if m.ReasoningContent != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
+	}
 	if m.Content != "" {
-		out.Replies = []genai.Reply{{Text: m.Content}}
+		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
 	}
 	for i := range m.ToolCalls {
-		out.Replies = []genai.Reply{{}}
+		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
@@ -570,11 +576,12 @@ func (m *MessageResponse) To(out *genai.Message) error {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	Object            string     `json:"object"` // "chat.completion.chunk"
-	Created           base.TimeS `json:"created"`
-	ID                string     `json:"id"`
-	Model             string     `json:"model"`
-	SystemFingerprint string     `json:"system_fingerprint"`
+	Object            string          `json:"object"` // "chat.completion.chunk"
+	Created           base.TimeS      `json:"created"`
+	ID                string          `json:"id"`
+	Model             string          `json:"model"`
+	SystemFingerprint string          `json:"system_fingerprint"`
+	ServiceTier       json.RawMessage `json:"service_tier,omitzero"`
 	Choices           []struct {
 		Index        int64        `json:"index,omitzero"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -591,6 +598,7 @@ type ChatStreamChunkResponse struct {
 		RawOutput            json.RawMessage      `json:"raw_output,omitzero"`
 		ContentFilterResults ContentFilterResults `json:"content_filter_results,omitzero"`
 		StopReason           string               `json:"stop_reason,omitzero"`
+		TokenIDs             []int64              `json:"token_ids,omitzero"`
 	} `json:"choices"`
 	Usage      Usage `json:"usage"`
 	SLAMetrics struct {

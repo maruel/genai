@@ -39,13 +39,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a03639ed4eda36ab-YYZ
+                - a3aac4f89cd45933-YUL
             Content-Length:
                 - "330"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "317"
+                - "25"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -61,13 +61,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "968"
+                - "946"
             X-Ratelimit-Remaining-Tokens:
-                - "37359"
+                - "39980"
             X-Ratelimit-Reset-Requests:
-                - 44m51.666s
+                - 1h16m34.907s
             X-Ratelimit-Reset-Tokens:
-                - 3.961s
+                - 30ms
         status: 400 Bad Request
         code: 400
-        duration: 1.331s
+        duration: 128ms

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-E1DwEJ7qNjN0yqmVOvSRIMM5WosSI",
+              "id": "chatcmpl-ENnUJhU6UjdAStoZTLlSyRQGkicus",
               "object": "chat.completion",
-              "created": 1783960614,
+              "created": 1789340483,
               "model": "gpt-5.6-terra",
               "choices": [
                 {
@@ -68,11 +68,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9b58afe11255a-YUL
+                - a3aac60409d55933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "567"
+                - "819"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -97,4 +97,4 @@ interactions:
                 - 1ms
         status: 200 OK
         code: 200
-        duration: 942ms
+        duration: 1.228s

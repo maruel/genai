@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-E1EAjskjY3WBQRofRbVbJ0I0EPsRZ",
+              "id": "chatcmpl-ENnUg185Bt3vQuhOMG7LPCMTbvVdi",
               "object": "chat.completion",
-              "created": 1783961513,
+              "created": 1789340506,
               "model": "gpt-5.6-luna",
               "choices": [
                 {
@@ -68,11 +68,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9cb80e8f292ef-YUL
+                - a3aac6925d645933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "456"
+                - "515"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -86,15 +86,15 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199966"
+                - "499966"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 10ms
+                - 4ms
         status: 200 OK
         code: 200
-        duration: 555ms
+        duration: 645ms

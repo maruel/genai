@@ -9,7 +9,7 @@ interactions:
         content_length: 919
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-terra","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_siQ9Y9BlxnbhyM3wHA0kbWrs","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_siQ9Y9BlxnbhyM3wHA0kbWrs"}],"store":true,"reasoning_effort":"none","service_tier":"flex","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
+            {"model":"gpt-5.6-terra","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_8nP1N1eiCKzp4pFdVdnzCQeK","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_8nP1N1eiCKzp4pFdVdnzCQeK"}],"store":true,"reasoning_effort":"none","service_tier":"flex","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-E1EeT1qpQNm6wTzyM0ERQmMFsNrOY",
+              "id": "chatcmpl-ENnUOY2cR29isAMsySpvnUHA5cWOl",
               "object": "chat.completion",
-              "created": 1783963357,
+              "created": 1789340488,
               "model": "gpt-5.6-terra",
               "choices": [
                 {
@@ -68,11 +68,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9f873cb162f84-YUL
+                - a3aac62408b95933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "992"
+                - "558"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -97,4 +97,4 @@ interactions:
                 - 4ms
         status: 200 OK
         code: 200
-        duration: 3.296s
+        duration: 667ms

@@ -1,57 +1,59 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 268
-    host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"openai/gpt-oss-120b\",\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.groq.com/openai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-ac210c7b-3b17-4980-b62d-29abb31c501d\",\"object\":\"chat.completion\",\"created\":1765638725,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"The user asks: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quake...\\\". The answer: \\\"Quack\\\". So just answer.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.003896059,\"prompt_tokens\":105,\"prompt_time\":0.005078584,\"completion_tokens\":68,\"completion_time\":0.151009465,\"total_tokens\":173,\"total_time\":0.156088049,\"completion_tokens_details\":{\"reasoning_tokens\":47}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0060895c89\",\"x_groq\":{\"id\":\"req_01kcc49r33e7xs7tnnr0zqgt41\",\"seed\":985940858},\"service_tier\":\"on_demand\"}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cache-Control:
-      - private, max-age=0, no-store, no-cache, must-revalidate
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ad665d3cdf2a316-YUL
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=2592000
-      Vary:
-      - Origin
-      X-Groq-Region:
-      - yul
-      X-Ratelimit-Limit-Requests:
-      - "500000"
-      X-Ratelimit-Limit-Tokens:
-      - "250000"
-      X-Ratelimit-Remaining-Requests:
-      - "499999"
-      X-Ratelimit-Remaining-Tokens:
-      - "204850"
-      X-Ratelimit-Reset-Requests:
-      - 172ms
-      X-Ratelimit-Reset-Tokens:
-      - 10.836s
-    status: 200 OK
-    code: 200
-    duration: 180ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 268
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"openai/gpt-oss-120b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-ac210c7b-3b17-4980-b62d-29abb31c501d","object":"chat.completion","created":1765638725,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"The user asks: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quake...\". The answer: \"Quack\". So just answer."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003896059,"prompt_tokens":105,"prompt_time":0.005078584,"completion_tokens":68,"completion_time":0.151009465,"total_tokens":173,"total_time":0.156088049,"completion_tokens_details":{"reasoning_tokens":47}},"usage_breakdown":null,"system_fingerprint":"fp_0060895c89","x_groq":{"id":"req_01kcc49r33e7xs7tnnr0zqgt41","seed":985940858},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ad665d3cdf2a316-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=2592000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "204850"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 10.836s
+        status: 200 OK
+        code: 200
+        duration: 180ms

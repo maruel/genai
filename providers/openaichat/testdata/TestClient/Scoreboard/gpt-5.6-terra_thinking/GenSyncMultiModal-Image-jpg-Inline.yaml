@@ -19,15 +19,43 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 165
-        body: |-
+        content_length: -1
+        uncompressed: true
+        body: |
             {
-              "error": {
-                "message": "You have insufficient permissions for this operation.",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": null
-              }
+              "id": "chatcmpl-ENnUSaZWZD1eBu2qmLiAqigfAeDZP",
+              "object": "chat.completion",
+              "created": 1789340492,
+              "model": "gpt-5.6-terra",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Banana",
+                    "refusal": null,
+                    "annotations": []
+                  },
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 149,
+                "completion_tokens": 5,
+                "total_tokens": 154,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 0,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "service_tier": "flex",
+              "system_fingerprint": null
             }
         headers:
             Access-Control-Expose-Headers:
@@ -39,13 +67,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9d06a7944a2bb-YUL
-            Content-Length:
-                - "165"
+                - a3aac63e3a4e5933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "461"
+                - "542"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -74,6 +100,6 @@ interactions:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 93ms
-        status: 401 Unauthorized
-        code: 401
-        duration: 560ms
+        status: 200 OK
+        code: 200
+        duration: 653ms

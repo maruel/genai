@@ -10,7 +10,7 @@
   "scenarios": [
     {
       "models": [
-        "gpt-5.6-sol"
+        "gpt-6-astra"
       ],
       "sota": true,
       "reason": true,
@@ -45,19 +45,14 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true
+        "json": true,
+        "jsonSchema": true
       },
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
       }
@@ -65,7 +60,7 @@
     {
       "comments": "TODO: More output image format are supported by the API",
       "models": [
-        "gpt-image-2"
+        "gpt-image-2.5-sunburst"
       ],
       "sota": true,
       "good": true,
@@ -177,7 +172,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
@@ -188,7 +183,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
@@ -268,6 +263,12 @@
         "toolCallRequired": true,
         "maxTokens": true
       }
+    },
+    {
+      "models": [
+        "gpt-5.6-sol"
+      ],
+      "reason": true
     },
     {
       "models": [
@@ -369,7 +370,12 @@
         "gpt-audio-mini-2025-12-15",
         "gpt-image-1",
         "gpt-image-1.5",
+        "gpt-image-2",
         "gpt-image-2-2026-04-21",
+        "gpt-image-2.5-flare",
+        "gpt-image-2.5-flare-2026-09-08",
+        "gpt-image-2.5-sunburst-2026-09-08",
+        "gpt-live-1",
         "gpt-live-transcribe",
         "gpt-realtime",
         "gpt-realtime-1.5",

@@ -7,6 +7,7 @@
 package openaibase
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -27,6 +28,7 @@ func TestClient(t *testing.T) {
 			&Model{ID: "gpt-5.6-codex", Created: base.TimeS(400)},
 			&Model{ID: "gpt-transcribe", Created: base.TimeS(500)},
 			&Model{ID: "gpt-live-transcribe", Created: base.TimeS(500)},
+			&Model{ID: "gpt-live-1", Created: base.TimeS(600)},
 		}
 		c := &Client{PreloadedModels: models}
 		data := []struct {
@@ -56,6 +58,7 @@ func TestClient(t *testing.T) {
 			&Model{ID: "gpt-image-1-mini", Created: base.TimeS(200)},
 			&Model{ID: "gpt-image-2", Created: base.TimeS(300)},
 			&Model{ID: "gpt-image-2-2026-04-21", Created: base.TimeS(400)},
+			&Model{ID: "gpt-image-2.5-sunburst", Created: base.TimeS(500)},
 		}
 		c := &Client{PreloadedModels: models}
 		data := []struct {
@@ -63,8 +66,8 @@ func TestClient(t *testing.T) {
 			in   genai.ProviderOptionModel
 			want string
 		}{
-			{name: "sota", in: genai.ModelSOTA, want: "gpt-image-2"},
-			{name: "good", in: genai.ModelGood, want: "gpt-image-2"},
+			{name: "sota", in: genai.ModelSOTA, want: "gpt-image-2.5-sunburst"},
+			{name: "good", in: genai.ModelGood, want: "gpt-image-2.5-sunburst"},
 			{name: "cheap", in: genai.ModelCheap, want: "gpt-image-1-mini"},
 		}
 		for _, tc := range data {
@@ -79,4 +82,17 @@ func TestClient(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestImageResponse(t *testing.T) {
+	var got ImageResponse
+	if err := json.Unmarshal([]byte(`{"data":[{"generation_id":"imggen_123"}]}`), &got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Data) != 1 {
+		t.Fatalf("got %d images, want 1", len(got.Data))
+	}
+	if got.Data[0].GenerationID != "imggen_123" {
+		t.Fatalf("got generation ID %q, want %q", got.Data[0].GenerationID, "imggen_123")
+	}
 }

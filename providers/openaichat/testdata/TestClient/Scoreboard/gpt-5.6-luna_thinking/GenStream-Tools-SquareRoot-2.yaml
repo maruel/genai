@@ -9,7 +9,7 @@ interactions:
         content_length: 957
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-luna","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_3Y7uBQXIj35sflEMR4D5zHqt","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_3Y7uBQXIj35sflEMR4D5zHqt"}],"store":true,"reasoning_effort":"none","service_tier":"flex","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
+            {"model":"gpt-5.6-luna","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_8Y3NeQzbAUFYVC4GYV9gF6Mq","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_8Y3NeQzbAUFYVC4GYV9gF6Mq"}],"store":true,"reasoning_effort":"none","service_tier":"flex","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,17 +21,17 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-E1Eejb0qorzIR0SYdAXQClcidVHWS","object":"chat.completion.chunk","created":1783963373,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"o"}
+            data: {"id":"chatcmpl-ENnUdzW3ukL4rQ5KAJmrjo0hjo4ey","object":"chat.completion.chunk","created":1789340503,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"3"}
 
-            data: {"id":"chatcmpl-E1Eejb0qorzIR0SYdAXQClcidVHWS","object":"chat.completion.chunk","created":1783963373,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"363"},"finish_reason":null}],"usage":null,"obfuscation":""}
+            data: {"id":"chatcmpl-ENnUdzW3ukL4rQ5KAJmrjo0hjo4ey","object":"chat.completion.chunk","created":1789340503,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"363"},"finish_reason":null}],"usage":null,"obfuscation":""}
 
-            data: {"id":"chatcmpl-E1Eejb0qorzIR0SYdAXQClcidVHWS","object":"chat.completion.chunk","created":1783963373,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}],"usage":null,"obfuscation":"dA"}
+            data: {"id":"chatcmpl-ENnUdzW3ukL4rQ5KAJmrjo0hjo4ey","object":"chat.completion.chunk","created":1789340503,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}],"usage":null,"obfuscation":"Fw"}
 
-            data: {"id":"chatcmpl-E1Eejb0qorzIR0SYdAXQClcidVHWS","object":"chat.completion.chunk","created":1783963373,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"89"},"finish_reason":null}],"usage":null,"obfuscation":"2"}
+            data: {"id":"chatcmpl-ENnUdzW3ukL4rQ5KAJmrjo0hjo4ey","object":"chat.completion.chunk","created":1789340503,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"89"},"finish_reason":null}],"usage":null,"obfuscation":"x"}
 
-            data: {"id":"chatcmpl-E1Eejb0qorzIR0SYdAXQClcidVHWS","object":"chat.completion.chunk","created":1783963373,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"3cwcOof3Am1b2"}
+            data: {"id":"chatcmpl-ENnUdzW3ukL4rQ5KAJmrjo0hjo4ey","object":"chat.completion.chunk","created":1789340503,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"hFeTb415NtqwG"}
 
-            data: {"id":"chatcmpl-E1Eejb0qorzIR0SYdAXQClcidVHWS","object":"chat.completion.chunk","created":1783963373,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":187,"completion_tokens":6,"total_tokens":193,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"uVZXkYjq1M"}
+            data: {"id":"chatcmpl-ENnUdzW3ukL4rQ5KAJmrjo0hjo4ey","object":"chat.completion.chunk","created":1789340503,"model":"gpt-5.6-luna","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":187,"completion_tokens":6,"total_tokens":193,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"drvDDblBhy"}
 
             data: [DONE]
 
@@ -45,11 +45,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9f8ea29725b53-YUL
+                - a3aac6803f455933-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "314"
+                - "339"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -63,15 +63,15 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199963"
+                - "499963"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 11ms
+                - 4ms
         status: 200 OK
         code: 200
-        duration: 394ms
+        duration: 446ms

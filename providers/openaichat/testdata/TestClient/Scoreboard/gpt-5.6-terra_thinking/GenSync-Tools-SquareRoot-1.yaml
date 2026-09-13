@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-E1EePfaD2Y3SenwSWOKwaNEZrLUYf",
+              "id": "chatcmpl-ENnUNo2UM53mSpaClZxjGe0JsTOq7",
               "object": "chat.completion",
-              "created": 1783963353,
+              "created": 1789340487,
               "model": "gpt-5.6-terra",
               "choices": [
                 {
@@ -35,7 +35,7 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_siQ9Y9BlxnbhyM3wHA0kbWrs",
+                        "id": "call_8nP1N1eiCKzp4pFdVdnzCQeK",
                         "type": "function",
                         "function": {
                           "name": "square_root",
@@ -78,11 +78,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9f86eff9a2f84-YUL
+                - a3aac61f89895933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "650"
+                - "605"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -107,4 +107,4 @@ interactions:
                 - 3ms
         status: 200 OK
         code: 200
-        duration: 816ms
+        duration: 721ms

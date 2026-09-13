@@ -1,57 +1,59 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 557
-    host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.groq.com/openai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-7f2f6fe0-92a5-454b-a1bc-43224b28993a\",\"object\":\"chat.completion\",\"created\":1765638734,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user asks: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nWe must use the tool best_country. According to tool signature: best_country takes an object with property country: \\\"USA\\\" | \\\"Canada\\\". So we need to call with either USA or Canada to get output. But the tool likely expects we choose one. The user wants to know which is better, but the tool only accepts one. The best we can do is decide one; but which? Possibly we can pick USA or Canada. The instruction says \\\"Call the tool best_country to tell me which country is the best one.\\\" So we should call the tool with either USA or Canada. Which? Maybe choose USA. But it's ambiguous. We could choose \\\"USA\\\" or \\\"Canada\\\". The instruction: \\\"Which country is the best one\\\" – likely they want us to pick the best. We can choose \\\"USA\\\" as best. So call best_country with country: \\\"USA\\\".\",\"tool_calls\":[{\"id\":\"fc_b2dc5d23-aa5f-478e-89c7-9225c86f0d0e\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.003218067,\"prompt_tokens\":159,\"prompt_time\":0.00766537,\"completion_tokens\":235,\"completion_time\":0.237088057,\"total_tokens\":394,\"total_time\":0.244753427,\"completion_tokens_details\":{\"reasoning_tokens\":212}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_7d448090ba\",\"x_groq\":{\"id\":\"req_01kcc4a0anehrsm1k3616r4h2g\",\"seed\":332538760},\"service_tier\":\"on_demand\"}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cache-Control:
-      - private, max-age=0, no-store, no-cache, must-revalidate
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ad666087c2da316-YUL
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=2592000
-      Vary:
-      - Origin
-      X-Groq-Region:
-      - yul
-      X-Ratelimit-Limit-Requests:
-      - "500000"
-      X-Ratelimit-Limit-Tokens:
-      - "250000"
-      X-Ratelimit-Remaining-Requests:
-      - "499992"
-      X-Ratelimit-Remaining-Tokens:
-      - "246709"
-      X-Ratelimit-Reset-Requests:
-      - 1.382s
-      X-Ratelimit-Reset-Tokens:
-      - 789ms
-    status: 200 OK
-    code: 200
-    duration: 266ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 557
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"openai/gpt-oss-20b","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-7f2f6fe0-92a5-454b-a1bc-43224b28993a","object":"chat.completion","created":1765638734,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user asks: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nWe must use the tool best_country. According to tool signature: best_country takes an object with property country: \"USA\" | \"Canada\". So we need to call with either USA or Canada to get output. But the tool likely expects we choose one. The user wants to know which is better, but the tool only accepts one. The best we can do is decide one; but which? Possibly we can pick USA or Canada. The instruction says \"Call the tool best_country to tell me which country is the best one.\" So we should call the tool with either USA or Canada. Which? Maybe choose USA. But it's ambiguous. We could choose \"USA\" or \"Canada\". The instruction: \"Which country is the best one\" – likely they want us to pick the best. We can choose \"USA\" as best. So call best_country with country: \"USA\".","tool_calls":[{"id":"fc_b2dc5d23-aa5f-478e-89c7-9225c86f0d0e","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003218067,"prompt_tokens":159,"prompt_time":0.00766537,"completion_tokens":235,"completion_time":0.237088057,"total_tokens":394,"total_time":0.244753427,"completion_tokens_details":{"reasoning_tokens":212}},"usage_breakdown":null,"system_fingerprint":"fp_7d448090ba","x_groq":{"id":"req_01kcc4a0anehrsm1k3616r4h2g","seed":332538760},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ad666087c2da316-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=2592000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499992"
+            X-Ratelimit-Remaining-Tokens:
+                - "246709"
+            X-Ratelimit-Reset-Requests:
+                - 1.382s
+            X-Ratelimit-Reset-Tokens:
+                - 789ms
+        status: 200 OK
+        code: 200
+        duration: 266ms

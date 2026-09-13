@@ -1,57 +1,59 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 558
-    host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.groq.com/openai/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"chatcmpl-6b71d241-a08a-472e-95a7-ea2029895561\",\"object\":\"chat.completion\",\"created\":1765638719,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user wants a comparison: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nThe tool best_country expects a single argument: country: \\\"USA\\\" | \\\"Canada\\\". It returns something, presumably indicates best. But how to interpret? The tool seems to decide best country given input? Might need to call it with a country? The prompt says \\\"Call the tool best_country to tell me which country is the best one.\\\" Perhaps they want to pass both? But the spec only allows one country argument. Perhaps you call it twice? Or perhaps the tool returns best of the two given? But spec only allows a single country argument. Maybe the intended usage: you pass the country you think is best, and the tool returns something like a verdict. But ambiguous.\\n\\nWe could interpret that the tool will return some response indicating whether the given country is best. So to answer the question, we could call the tool with USA, expecting it to say if USA is best, or with Canada. But the user wants which country is best. So maybe we need to call the tool twice? Or perhaps we pick one? The tool spec says \\\"A tool to specify the best country\\\". It probably returns some output indicating if the country is best.\\n\\nGiven the user asks \\\"Call the tool best_country to tell me which country is the best one.\\\" I'd call it with USA? But that doesn't compare. Maybe we can call it with both? Not allowed. Could we call it with \\\"USA\\\" and then \\\"Canada\\\"? Possibly we can call it twice and compare results.\\n\\nBetter: call tool with USA and Canada separately, see which returns a positive. But we don't know output format. Might be something like {\\\"result\\\": \\\"USA is best\\\"}.\\n\\nWe'll attempt to call tool with USA first.\",\"tool_calls\":[{\"id\":\"fc_f3d65a47-f052-4dcc-8359-7cba1f01a5fb\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.02053596,\"prompt_tokens\":159,\"prompt_time\":0.009376721,\"completion_tokens\":404,\"completion_time\":0.981581033,\"total_tokens\":563,\"total_time\":0.990957754,\"completion_tokens_details\":{\"reasoning_tokens\":377}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_c5da83ab22\",\"x_groq\":{\"id\":\"req_01kcc49gwsepnvmaarc2xbak4t\",\"seed\":2083801242},\"service_tier\":\"on_demand\"}\n"
-    headers:
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cache-Control:
-      - private, max-age=0, no-store, no-cache, must-revalidate
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ad665a5bb83a316-YUL
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=2592000
-      Vary:
-      - Origin
-      X-Groq-Region:
-      - yul
-      X-Ratelimit-Limit-Requests:
-      - "500000"
-      X-Ratelimit-Limit-Tokens:
-      - "250000"
-      X-Ratelimit-Remaining-Requests:
-      - "499999"
-      X-Ratelimit-Remaining-Tokens:
-      - "249605"
-      X-Ratelimit-Reset-Requests:
-      - 172ms
-      X-Ratelimit-Reset-Tokens:
-      - 94ms
-    status: 200 OK
-    code: 200
-    duration: 1.029s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 558
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"openai/gpt-oss-120b","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-6b71d241-a08a-472e-95a7-ea2029895561","object":"chat.completion","created":1765638719,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user wants a comparison: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nThe tool best_country expects a single argument: country: \"USA\" | \"Canada\". It returns something, presumably indicates best. But how to interpret? The tool seems to decide best country given input? Might need to call it with a country? The prompt says \"Call the tool best_country to tell me which country is the best one.\" Perhaps they want to pass both? But the spec only allows one country argument. Perhaps you call it twice? Or perhaps the tool returns best of the two given? But spec only allows a single country argument. Maybe the intended usage: you pass the country you think is best, and the tool returns something like a verdict. But ambiguous.\n\nWe could interpret that the tool will return some response indicating whether the given country is best. So to answer the question, we could call the tool with USA, expecting it to say if USA is best, or with Canada. But the user wants which country is best. So maybe we need to call the tool twice? Or perhaps we pick one? The tool spec says \"A tool to specify the best country\". It probably returns some output indicating if the country is best.\n\nGiven the user asks \"Call the tool best_country to tell me which country is the best one.\" I'd call it with USA? But that doesn't compare. Maybe we can call it with both? Not allowed. Could we call it with \"USA\" and then \"Canada\"? Possibly we can call it twice and compare results.\n\nBetter: call tool with USA and Canada separately, see which returns a positive. But we don't know output format. Might be something like {\"result\": \"USA is best\"}.\n\nWe'll attempt to call tool with USA first.","tool_calls":[{"id":"fc_f3d65a47-f052-4dcc-8359-7cba1f01a5fb","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.02053596,"prompt_tokens":159,"prompt_time":0.009376721,"completion_tokens":404,"completion_time":0.981581033,"total_tokens":563,"total_time":0.990957754,"completion_tokens_details":{"reasoning_tokens":377}},"usage_breakdown":null,"system_fingerprint":"fp_c5da83ab22","x_groq":{"id":"req_01kcc49gwsepnvmaarc2xbak4t","seed":2083801242},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ad665a5bb83a316-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=2592000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249605"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 94ms
+        status: 200 OK
+        code: 200
+        duration: 1.029s

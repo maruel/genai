@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-E1EEj4H0xtLgLzSqrGNMKjP9EIPrZ","object":"chat.completion.chunk","created":1783961761,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":""}
+            data: {"id":"chatcmpl-ENnUSBcTky37FXr6I785MrvMl99zT","object":"chat.completion.chunk","created":1789340492,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":""}
 
-            data: {"id":"chatcmpl-E1EEj4H0xtLgLzSqrGNMKjP9EIPrZ","object":"chat.completion.chunk","created":1783961761,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":"Htebgnh38wJ6oTi"}
+            data: {"id":"chatcmpl-ENnUSBcTky37FXr6I785MrvMl99zT","object":"chat.completion.chunk","created":1789340492,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":"puRzWlGqeVcQZcx"}
 
-            data: {"id":"chatcmpl-E1EEj4H0xtLgLzSqrGNMKjP9EIPrZ","object":"chat.completion.chunk","created":1783961761,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":"HYZMliiP40ZMrEf"}
+            data: {"id":"chatcmpl-ENnUSBcTky37FXr6I785MrvMl99zT","object":"chat.completion.chunk","created":1789340492,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":"4plnOu0M2lkLiGe"}
 
-            data: {"id":"chatcmpl-E1EEj4H0xtLgLzSqrGNMKjP9EIPrZ","object":"chat.completion.chunk","created":1783961761,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"HGpzVAjFcgpc"}
+            data: {"id":"chatcmpl-ENnUSBcTky37FXr6I785MrvMl99zT","object":"chat.completion.chunk","created":1789340492,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"4ImOUKNCyfxQ"}
 
-            data: {"id":"chatcmpl-E1EEj4H0xtLgLzSqrGNMKjP9EIPrZ","object":"chat.completion.chunk","created":1783961761,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":150,"completion_tokens":5,"total_tokens":155,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":""}
+            data: {"id":"chatcmpl-ENnUSBcTky37FXr6I785MrvMl99zT","object":"chat.completion.chunk","created":1789340492,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":149,"completion_tokens":5,"total_tokens":154,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":""}
 
             data: [DONE]
 
@@ -43,11 +43,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9d19128df255a-YUL
+                - a3aac63cacf65933-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "620"
+                - "466"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -78,4 +78,4 @@ interactions:
                 - 93ms
         status: 200 OK
         code: 200
-        duration: 741ms
+        duration: 557ms

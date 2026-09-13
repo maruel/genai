@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-Dksb8473YR8QhqpllPXYfMfIY7tUK",
+              "id": "chatcmpl-ENnTcGNb1TrbcREKN380rzXV6aXux",
               "object": "chat.completion",
-              "created": 1780065334,
+              "created": 1789340440,
               "model": "gpt-audio-2025-08-28",
               "choices": [
                 {
@@ -35,11 +35,11 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_KAa9MH1RqasoXdtmhPOqGXql",
+                        "id": "call_1sO5WSfMOEdXh6vZDfd3wb7D",
                         "type": "function",
                         "function": {
                           "name": "square_root",
-                          "arguments": "{  \n  \"number\": 132413 \n} \n"
+                          "arguments": "{  \n  \"number\": 132413 \n}  \n"
                         }
                       }
                     ],
@@ -68,7 +68,7 @@ interactions:
                 }
               },
               "service_tier": "default",
-              "system_fingerprint": "fp_f116be6bc4"
+              "system_fingerprint": "fp_c7b55dc93c"
             }
         headers:
             Access-Control-Expose-Headers:
@@ -80,11 +80,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a03639f5984236ab-YYZ
+                - a3aac4f95fff5933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "534"
+                - "584"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -100,13 +100,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "40000"
             X-Ratelimit-Remaining-Requests:
-                - "966"
+                - "945"
             X-Ratelimit-Remaining-Tokens:
-                - "38163"
+                - "39967"
             X-Ratelimit-Reset-Requests:
-                - 47m43.145s
+                - 1h18m1.182s
             X-Ratelimit-Reset-Tokens:
-                - 2.754s
+                - 49ms
         status: 200 OK
         code: 200
-        duration: 645ms
+        duration: 677ms

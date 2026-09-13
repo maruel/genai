@@ -19,16 +19,20 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 165
-        body: |-
-            {
-              "error": {
-                "message": "You have insufficient permissions for this operation.",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": null
-              }
-            }
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-ENnUUg7XtzBg2VtqCSIDMJbBscyJP","object":"chat.completion.chunk","created":1789340494,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-ENnUUg7XtzBg2VtqCSIDMJbBscyJP","object":"chat.completion.chunk","created":1789340494,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":"Bj2iLEUsDTwaUMR"}
+
+            data: {"id":"chatcmpl-ENnUUg7XtzBg2VtqCSIDMJbBscyJP","object":"chat.completion.chunk","created":1789340494,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":"47cU7eb3k4lq7GS"}
+
+            data: {"id":"chatcmpl-ENnUUg7XtzBg2VtqCSIDMJbBscyJP","object":"chat.completion.chunk","created":1789340494,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"QU2PirQmwn0D"}
+
+            data: {"id":"chatcmpl-ENnUUg7XtzBg2VtqCSIDMJbBscyJP","object":"chat.completion.chunk","created":1789340494,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":149,"completion_tokens":5,"total_tokens":154,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":""}
+
+            data: [DONE]
+
         headers:
             Access-Control-Expose-Headers:
                 - X-Request-ID
@@ -39,13 +43,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9d19b58df255a-YUL
-            Content-Length:
-                - "165"
+                - a3aac6495b405933-YUL
             Content-Type:
-                - application/json
+                - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "255"
+                - "2519"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -74,6 +76,6 @@ interactions:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 93ms
-        status: 401 Unauthorized
-        code: 401
-        duration: 352ms
+        status: 200 OK
+        code: 200
+        duration: 2.623s

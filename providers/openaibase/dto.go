@@ -194,6 +194,7 @@ type ImageResponse struct {
 // ImageChoiceData is the data for one image generation choice.
 type ImageChoiceData struct {
 	B64JSON       []byte `json:"b64_json"`
+	GenerationID  string `json:"generation_id"`
 	RevisedPrompt string `json:"revised_prompt"` // dall-e-3 only
 	URL           string `json:"url"`            // Unsupported for gpt-image-1
 }

@@ -21,11 +21,11 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-E1EAXhUVN2798TGZDocyT7rpwFciG","object":"chat.completion.chunk","created":1783961501,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":""}
+            data: {"id":"chatcmpl-ENnUKr7Q4HRaoZir3gM1o2FmwqIqh","object":"chat.completion.chunk","created":1789340484,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":""}
 
-            data: {"id":"chatcmpl-E1EAXhUVN2798TGZDocyT7rpwFciG","object":"chat.completion.chunk","created":1783961501,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"length"}],"usage":null,"obfuscation":"tGwI1tKM7c"}
+            data: {"id":"chatcmpl-ENnUKr7Q4HRaoZir3gM1o2FmwqIqh","object":"chat.completion.chunk","created":1789340484,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"length"}],"usage":null,"obfuscation":"rUJkt2OYWd"}
 
-            data: {"id":"chatcmpl-E1EAXhUVN2798TGZDocyT7rpwFciG","object":"chat.completion.chunk","created":1783961501,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":16,"completion_tokens":16,"total_tokens":32,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":16,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"XVDuurfd4"}
+            data: {"id":"chatcmpl-ENnUKr7Q4HRaoZir3gM1o2FmwqIqh","object":"chat.completion.chunk","created":1789340484,"model":"gpt-5.6-terra","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":16,"completion_tokens":16,"total_tokens":32,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":16,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"XNHJauYdb"}
 
             data: [DONE]
 
@@ -39,11 +39,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1a9cb376c0592ef-YUL
+                - a3aac60cea625933-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "558"
+                - "637"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -68,4 +68,4 @@ interactions:
                 - 1ms
         status: 200 OK
         code: 200
-        duration: 647ms
+        duration: 727ms

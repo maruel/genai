@@ -331,7 +331,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
 					return
 				}
-				f := genai.Reply{Text: pkt.Choices[0].Delta.Content}
+				f := genai.Reply{
+					Text:      pkt.Choices[0].Delta.Content,
+					Reasoning: pkt.Choices[0].Delta.ReasoningContent,
+				}
 				// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 					// ID is not consistently set. Use Name for now but that's risky.

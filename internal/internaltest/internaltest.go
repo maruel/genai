@@ -32,14 +32,6 @@ import (
 	"github.com/maruel/genai/internal/myrecorder"
 )
 
-// Records manages HTTP recording/playback for tests.
-type Records struct {
-	Records *myrecorder.Records
-
-	mu       sync.Mutex
-	rerecord map[string]struct{} // test names to re-record
-}
-
 // NewRecords creates a new Records instance.
 func NewRecords() *Records {
 	rr, err := myrecorder.NewRecords("testdata")
@@ -50,6 +42,14 @@ func NewRecords() *Records {
 		panic(err.Error())
 	}
 	return &Records{Records: rr}
+}
+
+// Records manages HTTP recording/playback for tests.
+type Records struct {
+	Records *myrecorder.Records
+
+	mu       sync.Mutex
+	rerecord map[string]struct{} // test names to re-record
 }
 
 // Close finalizes all recordings.
@@ -266,6 +266,7 @@ func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts
 	return i.Provider.GenStream(ctx, msgs, append(opts, i.Opts...)...)
 }
 
+// Unwrap returns the wrapped provider.
 func (i *InjectOptions) Unwrap() genai.Provider {
 	return i.Provider
 }
@@ -302,6 +303,7 @@ func (r *RetryOnRateLimit) GenStream(ctx context.Context, msgs genai.Messages, o
 	}
 }
 
+// Unwrap returns the wrapped provider.
 func (r *RetryOnRateLimit) Unwrap() genai.Provider {
 	return r.Provider
 }
@@ -322,6 +324,7 @@ type HideHTTPCode struct {
 	StatusCode int
 }
 
+// Unwrap returns the wrapped provider.
 func (h *HideHTTPCode) Unwrap() genai.Provider {
 	return h.Provider
 }
@@ -358,6 +361,7 @@ type WriterToLog struct {
 	T testing.TB
 }
 
+// Write logs p and reports that all bytes were consumed.
 func (tw *WriterToLog) Write(p []byte) (n int, err error) {
 	// Sadly the log output is attributed to this line.
 	tw.T.Log(strings.TrimSpace(string(p)))

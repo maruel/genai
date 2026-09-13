@@ -25,12 +25,24 @@ history for multi-turn: `session/load` is used instead of `session/new`.
 
 ## Upstream Source
 
-Type names in `dto.go` follow the upstream ACP SDK definitions:
+The wire contract is pinned to the versions used by OpenCode itself:
 
-- `packages/opencode/src/acp/agent.ts` — session update types and request/response handling
+- OpenCode `1.18.30`, commit `95daf90670b7c039c436c85537da5fbfe2205b41`
+- `@agentclientprotocol/sdk` `0.21.0`, commit `74372b59f8f56eb30e72f2538df2671a0adb376f`
+
+Relevant OpenCode sources:
+
+- `packages/opencode/src/acp/agent.ts` — ACP method dispatch
+- `packages/opencode/src/acp/service.ts` — lifecycle, configuration, prompt, and capability behavior
+- `packages/opencode/src/acp/event.ts` — session updates
+- `packages/opencode/src/acp/permission.ts` — permission requests and responses
+- `packages/opencode/src/acp/content.ts` — prompt and update content conversion
+- `packages/opencode/src/acp/tool.ts` — tool-call wire content
 
 When updating wire types, clone https://github.com/anomalyco/opencode and diff
-against `agent.ts` to find new session update types or fields.
+these sources and the exact ACP SDK version in `packages/opencode/package.json`.
+Do not update from ACP specification HEAD alone because it can be ahead of the
+SDK version shipped by OpenCode.
 
 ## Key Design Decisions
 
@@ -50,7 +62,12 @@ against `agent.ts` to find new session update types or fields.
 - **Image support**: detected from `agentCapabilities.promptCapabilities.image`
   in the initialize response.
 - **Permission auto-approve**: `session/request_permission` requests are auto-approved
-  with the first "allow" option.
+  with the first "allow" option using ACP's nested selected-outcome response.
+- **Client-side methods**: no filesystem or terminal capabilities are advertised.
+  Unexpected agent requests, including `fs/write_text_file`, receive JSON-RPC
+  method-not-found instead of a false successful response.
+- **Stream cancellation**: stopping the reply iterator sends `session/cancel`
+  before the subprocess connection is closed.
 
 ## References
 

@@ -14,6 +14,7 @@
 package subprocessrecord
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -29,36 +30,14 @@ import (
 //
 // Use Wrap as a genai.ProviderOptionStarterWrapper:
 //
-//	rec, err := subprocessrecord.New("testdata/scenario")
+//	rec, err := subprocessrecord.New("testdata/scenario", nil)
 //	opts := []genai.ProviderOption{genai.ProviderOptionStarterWrapper(rec.Wrap)}
 //	c, err := codex.New(opts...)
 //	defer rec.Stop()
 type Recorder struct {
-	fixture string
-	replay  bool
-}
-
-// New creates a Recorder for the given path.
-//
-// The path should not include the ".ndjson" extension; it is appended
-// automatically. A non-empty fixture is replayed. Empty fixtures are removed
-// because they are incomplete recordings, then recorded again.
-func New(path string) (*Recorder, error) {
-	fixture := path + ".ndjson"
-	r := &Recorder{fixture: fixture}
-	st, err := os.Stat(fixture)
-	if err == nil && st.Size() != 0 {
-		r.replay = true
-		return r, nil
-	}
-	if err == nil {
-		if err := os.Remove(fixture); err != nil {
-			return nil, fmt.Errorf("remove empty fixture: %w", err)
-		}
-	} else if !errors.Is(err, os.ErrNotExist) {
-		return nil, fmt.Errorf("stat fixture: %w", err)
-	}
-	return r, nil
+	fixture  string
+	replay   bool
+	sanitize LineSanitizer
 }
 
 // Stop is called when the recording session is done.
@@ -106,10 +85,37 @@ func (r *Recorder) Wrap(inner genai.Starter) genai.Starter {
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		tee := io.TeeReader(stdout, f)
-		rc := &teeReadCloser{Reader: tee, file: f, orig: stdout}
+		rc := &recordingReadCloser{file: f, orig: stdout, sanitize: r.sanitize}
 		return stdin, rc, wait, nil
 	}
+}
+
+// LineSanitizer transforms one recorded stdout line without changing the data
+// returned to the subprocess client.
+type LineSanitizer func([]byte) ([]byte, error)
+
+// New creates a Recorder for the given path.
+//
+// The path should not include the ".ndjson" extension; it is appended
+// automatically. A non-empty fixture is replayed. Empty fixtures are removed
+// because they are incomplete recordings, then recorded again. If sanitize is
+// non-nil, it transforms each recorded line before persistence.
+func New(path string, sanitize LineSanitizer) (*Recorder, error) {
+	fixture := path + ".ndjson"
+	r := &Recorder{fixture: fixture, sanitize: sanitize}
+	st, err := os.Stat(fixture)
+	if err == nil && st.Size() != 0 {
+		r.replay = true
+		return r, nil
+	}
+	if err == nil {
+		if err := os.Remove(fixture); err != nil {
+			return nil, fmt.Errorf("remove empty fixture: %w", err)
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("stat fixture: %w", err)
+	}
+	return r, nil
 }
 
 func replayFixture(fixture string) (io.WriteCloser, io.ReadCloser, func() error, error) {
@@ -123,13 +129,56 @@ func replayFixture(fixture string) (io.WriteCloser, io.ReadCloser, func() error,
 	return pw, io.NopCloser(strings.NewReader(string(data))), func() error { return nil }, nil
 }
 
-// teeReadCloser closes both the fixture file and the original ReadCloser.
-type teeReadCloser struct {
-	io.Reader
-	file *os.File
-	orig io.ReadCloser
+// recordingReadCloser returns raw subprocess output while recording sanitized lines.
+type recordingReadCloser struct {
+	file     *os.File
+	orig     io.ReadCloser
+	sanitize LineSanitizer
+	pending  []byte
 }
 
-func (t *teeReadCloser) Close() error {
-	return errors.Join(t.orig.Close(), t.file.Close())
+func (r *recordingReadCloser) Read(p []byte) (int, error) {
+	n, readErr := r.orig.Read(p)
+	if n != 0 {
+		r.pending = append(r.pending, p[:n]...)
+		if err := r.writeCompleteLines(readErr != nil); err != nil {
+			return n, err
+		}
+	}
+	return n, readErr
+}
+
+func (r *recordingReadCloser) Close() error {
+	return errors.Join(r.writeCompleteLines(true), r.orig.Close(), r.file.Close())
+}
+
+func (r *recordingReadCloser) writeCompleteLines(flush bool) error {
+	for {
+		i := bytes.IndexByte(r.pending, '\n')
+		if i < 0 {
+			if !flush || len(r.pending) == 0 {
+				return nil
+			}
+			i = len(r.pending)
+		}
+		line := r.pending[:i]
+		if r.sanitize != nil {
+			var err error
+			line, err = r.sanitize(line)
+			if err != nil {
+				return fmt.Errorf("sanitize subprocess output: %w", err)
+			}
+		}
+		if _, err := r.file.Write(line); err != nil {
+			return fmt.Errorf("record subprocess output: %w", err)
+		}
+		if i < len(r.pending) {
+			if _, err := r.file.Write([]byte{'\n'}); err != nil {
+				return fmt.Errorf("record subprocess newline: %w", err)
+			}
+			r.pending = r.pending[i+1:]
+		} else {
+			r.pending = r.pending[:0]
+		}
+	}
 }

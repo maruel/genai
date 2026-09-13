@@ -33,10 +33,14 @@ const (
 	MethodThreadStarted Method = "thread/started"
 	// MethodThreadArchived reports that a thread was archived.
 	MethodThreadArchived Method = "thread/archived"
+	// MethodThreadDeleted reports that a thread was deleted.
+	MethodThreadDeleted Method = "thread/deleted"
 	// MethodThreadUnarchived reports that a thread was unarchived.
 	MethodThreadUnarchived Method = "thread/unarchived"
 	// MethodThreadClosed reports that a thread was closed.
 	MethodThreadClosed Method = "thread/closed"
+	// MethodThreadReverted reports that a thread rollback completed.
+	MethodThreadReverted Method = "thread/reverted"
 	// MethodTurnStarted reports that a turn started.
 	MethodTurnStarted Method = "turn/started"
 	// MethodTurnCompleted reports that a turn completed.
@@ -49,6 +53,8 @@ const (
 	MethodItemDelta Method = "item/agentMessage/delta"
 	// MethodRawItemCompleted reports an internal raw response item.
 	MethodRawItemCompleted Method = "rawResponseItem/completed"
+	// MethodRawResponseCompleted reports an internal completed response.
+	MethodRawResponseCompleted Method = "rawResponse/completed"
 	// MethodTokenUsageUpdated reports updated thread token usage.
 	MethodTokenUsageUpdated Method = "thread/tokenUsage/updated"
 
@@ -56,6 +62,8 @@ const (
 	MethodItemGuardianApprovalReviewStarted Method = "item/autoApprovalReview/started"
 	// MethodItemGuardianApprovalReviewCompleted reports the completion of an approval auto-review.
 	MethodItemGuardianApprovalReviewCompleted Method = "item/autoApprovalReview/completed"
+	// MethodStrictReviewRequired reports that an auto-approval needs strict review.
+	MethodStrictReviewRequired Method = "autoApprovalReview/strictReviewRequired"
 	// MethodCommandExecOutputDelta streams output from a command/exec session.
 	MethodCommandExecOutputDelta Method = "command/exec/outputDelta"
 	// MethodProcessOutputDelta streams output from a spawned process.
@@ -68,6 +76,8 @@ const (
 	MethodCommandTerminalInteract Method = "item/commandExecution/terminalInteraction"
 	// MethodFileChangePatchUpdated reports an updated file change patch.
 	MethodFileChangePatchUpdated Method = "item/fileChange/patchUpdated"
+	// MethodFileChangeOutputDelta streams legacy file-change output.
+	MethodFileChangeOutputDelta Method = "item/fileChange/outputDelta"
 	// MethodReasoningSummaryTextDelta streams reasoning summary text.
 	MethodReasoningSummaryTextDelta Method = "item/reasoning/summaryTextDelta"
 	// MethodReasoningSummaryPartAdded reports a new reasoning summary part.
@@ -92,10 +102,28 @@ const (
 	MethodThreadGoalUpdated Method = "thread/goal/updated"
 	// MethodThreadGoalCleared reports that the thread goal was cleared.
 	MethodThreadGoalCleared Method = "thread/goal/cleared"
+	// MethodThreadQueueChanged reports a thread queue update.
+	MethodThreadQueueChanged Method = "thread/queue/changed"
+	// MethodProjectChanged reports a project update.
+	MethodProjectChanged Method = "project/changed"
+	// MethodThreadProjectUpdated reports a thread project assignment update.
+	MethodThreadProjectUpdated Method = "thread/project/updated"
+	// MethodEnvironmentConnected reports a thread environment connection.
+	MethodEnvironmentConnected Method = "thread/environment/connected"
+	// MethodEnvironmentDisconnected reports a thread environment disconnection.
+	MethodEnvironmentDisconnected Method = "thread/environment/disconnected"
+	// MethodThreadCompacted reports legacy context compaction.
+	MethodThreadCompacted Method = "thread/compacted"
 	// MethodModelRerouted reports that Codex changed the model for a turn.
 	MethodModelRerouted Method = "model/rerouted"
 	// MethodModelVerification reports model verification requirements.
 	MethodModelVerification Method = "model/verification"
+	// MethodAuthRecoveryStarted reports the start of provider authentication recovery.
+	MethodAuthRecoveryStarted Method = "modelProvider/authRecoveryStarted"
+	// MethodAuthRecoveryCompleted reports completion of provider authentication recovery.
+	MethodAuthRecoveryCompleted Method = "modelProvider/authRecoveryCompleted"
+	// MethodModelSafetyBufferingUpdated reports model safety-buffering state.
+	MethodModelSafetyBufferingUpdated Method = "model/safetyBuffering/updated"
 	// MethodTurnModerationMetadata reports moderation metadata for a turn.
 	MethodTurnModerationMetadata Method = "turn/moderationMetadata"
 	// MethodWarning reports a non-fatal warning.
@@ -130,6 +158,12 @@ const (
 	MethodChatgptAuthTokensRefresh Method = "account/chatgptAuthTokens/refresh"
 	// MethodAttestationGenerate requests an attestation result.
 	MethodAttestationGenerate Method = "attestation/generate"
+	// MethodCurrentTimeRead requests the current time from the client.
+	MethodCurrentTimeRead Method = "currentTime/read"
+	// MethodApplyPatchApproval is the legacy patch approval request.
+	MethodApplyPatchApproval Method = "applyPatchApproval"
+	// MethodExecCommandApproval is the legacy command approval request.
+	MethodExecCommandApproval Method = "execCommandApproval"
 
 	// Account and configuration notifications.
 	// MethodAccountUpdated reports updated account data.
@@ -144,6 +178,8 @@ const (
 	MethodRemoteControlStatusChanged Method = "remoteControl/status/changed"
 	// MethodExternalAgentConfigImportCompleted reports completion of external agent config import.
 	MethodExternalAgentConfigImportCompleted Method = "externalAgentConfig/import/completed"
+	// MethodExternalAgentConfigImportProgress reports external agent config import progress.
+	MethodExternalAgentConfigImportProgress Method = "externalAgentConfig/import/progress"
 	// MethodFsChanged reports watched filesystem changes.
 	MethodFsChanged Method = "fs/changed"
 	// MethodConfigWarning reports a configuration warning.
@@ -156,6 +192,8 @@ const (
 	MethodMcpOauthLoginCompleted Method = "mcpServer/oauthLogin/completed"
 	// MethodMcpServerStatusUpdated reports an MCP server startup status update.
 	MethodMcpServerStatusUpdated Method = "mcpServer/startupStatus/updated"
+	// MethodMcpServerEventStream reports an MCP server event-stream notification.
+	MethodMcpServerEventStream Method = "mcpServer/event/stream/notification"
 
 	// Search and realtime notifications.
 	// MethodFuzzyFileSearchSessionUpdated reports updated fuzzy file search results.
@@ -166,6 +204,12 @@ const (
 	MethodThreadRealtimeStarted Method = "thread/realtime/started"
 	// MethodThreadRealtimeItemAdded reports a new realtime item.
 	MethodThreadRealtimeItemAdded Method = "thread/realtime/itemAdded"
+	// MethodThreadRealtimeItemStarted reports a realtime item start.
+	MethodThreadRealtimeItemStarted Method = "thread/realtime/item/started"
+	// MethodThreadRealtimeItemTranscriptDelta streams a realtime item transcript.
+	MethodThreadRealtimeItemTranscriptDelta Method = "thread/realtime/item/transcript/delta"
+	// MethodThreadRealtimeItemCompleted reports a realtime item completion.
+	MethodThreadRealtimeItemCompleted Method = "thread/realtime/item/completed"
 	// MethodThreadRealtimeTranscriptDelta streams realtime transcript text.
 	MethodThreadRealtimeTranscriptDelta Method = "thread/realtime/transcript/delta"
 	// MethodThreadRealtimeTranscriptDone reports completion of realtime transcript text.
@@ -193,6 +237,8 @@ const (
 	ItemTypeUserMessage ItemType = "userMessage"
 	// ItemTypeAgentMessage identifies assistant text message items.
 	ItemTypeAgentMessage ItemType = "agentMessage"
+	// ItemTypeFunctionCallOutput identifies client-provided tool output items.
+	ItemTypeFunctionCallOutput ItemType = "functionCallOutput"
 	// ItemTypePlan identifies plan items.
 	ItemTypePlan ItemType = "plan"
 	// ItemTypeReasoning identifies reasoning items.
@@ -316,6 +362,10 @@ const (
 	TurnInputTypeImage TurnInputType = "image"
 	// TurnInputTypeLocalImage identifies image input by local path.
 	TurnInputTypeLocalImage TurnInputType = "localImage"
+	// TurnInputTypeAudio identifies audio input by URL.
+	TurnInputTypeAudio TurnInputType = "audio"
+	// TurnInputTypeLocalAudio identifies audio input by local path.
+	TurnInputTypeLocalAudio TurnInputType = "localAudio"
 	// TurnInputTypeSkill identifies skill input.
 	TurnInputTypeSkill TurnInputType = "skill"
 	// TurnInputTypeMention identifies mention input.
@@ -488,6 +538,14 @@ const (
 	CollabAgentToolWait CollabAgentTool = "wait"
 	// CollabAgentToolCloseAgent closes a collaborative agent.
 	CollabAgentToolCloseAgent CollabAgentTool = "closeAgent"
+	// CollabAgentToolFollowupTask sends a follow-up task to a collaborative agent.
+	CollabAgentToolFollowupTask CollabAgentTool = "followupTask"
+	// CollabAgentToolInterruptAgent interrupts a collaborative agent.
+	CollabAgentToolInterruptAgent CollabAgentTool = "interruptAgent"
+	// CollabAgentToolListAgents lists collaborative agents.
+	CollabAgentToolListAgents CollabAgentTool = "listAgents"
+	// CollabAgentToolSendMessage sends a message to a collaborative agent.
+	CollabAgentToolSendMessage CollabAgentTool = "sendMessage"
 )
 
 // CollabAgentToolCallStatus is a collaborative agent tool call status.
@@ -501,6 +559,8 @@ const (
 	CollabAgentToolCallStatusCompleted CollabAgentToolCallStatus = "completed"
 	// CollabAgentToolCallStatusFailed indicates the collaborative tool call failed.
 	CollabAgentToolCallStatusFailed CollabAgentToolCallStatus = "failed"
+	// CollabAgentToolCallStatusInterrupted indicates the collaborative tool call was interrupted.
+	CollabAgentToolCallStatusInterrupted CollabAgentToolCallStatus = "interrupted"
 )
 
 // CollabAgentStatus is a collaborative agent lifecycle status.
@@ -558,7 +618,7 @@ type ModelRerouteReason string
 // Model reroute reason constants.
 const (
 	// ModelRerouteReasonHighRiskCyberActivity indicates rerouting due to high-risk cyber activity.
-	ModelRerouteReasonHighRiskCyberActivity ModelRerouteReason = "high_risk_cyber_activity"
+	ModelRerouteReasonHighRiskCyberActivity ModelRerouteReason = "highRiskCyberActivity"
 )
 
 // ModelVerification describes a model verification requirement.
@@ -567,7 +627,7 @@ type ModelVerification string
 // Model verification constants.
 const (
 	// ModelVerificationTrustedAccessForCyber indicates trusted access for cyber is required.
-	ModelVerificationTrustedAccessForCyber ModelVerification = "trusted_access_for_cyber"
+	ModelVerificationTrustedAccessForCyber ModelVerification = "trustedAccessForCyber"
 )
 
 // InputModality is a model input modality.
@@ -579,6 +639,8 @@ const (
 	InputModalityText InputModality = "text"
 	// InputModalityImage indicates image input support.
 	InputModalityImage InputModality = "image"
+	// InputModalityAudio indicates audio input support.
+	InputModalityAudio InputModality = "audio"
 )
 
 // AutoReviewDecisionSource identifies what produced an auto-review decision.
@@ -606,7 +668,7 @@ const (
 )
 
 // JSONRPCMessage is the JSON-RPC 2.0 envelope for codex app-server messages.
-// Notifications have Method set. Responses have a non-empty ID.
+// Notifications have Method set, responses have an ID, and server requests have both.
 type JSONRPCMessage struct {
 	JSONRPC   string          `json:"jsonrpc"`
 	EmittedAt base.TimeMS     `json:"emittedAtMs,omitzero"`
@@ -617,8 +679,11 @@ type JSONRPCMessage struct {
 	Error     *JSONRPCError   `json:"error,omitzero"`
 }
 
-// IsResponse returns true if this is a response (has an ID).
-func (m *JSONRPCMessage) IsResponse() bool { return len(m.ID) != 0 }
+// IsResponse reports whether the message is a response to a client request.
+func (m *JSONRPCMessage) IsResponse() bool { return len(m.ID) != 0 && m.Method == "" }
+
+// IsServerRequest reports whether the server expects a response from the client.
+func (m *JSONRPCMessage) IsServerRequest() bool { return len(m.ID) != 0 && m.Method != "" }
 
 // JSONRPCError is a JSON-RPC 2.0 error object.
 type JSONRPCError struct {
@@ -674,7 +739,11 @@ type ClientInfo struct {
 
 // Capabilities declares client capabilities in the initialize handshake.
 type Capabilities struct {
-	OptOutNotificationMethods []Method `json:"optOutNotificationMethods"`
+	ExperimentalAPI           bool                       `json:"experimentalApi"`
+	RequestAttestation        bool                       `json:"requestAttestation"`
+	McpServerOpenaiForm       bool                       `json:"mcpServerOpenaiFormElicitation,omitzero"`
+	OptOutNotificationMethods []Method                   `json:"optOutNotificationMethods"`
+	Extensions                map[string]json.RawMessage `json:"extensions,omitzero"`
 }
 
 // Thread management request params.
@@ -695,40 +764,30 @@ type ThreadStartParams struct {
 	BaseInstructions      string                     `json:"baseInstructions,omitzero"`
 	DeveloperInstructions string                     `json:"developerInstructions,omitzero"`
 	Personality           Personality                `json:"personality,omitzero"`
-	Ephemeral             *bool                      `json:"ephemeral,omitzero"`
-	HistoryMode           string                     `json:"historyMode,omitzero"`
+	Ephemeral             bool                       `json:"ephemeral,omitzero"`
 	SessionStartSource    ThreadStartSource          `json:"sessionStartSource,omitzero"`
 	ThreadSource          ThreadSource               `json:"threadSource,omitzero"`
-	ProjectID             string                     `json:"projectId,omitzero"`
-	Environments          []TurnEnvironmentParams    `json:"environments,omitzero"`
-	DynamicTools          []DynamicToolSpec          `json:"dynamicTools,omitzero"`
-	ExperimentalRawEvents bool                       `json:"experimentalRawEvents,omitzero"`
 }
 
 // ThreadResumeParams holds the params for thread/resume.
 type ThreadResumeParams struct {
 	ThreadID              string                     `json:"threadId"`
-	History               json.RawMessage            `json:"history,omitzero"`
-	Path                  string                     `json:"path,omitzero"`
 	Model                 string                     `json:"model,omitzero"`
 	ModelProvider         string                     `json:"modelProvider,omitzero"`
 	ServiceTier           *string                    `json:"serviceTier,omitzero"`
 	Cwd                   string                     `json:"cwd,omitzero"`
-	RuntimeWorkspaceRoots []string                   `json:"runtimeWorkspaceRoots,omitzero"`
 	ApprovalPolicy        json.RawMessage            `json:"approvalPolicy,omitzero"`
 	ApprovalsReviewer     ApprovalsReviewer          `json:"approvalsReviewer,omitzero"`
 	Sandbox               SandboxMode                `json:"sandbox,omitzero"`
-	Permissions           string                     `json:"permissions,omitzero"`
 	Config                map[string]json.RawMessage `json:"config,omitzero"`
 	BaseInstructions      string                     `json:"baseInstructions,omitzero"`
 	DeveloperInstructions string                     `json:"developerInstructions,omitzero"`
 	Personality           Personality                `json:"personality,omitzero"`
 	ExcludeTurns          bool                       `json:"excludeTurns,omitzero"`
-	InitialTurnsPage      json.RawMessage            `json:"initialTurnsPage,omitzero"`
 }
 
-// ThreadStartResult is the result object from a thread/start JSON-RPC response.
-type ThreadStartResult struct {
+// ThreadStartResponse is the result object from a thread/start JSON-RPC response.
+type ThreadStartResponse struct {
 	Thread                  Thread                   `json:"thread"`
 	Model                   string                   `json:"model,omitzero"`
 	ModelProvider           string                   `json:"modelProvider,omitzero"`
@@ -738,24 +797,56 @@ type ThreadStartResult struct {
 	InstructionSources      []string                 `json:"instructionSources,omitzero"`
 	ApprovalPolicy          json.RawMessage          `json:"approvalPolicy,omitzero"`
 	ApprovalsReviewer       ApprovalsReviewer        `json:"approvalsReviewer,omitzero"`
-	Sandbox                 ThreadSandbox            `json:"sandbox,omitzero"`
+	Sandbox                 SandboxPolicy            `json:"sandbox,omitzero"`
 	ActivePermissionProfile *ActivePermissionProfile `json:"activePermissionProfile,omitzero"`
 	ReasoningEffort         *ReasoningEffort         `json:"reasoningEffort,omitzero"`
 	MultiAgentMode          string                   `json:"multiAgentMode,omitzero"`
 	InitialTurnsPage        json.RawMessage          `json:"initialTurnsPage,omitzero"`
 }
 
-// ThreadSandbox describes sandbox settings active for a thread.
-type ThreadSandbox struct {
-	Type          string              `json:"type,omitzero"`
-	Access        ThreadSandboxAccess `json:"access,omitzero"`
-	NetworkAccess bool                `json:"networkAccess,omitzero"`
+// ThreadResumeResponse is the result object from a thread/resume JSON-RPC response.
+type ThreadResumeResponse struct {
+	ThreadStartResponse
+	TurnsBackwardsCursor string `json:"turnsBackwardsCursor,omitzero"`
+	ItemsBackwardsCursor string `json:"itemsBackwardsCursor,omitzero"`
 }
 
-// ThreadSandboxAccess describes filesystem access granted inside a thread sandbox.
-type ThreadSandboxAccess struct {
-	Type string `json:"type,omitzero"`
+// SandboxPolicy describes the active filesystem and network sandbox.
+type SandboxPolicy struct {
+	Type                string               `json:"type"`
+	NetworkAccess       SandboxNetworkAccess `json:"networkAccess,omitzero"`
+	WritableRoots       []string             `json:"writableRoots,omitzero"`
+	ExcludeTmpdirEnvVar bool                 `json:"excludeTmpdirEnvVar,omitzero"`
+	ExcludeSlashTmp     bool                 `json:"excludeSlashTmp,omitzero"`
 }
+
+// SandboxNetworkAccess accepts the boolean and named network policies used by sandbox variants.
+type SandboxNetworkAccess string
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (s *SandboxNetworkAccess) UnmarshalJSON(b []byte) error {
+	var enabled bool
+	if err := json.Unmarshal(b, &enabled); err == nil {
+		if enabled {
+			*s = SandboxNetworkAccessEnabled
+		} else {
+			*s = SandboxNetworkAccessRestricted
+		}
+		return nil
+	}
+	var policy string
+	if err := json.Unmarshal(b, &policy); err != nil {
+		return err
+	}
+	*s = SandboxNetworkAccess(policy)
+	return nil
+}
+
+// Sandbox network access policies.
+const (
+	SandboxNetworkAccessRestricted SandboxNetworkAccess = "restricted"
+	SandboxNetworkAccessEnabled    SandboxNetworkAccess = "enabled"
+)
 
 // Turn request params.
 
@@ -794,25 +885,29 @@ const (
 
 // TurnStartParams holds the params for turn/start.
 type TurnStartParams struct {
-	ThreadID                   string                            `json:"threadId"`
-	ClientUserMessageID        string                            `json:"clientUserMessageId,omitzero"`
-	Input                      []TurnInput                       `json:"input"`
-	ResponsesAPIClientMetadata map[string]string                 `json:"responsesapiClientMetadata,omitzero"`
-	AdditionalContext          map[string]AdditionalContextEntry `json:"additionalContext,omitzero"`
-	Environments               []TurnEnvironmentParams           `json:"environments,omitzero"`
-	Cwd                        string                            `json:"cwd,omitzero"`
-	RuntimeWorkspaceRoots      []string                          `json:"runtimeWorkspaceRoots,omitzero"`
-	ApprovalPolicy             json.RawMessage                   `json:"approvalPolicy,omitzero"`
-	ApprovalsReviewer          ApprovalsReviewer                 `json:"approvalsReviewer,omitzero"`
-	SandboxPolicy              json.RawMessage                   `json:"sandboxPolicy,omitzero"`
-	Permissions                string                            `json:"permissions,omitzero"`
-	Model                      string                            `json:"model,omitzero"`
-	ServiceTier                *string                           `json:"serviceTier,omitzero"`
-	Effort                     ReasoningEffort                   `json:"effort,omitzero"`
-	Summary                    ReasoningSummary                  `json:"summary,omitzero"`
-	Personality                Personality                       `json:"personality,omitzero"`
-	OutputSchema               json.RawMessage                   `json:"outputSchema,omitzero"`
-	CollaborationMode          json.RawMessage                   `json:"collaborationMode,omitzero"`
+	ThreadID            string            `json:"threadId"`
+	ClientUserMessageID string            `json:"clientUserMessageId,omitzero"`
+	Input               []TurnInput       `json:"input"`
+	TurnTrigger         string            `json:"turnTrigger,omitzero"`
+	ToolOutput          TurnToolOutput    `json:"toolOutput,omitzero"`
+	Cwd                 string            `json:"cwd,omitzero"`
+	ApprovalPolicy      json.RawMessage   `json:"approvalPolicy,omitzero"`
+	ApprovalsReviewer   ApprovalsReviewer `json:"approvalsReviewer,omitzero"`
+	SandboxPolicy       json.RawMessage   `json:"sandboxPolicy,omitzero"`
+	Model               string            `json:"model,omitzero"`
+	ServiceTier         *string           `json:"serviceTier,omitzero"`
+	ServiceTierForTurn  string            `json:"serviceTierForTurn,omitzero"`
+	Effort              ReasoningEffort   `json:"effort,omitzero"`
+	Summary             ReasoningSummary  `json:"summary,omitzero"`
+	Personality         Personality       `json:"personality,omitzero"`
+	OutputSchema        json.RawMessage   `json:"outputSchema,omitzero"`
+}
+
+// TurnToolOutput is a function-call result supplied while starting a turn.
+type TurnToolOutput struct {
+	Name      string          `json:"name"`
+	Namespace string          `json:"namespace,omitzero"`
+	Output    json.RawMessage `json:"output"`
 }
 
 // TurnInput is a single item in the turn/start input array.
@@ -867,13 +962,24 @@ type AdditionalContextEntry struct {
 
 // TurnEnvironmentParams selects a turn or thread environment.
 type TurnEnvironmentParams struct {
-	EnvironmentID string `json:"environmentId"`
-	Cwd           string `json:"cwd"`
+	EnvironmentID         string   `json:"environmentId"`
+	Cwd                   string   `json:"cwd"`
+	RuntimeWorkspaceRoots []string `json:"runtimeWorkspaceRoots,omitzero"`
 }
 
 // DynamicToolSpec describes a dynamically registered tool.
 type DynamicToolSpec struct {
-	Namespace    string          `json:"namespace,omitzero"`
+	Type         string                     `json:"type"`
+	Name         string                     `json:"name"`
+	Description  string                     `json:"description"`
+	InputSchema  json.RawMessage            `json:"inputSchema"`
+	DeferLoading bool                       `json:"deferLoading,omitzero"`
+	Tools        []DynamicToolNamespaceTool `json:"tools,omitzero"`
+}
+
+// DynamicToolNamespaceTool is one function exposed by a dynamic tool namespace.
+type DynamicToolNamespaceTool struct {
+	Type         string          `json:"type"`
 	Name         string          `json:"name"`
 	Description  string          `json:"description"`
 	InputSchema  json.RawMessage `json:"inputSchema"`
@@ -1050,9 +1156,22 @@ type Turn struct {
 
 // TurnError describes a turn failure.
 type TurnError struct {
-	Message           string          `json:"message"`
-	CodexErrorInfo    json.RawMessage `json:"codexErrorInfo,omitzero"`
-	AdditionalDetails string          `json:"additionalDetails,omitzero"`
+	Message           string                   `json:"message"`
+	CodexErrorInfo    json.RawMessage          `json:"codexErrorInfo,omitzero"`
+	AdditionalDetails string                   `json:"additionalDetails,omitzero"`
+	Misalignment      MisalignmentErrorDetails `json:"misalignment,omitzero"`
+}
+
+// MisalignmentErrorDetails describes a model-response alignment block.
+type MisalignmentErrorDetails struct {
+	ErrorType           string            `json:"errorType,omitzero"`
+	DetailedExplanation string            `json:"detailedExplanation,omitzero"`
+	Steer               MisalignmentSteer `json:"steer,omitzero"`
+}
+
+// MisalignmentSteer is the suggested follow-up instruction for an alignment block.
+type MisalignmentSteer struct {
+	Message string `json:"message"`
 }
 
 // TurnDiffUpdatedNotification holds params for turn/diff/updated.
@@ -1088,11 +1207,34 @@ type AgentMessageDeltaNotification struct {
 
 // AgentMessageItem is an agent text response item.
 type AgentMessageItem struct {
-	ID             string          `json:"id"`
-	Type           ItemType        `json:"type"`
-	Text           string          `json:"text,omitzero"`
-	Phase          MessagePhase    `json:"phase,omitzero"`
-	MemoryCitation *MemoryCitation `json:"memoryCitation,omitzero"`
+	ID             string                   `json:"id"`
+	Type           ItemType                 `json:"type"`
+	Text           string                   `json:"text,omitzero"`
+	Phase          MessagePhase             `json:"phase,omitzero"`
+	MemoryCitation *MemoryCitation          `json:"memoryCitation,omitzero"`
+	Delivery       AgentMessageDelivery     `json:"delivery,omitzero"`
+	Questions      []AsyncUserInputQuestion `json:"questions,omitzero"`
+}
+
+// AgentMessageDelivery describes asynchronous message delivery.
+type AgentMessageDelivery string
+
+// AgentMessageDeliveryAsync identifies an asynchronously delivered message.
+const AgentMessageDeliveryAsync AgentMessageDelivery = "async"
+
+// AsyncUserInputQuestion is an asynchronous question attached to an agent message.
+type AsyncUserInputQuestion struct {
+	Title   string   `json:"title"`
+	Options []string `json:"options,omitzero"`
+}
+
+// FunctionCallOutputItem is a client-provided tool output in thread history.
+type FunctionCallOutputItem struct {
+	ID        string          `json:"id"`
+	Type      ItemType        `json:"type"`
+	Name      string          `json:"name"`
+	Namespace string          `json:"namespace,omitzero"`
+	Output    json.RawMessage `json:"output"`
 }
 
 // PlanItem is an agent plan item.
@@ -1201,6 +1343,8 @@ const (
 	SubAgentActivityKindInteracted SubAgentActivityKind = "interacted"
 	// SubAgentActivityKindInterrupted identifies an interrupted sub-agent.
 	SubAgentActivityKindInterrupted SubAgentActivityKind = "interrupted"
+	// SubAgentActivityKindCompleted identifies a completed sub-agent.
+	SubAgentActivityKindCompleted SubAgentActivityKind = "completed"
 )
 
 // SubAgentActivityItem reports a sub-agent lifecycle activity.
@@ -1257,12 +1401,21 @@ type SleepItem struct {
 
 // ImageGenerationItem is an image generation item.
 type ImageGenerationItem struct {
-	ID            string   `json:"id"`
-	Type          ItemType `json:"type"`
-	Status        string   `json:"status,omitzero"`
-	RevisedPrompt string   `json:"revisedPrompt,omitzero"`
-	Result        string   `json:"result,omitzero"`
-	SavedPath     string   `json:"savedPath,omitzero"`
+	ID                    string                 `json:"id"`
+	Type                  ItemType               `json:"type"`
+	Status                string                 `json:"status,omitzero"`
+	RevisedPrompt         string                 `json:"revisedPrompt,omitzero"`
+	Result                string                 `json:"result,omitzero"`
+	TransparentBackground bool                   `json:"transparentBackground,omitzero"`
+	Failure               ImageGenerationFailure `json:"failure,omitzero"`
+	SavedPath             string                 `json:"savedPath,omitzero"`
+}
+
+// ImageGenerationFailure describes a failed image generation request.
+type ImageGenerationFailure struct {
+	Type     string     `json:"type"`
+	LimitID  string     `json:"limitId"`
+	ResetsAt base.TimeS `json:"resetsAt,omitzero"`
 }
 
 // HookPromptItem is a hook execution prompt item.
@@ -1370,6 +1523,7 @@ type WebSearchAction struct {
 type McpToolCallResult struct {
 	Content           []json.RawMessage `json:"content"`
 	StructuredContent json.RawMessage   `json:"structuredContent,omitzero"`
+	Meta              json.RawMessage   `json:"_meta,omitzero"`
 }
 
 // McpToolCallError holds the error from a failed MCP tool call.
@@ -1616,10 +1770,17 @@ type ModelReroutedNotification struct {
 
 // Model list (handshake response).
 
-// ModelListResult is the result of a model/list request.
-type ModelListResult struct {
-	Data       []ModelInfo      `json:"data"`
-	NextCursor *json.RawMessage `json:"nextCursor,omitzero"`
+// ModelListParams holds pagination options for model/list.
+type ModelListParams struct {
+	Cursor        string `json:"cursor,omitzero"`
+	Limit         int    `json:"limit,omitzero"`
+	IncludeHidden bool   `json:"includeHidden,omitzero"`
+}
+
+// ModelListResponse is the result of a model/list request.
+type ModelListResponse struct {
+	Data       []ModelInfo `json:"data"`
+	NextCursor string      `json:"nextCursor,omitzero"`
 }
 
 // ModelInfo describes a single model in a model/list result.
@@ -1657,8 +1818,9 @@ type MultiAgentVersion string
 
 // Multi-agent protocol versions.
 const (
-	MultiAgentVersionV1 MultiAgentVersion = "v1"
-	MultiAgentVersionV2 MultiAgentVersion = "v2"
+	MultiAgentVersionDisabled MultiAgentVersion = "disabled"
+	MultiAgentVersionV1       MultiAgentVersion = "v1"
+	MultiAgentVersionV2       MultiAgentVersion = "v2"
 )
 
 // ModelAvailabilityNux holds a new-user-experience announcement for a model.
@@ -1701,6 +1863,8 @@ const (
 	AuthModeAgentIdentity       AuthMode = "agentIdentity"
 	AuthModePersonalAccessToken AuthMode = "personalAccessToken"
 	AuthModeBedrockAPIKey       AuthMode = "bedrockApiKey"
+	AuthModeBedrockAccessKeys   AuthMode = "bedrockAccessKeys"
+	AuthModeHeaders             AuthMode = "headers"
 )
 
 // AccountUpdatedNotification holds params for account/updated.
@@ -1711,26 +1875,69 @@ type AccountUpdatedNotification struct {
 
 // AccountLoginCompletedNotification holds params for account/login/completed.
 type AccountLoginCompletedNotification struct {
-	LoginID string `json:"loginId,omitzero"`
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitzero"`
+	LoginID              string                      `json:"loginId,omitzero"`
+	Success              bool                        `json:"success"`
+	Error                string                      `json:"error,omitzero"`
+	OnboardingEntrypoint DesktopOnboardingEntrypoint `json:"onboardingEntrypoint,omitzero"`
 }
+
+// DesktopOnboardingEntrypoint identifies a provider onboarding flow.
+type DesktopOnboardingEntrypoint string
+
+// DesktopOnboardingEntrypointLifeSciences identifies life-sciences onboarding.
+const DesktopOnboardingEntrypointLifeSciences DesktopOnboardingEntrypoint = "life_sciences"
 
 // GetAccountRateLimitsResponse is the response to account/rateLimits/read.
 type GetAccountRateLimitsResponse struct {
+	OrdinaryUsageAllowed  bool                          `json:"ordinaryUsageAllowed,omitzero"`
 	RateLimits            RateLimitSnapshot             `json:"rateLimits"`
 	RateLimitsByLimitID   map[string]RateLimitSnapshot  `json:"rateLimitsByLimitId,omitzero"`
 	RateLimitResetCredits *RateLimitResetCreditsSummary `json:"rateLimitResetCredits,omitzero"`
+	AccountID             string                        `json:"accountId,omitzero"`
+	RateLimitUpsell       json.RawMessage               `json:"rateLimitUpsell,omitzero"`
 }
 
 // RateLimitResetCreditsSummary summarizes available rate-limit reset credits.
 type RateLimitResetCreditsSummary struct {
-	AvailableCount int64 `json:"availableCount"`
+	AvailableCount int64                  `json:"availableCount"`
+	Credits        []RateLimitResetCredit `json:"credits,omitzero"`
 }
+
+// RateLimitResetCredit is one available account rate-limit reset credit.
+type RateLimitResetCredit struct {
+	ID          string                     `json:"id"`
+	ResetType   RateLimitResetType         `json:"resetType"`
+	Status      RateLimitResetCreditStatus `json:"status"`
+	GrantedAt   base.TimeS                 `json:"grantedAt"`
+	ExpiresAt   base.TimeS                 `json:"expiresAt,omitzero"`
+	Title       string                     `json:"title,omitzero"`
+	Description string                     `json:"description,omitzero"`
+}
+
+// RateLimitResetType identifies the quota reset performed by a credit.
+type RateLimitResetType string
+
+// Rate-limit reset types.
+const (
+	RateLimitResetTypeCodexRateLimits RateLimitResetType = "codexRateLimits"
+	RateLimitResetTypeUnknown         RateLimitResetType = "unknown"
+)
+
+// RateLimitResetCreditStatus is a reset-credit lifecycle status.
+type RateLimitResetCreditStatus string
+
+// Rate-limit reset credit statuses.
+const (
+	RateLimitResetCreditStatusAvailable RateLimitResetCreditStatus = "available"
+	RateLimitResetCreditStatusRedeeming RateLimitResetCreditStatus = "redeeming"
+	RateLimitResetCreditStatusRedeemed  RateLimitResetCreditStatus = "redeemed"
+	RateLimitResetCreditStatusUnknown   RateLimitResetCreditStatus = "unknown"
+)
 
 // ConsumeAccountRateLimitResetCreditParams holds params for account/rateLimitResetCredit/consume.
 type ConsumeAccountRateLimitResetCreditParams struct {
 	IdempotencyKey string `json:"idempotencyKey"`
+	CreditID       string `json:"creditId,omitzero"`
 }
 
 // ConsumeAccountRateLimitResetCreditResponse is the response to account/rateLimitResetCredit/consume.
@@ -1783,10 +1990,15 @@ const (
 	PlanTypeProLite                     PlanType = "prolite"
 	PlanTypeTeam                        PlanType = "team"
 	PlanTypeSelfServeBusinessUsageBased PlanType = "self_serve_business_usage_based"
+	PlanTypeSelfServeBusinessProLite    PlanType = "self_serve_business_prolite"
 	PlanTypeBusiness                    PlanType = "business"
+	PlanTypeEnt26                       PlanType = "ent26"
+	PlanTypeEnterpriseCbpAutomation     PlanType = "enterprise_cbp_automation"
 	PlanTypeEnterpriseCbpUsageBased     PlanType = "enterprise_cbp_usage_based"
 	PlanTypeEnterprise                  PlanType = "enterprise"
 	PlanTypeEdu                         PlanType = "edu"
+	PlanTypeEduPlus                     PlanType = "edu_plus"
+	PlanTypeEduPro                      PlanType = "edu_pro"
 	PlanTypeUnknown                     PlanType = "unknown"
 )
 
@@ -1957,9 +2169,10 @@ type ServerRequestResolvedNotification struct {
 
 // McpServerOauthLoginCompletedNotification holds params for mcpServer/oauthLogin/completed.
 type McpServerOauthLoginCompletedNotification struct {
-	Name    string  `json:"name"`
-	Success bool    `json:"success"`
-	Error   *string `json:"error,omitzero"`
+	ThreadID string `json:"threadId,omitzero"`
+	Name     string `json:"name"`
+	Success  bool   `json:"success"`
+	Error    string `json:"error,omitzero"`
 }
 
 // McpServerStatusUpdatedNotification holds params for mcpServer/startupStatus/updated.
@@ -1973,3 +2186,126 @@ type McpServerStatusUpdatedNotification struct {
 
 // SkillsChangedNotification holds params for skills/changed notifications.
 type SkillsChangedNotification struct{}
+
+// ThreadDeletedNotification holds params for thread/deleted.
+type ThreadDeletedNotification struct {
+	ThreadID string `json:"threadId"`
+}
+
+// ThreadRevertedNotification holds params for thread/reverted.
+type ThreadRevertedNotification struct {
+	ThreadID string `json:"threadId"`
+}
+
+// ThreadQueueChangedNotification holds params for thread/queue/changed.
+type ThreadQueueChangedNotification struct {
+	ThreadID string `json:"threadId"`
+}
+
+// ProjectChangedNotification holds params for project/changed.
+type ProjectChangedNotification struct {
+	ProjectID  string            `json:"projectId"`
+	ChangeType ProjectChangeType `json:"changeType"`
+}
+
+// ProjectChangeType identifies how a project changed.
+type ProjectChangeType string
+
+// Project change types.
+const (
+	ProjectChangeTypeCreated ProjectChangeType = "created"
+	ProjectChangeTypeUpdated ProjectChangeType = "updated"
+	ProjectChangeTypeDeleted ProjectChangeType = "deleted"
+)
+
+// ThreadProjectUpdatedNotification holds params for thread/project/updated.
+type ThreadProjectUpdatedNotification struct {
+	ThreadID  string `json:"threadId"`
+	ProjectID string `json:"projectId,omitzero"`
+}
+
+// EnvironmentConnectionNotification holds thread environment connection state.
+type EnvironmentConnectionNotification struct {
+	ThreadID      string `json:"threadId"`
+	EnvironmentID string `json:"environmentId"`
+}
+
+// StrictReviewRequiredNotification requests a strict auto-approval review.
+type StrictReviewRequiredNotification struct {
+	ThreadID  string      `json:"threadId"`
+	TurnID    string      `json:"turnId"`
+	StartedAt base.TimeMS `json:"startedAtMs"`
+}
+
+// RawResponseCompletedNotification contains exact usage from one Responses API call.
+type RawResponseCompletedNotification struct {
+	ThreadID      string              `json:"threadId"`
+	TurnID        string              `json:"turnId"`
+	ResponseID    string              `json:"responseId"`
+	Usage         TokenUsageBreakdown `json:"usage,omitzero"`
+	UsageMetadata json.RawMessage     `json:"usageMetadata,omitzero"`
+}
+
+// FileChangeOutputDeltaNotification holds deprecated apply-patch output.
+type FileChangeOutputDeltaNotification struct {
+	ThreadID string `json:"threadId"`
+	TurnID   string `json:"turnId"`
+	ItemID   string `json:"itemId"`
+	Delta    string `json:"delta"`
+}
+
+// McpServerEventStreamNotification holds an MCP event-stream update.
+type McpServerEventStreamNotification struct {
+	SubscriptionID string          `json:"subscriptionId"`
+	Notification   json.RawMessage `json:"notification"`
+}
+
+// ExternalAgentConfigImportProgressNotification holds import progress.
+type ExternalAgentConfigImportProgressNotification struct {
+	ImportID        string            `json:"importId"`
+	ItemTypeResults []json.RawMessage `json:"itemTypeResults"`
+}
+
+// ContextCompactedNotification holds the deprecated thread compaction event.
+type ContextCompactedNotification struct {
+	ThreadID string `json:"threadId"`
+	TurnID   string `json:"turnId"`
+}
+
+// AuthRecoveryNotification holds provider authentication recovery state.
+type AuthRecoveryNotification struct {
+	ThreadID string `json:"threadId"`
+	TurnID   string `json:"turnId"`
+	Provider string `json:"provider"`
+	Message  string `json:"message"`
+}
+
+// ModelSafetyBufferingUpdatedNotification holds model safety-buffering state.
+type ModelSafetyBufferingUpdatedNotification struct {
+	ThreadID        string   `json:"threadId"`
+	TurnID          string   `json:"turnId"`
+	Model           string   `json:"model"`
+	UseCases        []string `json:"useCases"`
+	Reasons         []string `json:"reasons"`
+	ShowBufferingUI bool     `json:"showBufferingUi"`
+	FasterModel     string   `json:"fasterModel,omitzero"`
+}
+
+// ThreadRealtimeItemStartedNotification holds a realtime item start.
+type ThreadRealtimeItemStartedNotification struct {
+	ThreadID string          `json:"threadId"`
+	Item     json.RawMessage `json:"item"`
+}
+
+// ThreadRealtimeItemTranscriptDeltaNotification holds realtime item transcript text.
+type ThreadRealtimeItemTranscriptDeltaNotification struct {
+	ThreadID string `json:"threadId"`
+	ItemID   string `json:"itemId"`
+	Delta    string `json:"delta"`
+}
+
+// ThreadRealtimeItemCompletedNotification holds a completed realtime item.
+type ThreadRealtimeItemCompletedNotification struct {
+	ThreadID string          `json:"threadId"`
+	Item     json.RawMessage `json:"item"`
+}

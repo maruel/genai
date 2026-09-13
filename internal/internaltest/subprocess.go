@@ -24,11 +24,18 @@ import (
 //
 // Use it as a ProviderOptionStarterWrapper:
 //
-//	rec := internaltest.NewSubprocessRecorder(t, "scenario", "claude")
+//	rec := internaltest.NewSubprocessRecorder(t, "scenario", "claude", nil)
 //	c, err := claudecode.New(genai.ProviderOptionStarterWrapper(rec.Wrap))
 type SubprocessRecorder struct {
 	rec     *subprocessrecord.Recorder
 	forceRR bool // true when a fresh trace should be recorded
+}
+
+// Wrap returns a starter wrapper that either records or replays subprocess I/O.
+//
+// It implements the genai.ProviderOptionStarterWrapper signature.
+func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
+	return s.rec.Wrap(inner)
 }
 
 // NewSubprocessRecorder returns a recorder whose fixture file lives at
@@ -36,8 +43,10 @@ type SubprocessRecorder struct {
 //
 // When RECORD is "all", a fresh trace is always recorded. When RECORD is
 // "failure_only", recording happens only when the fixture is missing or empty.
-// Otherwise the existing fixture is replayed.
-func NewSubprocessRecorder(t testing.TB, name, binaryName string) *SubprocessRecorder {
+// Otherwise the existing fixture is replayed. If sanitize is non-nil, it
+// transforms each stdout line before storage while preserving the original
+// stream for the client.
+func NewSubprocessRecorder(t testing.TB, name, binaryName string, sanitize subprocessrecord.LineSanitizer) *SubprocessRecorder {
 	fixture := filepath.Join("testdata", name)
 	rec := os.Getenv("RECORD")
 	forceRR := false
@@ -57,7 +66,7 @@ func NewSubprocessRecorder(t testing.TB, name, binaryName string) *SubprocessRec
 		// Remove the fixture so subprocessrecord.New records fresh.
 		_ = os.Remove(fixture + ".ndjson")
 	}
-	r, err := subprocessrecord.New(fixture)
+	r, err := subprocessrecord.New(fixture, sanitize)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,11 +76,4 @@ func NewSubprocessRecorder(t testing.TB, name, binaryName string) *SubprocessRec
 		}
 	})
 	return &SubprocessRecorder{rec: r, forceRR: forceRR}
-}
-
-// Wrap returns a starter wrapper that either records or replays subprocess I/O.
-//
-// It implements the genai.ProviderOptionStarterWrapper signature.
-func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
-	return s.rec.Wrap(inner)
 }

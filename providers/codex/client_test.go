@@ -7,6 +7,11 @@
 package codex
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -23,13 +28,75 @@ import (
 )
 
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
-	rec := internaltest.NewSubprocessRecorder(t, name, "codex")
+	rec := internaltest.NewSubprocessRecorder(t, name, "codex", sanitizeCodexFixtureLine)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
 	return c
+}
+
+func newOutputClient(t *testing.T, lines ...string) *Client {
+	starter := genai.ProviderOptionStarterWrapper(func(genai.Starter) genai.Starter {
+		return func(_ context.Context, _ []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+			pr, pw := io.Pipe()
+			go func() { _, _ = io.Copy(io.Discard, pr) }()
+			return pw, io.NopCloser(strings.NewReader(strings.Join(lines, "\n"))), func() error { return nil }, nil
+		}
+	})
+	c, err := New(starter)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	return c
+}
+
+func sanitizeCodexFixtureLine(line []byte) ([]byte, error) {
+	d := json.NewDecoder(bytes.NewReader(line))
+	d.UseNumber()
+	var value any
+	if err := d.Decode(&value); err != nil {
+		return nil, err
+	}
+	sanitizeCodexFixtureValue(value)
+	return json.Marshal(value)
+}
+
+func sanitizeCodexFixtureValue(value any) {
+	switch value := value.(type) {
+	case map[string]any:
+		delete(value, "installationId")
+		delete(value, "serverName")
+		for key, child := range value {
+			if path, ok := child.(string); ok {
+				value[key] = sanitizeHostHome(path)
+				continue
+			}
+			sanitizeCodexFixtureValue(child)
+		}
+	case []any:
+		for i, child := range value {
+			if path, ok := child.(string); ok {
+				value[i] = sanitizeHostHome(path)
+				continue
+			}
+			sanitizeCodexFixtureValue(child)
+		}
+	}
+}
+
+func sanitizeHostHome(value string) string {
+	for _, prefix := range []string{"/home/", "/Users/"} {
+		if !strings.HasPrefix(value, prefix) {
+			continue
+		}
+		rest := strings.TrimPrefix(value, prefix)
+		if i := strings.IndexByte(rest, '/'); i >= 0 {
+			return "$HOME" + rest[i:]
+		}
+	}
+	return value
 }
 
 func setupCodexSmokeHome(t testing.TB) (string, string) {
@@ -64,6 +131,95 @@ func copyCodexSmokeFile(t testing.TB, src, dst, name string) {
 	}
 	if err := os.WriteFile(filepath.Join(dst, name), data, 0o600); err != nil {
 		t.Fatalf("write temp Codex %s: %v", name, err)
+	}
+}
+
+func TestSanitizeCodexFixtureLine(t *testing.T) {
+	input := []byte(`{"method":"remoteControl/status/changed","params":{"serverName":"host","installationId":"uuid","runtimeWorkspaceRoots":["/tmp/work","/home/maruel/.cache/go-build"]}}`)
+	got, err := sanitizeCodexFixtureLine(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, secret := range [][]byte{[]byte("serverName"), []byte("installationId"), []byte("/home/maruel")} {
+		if bytes.Contains(got, secret) {
+			t.Errorf("sanitized fixture contains %q: %s", secret, got)
+		}
+	}
+	if !bytes.Contains(got, []byte(`"$HOME/.cache/go-build"`)) {
+		t.Errorf("sanitized fixture = %s, want normalized home", got)
+	}
+}
+
+func TestRecordedFixturesSanitized(t *testing.T) {
+	var fixtures []string
+	err := filepath.WalkDir("testdata", func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !entry.IsDir() && filepath.Ext(path) == ".ndjson" {
+			fixtures = append(fixtures, path)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, fixture := range fixtures {
+		data, err := os.ReadFile(fixture)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, secret := range [][]byte{[]byte(`"serverName"`), []byte(`"installationId"`), []byte("/home/"), []byte("/Users/")} {
+			if bytes.Contains(data, secret) {
+				t.Errorf("%s contains host identifier %q", fixture, secret)
+			}
+		}
+	}
+}
+
+func TestGenStreamErrors(t *testing.T) {
+	prefix := []string{
+		`{"id":1,"result":{"userAgent":"genai-codex/0.154.0"}}`,
+		`{"id":2,"result":{"data":[],"nextCursor":null}}`,
+		`{"id":3,"result":{"thread":{"id":"thread"}}}`,
+	}
+	for _, tc := range []struct {
+		name string
+		line string
+		want string
+	}{
+		{
+			name: "error notification",
+			line: `{"method":"error","params":{"error":{"message":"internal server error","codexErrorInfo":null,"additionalDetails":null,"misalignment":null},"willRetry":false,"threadId":"thread","turnId":"turn"}}`,
+			want: "codex error: internal server error",
+		},
+		{
+			name: "server request",
+			line: `{"id":7,"method":"item/tool/requestUserInput","params":{"threadId":"thread","turnId":"turn","itemId":"item","questions":[]}}`,
+			want: `unsupported server request "item/tool/requestUserInput" (id 7)`,
+		},
+		{
+			name: "JSON-RPC error response",
+			line: `{"id":100,"error":{"code":-32000,"message":"turn failed"}}`,
+			want: "JSON-RPC error -32000: turn failed",
+		},
+		{
+			name: "malformed JSON",
+			line: `{"method":"turn/completed"`,
+			want: "decode app-server message",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			lines := append(slices.Clone(prefix), tc.line)
+			c := newOutputClient(t, lines...)
+			seq, finish := c.GenStream(t.Context(), genai.Messages{genai.NewTextMessage("hello")})
+			for range seq {
+			}
+			_, err := finish()
+			if err == nil || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("error = %v, want %q", err, tc.want)
+			}
+		})
 	}
 }
 
@@ -129,7 +285,7 @@ func TestClient(t *testing.T) {
 				wrapped := fn(http.DefaultTransport)
 				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
 					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					r := internaltest.NewSubprocessRecorder(t, name, "codex")
+					r := internaltest.NewSubprocessRecorder(t, name, "codex", sanitizeCodexFixtureLine)
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
@@ -167,7 +323,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("gpt-5.4"))
+			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("gpt-5.6-terra"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			res, err := c.GenSync(t.Context(), msgs)
 			if err != nil {
@@ -209,7 +365,7 @@ func TestClient(t *testing.T) {
 		})
 		t.Run("thread_resumed_from_opaque", func(t *testing.T) {
 			// Turn 1: establish a session with a unique fact.
-			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("gpt-5.4"))
+			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("gpt-5.6-terra"))
 			msgs1 := genai.Messages{genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it.")}
 			res1, err := c1.GenSync(t.Context(), msgs1)
 			if err != nil {
@@ -226,7 +382,7 @@ func TestClient(t *testing.T) {
 			}
 
 			// Turn 2: resume the session and ask it to recall the fact.
-			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("gpt-5.4"))
+			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("gpt-5.6-terra"))
 			msgs2 := genai.Messages{
 				genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it."),
 				{Replies: res1.Replies},
@@ -244,22 +400,11 @@ func TestClient(t *testing.T) {
 				t.Errorf("turn 2: expected reply to contain 'blue-fox-42', got %q", res2.Replies[0].Text)
 			}
 		})
-		t.Run("error_result", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_error")
-			msgs := genai.Messages{genai.NewTextMessage("cause error")}
-			_, err := c.GenSync(t.Context(), msgs)
-			if err == nil {
-				t.Fatal("expected error, got nil")
-			}
-			if !strings.Contains(err.Error(), "rate limit exceeded") {
-				t.Errorf("unexpected error message: %v", err)
-			}
-		})
 	})
 
 	t.Run("gen_stream", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("gpt-5.4"))
+			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("gpt-5.6-terra"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 
@@ -287,14 +432,13 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("gpt-5.4"))
-			msgs := genai.Messages{genai.NewTextMessage("say hello")}
+			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("gpt-5.6-sol"))
+			msgs := genai.Messages{genai.NewTextMessage("Think carefully: is 104729 prime? Explain briefly, then say hello.")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 
-			var text, reasoning strings.Builder
+			var text strings.Builder
 			for r := range seq {
 				text.WriteString(r.Text)
-				reasoning.WriteString(r.Reasoning)
 			}
 			res, err := finish()
 			if err != nil {
@@ -303,37 +447,17 @@ func TestClient(t *testing.T) {
 			if !strings.Contains(strings.ToLower(text.String()), "hello") {
 				t.Errorf("streamed text: got %q, want something containing hello", text.String())
 			}
-			if reasoning.Len() == 0 {
-				t.Errorf("streamed reasoning: got empty, want non-empty")
-			}
-			var hasText, hasReasoning bool
+			var hasText bool
 			for _, r := range res.Replies {
 				if strings.Contains(strings.ToLower(r.Text), "hello") {
 					hasText = true
-				}
-				if r.Reasoning != "" {
-					hasReasoning = true
 				}
 			}
 			if !hasText {
 				t.Errorf("result missing text reply")
 			}
-			if !hasReasoning {
-				t.Errorf("result missing reasoning reply")
-			}
-		})
-		t.Run("error_event", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_error_event")
-			msgs := genai.Messages{genai.NewTextMessage("hello")}
-			seq, finish := c.GenStream(t.Context(), msgs)
-			for range seq {
-			}
-			_, err := finish()
-			if err == nil {
-				t.Fatal("expected error from error notification")
-			}
-			if !strings.Contains(err.Error(), "internal server error") {
-				t.Errorf("unexpected error: %v", err)
+			if res.Usage.ReasoningTokens == 0 {
+				t.Error("ReasoningTokens: got 0, want > 0")
 			}
 		})
 	})

@@ -16,7 +16,7 @@ import (
 )
 
 func Example() {
-	c, err := codex.New(genai.ProviderOptionModel("gpt-5.4"), codex.ReasoningEffortHigh)
+	c, err := codex.New(genai.ProviderOptionModel("gpt-5.6-terra"), codex.ReasoningEffortHigh)
 	if err != nil {
 		log.Fatal(err)
 	}

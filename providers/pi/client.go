@@ -102,18 +102,6 @@ func newScanner(r io.Reader) *bufio.Scanner {
 	return sc
 }
 
-// Client is a genai provider that delegates to the local `pi` CLI.
-type Client struct {
-	base.NotImplemented
-	exec           genai.Starter
-	starterWrapper genai.ProviderOptionStarterWrapper
-	bin            string
-	model          string
-
-	binOnce sync.Once
-	binErr  error
-}
-
 // New creates a Client for the `pi` CLI.
 //
 // The binary is located lazily on the first call to GenSync, GenStream, or
@@ -144,6 +132,18 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, nil
+}
+
+// Client is a genai provider that delegates to the local `pi` CLI.
+type Client struct {
+	base.NotImplemented
+	exec           genai.Starter
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+
+	binOnce sync.Once
+	binErr  error
 }
 
 // ensureBin locates the pi binary on first call. Safe for concurrent use.
@@ -418,18 +418,18 @@ func msgToPromptParts(msg *genai.Message) (string, []ImageContent, error) {
 func readResponseForCommand(sc *bufio.Scanner, cmd EventType) (*Response, error) {
 	for sc.Scan() {
 		var probe LineProbe
-		if json.Unmarshal(sc.Bytes(), &probe) != nil {
-			continue
+		if err := json.Unmarshal(sc.Bytes(), &probe); err != nil {
+			return nil, fmt.Errorf("parse pi output while waiting for %s: %w", cmd, err)
 		}
-		if probe.Type != EventResponse {
+		if probe.Type == EventExtensionError {
+			return nil, decodeExtensionError(sc.Bytes())
+		}
+		if probe.Type != EventResponse || probe.Command != cmd {
 			continue
 		}
 		var resp Response
 		if err := internal.UnmarshalJSON(sc.Bytes(), &resp); err != nil {
-			continue
-		}
-		if resp.Command != cmd {
-			continue
+			return nil, fmt.Errorf("parse %s response: %w", cmd, err)
 		}
 		if !resp.Success {
 			return nil, fmt.Errorf("pi %s error: %s", cmd, resp.Error)
@@ -451,8 +451,8 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 	for sc.Scan() {
 		line := sc.Bytes()
 		var probe LineProbe
-		if json.Unmarshal(line, &probe) != nil {
-			continue
+		if err := json.Unmarshal(line, &probe); err != nil {
+			return genai.Result{}, fmt.Errorf("parse pi event: %w", err)
 		}
 
 		switch probe.Type {
@@ -469,7 +469,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 
 		case EventAgentEnd:
 			var ev AgentEndEvent
-			if err := json.Unmarshal(line, &ev); err != nil {
+			if err := internal.UnmarshalJSON(line, &ev); err != nil {
 				return genai.Result{}, fmt.Errorf("unmarshal agent_end: %w", err)
 			}
 			if ev.WillRetry {
@@ -493,7 +493,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 
 		case EventAutoRetryEnd:
 			var ev AutoRetryEndEvent
-			if err := json.Unmarshal(line, &ev); err != nil {
+			if err := internal.UnmarshalJSON(line, &ev); err != nil {
 				return genai.Result{}, fmt.Errorf("unmarshal auto_retry_end: %w", err)
 			}
 			if !ev.Success {
@@ -509,10 +509,28 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 				return genai.Result{}, fmt.Errorf("handle extension UI: %w", err)
 			}
 
+		case EventBashExecutionUpdate:
+			var ev BashExecutionUpdateEvent
+			if err := internal.UnmarshalJSON(line, &ev); err != nil {
+				return genai.Result{}, fmt.Errorf("unmarshal bash_execution_update: %w", err)
+			}
+
+		case EventSessionInfoChanged:
+			var ev SessionInfoChangedEvent
+			if err := internal.UnmarshalJSON(line, &ev); err != nil {
+				return genai.Result{}, fmt.Errorf("unmarshal session_info_changed: %w", err)
+			}
+
+		case EventExtensionError:
+			return genai.Result{}, decodeExtensionError(line)
+
 		case EventResponse:
 			// Responses to commands (e.g. prompt ack); skip.
 			var resp Response
-			if internal.UnmarshalJSON(line, &resp) == nil && !resp.Success {
+			if err := internal.UnmarshalJSON(line, &resp); err != nil {
+				return genai.Result{}, fmt.Errorf("parse %s response: %w", probe.Command, err)
+			}
+			if !resp.Success {
 				return genai.Result{}, fmt.Errorf("pi error (command=%s): %s", resp.Command, resp.Error)
 			}
 		default:
@@ -526,18 +544,27 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 	if retryErr != nil {
 		return genai.Result{}, retryErr
 	}
-	// Pi v0.84.1 and earlier exit after agent_end without an agent_settled
-	// event. Preserve compatibility while newer Pi versions wait for settlement.
+	// A finite or replayed RPC stream may end immediately after its final
+	// non-retrying agent_end. That event already contains the authoritative
+	// messages needed to construct the result.
 	if finalAgentEnd != nil {
 		return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String())
 	}
 	return genai.Result{}, errors.New("pi exited without agent_end")
 }
 
+func decodeExtensionError(line []byte) error {
+	var ev ExtensionErrorEvent
+	if err := internal.UnmarshalJSON(line, &ev); err != nil {
+		return fmt.Errorf("unmarshal extension_error: %w", err)
+	}
+	return fmt.Errorf("pi extension %q failed handling %q: %s", ev.ExtensionPath, ev.Event, ev.Error)
+}
+
 // parseMessageUpdateDelta extracts text and reasoning deltas from a message_update event.
 func parseMessageUpdateDelta(line []byte) (text, reasoning string, err error) {
-	var ev MessageUpdateDeltaEvent
-	if err := json.Unmarshal(line, &ev); err != nil {
+	var ev MessageUpdateEvent
+	if err := internal.UnmarshalJSON(line, &ev); err != nil {
 		return "", "", fmt.Errorf("unmarshal message_update: %w", err)
 	}
 	switch ev.AssistantMessageEvent.Type {
@@ -595,7 +622,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 func buildResult(line []byte, text, thinking string) (genai.Result, error) {
 	r := genai.Result{}
 	var ev AgentEndEvent
-	if err := json.Unmarshal(line, &ev); err != nil {
+	if err := internal.UnmarshalJSON(line, &ev); err != nil {
 		return r, fmt.Errorf("unmarshal agent_end: %w", err)
 	}
 

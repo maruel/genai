@@ -14,7 +14,7 @@
 //   - packages/agent/src/types.ts — AgentEvent types
 //   - packages/ai/src/types.ts — AssistantMessage, AssistantMessageEvent, Model
 //
-// These DTOs are defined against Pi Coding Agent v0.84.2.
+// These DTOs are defined against Pi Coding Agent v0.85.1.
 //
 // Source: https://github.com/earendil-works/pi
 
@@ -37,10 +37,11 @@ type EventType string
 // Command type constants.
 const (
 	// Prompting.
-	CmdPrompt   EventType = "prompt"
-	CmdSteer    EventType = "steer"
-	CmdFollowUp EventType = "follow_up"
-	CmdAbort    EventType = "abort"
+	CmdPrompt     EventType = "prompt"
+	CmdSteer      EventType = "steer"
+	CmdFollowUp   EventType = "follow_up"
+	CmdAbort      EventType = "abort"
+	CmdClearQueue EventType = "clear_queue"
 
 	// Session.
 	CmdNewSession           EventType = "new_session"
@@ -108,6 +109,9 @@ const (
 	EventSummarizationRetryFinished     EventType = "summarization_retry_finished"
 	EventThinkingLevelChanged           EventType = "thinking_level_changed"
 	EventEntryAppended                  EventType = "entry_appended"
+	EventBashExecutionUpdate            EventType = "bash_execution_update"
+	EventSessionInfoChanged             EventType = "session_info_changed"
+	EventExtensionError                 EventType = "extension_error"
 	EventResponse                       EventType = "response"
 	EventExtensionUI                    EventType = "extension_ui_request"
 )
@@ -189,9 +193,13 @@ type Role string
 
 // Role constants.
 const (
-	RoleUser       Role = "user"
-	RoleAssistant  Role = "assistant"
-	RoleToolResult Role = "toolResult"
+	RoleUser              Role = "user"
+	RoleAssistant         Role = "assistant"
+	RoleToolResult        Role = "toolResult"
+	RoleBashExecution     Role = "bashExecution"
+	RoleCustom            Role = "custom"
+	RoleBranchSummary     Role = "branchSummary"
+	RoleCompactionSummary Role = "compactionSummary"
 )
 
 // ContentBlockType is the content block type discriminator.
@@ -296,6 +304,12 @@ type FollowUpCmd struct {
 
 // AbortCmd cancels the current generation.
 type AbortCmd struct {
+	ID   string    `json:"id,omitzero"`
+	Type EventType `json:"type"`
+}
+
+// ClearQueueCmd removes and returns pending steering and follow-up messages.
+type ClearQueueCmd struct {
 	ID   string    `json:"id,omitzero"`
 	Type EventType `json:"type"`
 }
@@ -542,6 +556,12 @@ type Response struct {
 // ModelsData is the data payload for get_available_models response.
 type ModelsData struct {
 	Models []Model `json:"models"`
+}
+
+// ClearQueueData is the data payload for a clear_queue response.
+type ClearQueueData struct {
+	Steering []string `json:"steering"`
+	FollowUp []string `json:"followUp"`
 }
 
 // StateData is the data payload for get_state response.
@@ -867,6 +887,27 @@ type ThinkingLevelChangedEvent struct {
 	Level ThinkingLevel `json:"level"`
 }
 
+// BashExecutionUpdateEvent streams output from a direct RPC bash command.
+type BashExecutionUpdateEvent struct {
+	Type  EventType `json:"type"`
+	ID    string    `json:"id,omitzero"`
+	Delta string    `json:"delta"`
+}
+
+// SessionInfoChangedEvent reports a session name change.
+type SessionInfoChangedEvent struct {
+	Type EventType `json:"type"`
+	Name string    `json:"name,omitzero"`
+}
+
+// ExtensionErrorEvent reports an error thrown by an extension event handler.
+type ExtensionErrorEvent struct {
+	Type          EventType `json:"type"`
+	ExtensionPath string    `json:"extensionPath"`
+	Event         string    `json:"event"`
+	Error         string    `json:"error"`
+}
+
 // TurnStartEvent is emitted when a turn begins.
 type TurnStartEvent struct {
 	Type EventType `json:"type"`
@@ -888,43 +929,8 @@ type MessageStartEvent struct {
 // MessageUpdateEvent is emitted during streaming with a delta.
 type MessageUpdateEvent struct {
 	Type                  EventType             `json:"type"`
-	Message               AgentMessage          `json:"message"`
 	Usage                 MessageUsage          `json:"usage"`
 	AssistantMessageEvent AssistantMessageEvent `json:"assistantMessageEvent"`
-}
-
-// MessageUpdateDeltaEvent is the minimal message_update event shape needed by
-// streaming consumers that only need the assistantMessageEvent payload.
-type MessageUpdateDeltaEvent struct {
-	Type                  EventType          `json:"type"`
-	Usage                 MessageUsage       `json:"usage"`
-	AssistantMessageEvent MessageUpdateDelta `json:"assistantMessageEvent"`
-}
-
-// MessageUpdateDelta is the compact assistantMessageEvent payload emitted in a
-// message_update event.
-type MessageUpdateDelta struct {
-	Type         DeltaType              `json:"type"`
-	ContentIndex int                    `json:"contentIndex,omitzero"`
-	ID           string                 `json:"id,omitzero"`
-	ToolName     string                 `json:"toolName,omitzero"`
-	Delta        string                 `json:"delta,omitzero"`
-	Content      string                 `json:"content,omitzero"`
-	Reason       StopReason             `json:"reason,omitzero"`
-	ToolCall     *MessageUpdateToolCall `json:"toolCall,omitzero"`
-	Error        *MessageUpdateError    `json:"error,omitzero"`
-}
-
-// MessageUpdateToolCall is the tool call payload in a message_update delta.
-type MessageUpdateToolCall struct {
-	ID        string                     `json:"id"`
-	Name      string                     `json:"name"`
-	Arguments map[string]json.RawMessage `json:"arguments"`
-}
-
-// MessageUpdateError is the error payload in a message_update delta.
-type MessageUpdateError struct {
-	ErrorMessage string `json:"errorMessage"`
 }
 
 // MessageEndEvent is emitted when a message is complete.
@@ -1044,30 +1050,42 @@ type ExtensionUIRequest struct {
 // Message types (shared between events and responses).
 // ============================================================
 
-// AgentMessage is the union of user/assistant/toolResult messages.
+// AgentMessage is the union of Pi AI messages and coding-agent custom messages.
 // We only care about assistant messages for building genai.Result.
 type AgentMessage struct {
-	Role           Role              `json:"role"`
-	Content        ContentBlocks     `json:"content,omitzero"`
-	API            string            `json:"api,omitzero"`
-	Provider       string            `json:"provider,omitzero"`
-	Model          string            `json:"model,omitzero"`
-	ResponseModel  string            `json:"responseModel,omitzero"`
-	ResponseID     string            `json:"responseId,omitzero"`
-	Diagnostics    []json.RawMessage `json:"diagnostics,omitzero"`
-	Usage          MessageUsage      `json:"usage,omitzero"`
-	StopReason     StopReason        `json:"stopReason,omitzero"`
-	Deferred       *DeferredHandle   `json:"deferred,omitzero"`
-	ErrorMessage   string            `json:"errorMessage,omitzero"`
-	RawStopReason  string            `json:"rawStopReason,omitzero"`
-	Timestamp      float64           `json:"timestamp,omitzero"`
-	ToolCallID     string            `json:"toolCallId,omitzero"`
-	ToolName       string            `json:"toolName,omitzero"`
-	Details        json.RawMessage   `json:"details,omitzero"`
-	AddedToolNames []string          `json:"addedToolNames,omitzero"`
-	IsError        bool              `json:"isError,omitzero"`
-	CustomType     string            `json:"customType,omitzero"`
-	Display        bool              `json:"display,omitzero"`
+	Role                  Role              `json:"role"`
+	Content               ContentBlocks     `json:"content,omitzero"`
+	API                   string            `json:"api,omitzero"`
+	Provider              string            `json:"provider,omitzero"`
+	Model                 string            `json:"model,omitzero"`
+	ResponseModel         string            `json:"responseModel,omitzero"`
+	ResponseID            string            `json:"responseId,omitzero"`
+	ProviderThinkingLevel string            `json:"providerThinkingLevel,omitzero"`
+	Diagnostics           []json.RawMessage `json:"diagnostics,omitzero"`
+	Usage                 MessageUsage      `json:"usage,omitzero"`
+	StopReason            StopReason        `json:"stopReason,omitzero"`
+	Deferred              *DeferredHandle   `json:"deferred,omitzero"`
+	ErrorMessage          string            `json:"errorMessage,omitzero"`
+	RawStopReason         string            `json:"rawStopReason,omitzero"`
+	EndTurn               bool              `json:"endTurn,omitzero"`
+	Timestamp             float64           `json:"timestamp,omitzero"`
+	ToolCallID            string            `json:"toolCallId,omitzero"`
+	ToolName              string            `json:"toolName,omitzero"`
+	Details               json.RawMessage   `json:"details,omitzero"`
+	AddedToolNames        []string          `json:"addedToolNames,omitzero"`
+	IsError               bool              `json:"isError,omitzero"`
+	CustomType            string            `json:"customType,omitzero"`
+	Display               bool              `json:"display,omitzero"`
+	Command               string            `json:"command,omitzero"`
+	Output                string            `json:"output,omitzero"`
+	ExitCode              int               `json:"exitCode,omitzero"`
+	Cancelled             bool              `json:"cancelled,omitzero"`
+	Truncated             bool              `json:"truncated,omitzero"`
+	FullOutputPath        string            `json:"fullOutputPath,omitzero"`
+	ExcludeFromContext    bool              `json:"excludeFromContext,omitzero"`
+	Summary               string            `json:"summary,omitzero"`
+	FromID                string            `json:"fromId,omitzero"`
+	TokensBefore          int64             `json:"tokensBefore,omitzero"`
 }
 
 // DeferredHandle identifies a provider-managed deferred response.
@@ -1164,6 +1182,7 @@ type ContentBlock struct {
 	PartialArgs      string                     `json:"partialArgs,omitzero"`
 	StreamIndex      int                        `json:"streamIndex,omitzero"`
 	ThoughtSignature string                     `json:"thoughtSignature,omitzero"`
+	Namespace        string                     `json:"namespace,omitzero"`
 	// image block
 	Data     string `json:"data,omitzero"`
 	MimeType string `json:"mimeType,omitzero"`
@@ -1204,8 +1223,6 @@ type AssistantMessageEvent struct {
 	Content      string        `json:"content,omitzero"`
 	Reason       StopReason    `json:"reason,omitzero"`
 	ToolCall     *ContentBlock `json:"toolCall,omitzero"`
-	// Partial carries the accumulated message during streaming.
-	Partial *AgentMessage `json:"partial,omitzero"`
 	// Message carries the final message on done.
 	Message *AgentMessage `json:"message,omitzero"`
 	// Error carries the final message on error/abort.

@@ -7,6 +7,7 @@
 package subprocessrecord
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"io"
@@ -31,7 +32,7 @@ func fakeStarter(output string) genai.Starter {
 func TestNew(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Run("record_when_no_fixture", func(t *testing.T) {
-			rec, err := New(filepath.Join(t.TempDir(), "test"))
+			rec, err := New(filepath.Join(t.TempDir(), "test"), nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -45,7 +46,7 @@ func TestNew(t *testing.T) {
 			if err := os.WriteFile(path+".ndjson", nil, 0o644); err != nil {
 				t.Fatal(err)
 			}
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -59,12 +60,53 @@ func TestNew(t *testing.T) {
 			if err := os.WriteFile(path+".ndjson", []byte("data\n"), 0o644); err != nil {
 				t.Fatal(err)
 			}
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 			if !rec.replay {
 				t.Fatal("expected replay mode")
+			}
+		})
+		t.Run("record_sanitized", func(t *testing.T) {
+			dir := t.TempDir()
+			path := filepath.Join(dir, "test")
+			rec, err := New(path, func(line []byte) ([]byte, error) {
+				return bytes.ReplaceAll(line, []byte("host-secret"), []byte("<redacted>")), nil
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := "first host-secret\nsecond host-secret\n"
+			stdin, stdout, wait, err := rec.Wrap(fakeStarter(want))(t.Context(), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, err := io.ReadAll(stdout)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(got) != want {
+				t.Fatalf("stdout = %q, want raw %q", got, want)
+			}
+			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if err := stdout.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if err := wait(); err != nil {
+				t.Fatal(err)
+			}
+			if err := rec.Stop(); err != nil {
+				t.Fatal(err)
+			}
+			fixture, err := os.ReadFile(path + ".ndjson")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(fixture) != "first <redacted>\nsecond <redacted>\n" {
+				t.Fatalf("fixture = %q", fixture)
 			}
 		})
 	})
@@ -76,7 +118,7 @@ func TestRecorder(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
 			fixture := path + ".ndjson"
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -117,7 +159,7 @@ func TestRecorder(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
 			fixture := path + ".ndjson"
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -152,7 +194,7 @@ func TestRecorder(t *testing.T) {
 			if err := os.WriteFile(path+".ndjson", []byte(want), 0o644); err != nil {
 				t.Fatal(err)
 			}
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -189,7 +231,7 @@ func TestRecorder(t *testing.T) {
 			want := `{"line":1}` + "\n" + `{"line":2}` + "\n"
 
 			// Record.
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -212,7 +254,7 @@ func TestRecorder(t *testing.T) {
 			}
 
 			// Replay.
-			rec2, err := New(path)
+			rec2, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -237,7 +279,7 @@ func TestRecorder(t *testing.T) {
 		t.Run("record_inner_error", func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
-			rec, err := New(path)
+			rec, err := New(path, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

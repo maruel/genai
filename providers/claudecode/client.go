@@ -303,19 +303,6 @@ func newScanner(r io.Reader) *bufio.Scanner {
 	return sc
 }
 
-// Client is a genai provider that delegates to the local `claude` CLI.
-type Client struct {
-	base.NotImplemented
-	exec           genai.Starter
-	starterWrapper genai.ProviderOptionStarterWrapper
-	bin            string
-	model          string
-	apiKeyAuth     bool // keep ANTHROPIC_API_KEY in subprocess environment
-
-	binOnce sync.Once
-	binErr  error
-}
-
 // New creates a Client for the `claude` CLI.
 //
 // The binary is located lazily on the first call to GenSync, GenStream, or
@@ -358,6 +345,19 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, nil
+}
+
+// Client is a genai provider that delegates to the local `claude` CLI.
+type Client struct {
+	base.NotImplemented
+	exec           genai.Starter
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+	apiKeyAuth     bool // keep ANTHROPIC_API_KEY in subprocess environment
+
+	binOnce sync.Once
+	binErr  error
 }
 
 // ensureBin locates the claude binary on first call. It is safe for
@@ -444,8 +444,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	var summaries []string
 	for _, line := range records {
 		var b OutputTypeProbe
-		if json.Unmarshal(line, &b) != nil {
-			continue
+		if e := json.Unmarshal(line, &b); e != nil {
+			return genai.Result{}, errors.Join(fmt.Errorf("parse output envelope: %w", e), err)
 		}
 		switch b.Type {
 		case OutputSystem:
@@ -529,8 +529,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...ge
 		line := sc.Bytes()
 		records = append(records, append(json.RawMessage(nil), line...))
 		var b OutputTypeProbe
-		if json.Unmarshal(line, &b) != nil {
-			continue
+		if e := json.Unmarshal(line, &b); e != nil {
+			return records, fmt.Errorf("parse output envelope: %w", e)
 		}
 		switch b.Type {
 		case OutputControlRequest:
@@ -598,8 +598,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		for sc.Scan() {
 			line := sc.Bytes()
 			var b OutputTypeProbe
-			if json.Unmarshal(line, &b) != nil {
-				continue
+			if err := json.Unmarshal(line, &b); err != nil {
+				finalErr = fmt.Errorf("parse output envelope: %w", err)
+				return
 			}
 			switch b.Type {
 			case OutputSystem:
@@ -621,11 +622,16 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				}
 			case OutputStreamEvent:
 				var ev OutputStreamEventMsg
-				if json.Unmarshal(line, &ev) != nil {
-					continue
+				if err := json.Unmarshal(line, &ev); err != nil {
+					finalErr = fmt.Errorf("parse stream event: %w", err)
+					return
 				}
 				if ev.Event.Type == "error" {
-					finalErr = errors.New("claude stream error")
+					if len(ev.Event.Error) == 0 {
+						finalErr = errors.New("claude stream error")
+					} else {
+						finalErr = fmt.Errorf("claude stream error: %s", ev.Event.Error)
+					}
 					return
 				}
 				if ev.Event.Type == "message_delta" && !ev.Event.Usage.IsZero() {
@@ -724,11 +730,9 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 		args = append(args, "--setting-sources", "project,local")
 	}
 
-	// Session persistence: enabled automatically when resuming a previous session.
+	// Persist new sessions because their result IDs are returned as resumable opaque metadata.
 	if sessionID != "" {
 		args = append(args, "--resume", sessionID)
-	} else {
-		args = append(args, "--no-session-persistence")
 	}
 
 	// Partial streaming for GenStream.

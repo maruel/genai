@@ -35,10 +35,16 @@ func TestBuildArgs(t *testing.T) {
 			"--tools", "",
 			"--disable-slash-commands",
 			"--setting-sources", "project,local",
-			"--no-session-persistence",
 		}
 		if !slices.Equal(args, want) {
 			t.Errorf("got  %v\nwant %v", args, want)
+		}
+	})
+	t.Run("new_sessions_are_persisted", func(t *testing.T) {
+		c := &Client{}
+		args := c.buildArgs(&callOpts{}, "", false)
+		if slices.Contains(args, "--no-session-persistence") {
+			t.Fatalf("new sessions must be persisted so their returned session ID can be resumed: %v", args)
 		}
 	})
 	t.Run("with_tools", func(t *testing.T) {
@@ -250,6 +256,50 @@ func TestStreamDelta(t *testing.T) {
 }
 
 func TestOutputMessages(t *testing.T) {
+	t.Run("current_assistant_metadata", func(t *testing.T) {
+		const data = `{"type":"assistant","message":{"id":"m1","role":"assistant","model":"claude-opus-4-8","content":[],"usage":{},"stop_reason":null},"parent_tool_use_id":null,"uuid":"u1","session_id":"s1","user_message_uuid":"q1","user_message_uuids":["q0","q1"],"resume_reason":"checkpoint_restore","resumed_from_incomplete_thinking":true,"supersedes":["old"],"aborted":true,"context_usage":{"model":"claude-opus-4-8","total_tokens":10,"raw_max_tokens":200000,"percentage":1,"categories":[],"mcp_tools":[],"memory_files":[],"agents":[]}}`
+		var got OutputAssistantMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.UserMessageUUID != "q1" || len(got.UserMessageUUIDs) != 2 || !got.ResumedFromIncompleteThinking || !got.Aborted {
+			t.Fatalf("assistant metadata = %#v", got)
+		}
+		if got.ContextUsage.TotalTokens != 10 || got.ContextUsage.RawMaxTokens != 200000 {
+			t.Fatalf("context usage = %#v", got.ContextUsage)
+		}
+	})
+	t.Run("message_origin_variants", func(t *testing.T) {
+		const data = `{"type":"result","subtype":"success","duration_ms":1,"duration_api_ms":1,"is_error":false,"num_turns":1,"result":"ok","stop_reason":null,"total_cost_usd":0,"usage":{},"modelUsage":{},"permission_denials":[],"origin":{"kind":"peer","from":"agent-a","fromMode":"bypass","name":"Agent A","fromSession":"s0","senderTaskId":"t0","body":"hello","verifiedPeerPid":42},"uuid":"u1","session_id":"s1"}`
+		var got OutputResultMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Origin.Kind != MessageOriginPeer || got.Origin.From != "agent-a" || got.Origin.VerifiedPeerPID != 42 {
+			t.Fatalf("origin = %#v", got.Origin)
+		}
+	})
+	t.Run("current_system_events", func(t *testing.T) {
+		cases := []struct {
+			data    string
+			subtype SystemSubtype
+		}{
+			{`{"type":"system","subtype":"control_request_progress","request_id":"r1","status":"api_retry","attempt":1,"max_retries":2,"retry_delay_ms":3,"error_status":429,"uuid":"u","session_id":"s"}`, SystemControlRequestProgress},
+			{`{"type":"system","subtype":"worker_shutting_down","reason":"host_draining","uuid":"u","session_id":"s"}`, SystemWorkerShuttingDown},
+			{`{"type":"system","subtype":"notification","key":"notice","text":"done","priority":"medium","uuid":"u","session_id":"s"}`, SystemNotification},
+			{`{"type":"system","subtype":"permission_denied","tool_name":"Bash","tool_use_id":"t","decision_reason":"policy","message":"denied","uuid":"u","session_id":"s"}`, SystemPermissionDenied},
+		}
+		for _, tc := range cases {
+			var got OutputSystemMsg
+			if err := internal.UnmarshalJSON([]byte(tc.data), &got); err != nil {
+				t.Errorf("%s: %v", tc.subtype, err)
+				continue
+			}
+			if got.Subtype != tc.subtype {
+				t.Errorf("subtype = %q, want %q", got.Subtype, tc.subtype)
+			}
+		}
+	})
 	t.Run("assistant wire metadata", func(t *testing.T) {
 		const data = `{"type":"assistant","message":{"id":"m1","role":"assistant","model":"claude-opus-4-8","content":[],"usage":{},"stop_reason":"tool_use"},"wire_tool_inputs":{"toolu_1":{"command":"true"}},"wire_ingest_context":{"toolu_1":{"cwd":"/src"}},"is_api_error_message":true}`
 		var got OutputAssistantMsg
@@ -701,11 +751,11 @@ func TestOutputMessages(t *testing.T) {
 		if len(add.Rules) != 2 {
 			t.Fatalf("len(PermissionSuggestions[0].Rules) = %d, want 2", len(add.Rules))
 		}
-		if add.Rules[0].ToolName != "Bash" || add.Rules[0].RuleContent == nil || *add.Rules[0].RuleContent != "git status" {
+		if add.Rules[0].ToolName != "Bash" || add.Rules[0].RuleContent != "git status" {
 			t.Errorf("Rules[0] = %+v, want Bash git status", add.Rules[0])
 		}
-		if add.Rules[1].ToolName != "Read" || add.Rules[1].RuleContent != nil {
-			t.Errorf("Rules[1] = %+v, want Read nil content", add.Rules[1])
+		if add.Rules[1].ToolName != "Read" || add.Rules[1].RuleContent != "" {
+			t.Errorf("Rules[1] = %+v, want Read empty content", add.Rules[1])
 		}
 		mode := raw.Request.PermissionSuggestions[1]
 		if mode.Type != PermissionUpdateSetMode || mode.Mode != "acceptEdits" || mode.Destination != PermissionUpdateSession {
@@ -844,8 +894,8 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("QueuedTurnCount = %d, want 2", got.QueuedTurnCount)
 		}
 	})
-	t.Run("rate_limit_2_1_214_fields", func(t *testing.T) {
-		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"overagePeriodMonthly":{"utilization":0.7},"overagePeriodChannel":{"utilization":0.6},"unifiedWindows":{"five_hour":{"utilization":0.1,"resetsAt":1788359400},"seven_day":{"utilization":0.2,"resetsAt":1788490800}},"errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
+	t.Run("rate_limit_current_fields", func(t *testing.T) {
+		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"limitScope":"group_pool","errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
 		var got OutputRateLimitEventMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -857,14 +907,11 @@ func TestOutputMessages(t *testing.T) {
 		if i.OverageStatus != RateLimitRejected || i.OverageDisabledReason != OverageDisabledOutOfCredits {
 			t.Errorf("overage status/reason = %q, %q", i.OverageStatus, i.OverageDisabledReason)
 		}
-		if !i.OverageInUse || i.SurpassedThreshold != 0.8 || i.OveragePeriodMonthly.Utilization != 0.7 || i.OveragePeriodChannel.Utilization != 0.6 {
+		if !i.OverageInUse || i.SurpassedThreshold != 0.8 || i.LimitScope != "group_pool" {
 			t.Errorf("overage fields = %+v", i)
 		}
 		if i.ErrorCode != RateLimitErrorCreditsRequired || !i.CanUserPurchaseCredits || !i.HasChargeableSavedPaymentMethod {
 			t.Errorf("credit fields = %+v", i)
-		}
-		if i.UnifiedWindows[RateLimitFiveHour].Utilization != 0.1 || i.UnifiedWindows[RateLimitSevenDay].ResetsAt != 1788490800 {
-			t.Errorf("unified windows = %+v", i.UnifiedWindows)
 		}
 	})
 	t.Run("result_origin", func(t *testing.T) {
@@ -873,8 +920,8 @@ func TestOutputMessages(t *testing.T) {
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
-		if got.Origin.Kind != ResultOriginTaskNotification {
-			t.Errorf("Origin.Kind = %q, want %q", got.Origin.Kind, ResultOriginTaskNotification)
+		if got.Origin.Kind != MessageOriginTaskNotification {
+			t.Errorf("Origin.Kind = %q, want %q", got.Origin.Kind, MessageOriginTaskNotification)
 		}
 	})
 	t.Run("tool_progress", func(t *testing.T) {

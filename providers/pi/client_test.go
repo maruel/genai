@@ -23,7 +23,7 @@ import (
 )
 
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
-	rec := internaltest.NewSubprocessRecorder(t, name, "pi")
+	rec := internaltest.NewSubprocessRecorder(t, name, "pi", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(opts...)
 	if err != nil {
@@ -76,7 +76,7 @@ func TestClient(t *testing.T) {
 				wrapped := fn(http.DefaultTransport)
 				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
 					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					r := internaltest.NewSubprocessRecorder(t, name, "pi")
+					r := internaltest.NewSubprocessRecorder(t, name, "pi", nil)
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
@@ -262,6 +262,52 @@ func TestReadUntilDone(t *testing.T) {
 		_, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true })
 		if err == nil || err.Error() != "pi auto retry failed: 502 status code" {
 			t.Errorf("error = %v, want terminal retry failure", err)
+		}
+	})
+
+	t.Run("informational events", func(t *testing.T) {
+		input := strings.Join([]string{
+			`{"type":"bash_execution_update","id":"req-1","delta":"output"}`,
+			`{"type":"session_info_changed","name":"renamed"}`,
+			`{"type":"agent_end","willRetry":false,"messages":[]}`,
+			`{"type":"agent_settled"}`,
+		}, "\n")
+		if _, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true }); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("extension error", func(t *testing.T) {
+		input := `{"type":"extension_error","extensionPath":"/tmp/ext.ts","event":"tool_call","error":"failed"}`
+		_, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true })
+		if err == nil || !strings.Contains(err.Error(), "/tmp/ext.ts") || !strings.Contains(err.Error(), "failed") {
+			t.Fatalf("expected exact extension error, got %v", err)
+		}
+	})
+
+	t.Run("prompt response decode error", func(t *testing.T) {
+		input := `{"type":"response","command":"prompt","success":true,"error":123}`
+		_, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true })
+		if err == nil || !strings.Contains(err.Error(), "parse prompt response") {
+			t.Fatalf("expected prompt response decode error, got %v", err)
+		}
+	})
+}
+
+func TestReadResponseForCommand(t *testing.T) {
+	t.Run("decode error", func(t *testing.T) {
+		input := `{"type":"response","command":"get_available_models","success":true,"error":123}`
+		_, err := readResponseForCommand(newScanner(strings.NewReader(input)), CmdGetModels)
+		if err == nil || !strings.Contains(err.Error(), "parse get_available_models response") {
+			t.Fatalf("expected exact response decode error, got %v", err)
+		}
+	})
+
+	t.Run("extension error", func(t *testing.T) {
+		input := `{"type":"extension_error","extensionPath":"/tmp/model.ts","event":"model_select","error":"failed"}`
+		_, err := readResponseForCommand(newScanner(strings.NewReader(input)), CmdGetModels)
+		if err == nil || !strings.Contains(err.Error(), "/tmp/model.ts") || !strings.Contains(err.Error(), "failed") {
+			t.Fatalf("expected exact extension error, got %v", err)
 		}
 	})
 }

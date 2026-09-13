@@ -38,6 +38,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -125,6 +126,8 @@ const threadIDKey = "thread_id"
 // These reduce noise for a text-generation-only use case.
 var optOutMethods = []Method{
 	MethodCommandTerminalInteract,
+	MethodFileChangeOutputDelta,
+	MethodFileChangePatchUpdated,
 	MethodReasoningSummaryPartAdded,
 	MethodReasoningTextDelta,
 	MethodPlanDelta,
@@ -175,18 +178,6 @@ func newScanner(r io.Reader) *bufio.Scanner {
 	return sc
 }
 
-// Client is a genai provider that delegates to the local `codex` CLI.
-type Client struct {
-	base.NotImplemented
-	exec           genai.Starter
-	starterWrapper genai.ProviderOptionStarterWrapper
-	bin            string
-	model          string
-	effort         ReasoningEffort
-	binOnce        sync.Once
-	binErr         error
-}
-
 // New creates a Client for the `codex` CLI.
 //
 // The binary is located lazily on the first call to GenSync, GenStream, or
@@ -227,6 +218,18 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, nil
+}
+
+// Client is a genai provider that delegates to the local `codex` CLI.
+type Client struct {
+	base.NotImplemented
+	exec           genai.Starter
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+	effort         ReasoningEffort
+	binOnce        sync.Once
+	binErr         error
 }
 
 // ensureBin locates the codex binary on first call. Safe for concurrent use.
@@ -305,7 +308,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	}()
 
 	sc := newScanner(stdout)
-	models, err := initAndListModels(stdin, sc)
+	models, _, err := initAndListModels(stdin, sc)
 	if err != nil {
 		return nil, err
 	}
@@ -412,52 +415,66 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			usage   genai.Usage
 		)
 		for sc.Scan() {
-			line := sc.Bytes()
-			var probe MethodProbe
-			if json.Unmarshal(line, &probe) != nil {
-				continue
-			}
-			if probe.Method == "" {
-				continue
-			}
-
 			var msg JSONRPCMessage
-			if json.Unmarshal(line, &msg) != nil {
-				continue
+			if err := json.Unmarshal(sc.Bytes(), &msg); err != nil {
+				finalErr = fmt.Errorf("decode app-server message: %w", err)
+				return
+			}
+			if msg.IsServerRequest() {
+				finalErr = unsupportedServerRequest(&msg)
+				return
 			}
 			if msg.IsResponse() {
+				if msg.Error != nil {
+					finalErr = jsonRPCError(msg.Error)
+					return
+				}
+				continue
+			}
+			if msg.Method == "" {
 				continue
 			}
 
 			switch msg.Method {
 			case MethodItemDelta:
 				var p AgentMessageDeltaNotification
-				if internal.UnmarshalJSON(msg.Params, &p) == nil && p.Delta != "" {
-					if !yield(genai.Reply{Text: p.Delta}) {
-						return
-					}
+				if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+					finalErr = fmt.Errorf("decode %s: %w", msg.Method, err)
+					return
+				}
+				if p.Delta != "" && !yield(genai.Reply{Text: p.Delta}) {
+					return
 				}
 			case MethodReasoningSummaryTextDelta:
 				var p ReasoningSummaryTextDeltaNotification
-				if internal.UnmarshalJSON(msg.Params, &p) == nil && p.Delta != "" {
-					if !yield(genai.Reply{Reasoning: p.Delta}) {
-						return
-					}
+				if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+					finalErr = fmt.Errorf("decode %s: %w", msg.Method, err)
+					return
+				}
+				if p.Delta != "" && !yield(genai.Reply{Reasoning: p.Delta}) {
+					return
 				}
 			case MethodItemCompleted:
-				r := parseCompletedItem(msg.Params)
-				if r != nil {
-					replies = append(replies, *r)
+				r, ok, err := parseCompletedItem(msg.Params)
+				if err != nil {
+					finalErr = fmt.Errorf("decode %s: %w", msg.Method, err)
+					return
+				}
+				if ok {
+					replies = append(replies, r)
 				}
 			case MethodTokenUsageUpdated:
 				var p ThreadTokenUsageUpdatedNotification
-				if internal.UnmarshalJSON(msg.Params, &p) == nil {
-					accumulateUsage(&usage, &p.TokenUsage)
+				if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+					finalErr = fmt.Errorf("decode %s: %w", msg.Method, err)
+					return
 				}
+				accumulateUsage(&usage, &p.TokenUsage)
 			case MethodTurnCompleted:
 				var p TurnCompletedNotification
-				if internal.UnmarshalJSON(msg.Params, &p) != nil {
-					continue
+				if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+					finalErr = fmt.Errorf("decode %s: %w", msg.Method, err)
+					return
 				}
 				if p.Turn.Status == TurnStatusFailed || p.Turn.Status == TurnStatusInterrupted {
 					errMsg := "codex turn " + string(p.Turn.Status)
@@ -471,8 +488,16 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				return
 			case MethodErrorNotification:
 				var p ErrorNotification
-				if internal.UnmarshalJSON(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
-					finalErr = fmt.Errorf("codex error: %s", p.Error.Message)
+				if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+					finalErr = fmt.Errorf("decode %s: %w", msg.Method, err)
+					return
+				}
+				if !p.WillRetry {
+					if p.Error == nil {
+						finalErr = errors.New("codex error notification missing error")
+					} else {
+						finalErr = fmt.Errorf("codex error: %s", p.Error.Message)
+					}
 					return
 				}
 			default:
@@ -495,14 +520,14 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // initAndListModels performs the JSON-RPC initialize → initialized →
 // model/list sequence and returns the model list. nextID is set to the last
 // used request ID so the caller can continue numbering.
-func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) {
+func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, int64, error) {
 	// 1. Send initialize request.
 	params, err := marshalJSONRaw(InitializeParams{
 		ClientInfo:   ClientInfo{Name: "genai-codex", Title: "genai-codex", Version: "1.0.0"},
 		Capabilities: Capabilities{OptOutNotificationMethods: optOutMethods},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("marshal initialize params: %w", err)
+		return nil, 0, fmt.Errorf("marshal initialize params: %w", err)
 	}
 	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
@@ -510,40 +535,54 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) 
 		Method:  "initialize",
 		Params:  params,
 	}); err != nil {
-		return nil, fmt.Errorf("write initialize: %w", err)
+		return nil, 0, fmt.Errorf("write initialize: %w", err)
 	}
-	if _, err := readResponse(sc); err != nil {
-		return nil, fmt.Errorf("read initialize response: %w", err)
+	if _, err := readResponse(sc, 1); err != nil {
+		return nil, 0, fmt.Errorf("read initialize response: %w", err)
 	}
 
 	// 2. Send initialized notification.
 	if err := msgutil.WriteNDJSON(stdin, JSONRPCNotification{JSONRPC: "2.0", Method: "initialized"}); err != nil {
-		return nil, fmt.Errorf("write initialized: %w", err)
+		return nil, 0, fmt.Errorf("write initialized: %w", err)
 	}
 
-	// 3. Fetch model list.
-	params, err = marshalJSONRaw(struct{}{})
-	if err != nil {
-		return nil, fmt.Errorf("marshal model/list params: %w", err)
+	// 3. Fetch every model-list page.
+	var models []ModelInfo
+	var cursor string
+	nextID := int64(2)
+	for {
+		params, err = marshalJSONRaw(ModelListParams{Cursor: cursor})
+		if err != nil {
+			return nil, 0, fmt.Errorf("marshal model/list params: %w", err)
+		}
+		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: nextID, Method: "model/list", Params: params}); err != nil {
+			return nil, 0, fmt.Errorf("write model/list: %w", err)
+		}
+		mlData, err := readResponse(sc, nextID)
+		if err != nil {
+			return nil, 0, fmt.Errorf("read model/list response: %w", err)
+		}
+		var result ModelListResponse
+		if err := internal.UnmarshalJSON(mlData, &result); err != nil {
+			return nil, 0, fmt.Errorf("parse model/list result: %w", err)
+		}
+		models = append(models, result.Data...)
+		if result.NextCursor == "" {
+			return models, nextID, nil
+		}
+		if result.NextCursor == cursor {
+			return nil, 0, fmt.Errorf("model/list repeated cursor %q", cursor)
+		}
+		cursor = result.NextCursor
+		nextID++
 	}
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: params}); err != nil {
-		return nil, fmt.Errorf("write model/list: %w", err)
-	}
-	mlData, err := readResponse(sc)
-	if err != nil {
-		return nil, fmt.Errorf("read model/list response: %w", err)
-	}
-	var mlResult ModelListResult
-	if err := internal.UnmarshalJSON(mlData, &mlResult); err != nil {
-		return nil, fmt.Errorf("parse model/list result: %w", err)
-	}
-	return mlResult.Data, nil
 }
 
 // handshake performs the JSON-RPC initialize → initialized → model/list →
 // thread/start (or thread/resume) sequence. Returns the thread ID.
 func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPrompt string) (string, error) {
-	if _, err := initAndListModels(stdin, sc); err != nil {
+	_, nextID, err := initAndListModels(stdin, sc)
+	if err != nil {
 		return "", err
 	}
 
@@ -559,7 +598,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPr
 		}
 		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
-			ID:      3,
+			ID:      nextID + 1,
 			Method:  "thread/resume",
 			Params:  params,
 		}
@@ -573,7 +612,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPr
 		}
 		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
-			ID:      3,
+			ID:      nextID + 1,
 			Method:  "thread/start",
 			Params:  params,
 		}
@@ -581,37 +620,53 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPr
 	if err := msgutil.WriteNDJSON(stdin, threadReq); err != nil {
 		return "", fmt.Errorf("write thread/start: %w", err)
 	}
-	respData, err := readResponse(sc)
+	respData, err := readResponse(sc, nextID+1)
 	if err != nil {
 		return "", fmt.Errorf("read thread/start response: %w", err)
 	}
 
-	var result ThreadStartResult
-	if err := internal.UnmarshalJSON(respData, &result); err != nil {
-		return "", fmt.Errorf("parse thread/start result: %w", err)
+	var id string
+	if resumeThreadID != "" {
+		var result ThreadResumeResponse
+		if err := internal.UnmarshalJSON(respData, &result); err != nil {
+			return "", fmt.Errorf("parse thread/resume result: %w", err)
+		}
+		id = result.Thread.ID
+	} else {
+		var result ThreadStartResponse
+		if err := internal.UnmarshalJSON(respData, &result); err != nil {
+			return "", fmt.Errorf("parse thread/start result: %w", err)
+		}
+		id = result.Thread.ID
 	}
-	if result.Thread.ID == "" {
+	if id == "" {
 		if resumeThreadID != "" {
 			return resumeThreadID, nil
 		}
 		return "", errors.New("thread/start response missing thread.id")
 	}
-	return result.Thread.ID, nil
+	return id, nil
 }
 
 // readResponse reads lines from the scanner until a JSON-RPC response (has
 // "id" field) is found. Notifications are skipped.
-func readResponse(sc *bufio.Scanner) (json.RawMessage, error) {
+func readResponse(sc *bufio.Scanner, expectedID int64) (json.RawMessage, error) {
 	for sc.Scan() {
 		var msg JSONRPCMessage
-		if json.Unmarshal(sc.Bytes(), &msg) != nil {
-			continue
+		if err := json.Unmarshal(sc.Bytes(), &msg); err != nil {
+			return nil, fmt.Errorf("decode app-server message: %w", err)
+		}
+		if msg.IsServerRequest() {
+			return nil, unsupportedServerRequest(&msg)
 		}
 		if !msg.IsResponse() {
 			continue // Skip notifications during handshake.
 		}
+		if string(msg.ID) != strconv.FormatInt(expectedID, 10) {
+			return nil, fmt.Errorf("unexpected JSON-RPC response id %s; want %d", msg.ID, expectedID)
+		}
 		if msg.Error != nil {
-			return nil, fmt.Errorf("JSON-RPC error %d: %s", msg.Error.Code, msg.Error.Message)
+			return nil, jsonRPCError(msg.Error)
 		}
 		return msg.Result, nil
 	}
@@ -619,6 +674,14 @@ func readResponse(sc *bufio.Scanner) (json.RawMessage, error) {
 		return nil, fmt.Errorf("read response: %w", err)
 	}
 	return nil, errors.New("codex exited during handshake")
+}
+
+func unsupportedServerRequest(msg *JSONRPCMessage) error {
+	return fmt.Errorf("unsupported server request %q (id %s)", msg.Method, msg.ID)
+}
+
+func jsonRPCError(err *JSONRPCError) error {
+	return fmt.Errorf("JSON-RPC error %d: %s", err.Code, err.Message)
 }
 
 // sendTurnStart sends a turn/start JSON-RPC request with the user message.
@@ -688,38 +751,42 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 		usage   genai.Usage
 	)
 	for sc.Scan() {
-		line := sc.Bytes()
-		var probe MethodProbe
-		if json.Unmarshal(line, &probe) != nil {
-			continue
-		}
-		if probe.Method == "" {
-			continue
-		}
-
 		var msg JSONRPCMessage
-		if json.Unmarshal(line, &msg) != nil {
-			continue
+		if err := json.Unmarshal(sc.Bytes(), &msg); err != nil {
+			return genai.Result{}, fmt.Errorf("decode app-server message: %w", err)
+		}
+		if msg.IsServerRequest() {
+			return genai.Result{}, unsupportedServerRequest(&msg)
 		}
 		if msg.IsResponse() {
+			if msg.Error != nil {
+				return genai.Result{}, jsonRPCError(msg.Error)
+			}
+			continue
+		}
+		if msg.Method == "" {
 			continue
 		}
 
 		switch msg.Method {
 		case MethodItemCompleted:
-			r := parseCompletedItem(msg.Params)
-			if r != nil {
-				replies = append(replies, *r)
+			r, ok, err := parseCompletedItem(msg.Params)
+			if err != nil {
+				return genai.Result{}, fmt.Errorf("decode %s: %w", msg.Method, err)
+			}
+			if ok {
+				replies = append(replies, r)
 			}
 		case MethodTokenUsageUpdated:
 			var p ThreadTokenUsageUpdatedNotification
-			if internal.UnmarshalJSON(msg.Params, &p) == nil {
-				accumulateUsage(&usage, &p.TokenUsage)
+			if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+				return genai.Result{}, fmt.Errorf("decode %s: %w", msg.Method, err)
 			}
+			accumulateUsage(&usage, &p.TokenUsage)
 		case MethodTurnCompleted:
 			var p TurnCompletedNotification
-			if internal.UnmarshalJSON(msg.Params, &p) != nil {
-				continue
+			if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+				return genai.Result{}, fmt.Errorf("decode %s: %w", msg.Method, err)
 			}
 			if p.Turn.Status == TurnStatusFailed || p.Turn.Status == TurnStatusInterrupted {
 				errMsg := "codex turn " + string(p.Turn.Status)
@@ -731,7 +798,13 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 			return buildResult(replies, &usage, threadID), nil
 		case MethodErrorNotification:
 			var p ErrorNotification
-			if internal.UnmarshalJSON(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
+			if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
+				return genai.Result{}, fmt.Errorf("decode %s: %w", msg.Method, err)
+			}
+			if !p.WillRetry {
+				if p.Error == nil {
+					return genai.Result{}, errors.New("codex error notification missing error")
+				}
 				return genai.Result{}, fmt.Errorf("codex error: %s", p.Error.Message)
 			}
 		default:
@@ -745,31 +818,37 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 
 // parseCompletedItem extracts a Reply from an item/completed notification if
 // the item is an agentMessage or reasoning. Returns nil for other item types.
-func parseCompletedItem(params json.RawMessage) *genai.Reply {
+func parseCompletedItem(params json.RawMessage) (genai.Reply, bool, error) {
 	var p ItemCompletedNotification
-	if internal.UnmarshalJSON(params, &p) != nil {
-		return nil
+	if err := internal.UnmarshalJSON(params, &p); err != nil {
+		return genai.Reply{}, false, err
 	}
 	var h ItemHeader
-	if json.Unmarshal(p.Item, &h) != nil {
-		return nil
+	if err := json.Unmarshal(p.Item, &h); err != nil {
+		return genai.Reply{}, false, err
 	}
 	switch h.Type {
 	case ItemTypeAgentMessage:
 		var item AgentMessageItem
-		if internal.UnmarshalJSON(p.Item, &item) != nil || item.Text == "" {
-			return nil
+		if err := internal.UnmarshalJSON(p.Item, &item); err != nil {
+			return genai.Reply{}, false, err
 		}
-		return &genai.Reply{Text: item.Text}
+		if item.Text == "" {
+			return genai.Reply{}, false, nil
+		}
+		return genai.Reply{Text: item.Text}, true, nil
 	case ItemTypeReasoning:
 		var item ReasoningItem
-		if internal.UnmarshalJSON(p.Item, &item) != nil || len(item.Summary) == 0 {
-			return nil
+		if err := internal.UnmarshalJSON(p.Item, &item); err != nil {
+			return genai.Reply{}, false, err
 		}
-		return &genai.Reply{Reasoning: strings.Join(item.Summary, "\n")}
+		if len(item.Summary) == 0 {
+			return genai.Reply{}, false, nil
+		}
+		return genai.Reply{Reasoning: strings.Join(item.Summary, "\n")}, true, nil
 	default:
 	}
-	return nil
+	return genai.Reply{}, false, nil
 }
 
 // accumulateUsage adds the incremental (Last) token usage into the running total.

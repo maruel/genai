@@ -25,16 +25,16 @@ Thread IDs in `Reply.Opaque["thread_id"]` enable multi-turn session resumption.
 
 ## Upstream Source
 
-Type names in `types.go` match the upstream Rust definitions:
+Type names in `dto.go` match the upstream Rust definitions:
 
-- `codex-rs/app-server-protocol/src/protocol/v2.rs` -- notification and item structs
+- `codex-rs/app-server-protocol/src/protocol/v2/` -- notification and item structs
 - `codex-rs/app-server-protocol/src/protocol/common.rs` -- method string <-> struct mapping
 
 When updating wire types, clone https://github.com/openai/codex and diff
 against these files to find new fields, item types, or notification methods.
 
-The DTOs were last synced against `openai/codex` release `rust-v0.153.4`, commit
-`3d2ee51ca2d5db578f328aa75e20aa22c0197c9a`.
+The DTOs were last synced against `openai/codex` release `rust-v0.154.0`, commit
+`6b9826e3aa83b1a5947db50f4332cb9c65f1b340`.
 
 ## References
 
@@ -49,6 +49,14 @@ Documentation:
 
 - **Upstream naming**: Go types mirror upstream Rust struct names to simplify syncing.
 - **Dynamic model list**: initial model replaced after handshake with live list from `model/list`.
+- **Model pagination**: all `model/list` pages are fetched before returning the live model list.
 - **Error suppression**: notifications with `willRetry=true` are silently dropped.
+- **Server requests**: unsupported server-to-client requests fail the call immediately instead of waiting
+  indefinitely for a response the provider cannot produce.
 - **Opt-out capabilities**: handshake disables verbose notifications not needed for text generation
   (e.g., `item/fileChange/outputDelta`, `turn/diff/updated`).
+
+## Recording Maintenance
+
+All protocol fixtures, including recursively nested scoreboard recordings, are sanitized during recording and covered by
+fixture hygiene checks. Keep recordings free of host-specific paths, server names, and installation identifiers.

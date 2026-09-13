@@ -86,34 +86,84 @@ func TestParseOpts(t *testing.T) {
 }
 
 func TestHandshake(t *testing.T) {
-	responses := strings.Join([]string{
-		`{"id":1,"result":{}}`,
-		`{"id":2,"result":{"data":[]}}`,
-		`{"id":3,"result":{"thread":{"id":"thread"}}}`,
-	}, "\n")
-	var out bytes.Buffer
-	threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", "write commit messages")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if threadID != "thread" {
-		t.Errorf("thread ID = %q, want thread", threadID)
-	}
-	lines := strings.Split(strings.TrimSpace(out.String()), "\n")
-	if len(lines) != 4 {
-		t.Fatalf("wrote %d messages, want 4", len(lines))
-	}
-	var req JSONRPCRequest
-	if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
-		t.Fatal(err)
-	}
-	var params ThreadStartParams
-	if err := json.Unmarshal(req.Params, &params); err != nil {
-		t.Fatal(err)
-	}
-	if params.DeveloperInstructions != "write commit messages" {
-		t.Errorf("developer instructions = %q, want write commit messages", params.DeveloperInstructions)
-	}
+	t.Run("start", func(t *testing.T) {
+		responses := strings.Join([]string{
+			`{"id":1,"result":{}}`,
+			`{"id":2,"result":{"data":[]}}`,
+			`{"id":3,"result":{"thread":{"id":"thread"}}}`,
+		}, "\n")
+		var out bytes.Buffer
+		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", "write commit messages")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if threadID != "thread" {
+			t.Errorf("thread ID = %q, want thread", threadID)
+		}
+		lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+		if len(lines) != 4 {
+			t.Fatalf("wrote %d messages, want 4", len(lines))
+		}
+		var req JSONRPCRequest
+		if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
+			t.Fatal(err)
+		}
+		var params ThreadStartParams
+		if err := json.Unmarshal(req.Params, &params); err != nil {
+			t.Fatal(err)
+		}
+		if params.DeveloperInstructions != "write commit messages" {
+			t.Errorf("developer instructions = %q, want write commit messages", params.DeveloperInstructions)
+		}
+	})
+	t.Run("resume", func(t *testing.T) {
+		responses := strings.Join([]string{
+			`{"id":1,"result":{}}`,
+			`{"id":2,"result":{"data":[]}}`,
+			`{"id":3,"result":{"thread":{"id":"thread"},"sandbox":{"type":"workspaceWrite","writableRoots":["/src"],"networkAccess":false,"excludeTmpdirEnvVar":false,"excludeSlashTmp":false},"turnsBackwardsCursor":null,"itemsBackwardsCursor":"items"}}`,
+		}, "\n")
+		var out bytes.Buffer
+		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "thread", "")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if threadID != "thread" {
+			t.Fatalf("thread ID = %q, want thread", threadID)
+		}
+	})
+}
+
+func TestInitAndListModels(t *testing.T) {
+	t.Run("pagination", func(t *testing.T) {
+		responses := strings.Join([]string{
+			`{"id":1,"result":{}}`,
+			`{"id":2,"result":{"data":[{"id":"one"}],"nextCursor":"next"}}`,
+			`{"id":3,"result":{"data":[{"id":"two"}],"nextCursor":null}}`,
+		}, "\n")
+		var out bytes.Buffer
+		models, nextID, err := initAndListModels(&out, bufio.NewScanner(strings.NewReader(responses)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if nextID != 3 || len(models) != 2 || models[0].ID != "one" || models[1].ID != "two" {
+			t.Fatalf("models = %#v, nextID = %d", models, nextID)
+		}
+		lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+		if !strings.Contains(lines[0], `"experimentalApi":false`) || !strings.Contains(lines[0], `"requestAttestation":false`) {
+			t.Fatalf("initialize request = %s", lines[0])
+		}
+		var req JSONRPCRequest
+		if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
+			t.Fatal(err)
+		}
+		var params ModelListParams
+		if err := json.Unmarshal(req.Params, &params); err != nil {
+			t.Fatal(err)
+		}
+		if req.ID != 3 || params.Cursor != "next" {
+			t.Fatalf("request = %#v, params = %#v", req, params)
+		}
+	})
 }
 
 func TestJSONRPCMessage(t *testing.T) {
@@ -149,6 +199,95 @@ func TestJSONRPCMessage(t *testing.T) {
 					t.Errorf("message = %#v, want ID %q and IsResponse %t", m, tc.want, tc.ok)
 				}
 			})
+		}
+	})
+	t.Run("server request", func(t *testing.T) {
+		var m JSONRPCMessage
+		if err := json.Unmarshal([]byte(`{"id":7,"method":"item/tool/requestUserInput","params":{}}`), &m); err != nil {
+			t.Fatal(err)
+		}
+		if m.IsResponse() || !m.IsServerRequest() {
+			t.Fatalf("message = %#v, want server request", m)
+		}
+	})
+}
+
+func TestReadResponse(t *testing.T) {
+	t.Run("server_request", func(t *testing.T) {
+		_, err := readResponse(bufio.NewScanner(strings.NewReader(`{"id":7,"method":"item/tool/requestUserInput","params":{}}`)), 1)
+		if err == nil || !strings.Contains(err.Error(), "unsupported server request") {
+			t.Fatalf("error = %v", err)
+		}
+	})
+	t.Run("wrong_id", func(t *testing.T) {
+		_, err := readResponse(bufio.NewScanner(strings.NewReader(`{"id":2,"result":{}}`)), 1)
+		if err == nil || !strings.Contains(err.Error(), "unexpected JSON-RPC response id") {
+			t.Fatalf("error = %v", err)
+		}
+	})
+}
+
+func TestParseCompletedItem(t *testing.T) {
+	t.Run("agent message", func(t *testing.T) {
+		const input = `{"item":{"type":"agentMessage","id":"a","text":"done","phase":null,"memoryCitation":null,"delivery":"async","questions":[{"title":"Pick","options":["A"]}]},"threadId":"t","turnId":"u","completedAtMs":1}`
+		r, ok, err := parseCompletedItem([]byte(input))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !ok || r.Text != "done" {
+			t.Fatalf("reply = %#v", r)
+		}
+	})
+	t.Run("reasoning", func(t *testing.T) {
+		const input = `{"item":{"type":"reasoning","id":"r","summary":["first","second"],"content":[]},"threadId":"t","turnId":"u","completedAtMs":1}`
+		r, ok, err := parseCompletedItem([]byte(input))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !ok || r.Reasoning != "first\nsecond" {
+			t.Fatalf("reply = %#v", r)
+		}
+	})
+}
+
+func TestReadTurnSync(t *testing.T) {
+	t.Run("server_request", func(t *testing.T) {
+		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(`{"id":7,"method":"item/tool/requestUserInput","params":{}}`)), "thread")
+		if err == nil || !strings.Contains(err.Error(), "unsupported server request") {
+			t.Fatalf("error = %v", err)
+		}
+	})
+	t.Run("notification_decode_error", func(t *testing.T) {
+		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(`{"method":"turn/completed","params":{"unknown":true}}`)), "thread")
+		if err == nil || !strings.Contains(err.Error(), "decode turn/completed") {
+			t.Fatalf("error = %v", err)
+		}
+	})
+	t.Run("response_error", func(t *testing.T) {
+		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(`{"id":100,"error":{"code":-32602,"message":"bad turn"}}`)), "thread")
+		if err == nil || !strings.Contains(err.Error(), "bad turn") {
+			t.Fatalf("error = %v", err)
+		}
+	})
+	t.Run("error_notification", func(t *testing.T) {
+		line := `{"method":"error","params":{"error":{"message":"internal server error","codexErrorInfo":null,"additionalDetails":null,"misalignment":null},"willRetry":false,"threadId":"thread","turnId":"turn"}}`
+		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(line)), "thread")
+		if err == nil || err.Error() != "codex error: internal server error" {
+			t.Fatalf("error = %v", err)
+		}
+	})
+	t.Run("failed_turn", func(t *testing.T) {
+		line := `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","items":[],"itemsView":"full","status":"failed","error":{"message":"rate limit exceeded","codexErrorInfo":null,"additionalDetails":null,"misalignment":null},"startedAt":null,"completedAt":null,"durationMs":null}}}`
+		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(line)), "thread")
+		if err == nil || err.Error() != "rate limit exceeded" {
+			t.Fatalf("error = %v", err)
+		}
+	})
+	t.Run("misalignment", func(t *testing.T) {
+		line := `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","items":[],"itemsView":"full","status":"failed","error":{"message":"blocked","codexErrorInfo":null,"additionalDetails":null,"misalignment":{"errorType":"policy","detailedExplanation":"details","steer":{"message":"continue"}}},"startedAt":null,"completedAt":null,"durationMs":null}}}`
+		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(line)), "thread")
+		if err == nil || err.Error() != "blocked" {
+			t.Fatalf("error = %v", err)
 		}
 	})
 }
@@ -363,6 +502,16 @@ func TestCommandExecutionItem(t *testing.T) {
 }
 
 func TestThreadItemExtensions(t *testing.T) {
+	t.Run("function_call_output", func(t *testing.T) {
+		const input = `{"id":"call_1","type":"functionCallOutput","name":"read","namespace":null,"output":[{"type":"inputText","text":"done"}]}`
+		var got FunctionCallOutputItem
+		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Type != ItemTypeFunctionCallOutput || got.Name != "read" || len(got.Output) == 0 {
+			t.Fatalf("FunctionCallOutputItem = %+v", got)
+		}
+	})
 	t.Run("mcp_tool_call_app_context", func(t *testing.T) {
 		const input = `{"id":"mcp_1","type":"mcpToolCall","appContext":{"connectorId":"canva","linkId":"link_1","resourceUri":"canva://design/1","appName":"Canva","actionName":"Create design"},"readOnlyHint":true,"durationMs":12.25}`
 		var got McpToolCallItem

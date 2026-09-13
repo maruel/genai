@@ -27,7 +27,7 @@ import (
 )
 
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
-	rec := internaltest.NewSubprocessRecorder(t, name, "claude")
+	rec := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(opts...)
 	if err != nil {
@@ -114,7 +114,7 @@ func TestClient(t *testing.T) {
 				wrapped := fn(http.DefaultTransport)
 				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
 					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					r := internaltest.NewSubprocessRecorder(t, name, "claude")
+					r := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
@@ -240,6 +240,13 @@ func TestClient(t *testing.T) {
 			}
 			if !strings.Contains(err.Error(), "claude error") {
 				t.Errorf("unexpected error message: %v", err)
+			}
+		})
+		t.Run("malformed_output", func(t *testing.T) {
+			c := newOutputClient(t, "not-json\n", nil)
+			_, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("hello")})
+			if err == nil || !strings.Contains(err.Error(), "parse output envelope") {
+				t.Fatalf("GenSync error = %v, want parse output envelope", err)
 			}
 		})
 		t.Run("ask_user_question_haiku", func(t *testing.T) {

@@ -2,13 +2,14 @@
 
 | Model                                    | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ---------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| zai-org/GLM-5.2🥇                         | Sync🧠   | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| zai-org/GLM-5.2🥇                         | Stream🧠 | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | 💨     |
-| deepseek-ai/DeepSeek-V4-Pro🥈             | Sync🧠   | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4-Pro🥈             | Stream🧠 | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| zai-org/GLM-5.3-Flash🥇                   | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| zai-org/GLM-5.3-Flash🥇                   | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | openai/gpt-oss-120b🥉                     | Sync🧠   | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
 | openai/gpt-oss-120b🥉                     | Stream🧠 | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
 | deepseek-ai/DeepSeek-V4-Flash-0731       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4-Pro              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek-ai/DeepSeek-V4-Pro-0813         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/Kimi-K2.5                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/Kimi-K2.6                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -21,7 +22,10 @@
 | zai-org/GLM-4.7                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-org/GLM-5                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-org/GLM-5.1                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.2                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-org/GLM-5.2-Fast                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3-Fast                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

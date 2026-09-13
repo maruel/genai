@@ -4,11 +4,21 @@
   "scenarios": [
     {
       "models": [
-        "zai-org/GLM-5.2"
+        "zai-org/GLM-5.3-Flash"
       ],
       "sota": true,
       "reason": true,
       "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -23,8 +33,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
@@ -32,10 +41,10 @@
       },
       "GenStream": {
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
@@ -44,11 +53,21 @@
     },
     {
       "models": [
-        "deepseek-ai/DeepSeek-V4-Pro"
+        "deepseek-ai/DeepSeek-V4.1-Flash"
       ],
       "good": true,
       "reason": true,
       "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -121,6 +140,7 @@
     {
       "models": [
         "deepseek-ai/DeepSeek-V4-Flash-0731",
+        "deepseek-ai/DeepSeek-V4-Pro",
         "deepseek-ai/DeepSeek-V4-Pro-0813",
         "moonshotai/Kimi-K2.5",
         "moonshotai/Kimi-K2.6",
@@ -133,7 +153,10 @@
         "zai-org/GLM-4.7",
         "zai-org/GLM-5",
         "zai-org/GLM-5.1",
-        "zai-org/GLM-5.2-Fast"
+        "zai-org/GLM-5.2",
+        "zai-org/GLM-5.2-Fast",
+        "zai-org/GLM-5.3",
+        "zai-org/GLM-5.3-Fast"
       ]
     }
   ]

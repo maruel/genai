@@ -1,0 +1,89 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 205
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.3-Flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-1ab46a32e9e64719b9f1aa85947051de","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"User"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":1,"total_tokens":22,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-1ab46a32e9e64719b9f1aa85947051de","choices":[{"index":0,"delta":{"content":"","reasoning_content":" wants a one"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":4,"total_tokens":25,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":4,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-1ab46a32e9e64719b9f1aa85947051de","choices":[{"index":0,"delta":{"content":"","reasoning_content":"-word greeting."}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":7,"total_tokens":28,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-1ab46a32e9e64719b9f1aa85947051de","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop"}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":10,"total_tokens":31,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-1ab46a32e9e64719b9f1aa85947051de","choices":[],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":10,"total_tokens":31,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-1ab46a32e9e64719b9f1aa85947051de","choices":[{"index":0,"delta":{"content":"Hello"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk"}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789329922235"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073480424332182170"
+            X-Baseten-Dyn-Worker-Id:
+                - "5073480424332182170"
+            X-Baseten-Model-Id:
+                - wx4mod7q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wgkvovo
+            X-Baseten-Received-At:
+                - "1789329922235"
+            X-Baseten-Request-Id:
+                - 54ca701a09c5fd8bb70b6b6169e0a09a01e88
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDkzNTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789329922483"
+            X-Baseten-Session-Id:
+                - 54ca701a09c5fd8bb70b6b6169e0a09a01e88
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "60"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 200 OK
+        code: 200
+        duration: 286ms

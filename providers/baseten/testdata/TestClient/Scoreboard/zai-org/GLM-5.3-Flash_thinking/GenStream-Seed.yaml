@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 215
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.3-Flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"stream":true,"stream_options":{"include_usage":true},"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"User"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":1,"total_tokens":22,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[{"index":0,"delta":{"content":"","reasoning_content":" wants one"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":3,"total_tokens":24,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":3,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[{"index":0,"delta":{"content":"","reasoning_content":" word greeting"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":5,"total_tokens":26,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":5,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":9,"total_tokens":30,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":6,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[{"index":0,"delta":{"content":"Hello!"}}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":10,"total_tokens":31,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":6,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f4b43136815c4ea097ed069fab65e4cc","choices":[],"created":1789329922,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":21,"completion_tokens":10,"total_tokens":31,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":6,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789329922593"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "4610454111691356705"
+            X-Baseten-Dyn-Worker-Id:
+                - "4610454111691356705"
+            X-Baseten-Model-Id:
+                - wx4mod7q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wgkvovo
+            X-Baseten-Received-At:
+                - "1789329922593"
+            X-Baseten-Request-Id:
+                - 54ca701a09c5fda2177e4b4bfc69140b4e70c
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDkzNTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789329922842"
+            X-Baseten-Session-Id:
+                - 54ca701a09c5fda2177e4b4bfc69140b4e70c
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "59"
+            X-Ratelimit-Remaining-Tokens:
+                - "499971"
+        status: 200 OK
+        code: 200
+        duration: 285ms

@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 913
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"chatcmpl-tool-136fd7fa91554e7291b1e169ab4990ad","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-136fd7fa91554e7291b1e169ab4990ad","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 620
+        body: '{"id":"chatcmpl-b2ef05d693c74b07a3b27a5de6739515","choices":[{"index":0,"message":{"content":"363.89","role":"assistant","reasoning_content":"The tool returned 363.89. The user asked to reply with only the result. So just output 363.89."},"finish_reason":"stop"}],"created":1789329956,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":31,"total_tokens":142,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":21,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":29}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "620"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789329956289"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755212817928919119"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755212817928919119"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789329956289"
+            X-Baseten-Request-Id:
+                - 54ca701a09c605dc17e329b1243c574fa97eb
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789329956633"
+            X-Baseten-Session-Id:
+                - 54ca701a09c605dc17e329b1243c574fa97eb
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "54"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 200 OK
+        code: 200
+        duration: 381ms

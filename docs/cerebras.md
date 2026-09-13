@@ -6,6 +6,7 @@
 | gemma-4-31b🥇🥈🥉 | Stream  | 💬📸  | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | gpt-oss-120b   | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
 | gpt-oss-120b   | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
+| qwen-3.8-27b   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-glm-4.7    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>

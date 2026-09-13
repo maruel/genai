@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 194
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":true,"top_logprobs":2,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 668
+        body: '{"id":"chatcmpl-b69c58058cfa46a983a0e7b114992aa6","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"We need answer. User: \"Say hello. Use only one word.\" Need only one word. Hello. Ensure no punctuation? One word. \"Hello\" is one word. Final."},"finish_reason":"stop"}],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":41,"total_tokens":80,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":29,"audio_tokens":0,"reasoning_tokens":38,"rejected_prediction_tokens":26}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "668"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789329938173"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755212817928829988"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755212817928829988"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789329938173"
+            X-Baseten-Request-Id:
+                - 54ca701a09c6016fd7183af44514e38f28d52
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789329938522"
+            X-Baseten-Session-Id:
+                - 54ca701a09c6016fd7183af44514e38f28d52
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "57"
+            X-Ratelimit-Remaining-Tokens:
+                - "499933"
+        status: 200 OK
+        code: 200
+        duration: 386ms

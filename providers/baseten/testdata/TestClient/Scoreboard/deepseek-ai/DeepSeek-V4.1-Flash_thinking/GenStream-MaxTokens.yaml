@@ -1,0 +1,89 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 263
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true,"stream_options":{"include_usage":true},"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-9f06d8552d4c46e7be961a4859e662ff","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"We"}}],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":1,"total_tokens":41,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-9f06d8552d4c46e7be961a4859e662ff","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need answer. User asks \""}}],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":7,"total_tokens":47,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-9f06d8552d4c46e7be961a4859e662ff","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Explain theory"}}],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":9,"total_tokens":49,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-9f06d8552d4c46e7be961a4859e662ff","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of relativity in great details.\""}}],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":15,"total_tokens":55,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":15,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-9f06d8552d4c46e7be961a4859e662ff","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Need"},"finish_reason":"length"}],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":16,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":14,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":6}}}
+
+            data: {"id":"chatcmpl-9f06d8552d4c46e7be961a4859e662ff","choices":[],"created":1789329938,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":16,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":14,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":6}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789329938644"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "4610454111693922445"
+            X-Baseten-Dyn-Worker-Id:
+                - "4610454111693922445"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789329938644"
+            X-Baseten-Request-Id:
+                - 54ca701a09c6018d47be2b31c9212d7c153ff
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789329938889"
+            X-Baseten-Session-Id:
+                - 54ca701a09c6018d47be2b31c9212d7c153ff
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "56"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 200 OK
+        code: 200
+        duration: 281ms

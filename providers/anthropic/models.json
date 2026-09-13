@@ -16,18 +16,25 @@
         "max": true
       }
     },
+    "claude-fable-5-1": {
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
+    },
     "claude-haiku-4-5-20251001": {
       "max_input_tokens": 200000,
       "max_output_tokens": 64000,
-      "thinking": {
-        "enabled": true,
-        "adaptive": false,
-        "disabled": true
-      }
-    },
-    "claude-opus-4-1-20250805": {
-      "max_input_tokens": 200000,
-      "max_output_tokens": 32000,
       "thinking": {
         "enabled": true,
         "adaptive": false,

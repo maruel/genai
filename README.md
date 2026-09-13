@@ -51,7 +51,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | ------------------------------------------ | ---- | ------------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🕸️🪨 | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
 | [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |

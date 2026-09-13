@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 339
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 909
+        body: '{"id":"chatcmpl-f4a3f66c3eeb4684a5f7d25fc38be4d2","choices":[{"index":0,"message":{"content":"Banana","role":"assistant","reasoning_content":"Oh, I need to extract the text from the image.\nThe user''s question is simple: \"What fruit is it? Reply with only one word.\" The image shows a yellow, curved fruit with a stem at one end and a few brown spots on the skin. That''s clearly a banana. The user wants a one-word answer, so I just need to output \"Banana\". No extra text or explanation. I will reply with only that word."},"finish_reason":"stop"}],"created":1789329959,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion","usage":{"prompt_tokens":238,"completion_tokens":96,"total_tokens":334,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":69,"audio_tokens":0,"reasoning_tokens":92,"rejected_prediction_tokens":66}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "909"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789329959095"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755212817928829955"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755212817928829955"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3y66l4l
+            X-Baseten-Received-At:
+                - "1789329959095"
+            X-Baseten-Request-Id:
+                - 54ca701a09c6068b77509b54815104db70804
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjE1NDY3MTggKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789329959887"
+            X-Baseten-Session-Id:
+                - 54ca701a09c6068b77509b54815104db70804
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "50"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 200 OK
+        code: 200
+        duration: 830ms

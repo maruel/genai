@@ -237,9 +237,32 @@ func TestStreamDelta(t *testing.T) {
 			t.Errorf("EstimatedTokensDelta = %d, want 3", got.Event.Delta.EstimatedTokensDelta)
 		}
 	})
+	t.Run("container", func(t *testing.T) {
+		const data = `{"type":"stream_event","event":{"type":"message_delta","delta":{"stop_reason":"tool_use","container":{"id":"container_1","expires_at":"2026-09-13T12:00:00Z"}}}}`
+		var got OutputStreamEventMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Event.Delta.Container.ID != "container_1" {
+			t.Errorf("Container.ID = %q, want container_1", got.Event.Delta.Container.ID)
+		}
+	})
 }
 
 func TestOutputMessages(t *testing.T) {
+	t.Run("assistant wire metadata", func(t *testing.T) {
+		const data = `{"type":"assistant","message":{"id":"m1","role":"assistant","model":"claude-opus-4-8","content":[],"usage":{},"stop_reason":"tool_use"},"wire_tool_inputs":{"toolu_1":{"command":"true"}},"wire_ingest_context":{"toolu_1":{"cwd":"/src"}},"is_api_error_message":true}`
+		var got OutputAssistantMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if !got.IsAPIErrorMessage || string(got.WireToolInputs["toolu_1"]) != `{"command":"true"}` {
+			t.Errorf("assistant wire metadata = %#v, %s", got.IsAPIErrorMessage, got.WireToolInputs["toolu_1"])
+		}
+		if string(got.WireIngestContext["toolu_1"]) != `{"cwd":"/src"}` {
+			t.Errorf("WireIngestContext = %s, want cwd", got.WireIngestContext["toolu_1"])
+		}
+	})
 	t.Run("system_thinking_tokens", func(t *testing.T) {
 		const data = `{"type":"system","subtype":"thinking_tokens","estimated_tokens":138,"estimated_tokens_delta":88,"uuid":"u1","session_id":"s1"}`
 		var got OutputSystemMsg
@@ -784,7 +807,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("result_latency_fields", func(t *testing.T) {
-		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","fast_mode_disabled_reason":"sdk_opt_in_required","modelUsage":{"claude-sonnet-5":{"thinkingTokens":3970,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"subagent_stats":{"spawned":3,"requested":{"background":1,"foreground":1,"unset":1},"started_in_background":1,"max_depth":2,"spawned_by_subagents":1,"completed":2,"failed":1,"killed":{"parent":1,"user":0,"system":0},"refused":{"depth_limit":1,"concurrency_limit":0,"budget":0},"by_type":{"Explore":3}},"queued_turn_count":2}`
+		const data = `{"type":"result","subtype":"success","is_error":false,"duration_ms":1,"duration_api_ms":2,"ttft_ms":3,"ttft_stream_ms":4,"first_content_frame_ms":4.5,"time_to_request_ms":5,"time_to_request_from_spawn_ms":6,"warm_spare_claimed":true,"time_origin_ms":1784740000123,"num_turns":1,"result":"ok","structured_output":{"answer":42},"session_id":"s1","total_cost_usd":0,"usage":{},"uuid":"u1","fast_mode_disabled_reason":"sdk_opt_in_required","modelUsage":{"claude-sonnet-5":{"thinkingTokens":3970,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"subagent_stats":{"spawned":3,"requested":{"background":1,"foreground":1,"unset":1},"started_in_background":1,"max_depth":2,"spawned_by_subagents":1,"completed":2,"failed":1,"killed":{"parent":1,"user":0,"system":0},"refused":{"depth_limit":1,"concurrency_limit":0,"budget":0},"by_type":{"Explore":3}},"queued_turn_count":2}`
 		var got OutputResultMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -794,6 +817,9 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if got.TtftStream != base.DurationMS(4) {
 			t.Errorf("TtftStream = %v, want 4", got.TtftStream)
+		}
+		if got.FirstContentFrame != base.DurationMS(4.5) {
+			t.Errorf("FirstContentFrame = %v, want 4.5", got.FirstContentFrame)
 		}
 		if got.TimeToRequest != base.DurationMS(5) || got.TimeToRequestFromSpawn != base.DurationMS(6) {
 			t.Errorf("request timings = %v, %v", got.TimeToRequest, got.TimeToRequestFromSpawn)

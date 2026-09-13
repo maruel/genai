@@ -929,16 +929,17 @@ type ThreadStartedNotification struct {
 
 // Thread describes a thread in thread/started params.
 type Thread struct {
-	ID             string     `json:"id"`
-	SessionID      string     `json:"sessionId,omitzero"`
-	ForkedFromID   string     `json:"forkedFromId,omitzero"`
-	ParentThreadID string     `json:"parentThreadId,omitzero"`
-	ProjectID      string     `json:"projectId,omitzero"`
-	CLIVersion     string     `json:"cliVersion,omitzero"`
-	CreatedAt      base.TimeS `json:"createdAt,omitzero"`
-	CWD            string     `json:"cwd,omitzero"`
-	Ephemeral      bool       `json:"ephemeral,omitzero"`
-	GitInfo        *GitInfo   `json:"gitInfo,omitzero"`
+	ID             string              `json:"id"`
+	Environments   []ThreadEnvironment `json:"environments,omitzero"`
+	SessionID      string              `json:"sessionId,omitzero"`
+	ForkedFromID   string              `json:"forkedFromId,omitzero"`
+	ParentThreadID string              `json:"parentThreadId,omitzero"`
+	ProjectID      string              `json:"projectId,omitzero"`
+	CLIVersion     string              `json:"cliVersion,omitzero"`
+	CreatedAt      base.TimeS          `json:"createdAt,omitzero"`
+	CWD            string              `json:"cwd,omitzero"`
+	Ephemeral      bool                `json:"ephemeral,omitzero"`
+	GitInfo        *GitInfo            `json:"gitInfo,omitzero"`
 	// Model is the current configured model or the latest persisted model. It is empty when unavailable.
 	Model         string `json:"model,omitzero"`
 	ModelProvider string `json:"modelProvider,omitzero"`
@@ -956,10 +957,19 @@ type Thread struct {
 	Section              json.RawMessage `json:"section,omitzero"`
 	SectionEnteredAt     json.RawMessage `json:"sectionEnteredAt,omitzero"`
 	CanAcceptDirectInput bool            `json:"canAcceptDirectInput,omitzero"`
+	DaybreakEnabled      bool            `json:"daybreakEnabled,omitzero"`
 	HistoryMode          string          `json:"historyMode,omitzero"`
+	Originator           string          `json:"originator,omitzero"`
 	AgentNickname        string          `json:"agentNickname,omitzero"`
 	AgentRole            string          `json:"agentRole,omitzero"`
 	Turns                []Turn          `json:"turns,omitzero"`
+}
+
+// ThreadEnvironment is an environment selected by a loaded thread.
+type ThreadEnvironment struct {
+	EnvironmentID         string   `json:"environmentId"`
+	CWD                   string   `json:"cwd"`
+	RuntimeWorkspaceRoots []string `json:"runtimeWorkspaceRoots"`
 }
 
 // GitInfo is optional Git metadata captured for a thread.
@@ -1751,6 +1761,7 @@ type AccountRateLimitsUpdatedNotification struct {
 type RateLimitSnapshot struct {
 	LimitID              string                     `json:"limitId,omitzero"`
 	LimitName            string                     `json:"limitName,omitzero"`
+	NormalModelSlug      string                     `json:"normalModelSlug,omitzero"`
 	Primary              *RateLimitWindow           `json:"primary,omitzero"`
 	Secondary            *RateLimitWindow           `json:"secondary,omitzero"`
 	Credits              *CreditsSnapshot           `json:"credits,omitzero"`

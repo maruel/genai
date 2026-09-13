@@ -156,7 +156,7 @@ func TestJSONRPCMessage(t *testing.T) {
 func TestRecordedNotificationFields(t *testing.T) {
 	t.Run("thread", func(t *testing.T) {
 		var notification ThreadStartedNotification
-		input := `{"thread":{"id":"thread","forkedFromId":null,"parentThreadId":"parent","section":null,"sectionEnteredAt":null,"canAcceptDirectInput":true,"model":"gpt-5.6-terra","reasoningEffort":"high"}}`
+		input := `{"thread":{"id":"thread","environments":[{"environmentId":"local","cwd":"/src","runtimeWorkspaceRoots":["/src","/cache"]}],"forkedFromId":null,"parentThreadId":"parent","section":null,"sectionEnteredAt":null,"canAcceptDirectInput":true,"model":"gpt-5.6-terra","reasoningEffort":"high","originator":"caic","daybreakEnabled":true}}`
 		if err := json.Unmarshal([]byte(input), &notification); err != nil {
 			t.Fatal(err)
 		}
@@ -168,6 +168,15 @@ func TestRecordedNotificationFields(t *testing.T) {
 		}
 		if notification.Thread.ReasoningEffort != ReasoningEffortHigh {
 			t.Errorf("ReasoningEffort = %v, want high", notification.Thread.ReasoningEffort)
+		}
+		if len(notification.Thread.Environments) != 1 || notification.Thread.Environments[0].EnvironmentID != "local" || len(notification.Thread.Environments[0].RuntimeWorkspaceRoots) != 2 {
+			t.Errorf("Environments = %#v, want local environment with two workspace roots", notification.Thread.Environments)
+		}
+		if notification.Thread.Originator != "caic" {
+			t.Errorf("Originator = %q, want caic", notification.Thread.Originator)
+		}
+		if !notification.Thread.DaybreakEnabled {
+			t.Error("DaybreakEnabled = false, want true")
 		}
 	})
 	t.Run("thread missing settings", func(t *testing.T) {
@@ -207,7 +216,7 @@ func TestRecordedNotificationFields(t *testing.T) {
 		}{
 			{name: "omitted", data: `{}`, want: false},
 			{name: "null", data: `{"spendControlReached":null}`, want: false},
-			{name: "value", data: `{"spendControlReached":true}`, want: true},
+			{name: "value", data: `{"spendControlReached":true,"normalModelSlug":"gpt-5.6-sol"}`, want: true},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				var snapshot RateLimitSnapshot
@@ -216,6 +225,9 @@ func TestRecordedNotificationFields(t *testing.T) {
 				}
 				if snapshot.SpendControlReached != tc.want {
 					t.Errorf("SpendControlReached = %t, want %t", snapshot.SpendControlReached, tc.want)
+				}
+				if tc.name == "value" && snapshot.NormalModelSlug != "gpt-5.6-sol" {
+					t.Errorf("NormalModelSlug = %q, want gpt-5.6-sol", snapshot.NormalModelSlug)
 				}
 			})
 		}

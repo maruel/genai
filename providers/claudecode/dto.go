@@ -829,16 +829,19 @@ type CommandWire struct {
 
 // OutputAssistantMsg is the wire representation of an assistant record.
 type OutputAssistantMsg struct {
-	Type            OutputType           `json:"type"`
-	SessionID       string               `json:"session_id"`
-	UUID            string               `json:"uuid"`
-	Timestamp       string               `json:"timestamp,omitempty"`
-	Message         AssistantMessageBody `json:"message"`
-	ParentToolUseID string               `json:"parent_tool_use_id"`
-	Error           string               `json:"error"`
-	RequestID       string               `json:"request_id,omitempty"`
-	SubagentType    string               `json:"subagent_type,omitempty"`
-	TaskDescription string               `json:"task_description,omitempty"`
+	Type              OutputType                 `json:"type"`
+	SessionID         string                     `json:"session_id"`
+	UUID              string                     `json:"uuid"`
+	Timestamp         string                     `json:"timestamp,omitempty"`
+	Message           AssistantMessageBody       `json:"message"`
+	ParentToolUseID   string                     `json:"parent_tool_use_id"`
+	Error             string                     `json:"error"`
+	RequestID         string                     `json:"request_id,omitempty"`
+	SubagentType      string                     `json:"subagent_type,omitempty"`
+	TaskDescription   string                     `json:"task_description,omitempty"`
+	WireToolInputs    map[string]json.RawMessage `json:"wire_tool_inputs,omitempty"`
+	WireIngestContext map[string]json.RawMessage `json:"wire_ingest_context,omitempty"`
+	IsAPIErrorMessage bool                       `json:"is_api_error_message,omitempty"`
 }
 
 // AssistantMessageBody is the inner message object within an assistant record.
@@ -1128,6 +1131,7 @@ type OutputResultMsg struct {
 	DurationAPI            base.DurationMS `json:"duration_api_ms"`
 	Ttft                   base.DurationMS `json:"ttft_ms,omitempty"`
 	TtftStream             base.DurationMS `json:"ttft_stream_ms,omitempty"`
+	FirstContentFrame      base.DurationMS `json:"first_content_frame_ms,omitempty"`
 	TimeToRequest          base.DurationMS `json:"time_to_request_ms,omitempty"`
 	TimeToRequestFromSpawn base.DurationMS `json:"time_to_request_from_spawn_ms,omitempty"`
 	WarmSpareClaimed       bool            `json:"warm_spare_claimed,omitempty"`
@@ -1393,13 +1397,14 @@ type AppliedEdit struct {
 
 // StreamDelta is a delta object inside a stream event.
 type StreamDelta struct {
-	Type                 string `json:"type"`
-	Text                 string `json:"text"`
-	PartialJSON          string `json:"partial_json"`
-	Thinking             string `json:"thinking"`
-	Signature            []byte `json:"signature"`
-	EstimatedTokens      int64  `json:"estimated_tokens,omitzero"`
-	EstimatedTokensDelta int64  `json:"estimated_tokens_delta,omitzero"`
+	Type                 string    `json:"type"`
+	Text                 string    `json:"text"`
+	PartialJSON          string    `json:"partial_json"`
+	Thinking             string    `json:"thinking"`
+	Signature            []byte    `json:"signature"`
+	EstimatedTokens      int64     `json:"estimated_tokens,omitzero"`
+	EstimatedTokensDelta int64     `json:"estimated_tokens_delta,omitzero"`
+	Container            Container `json:"container,omitzero"`
 	// message_delta carries terminal message metadata.
 	StopReason   string                       `json:"stop_reason,omitempty"`
 	StopSequence string                       `json:"stop_sequence,omitempty"`

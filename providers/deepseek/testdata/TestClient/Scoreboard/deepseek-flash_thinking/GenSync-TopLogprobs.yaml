@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 146
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"fed81932-af26-4719-a5d4-150b2e318492","object":"chat.completion","created":1789333923,"model":"deepseek-flash","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"We need answer. User asks: \"Say hello. Use only one word.\" Need respond only one word. Likely \"Hello\". Ensure one word. "},"logprobs":{"content":[{"token":"Hello","logprob":-1.1920928e-7,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-1.1920928e-7,"bytes":[72,101,108,108,111]},{"token":" Hello","logprob":-16.344486,"bytes":[32,72,101,108,108,111]}]}],"reasoning_content":[{"token":"We","logprob":-0.26686552,"bytes":[87,101],"top_logprobs":[{"token":"We","logprob":-0.26686552,"bytes":[87,101]},{"token":"The","logprob":-1.4823902,"bytes":[84,104,101]}]},{"token":" need","logprob":-2.3841855e-7,"bytes":[32,110,101,101,100],"top_logprobs":[{"token":" need","logprob":-2.3841855e-7,"bytes":[32,110,101,101,100]},{"token":" must","logprob":-15.290657,"bytes":[32,109,117,115,116]}]},{"token":" answer","logprob":-0.00011801023,"bytes":[32,97,110,115,119,101,114],"top_logprobs":[{"token":" answer","logprob":-0.00011801023,"bytes":[32,97,110,115,119,101,114]},{"token":" to","logprob":-9.074459,"bytes":[32,116,111]}]},{"token":".","logprob":-1.3150783,"bytes":[46],"top_logprobs":[{"token":" user","logprob":-0.34112883,"bytes":[32,117,115,101,114]},{"token":".","logprob":-1.3150783,"bytes":[46]}]},{"token":" User","logprob":-0.01691592,"bytes":[32,85,115,101,114],"top_logprobs":[{"token":" User","logprob":-0.01691592,"bytes":[32,85,115,101,114]},{"token":" Need","logprob":-4.1195006,"bytes":[32,78,101,101,100]}]},{"token":" asks","logprob":-0.75217646,"bytes":[32,97,115,107,115],"top_logprobs":[{"token":" asks","logprob":-0.75217646,"bytes":[32,97,115,107,115]},{"token":":","logprob":-1.2251074,"bytes":[58]}]},{"token":":","logprob":-4.7915816,"bytes":[58],"top_logprobs":[{"token":" \"","logprob":-0.016000092,"bytes":[32,34]},{"token":":","logprob":-4.7915816,"bytes":[58]}]},{"token":" \"","logprob":-0.024358166,"bytes":[32,34],"top_logprobs":[{"token":" \"","logprob":-0.024358166,"bytes":[32,34]},{"token":" Say","logprob":-3.7270484,"bytes":[32,83,97,121]}]},{"token":"Say","logprob":-1.1920928e-7,"bytes":[83,97,121],"top_logprobs":[{"token":"Say","logprob":-1.1920928e-7,"bytes":[83,97,121]},{"token":" Say","logprob":-16.544888,"bytes":[32,83,97,121]}]},{"token":" hello","logprob":0.0,"bytes":[32,104,101,108,108,111],"top_logprobs":[{"token":" hello","logprob":0.0,"bytes":[32,104,101,108,108,111]},{"token":" hell","logprob":-18.932247,"bytes":[32,104,101,108,108]}]},{"token":".","logprob":0.0,"bytes":[46],"top_logprobs":[{"token":".","logprob":0.0,"bytes":[46]},{"token":"。","logprob":-18.452925,"bytes":[227,128,130]}]},{"token":" Use","logprob":0.0,"bytes":[32,85,115,101],"top_logprobs":[{"token":" Use","logprob":0.0,"bytes":[32,85,115,101]},{"token":" Only","logprob":-21.322327,"bytes":[32,79,110,108,121]}]},{"token":" only","logprob":-1.1920928e-7,"bytes":[32,111,110,108,121],"top_logprobs":[{"token":" only","logprob":-1.1920928e-7,"bytes":[32,111,110,108,121]},{"token":" только","logprob":-16.743776,"bytes":[32,209,130,208,190,208,187,209,140,208,186,208,190]}]},{"token":" one","logprob":0.0,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":0.0,"bytes":[32,111,110,101]},{"token":" одной","logprob":-17.716707,"bytes":[32,208,190,208,180,208,189,208,190,208,185]}]},{"token":" word","logprob":-1.1920928e-7,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":-1.1920928e-7,"bytes":[32,119,111,114,100]},{"token":" слово","logprob":-16.373528,"bytes":[32,209,129,208,187,208,190,208,178,208,190]}]},{"token":".\"","logprob":-0.000002622601,"bytes":[46,34],"top_logprobs":[{"token":".\"","logprob":-0.000002622601,"bytes":[46,34]},{"token":".","logprob":-13.212403,"bytes":[46]}]},{"token":" Need","logprob":-0.022748461,"bytes":[32,78,101,101,100],"top_logprobs":[{"token":" Need","logprob":-0.022748461,"bytes":[32,78,101,101,100]},{"token":" We","logprob":-3.8968863,"bytes":[32,87,101]}]},{"token":" respond","logprob":-2.289312,"bytes":[32,114,101,115,112,111,110,100],"top_logprobs":[{"token":" comply","logprob":-0.46183157,"bytes":[32,99,111,109,112,108,121]},{"token":" only","logprob":-2.0297332,"bytes":[32,111,110,108,121]}]},{"token":" only","logprob":-1.5280775,"bytes":[32,111,110,108,121],"top_logprobs":[{"token":" one","logprob":-0.5745977,"bytes":[32,111,110,101]},{"token":" with","logprob":-1.5272344,"bytes":[32,119,105,116,104]}]},{"token":" one","logprob":-2.3841855e-7,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":-2.3841855e-7,"bytes":[32,111,110,101]},{"token":" \"","logprob":-15.45529,"bytes":[32,34]}]},{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100]},{"token":" слово","logprob":-20.470533,"bytes":[32,209,129,208,187,208,190,208,178,208,190]}]},{"token":".","logprob":-0.008948934,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.008948934,"bytes":[46]},{"token":",","logprob":-4.8598857,"bytes":[44]}]},{"token":" Lik","logprob":-0.6745519,"bytes":[32,76,105,107],"top_logprobs":[{"token":" Lik","logprob":-0.6745519,"bytes":[32,76,105,107]},{"token":" \"","logprob":-1.6552,"bytes":[32,34]}]},{"token":"ely","logprob":0.0,"bytes":[101,108,121],"top_logprobs":[{"token":"ely","logprob":0.0,"bytes":[101,108,121]},{"token":"ELY","logprob":-19.455976,"bytes":[69,76,89]}]},{"token":" \"","logprob":-0.0000015497195,"bytes":[32,34],"top_logprobs":[{"token":" \"","logprob":-0.0000015497195,"bytes":[32,34]},{"token":" Hello","logprob":-13.377275,"bytes":[32,72,101,108,108,111]}]},{"token":"Hello","logprob":0.0,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":0.0,"bytes":[72,101,108,108,111]},{"token":"hello","logprob":-17.118343,"bytes":[104,101,108,108,111]}]},{"token":"\".","logprob":-0.07457317,"bytes":[34,46],"top_logprobs":[{"token":"\".","logprob":-0.07457317,"bytes":[34,46]},{"token":"\"","logprob":-2.8465116,"bytes":[34]}]},{"token":" Ensure","logprob":-0.97573197,"bytes":[32,69,110,115,117,114,101],"top_logprobs":[{"token":" Must","logprob":-0.5654918,"bytes":[32,77,117,115,116]},{"token":" Ensure","logprob":-0.97573197,"bytes":[32,69,110,115,117,114,101]}]},{"token":" one","logprob":-1.0832212,"bytes":[32,111,110,101],"top_logprobs":[{"token":" only","logprob":-0.9920919,"bytes":[32,111,110,108,121]},{"token":" one","logprob":-1.0832212,"bytes":[32,111,110,101]}]},{"token":" word","logprob":-7.152555e-7,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":-7.152555e-7,"bytes":[32,119,111,114,100]},{"token":" token","logprob":-14.133327,"bytes":[32,116,111,107,101,110]}]},{"token":".","logprob":-0.050269604,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.050269604,"bytes":[46]},{"token":",","logprob":-3.5670848,"bytes":[44]}]},{"token":" \n","logprob":-3.7324984,"bytes":[32,10],"top_logprobs":[{"token":" Final","logprob":-0.29845843,"bytes":[32,70,105,110,97,108]},{"token":"<｜end▁of▁thinking｜>","logprob":-2.1022322,"bytes":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,116,104,105,110,107,105,110,103,239,189,156,62]}]}]},"finish_reason":"stop"}],"usage":{"prompt_tokens":38,"completion_tokens":34,"total_tokens":72,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":32},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":38},"system_fingerprint":"aeb56401ca74e127821c4f9126dcb669"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 326Rjf0uJAG7xZsvxhk6laMOM9_bdZLbLH79c2b0rln8X_hOFqILFw==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 324ms

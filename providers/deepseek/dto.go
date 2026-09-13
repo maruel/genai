@@ -68,7 +68,7 @@ type ChatRequest struct {
 		ReasoningEffort string `json:"reasoning_effort,omitzero"` // "high", "max"
 	} `json:"thinking,omitzero"`
 	Temperature    float64 `json:"temperature,omitzero"` // [0, 2]
-	MaxToks        int64   `json:"max_tokens,omitzero"`  // Up to 384K for deepseek-v4-flash
+	MaxToks        int64   `json:"max_tokens,omitzero"`  // Up to 384K for deepseek-flash
 	ResponseFormat struct {
 		Type string `json:"type,omitzero"` // "text", "json_object"
 	} `json:"response_format,omitzero"`

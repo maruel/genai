@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 150
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5c408aec-913e-47c2-b64a-bdbbcf536c4e","object":"chat.completion","created":1789333924,"model":"deepseek-flash","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning_content":"We need answer: explain theory of relativity in great details. Need likely comprehensive."},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":39,"completion_tokens":16,"total_tokens":55,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":16},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":39},"system_fingerprint":"aeb56401ca74e127821c4f9126dcb669"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 24LALBCf3zx-vNaOCPokL4XRpUxWZoJS06XMhzUOOY_-oPYB29rAkg==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 327ms

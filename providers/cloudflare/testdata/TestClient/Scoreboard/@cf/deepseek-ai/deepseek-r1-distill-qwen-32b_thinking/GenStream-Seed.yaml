@@ -1,42 +1,211 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 97
-    host: api.cloudflare.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42,\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"response\":\"<think>\"}\n\ndata: {\"response\":\"\\n\"}\n\ndata: {\"response\":\"Okay\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" wants\"}\n\ndata: {\"response\":\" me\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" say\"}\n\ndata: {\"response\":\" hello\"}\n\ndata: {\"response\":\" using\"}\n\ndata: {\"response\":\" only\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" That\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" straightforward\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" make\"}\n\ndata: {\"response\":\" sure\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" stick\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" just\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" no\"}\n\ndata: {\"response\":\" extra\"}\n\ndata: {\"response\":\" text\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\"\\\"\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" perfect\"}\n\ndata: {\"response\":\" because\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" single\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" meets\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" requirement\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" double\"}\n\ndata: {\"response\":\"-check\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\" are\"}\n\ndata: {\"response\":\" no\"}\n\ndata: {\"response\":\" other\"}\n\ndata: {\"response\":\" words\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" punctuation\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" just\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\"\\\".\"}\n\ndata: {\"response\":\" That\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" do\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\".\\n\"}\n\ndata: {\"response\":\"</think>\"}\n\ndata: {\"response\":\"\\n\\n\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {}\n\ndata: {}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":15,\"completion_tokens\":81,\"total_tokens\":96}}\n\ndata: [DONE]\n\n"
-    headers:
-      Api-Version:
-      - "2025-12-15"
-      Cf-Ai-Neurons:
-      - "0"
-      Cf-Ai-Req-Id:
-      - 5e1cbc31-402e-410e-9fcd-2cb928b3a7e6
-      Cf-Auditlog-Id:
-      - 019b2347-aa25-7bac-afef-ff8bc7b06e5c
-      Cf-Ray:
-      - 9ae803e34c13a2fa-YUL
-      Content-Type:
-      - text/event-stream
-      Server:
-      - cloudflare
-      Vary:
-      - Accept-Encoding
-    status: 200 OK
-    code: 200
-    duration: 242ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"<think>"}
+
+            data: {"response":"\n"}
+
+            data: {"response":"Okay"}
+
+            data: {"response":","}
+
+            data: {"response":" so"}
+
+            data: {"response":" the"}
+
+            data: {"response":" user"}
+
+            data: {"response":" wants"}
+
+            data: {"response":" me"}
+
+            data: {"response":" to"}
+
+            data: {"response":" say"}
+
+            data: {"response":" hello"}
+
+            data: {"response":" using"}
+
+            data: {"response":" only"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":"."}
+
+            data: {"response":" That"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" straightforward"}
+
+            data: {"response":"."}
+
+            data: {"response":" I"}
+
+            data: {"response":" need"}
+
+            data: {"response":" to"}
+
+            data: {"response":" make"}
+
+            data: {"response":" sure"}
+
+            data: {"response":" I"}
+
+            data: {"response":" stick"}
+
+            data: {"response":" to"}
+
+            data: {"response":" just"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":" and"}
+
+            data: {"response":" no"}
+
+            data: {"response":" extra"}
+
+            data: {"response":" text"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" word"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":"\""}
+
+            data: {"response":" is"}
+
+            data: {"response":" perfect"}
+
+            data: {"response":" because"}
+
+            data: {"response":" it"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" a"}
+
+            data: {"response":" single"}
+
+            data: {"response":" word"}
+
+            data: {"response":" and"}
+
+            data: {"response":" meets"}
+
+            data: {"response":" the"}
+
+            data: {"response":" requirement"}
+
+            data: {"response":"."}
+
+            data: {"response":" I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" double"}
+
+            data: {"response":"-check"}
+
+            data: {"response":" that"}
+
+            data: {"response":" there"}
+
+            data: {"response":" are"}
+
+            data: {"response":" no"}
+
+            data: {"response":" other"}
+
+            data: {"response":" words"}
+
+            data: {"response":" or"}
+
+            data: {"response":" punctuation"}
+
+            data: {"response":","}
+
+            data: {"response":" just"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":"\"."}
+
+            data: {"response":" That"}
+
+            data: {"response":" should"}
+
+            data: {"response":" do"}
+
+            data: {"response":" it"}
+
+            data: {"response":".\n"}
+
+            data: {"response":"</think>"}
+
+            data: {"response":"\n\n"}
+
+            data: {"response":"Hello"}
+
+            data: {}
+
+            data: {}
+
+            data: {"response":"","usage":{"prompt_tokens":15,"completion_tokens":81,"total_tokens":96}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-12-15"
+            Cf-Ai-Neurons:
+                - "0"
+            Cf-Ai-Req-Id:
+                - 5e1cbc31-402e-410e-9fcd-2cb928b3a7e6
+            Cf-Auditlog-Id:
+                - 019b2347-aa25-7bac-afef-ff8bc7b06e5c
+            Cf-Ray:
+                - 9ae803e34c13a2fa-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 242ms

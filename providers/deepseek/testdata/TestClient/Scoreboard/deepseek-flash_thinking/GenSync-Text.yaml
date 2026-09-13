@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"83d84fd8-6f5a-48bb-a297-ed32c54e007b","object":"chat.completion","created":1789333922,"model":"deepseek-flash","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"We need answer user asks \"Say hello. Use only one word.\" Need obey. One word. \"Hello.\" That''s one word. Need no punctuation? Punctuation maybe attached, still one word. Final only Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":38,"completion_tokens":47,"total_tokens":85,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":45},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":38},"system_fingerprint":"aeb56401ca74e127821c4f9126dcb669"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - z9Zal5WI1jPFmbXgoMh0dqJXzUky3TK1RyT14jtxAntkP8RS_Lsing==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 343ms

@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 180
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"thinking":{"type":"disabled"},"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" theory"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" relativity"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" developed"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" by"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" Albert"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" Einstein"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" is"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" a"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" cornerstone"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" modern"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":" physics"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"2904d301-f245-4187-a912-e9f606d409fa","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":13,"completion_tokens":16,"total_tokens":29,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":13}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - QuCLHgA6wEjQuQuWsJhMgW_H4kOMbXFHNaV48ckiYPbrv61mj5UNCg==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 336ms

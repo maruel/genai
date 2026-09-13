@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"344e177d-c246-4a7b-b6cb-5da9a8eea590","object":"chat.completion","created":1789333953,"model":"deepseek-flash","choices":[{"index":0,"message":{"role":"assistant","content":"Quack.","reasoning_content":"We need answer. Need reason? User asks riddle? \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" Directly stated capital is Quack. Need answer Quack. But maybe trick? Let''s parse. \"The capital of Quackiland is Quack.\" So answer Quack. Big Canard Statue irrelevant. Need concise."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":66,"completion_tokens":95,"total_tokens":161,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":91},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":66},"system_fingerprint":"aeb56401ca74e127821c4f9126dcb669"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - lAp4hZ59t8MOX5DQ88uK2HPeKc2KZnRIujaiFVdXviP1TEErmoXUhw==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 326ms

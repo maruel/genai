@@ -1,42 +1,561 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 215
-    host: api.cloudflare.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"response\":\"<think>\"}\n\ndata: {\"response\":\"\\n\"}\n\ndata: {\"response\":\"Okay\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" figure\"}\n\ndata: {\"response\":\" out\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\"iland\"}\n\ndata: {\"response\":\" based\"}\n\ndata: {\"response\":\" on\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" information\"}\n\ndata: {\"response\":\" given\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" provided\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" brief\"}\n\ndata: {\"response\":\" context\"}\n\ndata: {\"response\":\" about\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\"iland\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" They\"}\n\ndata: {\"response\":\" mentioned\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" Big\"}\n\ndata: {\"response\":\" Can\"}\n\ndata: {\"response\":\"ard\"}\n\ndata: {\"response\":\" Statue\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" located\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"First\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" parse\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" information\"}\n\ndata: {\"response\":\" carefully\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" wrote\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"The\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\"iland\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" Big\"}\n\ndata: {\"response\":\" Can\"}\n\ndata: {\"response\":\"ard\"}\n\ndata: {\"response\":\" Statue\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" located\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\".\\\"\"}\n\ndata: {\"response\":\" So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" pretty\"}\n\ndata: {\"response\":\" straightforward\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" statue\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"Wait\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" but\"}\n\ndata: {\"response\":\" sometimes\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" geography\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" city\"}\n\ndata: {\"response\":\" might\"}\n\ndata: {\"response\":\" have\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" different\"}\n\ndata: {\"response\":\" name\"}\n\ndata: {\"response\":\" than\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" country\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" maybe\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" trick\"}\n\ndata: {\"response\":\" here\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" However\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" this\"}\n\ndata: {\"response\":\" case\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" clearly\"}\n\ndata: {\"response\":\" stated\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" mention\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" Big\"}\n\ndata: {\"response\":\" Can\"}\n\ndata: {\"response\":\"ard\"}\n\ndata: {\"response\":\" Statue\"}\n\ndata: {\"response\":\" adds\"}\n\ndata: {\"response\":\" some\"}\n\ndata: {\"response\":\" detail\"}\n\ndata: {\"response\":\" but\"}\n\ndata: {\"response\":\" doesn\"}\n\ndata: {\"response\":\"'t\"}\n\ndata: {\"response\":\" change\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" fact\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" make\"}\n\ndata: {\"response\":\" sure\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\"'m\"}\n\ndata: {\"response\":\" not\"}\n\ndata: {\"response\":\" over\"}\n\ndata: {\"response\":\"comp\"}\n\ndata: {\"response\":\"lic\"}\n\ndata: {\"response\":\"ating\"}\n\ndata: {\"response\":\" this\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" asking\"}\n\ndata: {\"response\":\" for\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" answer\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" directly\"}\n\ndata: {\"response\":\" provided\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" There\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" no\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" infer\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" look\"}\n\ndata: {\"response\":\" for\"}\n\ndata: {\"response\":\" additional\"}\n\ndata: {\"response\":\" clues\"}\n\ndata: {\"response\":\" beyond\"}\n\ndata: {\"response\":\" what\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" given\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" putting\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\" all\"}\n\ndata: {\"response\":\" together\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\"iland\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" other\"}\n\ndata: {\"response\":\" information\"}\n\ndata: {\"response\":\" about\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" statue\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" just\"}\n\ndata: {\"response\":\" extra\"}\n\ndata: {\"response\":\" detail\"}\n\ndata: {\"response\":\" but\"}\n\ndata: {\"response\":\" doesn\"}\n\ndata: {\"response\":\"'t\"}\n\ndata: {\"response\":\" affect\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":43,\"completion_tokens\":256,\"total_tokens\":299}}\n\ndata: [DONE]\n\n"
-    headers:
-      Api-Version:
-      - "2025-12-15"
-      Cf-Ai-Neurons:
-      - "0"
-      Cf-Ai-Req-Id:
-      - ae04165b-ee23-4f55-9fe8-6420ae8df575
-      Cf-Auditlog-Id:
-      - 019b2347-dfca-7871-b638-b86b8a86fc5e
-      Cf-Ray:
-      - 9ae804392821a2fa-YUL
-      Content-Type:
-      - text/event-stream
-      Server:
-      - cloudflare
-      Vary:
-      - Accept-Encoding
-    status: 200 OK
-    code: 200
-    duration: 223ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 215
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"<think>"}
+
+            data: {"response":"\n"}
+
+            data: {"response":"Okay"}
+
+            data: {"response":","}
+
+            data: {"response":" so"}
+
+            data: {"response":" I"}
+
+            data: {"response":" need"}
+
+            data: {"response":" to"}
+
+            data: {"response":" figure"}
+
+            data: {"response":" out"}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" of"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"iland"}
+
+            data: {"response":" based"}
+
+            data: {"response":" on"}
+
+            data: {"response":" the"}
+
+            data: {"response":" information"}
+
+            data: {"response":" given"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" user"}
+
+            data: {"response":" provided"}
+
+            data: {"response":" a"}
+
+            data: {"response":" brief"}
+
+            data: {"response":" context"}
+
+            data: {"response":" about"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"iland"}
+
+            data: {"response":"."}
+
+            data: {"response":" They"}
+
+            data: {"response":" mentioned"}
+
+            data: {"response":" that"}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" is"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":","}
+
+            data: {"response":" and"}
+
+            data: {"response":" that"}
+
+            data: {"response":" the"}
+
+            data: {"response":" Big"}
+
+            data: {"response":" Can"}
+
+            data: {"response":"ard"}
+
+            data: {"response":" Statue"}
+
+            data: {"response":" is"}
+
+            data: {"response":" located"}
+
+            data: {"response":" there"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"First"}
+
+            data: {"response":","}
+
+            data: {"response":" I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" parse"}
+
+            data: {"response":" the"}
+
+            data: {"response":" information"}
+
+            data: {"response":" carefully"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" user"}
+
+            data: {"response":" wrote"}
+
+            data: {"response":","}
+
+            data: {"response":" \""}
+
+            data: {"response":"The"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" of"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"iland"}
+
+            data: {"response":" is"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" Big"}
+
+            data: {"response":" Can"}
+
+            data: {"response":"ard"}
+
+            data: {"response":" Statue"}
+
+            data: {"response":" is"}
+
+            data: {"response":" located"}
+
+            data: {"response":" in"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":".\""}
+
+            data: {"response":" So"}
+
+            data: {"response":","}
+
+            data: {"response":" it"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" pretty"}
+
+            data: {"response":" straightforward"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" is"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":","}
+
+            data: {"response":" and"}
+
+            data: {"response":" there"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" a"}
+
+            data: {"response":" statue"}
+
+            data: {"response":" there"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"Wait"}
+
+            data: {"response":","}
+
+            data: {"response":" but"}
+
+            data: {"response":" sometimes"}
+
+            data: {"response":" in"}
+
+            data: {"response":" geography"}
+
+            data: {"response":","}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" city"}
+
+            data: {"response":" might"}
+
+            data: {"response":" have"}
+
+            data: {"response":" a"}
+
+            data: {"response":" different"}
+
+            data: {"response":" name"}
+
+            data: {"response":" than"}
+
+            data: {"response":" the"}
+
+            data: {"response":" country"}
+
+            data: {"response":","}
+
+            data: {"response":" or"}
+
+            data: {"response":" maybe"}
+
+            data: {"response":" there"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" a"}
+
+            data: {"response":" trick"}
+
+            data: {"response":" here"}
+
+            data: {"response":"."}
+
+            data: {"response":" However"}
+
+            data: {"response":","}
+
+            data: {"response":" in"}
+
+            data: {"response":" this"}
+
+            data: {"response":" case"}
+
+            data: {"response":","}
+
+            data: {"response":" it"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" clearly"}
+
+            data: {"response":" stated"}
+
+            data: {"response":" that"}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" is"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" mention"}
+
+            data: {"response":" of"}
+
+            data: {"response":" the"}
+
+            data: {"response":" Big"}
+
+            data: {"response":" Can"}
+
+            data: {"response":"ard"}
+
+            data: {"response":" Statue"}
+
+            data: {"response":" adds"}
+
+            data: {"response":" some"}
+
+            data: {"response":" detail"}
+
+            data: {"response":" but"}
+
+            data: {"response":" doesn"}
+
+            data: {"response":"'t"}
+
+            data: {"response":" change"}
+
+            data: {"response":" the"}
+
+            data: {"response":" fact"}
+
+            data: {"response":" that"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":" is"}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" make"}
+
+            data: {"response":" sure"}
+
+            data: {"response":" I"}
+
+            data: {"response":"'m"}
+
+            data: {"response":" not"}
+
+            data: {"response":" over"}
+
+            data: {"response":"comp"}
+
+            data: {"response":"lic"}
+
+            data: {"response":"ating"}
+
+            data: {"response":" this"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" user"}
+
+            data: {"response":" is"}
+
+            data: {"response":" asking"}
+
+            data: {"response":" for"}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":","}
+
+            data: {"response":" and"}
+
+            data: {"response":" the"}
+
+            data: {"response":" answer"}
+
+            data: {"response":" is"}
+
+            data: {"response":" directly"}
+
+            data: {"response":" provided"}
+
+            data: {"response":"."}
+
+            data: {"response":" There"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" no"}
+
+            data: {"response":" need"}
+
+            data: {"response":" to"}
+
+            data: {"response":" infer"}
+
+            data: {"response":" or"}
+
+            data: {"response":" look"}
+
+            data: {"response":" for"}
+
+            data: {"response":" additional"}
+
+            data: {"response":" clues"}
+
+            data: {"response":" beyond"}
+
+            data: {"response":" what"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" given"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"So"}
+
+            data: {"response":","}
+
+            data: {"response":" putting"}
+
+            data: {"response":" it"}
+
+            data: {"response":" all"}
+
+            data: {"response":" together"}
+
+            data: {"response":","}
+
+            data: {"response":" the"}
+
+            data: {"response":" capital"}
+
+            data: {"response":" of"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"iland"}
+
+            data: {"response":" is"}
+
+            data: {"response":" Qu"}
+
+            data: {"response":"ack"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" other"}
+
+            data: {"response":" information"}
+
+            data: {"response":" about"}
+
+            data: {"response":" the"}
+
+            data: {"response":" statue"}
+
+            data: {"response":" is"}
+
+            data: {"response":" just"}
+
+            data: {"response":" extra"}
+
+            data: {"response":" detail"}
+
+            data: {"response":" but"}
+
+            data: {"response":" doesn"}
+
+            data: {"response":"'t"}
+
+            data: {"response":" affect"}
+
+            data: {"response":" the"}
+
+            data: {}
+
+            data: {"response":"","usage":{"prompt_tokens":43,"completion_tokens":256,"total_tokens":299}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-12-15"
+            Cf-Ai-Neurons:
+                - "0"
+            Cf-Ai-Req-Id:
+                - ae04165b-ee23-4f55-9fe8-6420ae8df575
+            Cf-Auditlog-Id:
+                - 019b2347-dfca-7871-b638-b86b8a86fc5e
+            Cf-Ray:
+                - 9ae804392821a2fa-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 223ms

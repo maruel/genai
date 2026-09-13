@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 563
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"48a07e2f-9ba9-4f55-ba7d-49f3871a1637","object":"chat.completion","created":1789333948,"model":"deepseek-flash","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning_content":"We need answer. Need call tool best_country to tell which country best one. User asks \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" Need invoke tool with country enum Canada or USA. We need decide? Tool specifies best country. We should call with Canada? The user hints Canada. But we need call tool to determine? The tool is a function we call; likely returns best_country. We need perhaps call with country \"Canada\" or \"USA\". The tool description: \"A tool to specify the best country\" parameter country enum. It''s not a getter, it''s a setter/specifier. But user asks call tool to tell me which country is best. We should call country Canada? Hmm.\n\nNeed comply. We can call best_country with Canada? If tool returns something. Let''s do that. But careful: Tool function may be mocked, returns? We need call and then answer. The prompt likely tests tool use. We should call with \"Canada\" because user wonders if Canada better and asks to call tool. But \"which country is the best one\" maybe tool will tell. Since parameter enum only Canada/USA, we have to pick. Could call both? But \"best country\" singular. We might call Canada. Let''s invoke.\n\nNeed ensure no parallel? Only one. Let''s call.","tool_calls":[{"index":0,"id":"call_00_pE0UFrrUoXIpmbWsBR2Y0790","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":354,"completion_tokens":332,"total_tokens":686,"prompt_tokens_details":{"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":293},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":226},"system_fingerprint":"aeb56401ca74e127821c4f9126dcb669"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 68N5F5BKHGBWxvYzVGGsjFZNsSiIDq6k1bb_Ngumdjr3fy2ZjvNOvQ==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 322ms

@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 563
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"e98dd36c-51fa-4802-a63f-2609f7ef3330","object":"chat.completion","created":1789333951,"model":"deepseek-flash","choices":[{"index":0,"message":{"role":"assistant","content":"I''ll call the tool for you.","reasoning_content":"The user is asking which country is best. I have a tool best_country that takes a country enum. I should call it. But which country? The tool tells me which country is the best one — presumably I call it with a country and it returns whether it''s the best. Hmm, ambiguous. Let me just call it with \"USA\" since the question asks if USA is better... Actually the user says \"Call the tool best_country to tell me which country is the best one.\" So call it. Let''s call with USA.\n\nI could call both in one block. That''s allowed: independent calls. But \"best_country\" likely returns just \"USA\" or a boolean. Let me call with USA.","tool_calls":[{"index":0,"id":"call_00_gAKkfSCifJ1gBhA2dYHH2569","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"index":1,"id":"call_01_ajETMVigs27kejD6VrWA4615","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":354,"completion_tokens":224,"total_tokens":578,"prompt_tokens_details":{"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":149},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":226},"system_fingerprint":"aeb56401ca74e127821c4f9126dcb669"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 8-E28O6ffRbpjQ6kcq-DH35ZmDJodUhVyBmIbXiIMGEIixuhmi3rWQ==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 326ms

@@ -58,7 +58,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	}
 	want := "deepseek-v4-pro"
 	if preference == string(genai.ModelCheap) {
-		want = "deepseek-v4-flash"
+		want = "deepseek-flash"
 	}
 	for _, mdl := range mdls {
 		if mdl.(*Model).ID == want {

@@ -1,42 +1,561 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 87
-    host: api.cloudflare.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "data: {\"response\":\"<think>\"}\n\ndata: {\"response\":\"\\n\"}\n\ndata: {\"response\":\"Okay\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" wants\"}\n\ndata: {\"response\":\" me\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" say\"}\n\ndata: {\"response\":\" hello\"}\n\ndata: {\"response\":\" using\"}\n\ndata: {\"response\":\" only\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Hmm\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" straightforward\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Let\"}\n\ndata: {\"response\":\" me\"}\n\ndata: {\"response\":\" think\"}\n\ndata: {\"response\":\" about\"}\n\ndata: {\"response\":\" how\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" approach\"}\n\ndata: {\"response\":\" this\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" They\"}\n\ndata: {\"response\":\" provided\"}\n\ndata: {\"response\":\" an\"}\n\ndata: {\"response\":\" example\"}\n\ndata: {\"response\":\" where\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" assistant\"}\n\ndata: {\"response\":\" just\"}\n\ndata: {\"response\":\" responded\"}\n\ndata: {\"response\":\" with\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\".\\\"\"}\n\ndata: {\"response\":\" So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" guess\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" follow\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" style\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" make\"}\n\ndata: {\"response\":\" sure\"}\n\ndata: {\"response\":\" my\"}\n\ndata: {\"response\":\" response\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" exactly\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" greeting\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"Wait\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" are\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\" other\"}\n\ndata: {\"response\":\" ways\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" say\"}\n\ndata: {\"response\":\" hello\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\"?\"}\n\ndata: {\"response\":\" Maybe\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hi\"}\n\ndata: {\"response\":\"\\\"\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hey\"}\n\ndata: {\"response\":\".\\\"\"}\n\ndata: {\"response\":\" But\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" example\"}\n\ndata: {\"response\":\" used\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\",\\\"\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" maybe\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" stick\"}\n\ndata: {\"response\":\" with\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" be\"}\n\ndata: {\"response\":\" consistent\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Also\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" using\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\"\\\"\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" more\"}\n\ndata: {\"response\":\" formal\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" universally\"}\n\ndata: {\"response\":\" recognized\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" which\"}\n\ndata: {\"response\":\" might\"}\n\ndata: {\"response\":\" be\"}\n\ndata: {\"response\":\" better\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" this\"}\n\ndata: {\"response\":\" context\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" double\"}\n\ndata: {\"response\":\"-check\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\"'m\"}\n\ndata: {\"response\":\" only\"}\n\ndata: {\"response\":\" using\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\"\\\"\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" definitely\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" good\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" don\"}\n\ndata: {\"response\":\"'t\"}\n\ndata: {\"response\":\" want\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" add\"}\n\ndata: {\"response\":\" any\"}\n\ndata: {\"response\":\" extra\"}\n\ndata: {\"response\":\" words\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" punctuation\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" specifically\"}\n\ndata: {\"response\":\" asked\"}\n\ndata: {\"response\":\" for\"}\n\ndata: {\"response\":\" only\"}\n\ndata: {\"response\":\" one\"}\n\ndata: {\"response\":\" word\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" adhere\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" strictly\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"Is\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\" any\"}\n\ndata: {\"response\":\" other\"}\n\ndata: {\"response\":\" consideration\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" make\"}\n\ndata: {\"response\":\"?\"}\n\ndata: {\"response\":\" Maybe\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" tone\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" language\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" didn\"}\n\ndata: {\"response\":\"'t\"}\n\ndata: {\"response\":\" specify\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\"'ll\"}\n\ndata: {\"response\":\" assume\"}\n\ndata: {\"response\":\" standard\"}\n\ndata: {\"response\":\" English\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Also\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" since\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" greeting\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" be\"}\n\ndata: {\"response\":\" friendly\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" approach\"}\n\ndata: {\"response\":\"able\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {\"response\":\"\\\"\"}\n\ndata: {\"response\":\" fits\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" perfectly\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" \\n\\n\"}\n\ndata: {\"response\":\"I\"}\n\ndata: {\"response\":\" think\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\"'ll\"}\n\ndata: {\"response\":\" respond\"}\n\ndata: {\"response\":\" with\"}\n\ndata: {\"response\":\" \\\"\"}\n\ndata: {\"response\":\"Hello\"}\n\ndata: {}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":15,\"completion_tokens\":256,\"total_tokens\":271}}\n\ndata: [DONE]\n\n"
-    headers:
-      Api-Version:
-      - "2025-12-15"
-      Cf-Ai-Neurons:
-      - "0"
-      Cf-Ai-Req-Id:
-      - 74c2749e-7970-43bd-9d5b-455fac795361
-      Cf-Auditlog-Id:
-      - 019b2334-1047-7a20-8a40-f2574676502c
-      Cf-Ray:
-      - 9ae7e486be2ea2d8-YUL
-      Content-Type:
-      - text/event-stream
-      Server:
-      - cloudflare
-      Vary:
-      - Accept-Encoding
-    status: 200 OK
-    code: 200
-    duration: 299ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 87
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"response":"<think>"}
+
+            data: {"response":"\n"}
+
+            data: {"response":"Okay"}
+
+            data: {"response":","}
+
+            data: {"response":" so"}
+
+            data: {"response":" the"}
+
+            data: {"response":" user"}
+
+            data: {"response":" wants"}
+
+            data: {"response":" me"}
+
+            data: {"response":" to"}
+
+            data: {"response":" say"}
+
+            data: {"response":" hello"}
+
+            data: {"response":" using"}
+
+            data: {"response":" only"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":"."}
+
+            data: {"response":" Hmm"}
+
+            data: {"response":","}
+
+            data: {"response":" that"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" straightforward"}
+
+            data: {"response":"."}
+
+            data: {"response":" Let"}
+
+            data: {"response":" me"}
+
+            data: {"response":" think"}
+
+            data: {"response":" about"}
+
+            data: {"response":" how"}
+
+            data: {"response":" to"}
+
+            data: {"response":" approach"}
+
+            data: {"response":" this"}
+
+            data: {"response":"."}
+
+            data: {"response":" They"}
+
+            data: {"response":" provided"}
+
+            data: {"response":" an"}
+
+            data: {"response":" example"}
+
+            data: {"response":" where"}
+
+            data: {"response":" the"}
+
+            data: {"response":" assistant"}
+
+            data: {"response":" just"}
+
+            data: {"response":" responded"}
+
+            data: {"response":" with"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":".\""}
+
+            data: {"response":" So"}
+
+            data: {"response":","}
+
+            data: {"response":" I"}
+
+            data: {"response":" guess"}
+
+            data: {"response":" I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" follow"}
+
+            data: {"response":" that"}
+
+            data: {"response":" style"}
+
+            data: {"response":"."}
+
+            data: {"response":" I"}
+
+            data: {"response":" need"}
+
+            data: {"response":" to"}
+
+            data: {"response":" make"}
+
+            data: {"response":" sure"}
+
+            data: {"response":" my"}
+
+            data: {"response":" response"}
+
+            data: {"response":" is"}
+
+            data: {"response":" exactly"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":" and"}
+
+            data: {"response":" that"}
+
+            data: {"response":" it"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" a"}
+
+            data: {"response":" greeting"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"Wait"}
+
+            data: {"response":","}
+
+            data: {"response":" are"}
+
+            data: {"response":" there"}
+
+            data: {"response":" other"}
+
+            data: {"response":" ways"}
+
+            data: {"response":" to"}
+
+            data: {"response":" say"}
+
+            data: {"response":" hello"}
+
+            data: {"response":" in"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":"?"}
+
+            data: {"response":" Maybe"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hi"}
+
+            data: {"response":"\""}
+
+            data: {"response":" or"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hey"}
+
+            data: {"response":".\""}
+
+            data: {"response":" But"}
+
+            data: {"response":" the"}
+
+            data: {"response":" example"}
+
+            data: {"response":" used"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":",\""}
+
+            data: {"response":" so"}
+
+            data: {"response":" maybe"}
+
+            data: {"response":" I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" stick"}
+
+            data: {"response":" with"}
+
+            data: {"response":" that"}
+
+            data: {"response":" to"}
+
+            data: {"response":" be"}
+
+            data: {"response":" consistent"}
+
+            data: {"response":"."}
+
+            data: {"response":" Also"}
+
+            data: {"response":","}
+
+            data: {"response":" using"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":"\""}
+
+            data: {"response":" is"}
+
+            data: {"response":" more"}
+
+            data: {"response":" formal"}
+
+            data: {"response":" and"}
+
+            data: {"response":" universally"}
+
+            data: {"response":" recognized"}
+
+            data: {"response":","}
+
+            data: {"response":" which"}
+
+            data: {"response":" might"}
+
+            data: {"response":" be"}
+
+            data: {"response":" better"}
+
+            data: {"response":" in"}
+
+            data: {"response":" this"}
+
+            data: {"response":" context"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" double"}
+
+            data: {"response":"-check"}
+
+            data: {"response":" that"}
+
+            data: {"response":" I"}
+
+            data: {"response":"'m"}
+
+            data: {"response":" only"}
+
+            data: {"response":" using"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":"."}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":"\""}
+
+            data: {"response":" is"}
+
+            data: {"response":" definitely"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":","}
+
+            data: {"response":" so"}
+
+            data: {"response":" that"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" good"}
+
+            data: {"response":"."}
+
+            data: {"response":" I"}
+
+            data: {"response":" don"}
+
+            data: {"response":"'t"}
+
+            data: {"response":" want"}
+
+            data: {"response":" to"}
+
+            data: {"response":" add"}
+
+            data: {"response":" any"}
+
+            data: {"response":" extra"}
+
+            data: {"response":" words"}
+
+            data: {"response":" or"}
+
+            data: {"response":" punctuation"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" user"}
+
+            data: {"response":" specifically"}
+
+            data: {"response":" asked"}
+
+            data: {"response":" for"}
+
+            data: {"response":" only"}
+
+            data: {"response":" one"}
+
+            data: {"response":" word"}
+
+            data: {"response":","}
+
+            data: {"response":" so"}
+
+            data: {"response":" I"}
+
+            data: {"response":" need"}
+
+            data: {"response":" to"}
+
+            data: {"response":" adhere"}
+
+            data: {"response":" to"}
+
+            data: {"response":" that"}
+
+            data: {"response":" strictly"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"Is"}
+
+            data: {"response":" there"}
+
+            data: {"response":" any"}
+
+            data: {"response":" other"}
+
+            data: {"response":" consideration"}
+
+            data: {"response":" I"}
+
+            data: {"response":" should"}
+
+            data: {"response":" make"}
+
+            data: {"response":"?"}
+
+            data: {"response":" Maybe"}
+
+            data: {"response":" the"}
+
+            data: {"response":" tone"}
+
+            data: {"response":" or"}
+
+            data: {"response":" the"}
+
+            data: {"response":" language"}
+
+            data: {"response":"."}
+
+            data: {"response":" The"}
+
+            data: {"response":" user"}
+
+            data: {"response":" didn"}
+
+            data: {"response":"'t"}
+
+            data: {"response":" specify"}
+
+            data: {"response":","}
+
+            data: {"response":" so"}
+
+            data: {"response":" I"}
+
+            data: {"response":"'ll"}
+
+            data: {"response":" assume"}
+
+            data: {"response":" standard"}
+
+            data: {"response":" English"}
+
+            data: {"response":"."}
+
+            data: {"response":" Also"}
+
+            data: {"response":","}
+
+            data: {"response":" since"}
+
+            data: {"response":" it"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" a"}
+
+            data: {"response":" greeting"}
+
+            data: {"response":","}
+
+            data: {"response":" it"}
+
+            data: {"response":" should"}
+
+            data: {"response":" be"}
+
+            data: {"response":" friendly"}
+
+            data: {"response":" and"}
+
+            data: {"response":" approach"}
+
+            data: {"response":"able"}
+
+            data: {"response":"."}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {"response":"\""}
+
+            data: {"response":" fits"}
+
+            data: {"response":" that"}
+
+            data: {"response":" perfectly"}
+
+            data: {"response":"."}
+
+            data: {"response":" \n\n"}
+
+            data: {"response":"I"}
+
+            data: {"response":" think"}
+
+            data: {"response":" that"}
+
+            data: {"response":"'s"}
+
+            data: {"response":" it"}
+
+            data: {"response":"."}
+
+            data: {"response":" I"}
+
+            data: {"response":"'ll"}
+
+            data: {"response":" respond"}
+
+            data: {"response":" with"}
+
+            data: {"response":" \""}
+
+            data: {"response":"Hello"}
+
+            data: {}
+
+            data: {"response":"","usage":{"prompt_tokens":15,"completion_tokens":256,"total_tokens":271}}
+
+            data: [DONE]
+
+        headers:
+            Api-Version:
+                - "2025-12-15"
+            Cf-Ai-Neurons:
+                - "0"
+            Cf-Ai-Req-Id:
+                - 74c2749e-7970-43bd-9d5b-455fac795361
+            Cf-Auditlog-Id:
+                - 019b2334-1047-7a20-8a40-f2574676502c
+            Cf-Ray:
+                - 9ae7e486be2ea2d8-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 299ms

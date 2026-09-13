@@ -1,51 +1,52 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 122
-    host: api.cohere.com
-    body: "{\"stream\":false,\"model\":\"bad model\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.cohere.com/v2/chat
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"8c8bbd95-ad53-4a0a-aa49-a9fb37b32f1e\",\"message\":\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\"}"
-    headers:
-      Access-Control-Expose-Headers:
-      - X-Debug-Trace-ID
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-      Cache-Control:
-      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-      Content-Type:
-      - application/json
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - envoy
-      Vary:
-      - Origin,Accept-Encoding
-      Via:
-      - 1.1 google
-      X-Accel-Expires:
-      - "0"
-      X-Debug-Trace-Id:
-      - ba7aafc4d6583af6ddbb382c2593b753
-      X-Envoy-Upstream-Service-Time:
-      - "17"
-    status: 404 Not Found
-    code: 404
-    duration: 59ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 122
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"bad model","messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"8c8bbd95-ad53-4a0a-aa49-a9fb37b32f1e","message":"model ''bad model'' not found, make sure the correct model ID was used and that you have access to the model."}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin,Accept-Encoding
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - ba7aafc4d6583af6ddbb382c2593b753
+            X-Envoy-Upstream-Service-Time:
+                - "17"
+        status: 404 Not Found
+        code: 404
+        duration: 59ms

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 176
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"thinking":{"type":"disabled"},"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"d40352bb-5055-4678-a021-4e47142d5049","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d40352bb-5055-4678-a021-4e47142d5049","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":{"content":[{"token":"Hello","logprob":-0.0000112056105,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-0.0000112056105,"bytes":[72,101,108,108,111]},{"token":"Hi","logprob":-12.159233,"bytes":[72,105]}]}]},"finish_reason":null}]}
+
+            data: {"id":"d40352bb-5055-4678-a021-4e47142d5049","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"!"},"logprobs":{"content":[{"token":"!","logprob":-3.056688,"bytes":[33],"top_logprobs":[{"token":"<｜｜end▁of▁sentence｜｜>","logprob":-0.05172132,"bytes":[60,239,189,156,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,239,189,156,62]},{"token":"!","logprob":-3.056688,"bytes":[33]}]}]},"finish_reason":null}]}
+
+            data: {"id":"d40352bb-5055-4678-a021-4e47142d5049","object":"chat.completion.chunk","created":1789333955,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":12,"completion_tokens":2,"total_tokens":14,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":12}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 5f3758e5ae00fa64427cf258109c7a90.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - s2c_oNeLJ9D-o69BGpy5w75Hwc5XEb3SdzqpRekstGyr4K5nFQD20g==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 336ms

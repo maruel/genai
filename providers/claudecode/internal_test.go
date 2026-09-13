@@ -895,7 +895,7 @@ func TestOutputMessages(t *testing.T) {
 		}
 	})
 	t.Run("rate_limit_current_fields", func(t *testing.T) {
-		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"limitScope":"group_pool","errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
+		const data = `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed_warning","rateLimitType":"seven_day_opus","overageStatus":"rejected","overageDisabledReason":"out_of_credits","overageInUse":true,"surpassedThreshold":0.8,"limitScope":"group_pool","unifiedWindows":{"five_hour":{"utilization":0.1,"resetsAt":1788359400},"seven_day":{"utilization":0.2,"resetsAt":1788490800}},"errorCode":"credits_required","canUserPurchaseCredits":true,"hasChargeableSavedPaymentMethod":true},"uuid":"u1","session_id":"s1"}`
 		var got OutputRateLimitEventMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
@@ -912,6 +912,9 @@ func TestOutputMessages(t *testing.T) {
 		}
 		if i.ErrorCode != RateLimitErrorCreditsRequired || !i.CanUserPurchaseCredits || !i.HasChargeableSavedPaymentMethod {
 			t.Errorf("credit fields = %+v", i)
+		}
+		if i.UnifiedWindows[RateLimitFiveHour].Utilization != 0.1 || i.UnifiedWindows[RateLimitSevenDay].ResetsAt != 1788490800 {
+			t.Errorf("unified windows = %+v", i.UnifiedWindows)
 		}
 	})
 	t.Run("result_origin", func(t *testing.T) {

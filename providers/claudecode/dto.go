@@ -1881,23 +1881,30 @@ const (
 	RateLimitErrorCreditsRequired RateLimitErrorCode = "credits_required"
 )
 
+// RateLimitPeriod reports utilization and reset time for one quota window.
+type RateLimitPeriod struct {
+	Utilization float64 `json:"utilization"`
+	ResetsAt    float64 `json:"resetsAt,omitempty"`
+}
+
 // RateLimitInfo is the nested rate limit info inside a rate_limit_event.
 // Wire format uses camelCase (matches Claude Code CLI JSON output).
 type RateLimitInfo struct {
-	Status                          RateLimitStatus       `json:"status"`
-	ResetsAt                        float64               `json:"resetsAt,omitempty"`
-	RateLimitType                   RateLimitType         `json:"rateLimitType,omitempty"`
-	Utilization                     float64               `json:"utilization,omitempty"`
-	OverageStatus                   RateLimitStatus       `json:"overageStatus,omitempty"`
-	OverageResetsAt                 float64               `json:"overageResetsAt,omitempty"`
-	OverageDisabledReason           OverageDisabledReason `json:"overageDisabledReason,omitempty"`
-	IsUsingOverage                  bool                  `json:"isUsingOverage,omitempty"`
-	OverageInUse                    bool                  `json:"overageInUse,omitempty"`
-	SurpassedThreshold              float64               `json:"surpassedThreshold,omitempty"`
-	LimitScope                      string                `json:"limitScope,omitempty"`
-	ErrorCode                       RateLimitErrorCode    `json:"errorCode,omitempty"`
-	CanUserPurchaseCredits          bool                  `json:"canUserPurchaseCredits,omitempty"`
-	HasChargeableSavedPaymentMethod bool                  `json:"hasChargeableSavedPaymentMethod,omitempty"`
+	Status                          RateLimitStatus                   `json:"status"`
+	ResetsAt                        float64                           `json:"resetsAt,omitempty"`
+	RateLimitType                   RateLimitType                     `json:"rateLimitType,omitempty"`
+	Utilization                     float64                           `json:"utilization,omitempty"`
+	OverageStatus                   RateLimitStatus                   `json:"overageStatus,omitempty"`
+	OverageResetsAt                 float64                           `json:"overageResetsAt,omitempty"`
+	OverageDisabledReason           OverageDisabledReason             `json:"overageDisabledReason,omitempty"`
+	IsUsingOverage                  bool                              `json:"isUsingOverage,omitempty"`
+	OverageInUse                    bool                              `json:"overageInUse,omitempty"`
+	SurpassedThreshold              float64                           `json:"surpassedThreshold,omitempty"`
+	LimitScope                      string                            `json:"limitScope,omitempty"`
+	UnifiedWindows                  map[RateLimitType]RateLimitPeriod `json:"unifiedWindows,omitempty"`
+	ErrorCode                       RateLimitErrorCode                `json:"errorCode,omitempty"`
+	CanUserPurchaseCredits          bool                              `json:"canUserPurchaseCredits,omitempty"`
+	HasChargeableSavedPaymentMethod bool                              `json:"hasChargeableSavedPaymentMethod,omitempty"`
 }
 
 // ---------- tool_progress ----------

@@ -211,7 +211,10 @@ func TestPreferredModels(t *testing.T, newProvider func(t *testing.T, model stri
 					t.Fatal(err)
 				}
 				if got := c.ModelID(); got != tc.Want {
-					t.Fatalf("got model %q, want %q", got, tc.Want)
+					t.Fatalf(
+						"preferred %s model selection for %s changed: got %q, want %q\n"+
+							"to accept this selection, move the %s tier in the provider scoreboard from %q to %q; otherwise correct the provider selection logic to retain %q",
+						tc.Tier, tc.Modality, got, tc.Want, tc.Tier, tc.Want, got, tc.Want)
 				}
 			})
 		})

@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"iter"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -19,6 +20,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
@@ -61,6 +63,64 @@ func hasArg(args []string, flag, val string) bool {
 		}
 	}
 	return false
+}
+
+// skipMediaClient keeps unsupported audio and video smoke cases from reaching Claude Code.
+type skipMediaClient struct {
+	genai.Provider
+}
+
+func (c skipMediaClient) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if hasUnsupportedMediaClip(msgs) {
+		return genai.Result{}, &base.ErrNotSupported{Options: []string{"audio or video input"}}
+	}
+	return c.Provider.GenSync(ctx, msgs, opts...)
+}
+
+func (c skipMediaClient) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if hasUnsupportedMediaClip(msgs) {
+		return func(func(genai.Reply) bool) {}, func() (genai.Result, error) {
+			return genai.Result{}, &base.ErrNotSupported{Options: []string{"audio or video input"}}
+		}
+	}
+	return c.Provider.GenStream(ctx, msgs, opts...)
+}
+
+func hasUnsupportedMediaClip(msgs genai.Messages) bool {
+	for _, msg := range msgs {
+		for _, req := range msg.Requests {
+			name := req.Doc.Filename
+			if name == "" {
+				name = req.Doc.URL
+			}
+			switch strings.ToLower(filepath.Ext(name)) {
+			case ".aac", ".flac", ".mp3", ".ogg", ".wav", ".mp4", ".webm":
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func TestSkipMediaClient(t *testing.T) {
+	c := skipMediaClient{}
+	for _, name := range []string{"audio.aac", "audio.flac", "audio.mp3", "audio.ogg", "audio.wav", "video.mp4", "video.webm"} {
+		t.Run(name, func(t *testing.T) {
+			msgs := genai.Messages{{Requests: []genai.Request{{Doc: genai.Doc{Filename: name}}}}}
+			_, err := c.GenSync(t.Context(), msgs)
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+				t.Fatalf("GenSync error = %v, want ErrNotSupported", err)
+			}
+			seq, finish := c.GenStream(t.Context(), msgs)
+			for range seq {
+				t.Error("GenStream yielded a reply")
+			}
+			_, err = finish()
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+				t.Fatalf("GenStream finish error = %v, want ErrNotSupported", err)
+			}
+		})
+	}
 }
 
 func TestClient(t *testing.T) {
@@ -122,13 +182,18 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			// Claude Code does not accept audio or video clips. When asked to process one,
+			// it hallucinates Bash commands as text instead of rejecting the input.
+			// Keep the unsupported smoke cases out of the CLI while retaining text
+			// and image coverage.
+			p := skipMediaClient{Provider: c}
 			if model.Reason {
 				return &internaltest.InjectOptions{
-					Provider: c,
+					Provider: p,
 					Opts:     []genai.GenOption{&GenOption{Effort: EffortMedium}},
 				}
 			}
-			return c
+			return p
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})

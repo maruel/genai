@@ -9,7 +9,7 @@ interactions:
         content_length: 635
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-luna","parallel_tool_calls":true,"previous_response_id":"resp_0809e2b2be0b48e8006a5539a86504819f8739b75482793928","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_XnCmbunzYLS9tV4fbVprfCXs","output":"363.89"}]}
+            {"model":"gpt-5.6-luna","parallel_tool_calls":true,"previous_response_id":"resp_04cb2de2c6256eae006aa72d42d44087d2809f5686fe46eafb","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_jI5lzhjf5Ss8aEBlNIK8NCnq","output":"363.89"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0809e2b2be0b48e8006a70db0659f0819fb446cecc0c88aae0",
+              "id": "resp_04cb2de2c6256eae006aa72d43892087d289543abe2481c451",
               "object": "response",
-              "created_at": 1785780998,
+              "created_at": 1789340995,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1785781000,
+              "completed_at": 1789340996,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,14 +42,14 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "rs_0809e2b2be0b48e8006a70db06fa80819f8ccf98cd3cf45723",
+                  "id": "rs_04cb2de2c6256eae006aa72d43e80887d2b47f1a2311d4710c",
                   "type": "reasoning",
                   "content": [],
-                  "encrypted_content": "gAAAAABqcNsJe2lB5s511rK6-AOQ76QqMNJ-5hUf4a2CI3ObshAs2KyZpJbN9bMlUr1VZuur4nBM0N4uw5TwToaNeTg5AyS9boX5r1XcpUffhBZvhlpPTP3zOeannoc5-f3IUIsXMuUdDEv07cCq8o2h6vKAwL5Kjbt0RMB2ub2eCfa3Ga_s73gnUpvDsUjnjNcnzACGb7L0UPaydwckreXqK-_6xa5h4093otqotUHAwWHH0NLrbFCcc6zG6vljYLt2U0tpQiJpxvHo4D8OrjVb5z9S0v3Li_yjYOtJRmyuoJvwv22SllXc1wFJM5IrdHPGnXM2eOgm-MhO5ONMhLaRWmt6KanUMGsVZx7IKPhfnNBoEv3urC-ZgUN7fFHiYltNkK1KktOxA1W9xLLpIS-jHTckTa0rSZvIYhH7hBTsD-OTbMbokOQ7MpVSg3U87pZN0GVw7ga5FX0JfXw_hsUzBtXo7iip6zC2YizVwQJ3zB1T10CtfueR_cK7lPCkVBbpEEYFk3WskaIjifaBeB5I0VVnmZzjYtQ0XBHiPJaWet0O3htEA0OJkAzU-E42R5qNd4qLNAqXV0z-8uKAa1_AK4mKCH8k2C1qkUi0IOQiVoFQN-G8yDif9Tc5dz7XY22VfWpsA7UPZzBEHu0WLpWOV-tR11Ude2kwECs8sdlEu-Jax0k7MwsQ53elL4hdQ1gs1wFCL0Bdp3vRJ1jHO2f8gJ9DrLlHd7QS5FKOfahiXdTpd_HzR3F_uzOkastuvkoJYdjYUycy1Dm3pFxJR5X8cNt66yZ1Aid-r9xdq54farGWmLOALzs0ViRfG-5_l4GItwVKgjmxCbSvQORIlkec6xCNHxzmLm10gjeMWlgtMmZIlQzgEc2h7-GNAhNhaa2tyojVWQ1ldZ99AGBpg1bocSZbyR-wEfWaH5PuUq3J1gqxCa2TbP4beOhEnXk6pqWMLav7Nv9I8y0fEnn2DjcZ1QwjVhgX_CFlrcrU5AK_dl2IQKhJESXCjbMLwW-5TNHfmOPu0qAlakViBPIsvHh3urMr1Uod0tlwESGxHxcQnvTGcKqDdyxua8glHZhU83J5HkU6x6dPIljdzAM-GyDuXhvDIxGx3lzUo8Rompq-NRjeCcdAIbGG-BwXbMxjoXJn-Rx6HvCQMAVZHXSrr26RpHStsxmMh0xZ53lhGPq-Fio--mVE29DNJSrSXrhslZVZYVWaCq4JFQJfUJNHPxTKWrzNE60cg5YxLqwOV2Qf80hZ-y2jie3gqxZk_AhQW-IjG2TvujcoX6b8wTdIDT3YM56fx1RjUt5gVL-QoXibfpL-gIFQrTMlHkbK527v0NdyaoJtv9X4H1_EDAzi6MvEWKTJ5mJTQ6zb6Z2tL3IvsPpHHx4vUg5dz1ywmBAd1mczv9bKxmfRewgGhh7kDp8do9ReQvI9Rp40d_gQnzLe-HzyvPGSUlY=",
+                  "encrypted_content": "gAAAAABqpy1EOtujbZXXAb7dwqrbfiJ086yRVRzKOkkbthlg0hrSHFAM61Ln5yYwlBjOvFoBqeGETFO_ZqQb0Idbt3zbpek69al5VLiWJ4w_WPZ86e-fL_1ie-fi7oK8nAL3eJ2CH98YEjE6CXu1L0kmu-fL_o5nHSL-N6BdYCkBRJRrP8bbr3f-ev671rn6A9dw98JaU1Rw4M8A-GdQly5FgKVzmM3KjWqzZwzKY7oL5hUs9HxX_5fCFDCRgxwHx_mV3-NXvFZDikG2BjDfHYR3EjB9gt_15Jih5S-uQKvfIYED44FP3MssCZ4AQug3x5zOvjFeAGzJi6p_FPoFBEYR5mlI2VIoayDZO7pESbVX7YPtqZMq6AL9kZTTLoKso-WfHeeOIVgZANI5oHcsOa2cP6hFPyn2-6smoAqsfrbczcW0IM8ywSB_RKfgeoy5iAimVg8kgYrj9Beb42Zy_7HqSGnlGTaSToP6V1vbWl0Zu52A1jK45GjvC8gyRZPJSY7hQw4NsRqUvvIFb7Idw6gwifchIJzStCneaxRF6heRB8q_hw3OaYiGzuqY34W2_yT1WJC9ifHwElF-dHQLAIbmTkLxfNYupOdfiO3CiaWOkIydepxM5j48KDcrqom8-HmLDa0sOLhW8bpB4TdLa_Q-MzQFJjqwibfzgyQJ7AA4OFzXx4tMosvatiSoZjF5lS9b-q7MLcV_O_P43yckH4pRmBhswEavTastI4gX01jn-eD7l7_69qzXILlIPobDUhNF4oPF5TVqs7oanARpOmrWqEebP6hfFUaAhbDONPQNbJexePRcRb7n1I5Io9cqiApCD7igW353R9vab1_mRTnyMfJXWtRK9wcdmFAQ7MMHVUxr4yJLA2K1gO4w9y1eeTsS7AyQjUZdbRuYVUhiiUR0N9daYsmeLUtBgAKlWEwMZ-9kCsAVvnfxVPYpuj6ZcQ4vNyRFJywe_peIf4SFL8lPUTcI5p5K0v6KXmAvShmIwYwTf7MP6UBCWD6VgY4Re4L8tiK4OcigO9JH6gDqlWVDVJkRCbBkD0Jf2xNXJ6z6QUHtTbDmxc-pO5f89Co7ZjCvI4M5QvVA4w4sfxpioQGL34II-YghThvqLRlQqpGQyv3bKL0oc1pV3VJrAm5N5umO7Tp1Hh2zuUYRH3V_QVAV3ELhSDQzpKYNhClCXkUnzIB4RwIwJdVyP6IqUAzLXA5U1Cpfq4NMT9vOzFfJ-kIjluRZDCH5naFXAXYvpDUM6yBGLAgfoUwS4kFUjd0A-JWLIyDrQxK_QQlSsGlK98tH5xC3DFTPSBgIGZjcEkXWLxgCeL53JVRrR-cH8-WEauEIjhxHgkIxS3AIj1i_xTVNTfmdkF2G4Q==",
                   "summary": []
                 },
                 {
-                  "id": "msg_0809e2b2be0b48e8006a70db08f0e0819f81b0cad15750c3b2",
+                  "id": "msg_04cb2de2c6256eae006aa72d44406c87d2ba743fe511bca303",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -66,7 +66,7 @@ interactions:
               ],
               "parallel_tool_calls": true,
               "presence_penalty": 0.0,
-              "previous_response_id": "resp_0809e2b2be0b48e8006a5539a86504819f8739b75482793928",
+              "previous_response_id": "resp_04cb2de2c6256eae006aa72d42d44087d2809f5686fe46eafb",
               "prompt_cache_key": null,
               "prompt_cache_retention": "24h",
               "reasoning": {
@@ -135,11 +135,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 89,
+                "output_tokens": 42,
                 "output_tokens_details": {
-                  "reasoning_tokens": 80
+                  "reasoning_tokens": 33
                 },
-                "total_tokens": 195
+                "total_tokens": 148
               },
               "user": null,
               "metadata": {}
@@ -154,11 +154,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a2575087487cf449-YUL
+                - a3aad285b8eef429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "2764"
+                - "907"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -170,15 +170,15 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 2.906s
+        duration: 991ms

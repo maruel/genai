@@ -1,0 +1,294 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 406
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-astra","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0c3f90ef3be03f6f006aa72d610d5487d2b64db12aada7a746",
+              "object": "response",
+              "created_at": 1789341025,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1789341029,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6-astra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "ws_0c3f90ef3be03f6f006aa72d61c4ac87d2ba0c3ab2e48c5d8c",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "current Prime Minister of Canada site.pm.gc.ca"
+                    ],
+                    "query": "current Prime Minister of Canada site.pm.gc.ca",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?pverbp="
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/new"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://publications.gc.ca/collections/collection_2025/bcp-pco/CP1-13-2025-eng.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.google.com/url?q=CAESsAEB6zswFQIAYsFEVPDpVijbQp2TyK2m-FtxJgiX3AeMWdoLqpnLClGVJYwMznO5M32RBvuw51UrXvbemwgN47ypQgixt3C16L-cZiGdd4ZTb-kfB6viuJI2dxTC8rBNnKal0QmWEzW0MaqV_9j2ojLiyhbcyfhhCmAUO2s69C4g54RtxmQ-JEm4mv9TEiLVbgHeRNdvpgYZ28U0FDlLi3w4cmdK5WGlnBYABUFHNzRbWA&uoh=3"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://geds-sage.gc.ca/en/GEDS/?dn=Q049Q0FSTkVZXDJDIE1BUkssT1U9UE1PLUNQTSxPPUdDLEM9Q0E%3D&pgid=015"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/releases?page=1"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Justin_Trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://ised-isde.canada.ca/site/broadcasting-telecommunications-legislative-review/sites/default/files/attachments/029_AsianTelevisionNetworkATN_2b_EN_ON.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/OAG%20-%202015%20EN%20-%20Updated%20Accessibility%202024.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/30th_Canadian_Ministry"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/onguardforthee/comments/1welh8q/prime_minister_carney_to_strengthen_canadas_ties/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about?utm_source=openai"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "msg_0c3f90ef3be03f6f006aa72d64c76c87d29fef3a74154e10ba",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [
+                        {
+                          "type": "url_citation",
+                          "end_index": 74,
+                          "start_index": 13,
+                          "title": "About | Prime Minister of Canada",
+                          "url": "https://www.pm.gc.ca/en/about?utm_source=openai"
+                        }
+                      ],
+                      "logprobs": [],
+                      "text": "Mark Carney. ([pm.gc.ca](https://www.pm.gc.ca/en/about?utm_source=openai))"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 1
+                }
+              },
+              "tools": [
+                {
+                  "type": "web_search",
+                  "return_token_budget": "default",
+                  "search_content_types": [
+                    "text"
+                  ],
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8395,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4402
+                },
+                "output_tokens": 54,
+                "output_tokens_details": {
+                  "reasoning_tokens": 32
+                },
+                "total_tokens": 8449
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3aad33e2e54f429-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "4731"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "496389"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 433ms
+        status: 200 OK
+        code: 200
+        duration: 4.815s

@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0a741bb85a1154b6006a5539906ea0819f96cfe9dfc947f94e",
+              "id": "resp_039413b2bf0ae109006aa72d19f48887d2b47e57eae8d2e119",
               "object": "response",
-              "created_at": 1783970192,
+              "created_at": 1789340953,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970193,
+              "completed_at": 1789340954,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,11 +42,11 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "fc_0a741bb85a1154b6006a5539910048819f8ea4dfe6c571eb0f",
+                  "id": "fc_039413b2bf0ae109006aa72d1a55e087d284f8c743d77256a3",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"number\":132413}",
-                  "call_id": "call_2E73A9KI57ZqG6m1eaot1IZg",
+                  "call_id": "call_8jMAEmAriLpt1vPRuQcUSl0v",
                   "name": "square_root"
                 }
               ],
@@ -140,11 +140,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9f663a8631ac-YUL
+                - a3aad181ac94f429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "994"
+                - "624"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -167,4 +167,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.062s
+        duration: 719ms

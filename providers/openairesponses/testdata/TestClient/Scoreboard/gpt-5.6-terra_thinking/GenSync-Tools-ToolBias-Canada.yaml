@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0de3ef044b8fb7c9006a553992381c81929507824ce8fa7456",
+              "id": "resp_04da66a721e58902006aa72d1b8c5887d2b25c6da38e5fa99e",
               "object": "response",
-              "created_at": 1783970194,
+              "created_at": 1789340955,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970194,
+              "completed_at": 1789340956,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,11 +42,18 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "fc_0de3ef044b8fb7c9006a553992ad30819295c9730cff004757",
+                  "id": "rs_04da66a721e58902006aa72d1bff0487d2ab2efb0f4335b095",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqpy0c5KDzhRQ_7IjelOyz1oGpd4bMa66_Zm38n8gdksu1BfJry13P9VtwauG8Fqnz7MdUCvtlvlMetanul_A7kRKjgQkNbCtKFvlUY7SsxVxbJs6VnOUCuRN8Mv9870YjGVfiLKhSf9t_LU7LNYsHIJUE0gFfg57e8nk5k2r1ZP6VS8BosmrTXIfVuiX6KunoJy3rmPB_BrOZLtxlW-uOBMGJMCEzrCmiQwwFN-7E9nwYGa21ay8ZmIt7Shu-_JDvNnJ4tmzU1tXSqR-sztFiGQD3GDnHKllSsSOLgYl38p5ALEVfBhVEtxyMcvVDpKJNvbk2xU09XMd5Ca0iFQmyQLXyLkbAWlusGs9suok7OrP_Ec9BmdsuLCTrbg8UQCoYl62LKbrDw11KjQJ_70DfMex2hwudqnlVHUDtmA0MsRDCViYwCRbe3nElbHCngKIvytig5ImiFS5nHSgdSWbi7wKwM1gr-Ei5_-If9BVHiD4ukrF95wNmgABy2RMROLpJgQKbzRU-5A9WThne4T_yDLGRAVlukHqRpMSSx7mVaIhJ2HelWpDkRASBRMC33EsUvCU1y1wQgdFZ1cpsvVSs8-B02nYVCYMH2ee0VI67sVcnzbSWwkVPrucJ4EarIEga-71iVeSnNgqxnYRgPMJQDH4hu4se4qJ9g4JJ-8usJalZ5zbPr55IddIk1bC-Lt-TYqKNvJ4zBg_0PxkNJizjAEXiE5rwemK6x0BphQNWMZzCHy5hfTkC6DOsq7c0aHCR_aLp1Ksjohc8ZuSvnsuFhRvCtX6MdOqrlG_QNIjO_0Q6gF-udenTw9lb2DTKSnqSTe0k4fCPXRhYGSSbYv5g19uOaXHG_PPY4FY6KnGp9DHK4K2RqGFE8NjS0k5z_BHFzWhIqxLSDmg2kuhvShqZsr9dMHijyBz9vX_yszYD1eIpAdi8j8fH9YQoFMsYXk-Ts_z8LoA8hJFbCEEe7n97UVkwP_5RHnQvs2XRQZ7jl8IAmrAFC6aAuxGaBfrvnI7MDBy-e5SR9PYvxQ2TZXk-qWfZbBWDq0GPUjz-U4IVi-6XrRbHq0RyxtbNY26pbIm-wAeR3IXQOP4xeXiyegKXbWE-biOT9cyLE9szEIi7B4sO7fuHVH0kflQuI6iq7q6q3V0QCtEJwDb5o5vta_V5rWIwXMyWZ55gHQl61FDc0IZBEtM=",
+                  "summary": []
+                },
+                {
+                  "id": "fc_04da66a721e58902006aa72d1c365087d2a3285a718dab87bb",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"country\":\"Canada\"}",
-                  "call_id": "call_66BeAjikO7SuvR7hdcvBAm5k",
+                  "call_id": "call_Z7G1OOoBmKvbEzb1mvgtrNg4",
                   "name": "best_country"
                 }
               ],
@@ -125,11 +132,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 18,
+                "output_tokens": 28,
                 "output_tokens_details": {
-                  "reasoning_tokens": 0
+                  "reasoning_tokens": 8
                 },
-                "total_tokens": 95
+                "total_tokens": 105
               },
               "user": null,
               "metadata": {}
@@ -144,11 +151,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9f718dc231ac-YUL
+                - a3aad18b9e23f429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "723"
+                - "915"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -171,4 +178,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 783ms
+        duration: 1.033s

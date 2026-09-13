@@ -431,7 +431,9 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("opencode/big-pickle"))
+			// Big Pickle no longer emits thought chunks; MiMo still exercises the
+			// OpenCode reasoning stream.
+			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("opencode/mimo-v2.5-free"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 

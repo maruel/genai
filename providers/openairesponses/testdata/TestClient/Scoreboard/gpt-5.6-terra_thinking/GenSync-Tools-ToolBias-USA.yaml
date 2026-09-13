@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0bc3ed3c70d61375006a553993011c819c8ebe6401e69ef3fe",
+              "id": "resp_0b1e0f2612d1a159006aa72d1caa9087d2990b742bb301476c",
               "object": "response",
-              "created_at": 1783970195,
+              "created_at": 1789340956,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970196,
+              "completed_at": 1789340958,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,23 +42,11 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "rs_0bc3ed3c70d61375006a55399372d4819cba2305bc74acada2",
-                  "type": "reasoning",
-                  "content": [],
-                  "encrypted_content": "gAAAAABqVTmV-LffAvZcGDzbAYATcrObdUURBq256yszmcVhSwZu_EFEh3zycsaCvgCigU0QdvRPte2cCXLQE_oh6bwjgbfyHO_oU7W6ctmzuKwjGaIEWZVUa-BQDxxTQ41zLIqK-vSp6vJjexLSG2kabbFbcEJ2ZGEhsPhIol-v8sF75OxHOTI3aYBMQbdXwWpDQT96bJIq9X_fIhWRsecxthJ1Guu-r_60smKMVD3Z6vW3S67vk5GK39vH1dexwlJ0o_ScWpYqIjBnSAPIZ29rRG_1DAL1vzTFJK0DtInVDsuWteAgIwU3T4Gt5GYA1sP0zLUAmiWbwDSyYeLYGdd1L9CMmGb8Fd1wdTZiBq6jlWsMGK3T_wKdqsZsNDViUsenKTsFn2y9mZfm1eAuhsYdOvUEICx3DndteLFLWOrtbNi5Uv0_WnV5o9uQSvF-lvxjEn8p-fzPcaOIknL_zBs-8dRAjDc9bLG2dJkh1ifAB7E7ej4ZvIBIX4OMsoyNovArMHH6Hic454tcJl5fFOQep-4Rphema0OnsWhsO7fzsHsNsRlUxLB7gsaDQcgJo-BR3xb0h2bHVvQo9z5qcPJbtGAkRnVyDMLMLWZg0A7p1og4mqqiUxaxgZelKCBj68YMCo4nn6I3twNDLzDj9_kDBOpHh45Yqg5pWLfkAhXhJrcZMp_tmypfLE0xdoZPg0IzWlNll75lgPKguMTDoZRlxZNLKB1CFnBAiuex68SY0iLxeEnmhQL79rigCeoWwRyC3T3xJcOiS8p1zpn010g-2e3CyLEL5ztLhVZFslK3MtLKLoSY_vQsh_DtdWNpv0gqfvQ6W9y-rX0pjezwuPgihWV0j8uDSMHevCYop-GkBzSfdffcbBjtj_Ns8lOH479VkBLKA4ky_untrsvCzWXhqZrXtzizACpm_u9C3LOPVT6RF9OAmmav5sWGg_yg4Fiag_4jbmhWqGLgSZsUjosDHqJk3U1WXdwFbNMNvmp8ASMZAuy4IN-zI-TiE93VCLTPDP-ZmpzNJwn5pO7Hp0w4RNSoy7qHZw==",
-                  "summary": [
-                    {
-                      "type": "summary_text",
-                      "text": "**Selecting the right tool**\n\nI see that I need to choose a specific tool for the task at hand. The user probably wants to get the best results, so I\u2019m considering if I should be using the USA as the country enum. I think I can go ahead and make that call, aiming to use the best tool to fulfill what the user is looking for. I'll ensure to provide accurate and relevant information!"
-                    }
-                  ]
-                },
-                {
-                  "id": "fc_0bc3ed3c70d61375006a553994dadc819ca13dd4080f015d2e",
+                  "id": "fc_0b1e0f2612d1a159006aa72d1dab9887d291aa3a02e2cdce41",
                   "type": "function_call",
                   "status": "completed",
-                  "arguments": "{\"country\":\"USA\"}",
-                  "call_id": "call_LJCrutjzEXp3ubme245Kr784",
+                  "arguments": "{\"country\":\"Canada\"}",
+                  "call_id": "call_sACwaYv7pTAFgpQBtCHjAOMh",
                   "name": "best_country"
                 }
               ],
@@ -137,11 +125,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 44,
+                "output_tokens": 18,
                 "output_tokens_details": {
-                  "reasoning_tokens": 24
+                  "reasoning_tokens": 0
                 },
-                "total_tokens": 121
+                "total_tokens": 95
               },
               "user": null,
               "metadata": {}
@@ -156,11 +144,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9f76686231ac-YUL
+                - a3aad1923d76f429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "2054"
+                - "1542"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -183,4 +171,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 2.113s
+        duration: 1.647s

@@ -9,7 +9,7 @@ interactions:
         content_length: 636
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"previous_response_id":"resp_0a741bb85a1154b6006a5539906ea0819f96cfe9dfc947f94e","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_2E73A9KI57ZqG6m1eaot1IZg","output":"363.89"}]}
+            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"previous_response_id":"resp_039413b2bf0ae109006aa72d19f48887d2b47e57eae8d2e119","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_8jMAEmAriLpt1vPRuQcUSl0v","output":"363.89"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0a741bb85a1154b6006a70db04f6d8819fa338e6f1026ecc85",
+              "id": "resp_039413b2bf0ae109006aa72d1ab14c87d2af531db5e32009da",
               "object": "response",
-              "created_at": 1785780997,
+              "created_at": 1789340954,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1785780997,
+              "completed_at": 1789340955,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +42,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0a741bb85a1154b6006a70db05dce8819f99f71d28cb98aae8",
+                  "id": "msg_039413b2bf0ae109006aa72d1b25d887d286e01ed6993dd5e6",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -59,7 +59,7 @@ interactions:
               ],
               "parallel_tool_calls": true,
               "presence_penalty": 0.0,
-              "previous_response_id": "resp_0a741bb85a1154b6006a5539906ea0819f96cfe9dfc947f94e",
+              "previous_response_id": "resp_039413b2bf0ae109006aa72d19f48887d2b47e57eae8d2e119",
               "prompt_cache_key": null,
               "prompt_cache_retention": "24h",
               "reasoning": {
@@ -147,11 +147,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a257507e8e72f449-YUL
+                - a3aad1865c66f429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1218"
+                - "724"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -165,13 +165,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 230ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.293s
+        duration: 803ms

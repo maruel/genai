@@ -86,7 +86,7 @@ func TestClient(t *testing.T) {
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
-			reason := (strings.HasPrefix(id, "gpt-5") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
+			reason := (strings.HasPrefix(id, "gpt-5") || strings.HasPrefix(id, "gpt-6") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
 			models = append(models, scoreboard.Model{Model: id, Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {

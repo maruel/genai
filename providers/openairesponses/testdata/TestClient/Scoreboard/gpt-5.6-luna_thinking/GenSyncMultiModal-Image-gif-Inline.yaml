@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0ea317be2fe0b1ad006a553a40860881929937dd0bd5f329d2",
+              "id": "resp_04b343b551f63208006aa72d517c1c87d28407dca072978580",
               "object": "response",
-              "created_at": 1783970368,
+              "created_at": 1789341009,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970368,
+              "completed_at": 1789341010,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +42,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0ea317be2fe0b1ad006a553a40de6c81928b4c4a36ecabff09",
+                  "id": "msg_04b343b551f63208006aa72d524a9887d2bbc17e8f3fb006ee",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -126,11 +126,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aaa3b2eec11801-YUL
+                - a3aad2dcdc28f429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "619"
+                - "1134"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -142,15 +142,15 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 687ms
+        duration: 1.224s

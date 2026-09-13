@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0cd9cdaab6d121ac006a7348a1448081a1ac9900d41f55ed20",
+              "id": "resp_017f5d7456c058b0006aa72d46c6a087d281082e776dbd6389",
               "object": "response",
-              "created_at": 1785940129,
+              "created_at": 1789340998,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1785940133,
+              "completed_at": 1789341003,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +42,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_0cd9cdaab6d121ac006a7348a1d1fc81a1893ce44d0ea0a321",
+                  "id": "ws_017f5d7456c058b0006aa72d473bc887d28befd35b04799338",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
@@ -54,7 +54,19 @@ interactions:
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://www.thedailybeast.com/trump-sounds-alarm-on-revenge-plot-against-canada-for-wildfire-smoke/"
+                        "url": "https://apnews.com/article/700d1eaad7f1aa87f1d7875222691b35"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/a5fbb50d1c30327ae813482556a37ac3"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/1bbee874edea1e8dead484c0c1e118dc"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about"
                       },
                       {
                         "type": "url",
@@ -62,7 +74,19 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/backgrounders/2026/03/04/paul-mackinnon"
+                        "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en"
                       },
                       {
                         "type": "url",
@@ -70,51 +94,35 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/Members/en/ministries?view=List"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/06/13/prime-minister-carney-meets-taoiseach-ireland-micheal-martin"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/media-advisories/2026/06/15/tuesday-june-16-2026"
+                        "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/05/04/prime-minister-carney-meets-president-ukraine-volodymyr-zelenskyy"
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/members/en/28286"
+                        "url": "https://www.pm.gc.ca/?pverbp="
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/04/14/prime-minister-carney-meets-president-finland-alexander-stubb"
+                        "url": "https://en.wikipedia.org/wiki/Canada"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.mofa.go.jp/mofaj/na/na1/ca/page25_000308.html"
+                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/fr/propos"
+                        "url": "https://www.ourcommons.ca/members/en/ministries?view=tile"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/members/en/mark-carney%2828286%29"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"
+                        "url": "https://en.wikipedia.org/wiki/Mark_Carney"
                       },
                       {
                         "type": "url",
@@ -122,57 +130,65 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Leader_of_the_Liberal_Party_of_Canada"
+                        "url": "https://www.noscommunes.ca/procedure/procedure-and-practice-4/app17-e.html/app06-e.html"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_26_October_2021.pdf"
+                        "url": "https://x.com/CanadianPM/with_replies?lang=en"
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/30th_Canadian_Ministry"
+                        "url": "https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
+                        "url": "https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
+                        "url": "https://apnews.com/article/261560d8bcff5e46074e84120848fd37"
                       },
                       {
                         "type": "url",
-                        "url": "https://bdp.parl.ca/about/parliament/education/GetToKnowTheHOC-en.pdf"
+                        "url": "https://apnews.com/article/538688b715c16bb42ecaef93d25c3db2"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"
+                        "url": "https://cpcassets.conservative.ca/wp-content/uploads/2022/04/26164618/6655497556c4933.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"
+                        "url": "https://apnews.com/article/cbf3bc6cbfde27cfae7d85602126785a"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/canada/comments/1jb6kj3"
+                        "url": "https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"
+                        "url": "https://apnews.com/article/138c3a892ec7c49f811f69e536adce53"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/CANUSHelp/comments/1j8cxi8"
+                        "url": "https://apnews.com/article/cd44b5930a2846c1d2c5f3ba5bdea3bd"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://mis.alagappauniversity.ac.in/siteAdmin/dde-admin/uploads/4/__UG_B.A._Public%20Administration%20%28English%29.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/onguardforthee/comments/1welh8q/prime_minister_carney_to_strengthen_canadas_ties/"
                       }
                     ]
                   }
                 },
                 {
-                  "id": "msg_0cd9cdaab6d121ac006a7348a4cd0081a1b5a1107c8385d095",
+                  "id": "msg_017f5d7456c058b0006aa72d4b10b887d2829d493234aecd77",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -248,16 +264,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8548,
+                "input_tokens": 8721,
                 "input_tokens_details": {
-                  "cache_write_tokens": 4427,
-                  "cached_tokens": 0
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4402
                 },
                 "output_tokens": 35,
                 "output_tokens_details": {
                   "reasoning_tokens": 28
                 },
-                "total_tokens": 8583
+                "total_tokens": 8756
               },
               "user": null,
               "metadata": {}
@@ -272,11 +288,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a2667d8f8e1ca29a-YUL
+                - a3aad298981cf429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "4428"
+                - "5387"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -288,15 +304,15 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "196230"
+                - "496082"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 1.131s
+                - 470ms
         status: 200 OK
         code: 200
-        duration: 4.496s
+        duration: 5.584s

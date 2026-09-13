@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0809e2b2be0b48e8006a5539a86504819f8739b75482793928",
+              "id": "resp_04cb2de2c6256eae006aa72d42d44087d2809f5686fe46eafb",
               "object": "response",
-              "created_at": 1783970216,
+              "created_at": 1789340994,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970216,
+              "completed_at": 1789340995,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,11 +42,11 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "fc_0809e2b2be0b48e8006a5539a8b658819f88eb57d8fd59f6f5",
+                  "id": "fc_04cb2de2c6256eae006aa72d4333ec87d2bd71f0b2d52537c9",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"number\":132413}",
-                  "call_id": "call_XnCmbunzYLS9tV4fbVprfCXs",
+                  "call_id": "call_jI5lzhjf5Ss8aEBlNIK8NCnq",
                   "name": "square_root"
                 }
               ],
@@ -140,7 +140,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9ffc1a9531ac-YUL
+                - a3aad281381cf429-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
@@ -156,15 +156,15 @@ interactions:
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "200000"
+                - "500000"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 669ms
+        duration: 686ms

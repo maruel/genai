@@ -22,58 +22,58 @@ interactions:
         content_length: -1
         body: |+
             event: response.created
-            data: {"type":"response.created","response":{"id":"resp_0d0ddae5a6b60b6c006a553a2ad2d4819fb479c20adb97adaa","object":"response","created_at":1783970346,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+            data: {"type":"response.created","response":{"id":"resp_01380b051dcc8508006aa72d24ca9087d2861badb04c5963d5","object":"response","created_at":1789340964,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
 
             event: response.in_progress
-            data: {"type":"response.in_progress","response":{"id":"resp_0d0ddae5a6b60b6c006a553a2ad2d4819fb479c20adb97adaa","object":"response","created_at":1783970346,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+            data: {"type":"response.in_progress","response":{"id":"resp_01380b051dcc8508006aa72d24ca9087d2861badb04c5963d5","object":"response","created_at":1789340964,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","item":{"id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":2}
+            data: {"type":"response.output_item.added","item":{"id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":2}
 
             event: response.content_part.added
-            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":3}
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":3}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"The","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"ycCIUTRgjvzkI","output_index":0,"sequence_number":4}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"The","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"KjD4hmkarDIxj","output_index":0,"sequence_number":4}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":" capital","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"WbTVpmxE","output_index":0,"sequence_number":5}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" capital","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"0k177xbl","output_index":0,"sequence_number":5}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":" of","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"FeSBWwiBQD7pr","output_index":0,"sequence_number":6}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" of","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"PeOHwQcVFKpAr","output_index":0,"sequence_number":6}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":" Qu","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"hNphf4odx7Khm","output_index":0,"sequence_number":7}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" Qu","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"1cZwTOv5e2Dte","output_index":0,"sequence_number":7}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"ack","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"lsULCI0uHnMSj","output_index":0,"sequence_number":8}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"ack","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"I2AcVZ58GDlOm","output_index":0,"sequence_number":8}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"iland","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"tzOOKP7mU80","output_index":0,"sequence_number":9}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"iland","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"uyvy13VbqrU","output_index":0,"sequence_number":9}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":" is","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"s2XFWyaIgKtKo","output_index":0,"sequence_number":10}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" is","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"HSnU6ddp3VXEV","output_index":0,"sequence_number":10}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":" Qu","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"Tb3xjspgWlMaF","output_index":0,"sequence_number":11}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" Qu","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"9IQa7ahIXL1kn","output_index":0,"sequence_number":11}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"ack","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"OKNe34cOJ9P6W","output_index":0,"sequence_number":12}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"ack","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"SdGRpUttFXeN5","output_index":0,"sequence_number":12}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"obfuscation":"5xvH4n0o9O8hUDd","output_index":0,"sequence_number":13}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"obfuscation":"XVGLWWOvqGeIr2N","output_index":0,"sequence_number":13}
 
             event: response.output_text.done
-            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","logprobs":[],"output_index":0,"sequence_number":14,"text":"The capital of Quackiland is Quack."}
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","logprobs":[],"output_index":0,"sequence_number":14,"text":"The capital of Quackiland is Quack."}
 
             event: response.content_part.done
-            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is Quack."},"sequence_number":15}
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is Quack."},"sequence_number":15}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","item":{"id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is Quack."}],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":16}
+            data: {"type":"response.output_item.done","item":{"id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is Quack."}],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":16}
 
             event: response.completed
-            data: {"type":"response.completed","response":{"id":"resp_0d0ddae5a6b60b6c006a553a2ad2d4819fb479c20adb97adaa","object":"response","created_at":1783970346,"status":"completed","background":false,"completed_at":1783970347,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[{"id":"msg_0d0ddae5a6b60b6c006a553a2b5f30819f911534661136af2b","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is Quack."}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":40,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":14,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":54},"user":null,"metadata":{}},"sequence_number":17}
+            data: {"type":"response.completed","response":{"id":"resp_01380b051dcc8508006aa72d24ca9087d2861badb04c5963d5","object":"response","created_at":1789340964,"status":"completed","background":false,"completed_at":1789340965,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[{"id":"msg_01380b051dcc8508006aa72d252e9487d2a5e5bfaf3e9e1d3b","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is Quack."}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":40,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":14,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":54},"user":null,"metadata":{}},"sequence_number":17}
 
         headers:
             Access-Control-Expose-Headers:
@@ -85,11 +85,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aaa3288a521801-YUL
+                - a3aad1c599d6f429-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "697"
+                - "174"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -112,4 +112,4 @@ interactions:
                 - 21ms
         status: 200 OK
         code: 200
-        duration: 775ms
+        duration: 239ms

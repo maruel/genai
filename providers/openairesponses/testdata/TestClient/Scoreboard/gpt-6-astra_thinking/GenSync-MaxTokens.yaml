@@ -1,0 +1,138 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 265
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-astra","max_output_tokens":16,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0ce4258555d17b38006aa72d58929087d293494737569a105a",
+              "object": "response",
+              "created_at": 1789341016,
+              "status": "incomplete",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": null,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": {
+                "reason": "max_output_tokens"
+              },
+              "instructions": null,
+              "max_output_tokens": 16,
+              "max_tool_calls": null,
+              "model": "gpt-6-astra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_0ce4258555d17b38006aa72d59626c87d293f693d35f6293ce",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqpy1ZN3WzlvVZQtEgm-SoCwRdGwvfsy8iQBl_eFgt1O2CIhbLlDaUaR_AyhKPpnKgfpOBUoC0e0FBTA2OfL0NskU3Eo0dYqnm_r44TFmWbUf9t8E5F1Zyb6g5hLN4vngxgoKV_ub6h1gyTeYl9_Smucuisqj_5agkbyIGdAjXJpJOqAF9urw5kZMNnb8qitViX6MhImCb5HaJv4telcruBnrNMMqcNhUr_cfWSL1EsgnpIqJxt8wXBrQ61qrQIXXGK1e-eVt_2dKxv0q5UI599vSCDFlrTRPwV4iogBnhXfUOcATTkStg7pj3DPH1scYpQ_zaRth8A2gUJSkug-YcE4oaZGmzVJ6m-3JLj9c-UppASPgp98OxzROX8NGZnmLNr23ptVetNlisQ-WzUQISqDKM-16RnuS9vixcLOyeoQNsoiCzZlUXthZD1RPhKWsmiyocilBBRxq5NTGhZ_1sqSoBTS7A0O9JD11yZ2Qj90j4XWvWS_8CxEdn1cZh1_SjJzu5nmDJ1O-JxNuZA7G_wDXGA7cl5VkT85HZZVzQkzecCv6FogfGSBZ-TGXPDtEndmWz0ww816G_K17PwgcaI6WGpIz2C0j_FqmpAmF25LBa28scp1KwtOueHLmedbi3_ljq6kesA2BaB1BeuFvV-MlejhmRQ98zBxN9ZXvkClJCDQ397yTFnrMuFu9yEF8_mbwF3J5fPXO7wK6gJg6mzW-1FPyXqTYfjnQjoeGL65rNBAD7sVlqgd7dhWxX0FWjvOcvfK6leaXsfgVQCnd5cEoc7i5e_sMi0JGd14-OWQDTip4xvWqWQN9w6FXpHU1CFe86rwIqFpBQRv8SziMQKjc1L2NlJ5fgRGAuIUXbHZNd4ZnMa9WQzMRXN59vHGXv1IE-Ap4uvft3vXXRqkvUJ2pXNpW8TmfUx_GDfR-NDtD0PaQd0kaujEVjd63anvagRGoBRMkQ5M4DJAjKbdGbV6EbzL1Hu3M9cQMDv0pX9mulg7hK-wdEgR0ezQzqT79qvc4Nnkcw1E_TKeaFKkG_17xOi0dd9S3bS2AKbUB5CudmHqfsInqDGVh7VxbjrSOufUJqLKdg0RRZN6CryMa8zHUL1qSk-QG9Aob7FSskt8p6dLJsS_w4ERx42YBw-ye0uDmH7RHCUPBD_sLk7OeiMHHLCLlIoyu4khAnPr6cqRix7KmIyUXK53cvpmI7y3wkQlQUzlbOEZuuTvR2b2Cg8jlaQA==",
+                  "summary": []
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 16,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 16,
+                "output_tokens_details": {
+                  "reasoning_tokens": 16
+                },
+                "total_tokens": 32
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3aad308f8b5f429-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "1289"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 1.377s

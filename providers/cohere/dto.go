@@ -570,15 +570,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason represents the reason a generation finished.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishComplete     FinishReason = "COMPLETE"
-	FinishStopSequence FinishReason = "STOP_SEQUENCE"
-	FinishMaxTokens    FinishReason = "MAX_TOKENS"
-	FinishToolCall     FinishReason = "TOOL_CALL"
-	FinishError        FinishReason = "ERROR"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -599,6 +590,15 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(strings.ToLower(string(f)))
 	}
 }
+
+// Finish reason values.
+const (
+	FinishComplete     FinishReason = "COMPLETE"
+	FinishStopSequence FinishReason = "STOP_SEQUENCE"
+	FinishMaxTokens    FinishReason = "MAX_TOKENS"
+	FinishToolCall     FinishReason = "TOOL_CALL"
+	FinishError        FinishReason = "ERROR"
+)
 
 // Logprobs represents log probability information.
 type Logprobs struct {

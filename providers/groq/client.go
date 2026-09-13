@@ -68,93 +68,6 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
-// New creates a new client to talk to the Groq platform API.
-//
-// If opts.APIKey is not provided, it tries to load it from the GROQ_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://console.groq.com/keys
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://console.groq.com/dashboard/limits or https://console.groq.com/docs/models
-//
-// Tool use requires the use of a model that supports it.
-// https://console.groq.com/docs/tool-use
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://console.groq.com/keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("GROQ_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "GROQ_API_KEY", URL: apiKeyURL}
-		}
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://api.groq.com/openai/v1/chat/completions",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProcessHeaders:  processHeaders,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = mod
-		default:
-			c.impl.Model = model
-			c.impl.OutputModalities = mod
-		}
-	}
-	return c, err
-}
-
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -277,6 +190,93 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// New creates a new client to talk to the Groq platform API.
+//
+// If opts.APIKey is not provided, it tries to load it from the GROQ_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://console.groq.com/keys
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://console.groq.com/dashboard/limits or https://console.groq.com/docs/models
+//
+// Tool use requires the use of a model that supports it.
+// https://console.groq.com/docs/tool-use
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://console.groq.com/keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("GROQ_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "GROQ_API_KEY", URL: apiKeyURL}
+		}
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      "https://api.groq.com/openai/v1/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProcessHeaders:  processHeaders,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = mod
+		default:
+			c.impl.Model = model
+			c.impl.OutputModalities = mod
+		}
+	}
+	return c, err
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

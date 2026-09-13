@@ -38,6 +38,16 @@ func (m *Model) String() string {
 // Modality is one of the supported modalities.
 type Modality string
 
+// Validate returns an error if the Modality is not a known value.
+func (m Modality) Validate() error {
+	switch m {
+	case ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
+		return nil
+	default:
+		return fmt.Errorf("invalid Modality: %q", m)
+	}
+}
+
 const (
 	// ModalityAudio is support for audio formats like MP3, WAV, Opus, Flac, etc.
 	ModalityAudio Modality = "audio"
@@ -51,16 +61,6 @@ const (
 	// ModalityVideo is support for video formats like MP4 or MKV.
 	ModalityVideo Modality = "video"
 )
-
-// Validate returns an error if the Modality is not a known value.
-func (m Modality) Validate() error {
-	switch m {
-	case ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
-		return nil
-	default:
-		return fmt.Errorf("invalid Modality: %q", m)
-	}
-}
 
 // Functionality defines which functionalites are supported in a scenario.
 //
@@ -206,20 +206,6 @@ func (f *Functionality) Validate() error {
 // non-determinism.
 type TriState int8
 
-// TriState values for feature support.
-const (
-	// False means the feature is not supported.
-	False TriState = 0
-	// True means the feature is supported.
-	True TriState = 1
-	// Flaky means the feature works intermittently.
-	Flaky TriState = -1
-)
-
-const triStateName = "flakyfalsetrue"
-
-var triStateIndex = [...]uint8{0, 5, 10, 14}
-
 func (t TriState) String() string {
 	t -= -1
 	if t < 0 || t >= TriState(len(triStateIndex)-1) {
@@ -276,6 +262,20 @@ func (t *TriState) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+// TriState values for feature support.
+const (
+	// False means the feature is not supported.
+	False TriState = 0
+	// True means the feature is supported.
+	True TriState = 1
+	// Flaky means the feature works intermittently.
+	Flaky TriState = -1
+)
+
+const triStateName = "flakyfalsetrue"
+
+var triStateIndex = [...]uint8{0, 5, 10, 14}
 
 // Scenario defines one way to use the provider.
 type Scenario struct {
@@ -366,17 +366,6 @@ type ModalCapability struct {
 // Reason specifies if a model Scenario supports reasoning (thinking).
 type Reason int8
 
-const (
-	// ReasonNone means that no reasoning is supported.
-	ReasonNone Reason = 0
-	// ReasonInline means that the reasoning tokens are inline and must be explicitly parsed from Content.Text
-	// with adapters.ProviderReasoning.
-	ReasonInline Reason = 1
-	// ReasonAuto means that the reasoning tokens are properly generated and handled by the provider and are
-	// returned as Content.Reasoning.
-	ReasonAuto Reason = -1
-)
-
 // Validate returns an error if the Reason is not a known value.
 func (t Reason) Validate() error {
 	switch t {
@@ -420,6 +409,17 @@ func (t *Reason) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+const (
+	// ReasonNone means that no reasoning is supported.
+	ReasonNone Reason = 0
+	// ReasonInline means that the reasoning tokens are inline and must be explicitly parsed from Content.Text
+	// with adapters.ProviderReasoning.
+	ReasonInline Reason = 1
+	// ReasonAuto means that the reasoning tokens are properly generated and handled by the provider and are
+	// returned as Content.Reasoning.
+	ReasonAuto Reason = -1
+)
 
 // Score is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
 // accuracy.
@@ -560,6 +560,15 @@ func (s *Score) Validate() error {
 	return nil
 }
 
+// SortScenarios sorts the scenarios in place by preference flags.
+// Untested scenarios are sorted last.
+// Tested scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
+// Within the same priority, reasoning scenarios come before non-reasoning.
+// Within the same priority and reasoning status, scenarios are sorted alphabetically by first model name.
+func (s *Score) SortScenarios() {
+	slices.SortFunc(s.Scenarios, CompareScenarios)
+}
+
 // ConsolidateUntestedScenarios merges untested scenarios by comments/reason.
 //
 // Scenarios with matching Comments and Reason are merged, with their models
@@ -595,15 +604,6 @@ func ConsolidateUntestedScenarios(scenarios []Scenario) []Scenario {
 		}
 	}
 	return result
-}
-
-// SortScenarios sorts the scenarios in place by preference flags.
-// Untested scenarios are sorted last.
-// Tested scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
-// Within the same priority, reasoning scenarios come before non-reasoning.
-// Within the same priority and reasoning status, scenarios are sorted alphabetically by first model name.
-func (s *Score) SortScenarios() {
-	slices.SortFunc(s.Scenarios, CompareScenarios)
 }
 
 // CompareScenarios compares two scenarios for sorting.

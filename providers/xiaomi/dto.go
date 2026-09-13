@@ -288,54 +288,6 @@ type Message struct {
 	} `json:"audio,omitzero"`
 }
 
-// Annotation is a provider-specific annotation.
-type Annotation struct {
-	Type        string `json:"type,omitzero"` // "url_citation"
-	URL         string `json:"url,omitzero"`
-	Title       string `json:"title,omitzero"`
-	Summary     string `json:"summary,omitzero"`
-	SiteName    string `json:"site_name,omitzero"`
-	LogoURL     string `json:"logo_url,omitzero"`
-	PublishTime string `json:"publish_time,omitzero"`
-}
-
-// Content is a provider-specific content block.
-type Content struct {
-	Type ContentType `json:"type,omitzero"`
-
-	// Type == "text"
-	Text string `json:"text,omitzero"`
-
-	// Type == "image_url"
-	ImageURL struct {
-		URL string `json:"url,omitzero"`
-	} `json:"image_url,omitzero"`
-
-	// Type == "input_audio"
-	InputAudio struct {
-		Data   string `json:"data,omitzero"`   // base64 encoded or URL
-		Format string `json:"format,omitzero"` // "mp3", "wav"
-	} `json:"input_audio,omitzero"`
-
-	// Type == "video_url"
-	VideoURL struct {
-		URL             string  `json:"url,omitzero"`
-		FPS             float64 `json:"fps,omitzero"`
-		MediaResolution string  `json:"media_resolution,omitzero"` // "default", "max"
-	} `json:"video_url,omitzero"`
-}
-
-// ContentType is a provider-specific content type.
-type ContentType string
-
-// Content type values.
-const (
-	ContentText       ContentType = "text"
-	ContentImageURL   ContentType = "image_url"
-	ContentInputAudio ContentType = "input_audio"
-	ContentVideoURL   ContentType = "video_url"
-)
-
 // From must be called with at most one Request or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	if len(in.Requests) > 1 || len(in.ToolCallResults) > 1 {
@@ -495,6 +447,54 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
+// Annotation is a provider-specific annotation.
+type Annotation struct {
+	Type        string `json:"type,omitzero"` // "url_citation"
+	URL         string `json:"url,omitzero"`
+	Title       string `json:"title,omitzero"`
+	Summary     string `json:"summary,omitzero"`
+	SiteName    string `json:"site_name,omitzero"`
+	LogoURL     string `json:"logo_url,omitzero"`
+	PublishTime string `json:"publish_time,omitzero"`
+}
+
+// Content is a provider-specific content block.
+type Content struct {
+	Type ContentType `json:"type,omitzero"`
+
+	// Type == "text"
+	Text string `json:"text,omitzero"`
+
+	// Type == "image_url"
+	ImageURL struct {
+		URL string `json:"url,omitzero"`
+	} `json:"image_url,omitzero"`
+
+	// Type == "input_audio"
+	InputAudio struct {
+		Data   string `json:"data,omitzero"`   // base64 encoded or URL
+		Format string `json:"format,omitzero"` // "mp3", "wav"
+	} `json:"input_audio,omitzero"`
+
+	// Type == "video_url"
+	VideoURL struct {
+		URL             string  `json:"url,omitzero"`
+		FPS             float64 `json:"fps,omitzero"`
+		MediaResolution string  `json:"media_resolution,omitzero"` // "default", "max"
+	} `json:"video_url,omitzero"`
+}
+
+// ContentType is a provider-specific content type.
+type ContentType string
+
+// Content type values.
+const (
+	ContentText       ContentType = "text"
+	ContentImageURL   ContentType = "image_url"
+	ContentInputAudio ContentType = "input_audio"
+	ContentVideoURL   ContentType = "video_url"
+)
+
 // ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
@@ -605,15 +605,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop          FinishReason = "stop"
-	FinishToolCalls     FinishReason = "tool_calls"
-	FinishLength        FinishReason = "length"
-	FinishContentFilter FinishReason = "content_filter"
-	FinishRepetition    FinishReason = "repetition_truncation"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -634,6 +625,15 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop          FinishReason = "stop"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishLength        FinishReason = "length"
+	FinishContentFilter FinishReason = "content_filter"
+	FinishRepetition    FinishReason = "repetition_truncation"
+)
 
 // Usage is the provider-specific token usage.
 type Usage struct {

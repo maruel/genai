@@ -139,55 +139,6 @@ type Schema struct {
 	Type Type `json:"type,omitzero"`
 }
 
-// jsonSchemaNode is a minimal subset of JSON Schema used for conversion to Gemini's Schema.
-type jsonSchemaNode struct {
-	AnyOf       []jsonSchemaNode          `json:"anyOf"`
-	Default     json.RawMessage           `json:"default"`
-	Description string                    `json:"description"`
-	Enum        []json.RawMessage         `json:"enum"`
-	Example     json.RawMessage           `json:"example"`
-	Format      string                    `json:"format"`
-	Items       *jsonSchemaNode           `json:"items"`
-	MaxItems    int64                     `json:"maxItems"`
-	MaxLength   int64                     `json:"maxLength"`
-	Maximum     float64                   `json:"maximum"`
-	MinItems    int64                     `json:"minItems"`
-	MinLength   int64                     `json:"minLength"`
-	Minimum     float64                   `json:"minimum"`
-	Nullable    bool                      `json:"nullable"`
-	Properties  map[string]jsonSchemaNode `json:"properties"`
-	Required    []string                  `json:"required"`
-	Title       string                    `json:"title"`
-	// Type handles both the single-string form ("string") and the
-	// type-array nullable form (["string", "null"]).
-	Type jsonSchemaType `json:"type"`
-}
-
-// jsonSchemaType unmarshals the JSON Schema "type" field which may be either a
-// plain string ("string") or an array encoding a nullable type (["string", "null"]).
-type jsonSchemaType struct {
-	value    string
-	nullable bool
-}
-
-func (t *jsonSchemaType) UnmarshalJSON(b []byte) error {
-	if len(b) > 0 && b[0] == '[' {
-		var arr []string
-		if err := json.Unmarshal(b, &arr); err != nil {
-			return err
-		}
-		for _, v := range arr {
-			if v == "null" {
-				t.nullable = true
-			} else {
-				t.value = v
-			}
-		}
-		return nil
-	}
-	return json.Unmarshal(b, &t.value)
-}
-
 // FromJSONSchema populates s from a JSON Schema document.
 //
 // Accepts standard JSON Schema with lowercase type names ("string", "integer", etc.).
@@ -302,6 +253,55 @@ func (s *Schema) fromNode(n *jsonSchemaNode) error {
 	}
 
 	return nil
+}
+
+// jsonSchemaNode is a minimal subset of JSON Schema used for conversion to Gemini's Schema.
+type jsonSchemaNode struct {
+	AnyOf       []jsonSchemaNode          `json:"anyOf"`
+	Default     json.RawMessage           `json:"default"`
+	Description string                    `json:"description"`
+	Enum        []json.RawMessage         `json:"enum"`
+	Example     json.RawMessage           `json:"example"`
+	Format      string                    `json:"format"`
+	Items       *jsonSchemaNode           `json:"items"`
+	MaxItems    int64                     `json:"maxItems"`
+	MaxLength   int64                     `json:"maxLength"`
+	Maximum     float64                   `json:"maximum"`
+	MinItems    int64                     `json:"minItems"`
+	MinLength   int64                     `json:"minLength"`
+	Minimum     float64                   `json:"minimum"`
+	Nullable    bool                      `json:"nullable"`
+	Properties  map[string]jsonSchemaNode `json:"properties"`
+	Required    []string                  `json:"required"`
+	Title       string                    `json:"title"`
+	// Type handles both the single-string form ("string") and the
+	// type-array nullable form (["string", "null"]).
+	Type jsonSchemaType `json:"type"`
+}
+
+// jsonSchemaType unmarshals the JSON Schema "type" field which may be either a
+// plain string ("string") or an array encoding a nullable type (["string", "null"]).
+type jsonSchemaType struct {
+	value    string
+	nullable bool
+}
+
+func (t *jsonSchemaType) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] == '[' {
+		var arr []string
+		if err := json.Unmarshal(b, &arr); err != nil {
+			return err
+		}
+		for _, v := range arr {
+			if v == "null" {
+				t.nullable = true
+			} else {
+				t.value = v
+			}
+		}
+		return nil
+	}
+	return json.Unmarshal(b, &t.value)
 }
 
 // nullableFrom returns the non-null node when anyOf encodes a nullable type as [T, null] or [null, T].
@@ -1217,31 +1217,6 @@ type TokenCandidate struct {
 // FinishReason is documented at https://ai.google.dev/api/generate-content?hl=en#FinishReason
 type FinishReason string
 
-const (
-	// FinishStop is the natural stop point of the model or provided stop sequence.
-	FinishStop FinishReason = "STOP"
-	// FinishMaxTokens means the maximum number of tokens as specified in the request was reached.
-	FinishMaxTokens FinishReason = "MAX_TOKENS"
-	// FinishSafety means the response candidate content was flagged for safety reasons.
-	FinishSafety FinishReason = "SAFETY"
-	// FinishRecitation means the response candidate content was flagged for recitation reasons.
-	FinishRecitation FinishReason = "RECITATION"
-	// FinishLanguage means the response candidate content was flagged for using an unsupported language.
-	FinishLanguage FinishReason = "LANGUAGE"
-	// FinishOther is an unknown reason.
-	FinishOther FinishReason = "OTHER"
-	// FinishBlocklist means token generation stopped because the content contains forbidden terms.
-	FinishBlocklist FinishReason = "BLOCKLIST"
-	// FinishProhibitedContent means token generation stopped for potentially containing prohibited content.
-	FinishProhibitedContent FinishReason = "PROHIBITED_CONTENT"
-	// FinishSPII means token generation stopped because the content potentially contains Sensitive Personally Identifiable Information.
-	FinishSPII FinishReason = "SPII"
-	// FinishMalformed means the function call generated by the model is invalid.
-	FinishMalformed FinishReason = "MALFORMED_FUNCTION_CALL"
-	// FinishImageSafety means token generation stopped because generated images contain safety violations.
-	FinishImageSafety FinishReason = "IMAGE_SAFETY"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -1266,6 +1241,31 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 // Usage types.
+
+const (
+	// FinishStop is the natural stop point of the model or provided stop sequence.
+	FinishStop FinishReason = "STOP"
+	// FinishMaxTokens means the maximum number of tokens as specified in the request was reached.
+	FinishMaxTokens FinishReason = "MAX_TOKENS"
+	// FinishSafety means the response candidate content was flagged for safety reasons.
+	FinishSafety FinishReason = "SAFETY"
+	// FinishRecitation means the response candidate content was flagged for recitation reasons.
+	FinishRecitation FinishReason = "RECITATION"
+	// FinishLanguage means the response candidate content was flagged for using an unsupported language.
+	FinishLanguage FinishReason = "LANGUAGE"
+	// FinishOther is an unknown reason.
+	FinishOther FinishReason = "OTHER"
+	// FinishBlocklist means token generation stopped because the content contains forbidden terms.
+	FinishBlocklist FinishReason = "BLOCKLIST"
+	// FinishProhibitedContent means token generation stopped for potentially containing prohibited content.
+	FinishProhibitedContent FinishReason = "PROHIBITED_CONTENT"
+	// FinishSPII means token generation stopped because the content potentially contains Sensitive Personally Identifiable Information.
+	FinishSPII FinishReason = "SPII"
+	// FinishMalformed means the function call generated by the model is invalid.
+	FinishMalformed FinishReason = "MALFORMED_FUNCTION_CALL"
+	// FinishImageSafety means token generation stopped because generated images contain safety violations.
+	FinishImageSafety FinishReason = "IMAGE_SAFETY"
+)
 
 // UsageMetadata is documented at https://ai.google.dev/api/generate-content?hl=en#UsageMetadata
 type UsageMetadata struct {

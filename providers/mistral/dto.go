@@ -435,14 +435,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason represents the reason a generation finished.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop          FinishReason = "stop"
-	FinishLength        FinishReason = "length"
-	FinishToolCalls     FinishReason = "tool_calls"
-	FinishContentFilter FinishReason = "content_filter"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -461,6 +453,14 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop          FinishReason = "stop"
+	FinishLength        FinishReason = "length"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishContentFilter FinishReason = "content_filter"
+)
 
 // Usage represents token usage information.
 type Usage struct {

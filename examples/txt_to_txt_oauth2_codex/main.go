@@ -104,15 +104,6 @@ type cachedTokens struct {
 	AccountID    string `json:"account_id,omitempty"`
 }
 
-// cachePath returns the path to the token cache file.
-func cachePath() (string, error) {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(dir, "genai-oauth2-example", "codex-tokens.json"), nil
-}
-
 // load reads cached tokens from disk.
 func (t *cachedTokens) load() error {
 	p, err := cachePath()
@@ -143,6 +134,15 @@ func (t *cachedTokens) save() error {
 }
 
 // OAuth2 flow.
+
+// cachePath returns the path to the token cache file.
+func cachePath() (string, error) {
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, "genai-oauth2-example", "codex-tokens.json"), nil
+}
 
 // getTokens returns valid tokens, using cached tokens if available and
 // refreshing if needed. Falls back to a full browser login.

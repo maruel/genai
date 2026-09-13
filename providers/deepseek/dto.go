@@ -36,16 +36,6 @@ type GenOption struct {
 	ReasoningEffort ReasoningEffort
 }
 
-// ReasoningEffort controls the amount of effort the model puts into reasoning.
-type ReasoningEffort string
-
-const (
-	// ReasoningEffortHigh is the default effort for regular requests.
-	ReasoningEffortHigh ReasoningEffort = "high"
-	// ReasoningEffortMax maximizes reasoning quality.
-	ReasoningEffortMax ReasoningEffort = "max"
-)
-
 // Validate implements genai.Validatable.
 func (g *GenOption) Validate() error {
 	switch g.ReasoningEffort {
@@ -55,6 +45,16 @@ func (g *GenOption) Validate() error {
 	}
 	return nil
 }
+
+// ReasoningEffort controls the amount of effort the model puts into reasoning.
+type ReasoningEffort string
+
+const (
+	// ReasoningEffortHigh is the default effort for regular requests.
+	ReasoningEffortHigh ReasoningEffort = "high"
+	// ReasoningEffortMax maximizes reasoning quality.
+	ReasoningEffortMax ReasoningEffort = "max"
+)
 
 // ChatRequest is documented at https://api-docs.deepseek.com/api/create-chat-completion
 type ChatRequest struct {
@@ -391,15 +391,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop          FinishReason = "stop"
-	FinishToolCalls     FinishReason = "tool_calls"
-	FinishLength        FinishReason = "length"
-	FinishContentFilter FinishReason = "content_filter"
-	FinishInsufficient  FinishReason = "insufficient_system_resource"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -424,6 +415,15 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Finish reason values.
+const (
+	FinishStop          FinishReason = "stop"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishLength        FinishReason = "length"
+	FinishContentFilter FinishReason = "content_filter"
+	FinishInsufficient  FinishReason = "insufficient_system_resource"
+)
+
 // Usage is the provider-specific token usage.
 type Usage struct {
 	CompletionTokens      int64 `json:"completion_tokens"`
@@ -445,18 +445,6 @@ type Logprobs struct {
 	ReasoningContent []LogprobEntry `json:"reasoning_content,omitzero"`
 }
 
-// LogprobEntry is a single log probability entry.
-type LogprobEntry struct {
-	Token       string  `json:"token"`
-	Bytes       []byte  `json:"bytes"`
-	Logprob     float64 `json:"logprob"`
-	TopLogprobs []struct {
-		Token   string  `json:"token"`
-		Bytes   []byte  `json:"bytes"`
-		Logprob float64 `json:"logprob"`
-	} `json:"top_logprobs"`
-}
-
 // To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
@@ -474,6 +462,18 @@ func (l *Logprobs) To() [][]genai.Logprob {
 		out = append(out, lp)
 	}
 	return out
+}
+
+// LogprobEntry is a single log probability entry.
+type LogprobEntry struct {
+	Token       string  `json:"token"`
+	Bytes       []byte  `json:"bytes"`
+	Logprob     float64 `json:"logprob"`
+	TopLogprobs []struct {
+		Token   string  `json:"token"`
+		Bytes   []byte  `json:"bytes"`
+		Logprob float64 `json:"logprob"`
+	} `json:"top_logprobs"`
 }
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.

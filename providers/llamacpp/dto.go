@@ -313,13 +313,6 @@ type Usage struct {
 // FinishReason describes why the model stopped generating tokens.
 type FinishReason string
 
-// Valid FinishReason values.
-const (
-	FinishedStop      FinishReason = "stop"
-	FinishedLength    FinishReason = "length"
-	FinishedToolCalls FinishReason = "tool_calls"
-)
-
 // ToFinishReason converts to the genai finish reason type.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -336,6 +329,13 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Valid FinishReason values.
+const (
+	FinishedStop      FinishReason = "stop"
+	FinishedLength    FinishReason = "length"
+	FinishedToolCalls FinishReason = "tool_calls"
+)
 
 // ReasoningFormat defines the reasoning format supported by llama.cpp.
 //
@@ -428,12 +428,6 @@ type CompletionRequest struct {
 	Lora                []Lora            `json:"lora,omitzero"`
 }
 
-// Lora is a LoRA adapter configuration.
-type Lora struct {
-	ID    int64   `json:"id,omitzero"`
-	Scale float64 `json:"scale,omitzero"`
-}
-
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	var errs []error
@@ -471,6 +465,12 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
+}
+
+// Lora is a LoRA adapter configuration.
+type Lora struct {
+	ID    int64   `json:"id,omitzero"`
+	Scale float64 `json:"scale,omitzero"`
 }
 
 // GenerationSettings contains the generation settings returned by the server in completion responses.
@@ -562,13 +562,6 @@ func (c *CompletionResponse) ToResult() (genai.Result, error) {
 // StopType describes the reason a completion stopped.
 type StopType string
 
-// Valid StopType values.
-const (
-	StopEOS   StopType = "eos"
-	StopLimit StopType = "limit"
-	StopWord  StopType = "word"
-)
-
 // ToFinishReason converts to the genai finish reason type.
 func (s StopType) ToFinishReason() genai.FinishReason {
 	switch s {
@@ -585,6 +578,13 @@ func (s StopType) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(s)
 	}
 }
+
+// Valid StopType values.
+const (
+	StopEOS   StopType = "eos"
+	StopLimit StopType = "limit"
+	StopWord  StopType = "word"
+)
 
 // Timings contains timing information for prompt processing and prediction.
 type Timings struct {

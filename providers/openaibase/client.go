@@ -261,17 +261,6 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 	return selectedModel, nil
 }
 
-func isImageModelMatch(id string, cheap bool) bool {
-	if !strings.HasPrefix(id, "gpt-image") {
-		return false
-	}
-	isMini := strings.HasSuffix(id, "-mini")
-	if cheap {
-		return isMini
-	}
-	return !isMini
-}
-
 // SelectBestImageModel selects the most appropriate image model based on the preference (cheap, good, or SOTA).
 func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
@@ -358,6 +347,17 @@ func (c *Client) IsImage() bool {
 // IsVideo returns true if the output modality is video.
 func (c *Client) IsVideo() bool {
 	return slices.Contains(c.Impl.OutputModalities, genai.ModalityVideo)
+}
+
+func isImageModelMatch(id string, cheap bool) bool {
+	if !strings.HasPrefix(id, "gpt-image") {
+		return false
+	}
+	isMini := strings.HasSuffix(id, "-mini")
+	if cheap {
+		return isMini
+	}
+	return !isMini
 }
 
 // ProcessHeaders extracts rate limit information from OpenAI HTTP response headers.

@@ -53,119 +53,6 @@ type ChatRequest struct {
 	TopLogprobs int64              `json:"top_logprobs,omitzero"`
 }
 
-// ChatRequestFormat is not documented.
-//
-// See fromChatRequest() in https://github.com/ollama/ollama/blob/main/openai/openai.go for the actual
-// expected format. I think that using llama-server's actual format may be saner.
-//
-// See llmServer.Completion() in https://github.com/ollama/ollama/blob/main/llm/server.go for the use. Ollama
-// doesn't use llama-server's native JSON support at all.
-type ChatRequestFormat struct {
-	Type   string
-	Schema genai.JSONSchema
-}
-
-// MarshalJSON implements json.Marshaler.
-func (c *ChatRequestFormat) MarshalJSON() ([]byte, error) {
-	if c.Type != "" {
-		return json.Marshal(c.Type)
-	}
-	return json.Marshal(c.Schema)
-}
-
-// ReasoningEffort controls the amount of thinking effort.
-//
-// It maps to the "think" field in the Ollama API, which accepts boolean
-// (true/false) or string ("low", "medium", "high") values.
-type ReasoningEffort string
-
-// Reasoning effort values.
-const (
-	// ReasoningEffortOff disables thinking. Serialized as JSON false.
-	ReasoningEffortOff    ReasoningEffort = "off"
-	ReasoningEffortLow    ReasoningEffort = "low"
-	ReasoningEffortMedium ReasoningEffort = "medium"
-	ReasoningEffortHigh   ReasoningEffort = "high"
-)
-
-// MarshalJSON implements json.Marshaler.
-//
-// "off" is serialized as boolean false to match the Ollama API.
-func (r ReasoningEffort) MarshalJSON() ([]byte, error) {
-	if r == ReasoningEffortOff {
-		return []byte("false"), nil
-	}
-	return json.Marshal(string(r))
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (r *ReasoningEffort) UnmarshalJSON(b []byte) error {
-	if string(b) == "false" {
-		*r = ReasoningEffortOff
-		return nil
-	}
-	if string(b) == "true" {
-		// Boolean true means default thinking; map to empty (server default).
-		*r = ""
-		return nil
-	}
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-	*r = ReasoningEffort(s)
-	return r.Validate()
-}
-
-// Validate implements genai.Validatable.
-func (r ReasoningEffort) Validate() error {
-	switch r {
-	case "", ReasoningEffortOff, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
-		return nil
-	default:
-		return fmt.Errorf("invalid reasoning effort %q", r)
-	}
-}
-
-// GenOptionText defines Ollama specific options.
-type GenOptionText struct {
-	// ReasoningEffort controls the thinking effort level ("off", "low", "medium", "high").
-	ReasoningEffort ReasoningEffort
-}
-
-// Validate implements genai.Validatable.
-func (o *GenOptionText) Validate() error {
-	return o.ReasoningEffort.Validate()
-}
-
-// ChatRequestOptions is named Options in ollama.
-//
-// It is documented at: https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
-type ChatRequestOptions struct {
-	// Fields from: https://pkg.go.dev/github.com/ollama/ollama/api#Runner
-	NumCtx    int64 `json:"num_ctx,omitzero"` // Context Window, default 4096
-	NumBatch  int64 `json:"num_batch,omitzero"`
-	NumGPU    int64 `json:"num_gpu,omitzero"`
-	MainGPU   int64 `json:"main_gpu,omitzero"`
-	UseMMap   bool  `json:"use_mmap,omitzero"`
-	NumThread int64 `json:"num_thread,omitzero"`
-
-	// Fields from: https://pkg.go.dev/github.com/ollama/ollama/api#Options
-	NumKeep          int64    `json:"num_keep,omitzero"`          //
-	Seed             int64    `json:"seed,omitzero"`              //
-	NumPredict       int64    `json:"num_predict,omitzero"`       // MaxTokens
-	TopK             int64    `json:"top_k,omitzero"`             // Default: 40
-	TopP             float64  `json:"top_p,omitzero"`             // Default: 0.9
-	MinP             float64  `json:"min_p,omitzero"`             // Default: 0.0
-	TypicalP         float64  `json:"typical_p,omitzero"`         //
-	RepeatLastN      int64    `json:"repeat_last_n,omitzero"`     // Lookback for repeated tokens, default 64
-	Temperature      float64  `json:"temperature,omitzero"`       // default 0.7 or 0.8?
-	RepeatPenalty    float64  `json:"repeat_penalty,omitzero"`    // default 1.1
-	PresencePenalty  float64  `json:"presence_penalty,omitzero"`  //
-	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` //
-	Stop             []string `json:"stop,omitzero"`              //
-}
-
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
@@ -279,6 +166,119 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
+}
+
+// ChatRequestFormat is not documented.
+//
+// See fromChatRequest() in https://github.com/ollama/ollama/blob/main/openai/openai.go for the actual
+// expected format. I think that using llama-server's actual format may be saner.
+//
+// See llmServer.Completion() in https://github.com/ollama/ollama/blob/main/llm/server.go for the use. Ollama
+// doesn't use llama-server's native JSON support at all.
+type ChatRequestFormat struct {
+	Type   string
+	Schema genai.JSONSchema
+}
+
+// MarshalJSON implements json.Marshaler.
+func (c *ChatRequestFormat) MarshalJSON() ([]byte, error) {
+	if c.Type != "" {
+		return json.Marshal(c.Type)
+	}
+	return json.Marshal(c.Schema)
+}
+
+// ReasoningEffort controls the amount of thinking effort.
+//
+// It maps to the "think" field in the Ollama API, which accepts boolean
+// (true/false) or string ("low", "medium", "high") values.
+type ReasoningEffort string
+
+// MarshalJSON implements json.Marshaler.
+//
+// "off" is serialized as boolean false to match the Ollama API.
+func (r ReasoningEffort) MarshalJSON() ([]byte, error) {
+	if r == ReasoningEffortOff {
+		return []byte("false"), nil
+	}
+	return json.Marshal(string(r))
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (r *ReasoningEffort) UnmarshalJSON(b []byte) error {
+	if string(b) == "false" {
+		*r = ReasoningEffortOff
+		return nil
+	}
+	if string(b) == "true" {
+		// Boolean true means default thinking; map to empty (server default).
+		*r = ""
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*r = ReasoningEffort(s)
+	return r.Validate()
+}
+
+// Validate implements genai.Validatable.
+func (r ReasoningEffort) Validate() error {
+	switch r {
+	case "", ReasoningEffortOff, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+		return nil
+	default:
+		return fmt.Errorf("invalid reasoning effort %q", r)
+	}
+}
+
+// Reasoning effort values.
+const (
+	// ReasoningEffortOff disables thinking. Serialized as JSON false.
+	ReasoningEffortOff    ReasoningEffort = "off"
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+)
+
+// GenOptionText defines Ollama specific options.
+type GenOptionText struct {
+	// ReasoningEffort controls the thinking effort level ("off", "low", "medium", "high").
+	ReasoningEffort ReasoningEffort
+}
+
+// Validate implements genai.Validatable.
+func (o *GenOptionText) Validate() error {
+	return o.ReasoningEffort.Validate()
+}
+
+// ChatRequestOptions is named Options in ollama.
+//
+// It is documented at: https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
+type ChatRequestOptions struct {
+	// Fields from: https://pkg.go.dev/github.com/ollama/ollama/api#Runner
+	NumCtx    int64 `json:"num_ctx,omitzero"` // Context Window, default 4096
+	NumBatch  int64 `json:"num_batch,omitzero"`
+	NumGPU    int64 `json:"num_gpu,omitzero"`
+	MainGPU   int64 `json:"main_gpu,omitzero"`
+	UseMMap   bool  `json:"use_mmap,omitzero"`
+	NumThread int64 `json:"num_thread,omitzero"`
+
+	// Fields from: https://pkg.go.dev/github.com/ollama/ollama/api#Options
+	NumKeep          int64    `json:"num_keep,omitzero"`          //
+	Seed             int64    `json:"seed,omitzero"`              //
+	NumPredict       int64    `json:"num_predict,omitzero"`       // MaxTokens
+	TopK             int64    `json:"top_k,omitzero"`             // Default: 40
+	TopP             float64  `json:"top_p,omitzero"`             // Default: 0.9
+	MinP             float64  `json:"min_p,omitzero"`             // Default: 0.0
+	TypicalP         float64  `json:"typical_p,omitzero"`         //
+	RepeatLastN      int64    `json:"repeat_last_n,omitzero"`     // Lookback for repeated tokens, default 64
+	Temperature      float64  `json:"temperature,omitzero"`       // default 0.7 or 0.8?
+	RepeatPenalty    float64  `json:"repeat_penalty,omitzero"`    // default 1.1
+	PresencePenalty  float64  `json:"presence_penalty,omitzero"`  //
+	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` //
+	Stop             []string `json:"stop,omitzero"`              //
 }
 
 // Message is described at https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
@@ -540,20 +540,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // DoneReason is not documented.
 type DoneReason string
 
-// DoneReason values for completion status.
-const (
-	// DoneStop means the model finished generating normally.
-	DoneStop DoneReason = "stop"
-	// DoneLength means the model hit the token limit.
-	DoneLength DoneReason = "length"
-	// DoneLoad means the model was loaded.
-	//
-	// See https://pkg.go.dev/github.com/ollama/ollama/server#Server.ChatHandler
-	DoneLoad DoneReason = "load"
-	// DoneUnload means the model was unloaded.
-	DoneUnload DoneReason = "unload"
-)
-
 // ToFinishReason converts the DoneReason to a genai.FinishReason.
 func (d DoneReason) ToFinishReason() genai.FinishReason {
 	switch d {
@@ -570,6 +556,20 @@ func (d DoneReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(d)
 	}
 }
+
+// DoneReason values for completion status.
+const (
+	// DoneStop means the model finished generating normally.
+	DoneStop DoneReason = "stop"
+	// DoneLength means the model hit the token limit.
+	DoneLength DoneReason = "length"
+	// DoneLoad means the model was loaded.
+	//
+	// See https://pkg.go.dev/github.com/ollama/ollama/server#Server.ChatHandler
+	DoneLoad DoneReason = "load"
+	// DoneUnload means the model was unloaded.
+	DoneUnload DoneReason = "unload"
+)
 
 // ChatStreamChunkResponse is a streaming chunk from the chat API.
 type ChatStreamChunkResponse ChatResponse

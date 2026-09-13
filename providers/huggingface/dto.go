@@ -389,6 +389,31 @@ type ChatResponse struct {
 	ServiceTier    struct{} `json:"service_tier"`
 }
 
+// ToResult converts the response to a genai.Result.
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
+		// At the moment, Huggingface doesn't support caching.
+		Usage: genai.Usage{
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
+			TotalTokens:       c.Usage.TotalTokens,
+		},
+	}
+	if len(c.Choices) != 1 {
+		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
+	}
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	err := c.Choices[0].Message.To(&out.Message)
+	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		// Lie for the benefit of everyone.
+		out.Usage.FinishReason = genai.FinishedToolCalls
+	}
+	out.Logprobs = c.Choices[0].Logprobs.To()
+	return out, err
+}
+
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
@@ -447,14 +472,6 @@ func (l *Logprobs) To() [][]genai.Logprob {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop         FinishReason = "stop"
-	FinishLength       FinishReason = "length"
-	FinishStopSequence FinishReason = "stop_sequence"
-	FinishToolCalls    FinishReason = "tool_calls"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -473,6 +490,14 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop         FinishReason = "stop"
+	FinishLength       FinishReason = "length"
+	FinishStopSequence FinishReason = "stop_sequence"
+	FinishToolCalls    FinishReason = "tool_calls"
+)
 
 // Usage is the provider-specific token usage.
 type Usage struct {
@@ -541,31 +566,6 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
-}
-
-// ToResult converts the response to a genai.Result.
-func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		// At the moment, Huggingface doesn't support caching.
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-		},
-	}
-	if len(c.Choices) != 1 {
-		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
-	}
-	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
-	err := c.Choices[0].Message.To(&out.Message)
-	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
-		// Lie for the benefit of everyone.
-		out.Usage.FinishReason = genai.FinishedToolCalls
-	}
-	out.Logprobs = c.Choices[0].Logprobs.To()
-	return out, err
 }
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.

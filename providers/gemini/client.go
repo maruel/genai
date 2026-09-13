@@ -117,162 +117,6 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
-// New creates a new client to talk to Google's Gemini platform API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://ai.google.dev/gemini-api/docs/models/gemini
-//
-// See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
-// for good ideas on how to prompt with images.
-//
-// Using large files requires a pinned model with caching support.
-//
-// Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
-//
-// As of May 2025, price on Pro model increases when more than 200k input tokens are used.
-// Cached input tokens are 25% of the price of new tokens.
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://aistudio.google.com/apikey"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
-		}
-	}
-	switch len(modalities) {
-	case 0:
-		// Auto-detect below.
-	case 1:
-		switch modalities[0] {
-		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
-		case genai.ModalityDocument:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
-		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
-		}
-	case 2:
-		// The only combination supported is image + text.
-		mods := slices.Clone(modalities)
-		slices.Sort(mods)
-		if !slices.Equal(mods, []genai.Modality{genai.ModalityImage, genai.ModalityText}) {
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image+text are supported when grouped together", mods)
-		}
-	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", modalities)
-	}
-	// Google supports HTTP POST gzip compression!
-	var t http.RoundTripper = &roundtrippers.PostCompressed{
-		Transport: base.DefaultTransport,
-		Encoding:  "gzip",
-	}
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			LieToolCalls:    true,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"x-goog-api-key": {apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			var mod genai.Modality
-			switch len(modalities) {
-			case 0:
-				mod = genai.ModalityText
-			case 1:
-				mod = modalities[0]
-			default:
-				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
-			}
-			switch mod {
-			case genai.ModalityText:
-				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
-				c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityImage:
-				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityVideo:
-				if c.impl.Model, err = c.selectBestVideoModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityAudio:
-				if c.impl.Model, err = c.selectBestAudioModel(ctx); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityDocument:
-				// TODO: Implement document modality model selection.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
-			default:
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
-			}
-		default:
-			c.impl.Model = model
-			if len(modalities) == 0 {
-				c.impl.OutputModalities, err = c.detectModelModalities(ctx, c.impl.Model)
-			} else {
-				c.impl.OutputModalities = modalities
-			}
-			c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
-			c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
-		}
-	}
-	return c, err
-}
-
 // detectModelModalities tries its best to figure out the modality of a model
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -392,66 +236,6 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
-}
-
-// isPinnedModel returns true if the model name ends with a version number (e.g., -001, -002).
-func isPinnedModel(name string) bool {
-	parts := strings.Split(name, "-")
-	if len(parts) == 0 {
-		return false
-	}
-	lastPart := parts[len(parts)-1]
-	// A pinned model ends with 3 digits and is not "-latest"
-	if lastPart == "latest" {
-		return false
-	}
-	return len(lastPart) == 3 && lastPart[0] >= '0' && lastPart[0] <= '9'
-}
-
-// compareVersions compares two model names by their version numbers.
-// Returns >0 if a > b, <0 if a < b, 0 if equal or incomparable.
-// Example: "gemini-3-flash" > "gemini-2.5-flash".
-func compareVersions(a, b string) int {
-	// Extract version parts (e.g., "2.5" from "gemini-2.5-flash")
-	getVersionParts := func(name string) (major, minor int) {
-		parts := strings.Split(name, "-")
-		for i, part := range parts {
-			if part == "gemini" && i+1 < len(parts) {
-				versionStr := parts[i+1]
-				// Check if the next meaningful part is a type (flash, pro, etc)
-				var isVersionNumber bool
-				for j := i + 2; j < len(parts); j++ {
-					if parts[j] == "flash" || parts[j] == "pro" || parts[j] == "lite" {
-						isVersionNumber = true
-						break
-					}
-				}
-				if isVersionNumber {
-					// Parse major.minor version
-					versionParts := strings.Split(versionStr, ".")
-					if len(versionParts) >= 1 {
-						if v, err := strconv.Atoi(versionParts[0]); err == nil {
-							major = v
-						}
-					}
-					if len(versionParts) >= 2 {
-						if v, err := strconv.Atoi(versionParts[1]); err == nil {
-							minor = v
-						}
-					}
-					return
-				}
-			}
-		}
-		return
-	}
-
-	aMajor, aMinor := getVersionParts(a)
-	bMajor, bMinor := getVersionParts(b)
-	if aMajor != bMajor {
-		return aMajor - bMajor
-	}
-	return aMinor - bMinor
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
@@ -1377,6 +1161,232 @@ func (c *Client) FileSearchStoreDocumentDelete(ctx context.Context, name string,
 // https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/batch-prediction-api
 // This may require creating a whole new provider with Vertex AI API surface.
 
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	// GenAsync (predictLongRunning) is only supported for video generation models.
+	// Text models use generateContent, which doesn't support async operations.
+	return genai.ProviderCapabilities{
+		GenAsync: slices.Contains(c.impl.OutputModalities, genai.ModalityVideo),
+		Caching:  true,
+	}
+}
+
+// New creates a new client to talk to Google's Gemini platform API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://ai.google.dev/gemini-api/docs/models/gemini
+//
+// See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
+// for good ideas on how to prompt with images.
+//
+// Using large files requires a pinned model with caching support.
+//
+// Visit https://ai.google.dev/gemini-api/docs/pricing for up to date information.
+//
+// As of May 2025, price on Pro model increases when more than 200k input tokens are used.
+// Cached input tokens are 25% of the price of new tokens.
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://aistudio.google.com/apikey"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("GEMINI_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
+		}
+	}
+	switch len(modalities) {
+	case 0:
+		// Auto-detect below.
+	case 1:
+		switch modalities[0] {
+		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityDocument:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
+		}
+	case 2:
+		// The only combination supported is image + text.
+		mods := slices.Clone(modalities)
+		slices.Sort(mods)
+		if !slices.Equal(mods, []genai.Modality{genai.ModalityImage, genai.ModalityText}) {
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image+text are supported when grouped together", mods)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", modalities)
+	}
+	// Google supports HTTP POST gzip compression!
+	var t http.RoundTripper = &roundtrippers.PostCompressed{
+		Transport: base.DefaultTransport,
+		Encoding:  "gzip",
+	}
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			LieToolCalls:    true,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"x-goog-api-key": {apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			var mod genai.Modality
+			switch len(modalities) {
+			case 0:
+				mod = genai.ModalityText
+			case 1:
+				mod = modalities[0]
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
+			}
+			switch mod {
+			case genai.ModalityText:
+				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
+				c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityImage:
+				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityVideo:
+				if c.impl.Model, err = c.selectBestVideoModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityAudio:
+				if c.impl.Model, err = c.selectBestAudioModel(ctx); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityDocument:
+				// TODO: Implement document modality model selection.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
+			default:
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
+			}
+		default:
+			c.impl.Model = model
+			if len(modalities) == 0 {
+				c.impl.OutputModalities, err = c.detectModelModalities(ctx, c.impl.Model)
+			} else {
+				c.impl.OutputModalities = modalities
+			}
+			c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
+			c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
+		}
+	}
+	return c, err
+}
+
+// isPinnedModel returns true if the model name ends with a version number (e.g., -001, -002).
+func isPinnedModel(name string) bool {
+	parts := strings.Split(name, "-")
+	if len(parts) == 0 {
+		return false
+	}
+	lastPart := parts[len(parts)-1]
+	// A pinned model ends with 3 digits and is not "-latest"
+	if lastPart == "latest" {
+		return false
+	}
+	return len(lastPart) == 3 && lastPart[0] >= '0' && lastPart[0] <= '9'
+}
+
+// compareVersions compares two model names by their version numbers.
+// Returns >0 if a > b, <0 if a < b, 0 if equal or incomparable.
+// Example: "gemini-3-flash" > "gemini-2.5-flash".
+func compareVersions(a, b string) int {
+	// Extract version parts (e.g., "2.5" from "gemini-2.5-flash")
+	getVersionParts := func(name string) (major, minor int) {
+		parts := strings.Split(name, "-")
+		for i, part := range parts {
+			if part == "gemini" && i+1 < len(parts) {
+				versionStr := parts[i+1]
+				// Check if the next meaningful part is a type (flash, pro, etc)
+				var isVersionNumber bool
+				for j := i + 2; j < len(parts); j++ {
+					if parts[j] == "flash" || parts[j] == "pro" || parts[j] == "lite" {
+						isVersionNumber = true
+						break
+					}
+				}
+				if isVersionNumber {
+					// Parse major.minor version
+					versionParts := strings.Split(versionStr, ".")
+					if len(versionParts) >= 1 {
+						if v, err := strconv.Atoi(versionParts[0]); err == nil {
+							major = v
+						}
+					}
+					if len(versionParts) >= 2 {
+						if v, err := strconv.Atoi(versionParts[1]); err == nil {
+							minor = v
+						}
+					}
+					return
+				}
+			}
+		}
+		return
+	}
+
+	aMajor, aMinor := getVersionParts(a)
+	bMajor, bMinor := getVersionParts(b)
+	if aMajor != bMajor {
+		return aMajor - bMajor
+	}
+	return aMinor - bMinor
+}
+
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
@@ -1510,16 +1520,6 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 }
 
 func yieldNothing[T any](yield func(T) bool) {
-}
-
-// Capabilities implements genai.Provider.
-func (c *Client) Capabilities() genai.ProviderCapabilities {
-	// GenAsync (predictLongRunning) is only supported for video generation models.
-	// Text models use generateContent, which doesn't support async operations.
-	return genai.ProviderCapabilities{
-		GenAsync: slices.Contains(c.impl.OutputModalities, genai.ModalityVideo),
-		Caching:  true,
-	}
 }
 
 var _ genai.Provider = &Client{}

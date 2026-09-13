@@ -53,133 +53,6 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
-// New creates a new client to talk to the Pollinations platform API.
-//
-// The value for ProviderOptionAPIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
-// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
-//
-// ProviderOptionAPIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
-//
-// To use multiple models, create multiple clients.
-// Models are listed at https://docs.perplexity.ai/guides/model-cards
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	var h http.Header
-	if apiKey == "" {
-		apiKey = os.Getenv("POLLINATIONS_API_KEY")
-	}
-	if apiKey != "" {
-		if strings.HasPrefix(apiKey, "http://") || strings.HasPrefix(apiKey, "https://") {
-			h = http.Header{"Referrer": {apiKey}}
-		} else {
-			h = http.Header{"Authorization": {"Bearer " + apiKey}}
-		}
-	}
-	// Default to text generation.
-	preferText := true
-	switch len(modalities) {
-	case 0:
-		// Auto-detect below.
-	case 1:
-		switch modalities[0] {
-		case genai.ModalityAudio:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", modalities)
-		case genai.ModalityImage:
-			preferText = false
-		case genai.ModalityText:
-		case genai.ModalityDocument, genai.ModalityVideo:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
-		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
-		}
-	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
-	}
-	t := base.DefaultTransport
-	if r, ok := t.(*roundtrippers.Retry); ok {
-		// Make a copy so we can edit it.
-		c := *r
-		if p, ok := c.Policy.(*roundtrippers.ExponentialBackoff); ok {
-			// Tweak the policy.
-			c.Policy = &exponentialBackoff{ExponentialBackoff: *p}
-		} else {
-			return nil, fmt.Errorf("unsupported retry policy %T", c.Policy)
-		}
-		t = &c
-	} else {
-		return nil, fmt.Errorf("unsupported transport %T", t)
-	}
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://text.pollinations.ai/openai",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			LieToolCalls:    true,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				Lenient: internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    h,
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	var err error
-	switch model {
-	case "":
-	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-		if preferText {
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
-		} else {
-			if c.impl.Model, err = c.selectBestImageModel(ctx); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-		}
-	default:
-		c.impl.Model = model
-		if len(modalities) == 0 {
-			c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
-		} else {
-			c.impl.OutputModalities = modalities
-		}
-	}
-	return c, err
-}
-
 // detectModelModalities tries its best to figure out the modality of a model
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -476,6 +349,133 @@ func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error
 		return fmt.Errorf("modality %s not supported", mod)
 	}
 	return nil
+}
+
+// New creates a new client to talk to the Pollinations platform API.
+//
+// The value for ProviderOptionAPIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
+// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
+//
+// ProviderOptionAPIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
+//
+// To use multiple models, create multiple clients.
+// Models are listed at https://docs.perplexity.ai/guides/model-cards
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	var h http.Header
+	if apiKey == "" {
+		apiKey = os.Getenv("POLLINATIONS_API_KEY")
+	}
+	if apiKey != "" {
+		if strings.HasPrefix(apiKey, "http://") || strings.HasPrefix(apiKey, "https://") {
+			h = http.Header{"Referrer": {apiKey}}
+		} else {
+			h = http.Header{"Authorization": {"Bearer " + apiKey}}
+		}
+	}
+	// Default to text generation.
+	preferText := true
+	switch len(modalities) {
+	case 0:
+		// Auto-detect below.
+	case 1:
+		switch modalities[0] {
+		case genai.ModalityAudio:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", modalities)
+		case genai.ModalityImage:
+			preferText = false
+		case genai.ModalityText:
+		case genai.ModalityDocument, genai.ModalityVideo:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
+	}
+	t := base.DefaultTransport
+	if r, ok := t.(*roundtrippers.Retry); ok {
+		// Make a copy so we can edit it.
+		c := *r
+		if p, ok := c.Policy.(*roundtrippers.ExponentialBackoff); ok {
+			// Tweak the policy.
+			c.Policy = &exponentialBackoff{ExponentialBackoff: *p}
+		} else {
+			return nil, fmt.Errorf("unsupported retry policy %T", c.Policy)
+		}
+		t = &c
+	} else {
+		return nil, fmt.Errorf("unsupported transport %T", t)
+	}
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      "https://text.pollinations.ai/openai",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			LieToolCalls:    true,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				Lenient: internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    h,
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	var err error
+	switch model {
+	case "":
+	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+		if preferText {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
+		} else {
+			if c.impl.Model, err = c.selectBestImageModel(ctx); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
+		}
+	default:
+		c.impl.Model = model
+		if len(modalities) == 0 {
+			c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
+		} else {
+			c.impl.OutputModalities = modalities
+		}
+	}
+	return c, err
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

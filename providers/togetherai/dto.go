@@ -534,15 +534,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop         FinishReason = "stop"
-	FinishEOS          FinishReason = "eos"
-	FinishLength       FinishReason = "length"
-	FinishFunctionCall FinishReason = "function_call"
-	FinishToolCalls    FinishReason = "tool_calls"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -561,6 +552,15 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop         FinishReason = "stop"
+	FinishEOS          FinishReason = "eos"
+	FinishLength       FinishReason = "length"
+	FinishFunctionCall FinishReason = "function_call"
+	FinishToolCalls    FinishReason = "tool_calls"
+)
 
 // TokenIDs is a slice of token IDs returned by the API. Values are nullable and
 // can be int or float, so we use *json.Number to handle both nulls and varying

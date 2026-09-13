@@ -74,6 +74,76 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
+// selectBestTextModel selects the most appropriate model based on the preference.
+func (c *Client) selectBestTextModel(preference string) string {
+	switch preference {
+	case string(genai.ModelCheap):
+		return "qwen/qwen3.5-35b-a3b"
+	case string(genai.ModelGood):
+		return "qwen/qwen3.5-122b-a10b"
+	default:
+		// SOTA
+		return "qwen/qwen3.5-397b-a17b"
+	}
+}
+
+// Name implements genai.Provider.
+func (c *Client) Name() string {
+	return "openrouter"
+}
+
+// ModelID implements genai.Provider.
+func (c *Client) ModelID() string {
+	return c.impl.Model
+}
+
+// OutputModalities implements genai.Provider.
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
+}
+
+// Scoreboard implements genai.Provider.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return Scoreboard()
+}
+
+// HTTPClient returns the HTTP client.
+func (c *Client) HTTPClient() *http.Client {
+	return &c.impl.Client
+}
+
+// GenSync implements genai.Provider.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
+}
+
+// GenSyncRaw provides access to the raw API.
+func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
+	return c.impl.GenSyncRaw(ctx, in, out)
+}
+
+// GenStream implements genai.Provider.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	return c.impl.GenStream(ctx, msgs, opts...)
+}
+
+// GenStreamRaw provides access to the raw API.
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
+	return c.impl.GenStreamRaw(ctx, in)
+}
+
+// ListModels implements genai.Provider.
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
+	var resp ModelsResponse
+	if err := c.impl.DoRequest(ctx, "GET", "https://openrouter.ai/api/v1/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
+}
+
 // New creates a new client to talk to the OpenRouter API.
 //
 // If apiKey is not provided, it tries to load it from the OPENROUTER_API_KEY environment variable.
@@ -153,76 +223,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference.
-func (c *Client) selectBestTextModel(preference string) string {
-	switch preference {
-	case string(genai.ModelCheap):
-		return "qwen/qwen3.5-35b-a3b"
-	case string(genai.ModelGood):
-		return "qwen/qwen3.5-122b-a10b"
-	default:
-		// SOTA
-		return "qwen/qwen3.5-397b-a17b"
-	}
-}
-
-// Name implements genai.Provider.
-func (c *Client) Name() string {
-	return "openrouter"
-}
-
-// ModelID implements genai.Provider.
-func (c *Client) ModelID() string {
-	return c.impl.Model
-}
-
-// OutputModalities implements genai.Provider.
-func (c *Client) OutputModalities() genai.Modalities {
-	return c.impl.OutputModalities
-}
-
-// Scoreboard implements genai.Provider.
-func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard()
-}
-
-// HTTPClient returns the HTTP client.
-func (c *Client) HTTPClient() *http.Client {
-	return &c.impl.Client
-}
-
-// GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts...)
-}
-
-// GenSyncRaw provides access to the raw API.
-func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.impl.GenSyncRaw(ctx, in, out)
-}
-
-// GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return c.impl.GenStream(ctx, msgs, opts...)
-}
-
-// GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
-	return c.impl.GenStreamRaw(ctx, in)
-}
-
-// ListModels implements genai.Provider.
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	if c.impl.PreloadedModels != nil {
-		return c.impl.PreloadedModels, nil
-	}
-	var resp ModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", "https://openrouter.ai/api/v1/models", nil, &resp); err != nil {
-		return nil, err
-	}
-	return resp.ToModels(), nil
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

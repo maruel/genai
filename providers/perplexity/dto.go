@@ -387,12 +387,6 @@ type SearchResult struct {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop   FinishReason = "stop"
-	FinishLength FinishReason = "length"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -407,6 +401,12 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop   FinishReason = "stop"
+	FinishLength FinishReason = "length"
+)
 
 // Usage is the provider-specific token usage.
 type Usage struct {

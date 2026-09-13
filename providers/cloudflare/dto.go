@@ -363,6 +363,21 @@ type ChatResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+// ToResult converts the response to a genai.Result.
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
+		Usage: genai.Usage{
+			InputTokens:       c.Result.Usage.PromptTokens,
+			InputCachedTokens: c.Result.Usage.PromptTokensDetail.CachedTokens,
+			OutputTokens:      c.Result.Usage.CompletionTokens,
+			TotalTokens:       c.Result.Usage.TotalTokens,
+			// Cloudflare doesn't provide FinishReason (!?)
+		},
+	}
+	err := c.Result.To(&out.Message)
+	return out, err
+}
+
 // MessageResponse is a message in a provider-specific response.
 type MessageResponse struct {
 	// Normally a string, or an object if response_format.type == "json_schema".
@@ -395,21 +410,6 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 		out.Replies = []genai.Reply{{Text: "null"}}
 	}
 	return nil
-}
-
-// ToResult converts the response to a genai.Result.
-func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Result.Usage.PromptTokens,
-			InputCachedTokens: c.Result.Usage.PromptTokensDetail.CachedTokens,
-			OutputTokens:      c.Result.Usage.CompletionTokens,
-			TotalTokens:       c.Result.Usage.TotalTokens,
-			// Cloudflare doesn't provide FinishReason (!?)
-		},
-	}
-	err := c.Result.To(&out.Message)
-	return out, err
 }
 
 // ChatStreamChunkResponse is not documented.
@@ -517,13 +517,6 @@ func (m *Model) GetID() string {
 	return m.Name
 }
 
-// ModelPricing is the pricing information for a model.
-type ModelPricing struct {
-	Currency string  `json:"currency"`
-	Price    float64 `json:"price"`
-	Unit     string  `json:"unit"` // "per M input tokens", "per M output tokens"
-}
-
 func (m *Model) String() string {
 	var suffixes []string
 	pp := slices.Clone(m.Properties)
@@ -612,6 +605,13 @@ func (m *Model) Price() (float64, float64) {
 		return in, out
 	}
 	return in, out
+}
+
+// ModelPricing is the pricing information for a model.
+type ModelPricing struct {
+	Currency string  `json:"currency"`
+	Price    float64 `json:"price"`
+	Unit     string  `json:"unit"` // "per M input tokens", "per M output tokens"
 }
 
 func rawScalarString(v json.RawMessage) (string, bool) {

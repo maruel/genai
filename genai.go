@@ -381,12 +381,6 @@ type Message struct {
 	_ struct{}
 }
 
-// NewTextMessage is a shorthand function to create a Message with a single
-// text block.
-func NewTextMessage(text string) Message {
-	return Message{Requests: []Request{{Text: text}}}
-}
-
 // IsZero returns true if the message is empty.
 func (m *Message) IsZero() bool {
 	return m.User == "" && len(m.Requests) == 0 && len(m.Replies) == 0 && len(m.ToolCallResults) == 0
@@ -639,6 +633,12 @@ func (m *Message) Accumulate(mf *Reply) error {
 	return nil
 }
 
+// NewTextMessage is a shorthand function to create a Message with a single
+// text block.
+func NewTextMessage(text string) Message {
+	return Message{Requests: []Request{{Text: text}}}
+}
+
 // Request is a block of content in the message meant to be visible in a
 // chat setting.
 //
@@ -868,12 +868,6 @@ func (d *Doc) GetFilename() string {
 	return base
 }
 
-type serializedDoc struct {
-	Filename string `json:"filename,omitzero"`
-	Bytes    []byte `json:"bytes,omitzero"`
-	URL      string `json:"url,omitzero"`
-}
-
 // MarshalJSON implements the json.Marshaler interface.
 func (d *Doc) MarshalJSON() ([]byte, error) {
 	dd := serializedDoc{Filename: d.GetFilename(), URL: d.URL}
@@ -958,6 +952,12 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 		return "", nil, errors.New("empty data")
 	}
 	return mimeType, data, nil
+}
+
+type serializedDoc struct {
+	Filename string `json:"filename,omitzero"`
+	Bytes    []byte `json:"bytes,omitzero"`
+	URL      string `json:"url,omitzero"`
 }
 
 // ToolCall is a tool call that the LLM requested to make.

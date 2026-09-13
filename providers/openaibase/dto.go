@@ -27,6 +27,16 @@ import (
 // ServiceTier is the quality of service to determine the request's priority.
 type ServiceTier string
 
+// Validate implements genai.Validatable.
+func (s ServiceTier) Validate() error {
+	switch s {
+	case "", ServiceTierAuto, ServiceTierDefault, ServiceTierFlex:
+		return nil
+	default:
+		return fmt.Errorf("invalid service tier %q", s)
+	}
+}
+
 const (
 	// ServiceTierAuto will utilize scale tier credits until they are exhausted if the Project is Scale tier
 	// enabled, else the request will be processed using the default service tier with a lower uptime SLA and no
@@ -45,31 +55,11 @@ const (
 	ServiceTierFlex ServiceTier = "flex"
 )
 
-// Validate implements genai.Validatable.
-func (s ServiceTier) Validate() error {
-	switch s {
-	case "", ServiceTierAuto, ServiceTierDefault, ServiceTierFlex:
-		return nil
-	default:
-		return fmt.Errorf("invalid service tier %q", s)
-	}
-}
-
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
 //
 // https://platform.openai.com/docs/api-reference/assistants/createAssistant#assistants-createassistant-reasoning_effort
 // https://platform.openai.com/docs/guides/reasoning
 type ReasoningEffort string
-
-// Reasoning effort values.
-const (
-	ReasoningEffortNone    ReasoningEffort = "none"
-	ReasoningEffortMinimal ReasoningEffort = "minimal"
-	ReasoningEffortLow     ReasoningEffort = "low"
-	ReasoningEffortMedium  ReasoningEffort = "medium"
-	ReasoningEffortHigh    ReasoningEffort = "high"
-	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
-)
 
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
@@ -81,15 +71,18 @@ func (r ReasoningEffort) Validate() error {
 	}
 }
 
+// Reasoning effort values.
+const (
+	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortMinimal ReasoningEffort = "minimal"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortHigh    ReasoningEffort = "high"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+)
+
 // Background is only supported on gpt-image-1.
 type Background string
-
-// Background mode values.
-const (
-	BackgroundAuto        Background = "auto"
-	BackgroundTransparent Background = "transparent"
-	BackgroundOpaque      Background = "opaque"
-)
 
 // Validate implements genai.Validatable.
 func (b Background) Validate() error {
@@ -100,6 +93,13 @@ func (b Background) Validate() error {
 		return fmt.Errorf("invalid background %q", b)
 	}
 }
+
+// Background mode values.
+const (
+	BackgroundAuto        Background = "auto"
+	BackgroundTransparent Background = "transparent"
+	BackgroundOpaque      Background = "opaque"
+)
 
 // ImageRequest is documented at https://platform.openai.com/docs/api-reference/images
 type ImageRequest struct {

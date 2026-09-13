@@ -54,18 +54,6 @@ type ChatRequest struct {
 	OutputConfig  OutputConfig    `json:"output_config,omitzero"`
 }
 
-// OutputConfig is documented at https://docs.anthropic.com/en/api/messages#body-output-config
-type OutputConfig struct {
-	Effort Effort       `json:"effort,omitzero"`
-	Format OutputFormat `json:"format,omitzero"`
-}
-
-// OutputFormat is documented at https://docs.anthropic.com/en/api/messages#body-output-config-format
-type OutputFormat struct {
-	Type   string           `json:"type,omitzero"`
-	Schema genai.JSONSchema `json:"schema,omitzero"`
-}
-
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	return c.initImpl(msgs, model, true, opts...)
@@ -255,6 +243,18 @@ func (c *ChatRequest) initOptionsWeb(v *genai.GenOptionWeb) {
 			Name: "web_fetch",
 		})
 	}
+}
+
+// OutputConfig is documented at https://docs.anthropic.com/en/api/messages#body-output-config
+type OutputConfig struct {
+	Effort Effort       `json:"effort,omitzero"`
+	Format OutputFormat `json:"format,omitzero"`
+}
+
+// OutputFormat is documented at https://docs.anthropic.com/en/api/messages#body-output-config-format
+type OutputFormat struct {
+	Type   string           `json:"type,omitzero"`
+	Schema genai.JSONSchema `json:"schema,omitzero"`
 }
 
 // MCPServer is documented at https://docs.anthropic.com/en/api/messages#body-mcp-servers
@@ -465,14 +465,6 @@ type Content struct {
 
 	// Type == ContentDocument, ContentWebSearchResult, ContentWebFetchResult
 	Title string `json:"title,omitzero"` // Document title when using Source, web page title
-}
-
-// Caller indicates what invoked a tool call.
-type Caller struct {
-	// Type is "direct" or "code_execution_20250825" or "code_execution_20260120".
-	Type string `json:"type"`
-	// ToolID is set when the tool was invoked by another tool.
-	ToolID string `json:"tool_id,omitzero"`
 }
 
 // Validate checks that the expected fields are set.
@@ -954,6 +946,14 @@ func (c *Content) To() ([]genai.Reply, error) {
 	return out, nil
 }
 
+// Caller indicates what invoked a tool call.
+type Caller struct {
+	// Type is "direct" or "code_execution_20250825" or "code_execution_20260120".
+	Type string `json:"type"`
+	// ToolID is set when the tool was invoked by another tool.
+	ToolID string `json:"tool_id,omitzero"`
+}
+
 // WebSearch is the server tool use input for web_search.
 type WebSearch struct {
 	Query string `json:"query"`
@@ -1019,10 +1019,6 @@ type Citations struct {
 	Enabled   bool
 }
 
-type citationsObject struct {
-	Enabled bool `json:"enabled"`
-}
-
 // UnmarshalJSON implements json.Unmarshaler for Citations.
 // It attempts to unmarshal the input as either a slice of Citations or a struct with an Enabled field.
 func (c *Citations) UnmarshalJSON(b []byte) error {
@@ -1066,6 +1062,10 @@ func (c Citations) MarshalJSON() ([]byte, error) {
 		return json.Marshal(objectCitations)
 	}
 	return []byte("null"), nil
+}
+
+type citationsObject struct {
+	Enabled bool `json:"enabled"`
 }
 
 // ContentType is a provider-specific content type.
@@ -1173,16 +1173,6 @@ func (c *Citation) To(dst *genai.Citation) error {
 // https://platform.claude.com/docs/en/build-with-claude/extended-thinking
 type ThinkingType string
 
-const (
-	// ThinkingEnabled enables extended thinking with an explicit budget set via ThinkingBudget.
-	ThinkingEnabled ThinkingType = "enabled"
-	// ThinkingDisabled disables extended thinking.
-	ThinkingDisabled ThinkingType = "disabled"
-	// ThinkingAdaptive lets the model decide autonomously whether and how much to think.
-	// ThinkingBudget is ignored. Use Effort to control thinking depth.
-	ThinkingAdaptive ThinkingType = "adaptive"
-)
-
 // Validate implements genai.Validatable.
 func (t ThinkingType) Validate() error {
 	switch t {
@@ -1193,15 +1183,18 @@ func (t ThinkingType) Validate() error {
 	}
 }
 
+const (
+	// ThinkingEnabled enables extended thinking with an explicit budget set via ThinkingBudget.
+	ThinkingEnabled ThinkingType = "enabled"
+	// ThinkingDisabled disables extended thinking.
+	ThinkingDisabled ThinkingType = "disabled"
+	// ThinkingAdaptive lets the model decide autonomously whether and how much to think.
+	// ThinkingBudget is ignored. Use Effort to control thinking depth.
+	ThinkingAdaptive ThinkingType = "adaptive"
+)
+
 // ThinkingDisplay controls adaptive thinking visibility.
 type ThinkingDisplay string
-
-const (
-	// ThinkingDisplaySummarized returns summarized thinking text.
-	ThinkingDisplaySummarized ThinkingDisplay = "summarized"
-	// ThinkingDisplayOmitted hides thinking text.
-	ThinkingDisplayOmitted ThinkingDisplay = "omitted"
-)
 
 // Validate implements genai.Validatable.
 func (d ThinkingDisplay) Validate() error {
@@ -1212,6 +1205,13 @@ func (d ThinkingDisplay) Validate() error {
 		return fmt.Errorf("invalid ThinkingDisplay %q", d)
 	}
 }
+
+const (
+	// ThinkingDisplaySummarized returns summarized thinking text.
+	ThinkingDisplaySummarized ThinkingDisplay = "summarized"
+	// ThinkingDisplayOmitted hides thinking text.
+	ThinkingDisplayOmitted ThinkingDisplay = "omitted"
+)
 
 // Thinking is a provider-specific thinking block.
 type Thinking struct {
@@ -1322,16 +1322,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // StopReason is documented at https://docs.anthropic.com/en/api/messages#response-stop-reason
 type StopReason string
 
-// Stop reason values.
-const (
-	StopEndTurn   StopReason = "end_turn"
-	StopToolUse   StopReason = "tool_use"
-	StopSequence  StopReason = "stop_sequence"
-	StopMaxTokens StopReason = "max_tokens"
-	StopPauseTurn StopReason = "pause_turn" //  We paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
-	StopRefusal   StopReason = "refusal"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (s StopReason) ToFinishReason() genai.FinishReason {
 	switch s {
@@ -1354,6 +1344,16 @@ func (s StopReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(s)
 	}
 }
+
+// Stop reason values.
+const (
+	StopEndTurn   StopReason = "end_turn"
+	StopToolUse   StopReason = "tool_use"
+	StopSequence  StopReason = "stop_sequence"
+	StopMaxTokens StopReason = "max_tokens"
+	StopPauseTurn StopReason = "pause_turn" //  We paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+	StopRefusal   StopReason = "refusal"
+)
 
 // RefusalStopDetails is documented at https://docs.anthropic.com/en/docs/build-with-claude/handling-stop-reasons
 type RefusalStopDetails struct {

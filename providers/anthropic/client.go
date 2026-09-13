@@ -101,24 +101,6 @@ type GenOptionText struct {
 	InferenceGeo string
 }
 
-// Effort controls the amount of effort the model puts into its response.
-//
-// https://platform.claude.com/docs/en/api/messages#body-output-config
-type Effort string
-
-const (
-	// EffortLow minimizes latency at the cost of quality.
-	EffortLow Effort = "low"
-	// EffortMedium balances quality and latency.
-	EffortMedium Effort = "medium"
-	// EffortHigh favors quality over latency.
-	EffortHigh Effort = "high"
-	// EffortXHigh favors coding and agentic work at higher token usage.
-	EffortXHigh Effort = "xhigh"
-	// EffortMax maximizes quality.
-	EffortMax Effort = "max"
-)
-
 // Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
 	if err := o.Thinking.Validate(); err != nil {
@@ -144,6 +126,24 @@ func (o *GenOptionText) Validate() error {
 	return nil
 }
 
+// Effort controls the amount of effort the model puts into its response.
+//
+// https://platform.claude.com/docs/en/api/messages#body-output-config
+type Effort string
+
+const (
+	// EffortLow minimizes latency at the cost of quality.
+	EffortLow Effort = "low"
+	// EffortMedium balances quality and latency.
+	EffortMedium Effort = "medium"
+	// EffortHigh favors quality over latency.
+	EffortHigh Effort = "high"
+	// EffortXHigh favors coding and agentic work at higher token usage.
+	EffortXHigh Effort = "xhigh"
+	// EffortMax maximizes quality.
+	EffortMax Effort = "max"
+)
+
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
@@ -151,94 +151,6 @@ type Client struct {
 	// multipartBoundary overrides the multipart boundary for deterministic HTTP
 	// recordings. Leave empty for production use.
 	multipartBoundary string
-}
-
-// New creates a new client to talk to the Anthropic platform API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the ANTHROPIC_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get an API key at https://console.anthropic.com/settings/keys
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model, multipartBoundary string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		case ProviderOptionMultipartBoundary:
-			multipartBoundary = string(v)
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://console.anthropic.com/settings/keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("ANTHROPIC_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "ANTHROPIC_API_KEY", URL: apiKeyURL}
-		}
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	// Anthropic allows Opaque fields for thinking signatures
-	c := &Client{
-		multipartBoundary: multipartBoundary,
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://api.anthropic.com/v1/messages",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProcessHeaders:  processHeaders,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-						Transport: &betaHeader{transport: &roundtrippers.RequestID{Transport: t}},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = mod
-		default:
-			c.impl.Model = model
-			c.impl.OutputModalities = mod
-		}
-	}
-	return c, err
 }
 
 // selectBestTextModel selects the most recent model based on the preference (cheap, good, or SOTA).
@@ -579,16 +491,6 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	return c.impl.GenStream(ctxWithBeta(ctx, opts), msgs, opts...)
 }
 
-// ctxWithBeta adds the web-fetch beta header to the context if WebFetch is enabled.
-func ctxWithBeta(ctx context.Context, opts []genai.GenOption) context.Context {
-	for _, o := range opts {
-		if v, ok := o.(*genai.GenOptionWeb); ok && v.Fetch {
-			return context.WithValue(ctx, ctxBetaKey{}, "web-fetch-2025-09-10")
-		}
-	}
-	return ctx
-}
-
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
 	return c.impl.GenStreamRaw(ctx, in)
@@ -685,6 +587,104 @@ func (c *Client) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{
 		GenAsync: true,
 	}
+}
+
+// New creates a new client to talk to the Anthropic platform API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the ANTHROPIC_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get an API key at https://console.anthropic.com/settings/keys
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model, multipartBoundary string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case ProviderOptionMultipartBoundary:
+			multipartBoundary = string(v)
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://console.anthropic.com/settings/keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("ANTHROPIC_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "ANTHROPIC_API_KEY", URL: apiKeyURL}
+		}
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	// Anthropic allows Opaque fields for thinking signatures
+	c := &Client{
+		multipartBoundary: multipartBoundary,
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      "https://api.anthropic.com/v1/messages",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProcessHeaders:  processHeaders,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
+						Transport: &betaHeader{transport: &roundtrippers.RequestID{Transport: t}},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = mod
+		default:
+			c.impl.Model = model
+			c.impl.OutputModalities = mod
+		}
+	}
+	return c, err
+}
+
+// ctxWithBeta adds the web-fetch beta header to the context if WebFetch is enabled.
+func ctxWithBeta(ctx context.Context, opts []genai.GenOption) context.Context {
+	for _, o := range opts {
+		if v, ok := o.(*genai.GenOptionWeb); ok && v.Fetch {
+			return context.WithValue(ctx, ctxBetaKey{}, "web-fetch-2025-09-10")
+		}
+	}
+	return ctx
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
@@ -956,6 +956,51 @@ type modelData struct {
 	Effort          modelEffortData   `json:"effort,omitzero"`
 }
 
+func (m *modelData) defaultThinking() Thinking {
+	switch {
+	case m.Thinking.Adaptive:
+		return Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
+	case m.Thinking.Enabled && m.Thinking.Disabled:
+		return Thinking{Type: ThinkingDisabled}
+	default:
+		return Thinking{}
+	}
+}
+
+func (m *modelData) supportsEffort(e Effort) bool {
+	switch e {
+	case "":
+		return true
+	case EffortLow:
+		return m.Effort.Low
+	case EffortMedium:
+		return m.Effort.Medium
+	case EffortHigh:
+		return m.Effort.High
+	case EffortXHigh:
+		return m.Effort.XHigh
+	case EffortMax:
+		return m.Effort.Max
+	default:
+		return false
+	}
+}
+
+func (m *modelData) supportsThinking(t ThinkingType) bool {
+	switch t {
+	case "":
+		return true
+	case ThinkingDisabled:
+		return m.Thinking.Disabled
+	case ThinkingAdaptive:
+		return m.Thinking.Adaptive
+	case ThinkingEnabled:
+		return m.Thinking.Enabled
+	default:
+		return false
+	}
+}
+
 type modelThinkingData struct {
 	Enabled  bool `json:"enabled"`
 	Adaptive bool `json:"adaptive"`
@@ -1010,36 +1055,6 @@ func getModelData(model string) (modelData, bool) {
 	return m, ok
 }
 
-func (m *modelData) defaultThinking() Thinking {
-	switch {
-	case m.Thinking.Adaptive:
-		return Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
-	case m.Thinking.Enabled && m.Thinking.Disabled:
-		return Thinking{Type: ThinkingDisabled}
-	default:
-		return Thinking{}
-	}
-}
-
-func (m *modelData) supportsEffort(e Effort) bool {
-	switch e {
-	case "":
-		return true
-	case EffortLow:
-		return m.Effort.Low
-	case EffortMedium:
-		return m.Effort.Medium
-	case EffortHigh:
-		return m.Effort.High
-	case EffortXHigh:
-		return m.Effort.XHigh
-	case EffortMax:
-		return m.Effort.Max
-	default:
-		return false
-	}
-}
-
 func modelCanDisableThinking(id string) bool {
 	// Claude Fable 5 and Mythos models have adaptive thinking always on; Anthropic rejects disabled thinking.
 	// The Models API does not currently expose this bit.
@@ -1048,21 +1063,6 @@ func modelCanDisableThinking(id string) bool {
 		return false
 	default:
 		return true
-	}
-}
-
-func (m *modelData) supportsThinking(t ThinkingType) bool {
-	switch t {
-	case "":
-		return true
-	case ThinkingDisabled:
-		return m.Thinking.Disabled
-	case ThinkingAdaptive:
-		return m.Thinking.Adaptive
-	case ThinkingEnabled:
-		return m.Thinking.Enabled
-	default:
-		return false
 	}
 }
 

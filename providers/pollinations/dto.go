@@ -482,13 +482,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop      FinishReason = "stop"
-	FinishLength    FinishReason = "length"
-	FinishToolCalls FinishReason = "tool_calls"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -505,6 +498,13 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop      FinishReason = "stop"
+	FinishLength    FinishReason = "length"
+	FinishToolCalls FinishReason = "tool_calls"
+)
 
 // PromptFilterResult is the result of content filtering on a prompt.
 type PromptFilterResult struct {
@@ -1036,26 +1036,6 @@ type ErrorValue struct {
 	Timestamp string    `json:"timestamp"`
 }
 
-// CodeValue handles fields that can be either a string or a number.
-type CodeValue string
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (c *CodeValue) UnmarshalJSON(b []byte) error {
-	// Try as a string first.
-	var s string
-	if err := json.Unmarshal(b, &s); err == nil {
-		*c = CodeValue(s)
-		return nil
-	}
-	// Otherwise, try as a number.
-	var n json.Number
-	if err := json.Unmarshal(b, &n); err == nil {
-		*c = CodeValue(n.String())
-		return nil
-	}
-	return fmt.Errorf("code must be string or number, got: %s", string(b))
-}
-
 // UnmarshalJSON implements json.Unmarshaler.
 func (e *ErrorValue) UnmarshalJSON(b []byte) error {
 	// Try as a string first.
@@ -1074,4 +1054,24 @@ func (e *ErrorValue) String() string {
 		return string(e.Code) + ": " + e.Message
 	}
 	return e.Message
+}
+
+// CodeValue handles fields that can be either a string or a number.
+type CodeValue string
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (c *CodeValue) UnmarshalJSON(b []byte) error {
+	// Try as a string first.
+	var s string
+	if err := json.Unmarshal(b, &s); err == nil {
+		*c = CodeValue(s)
+		return nil
+	}
+	// Otherwise, try as a number.
+	var n json.Number
+	if err := json.Unmarshal(b, &n); err == nil {
+		*c = CodeValue(n.String())
+		return nil
+	}
+	return fmt.Errorf("code must be string or number, got: %s", string(b))
 }

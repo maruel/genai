@@ -648,15 +648,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop          FinishReason = "stop"
-	FinishLength        FinishReason = "length"
-	FinishToolCalls     FinishReason = "tool_calls"
-	FinishContentFilter FinishReason = "content_filter"
-	FinishError         FinishReason = "error"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -679,6 +670,15 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop          FinishReason = "stop"
+	FinishLength        FinishReason = "length"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishContentFilter FinishReason = "content_filter"
+	FinishError         FinishReason = "error"
+)
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
@@ -755,15 +755,6 @@ type Model struct {
 	SupportedVoices     []string                   `json:"supported_voices,omitzero"`
 }
 
-// ModelAliasTarget identifies the canonical model an alias redirects to.
-//
-// OpenRouter serves "latest" aliases (e.g. "~anthropic/claude-opus-latest") whose
-// id starts with "~" and that redirect to a canonical model.
-type ModelAliasTarget struct {
-	Name string `json:"name,omitzero"`
-	Slug string `json:"slug,omitzero"`
-}
-
 // GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
@@ -807,6 +798,15 @@ func (m *Model) String() string {
 // Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return m.ContextLength
+}
+
+// ModelAliasTarget identifies the canonical model an alias redirects to.
+//
+// OpenRouter serves "latest" aliases (e.g. "~anthropic/claude-opus-latest") whose
+// id starts with "~" and that redirect to a canonical model.
+type ModelAliasTarget struct {
+	Name string `json:"name,omitzero"`
+	Slug string `json:"slug,omitzero"`
 }
 
 // ModelBenchmarks contains OpenRouter benchmark metadata for a model.
@@ -908,6 +908,10 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (%s): %s", rawMessageString(er.ErrorVal.Code), er.ErrorVal.Type, er.ErrorVal.Message)
 }
 
+// IsAPIError implements base.ErrorResponseI.
+func (er *ErrorResponse) IsAPIError() bool {
+	return true
+}
 func formatModelPrice(s string) string {
 	if s == "" {
 		return ""
@@ -929,9 +933,4 @@ func rawMessageString(v json.RawMessage) string {
 		return s
 	}
 	return string(v)
-}
-
-// IsAPIError implements base.ErrorResponseI.
-func (er *ErrorResponse) IsAPIError() bool {
-	return true
 }

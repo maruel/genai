@@ -103,154 +103,6 @@ type Client struct {
 	shared openaibase.Client
 }
 
-// New creates a new client to talk to the OpenAI platform API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://platform.openai.com/settings/organization/api-keys
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://platform.openai.com/docs/models
-//
-// # Documents
-//
-// OpenAI supports many types of documents, listed at
-// https://platform.openai.com/docs/assistants/tools/file-search#supported-files
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
-		}
-	}
-	switch len(modalities) {
-	case 0:
-		// Auto-detect below.
-	case 1:
-		switch modalities[0] {
-		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
-		case genai.ModalityDocument:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
-		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
-		}
-	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	const baseURL = "https://api.openai.com/v1"
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      baseURL + "/chat/completions",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProcessHeaders:  openaibase.ProcessHeaders,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				// OpenAI error message prints the api key URL already.
-				APIKeyURL: "",
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	c.shared = openaibase.Client{
-		Impl:            &c.impl.ProviderBase,
-		BaseURL:         baseURL,
-		PreloadedModels: preloadedModels,
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			var mod genai.Modality
-			switch len(modalities) {
-			case 0:
-				mod = genai.ModalityText
-			case 1:
-				mod = modalities[0]
-			default:
-				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
-			}
-			switch mod {
-			case genai.ModalityText:
-				if c.impl.Model, err = c.shared.SelectBestTextModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityImage:
-				if c.impl.Model, err = c.shared.SelectBestImageModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityVideo:
-				if c.impl.Model, err = c.shared.SelectBestVideoModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityAudio:
-				if c.impl.Model, err = c.selectBestAudioModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityDocument:
-				// TODO: Soon, because it's cool.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
-			default:
-				// TODO: Soon, because it's cool.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
-			}
-		default:
-			c.impl.Model = model
-			switch len(modalities) {
-			case 0:
-				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
-			case 1:
-				c.impl.OutputModalities = modalities
-			default:
-				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
-			}
-		}
-	}
-	return c, err
-}
-
 // selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
 //
 // Audio models are identified by the "audio" in their name.
@@ -464,6 +316,282 @@ func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	return c.shared.FilesListRaw(ctx)
 }
 
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{
+		GenAsync: true,
+		Caching:  true,
+	}
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.impl.Model
+}
+
+// OutputModalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
+}
+
+// Scoreboard implements genai.Provider.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return Scoreboard()
+}
+
+// HTTPClient returns the HTTP client to fetch results (e.g. videos) generated by the provider.
+func (c *Client) HTTPClient() *http.Client {
+	return &c.impl.Client
+}
+
+// ListModels implements genai.Provider.
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	return c.shared.ListModels(ctx)
+}
+
+// GenSync implements genai.Provider.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if c.shared.IsImage() || c.shared.IsVideo() {
+		if len(msgs) != 1 {
+			return genai.Result{}, errors.New("must pass exactly one Message")
+		}
+		return c.shared.GenDoc(ctx, &msgs[0], opts...)
+	}
+	// Build the request ourselves so GenSyncRaw can track audioFormat on the response.
+	in := &ChatRequest{}
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+		return genai.Result{}, err
+	}
+	out := &ChatResponse{}
+	if err := c.GenSyncRaw(ctx, in, out); err != nil {
+		return genai.Result{}, err
+	}
+	res, err := out.ToResult()
+	if err != nil {
+		return res, err
+	}
+	if err := res.Validate(); err != nil {
+		return res, &internal.BadError{Err: err}
+	}
+	if lastResp := c.impl.LastResponseHeaders(); lastResp != nil {
+		res.Usage.Limits = openaibase.ProcessHeaders(lastResp)
+	}
+	return res, nil
+}
+
+// GenStream implements genai.Provider.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if c.shared.IsImage() || c.shared.IsVideo() {
+		return base.SimulateStream(ctx, c, msgs, opts...)
+	}
+	// Build the request ourselves so makeProcessStream can use the audio format.
+	in := &ChatRequest{}
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
+	// Streaming only supports pcm16 audio format.
+	if in.Audio.Format == "mp3" {
+		in.Audio.Format = "pcm16"
+	}
+
+	res := genai.Result{}
+	var finalErr error
+	fnFragments := func(yield func(genai.Reply) bool) {
+		chunks, finish := c.GenStreamRaw(ctx, in)
+		// Capture headers immediately after the HTTP call, before iterating.
+		lastResp := c.impl.LastResponseHeaders()
+		fragments, finish2 := makeProcessStream(in.Audio.Format)(chunks)
+		sent := false
+		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
+			if err := f.Validate(); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			if err := res.Accumulate(&f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			sent = true
+			if !yield(f) {
+				break
+			}
+		}
+		if err := finish(); finalErr == nil {
+			finalErr = err
+		}
+		var err error
+		res.Usage, res.Logprobs, err = finish2()
+		if finalErr == nil {
+			finalErr = err
+		}
+		if !sent && finalErr == nil {
+			finalErr = errors.New("model sent no reply")
+		}
+		if lastResp != nil {
+			res.Usage.Limits = openaibase.ProcessHeaders(lastResp)
+		}
+	}
+	return fnFragments, func() (genai.Result, error) {
+		return res, finalErr
+	}
+}
+
+// New creates a new client to talk to the OpenAI platform API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://platform.openai.com/settings/organization/api-keys
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://platform.openai.com/docs/models
+//
+// # Documents
+//
+// OpenAI supports many types of documents, listed at
+// https://platform.openai.com/docs/assistants/tools/file-search#supported-files
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
+		}
+	}
+	switch len(modalities) {
+	case 0:
+		// Auto-detect below.
+	case 1:
+		switch modalities[0] {
+		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityDocument:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	const baseURL = "https://api.openai.com/v1"
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      baseURL + "/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProcessHeaders:  openaibase.ProcessHeaders,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				// OpenAI error message prints the api key URL already.
+				APIKeyURL: "",
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	c.shared = openaibase.Client{
+		Impl:            &c.impl.ProviderBase,
+		BaseURL:         baseURL,
+		PreloadedModels: preloadedModels,
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			var mod genai.Modality
+			switch len(modalities) {
+			case 0:
+				mod = genai.ModalityText
+			case 1:
+				mod = modalities[0]
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
+			}
+			switch mod {
+			case genai.ModalityText:
+				if c.impl.Model, err = c.shared.SelectBestTextModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityImage:
+				if c.impl.Model, err = c.shared.SelectBestImageModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityVideo:
+				if c.impl.Model, err = c.shared.SelectBestVideoModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityAudio:
+				if c.impl.Model, err = c.selectBestAudioModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityDocument:
+				// TODO: Soon, because it's cool.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
+			default:
+				// TODO: Soon, because it's cool.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
+			}
+		default:
+			c.impl.Model = model
+			switch len(modalities) {
+			case 0:
+				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
+			case 1:
+				c.impl.OutputModalities = modalities
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
+			}
+		}
+	}
+	return c, err
+}
+
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
 func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	return func(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
@@ -632,134 +760,6 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 // ProcessStream is the default stream processor (no audio format).
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	return makeProcessStream("")(chunks)
-}
-
-// Capabilities implements genai.Provider.
-func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{
-		GenAsync: true,
-		Caching:  true,
-	}
-}
-
-// ModelID implements genai.Provider.
-//
-// It returns the selected model ID.
-func (c *Client) ModelID() string {
-	return c.impl.Model
-}
-
-// OutputModalities implements genai.Provider.
-//
-// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
-// video, etc).
-func (c *Client) OutputModalities() genai.Modalities {
-	return c.impl.OutputModalities
-}
-
-// Scoreboard implements genai.Provider.
-func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard()
-}
-
-// HTTPClient returns the HTTP client to fetch results (e.g. videos) generated by the provider.
-func (c *Client) HTTPClient() *http.Client {
-	return &c.impl.Client
-}
-
-// ListModels implements genai.Provider.
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	return c.shared.ListModels(ctx)
-}
-
-// GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	if c.shared.IsImage() || c.shared.IsVideo() {
-		if len(msgs) != 1 {
-			return genai.Result{}, errors.New("must pass exactly one Message")
-		}
-		return c.shared.GenDoc(ctx, &msgs[0], opts...)
-	}
-	// Build the request ourselves so GenSyncRaw can track audioFormat on the response.
-	in := &ChatRequest{}
-	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-		return genai.Result{}, err
-	}
-	out := &ChatResponse{}
-	if err := c.GenSyncRaw(ctx, in, out); err != nil {
-		return genai.Result{}, err
-	}
-	res, err := out.ToResult()
-	if err != nil {
-		return res, err
-	}
-	if err := res.Validate(); err != nil {
-		return res, &internal.BadError{Err: err}
-	}
-	if lastResp := c.impl.LastResponseHeaders(); lastResp != nil {
-		res.Usage.Limits = openaibase.ProcessHeaders(lastResp)
-	}
-	return res, nil
-}
-
-// GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if c.shared.IsImage() || c.shared.IsVideo() {
-		return base.SimulateStream(ctx, c, msgs, opts...)
-	}
-	// Build the request ourselves so makeProcessStream can use the audio format.
-	in := &ChatRequest{}
-	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
-	}
-	// Streaming only supports pcm16 audio format.
-	if in.Audio.Format == "mp3" {
-		in.Audio.Format = "pcm16"
-	}
-
-	res := genai.Result{}
-	var finalErr error
-	fnFragments := func(yield func(genai.Reply) bool) {
-		chunks, finish := c.GenStreamRaw(ctx, in)
-		// Capture headers immediately after the HTTP call, before iterating.
-		lastResp := c.impl.LastResponseHeaders()
-		fragments, finish2 := makeProcessStream(in.Audio.Format)(chunks)
-		sent := false
-		for f := range fragments {
-			if f.IsZero() {
-				continue
-			}
-			if err := f.Validate(); err != nil {
-				finalErr = &internal.BadError{Err: err}
-				break
-			}
-			if err := res.Accumulate(&f); err != nil {
-				finalErr = &internal.BadError{Err: err}
-				break
-			}
-			sent = true
-			if !yield(f) {
-				break
-			}
-		}
-		if err := finish(); finalErr == nil {
-			finalErr = err
-		}
-		var err error
-		res.Usage, res.Logprobs, err = finish2()
-		if finalErr == nil {
-			finalErr = err
-		}
-		if !sent && finalErr == nil {
-			finalErr = errors.New("model sent no reply")
-		}
-		if lastResp != nil {
-			res.Usage.Limits = openaibase.ProcessHeaders(lastResp)
-		}
-	}
-	return fnFragments, func() (genai.Result, error) {
-		return res, finalErr
-	}
 }
 
 var _ genai.Provider = &Client{}

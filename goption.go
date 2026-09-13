@@ -207,22 +207,6 @@ type GenOptionTools struct {
 	Force ToolCallRequest
 }
 
-// GenOptionWeb specifies web access options.
-type GenOptionWeb struct {
-	// Search specifies if websearch should be enabled. It is generally disabled by default except for
-	// perplexity.
-	//
-	// # Warning
-	//
-	// This will become a structure to provide information about included and excluded domains, and the user's
-	// location.
-	Search bool
-	// Fetch specifies if web fetch should be enabled. When enabled, the LLM can fetch content from URLs.
-	//
-	// Currently supported by Anthropic and Gemini.
-	Fetch bool
-}
-
 // Validate ensures the completion options are valid.
 func (o *GenOptionTools) Validate() error {
 	names := map[string]int{}
@@ -239,6 +223,22 @@ func (o *GenOptionTools) Validate() error {
 		return errors.New("field Force is ToolCallRequired: Tools are required")
 	}
 	return nil
+}
+
+// GenOptionWeb specifies web access options.
+type GenOptionWeb struct {
+	// Search specifies if websearch should be enabled. It is generally disabled by default except for
+	// perplexity.
+	//
+	// # Warning
+	//
+	// This will become a structure to provide information about included and excluded domains, and the user's
+	// location.
+	Search bool
+	// Fetch specifies if web fetch should be enabled. When enabled, the LLM can fetch content from URLs.
+	//
+	// Currently supported by Anthropic and Gemini.
+	Fetch bool
 }
 
 // Validate implements GenOption.
@@ -266,8 +266,6 @@ type ToolDef struct {
 
 	_ struct{}
 }
-
-var reToolName = regexp.MustCompile(`^[a-zA-Z0-9_-]{1,64}$`)
 
 // Validate ensures the tool definition is valid.
 //
@@ -324,6 +322,8 @@ func (t *ToolDef) GetInputSchema() (JSONSchema, error) {
 	// This function assumes Validate() was called.
 	return jsonSchemaFor(reflect.TypeOf(t.Callback).In(1))
 }
+
+var reToolName = regexp.MustCompile(`^[a-zA-Z0-9_-]{1,64}$`)
 
 // ToolCallRequest determines if we want the LLM to request a tool call.
 type ToolCallRequest int

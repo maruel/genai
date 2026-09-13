@@ -34,21 +34,6 @@ type Records struct {
 	recorded    map[string]struct{}
 }
 
-// NewRecords creates a new recorder.
-func NewRecords(root string) (*Records, error) {
-	r := &Records{root: root, preexisting: make(map[string]struct{}), recorded: make(map[string]struct{})}
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
-		if err == nil && !d.IsDir() && strings.HasSuffix(path, ".yaml") {
-			r.preexisting[path[len(root)+1:]] = struct{}{}
-		}
-		return err
-	})
-	if os.IsNotExist(err) {
-		return r, nil
-	}
-	return r, err
-}
-
 // Close finalizes all recordings.
 func (r *Records) Close() error {
 	r.mu.Lock()
@@ -126,6 +111,21 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 		return nil, err
 	}
 	return &Recorder{Recorder: rec, name: name + ".yaml", root: r.root}, nil
+}
+
+// NewRecords creates a new recorder.
+func NewRecords(root string) (*Records, error) {
+	r := &Records{root: root, preexisting: make(map[string]struct{}), recorded: make(map[string]struct{})}
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+		if err == nil && !d.IsDir() && strings.HasSuffix(path, ".yaml") {
+			r.preexisting[path[len(root)+1:]] = struct{}{}
+		}
+		return err
+	})
+	if os.IsNotExist(err) {
+		return r, nil
+	}
+	return r, err
 }
 
 type orphanedError struct {

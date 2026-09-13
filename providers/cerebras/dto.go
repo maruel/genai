@@ -30,6 +30,16 @@ import (
 // for model-specific support. Gemma 4 treats low, medium, and high identically.
 type ReasoningEffort string
 
+// Validate implements genai.Validatable.
+func (r ReasoningEffort) Validate() error {
+	switch r {
+	case "", ReasoningEffortNone, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+		return nil
+	default:
+		return fmt.Errorf("invalid ReasoningEffort %q", r)
+	}
+}
+
 // Reasoning effort values.
 const (
 	// ReasoningEffortNone disables model reasoning.
@@ -42,21 +52,21 @@ const (
 	ReasoningEffortHigh ReasoningEffort = "high"
 )
 
-// Validate implements genai.Validatable.
-func (r ReasoningEffort) Validate() error {
-	switch r {
-	case "", ReasoningEffortNone, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
-		return nil
-	default:
-		return fmt.Errorf("invalid ReasoningEffort %q", r)
-	}
-}
-
 // ReasoningFormat controls how reasoning content appears in a response.
 //
 // See https://inference-docs.cerebras.ai/capabilities/reasoning
 // for model-specific support.
 type ReasoningFormat string
+
+// Validate implements genai.Validatable.
+func (r ReasoningFormat) Validate() error {
+	switch r {
+	case "", ReasoningFormatParsed, ReasoningFormatTextParsed, ReasoningFormatRaw, ReasoningFormatHidden, ReasoningFormatNone:
+		return nil
+	default:
+		return fmt.Errorf("invalid ReasoningFormat %q", r)
+	}
+}
 
 // Reasoning format values.
 const (
@@ -72,21 +82,21 @@ const (
 	ReasoningFormatNone ReasoningFormat = "none"
 )
 
-// Validate implements genai.Validatable.
-func (r ReasoningFormat) Validate() error {
-	switch r {
-	case "", ReasoningFormatParsed, ReasoningFormatTextParsed, ReasoningFormatRaw, ReasoningFormatHidden, ReasoningFormatNone:
-		return nil
-	default:
-		return fmt.Errorf("invalid ReasoningFormat %q", r)
-	}
-}
-
 // ServiceTier controls request prioritization.
 //
 // See https://inference-docs.cerebras.ai/capabilities/service-tiers
 // for availability and behavior.
 type ServiceTier string
+
+// Validate implements genai.Validatable.
+func (s ServiceTier) Validate() error {
+	switch s {
+	case "", ServiceTierPriority, ServiceTierDefault, ServiceTierAuto, ServiceTierFlex:
+		return nil
+	default:
+		return fmt.Errorf("invalid ServiceTier %q", s)
+	}
+}
 
 // Service tier values.
 const (
@@ -99,16 +109,6 @@ const (
 	// ServiceTierFlex uses the lowest request priority.
 	ServiceTierFlex ServiceTier = "flex"
 )
-
-// Validate implements genai.Validatable.
-func (s ServiceTier) Validate() error {
-	switch s {
-	case "", ServiceTierPriority, ServiceTierDefault, ServiceTierAuto, ServiceTierFlex:
-		return nil
-	default:
-		return fmt.Errorf("invalid ServiceTier %q", s)
-	}
-}
 
 // ToolChoiceMode controls whether a model can call tools.
 type ToolChoiceMode string
@@ -760,14 +760,6 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // FinishReason is a provider-specific finish reason.
 type FinishReason string
 
-// Finish reason values.
-const (
-	FinishStop          FinishReason = "stop"
-	FinishToolCalls     FinishReason = "tool_calls"
-	FinishLength        FinishReason = "length"
-	FinishContentFilter FinishReason = "content_filter"
-)
-
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
@@ -786,6 +778,14 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishReason(f)
 	}
 }
+
+// Finish reason values.
+const (
+	FinishStop          FinishReason = "stop"
+	FinishToolCalls     FinishReason = "tool_calls"
+	FinishLength        FinishReason = "length"
+	FinishContentFilter FinishReason = "content_filter"
+)
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {

@@ -55,118 +55,6 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
-// New creates a new client to talk to the Together.AI platform API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the TOGETHER_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://api.together.ai/settings/api-keys
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://docs.together.ai/docs/serverless-models
-//
-// # Vision
-//
-// We must select a model that supports video.
-// https://docs.together.ai/docs/serverless-models#vision-models
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://api.together.ai/settings/api-keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "TOGETHER_API_KEY", URL: apiKeyURL}
-		}
-	}
-	switch len(modalities) {
-	case 0:
-	case 1:
-		switch modalities[0] {
-		case genai.ModalityImage, genai.ModalityText:
-		case genai.ModalityAudio:
-			// TODO: Add support for audio.
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", modalities)
-		case genai.ModalityDocument, genai.ModalityVideo:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", modalities)
-		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", modalities)
-		}
-	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", modalities)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://api.together.xyz/v1/chat/completions",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProcessHeaders:  processHeaders,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if len(modalities) == 0 || modalities[0] == genai.ModalityText {
-				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
-			} else {
-				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-			}
-		default:
-			c.impl.Model = model
-			if len(modalities) == 0 {
-				c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
-			} else {
-				c.impl.OutputModalities = modalities
-			}
-		}
-	}
-	return c, err
-}
-
 // detectModelModalities tries its best to figure out the modality of a model
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -296,69 +184,6 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	return selectedModel, nil
 }
 
-// flux2Rank returns a quality rank for FLUX.2 image models, or 0 for non-FLUX.2 models.
-//
-// max=3, pro=2, flex/dev=1.
-func flux2Rank(id string) int {
-	if !strings.HasPrefix(id, "black-forest-labs/FLUX.2") {
-		return 0
-	}
-	if strings.Contains(id, "-max") {
-		return 3
-	}
-	if strings.Contains(id, "-pro") {
-		return 2
-	}
-	return 1
-}
-
-// parseVersion extracts a leading version number (digits and dots) from s.
-// Returns the version and the remaining string. Returns 0 if s doesn't start with a digit.
-func parseVersion(s string) (float64, string) {
-	i := 0
-	for i < len(s) && (s[i] >= '0' && s[i] <= '9' || s[i] == '.') {
-		i++
-	}
-	if i == 0 {
-		return 0, s
-	}
-	v, err := strconv.ParseFloat(s[:i], 64)
-	if err != nil {
-		return 0, s
-	}
-	return v, s[i:]
-}
-
-// glmVersion returns the version of a base GLM model (e.g. GLM-5.1 → 5.1) or 0 for
-// non-base variants (e.g. GLM-OCR, GLM-4.5V, GLM-5-FP4).
-func glmVersion(modelID string) float64 {
-	s, ok := strings.CutPrefix(modelID, "zai-org/GLM-")
-	if !ok {
-		return 0
-	}
-	v, rem := parseVersion(s)
-	if rem != "" {
-		return 0
-	}
-	return v
-}
-
-// deepseekVersion returns the version of a DeepSeek chat model (e.g.
-// DeepSeek-V4-Pro → 4.0) or 0 for non-DeepSeek models or non-chat variants
-// (e.g. DeepSeek-R1, DeepSeek-OCR, DeepSeek-Coder).
-func deepseekVersion(modelID string) float64 {
-	s, ok := strings.CutPrefix(modelID, "deepseek-ai/DeepSeek-V")
-	if !ok {
-		return 0
-	}
-	v, rem := parseVersion(s)
-	// Accept plain version numbers (V4, V4.1) and reject suffixed variants (R1, Coder, OCR).
-	if rem != "" && rem != "-Pro" {
-		return 0
-	}
-	return v
-}
-
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.
@@ -470,6 +295,181 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// New creates a new client to talk to the Together.AI platform API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the TOGETHER_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://api.together.ai/settings/api-keys
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://docs.together.ai/docs/serverless-models
+//
+// # Vision
+//
+// We must select a model that supports video.
+// https://docs.together.ai/docs/serverless-models#vision-models
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://api.together.ai/settings/api-keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "TOGETHER_API_KEY", URL: apiKeyURL}
+		}
+	}
+	switch len(modalities) {
+	case 0:
+	case 1:
+		switch modalities[0] {
+		case genai.ModalityImage, genai.ModalityText:
+		case genai.ModalityAudio:
+			// TODO: Add support for audio.
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", modalities)
+		case genai.ModalityDocument, genai.ModalityVideo:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", modalities)
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", modalities)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      "https://api.together.xyz/v1/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProcessHeaders:  processHeaders,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if len(modalities) == 0 || modalities[0] == genai.ModalityText {
+				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
+			} else {
+				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
+			}
+		default:
+			c.impl.Model = model
+			if len(modalities) == 0 {
+				c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
+			} else {
+				c.impl.OutputModalities = modalities
+			}
+		}
+	}
+	return c, err
+}
+
+// flux2Rank returns a quality rank for FLUX.2 image models, or 0 for non-FLUX.2 models.
+//
+// max=3, pro=2, flex/dev=1.
+func flux2Rank(id string) int {
+	if !strings.HasPrefix(id, "black-forest-labs/FLUX.2") {
+		return 0
+	}
+	if strings.Contains(id, "-max") {
+		return 3
+	}
+	if strings.Contains(id, "-pro") {
+		return 2
+	}
+	return 1
+}
+
+// parseVersion extracts a leading version number (digits and dots) from s.
+// Returns the version and the remaining string. Returns 0 if s doesn't start with a digit.
+func parseVersion(s string) (float64, string) {
+	i := 0
+	for i < len(s) && (s[i] >= '0' && s[i] <= '9' || s[i] == '.') {
+		i++
+	}
+	if i == 0 {
+		return 0, s
+	}
+	v, err := strconv.ParseFloat(s[:i], 64)
+	if err != nil {
+		return 0, s
+	}
+	return v, s[i:]
+}
+
+// glmVersion returns the version of a base GLM model (e.g. GLM-5.1 → 5.1) or 0 for
+// non-base variants (e.g. GLM-OCR, GLM-4.5V, GLM-5-FP4).
+func glmVersion(modelID string) float64 {
+	s, ok := strings.CutPrefix(modelID, "zai-org/GLM-")
+	if !ok {
+		return 0
+	}
+	v, rem := parseVersion(s)
+	if rem != "" {
+		return 0
+	}
+	return v
+}
+
+// deepseekVersion returns the version of a DeepSeek chat model (e.g.
+// DeepSeek-V4-Pro → 4.0) or 0 for non-DeepSeek models or non-chat variants
+// (e.g. DeepSeek-R1, DeepSeek-OCR, DeepSeek-Coder).
+func deepseekVersion(modelID string) float64 {
+	s, ok := strings.CutPrefix(modelID, "deepseek-ai/DeepSeek-V")
+	if !ok {
+		return 0
+	}
+	v, rem := parseVersion(s)
+	// Accept plain version numbers (V4, V4.1) and reject suffixed variants (R1, Coder, OCR).
+	if rem != "" && rem != "-Pro" {
+		return 0
+	}
+	return v
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

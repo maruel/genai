@@ -123,15 +123,6 @@ type cachedTokens struct {
 	RefreshToken string `json:"refresh_token,omitempty"`
 }
 
-// cachePath returns the path to the token cache file.
-func cachePath() (string, error) {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(dir, "genai-oauth2-example", "gemini-tokens.json"), nil
-}
-
 // load reads cached tokens from disk.
 func (t *cachedTokens) load() error {
 	p, err := cachePath()
@@ -162,34 +153,6 @@ func (t *cachedTokens) save() error {
 }
 
 // OAuth2 flow.
-
-// getTokens returns valid tokens, using cached tokens if available and
-// refreshing if needed. Falls back to a full browser login.
-func getTokens(ctx context.Context, clientID, clientSecret string) (*cachedTokens, error) {
-	if p, err := cachePath(); err == nil {
-		fmt.Fprintf(os.Stderr, "Token cache: %s\n", p)
-	}
-	var tok cachedTokens
-	if tok.load() == nil && tok.RefreshToken != "" {
-		if err := tok.refresh(ctx, clientID, clientSecret); err == nil {
-			fmt.Fprintf(os.Stderr, "Token refreshed.\n")
-			if err := tok.save(); err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: could not save refreshed token: %v\n", err)
-			}
-			return &tok, nil
-		}
-		fmt.Fprintf(os.Stderr, "Token refresh failed, re-authenticating...\n")
-	}
-
-	if err := tok.doBrowserLogin(ctx, clientID, clientSecret); err != nil {
-		return nil, err
-	}
-	fmt.Fprintf(os.Stderr, "Login successful!\n")
-	if err := tok.save(); err != nil {
-		fmt.Fprintf(os.Stderr, "Warning: could not save token: %v\n", err)
-	}
-	return &tok, nil
-}
 
 // doBrowserLogin runs the full Authorization Code flow with PKCE.
 func (t *cachedTokens) doBrowserLogin(ctx context.Context, clientID, clientSecret string) error {
@@ -272,6 +235,43 @@ func (t *cachedTokens) refresh(ctx context.Context, clientID, clientSecret strin
 }
 
 // Browser callback server.
+
+// cachePath returns the path to the token cache file.
+func cachePath() (string, error) {
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, "genai-oauth2-example", "gemini-tokens.json"), nil
+}
+
+// getTokens returns valid tokens, using cached tokens if available and
+// refreshing if needed. Falls back to a full browser login.
+func getTokens(ctx context.Context, clientID, clientSecret string) (*cachedTokens, error) {
+	if p, err := cachePath(); err == nil {
+		fmt.Fprintf(os.Stderr, "Token cache: %s\n", p)
+	}
+	var tok cachedTokens
+	if tok.load() == nil && tok.RefreshToken != "" {
+		if err := tok.refresh(ctx, clientID, clientSecret); err == nil {
+			fmt.Fprintf(os.Stderr, "Token refreshed.\n")
+			if err := tok.save(); err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: could not save refreshed token: %v\n", err)
+			}
+			return &tok, nil
+		}
+		fmt.Fprintf(os.Stderr, "Token refresh failed, re-authenticating...\n")
+	}
+
+	if err := tok.doBrowserLogin(ctx, clientID, clientSecret); err != nil {
+		return nil, err
+	}
+	fmt.Fprintf(os.Stderr, "Login successful!\n")
+	if err := tok.save(); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: could not save token: %v\n", err)
+	}
+	return &tok, nil
+}
 
 // callbackResult holds the authorization code or error from the OAuth2 callback.
 type callbackResult struct {

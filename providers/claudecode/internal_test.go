@@ -35,16 +35,24 @@ func TestBuildArgs(t *testing.T) {
 			"--tools", "",
 			"--disable-slash-commands",
 			"--setting-sources", "project,local",
+			"--no-session-persistence",
 		}
 		if !slices.Equal(args, want) {
 			t.Errorf("got  %v\nwant %v", args, want)
 		}
 	})
-	t.Run("new_sessions_are_persisted", func(t *testing.T) {
+	t.Run("new_sessions_are_not_persisted", func(t *testing.T) {
 		c := &Client{}
 		args := c.buildArgs(&callOpts{}, "", false)
+		if !slices.Contains(args, "--no-session-persistence") {
+			t.Fatalf("new sessions must not be persisted: %v", args)
+		}
+	})
+	t.Run("new_sessions_can_enable_persistence", func(t *testing.T) {
+		c := &Client{}
+		args := c.buildArgs(&callOpts{sessionPersistence: true}, "", false)
 		if slices.Contains(args, "--no-session-persistence") {
-			t.Fatalf("new sessions must be persisted so their returned session ID can be resumed: %v", args)
+			t.Fatalf("new sessions must be persisted: %v", args)
 		}
 	})
 	t.Run("with_tools", func(t *testing.T) {

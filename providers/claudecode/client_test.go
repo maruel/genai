@@ -187,13 +187,14 @@ func TestClient(t *testing.T) {
 			// Keep the unsupported smoke cases out of the CLI while retaining text
 			// and image coverage.
 			p := skipMediaClient{Provider: c}
-			if model.Reason {
-				return &internaltest.InjectOptions{
-					Provider: p,
-					Opts:     []genai.GenOption{&GenOption{Effort: EffortMedium}},
-				}
+			smokeOpts := []genai.GenOption{
+				// Scoreboard calls are independent probes, not a conversation.
+				&GenOption{SessionPersistence: false},
 			}
-			return p
+			if model.Reason {
+				smokeOpts = append(smokeOpts, &GenOption{Effort: EffortMedium})
+			}
+			return &internaltest.InjectOptions{Provider: p, Opts: smokeOpts}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
@@ -222,7 +223,7 @@ func TestClient(t *testing.T) {
 	})
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("claude-sonnet-4-6"))
+			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel(genai.ModelGood))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			res, err := c.GenSync(t.Context(), msgs)
 			if err != nil {
@@ -292,6 +293,50 @@ func TestClient(t *testing.T) {
 			}
 			if !hasArg(args, "--resume", "550e8400-e29b-41d4-a716-446655440000") {
 				t.Errorf("--resume not found in args %v", args)
+			}
+		})
+		t.Run("live_session_resume", func(t *testing.T) {
+			if os.Getenv("CLAUDECODE_LIVE_SESSION_TEST") == "" {
+				t.Skip("set CLAUDECODE_LIVE_SESSION_TEST=1 to check CLI session persistence")
+			}
+			c, err := New(genai.ProviderOptionModel(genai.ModelGood))
+			if err != nil {
+				t.Fatalf("New: %v", err)
+			}
+			first := genai.Messages{genai.NewTextMessage("Remember the token cedar-ember-47. Reply with exactly that token and nothing else.")}
+			res, err := c.GenSync(t.Context(), first, &GenOption{MaxBudgetUSD: 0.05, SessionPersistence: true})
+			if err != nil {
+				t.Fatalf("first GenSync: %v", err)
+			}
+			if id := msgutil.ExtractOpaqueID(genai.Messages{res.Message}, sessionIDKey); id == "" {
+				t.Fatal("first result has no session ID")
+			}
+			msgs := append(first, res.Message, genai.NewTextMessage("What token did I ask you to remember? Reply with exactly that token and nothing else."))
+			res, err = c.GenSync(t.Context(), msgs, &GenOption{MaxBudgetUSD: 0.05})
+			if err != nil {
+				t.Fatalf("resumed GenSync: %v", err)
+			}
+			if len(res.Replies) == 0 || !strings.Contains(res.Replies[0].Text, "cedar-ember-47") {
+				t.Errorf("resumed reply = %#v, want cedar-ember-47", res.Replies)
+			}
+		})
+		t.Run("live_hello_without_session_persistence", func(t *testing.T) {
+			if os.Getenv("CLAUDECODE_LIVE_SESSION_TEST") == "" {
+				t.Skip("set CLAUDECODE_LIVE_SESSION_TEST=1 to check a stateless CLI call")
+			}
+			c, err := New(genai.ProviderOptionModel(genai.ModelGood))
+			if err != nil {
+				t.Fatalf("New: %v", err)
+			}
+			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Reply with exactly hello and nothing else.")}, &GenOption{
+				MaxBudgetUSD:       0.05,
+				SessionPersistence: false,
+			})
+			if err != nil {
+				t.Fatalf("GenSync: %v", err)
+			}
+			if len(res.Replies) == 0 || !strings.Contains(strings.ToLower(res.Replies[0].Text), "hello") {
+				t.Errorf("reply = %#v, want hello", res.Replies)
 			}
 		})
 		t.Run("error_result", func(t *testing.T) {
@@ -492,7 +537,7 @@ Do not answer the question yourself.`)
 	})
 	t.Run("gen_stream", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("claude-sonnet-4-6"))
+			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel(genai.ModelGood))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 

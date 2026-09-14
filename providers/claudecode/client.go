@@ -25,9 +25,10 @@
 // # Session / multi-turn
 //
 // Each GenSync or GenStream call launches a fresh subprocess. The session ID is
-// always returned inside Reply.Opaque["session_id"]. When the message history
-// contains a previous session ID, it is automatically picked up: --resume <id>
-// is passed and only the last user message is sent.
+// returned inside Reply.Opaque["session_id"]. To make it resumable, the first
+// call must set GenOption.SessionPersistence. When the message history contains
+// a previous session ID, it is automatically picked up: --resume <id> is passed
+// and only the last user message is sent.
 package claudecode
 
 import (
@@ -124,6 +125,9 @@ type GenOption struct {
 	// Effort sets the reasoning effort level (--effort).
 	// Use the Effort* constants.
 	Effort string
+	// SessionPersistence saves a new session so its opaque session ID can be
+	// resumed in a later call. It is disabled by default for independent calls.
+	SessionPersistence bool
 
 	_ struct{}
 }
@@ -157,15 +161,16 @@ func (g *GenOption) Validate() error {
 
 // callOpts holds per-call options parsed from the GenOption slice.
 type callOpts struct {
-	tools             []string // nil = disabled; non-nil = enabled tool list
-	skills            bool
-	projSettings      bool
-	maxBudgetUSD      float64
-	permissionMode    string
-	controlHandler    ControlHandler
-	effort            string
-	systemPrompt      string
-	progressSummaries bool
+	tools              []string // nil = disabled; non-nil = enabled tool list
+	skills             bool
+	projSettings       bool
+	maxBudgetUSD       float64
+	permissionMode     string
+	controlHandler     ControlHandler
+	effort             string
+	sessionPersistence bool
+	systemPrompt       string
+	progressSummaries  bool
 }
 
 // parseOpts validates and collects the per-call options.
@@ -191,6 +196,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 				co.controlHandler = v.ControlHandler
 			}
 			co.effort = v.Effort
+			co.sessionPersistence = co.sessionPersistence || v.SessionPersistence
 			co.progressSummaries = v.Effort != ""
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
@@ -730,9 +736,11 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 		args = append(args, "--setting-sources", "project,local")
 	}
 
-	// Persist new sessions because their result IDs are returned as resumable opaque metadata.
+	// Persist only sessions that the caller intends to resume.
 	if sessionID != "" {
 		args = append(args, "--resume", sessionID)
+	} else if !co.sessionPersistence {
+		args = append(args, "--no-session-persistence")
 	}
 
 	// Partial streaming for GenStream.

@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 214
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"model":"openai/gpt-5.4-nano","stream":true,"private":true,"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 188
+        body: '{"success":false,"error":{"message":"A valid API key is required. Get one at https://enter.pollinations.ai/keys","code":"UNAUTHORIZED","timestamp":"2026-09-14T01:07:42.418Z"},"status":401}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Ray:
+                - a3ab7f0d2fe2f337-YYZ
+            Content-Length:
+                - "188"
+            Content-Type:
+                - application/json
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=NZh%2FqM%2F5Rd%2F315MASQ1QEo94yC4Is%2BP%2BrybAyxSfSfVb%2FdAAY19Ug0W9lONkgdD%2F3HQ9ORxSl4H0A1fJWUl%2Fp7c4oAG2oeiTjRtb0Y0crvmHzvM6CDvlPZ49erAyiEQwbZFAwq4O"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=149
+            X-Cache:
+                - MISS
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 401 Unauthorized
+        code: 401
+        duration: 166ms

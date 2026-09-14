@@ -83,7 +83,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		// This is meh.
 		switch {
 		case cheap:
-			if m.Name == "openai-fast" {
+			if m.Name == "openai/gpt-5.4-nano" {
 				selectedModel = m.Name
 			}
 		case good:
@@ -437,7 +437,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://text.pollinations.ai/openai",
+			GenSyncURL:      "https://gen.pollinations.ai/v1/chat/completions",
 			ProcessStream:   ProcessStream,
 			PreloadedModels: preloadedModels,
 			LieToolCalls:    true,
@@ -486,6 +486,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
+				if pkt.ServiceTier != "" {
+					u.ServiceTier = pkt.ServiceTier
+				}
 				if pkt.Usage.PromptTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens

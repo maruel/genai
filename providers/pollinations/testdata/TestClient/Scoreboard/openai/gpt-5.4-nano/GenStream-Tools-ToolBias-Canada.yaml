@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"openai/gpt-5.4-nano","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 4271
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"","name":"best_country"},"id":"call_QRlN6l10Q4yDiCaZRCRCJN7y","index":0,"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"FnWIwciu3CjZa","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"tool_calls":[{"function":{"arguments":"{\""},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"chHdbtqS","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"tool_calls":[{"function":{"arguments":"country"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"15or","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"tool_calls":[{"function":{"arguments":"\":\""},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"90oul5","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"tool_calls":[{"function":{"arguments":"Canada"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"cDSFk","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"tool_calls":[{"function":{"arguments":"\"}"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"BEAP8SJM","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"tool_calls","index":0,"logprobs":null}],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","model":"gpt-5.4-nano-2026-03-17","obfuscation":"uH6f55y9b","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[],"created":1789344727,"id":"chatcmpl-ENoal24lXPijlYE0QSbDMXu3FJZG1","latency_checkpoint":{"engine_tbt_ms":6,"engine_ttft_ms":30,"engine_ttlt_ms":143,"pre_inference_ms":112,"service_tbt_ms":10,"service_ttft_ms":534,"service_ttlt_ms":712,"user_visible_ttft_ms":422},"model":"gpt-5.4-nano-2026-03-17","obfuscation":"dGvkxyj1a8","object":"chat.completion.chunk","routing":{"serving_pipereplica":"d20260806023754-bf09210e-default-r1-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":18,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":159,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":177}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a3ab7f148cbff337-YYZ
+            Content-Length:
+                - "4271"
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Q3AYyu0EEl3IBP0RWFMrfk7%2BJ34QUy8pC7qTvCMyE9chVwYOOFuI%2B%2BA3UV4RwTVq6XdTcjRLxe%2BVEBH4NxKFGH%2FsTwNNwnEvuaoSYWnRvKNGEnBcX%2B2rraDOfqt1hweUTEvjYBNv"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=8,cfOrigin;dur=0,cfWorker;dur=390
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-09-14T00:12:07.890Z"
+            X-Cache-Key:
+                - 01d101e1d25eac2a
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 200 OK
+        code: 200
+        duration: 411ms

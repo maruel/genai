@@ -456,7 +456,11 @@ type ChatResponse struct {
 	SystemFingerprint   string               `json:"system_fingerprint"`
 	PromptLogprobs      struct{}             `json:"prompt_logprobs"`
 	KVTransferParams    struct{}             `json:"kv_transfer_params"`
-	UserTier            string               `json:"user_tier"`
+	Routing             struct {
+		ServingPipeReplica string `json:"serving_pipereplica"`
+	} `json:"routing"`
+	ServiceTier string `json:"service_tier"`
+	UserTier    string `json:"user_tier"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -516,6 +520,16 @@ type PromptFilterResult struct {
 
 // Usage is the provider-specific token usage.
 type Usage struct {
+	LatencyCheckpoint struct {
+		EngineTBTMS       base.Float64 `json:"engine_tbt_ms"`
+		EngineTTFTMS      base.Float64 `json:"engine_ttft_ms"`
+		EngineTTLTMS      base.Float64 `json:"engine_ttlt_ms"`
+		PreInferenceMS    base.Float64 `json:"pre_inference_ms"`
+		ServiceTBTMS      base.Float64 `json:"service_tbt_ms"`
+		ServiceTTFTMS     base.Float64 `json:"service_ttft_ms"`
+		ServiceTTLTMS     base.Float64 `json:"service_ttlt_ms"`
+		UserVisibleTTFTMS base.Float64 `json:"user_visible_ttft_ms"`
+	} `json:"latency_checkpoint"`
 	PromptTokens            int64 `json:"prompt_tokens"`
 	AudioPromptTokens       int64 `json:"audio_prompt_tokens"`
 	CompletionTokens        int64 `json:"completion_tokens"`
@@ -537,12 +551,12 @@ type Usage struct {
 
 // MessageResponse is a message in a provider-specific response.
 type MessageResponse struct {
-	Role             string     `json:"role"`
-	ReasoningContent string     `json:"reasoning_content"`
-	Content          Contents   `json:"content"`
-	ToolCalls        []ToolCall `json:"tool_calls"`
-	Annotations      []struct{} `json:"annotations"`
-	Refusal          struct{}   `json:"refusal"`
+	Role             string          `json:"role"`
+	ReasoningContent string          `json:"reasoning_content"`
+	Content          json.RawMessage `json:"content"`
+	ToolCalls        []ToolCall      `json:"tool_calls"`
+	Annotations      []struct{}      `json:"annotations"`
+	Refusal          struct{}        `json:"refusal"`
 	Audio            struct {
 		Data []byte `json:"data"`
 	} `json:"audio"`
@@ -550,11 +564,15 @@ type MessageResponse struct {
 
 // To converts to the genai equivalent.
 func (m *MessageResponse) To(out *genai.Message) error {
-	for i := range m.Content {
-		if m.Content[i].Text != "" {
-			out.Replies = append(out.Replies, genai.Reply{Text: m.Content[i].Text})
+	var content Contents
+	if err := json.Unmarshal(m.Content, &content); err != nil {
+		return fmt.Errorf("parse content: %w", err)
+	}
+	for i := range content {
+		if content[i].Text != "" {
+			out.Replies = append(out.Replies, genai.Reply{Text: content[i].Text})
 		} else {
-			return &internal.BadError{Err: fmt.Errorf("unsupported content #%d: %q", i, m.Content[i])}
+			return &internal.BadError{Err: fmt.Errorf("unsupported content #%d: %q", i, content[i])}
 		}
 	}
 	if m.ReasoningContent != "" {
@@ -583,6 +601,23 @@ type ChatStreamChunkResponse struct {
 	Object  string     `json:"object"`  // "chat.completion.chunk"
 	Created base.TimeS `json:"created"` //
 	Model   string     `json:"model"`   // Original model full name
+	// Obfuscation is an opaque provider routing identifier.
+	Obfuscation string `json:"obfuscation"`
+	// ServiceTier is the processing tier that handled this chunk.
+	ServiceTier       string `json:"service_tier"`
+	LatencyCheckpoint struct {
+		EngineTBTMS       base.Float64 `json:"engine_tbt_ms"`
+		EngineTTFTMS      base.Float64 `json:"engine_ttft_ms"`
+		EngineTTLTMS      base.Float64 `json:"engine_ttlt_ms"`
+		PreInferenceMS    base.Float64 `json:"pre_inference_ms"`
+		ServiceTBTMS      base.Float64 `json:"service_tbt_ms"`
+		ServiceTTFTMS     base.Float64 `json:"service_ttft_ms"`
+		ServiceTTLTMS     base.Float64 `json:"service_ttlt_ms"`
+		UserVisibleTTFTMS base.Float64 `json:"user_visible_ttft_ms"`
+	} `json:"latency_checkpoint"`
+	Routing struct {
+		ServingPipeReplica string `json:"serving_pipereplica"`
+	} `json:"routing"`
 	Choices []struct {
 		ContentFilterResults ContentFilterResult `json:"content_filter_results"`
 		Index                int64               `json:"index"`
@@ -717,6 +752,7 @@ type ImageModel struct {
 	Aliases             Strings             `json:"aliases"`
 	Alpha               bool                `json:"alpha,omitzero"`
 	Brand               string              `json:"brand"`
+	Publisher           string              `json:"publisher"`
 	BrandURL            string              `json:"brand_url,omitzero"`
 	Capabilities        []string            `json:"capabilities,omitzero"`
 	Category            string              `json:"category"`
@@ -859,6 +895,7 @@ type TextModel struct {
 		PromptCacheWriteTokens    base.Float64 `json:"promptCacheWriteTokens,omitzero"`
 	} `json:"pricing,omitzero"`
 	Provider               string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
+	Publisher              string   `json:"publisher"`
 	Reasoning              bool     `json:"reasoning"`
 	Search                 bool     `json:"search"`
 	SupportsSystemMessages bool     `json:"supportsSystemMessages"`
@@ -870,6 +907,7 @@ type TextModel struct {
 	Voices                 []string `json:"voices"`
 	RequiredSafety         []string `json:"required_safety,omitzero"`
 	SupportedEndpoints     []string `json:"supported_endpoints,omitzero"`
+	SupportedParameters    []string `json:"supported_parameters,omitzero"`
 }
 
 // GetID implements genai.Model.

@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 351
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"model":"openai/gpt-5.4-nano","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 188
+        body: '{"success":false,"error":{"message":"A valid API key is required. Get one at https://enter.pollinations.ai/keys","code":"UNAUTHORIZED","timestamp":"2026-09-14T01:07:43.218Z"},"status":401}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Ray:
+                - a3ab7f123da5f337-YYZ
+            Content-Length:
+                - "188"
+            Content-Type:
+                - application/json
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=kFnZgqo2okEm7aE8Nkxd%2FHgdN4jbH6Ez7vCTe5%2BAHVCdq3emDBOIyO%2B%2FqXOqFxm1z3Z3aC78wxipMYvAKktnBjQc2gO3g281j1PTVLATSYovkmczdKvcBadyd4H0ijcDHiCRrTjd"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=141
+            X-Cache:
+                - MISS
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 401 Unauthorized
+        code: 401
+        duration: 159ms

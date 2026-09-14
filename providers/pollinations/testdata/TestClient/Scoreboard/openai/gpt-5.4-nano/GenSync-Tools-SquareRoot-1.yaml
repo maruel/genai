@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 603
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"openai/gpt-5.4-nano","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"protected_material_code":{"detected":false,"filtered":false},"protected_material_text":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"tool_calls","index":0,"logprobs":null,"message":{"annotations":[],"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\":132413}","name":"square_root"},"id":"call_mCbMvumZHCN7B9i5osXYM9qF","type":"function"}]}}],"created":1789344573,"id":"chatcmpl-ENoYHxazXhMvHVnVR6C5zfpDiByF6","model":"gpt-5.4-nano-2026-03-17","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"routing":{"serving_pipereplica":"d20260806023754-bf09210e-default-r2-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":19,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"latency_checkpoint":{"engine_tbt_ms":6,"engine_ttft_ms":31,"engine_ttlt_ms":148,"pre_inference_ms":192,"service_tbt_ms":9,"service_ttft_ms":668,"service_ttlt_ms":830,"user_visible_ttft_ms":475},"prompt_tokens":155,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":174}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a3ab7f0b5aa7f337-YYZ
+            Content-Type:
+                - application/json; charset=utf-8
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=dhAVnuj16oMZR4cPU8%2BnJEzRlCvdPTQnyYM6Uwq1RJmi6YInASD0N7kZH3uQHoMokjmDmxlb80fmA%2B41LAftoY04kCcjEzFDX2ccWq6FVovTljzgxQs2s8RBLXyxz5jvuToOBnpB"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=151
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-09-14T00:09:34.676Z"
+            X-Cache-Key:
+                - f6ab129b8e3bb344
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Moderation-Completion-Hate-Severity:
+                - safe
+            X-Moderation-Completion-Self-Harm-Severity:
+                - safe
+            X-Moderation-Completion-Sexual-Severity:
+                - safe
+            X-Moderation-Completion-Violence-Severity:
+                - safe
+            X-Moderation-Prompt-Hate-Severity:
+                - safe
+            X-Moderation-Prompt-Self-Harm-Severity:
+                - safe
+            X-Moderation-Prompt-Sexual-Severity:
+                - safe
+            X-Moderation-Prompt-Violence-Severity:
+                - safe
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "19"
+            X-Usage-Prompt-Text-Tokens:
+                - "155"
+        status: 200 OK
+        code: 200
+        duration: 170ms

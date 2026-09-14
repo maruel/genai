@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 348
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"model":"openai/gpt-5.4-nano","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"protected_material_code":{"detected":false,"filtered":false},"protected_material_text":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"stop","index":0,"logprobs":null,"message":{"annotations":[],"content":"Banana","refusal":null,"role":"assistant"}}],"created":1789344617,"id":"chatcmpl-ENoYzG4ywutocIBKJIgDkLx92MBMS","model":"gpt-5.4-nano-2026-03-17","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"routing":{"serving_pipereplica":"d20260816160456-97056c36-default-r0-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":6,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"latency_checkpoint":{"engine_tbt_ms":6,"engine_ttft_ms":204,"engine_ttlt_ms":240,"pre_inference_ms":103,"service_tbt_ms":7,"service_ttft_ms":786,"service_ttlt_ms":827,"user_visible_ttft_ms":683},"prompt_tokens":173,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":179}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a3ab7f169af9f337-YYZ
+            Content-Type:
+                - application/json; charset=utf-8
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=QK%2BlA55S3z0IgB9qpWWmaLMVaEQE7KKCL%2BEGY3%2FNreBLUlzysNNvFDQFyOSVZVA%2Bg6yqsFn2vj9HSZMVlg8ujz4KxMqUUWyFTzStU0K8HmmG9ysixuR%2Bjbry4bBZvx1fkHZrHAWr"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=8,cfOrigin;dur=0,cfWorker;dur=150
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-09-14T00:10:18.428Z"
+            X-Cache-Key:
+                - 46f285a4dbc8aad2
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Moderation-Completion-Hate-Severity:
+                - safe
+            X-Moderation-Completion-Self-Harm-Severity:
+                - safe
+            X-Moderation-Completion-Sexual-Severity:
+                - safe
+            X-Moderation-Completion-Violence-Severity:
+                - safe
+            X-Moderation-Prompt-Hate-Severity:
+                - safe
+            X-Moderation-Prompt-Self-Harm-Severity:
+                - safe
+            X-Moderation-Prompt-Sexual-Severity:
+                - safe
+            X-Moderation-Prompt-Violence-Severity:
+                - safe
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "6"
+            X-Usage-Prompt-Text-Tokens:
+                - "173"
+        status: 200 OK
+        code: 200
+        duration: 170ms

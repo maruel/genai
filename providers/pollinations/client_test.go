@@ -62,7 +62,7 @@ func getClientInner(t *testing.T, opts *providerOptions, fn func(http.RoundTripp
 
 func TestImageModelsResponse(t *testing.T) {
 	t.Run("metadata fields", func(t *testing.T) {
-		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000,"min_duration":6,"max_duration":120,"default_duration":6,"duration_step":6}]`
+		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","publisher":"Black Forest Labs","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000,"min_duration":6,"max_duration":120,"default_duration":6,"duration_step":6}]`
 		var resp pollinations.ImageModelsResponse
 		dec := json.NewDecoder(strings.NewReader(body))
 		dec.DisallowUnknownFields()
@@ -92,7 +92,7 @@ func TestImageModelsResponse(t *testing.T) {
 
 func TestTextModelsResponse(t *testing.T) {
 	t.Run("metadata fields", func(t *testing.T) {
-		body := `[{"name":"openai","aliases":["gpt-5.4-nano"],"category":"text","brand":"OpenAI","pricing":{"currency":"pollen","promptTextTokens":"0.00000015","promptCachedTokens":"0.000000015","completionTextTokens":"0.0000009375"},"title":"GPT-5.4 Nano","description":"GPT-5.4 Nano - Fast & Balanced","input_modalities":["text","image"],"output_modalities":["text"],"max_reference_images":10,"capabilities":["tool_calling"],"tools":true,"context_length":400000,"is_specialized":false,"alpha":true,"added_date":1759795200000}]`
+		body := `[{"name":"openai","aliases":["gpt-5.4-nano"],"category":"text","brand":"OpenAI","publisher":"OpenAI","supported_parameters":["max_tokens","stream"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000015","promptCachedTokens":"0.000000015","completionTextTokens":"0.0000009375"},"title":"GPT-5.4 Nano","description":"GPT-5.4 Nano - Fast & Balanced","input_modalities":["text","image"],"output_modalities":["text"],"max_reference_images":10,"capabilities":["tool_calling"],"tools":true,"context_length":400000,"is_specialized":false,"alpha":true,"added_date":1759795200000}]`
 		var resp pollinations.TextModelsResponse
 		dec := json.NewDecoder(strings.NewReader(body))
 		dec.DisallowUnknownFields()

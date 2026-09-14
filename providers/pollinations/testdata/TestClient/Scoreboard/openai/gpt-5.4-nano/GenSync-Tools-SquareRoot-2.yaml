@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 842
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_mCbMvumZHCN7B9i5osXYM9qF","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_mCbMvumZHCN7B9i5osXYM9qF"}],"model":"openai/gpt-5.4-nano","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"protected_material_code":{"detected":false,"filtered":false},"protected_material_text":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"stop","index":0,"logprobs":null,"message":{"annotations":[],"content":"363.89","refusal":null,"role":"assistant"}}],"created":1789344578,"id":"chatcmpl-ENoYMtPY5pbqZ2BzTse7UtW7kO7hU","model":"gpt-5.4-nano-2026-03-17","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"routing":{"serving_pipereplica":"d20260806023754-bf09210e-default-r2-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":7,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"latency_checkpoint":{"engine_tbt_ms":6,"engine_ttft_ms":48,"engine_ttlt_ms":90,"pre_inference_ms":90,"service_tbt_ms":5,"service_ttft_ms":538,"service_ttlt_ms":575,"user_visible_ttft_ms":448},"prompt_tokens":187,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":194}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a3ab7f0c6dddf337-YYZ
+            Content-Type:
+                - application/json; charset=utf-8
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=RnF3x8WR2n5mYdXg7hlEckQbepuiA2alfFzHon6QNZ0ciNC%2FM%2FGtvweMFnt7i5JxWMf8ZH%2BTmfe685rS%2FyusJ4Rxqg1ViOv2xBEbE%2Bqwf6p4X3Ppm3ao1yqsDkci0sRx3EONu%2F2r"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=8,cfOrigin;dur=0,cfWorker;dur=155
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-09-14T00:09:39.368Z"
+            X-Cache-Key:
+                - 3274b6f9c512e763
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Moderation-Completion-Hate-Severity:
+                - safe
+            X-Moderation-Completion-Self-Harm-Severity:
+                - safe
+            X-Moderation-Completion-Sexual-Severity:
+                - safe
+            X-Moderation-Completion-Violence-Severity:
+                - safe
+            X-Moderation-Prompt-Hate-Severity:
+                - safe
+            X-Moderation-Prompt-Self-Harm-Severity:
+                - safe
+            X-Moderation-Prompt-Sexual-Severity:
+                - safe
+            X-Moderation-Prompt-Violence-Severity:
+                - safe
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "7"
+            X-Usage-Prompt-Text-Tokens:
+                - "187"
+        status: 200 OK
+        code: 200
+        duration: 176ms

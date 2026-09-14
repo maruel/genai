@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 182
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"openai/gpt-5.4-nano","seed":42,"stream":true,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2263
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344717,"id":"chatcmpl-ENoabLVDxLYhcrD8ACWfjNmxHhH0a","model":"gpt-5.4-nano-2026-03-17","obfuscation":"YXo","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_text":{"detected":false,"filtered":false}},"delta":{"content":"Hello"},"finish_reason":null,"index":0,"logprobs":null}],"created":1789344717,"id":"chatcmpl-ENoabLVDxLYhcrD8ACWfjNmxHhH0a","model":"gpt-5.4-nano-2026-03-17","obfuscation":"","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1789344717,"id":"chatcmpl-ENoabLVDxLYhcrD8ACWfjNmxHhH0a","model":"gpt-5.4-nano-2026-03-17","obfuscation":"34wKy9FBIzfV6gb","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[],"created":1789344717,"id":"chatcmpl-ENoabLVDxLYhcrD8ACWfjNmxHhH0a","latency_checkpoint":{"engine_tbt_ms":5,"engine_ttft_ms":25,"engine_ttlt_ms":49,"pre_inference_ms":75,"service_tbt_ms":6,"service_ttft_ms":385,"service_ttlt_ms":416,"user_visible_ttft_ms":310},"model":"gpt-5.4-nano-2026-03-17","obfuscation":"","object":"chat.completion.chunk","routing":{"serving_pipereplica":"d20260812055937-c4940c16-default-r1-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":5,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":14,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":19}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a3ab7f0809daf337-YYZ
+            Content-Length:
+                - "2263"
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=eefEFJS5uGYla5lYtQoA7zn5GC4pIDfyGfDqGucL9kk2%2BachXo1lpJqOEac7hvdWNjwysA%2BCR7CFZho6pA2aeH2tVbkq4dvQgzS77MoAW%2FlgxBXbQ3l2Ty5MMrv94e%2FJZlh4Aynt"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=485
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-09-14T00:11:58.256Z"
+            X-Cache-Key:
+                - b92f8281af17113b
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 200 OK
+        code: 200
+        duration: 502ms

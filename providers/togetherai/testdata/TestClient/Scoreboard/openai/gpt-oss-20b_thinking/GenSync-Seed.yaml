@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK9LE-3pDw3Z-a04673c80880a2b4",
+              "id": "p1BXx2c-fdNmn-a3ab777e4c3fa2af",
               "object": "chat.completion",
-              "created": 1780235476,
+              "created": 1789347753,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "Hello",
+                    "content": "Hello.",
                     "tool_calls": [],
-                    "reasoning": "User says: \"Say hello. Use only one word.\" So we should reply with a single word greeting. Probably \"Hello\". They want one word. \"Hello\" is one word. Should we say \"Hi\"? That is also one word. They said \"Say hello. Use only one word.\" So maybe \"Hello\" is straightforward. Use only one word. So answer: Hello. Or \"Hi\". But \"hello\" matches the instruction. So reply \"Hello\"."
+                    "reasoning": "We need to respond with only one word: \"Hello.\" That meets the instruction. We must not include anything else."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 75,
-                "total_tokens": 182,
-                "completion_tokens": 107,
+                "total_tokens": 111,
+                "completion_tokens": 36,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673c80880a2b4-YUL
+                - a3ab777e4c3fa2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"3d0-tv6sL2tGtJo3l9i09JL6jA1b29w"
+                - W/"2b9-vskr2zrwFy4Wfam6560dI4pTLRs"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 2f658d2f-cac6-4b75-b582-426b8cba827e-noamzn
+                - d59be650-0fd5-4a90-a960-8744db7dec99-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:16.411Z"
+                - "2026-09-14T01:02:33.554Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:15.306Z"
+                - "2026-09-14T01:02:33.012Z"
             X-Api-Received:
-                - "2026-05-31T13:51:15.291Z"
+                - "2026-09-14T01:02:33.001Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.284s
+        duration: 942ms

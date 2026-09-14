@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 558
+        content_length: 554
         host: api.together.xyz
         body: |
-            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,43 +23,44 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK6j4-z1gNr-a04673918f03a2b4",
+              "id": "p1BXpNV-z1gNr-a3ab76df1c30a2af",
               "object": "chat.completion",
-              "created": 1780235468,
+              "created": 1789347727,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "",
+                    "content": "According to the tool, the United States (USA) is the better country.",
                     "tool_calls": [
                       {
-                        "id": "call_085fffab7ea94c52b87624b4",
-                        "index": 0,
+                        "id": "call_01a09d6f-9b1f-7a23-900e-d290e8d692a4",
                         "type": "function",
                         "function": {
                           "name": "best_country",
-                          "arguments": "{\"country\": \"USA\"}"
+                          "arguments": "{\n  \"country\": \"USA\"\n}"
                         }
                       }
                     ],
-                    "reasoning": "The user wants to compare USA vs Canada and asks to call the tool best_country to determine which is the best. The tool expects a parameter \"country\". Probably we need to call it with a country? But the prompt asks to tell which country is the best. The tool maybe returns something based on given country? The spec: type best_country = (_: { country: \"USA\" | \"Canada\", }) => any; It expects a country input and returns any. Not clear what it does. Probably we need to call the tool twice? Actually we likely need to call with each country to see which is \"best\". Or maybe the tool returns which is best among the input? But signature only takes a single country. So perhaps we must call the tool with both? But cannot pass two. Maybe we call with \"USA\" then \"Canada\"? Or we just call with one? The user says \"Call the tool best_country to tell me which country is the best one.\" Possibly we pass one and the tool returns a judgment? Or maybe we need to decide ourselves. However instructions say to use the tool. So we call the tool with a country argument; but which? Could try both? The tool might compare? But signature says only one param. I'd guess we call with \"USA\". Let's call with USA."
+                    "reasoning": "We need to call the tool best_country with a country? The tool spec says type best_country = (_: { country: \"USA\" | \"Canada\", }) => any; It says \"specify the best country\". Probably we need to pass which country we think is best? The user asks \"which country is the best one\". So we need to call tool with maybe both options? The tool signature only takes a single country input. Perhaps we call it with one and see response? Might be designed to get the best country as answer; we could try both? Probably we should call it with \"USA\" first."
                   },
-                  "logprobs": null,
                   "finish_reason": "tool_calls",
                   "seed": null
                 }
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 445,
-                "completion_tokens": 290,
-                "reasoning_tokens": 0
+                "completion_tokens": 176,
+                "total_tokens": 331,
+                "prompt_tokens_details": {
+                  "cached_tokens": 87
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 137
+                }
               }
             }
         headers:
@@ -70,11 +71,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673918f03a2b4-YUL
+                - a3ab76df1c30a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"815-IKEWRwjc6fXOhh9swwheXbZ6O7I"
+                - W/"604-O70QYN23TFVi8fVj5Ls9uNt3/c8"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -82,15 +83,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - bf07a683-a9b1-45ba-b669-d8a0d0c0f065-noamzn
+                - 1d367d98-526d-403f-8dbf-d6f7828fa559-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:08.846Z"
+                - "2026-09-14T01:02:12.258Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:06.534Z"
+                - "2026-09-14T01:02:07.253Z"
             X-Api-Received:
-                - "2026-05-31T13:51:06.523Z"
+                - "2026-09-14T01:02:07.242Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 2.369s
+        duration: 5.061s

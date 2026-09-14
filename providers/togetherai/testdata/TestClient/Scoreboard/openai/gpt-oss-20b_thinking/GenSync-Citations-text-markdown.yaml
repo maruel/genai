@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKCLy-4YNCb4-a0467407ac33a2b4",
+              "id": "p1BY4hc-fdNmn-a3ab780bfcefa2af",
               "object": "chat.completion",
-              "created": 1780235486,
+              "created": 1789347782,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "Quack.",
                     "tool_calls": [],
-                    "reasoning": "Ok the user says \"Quackiland\" and capital is Quack; the question re-asks: \"What is the capital of Quackiland?\" So answer: Quack. They might expect \"Quack\" as answer. Possibly we should state \"Quack.\"\n\nWe need to follow instructions: Provide answer in plain language. We can just answer: \"Quack.\"\n\nI should also note that the user repeated the question, maybe to check we are paying attention. So answer simply: Quack."
+                    "reasoning": "The user is asking: \"Quackiland... The capital of Quackiland is Quack... What is the capital of Quackiland?\" We need to answer that the capital is Quack. Probably straightforward. There's no trick? The answer: Quack.\n\nBut maybe there is trick: They give some information: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. They ask: What is the capital of Quackiland? It's Quack.\n\nYes just answer \"Quack.\""
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 102,
-                "total_tokens": 217,
-                "completion_tokens": 115,
+                "total_tokens": 223,
+                "completion_tokens": 121,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0467407ac33a2b4-YUL
+                - a3ab780bfcefa2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"3fb-SVYq56BN9mecQjAa4sLsE4zpVg8"
+                - W/"404-enGYbgm2SKvjyJh3V0aOo4U0p2o"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - f6b531c1-76f1-4ccd-b0fe-b1cabeac6280-noamzn
+                - 67497ea5-3ceb-4282-9c11-33822d33b2dc-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:26.699Z"
+                - "2026-09-14T01:03:02.695Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:25.480Z"
+                - "2026-09-14T01:02:55.457Z"
             X-Api-Received:
-                - "2026-05-31T13:51:25.426Z"
+                - "2026-09-14T01:02:55.447Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.352s
+        duration: 7.407s

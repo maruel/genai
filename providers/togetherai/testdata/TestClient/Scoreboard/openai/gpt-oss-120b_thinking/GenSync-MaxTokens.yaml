@@ -23,13 +23,11 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK5A3-z1gNr-a046737078d6a2b4",
+              "id": "p1BXmwi-z1gNr-a3ab76ac1fe0a2af",
               "object": "chat.completion",
-              "created": 1780235461,
+              "created": 1789347719,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
@@ -38,18 +36,22 @@ interactions:
                     "role": "assistant",
                     "content": "",
                     "tool_calls": [],
-                    "reasoning": "Need to produce a detailed explanation of theory of relativity, covering"
+                    "reasoning": "The user asks: \"Explain the theory of relativity in great"
                   },
-                  "logprobs": null,
                   "finish_reason": "length",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 77,
-                "total_tokens": 93,
+                "prompt_tokens": 79,
                 "completion_tokens": 16,
-                "reasoning_tokens": 0
+                "total_tokens": 95,
+                "prompt_tokens_details": {
+                  "cached_tokens": 78
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 14
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a046737078d6a2b4-YUL
+                - a3ab76ac1fe0a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"28d-RUKd+YKjsuqONVh8C6hdPYcJufg"
+                - W/"2c1-SPAsBpmDEd2klJI1Hj92YCgDnCQ"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 1a249f66-f186-4a7c-96e2-db6d58361e35-noamzn
+                - 994d7dc8-a4a4-46a5-a150-b64c5af3b1a0-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:01.414Z"
+                - "2026-09-14T01:01:59.903Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:01.255Z"
+                - "2026-09-14T01:01:59.087Z"
             X-Api-Received:
-                - "2026-05-31T13:51:01.244Z"
+                - "2026-09-14T01:01:59.077Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 424ms
+        duration: 862ms

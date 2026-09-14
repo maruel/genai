@@ -32,6 +32,32 @@ func TestRunOneModelUpdateScoreboard(t *testing.T) {
 	}
 }
 
+func TestRunOptionsQualifies(t *testing.T) {
+	m := scoreboard.Model{Model: "model", Reason: true}
+	opts := &RunOptions{Qualify: []scoreboard.Model{m}}
+	old := *updateScoreboard
+	t.Cleanup(func() {
+		*updateScoreboard = old
+	})
+	for _, test := range []struct {
+		name   string
+		update bool
+		model  scoreboard.Model
+		want   bool
+	}{
+		{name: "update", update: true, model: m, want: true},
+		{name: "normal", model: m},
+		{name: "wrong reasoning", update: true, model: scoreboard.Model{Model: m.Model}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			*updateScoreboard = test.update
+			if got := opts.qualifies(test.model); got != test.want {
+				t.Errorf("qualifies(%v) = %t, want %t", test.model, got, test.want)
+			}
+		})
+	}
+}
+
 type scoreboardProvider struct {
 	base.NotImplemented
 }

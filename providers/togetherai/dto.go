@@ -173,6 +173,25 @@ type Message struct {
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
+//
+// Together AI returns reasoning in either reasoning or reasoning_content,
+// depending on the model. The latter takes precedence when both are present.
+func (m *Message) UnmarshalJSON(b []byte) error {
+	v := messageJSON{messageAlias: (*messageAlias)(m)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&v); err != nil {
+		return err
+	}
+	if v.ReasoningContent != "" {
+		m.Reasoning = v.ReasoningContent
+	}
+	return nil
+}
+
 // From must be called with at most one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	if len(in.ToolCallResults) > 1 {
@@ -259,6 +278,13 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = []genai.Reply{{Opaque: map[string]any{"empty": true}}}
 	}
 	return nil
+}
+
+type messageAlias Message
+
+type messageJSON struct {
+	*messageAlias
+	ReasoningContent string `json:"reasoning_content"`
 }
 
 // Contents is a collection of content blocks.
@@ -482,6 +508,7 @@ type ChatResponse struct {
 		// The seed is returned as a int128.
 		Seed         big.Int      `json:"seed"`
 		FinishReason FinishReason `json:"finish_reason"`
+		MatchedStop  string       `json:"matched_stop"`
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
@@ -493,7 +520,7 @@ type ChatResponse struct {
 	Warnings         []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
-	SystemFingerprint struct{} `json:"system_fingerprint"`
+	SystemFingerprint string   `json:"system_fingerprint"`
 	Servicetier       struct{} `json:"service_tier"`
 	Metadata          struct {
 		WeightVersion string `json:"weight_version"` // "default"
@@ -506,7 +533,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: max(c.Usage.CachedTokens, c.Usage.PromptTokensDetails.CachedTokens),
-			ReasoningTokens:   c.Usage.ReasoningTokens,
+			ReasoningTokens:   max(c.Usage.ReasoningTokens, c.Usage.CompletionTokensDetails.ReasoningTokens),
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
 		},
@@ -649,6 +676,9 @@ type Usage struct {
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details"`
+	CompletionTokensDetails struct {
+		ReasoningTokens int64 `json:"reasoning_tokens"`
+	} `json:"completion_tokens_details"`
 }
 
 // ChoiceError is the choice-level error in a streaming chat chunk.
@@ -679,25 +709,26 @@ type ChatStreamChunkResponse struct {
 		Index       int64              `json:"index"`
 		Text        string             `json:"text"` // Duplicated to Delta.Text
 		Seed        big.Int            `json:"seed"`
-		Error       *ChoiceError       `json:"error,omitzero"`
+		Error       json.RawMessage    `json:"error,omitzero"`
 		Role        string             `json:"role,omitzero"` // Sometimes appears in streaming
 		Logprobs    LogprobsChunk      `json:"logprobs"`
 		TopLogprobs map[string]float64 `json:"top_logprobs,omitzero"`
 		Delta       struct {
-			TokenID   int64      `json:"token_id"`
-			Role      string     `json:"role"`
-			Content   string     `json:"content"`
-			ToolCalls []ToolCall `json:"tool_calls"`
-			Reasoning string     `json:"reasoning"`
+			TokenID          int64      `json:"token_id"`
+			Role             string     `json:"role"`
+			Content          string     `json:"content"`
+			ToolCalls        []ToolCall `json:"tool_calls"`
+			Reasoning        string     `json:"reasoning"`
+			ReasoningContent string     `json:"reasoning_content"`
 		} `json:"delta"`
-		FinishReason FinishReason `json:"finish_reason"`
-		MatchedStop  int64        `json:"matched_stop"`
-		StopReason   StopReason   `json:"stop_reason"`
-		ToolCalls    []ToolCall   `json:"tool_calls"`
+		FinishReason FinishReason    `json:"finish_reason"`
+		MatchedStop  json.RawMessage `json:"matched_stop"`
+		StopReason   StopReason      `json:"stop_reason"`
+		ToolCalls    []ToolCall      `json:"tool_calls"`
 	} `json:"choices"`
-	// SystemFingerprint string `json:"system_fingerprint"`
-	Usage    Usage `json:"usage"`
-	Warnings []struct {
+	SystemFingerprint string `json:"system_fingerprint"`
+	Usage             Usage  `json:"usage"`
+	Warnings          []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
 }

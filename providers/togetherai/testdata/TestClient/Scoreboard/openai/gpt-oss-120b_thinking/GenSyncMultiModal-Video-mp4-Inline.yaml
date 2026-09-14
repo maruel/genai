@@ -23,13 +23,11 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK8D2-4YNCb4-a04673b09e67a2b4",
+              "id": "p1BXsEo-z1gNr-a3ab771b4dafa2af",
               "object": "chat.completion",
-              "created": 1780235473,
+              "created": 1789347736,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
@@ -38,18 +36,22 @@ interactions:
                     "role": "assistant",
                     "content": "said",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"What is the word said? Reply with only the word.\" This is ambiguous, maybe a puzzle? The prompt: \"What is the word said? Reply with only the word.\" No context. Could be a trick: They want the word \"said\"? Or they ask \"What is the word said?\" The answer is \"said\". So reply with only the word: \"said\". Probably that."
+                    "reasoning": "The user asks: \"What is the word said? Reply with only the word.\"\n\nWe need to interpret. There's no context. Possibly a riddle? Maybe the user asks \"What is the word said?\" Might be a meta question: \"What is the word said?\" The answer could be \"said\". But they want the word. Could be \"said\". Or maybe the word \"word\". They ask \"What is the word said?\" Could be ambiguous. They want only the word. Likely answer is \"said\". Or maybe they want the word \"said\" as answer. I'd answer \"said\"."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 79,
-                "total_tokens": 175,
-                "completion_tokens": 96,
-                "reasoning_tokens": 0
+                "prompt_tokens": 81,
+                "completion_tokens": 134,
+                "total_tokens": 215,
+                "prompt_tokens_details": {
+                  "cached_tokens": 80
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 124
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673b09e67a2b4-YUL
+                - a3ab771b4dafa2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"3a0-cxCA/ddT7Lv2uFOk2SxHvTZnAHY"
+                - W/"489-Y+GJh1JKqtu7e/3oN2WgBAeEzMU"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - caa08547-104a-4e61-9f6a-aad27ef6dd7c-noamzn
+                - b225f403-d6c0-4e3b-9b52-fca484226d60-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:13.149Z"
+                - "2026-09-14T01:02:18.959Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:11.541Z"
+                - "2026-09-14T01:02:16.904Z"
             X-Api-Received:
-                - "2026-05-31T13:51:11.509Z"
+                - "2026-09-14T01:02:16.889Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.721s
+        duration: 2.123s

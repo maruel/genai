@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 263
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"We"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" need answer. Need be"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" careful. User asks: \""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"The capital of Quackiland"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" is Quack. The Big"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" Canard Statue is located"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" in Quack. What is"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" the capital of Quackiland"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"?\" Direct"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"ly"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" stated"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" capital is Quack. Answer"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". Need maybe concise"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":"Quack.","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c7185282-aws_ue1","object":"chat.completion.chunk","created":1789347525,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":null},"logprobs":null,"finish_reason":"stop"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3ab71f18d67a2af-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-09-14T00:58:45.440Z"
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 194ms

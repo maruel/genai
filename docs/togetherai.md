@@ -4,14 +4,14 @@
 | ------------------------------------------------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | black-forest-labs/FLUX.2-max🥇                                | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
 | zai-org/GLM-5.1🥇                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepseek-ai/DeepSeek-V4-Pro🥈                                 | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | 💨     |
-| deepseek-ai/DeepSeek-V4-Pro🥈                                 | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈                             | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈                             | Stream🧠 | 💬📸  | 💬     | 💨🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ❌    | ✅     |
 | black-forest-labs/FLUX.2-dev🥈                                | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
-| openai/gpt-oss-20b🥉                                          | Sync🧠   | 💬    | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-20b🥉                                          | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | openai/gpt-oss-20b🥉                                          | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
-| black-forest-labs/FLUX.1-schnell🥉                            | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
-| openai/gpt-oss-120b                                          | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b                                          | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
+| black-forest-labs/FLUX.2-pro🥉                                | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
+| openai/gpt-oss-120b                                          | Sync🧠   | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b                                          | Stream🧠 | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
 | Qwen/Qwen3.5-0.8B-Lora                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.5-122B-A10B-FP8                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.5-122B-A10B-Lora                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -30,6 +30,7 @@
 | Qwen/Qwen3.7-Max                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.7-Plus                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.8-2.4T-A95B                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Qwen/Qwen3.8-Flash                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek-ai/DeepSeek-V4-Flash-0731                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek-ai/DeepSeek-V4-Pro-0813                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-image-2                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -38,6 +39,10 @@
 | zai-org/GLM-5.2                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-org/GLM-5.2-FP8                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-org/GLM-5.2-FP8-Lora                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3-FP8                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3-FP8-Lora                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3-Flash                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Alibaba-NLP/gte-modernbert-base                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | BAAI/bge-base-en-v1.5                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | BAAI/bge-large-en-v1.5                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -139,7 +144,6 @@
 | black-forest-labs/FLUX.1-pro                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/FLUX.1.1-pro                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/FLUX.2-flex                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| black-forest-labs/FLUX.2-pro                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | canopylabs/orpheus-3b-0.1-ft                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cartesia/sonic                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cartesia/sonic-2                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -376,6 +380,7 @@
 | meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP4            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-4-Scout-17B-16E-Instruct-FP8-Lora           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-models/Muse-Glimmer-30B                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| minimax/h3                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | minimax/speech-2.8-turbo                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/Mixtral-8x7B-Instruct-v0.1-FP8-Lora                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/Voxtral-Mini-3B-2507                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

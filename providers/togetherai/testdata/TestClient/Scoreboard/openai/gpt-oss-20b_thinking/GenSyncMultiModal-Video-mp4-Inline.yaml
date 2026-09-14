@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKET4-4YNCb4-a0467433d860a2b4",
+              "id": "p1BY91T-fdNmn-a3ab78667e5aa2af",
               "object": "chat.completion",
-              "created": 1780235495,
+              "created": 1789347792,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "silence",
+                    "content": "word",
                     "tool_calls": [],
-                    "reasoning": "The user says: \"What is the word said? Reply with only the word.\"\n\nWe have no preceding context. We might be expected to guess a riddle or a game. Could be something like a phrase where the answer is a word. However, user might be expecting an answer to a puzzle that was previously stated, but the puzzle is missing. Could be they want the answer to the prior conversation, but there's none. This is ambiguous.\n\nPossibly they've omitted a puzzle, and we need to respond? The instruction: \"Reply with only the word.\" They want only a single word.\n\nWe need to consider common riddles: \"What word is spoken, but never heard?\" The answer could be \"silence\" or \"word\" etc. But no clue.\n\nMaybe it's a meta: The previous instruction: \"What is the word said?\" The word said could be \"the word said.\" Another possibility: \"Shh.\" Or the word \"silence\". Or \"word\". Let's think: If someone asks \"What is the word said?\" That could be a riddle: \"You say me and I become less.\" That might be \"silence\". The answer to \"What is the word said?\" could be \"nothing\" or \"silence\". Many riddles: \"What word is hidden on a clock but has no hands?\" Answer: \"time.\" Not relevant.\n\nWe want to satisfy. The user likely expects \"silence\". I need to respond with only that. I'll go with \"silence\"."
+                    "reasoning": "The user: \"What is the word said? Reply with only the word.\" No context. Maybe there's some hidden instruction? Might be a trick: \"the word said\" maybe refer to word said earlier? There's no prior context. Could be a puzzle: \"Word said\" could be \"word\" or \"silence\"? No. Probably they want a specific word like \"Hello\" or \"Word\". Maybe the answer is \"word\". The instruction: reply with only the word. So maybe answer \"word\". But could be \"silence\"? But they ask what is the word said? It's ambiguous. Might be a riddle: phrase: \"What word is said?\" The answer could be \"word\".\n\nAlternatively, maybe previous conversation context is missing. But I'd choose \"word\". Let's reply with that."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 79,
-                "total_tokens": 400,
-                "completion_tokens": 321,
+                "total_tokens": 254,
+                "completion_tokens": 175,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0467433d860a2b4-YUL
+                - a3ab78667e5aa2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"774-x/dmhTCqcbMrPAwoKwA8uBDrMsc"
+                - W/"512-j9pwKf1rsVyZfEOr/Jy1WXRNTp0"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - c2d65410-a2b4-4519-8042-f2d95c29dd84-noamzn
+                - 08f4b723-f656-4e46-8200-8acefe472471-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:35.135Z"
+                - "2026-09-14T01:03:12.748Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:32.527Z"
+                - "2026-09-14T01:03:09.952Z"
             X-Api-Received:
-                - "2026-05-31T13:51:32.508Z"
+                - "2026-09-14T01:03:09.939Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 2.707s
+        duration: 2.968s

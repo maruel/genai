@@ -134,7 +134,12 @@ func TestClient(t *testing.T) {
 			return &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}, size: size}
 		}
 
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{
+			Qualify: []scoreboard.Model{
+				{Model: "black-forest-labs/FLUX.2-pro"},
+				{Model: "deepseek-ai/DeepSeek-V4.1-Flash", Reason: true},
+			},
+		})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

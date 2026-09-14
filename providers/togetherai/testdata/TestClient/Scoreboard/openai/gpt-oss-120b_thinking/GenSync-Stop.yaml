@@ -19,36 +19,15 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        uncompressed: true
+        content_length: 298
         body: |-
             {
-              "id": "omJK5HV-z1gNr-a04673731d64a2b4",
-              "object": "chat.completion",
-              "created": 1780235461,
-              "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
-              "prompt": [],
-              "choices": [
-                {
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": "",
-                    "tool_calls": []
-                  },
-                  "logprobs": null,
-                  "finish_reason": "stop",
-                  "seed": null
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 79,
-                "total_tokens": 81,
-                "completion_tokens": 2,
-                "reasoning_tokens": 0
+              "id": "p1BXnCh-z1gNr-a3ab76b17e52a2af",
+              "error": {
+                "message": "Failed to start generation: stop=['is'] is unavailable when skip_tokenizer_init=True (requires tokenizer to decode tokens to text for matching).",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": null
               }
             }
         headers:
@@ -59,11 +38,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673731d64a2b4-YUL
+                - a3ab76b17e52a2af-YUL
+            Content-Length:
+                - "298"
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"229-lP89MYerrXb+NbjLcTVpZ4bKsjY"
+                - W/"12a-X/klVZmnxloVh1VLJ8GIiSQsgVk"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -71,15 +52,13 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 1fb795f3-7c75-43da-b814-a517f07cfed0-noamzn
-            X-Api-Call-End:
-                - "2026-05-31T13:51:01.954Z"
+                - 6ea8afaf-594e-4161-b7d7-9599148db91d-noamzn
             X-Api-Call-Start:
-                - "2026-05-31T13:51:01.686Z"
+                - "2026-09-14T01:01:59.956Z"
             X-Api-Received:
-                - "2026-05-31T13:51:01.676Z"
+                - "2026-09-14T01:01:59.947Z"
             X-Inference-Version:
                 - v2
-        status: 200 OK
-        code: 200
-        duration: 353ms
+        status: 400 Bad Request
+        code: 400
+        duration: 109ms

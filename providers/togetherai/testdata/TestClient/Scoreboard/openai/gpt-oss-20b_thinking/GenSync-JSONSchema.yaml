@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKAB4-4YNCb4-a04673d9fd15a2b4",
+              "id": "p1BXzeb-fdNmn-a3ab77b6de1ba2af",
               "object": "chat.completion",
-              "created": 1780235479,
+              "created": 1789347765,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "{\"is_fruit\":true}",
+                    "content": "{ \"is_fruit\": true }",
                     "tool_calls": [],
-                    "reasoning": "The user: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"\n\nThus output should be JSON, no explanation. Provide a JSON only, presumably with a key that gives answer: maybe {\"answer\":\"yes\"} or {\"banana\":\"fruit\"}.\n\nSimplest: {\"is_fruit\":true}. No explanation. That meets requirement. Ensure no stray text. Output JSON content only. They want to answer if a banana is a fruit. It's indeed a fruit. So we output JSON. No explanation. Probably {\"banana\":\"fruit\"} or {\"is_fruit\":true}. I'll do the latter."
+                    "reasoning": "User wants \"Is a banana a fruit?\" with no explanation, reply only as JSON.\n\nSo output JSON with something like {\"question\":\"Is a banana a fruit?\",\"answer\":\"Yes\"} . Let's produce minimal."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 84,
-                "total_tokens": 222,
-                "completion_tokens": 138,
+                "total_tokens": 140,
+                "completion_tokens": 56,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673d9fd15a2b4-YUL
+                - a3ab77b6de1ba2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"47a-RI7K5eLTjMmc1dppaZosKW7AkZI"
+                - W/"31f-BDOng2k/aIxUxSRg9raPgbfyz0A"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - e984da5a-9af0-43a4-a4c5-de922099e386-noamzn
+                - 13d8bf3e-492b-4310-afa3-9ef0227ef587-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:19.428Z"
+                - "2026-09-14T01:02:45.225Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:18.162Z"
+                - "2026-09-14T01:02:41.833Z"
             X-Api-Received:
-                - "2026-05-31T13:51:18.123Z"
+                - "2026-09-14T01:02:41.816Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.38s
+        duration: 3.54s

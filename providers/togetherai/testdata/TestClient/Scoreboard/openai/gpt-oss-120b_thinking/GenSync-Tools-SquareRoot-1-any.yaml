@@ -1,0 +1,97 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 544
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "p1BXohZ-z1gNr-a3ab76d10bd6a2af",
+              "object": "chat.completion",
+              "created": 1789347725,
+              "model": "openai/gpt-oss-120b",
+              "system_fingerprint": "default",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "363.6572850071946",
+                    "tool_calls": [
+                      {
+                        "id": "call_01a09d6f-817c-77a3-adbe-afddc4fdaf1f",
+                        "type": "function",
+                        "function": {
+                          "name": "square_root",
+                          "arguments": "{\n  \"number\": 132413\n}"
+                        }
+                      }
+                    ],
+                    "reasoning": "We need to call the function square_root with number 132413. Then output only the result."
+                  },
+                  "finish_reason": "tool_calls",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 152,
+                "completion_tokens": 62,
+                "total_tokens": 214,
+                "prompt_tokens_details": {
+                  "cached_tokens": 151
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 32
+                }
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3ab76d10bd6a2af-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"3fd-sje4RsYhY9xaeFyh2rOggqTPxzQ"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - ae5b6e0d-519e-417b-a205-2dc51ed7426f-noamzn
+            X-Api-Call-End:
+                - "2026-09-14T01:02:05.695Z"
+            X-Api-Call-Start:
+                - "2026-09-14T01:02:04.995Z"
+            X-Api-Received:
+                - "2026-09-14T01:02:04.984Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 748ms

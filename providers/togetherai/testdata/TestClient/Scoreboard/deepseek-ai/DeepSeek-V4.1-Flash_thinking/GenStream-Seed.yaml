@@ -1,0 +1,89 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"We"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" need answer user"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":":"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" \"Say hello. Use only"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" one word.\" Need only"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" one word. Lik"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"ely \"Hello\". Ensure"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" no"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" punctuation"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"? One"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" word. \""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"Hello\" is one"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" word. Final only"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" Hello"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":"Hello","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"d439d478-aws_ue1","object":"chat.completion.chunk","created":1789347334,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":null},"logprobs":null,"finish_reason":"stop"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3ab6d495b96a2af-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-09-14T00:55:34.680Z"
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 313ms

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKA1x-4YNCb4-a04673d6bfd4a2b4",
+              "id": "p1BXxnv-fdNmn-a3ab778fe95aa2af",
               "object": "chat.completion",
-              "created": 1780235478,
+              "created": 1789347761,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "{\"is_fruit\": true}",
+                    "content": "{\"commentaryWe will output {\":true}",
                     "tool_calls": [],
-                    "reasoning": "We need to produce only JSON according to the schema: {\"is_fruit\": bool}. No explanation. Just output this. The answer: banana is fruit -> true. So output {\"is_fruit\": true}. Ensure JSON format. No explanation."
+                    "reasoning": "We need to reply only as JSON: {\"is_fruit\": bool}. Should be exactly that. The question: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nSo answer: {\"is_fruit\": true}.\n\nEnsure no whitespace? JSON format, but whitespace okay. Just output the JSON.\n\nProceed."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 96,
-                "total_tokens": 158,
-                "completion_tokens": 62,
+                "total_tokens": 195,
+                "completion_tokens": 99,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673d6bfd4a2b4-YUL
+                - a3ab778fe95aa2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"32e-XlWBfG6LZZoYq+n1wwCqCFZ76fk"
+                - W/"3c6-jQla7uO8AUerctwekbNFNHSaT+U"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 7127ac8c-fd09-4f2e-a27d-688522956b1e-noamzn
+                - 020a4747-7731-4854-8765-fc5fd68a6df4-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:18.049Z"
+                - "2026-09-14T01:02:41.682Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:17.624Z"
+                - "2026-09-14T01:02:35.581Z"
             X-Api-Received:
-                - "2026-05-31T13:51:17.595Z"
+                - "2026-09-14T01:02:35.571Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 522ms
+        duration: 6.236s

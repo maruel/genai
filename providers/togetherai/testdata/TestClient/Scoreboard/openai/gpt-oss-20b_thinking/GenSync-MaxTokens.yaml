@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK9sW-4YNCb4-a04673d39a76a2b4",
+              "id": "p1BXxab-fdNmn-a3ab778b5c1ba2af",
               "object": "chat.completion",
-              "created": 1780235477,
+              "created": 1789347755,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -38,7 +38,7 @@ interactions:
                     "role": "assistant",
                     "content": "",
                     "tool_calls": [],
-                    "reasoning": "User wants an explanation of the theory of relativity in great detail"
+                    "reasoning": "The user asks: \"Explain the theory of relativity in great"
                   },
                   "logprobs": null,
                   "finish_reason": "length",
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673d39a76a2b4-YUL
+                - a3ab778b5c1ba2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"28a-5oZg0BYdlHjUNaMrzifcEP3IC2s"
+                - W/"27e-VE2XGrGTivz3hkgbmngid1O9hZc"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 83cd64ea-765b-4815-8ec4-e6dc5681e498-noamzn
+                - 54b2e253-5052-4708-a532-7e7f594b8afe-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:17.300Z"
+                - "2026-09-14T01:02:35.219Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:17.149Z"
+                - "2026-09-14T01:02:34.867Z"
             X-Api-Received:
-                - "2026-05-31T13:51:17.105Z"
+                - "2026-09-14T01:02:34.857Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 273ms
+        duration: 516ms

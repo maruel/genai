@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 558
+        content_length: 554
         host: api.together.xyz
         body: |
-            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,43 +23,44 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK6CH-z1gNr-a04673866cfba2b4",
+              "id": "p1BXp1A-fdNmn-a3ab76d71adca2af",
               "object": "chat.completion",
-              "created": 1780235466,
+              "created": 1789347726,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "",
+                    "content": "I called the `best_country` tool with **Canada**, and here's the result indicating that Canada is considered the best country.",
                     "tool_calls": [
                       {
-                        "id": "call_9a2335e912d44e9d919c5714",
-                        "index": 0,
+                        "id": "call_01a09d6f-8733-72b3-8129-7b7b7f0bdc4f",
                         "type": "function",
                         "function": {
                           "name": "best_country",
-                          "arguments": "{\"country\": \"Canada\"}"
+                          "arguments": "{\n  \"country\": \"Canada\"\n}"
                         }
                       }
                     ],
-                    "reasoning": "User wants us to call the best_country tool with either Canada or USA? The tool requires a \"country\" parameter (Canada or USA). Probably we call it to get some result. The user asks \"which country is the best one\". So we need to decide which to pass. Likely the tool returns something indicating if it's best? We can try passing one and get a result. Maybe we need to call tool for both? But the tool signature: best_country({_:\"country\": \"Canada\" | \"USA\"}). Probably returns something like a statement. We can call with \"Canada\" and see."
+                    "reasoning": "User wants us to call the tool best_country, with input specifying a country? The tool description: \"A tool to specify the best country\". It takes an argument \"country\" of type \"Canada\" | \"USA\". Probably the tool will output something indicating which is best? Probably you pass the country you consider best? Unclear. The user asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we likely call the tool with maybe \"Canada\" and \"USA\"? The tool signature only allows a single country parameter. Might need to call twice? Or perhaps we call with the country we think is best? But they want the tool to decide. Could pass \"Canada\"? Might get a response. Let's try calling the tool with country: \"Canada\"."
                   },
-                  "logprobs": null,
                   "finish_reason": "tool_calls",
                   "seed": null
                 }
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 305,
-                "completion_tokens": 150,
-                "reasoning_tokens": 0
+                "completion_tokens": 231,
+                "total_tokens": 386,
+                "prompt_tokens_details": {
+                  "cached_tokens": 154
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 183
+                }
               }
             }
         headers:
@@ -70,11 +71,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673866cfba2b4-YUL
+                - a3ab76d71adca2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"583-Cd/7+kxmt814rIqjC6kqmOlh8F4"
+                - W/"739-vAWASWXRN0An6MJU8/vDWUFBKT8"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -82,15 +83,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 82d95e22-dd57-49a0-94e7-da6f42cc6bca-noamzn
+                - e4a4a804-9f35-45d3-a338-26ed5ac37ac8-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:06.468Z"
+                - "2026-09-14T01:02:07.157Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:04.750Z"
+                - "2026-09-14T01:02:06.017Z"
             X-Api-Received:
-                - "2026-05-31T13:51:04.738Z"
+                - "2026-09-14T01:02:06.006Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.786s
+        duration: 1.279s

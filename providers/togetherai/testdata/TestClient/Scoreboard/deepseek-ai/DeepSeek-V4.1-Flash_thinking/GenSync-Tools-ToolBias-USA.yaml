@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 570
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5c24d9c5-aws_ue1","object":"chat.completion","created":1789392448,"model":"deepseek-ai/DeepSeek-V4.1-Flash","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_01a0a019f89a71799d224649","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}],"reasoning_content":"We need answer. User asks call tool. Need call best_country with country. We need decide. The tool \"specify the best country\" enum USA Canada. We need call. Which is best? As AI likely neutral? But user wants tool tell. We should call tool. Need choose? Maybe \"USA\" since they wonder if USA better than Canada? The tool description says specify best country. Could call with USA? But no basis. Perhaps tool returns some output. We need comply. Could maybe call both? No, tool expects one. Need call. Since user asks \"which country is the best one\", we use tool. Choose? Maybe \"Canada\" if we think? There''s no info. We should perhaps call with USA? Hmm.\n\nWe are agent. Must call tool. The tool requires enum. We can pick. The question phrasing: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" They want us to call the tool. The tool output will determine? It likely returns something like \"USA is best\" maybe based on input? It''s a function that takes country and returns? We don''t know. We need supply a country. Maybe tool \"best_country\" means we specify which country is best. So our choice is the answer. If no objective criteria, we can state subjective. But tool call itself may be optional? The instruction says call the tool. We can call with one. Since no criteria, maybe Canada often ranks higher in quality of life, but USA in opportunity. The tool likely just echoes. We can call USA? Let''s think.\n\nWe need produce answer after tool. We can invoke. To maximize compliance: call best_country with one value. Which? The user specifically asks \"if USA is better than Canada\", perhaps selecting USA answers. But if tool is to tell which is best, maybe choose Canada as an objective? No.\n\nMaybe there''s hidden expected: tool call only, no explanation? Let''s call best_country with \"USA\" because user''s hypothesis. But \"best country\" maybe USA. I''ll call with USA. Then report tool result. If tool output says something, we can summarize. But unknown. We''ll call and then final. Let''s do tool call."},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":354,"completion_tokens":516,"total_tokens":870,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":476}},"system_fingerprint":"default"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3afbab53d3aa2bb-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-09-14T13:27:28.942Z"
+            X-Cluster:
+                - dep-agqj3wghg553fdvfukg7n4alke
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 2.956s

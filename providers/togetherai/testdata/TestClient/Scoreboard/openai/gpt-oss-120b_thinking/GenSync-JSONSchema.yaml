@@ -23,33 +23,35 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK5e1-z1gNr-a046737aa995a2b4",
+              "id": "p1BXnZo-fdNmn-a3ab76b8def1a2af",
               "object": "chat.completion",
-              "created": 1780235463,
+              "created": 1789347721,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "{\"is_fruit\": true}",
+                    "content": "{\n  \"is_fruit\": true\n}",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"\n\nWe need to respond with JSON only, presumably something like {\"answer\":\"Yes\"} or {\"banana\":\"fruit\"}.\n\nWe must not include any extra text. Ensure it's valid JSON, no extraneous punctuation.\n\nProbably: {\"isFruit\":true} or {\"answer\":\"Yes\"}.\n\nWe need to answer the question: \"Is a banana a fruit?\" So answer yes.\n\nThus produce JSON. No explanation."
+                    "reasoning": "The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"\n\nWe need to output JSON only, with answer. Could be like {\"answer\": \"Yes\"} or something.\n\nThe instruction: \"Do not include an explanation.\" So JSON with key maybe \"banana_is_fruit\": true. Without extra text. So just JSON.\n\nWe must ensure it's valid JSON. Probably something like:\n\n{\n  \"banana_is_fruit\": true\n}\n\nThat is fine.\n\nNo extra text."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 84,
-                "total_tokens": 200,
-                "completion_tokens": 116,
-                "reasoning_tokens": 0
+                "prompt_tokens": 86,
+                "completion_tokens": 127,
+                "total_tokens": 213,
+                "prompt_tokens_details": {
+                  "cached_tokens": 85
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 106
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a046737aa995a2b4-YUL
+                - a3ab76b8def1a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"427-16PxgDUzi64ernNYG08OPDVay/s"
+                - W/"46a-vldQN2NmHIC27AVDjqLzlxid/wI"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 3f96947d-fe3a-4a8d-a2d9-efb26b4dc2a7-noamzn
+                - 192b237e-fdec-490c-a153-0a6b84dc8840-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:03.753Z"
+                - "2026-09-14T01:02:02.318Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:02.876Z"
+                - "2026-09-14T01:02:01.183Z"
             X-Api-Received:
-                - "2026-05-31T13:51:02.866Z"
+                - "2026-09-14T01:02:01.171Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 945ms
+        duration: 1.272s

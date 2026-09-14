@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 309
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 187
+        body: '{"error":{"type":"Bad Request","code":"process_messages_failed","message":"Failed to apply chat template: DeepSeek V4.1 supports text and image content only; got \"video\"","param":null}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3ab769bcac4a2af-YUL
+            Content-Length:
+                - "187"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-09-14T01:01:56.502Z"
+            X-Smg-Error-Code:
+                - process_messages_failed
+            X-Together-Routing:
+                - de2
+        status: 400 Bad Request
+        code: 400
+        duration: 113ms

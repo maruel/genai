@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKB5D-3pDw3Z-a04673ec9abda2b4",
+              "id": "p1BY2GW-fdNmn-a3ab77d8f972a2af",
               "object": "chat.completion",
-              "created": 1780235482,
+              "created": 1789347772,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -37,8 +37,18 @@ interactions:
                   "message": {
                     "role": "assistant",
                     "content": "",
-                    "tool_calls": [],
-                    "reasoning": "We need to call tool best_country. We can only specify either Canada or USA. The user wants to know which is \"better\". We must call the tool. Choose one. The function requires us to return either \"Canada\" or \"USA\". The user is comparing. Perhaps the tool will return whichever is better. We must choose. Since the user asked \"Call the tool best_country to tell me which country is the best one.\" I think we should pick either Canada or USA. This is arbitrary. Which is best? Could choose Canada. Let's choose Canada.[{\"name\":\"best_country\",\"parameters\":{\"country\":\"Canada\"}}]"
+                    "tool_calls": [
+                      {
+                        "id": "call_dcc4647236e74c249ab3fe9c",
+                        "index": 0,
+                        "type": "function",
+                        "function": {
+                          "name": "best_country",
+                          "arguments": "{\"country\": \"Canada\"}"
+                        }
+                      }
+                    ],
+                    "reasoning": "The user wants to know if Canada is better than the USA. The request: \"Call the tool best_country to tell me which country is the best one.\" We must use the function best_country. It takes an argument with country that is either \"Canada\" or \"USA\". Probably we need to decide who is best. We should probably choose one. The request: \"which country is the best one.\" I'd guess they want the best country, presumably which one is better overall. Could be subjective. The tool likely just returns a result. The function signature: best_country takes an object with country attribute. I think we need to call the function with a country. But which? The user wants to know if Canada is better; \"Call the tool best_country to tell me which country is the best one.\" They want the tool to decide. But the function expects a single country as input? The function signature: best_country takes an object with property country, either \"Canada\" or \"USA\". We must call it. But we need the tool to decide. Possibly we should ask the function to return the best one. But we need to pass an argument. The function likely will interpret. Since the user wants to know best, maybe we have to invoke best_country with country unspecified? But function signature requires country: \"Canada\" | \"USA\". Probably we need to call with one, say \"Canada\", and the tool will compare internally. The tool returns something. We'll call with \"Canada\"."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -47,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 288,
-                "completion_tokens": 133,
+                "total_tokens": 476,
+                "completion_tokens": 321,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673ec9abda2b4-YUL
+                - a3ab77d8f972a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"49d-6/PxZceN3+z+Lac1tLSp1dDVgkk"
+                - W/"8fc-eTnlWSOKjoy5KsRwiuhaVGgaNvs"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - cb4caeb0-4254-4ee2-a42d-e02049af477d-noamzn
+                - 40d07c48-5b33-467c-8b68-148ce3eb955e-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:22.041Z"
+                - "2026-09-14T01:02:52.222Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:21.162Z"
+                - "2026-09-14T01:02:47.274Z"
             X-Api-Received:
-                - "2026-05-31T13:51:21.148Z"
+                - "2026-09-14T01:02:47.263Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.062s
+        duration: 5.085s

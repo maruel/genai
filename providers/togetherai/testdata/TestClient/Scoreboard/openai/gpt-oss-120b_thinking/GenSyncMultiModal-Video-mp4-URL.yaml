@@ -23,13 +23,11 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK8iK-z1gNr-a04673bb5df4a2b4",
+              "id": "p1BXssE-z1gNr-a3ab77289a82a2af",
               "object": "chat.completion",
-              "created": 1780235473,
+              "created": 1789347739,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
@@ -38,18 +36,22 @@ interactions:
                     "role": "assistant",
                     "content": "said",
                     "tool_calls": [],
-                    "reasoning": "The user: \"What is the word said? Reply with only the word.\" So they ask: \"What is the word said?\" Possibly they want the word \"said\". Could be a riddle? The phrase \"What is the word said?\" The answer maybe \"said\". They ask to reply with only the word. Likely answer: \"said\". So I should output just the word."
+                    "reasoning": "The user says: \"What is the word said? Reply with only the word.\"\n\nWe need context to know what word. There's no prior conversation. Possibly they ask to guess a word? Might be a riddle? They ask \"What is the word said? Reply with only the word.\"\n\nMaybe it's a trick: The word is \"said\". They ask \"What is the word said?\" Means the word \"said\". So reply with only the word \"said\". Could be they want the word \"said\". The phrasing: \"What is the word said? Reply with only the word.\" Possibly they want the word that was said previously? No prior word.\n\nInterpretation: The question is ambiguous. Might be they ask \"What is the word (the word said)?\" Could be they want you to answer \"word\". Could be the answer is \"word\". But more likely they ask: \"What is the word said?\" The answer: \"said\". It's a meta question where the answer is the word \"said\". So reply only with \"said\". Let's do that."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 79,
-                "total_tokens": 170,
-                "completion_tokens": 91,
-                "reasoning_tokens": 0
+                "prompt_tokens": 81,
+                "completion_tokens": 229,
+                "total_tokens": 310,
+                "prompt_tokens_details": {
+                  "cached_tokens": 80
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 219
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673bb5df4a2b4-YUL
+                - a3ab77289a82a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"389-ttQw9GT7HUaf3aGQJevKewvhvD8"
+                - W/"62b-2zogJB3NsEU+dWKNvD2ZTgBfsJQ"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - d42b23e5-fe84-49d6-9d92-e0aa9c764d73-noamzn
+                - dea04558-12dc-4fc4-9711-4e30d8d11dc7-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:13.822Z"
+                - "2026-09-14T01:02:22.388Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:13.232Z"
+                - "2026-09-14T01:02:19.017Z"
             X-Api-Received:
-                - "2026-05-31T13:51:13.208Z"
+                - "2026-09-14T01:02:19.001Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 658ms
+        duration: 3.431s

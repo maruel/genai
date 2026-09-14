@@ -55,11 +55,18 @@ var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.
 type RunOptions struct {
 	// ScoreboardFile overrides the default scoreboard filename ("scoreboard.json").
 	ScoreboardFile string
+	// Qualify lists untested models that update mode should smoke test. It has no
+	// effect unless -update-scoreboard is set.
+	Qualify []scoreboard.Model
 	// TolerateReasoning lists model name substrings for which reasoning
 	// content in non-thinking scenarios is tolerated instead of causing a test
 	// failure. Some models (e.g. Gemma 4) emit reasoning even with
 	// enable_thinking=false.
 	TolerateReasoning []string
+}
+
+func (r *RunOptions) qualifies(m scoreboard.Model) bool {
+	return *updateScoreboard && slices.Contains(r.Qualify, m)
 }
 
 // Run regenerates the scoreboard and asserts it is up to date.
@@ -152,7 +159,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				}
 				want = scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason, Comments: foundComments}
 			}
-			if want.Untested() {
+			if want.Untested() && !opts.qualifies(m) {
 				// Collect the untested scenario for validation
 				updatedScenarios = append(updatedScenarios, want)
 				t.Skip("Explicitly unsupported model")

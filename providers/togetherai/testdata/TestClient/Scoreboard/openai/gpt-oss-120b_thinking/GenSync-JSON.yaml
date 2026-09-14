@@ -23,33 +23,35 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK5PX-4YNCb4-a046737558c8a2b4",
+              "id": "p1BXnEa-z1gNr-a3ab76b22f17a2af",
               "object": "chat.completion",
-              "created": 1780235462,
+              "created": 1789347720,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "{\n  \"is_fruit\": true\n}",
+                    "content": "{\"is_fruit\": true}",
                     "tool_calls": [],
-                    "reasoning": "User asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to output JSON with key is_fruit and boolean value. Banana is fruit, so true. Provide exactly {\"is_fruit\": true}. Ensure no extra text."
+                    "reasoning": "The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe should respond with JSON: {\"is_fruit\": true}. Need to ensure correct JSON format, no extra text. So final."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 96,
-                "total_tokens": 180,
-                "completion_tokens": 84,
-                "reasoning_tokens": 0
+                "prompt_tokens": 98,
+                "completion_tokens": 81,
+                "total_tokens": 179,
+                "prompt_tokens_details": {
+                  "cached_tokens": 66
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 63
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a046737558c8a2b4-YUL
+                - a3ab76b22f17a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"381-9mHEztvPLzos0E2QVUcLd7GcEsA"
+                - W/"39e-1qVudC0IkVCw8XtvXj9W1w6b3HA"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - e4bddbb4-2125-4eb7-8ee8-438bbd9a355b-noamzn
+                - 0e6478e5-003d-4fbc-833d-6baef37e172d-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:02.801Z"
+                - "2026-09-14T01:02:01.088Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:02.072Z"
+                - "2026-09-14T01:02:00.068Z"
             X-Api-Received:
-                - "2026-05-31T13:51:02.026Z"
+                - "2026-09-14T01:02:00.056Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 856ms
+        duration: 1.075s

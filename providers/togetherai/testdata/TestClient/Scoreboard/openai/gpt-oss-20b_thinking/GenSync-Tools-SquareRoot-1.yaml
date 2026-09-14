@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKAam-4YNCb4-a04673e29b77a2b4",
+              "id": "p1BY1hX-fdNmn-a3ab77ccfe0ca2af",
               "object": "chat.completion",
-              "created": 1780235480,
+              "created": 1789347766,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_4b328614069042f68a4a604d",
+                        "id": "call_8527410db62448a4bbc17282",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "The user requests: \"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"\n\nWe must call the tool. The function signature: square_root takes an object with property number: number. We'll call with number: 132413.\n\nWe'll output the result directly."
+                    "reasoning": "We need to call the tool functions.square_root with number: 132413. Then reply with only the result. No explanation."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 152,
-                "total_tokens": 249,
-                "completion_tokens": 97,
+                "total_tokens": 210,
+                "completion_tokens": 58,
                 "reasoning_tokens": 0
               }
             }
@@ -70,11 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673e29b77a2b4-YUL
+                - a3ab77ccfe0ca2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"499-ihpMtcJWAdHhLzuvSfsDKv6ygNk"
+                - W/"3c9-BebKK7Dc7dQVf0sAPMtqslAOyio"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -82,15 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 8cb8af91-b642-49bd-a943-10ef2328fb5e-noamzn
+                - 545c7136-24d0-4543-9ac4-8f72adf9c907-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:20.250Z"
+                - "2026-09-14T01:02:46.276Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:19.515Z"
+                - "2026-09-14T01:02:45.360Z"
             X-Api-Received:
-                - "2026-05-31T13:51:19.498Z"
+                - "2026-09-14T01:02:45.351Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 818ms
+        duration: 1.051s

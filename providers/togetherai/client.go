@@ -457,7 +457,7 @@ func glmVersion(modelID string) float64 {
 }
 
 // deepseekVersion returns the version of a DeepSeek chat model (e.g.
-// DeepSeek-V4-Pro → 4.0) or 0 for non-DeepSeek models or non-chat variants
+// DeepSeek-V4.1-Flash → 4.1) or 0 for non-DeepSeek models or non-chat variants
 // (e.g. DeepSeek-R1, DeepSeek-OCR, DeepSeek-Coder).
 func deepseekVersion(modelID string) float64 {
 	s, ok := strings.CutPrefix(modelID, "deepseek-ai/DeepSeek-V")
@@ -465,8 +465,9 @@ func deepseekVersion(modelID string) float64 {
 		return 0
 	}
 	v, rem := parseVersion(s)
-	// Accept plain version numbers (V4, V4.1) and reject suffixed variants (R1, Coder, OCR).
-	if rem != "" && rem != "-Pro" {
+	// Accept plain version numbers and current chat variants, but reject non-chat
+	// variants (R1, Coder, OCR).
+	if rem != "" && rem != "-Flash" && rem != "-Pro" {
 		return 0
 	}
 	return v
@@ -507,7 +508,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if pkt.Usage.TotalTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = max(pkt.Usage.CachedTokens, pkt.Usage.PromptTokensDetails.CachedTokens)
-					u.ReasoningTokens = pkt.Usage.ReasoningTokens
+					u.ReasoningTokens = max(pkt.Usage.ReasoningTokens, pkt.Usage.CompletionTokensDetails.ReasoningTokens)
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
 				}
@@ -518,8 +519,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					continue
 				}
 				// Check for streaming errors.
-				if pkt.Choices[0].Error != nil {
-					finalErr = fmt.Errorf("streaming error: %w", pkt.Choices[0].Error)
+				if len(pkt.Choices[0].Error) != 0 && string(pkt.Choices[0].Error) != "null" {
+					finalErr = fmt.Errorf("streaming error: %s", pkt.Choices[0].Error)
 					return
 				}
 				if pkt.Choices[0].FinishReason != "" {
@@ -568,10 +569,11 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 				}
-				f := genai.Reply{
-					Text:      pkt.Choices[0].Delta.Content,
-					Reasoning: pkt.Choices[0].Delta.Reasoning,
+				reasoning := pkt.Choices[0].Delta.Reasoning
+				if pkt.Choices[0].Delta.ReasoningContent != "" {
+					reasoning = pkt.Choices[0].Delta.ReasoningContent
 				}
+				f := genai.Reply{Text: pkt.Choices[0].Delta.Content, Reasoning: reasoning}
 				if !yield(f) {
 					return
 				}

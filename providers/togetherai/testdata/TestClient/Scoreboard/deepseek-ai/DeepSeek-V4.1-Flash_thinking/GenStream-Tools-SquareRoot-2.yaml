@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 808
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_01a09d6a044f704a88fa384d","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_01a09d6a044f704a88fa384d"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" tool"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" returned "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"363.89. The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" user wants"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" only the result. So"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" reply with"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"363.89."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":"363","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":".89","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"a68e4fb2-aws_ue1","object":"chat.completion.chunk","created":1789347366,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":null},"logprobs":null,"finish_reason":"stop"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3ab6e10da48a2af-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-09-14T00:56:06.595Z"
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 406ms

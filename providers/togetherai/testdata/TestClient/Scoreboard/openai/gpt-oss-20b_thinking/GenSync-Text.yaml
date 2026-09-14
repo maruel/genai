@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK98b-3pDw3Z-a04673c1cf25a2b4",
+              "id": "p1BXwjf-3pDw3Z-a3ab77778d5ba2af",
               "object": "chat.completion",
-              "created": 1780235475,
+              "created": 1789347752,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -36,9 +36,9 @@ interactions:
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "hello",
+                    "content": "Hello",
                     "tool_calls": [],
-                    "reasoning": "User says: \"Say hello. Use only one word.\" They want me to respond with \"hello\" presumably. It says Use only one word. So just say hello. That's it. No extra words. Possibly \"Greetings\" also one word but they want hello. So reply with \"hello\". Probably lower-case? They didn't specify. Let's do \"hello\"."
+                    "reasoning": "User: \"Say hello. Use only one word.\" So respond with \"hello\" or \"Hi\" or \"Greetings\"? They explicitly want just one word. So should respond with \"Hello\". Should we respond with \"Hello\"? Let's answer simply \"Hello\". Done."
                   },
                   "logprobs": null,
                   "finish_reason": "stop",
@@ -47,8 +47,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 75,
-                "total_tokens": 159,
-                "completion_tokens": 84,
+                "total_tokens": 140,
+                "completion_tokens": 65,
                 "reasoning_tokens": 0
               }
             }
@@ -60,11 +60,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673c1cf25a2b4-YUL
+                - a3ab77778d5ba2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"382-stznBE4h1bIrn7q1MauXVKW0NUY"
+                - W/"333-bO1X9ck3ghVFXYebfbWWBQpcew0"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +72,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - c6f59eb4-43b9-4102-9411-bc6865df239b-noamzn
+                - 792620f0-9e86-4102-860b-3c87ab4a538b-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:15.130Z"
+                - "2026-09-14T01:02:32.612Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:14.632Z"
+                - "2026-09-14T01:02:32.051Z"
             X-Api-Received:
-                - "2026-05-31T13:51:14.617Z"
+                - "2026-09-14T01:02:32.019Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.001s
+        duration: 1.087s

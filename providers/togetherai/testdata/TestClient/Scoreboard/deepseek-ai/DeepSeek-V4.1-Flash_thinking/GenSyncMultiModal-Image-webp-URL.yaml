@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"d2b9b555-aws_ue1","object":"chat.completion","created":1789347410,"model":"deepseek-ai/DeepSeek-V4.1-Flash","choices":[{"index":0,"message":{"role":"assistant","content":"banana","reasoning_content":"The user wants me to identify the fruit in the image and reply with only one word.\n\nThe image shows a yellow, curved fruit with a stem at the top. It''s clearly a banana.\n\nThe instruction is to reply with only one word. So I need to say \"banana\" and nothing else."},"finish_reason":"stop"}],"usage":{"prompt_tokens":238,"completion_tokens":66,"total_tokens":304,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":62}},"system_fingerprint":"default"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3ab6f233c28a2af-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-09-14T00:56:50.503Z"
+            X-Cluster:
+                - dep-agqjnzaiaf4gfnfu3nqobexbdm
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 19.705s

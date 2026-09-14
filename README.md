@@ -72,7 +72,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠 | 🎤🎥💬📸   | 🎤💬   | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>

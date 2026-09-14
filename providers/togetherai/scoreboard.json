@@ -38,13 +38,22 @@
       "sota": true
     },
     {
-      "comments": "TogetherAI corrupts DeepSeek-V4-Pro streamed tool call arguments; GenStream tools are flaky. GenSync works fine.",
       "models": [
-        "deepseek-ai/DeepSeek-V4-Pro"
+        "deepseek-ai/DeepSeek-V4.1-Flash"
       ],
       "good": true,
       "reason": true,
       "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -56,26 +65,22 @@
       },
       "GenSync": {
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
-        "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
+        "tools": "flaky",
         "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -123,8 +128,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -146,7 +151,7 @@
     },
     {
       "models": [
-        "black-forest-labs/FLUX.1-schnell"
+        "black-forest-labs/FLUX.2-pro"
       ],
       "cheap": true,
       "in": {
@@ -188,19 +193,16 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
+        "maxTokens": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
+        "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -227,6 +229,7 @@
         "Qwen/Qwen3.7-Max",
         "Qwen/Qwen3.7-Plus",
         "Qwen/Qwen3.8-2.4T-A95B",
+        "Qwen/Qwen3.8-Flash",
         "deepseek-ai/DeepSeek-V4-Flash-0731",
         "deepseek-ai/DeepSeek-V4-Pro-0813",
         "openai/gpt-image-2",
@@ -234,7 +237,11 @@
         "zai-org/GLM-4.7-fp4",
         "zai-org/GLM-5.2",
         "zai-org/GLM-5.2-FP8",
-        "zai-org/GLM-5.2-FP8-Lora"
+        "zai-org/GLM-5.2-FP8-Lora",
+        "zai-org/GLM-5.3",
+        "zai-org/GLM-5.3-FP8",
+        "zai-org/GLM-5.3-FP8-Lora",
+        "zai-org/GLM-5.3-Flash"
       ],
       "reason": true
     },
@@ -342,7 +349,6 @@
         "black-forest-labs/FLUX.1-pro",
         "black-forest-labs/FLUX.1.1-pro",
         "black-forest-labs/FLUX.2-flex",
-        "black-forest-labs/FLUX.2-pro",
         "canopylabs/orpheus-3b-0.1-ft",
         "cartesia/sonic",
         "cartesia/sonic-2",
@@ -583,6 +589,7 @@
         "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP4",
         "meta-llama/Llama-4-Scout-17B-16E-Instruct-FP8-Lora",
         "meta-models/Muse-Glimmer-30B",
+        "minimax/h3",
         "minimax/speech-2.8-turbo",
         "mistralai/Mixtral-8x7B-Instruct-v0.1-FP8-Lora",
         "mistralai/Voxtral-Mini-3B-2507",

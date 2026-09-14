@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 798
+        content_length: 858
         host: api.together.xyz
         body: |
-            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_6591435e438d4d2b8983702e","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_6591435e438d4d2b8983702e"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"363.6572850071946","tool_calls":[{"index":0,"id":"call_01a09d6f-817c-77a3-adbe-afddc4fdaf1f","type":"function","function":{"name":"square_root","arguments":"{\n  \"number\": 132413\n}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_01a09d6f-817c-77a3-adbe-afddc4fdaf1f"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,18 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK67j-z1gNr-a0467384b9f8a2b4",
+              "id": "p1BXowU-fdNmn-a3ab76d5b960a2af",
               "object": "chat.completion",
-              "created": 1780235464,
+              "created": 1789347725,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null,
                   "message": {
@@ -45,10 +42,12 @@ interactions:
                 }
               ],
               "usage": {
-                "prompt_tokens": 190,
-                "total_tokens": 197,
+                "prompt_tokens": 207,
                 "completion_tokens": 7,
-                "reasoning_tokens": 0
+                "total_tokens": 214,
+                "prompt_tokens_details": {
+                  "cached_tokens": 35
+                }
               }
             }
         headers:
@@ -59,11 +58,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0467384b9f8a2b4-YUL
+                - a3ab76d5b960a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"236-vuT7FXV5H8X7ohxiqdLSWPZGJIk"
+                - W/"231-LL5H3qe/MGUaCGTEIDRDveU+QBc"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -71,15 +70,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 40452939-7647-4a7d-875b-0d44c562aafa-noamzn
+                - 2873dab4-4c78-4862-b10d-ad613f915677-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:04.687Z"
+                - "2026-09-14T01:02:05.874Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:04.490Z"
+                - "2026-09-14T01:02:05.809Z"
             X-Api-Received:
-                - "2026-05-31T13:51:04.474Z"
+                - "2026-09-14T01:02:05.791Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 261ms
+        duration: 219ms

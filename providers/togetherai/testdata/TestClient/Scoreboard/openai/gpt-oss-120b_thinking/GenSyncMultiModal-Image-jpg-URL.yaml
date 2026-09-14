@@ -23,13 +23,11 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK84B-4YNCb4-a04673ad79b0a2b4",
+              "id": "p1BXrus-z1gNr-a3ab77147e64a2af",
               "object": "chat.completion",
-              "created": 1780235471,
+              "created": 1789347735,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
@@ -38,18 +36,22 @@ interactions:
                     "role": "assistant",
                     "content": "Apple",
                     "tool_calls": [],
-                    "reasoning": "User asks: \"What fruit is it? Reply with only one word.\" So need to guess fruit? Possibly a puzzle context missing? They just ask ambiguous. Could respond with a fruit name. Probably \"apple\". Provide one word."
+                    "reasoning": "The user asks: \"What fruit is it? Reply with only one word.\" There's no context given. Possibly they are expecting the assistant to guess a fruit? But no description. Might be a trick: The user asks \"What fruit is it?\" but no details. The instruction: reply with only one word. Could we say \"Apple\"? Or \"Orange\"? Since no context, maybe answer \"Apple\". It's ambiguous. Could also ask for clarification, but instruction says only one word. Probably respond with a fruit name: \"Apple\"."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 78,
-                "total_tokens": 136,
-                "completion_tokens": 58,
-                "reasoning_tokens": 0
+                "prompt_tokens": 80,
+                "completion_tokens": 119,
+                "total_tokens": 199,
+                "prompt_tokens_details": {
+                  "cached_tokens": 67
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 109
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673ad79b0a2b4-YUL
+                - a3ab77147e64a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"31f-yATQdPOxDfbGvDEZcPP4l0bUhYk"
+                - W/"47c-AFO6zDgt192ijk55ydj7Ggx2MO4"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - beee81a1-eead-4fb8-b6a2-5140830073f4-noamzn
+                - 93541b7b-cfae-4f1b-b8d8-c8052fc11a42-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:11.422Z"
+                - "2026-09-14T01:02:16.832Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:11.029Z"
+                - "2026-09-14T01:02:15.803Z"
             X-Api-Received:
-                - "2026-05-31T13:51:10.996Z"
+                - "2026-09-14T01:02:15.791Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 501ms
+        duration: 1.096s

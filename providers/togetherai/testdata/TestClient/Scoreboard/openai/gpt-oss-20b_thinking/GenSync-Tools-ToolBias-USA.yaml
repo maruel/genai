@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJKBNu-4YNCb4-a04673f33c62a2b4",
+              "id": "p1BY3nG-fdNmn-a3ab77f8bcbea2af",
               "object": "chat.completion",
-              "created": 1780235484,
+              "created": 1789347773,
               "model": "openai/gpt-oss-20b",
               "metadata": {
                 "weight_version": "default"
@@ -39,7 +39,7 @@ interactions:
                     "content": "",
                     "tool_calls": [
                       {
-                        "id": "call_a92cf085b5284de5a56d2913",
+                        "id": "call_04caa5bd0b4545eab91ee061",
                         "index": 0,
                         "type": "function",
                         "function": {
@@ -48,7 +48,7 @@ interactions:
                         }
                       }
                     ],
-                    "reasoning": "We need to call best_country tool. Provide country arg? The tool signature: best_country({country: \"USA\"|\"Canada\"}). We need to choose which to call? The user says \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" That seems ambiguous: They want tool to tell which is best. The tool may return something. We can pass 'USA' or 'Canada'? I think passing no argument? The tool expects a param. Might ask which? Possibly we should provide both? Maybe call with \"USA\" and see result? The tool maybe picks better? But we are asked: \"tell me which country is the best one.\" So maybe we call with something else? It's unclear. Let's interpret: The tool might pick the best country between USA and Canada. Then we pass no param? But tool requires country. Maybe we pass \"USA\" and tool returns best? Let's call with \"USA\"."
+                    "reasoning": "User: wants us to call best_country tool to determine if USA or Canada is best. We need to output the tool call."
                   },
                   "logprobs": null,
                   "finish_reason": "tool_calls",
@@ -57,8 +57,8 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 155,
-                "total_tokens": 391,
-                "completion_tokens": 236,
+                "total_tokens": 211,
+                "completion_tokens": 56,
                 "reasoning_tokens": 0
               }
             }
@@ -70,11 +70,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673f33c62a2b4-YUL
+                - a3ab77f8bcbea2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"6de-/L0fQD2jIxCmy8XbXICMZSByN20"
+                - W/"3c8-v1LHvgw7bq+2z+WFztvRV5mNL6o"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -82,15 +82,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 4feccff6-a3dd-4e3a-bbdc-740828dc5768-noamzn
+                - bd63d1c2-c049-495c-abe0-32c7463fa901-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:24.048Z"
+                - "2026-09-14T01:02:53.326Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:22.217Z"
+                - "2026-09-14T01:02:52.365Z"
             X-Api-Received:
-                - "2026-05-31T13:51:22.174Z"
+                - "2026-09-14T01:02:52.353Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 1.958s
+        duration: 1.107s

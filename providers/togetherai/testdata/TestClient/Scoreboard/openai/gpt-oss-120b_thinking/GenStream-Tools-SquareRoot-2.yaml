@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 797
+        content_length: 857
         host: api.together.xyz
         body: |
-            {"model":"openai/gpt-oss-120b","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_9fac4e2e63054355818b5f1d","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_9fac4e2e63054355818b5f1d"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"openai/gpt-oss-120b","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"363.8435435420566","tool_calls":[{"index":0,"id":"call_01a09d6f-87da-7b42-be7f-1d37289d4f0f","type":"function","function":{"name":"square_root","arguments":"{\n  \"number\": 132413\n}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_01a09d6f-87da-7b42-be7f-1d37289d4f0f"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,21 +21,17 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"matched_stop":null,"delta":{"token_id":null,"role":"assistant","content":""}}],"model":"openai/gpt-oss-120b","usage":null}
+            data: {"id":"p1BXpTJ-z1gNr-a3ab76e0ee38a2af","object":"chat.completion.chunk","created":1789347727,"choices":[{"index":0,"text":"final","finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"final"}}],"model":"openai/gpt-oss-120b"}
 
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":"final","logprobs":null,"finish_reason":null,"matched_stop":null,"delta":{"token_id":null,"role":"assistant","content":"final"}}],"model":"openai/gpt-oss-120b","usage":null}
+            data: {"id":"p1BXpTJ-z1gNr-a3ab76e0ee38a2af","object":"chat.completion.chunk","created":1789347727,"choices":[{"index":0,"text":"363","finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"363"}}],"model":"openai/gpt-oss-120b"}
 
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":null,"matched_stop":null,"delta":{"token_id":null,"role":"assistant","content":""}}],"model":"openai/gpt-oss-120b","usage":null}
+            data: {"id":"p1BXpTJ-z1gNr-a3ab76e0ee38a2af","object":"chat.completion.chunk","created":1789347727,"choices":[{"index":0,"text":".","finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"."}}],"model":"openai/gpt-oss-120b"}
 
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":"363","logprobs":null,"finish_reason":null,"matched_stop":null,"delta":{"token_id":null,"role":"assistant","content":"363"}}],"model":"openai/gpt-oss-120b","usage":null}
+            data: {"id":"p1BXpTJ-z1gNr-a3ab76e0ee38a2af","object":"chat.completion.chunk","created":1789347727,"choices":[{"index":0,"text":"89","finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"89"}}],"model":"openai/gpt-oss-120b"}
 
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":".","logprobs":null,"finish_reason":null,"matched_stop":null,"delta":{"token_id":null,"role":"assistant","content":"."}}],"model":"openai/gpt-oss-120b","usage":null}
+            data: {"id":"p1BXpTJ-z1gNr-a3ab76e0ee38a2af","object":"chat.completion.chunk","created":1789347727,"choices":[{"index":0,"text":"","finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":""}}],"model":"openai/gpt-oss-120b"}
 
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":"89","logprobs":null,"finish_reason":null,"matched_stop":null,"delta":{"token_id":null,"role":"assistant","content":"89"}}],"model":"openai/gpt-oss-120b","usage":null}
-
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"stop","matched_stop":200002,"delta":{"token_id":null,"role":"assistant","content":""}}],"model":"openai/gpt-oss-120b","usage":null}
-
-            data: {"id":"omJK6GK-z1gNr-a0467387efcda2b4","object":"chat.completion.chunk","created":1780235464,"choices":[],"model":"openai/gpt-oss-120b","usage":{"prompt_tokens":190,"total_tokens":197,"completion_tokens":7,"reasoning_tokens":0}}
+            data: {"id":"p1BXpTJ-z1gNr-a3ab76e0ee38a2af","object":"chat.completion.chunk","created":1789347727,"choices":[],"model":"openai/gpt-oss-120b","usage":{"prompt_tokens":207,"completion_tokens":7,"total_tokens":214,"prompt_tokens_details":{"cached_tokens":35}}}
 
             data: [DONE]
 
@@ -49,7 +45,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0467387efcda2b4-YUL
+                - a3ab76e0ee38a2af-YUL
             Content-Type:
                 - text/event-stream;charset=utf-8
             Server:
@@ -59,13 +55,13 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 97d73ea5-560c-403f-9013-e3bf3d1b9638-noamzn
+                - e167fa28-bdb7-4324-b025-b363e888dcfd-noamzn
             X-Api-Call-Start:
-                - "2026-05-31T13:51:04.994Z"
+                - "2026-09-14T01:02:07.620Z"
             X-Api-Received:
-                - "2026-05-31T13:51:04.973Z"
+                - "2026-09-14T01:02:07.522Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 123ms
+        duration: 136ms

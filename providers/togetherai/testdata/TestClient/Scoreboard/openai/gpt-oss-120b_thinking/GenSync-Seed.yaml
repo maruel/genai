@@ -23,13 +23,11 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK4k7-4YNCb4-a0467367cb61a2b4",
+              "id": "p1BXmeg-z1gNr-a3ab76a5efb7a2af",
               "object": "chat.completion",
-              "created": 1780235460,
+              "created": 1789347718,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
@@ -38,18 +36,22 @@ interactions:
                     "role": "assistant",
                     "content": "Hello",
                     "tool_calls": [],
-                    "reasoning": "The user asks: \"Say hello. Use only one word.\" So we respond with a single word greeting, like \"Hello\". That's one word. Must not add anything else. Provide just \"Hello\"."
+                    "reasoning": "User asks: \"Say hello. Use only one word.\" So respond with \"Hello\". That's one word."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 75,
-                "total_tokens": 127,
-                "completion_tokens": 52,
-                "reasoning_tokens": 0
+                "prompt_tokens": 77,
+                "completion_tokens": 33,
+                "total_tokens": 110,
+                "prompt_tokens_details": {
+                  "cached_tokens": 76
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 23
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a0467367cb61a2b4-YUL
+                - a3ab76a5efb7a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2fa-WnQ1qkFQa3xRqMEyd8FwRkGCR1Q"
+                - W/"2e3-Wd/SxU123UUfpCw7HL8PN+DFTko"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - 5ff2ec6a-53d6-4af3-8153-af27cbf744dd-noamzn
+                - 5ac6627f-2ad5-4d79-ad76-23ba15ccb8ee-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:00.575Z"
+                - "2026-09-14T01:01:58.465Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:50:59.878Z"
+                - "2026-09-14T01:01:58.104Z"
             X-Api-Received:
-                - "2026-05-31T13:50:59.856Z"
+                - "2026-09-14T01:01:58.089Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 802ms
+        duration: 413ms

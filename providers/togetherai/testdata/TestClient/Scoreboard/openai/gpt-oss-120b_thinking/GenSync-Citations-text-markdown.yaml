@@ -23,33 +23,35 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "omJK7fD-4YNCb4-a04673a52e1ba2b4",
+              "id": "p1BXr7k-z1gNr-a3ab7703cc18a2af",
               "object": "chat.completion",
-              "created": 1780235470,
+              "created": 1789347733,
               "model": "openai/gpt-oss-120b",
-              "metadata": {
-                "weight_version": "default"
-              },
+              "system_fingerprint": "default",
               "prompt": [],
               "choices": [
                 {
                   "index": 0,
                   "message": {
                     "role": "assistant",
-                    "content": "The capital of **Quackiland** is **Quack**.",
+                    "content": "The capital of Quackiland is **Quack**.",
                     "tool_calls": [],
-                    "reasoning": "We need to answer: The capital of Quax? It's Quack. Simple."
+                    "reasoning": "The user asks: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" This is a simple factual question: capital is Quack. So answer: Quack.\n\nWe need to ensure no refusal. It's straightforward."
                   },
-                  "logprobs": null,
                   "finish_reason": "stop",
                   "seed": null
                 }
               ],
               "usage": {
-                "prompt_tokens": 102,
-                "total_tokens": 143,
-                "completion_tokens": 41,
-                "reasoning_tokens": 0
+                "prompt_tokens": 104,
+                "completion_tokens": 85,
+                "total_tokens": 189,
+                "prompt_tokens_details": {
+                  "cached_tokens": 66
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 64
+                }
               }
             }
         headers:
@@ -60,11 +62,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04673a52e1ba2b4-YUL
+                - a3ab7703cc18a2af-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Etag:
-                - W/"2ac-6fL52lx1CFAaWctZSWBN/IlEBq0"
+                - W/"3b0-zB4tTECg40XTL65ZbH49VysnO5A"
             Server:
                 - cloudflare
             Strict-Transport-Security:
@@ -72,15 +74,15 @@ interactions:
             Vary:
                 - accept-encoding
             X-Amzn-Trace-Id:
-                - e7c6bf65-1bf2-4301-85d8-c004148582c4-noamzn
+                - 0305f2ae-67cd-4d0b-a131-48dda0b08128-noamzn
             X-Api-Call-End:
-                - "2026-05-31T13:51:10.133Z"
+                - "2026-09-14T01:02:14.866Z"
             X-Api-Call-Start:
-                - "2026-05-31T13:51:09.707Z"
+                - "2026-09-14T01:02:13.128Z"
             X-Api-Received:
-                - "2026-05-31T13:51:09.665Z"
+                - "2026-09-14T01:02:13.115Z"
             X-Inference-Version:
                 - v2
         status: 200 OK
         code: 200
-        duration: 544ms
+        duration: 1.801s

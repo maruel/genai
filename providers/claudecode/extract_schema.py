@@ -33,19 +33,14 @@ GO_JSON_TAG = re.compile(r"json:\"([^,\"]+)")
 
 
 def _declarations(source: str) -> dict[str, str]:
-    return {
-        match.group("name"): match.group("body")
-        for match in TYPE_DECLARATION.finditer(source)
-    }
+    return {match.group("name"): match.group("body") for match in TYPE_DECLARATION.finditer(source)}
 
 
 def _union_members(body: str) -> list[str]:
     return re.findall(r"\bSDK[A-Za-z0-9_]+\b", body)
 
 
-def _discriminators(
-    name: str, declarations: dict[str, str], seen: set[str]
-) -> set[str]:
+def _discriminators(name: str, declarations: dict[str, str], seen: set[str]) -> set[str]:
     if name in seen:
         return set()
     seen.add(name)
@@ -78,12 +73,8 @@ def _sdk_version(path: Path) -> str | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "sdk", type=Path, help="sdk.d.ts from @anthropic-ai/claude-agent-sdk"
-    )
-    parser.add_argument(
-        "dto", type=Path, nargs="?", default=Path(__file__).with_name("dto.go")
-    )
+    parser.add_argument("sdk", type=Path, help="sdk.d.ts from @anthropic-ai/claude-agent-sdk")
+    parser.add_argument("dto", type=Path, nargs="?", default=Path(__file__).with_name("dto.go"))
     parser.add_argument("--version", help="require this SDK package version")
     args = parser.parse_args()
 
@@ -103,16 +94,11 @@ def main() -> int:
     expected_fields = _fields("SDKMessage", declarations, set())
     expected_fields.update(_fields("SDKControlRequestInner", declarations, set()))
 
-    hooks_match = re.search(
-        r"HOOK_EVENTS:\s*readonly\s*\[(.*?)\]", sdk_source, re.DOTALL
-    )
+    hooks_match = re.search(r"HOOK_EVENTS:\s*readonly\s*\[(.*?)\]", sdk_source, re.DOTALL)
     if hooks_match:
         expected.update(QUOTED_LITERAL.findall(hooks_match.group(1)))
 
-    present = {
-        bytes(value, "utf-8").decode("unicode_escape")
-        for value in GO_LITERAL.findall(dto_source)
-    }
+    present = {bytes(value, "utf-8").decode("unicode_escape") for value in GO_LITERAL.findall(dto_source)}
     missing = sorted(expected - present)
     missing_fields = sorted(expected_fields - set(GO_JSON_TAG.findall(dto_source)))
     print(f"Claude Agent SDK {version or 'unknown'}: {len(expected)} discriminators")

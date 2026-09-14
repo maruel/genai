@@ -54,7 +54,7 @@ jobs:
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
         run: |
-          ./internal/regen_weekly.sh
+          ./scripts/regen_weekly.sh
       - name: Create auto-fix PR with pi.dev
         if: failure() && steps.regen.outcome == 'failure'
         env:

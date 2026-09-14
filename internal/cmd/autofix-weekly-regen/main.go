@@ -26,7 +26,7 @@ const (
 
 Fix the repository so this command can complete:
 
-    ./internal/regen_weekly.sh
+    ./scripts/regen_weekly.sh
 
 Constraints:
 - Follow AGENTS.md.

@@ -7,8 +7,11 @@
 
 set -euo pipefail
 
-cd "$(dirname "$0")"
-cd ..
+script_dir="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+readonly script_dir
+repo_root="$(CDPATH='' cd -- "$script_dir/.." && pwd)"
+readonly repo_root
+cd -- "$repo_root"
 
 if [[ -f "./.env" ]]; then
 	set -a

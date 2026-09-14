@@ -91,12 +91,12 @@ preflight_provider() {
 	groq) require_all "$1" GROQ_API_KEY ;;
 	huggingface) require_all "$1" HUGGINGFACE_API_KEY ;;
 	mistral) require_all "$1" MISTRAL_API_KEY ;;
-	openaichat|openairesponses) require_all "$1" OPENAI_API_KEY ;;
+	openaichat | openairesponses) require_all "$1" OPENAI_API_KEY ;;
 	openrouter) require_all "$1" OPENROUTER_API_KEY ;;
 	pollinations) require_all "$1" POLLINATIONS_API_KEY ;;
 	togetherai) require_all "$1" TOGETHER_API_KEY ;;
 	xiaomi) require_all "$1" MIMO_API_KEY ;;
-	claudecode|codex|opencode|pi)
+	claudecode | codex | opencode | pi)
 		local binary=$1
 		if [[ $binary == claudecode ]]; then
 			binary=claude

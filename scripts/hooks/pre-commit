@@ -1,0 +1,30 @@
+#!/bin/bash
+# Rejects binary executables and incorrectly formatted staged Go files.
+
+set -euo pipefail
+
+binaries=$(git diff --cached --name-only --diff-filter=ACM -z | xargs -0 -r file --mime-type 2>/dev/null | grep -E 'application/(x-executable|x-mach-binary|x-dosexec|x-pie-executable|x-sharedlib)' | cut -d: -f1 || true)
+if [ -n "$binaries" ]; then
+	echo '✗ Binary executables cannot be committed:'
+	echo "$binaries"
+	exit 1
+fi
+
+python3 scripts/update_agents_file_index.py --check
+
+declare -a unformatted=()
+while IFS= read -r -d '' file; do
+	if ! formatted=$(git show ":$file" | gofmt -d); then
+		printf 'Could not format staged Go file: %s\n' "$file" >&2
+		exit 1
+	fi
+	if [ -n "$formatted" ]; then
+		unformatted+=("$file")
+	fi
+done < <(git diff --cached --name-only --diff-filter=ACMR -z -- '*.go')
+
+if ((${#unformatted[@]} > 0)); then
+	echo '✗ Go files must be formatted before committing:'
+	printf '  %s\n' "${unformatted[@]}"
+	exit 1
+fi

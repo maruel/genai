@@ -285,9 +285,7 @@ func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, 
 		want.ReasoningTokenStart = ""
 		want.ReasoningTokenEnd = ""
 	}
-	// Check if valid.
-	// optTriState,
-	if diff := cmp.Diff(*want, got, optScenario); diff != "" {
+	if diff := cmp.Diff(*want, got, optScenario); diff != "" && !*updateScoreboard {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
 	// Preserve Comments from the original scenario

@@ -6,8 +6,8 @@
 | opus🥇   | Stream🧠 | 💬📸  | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | sonnet🥈 | Sync🧠   | 💬📸  | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | sonnet🥈 | Stream🧠 | 💬📸  | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| haiku🥉  | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| haiku🥉  | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| haiku🥉  | Sync🧠   | 💬📸  | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| haiku🥉  | Stream🧠 | 💬📸  | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

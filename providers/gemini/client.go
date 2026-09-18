@@ -382,6 +382,9 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityText) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
@@ -440,6 +443,9 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityText) {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
@@ -722,6 +728,9 @@ func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.G
 // The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
 // use the client's HTTP client.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return "", err
+	}
 	// GenAsync only works with video generation models (predictLongRunning endpoint).
 	// Text models use generateContent which doesn't support async operations.
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {

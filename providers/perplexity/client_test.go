@@ -7,8 +7,6 @@
 package perplexity_test
 
 import (
-	"context"
-	"iter"
 	"net/http"
 	"slices"
 	"strings"
@@ -109,13 +107,14 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			// Save on costs when running the smoke test.
-			var p genai.Provider = &injectOptions{
+			// Save on costs when running the smoke test, unless the caller explicitly enables web search.
+			var p genai.Provider = &internaltest.InjectOptions{
 				Provider: c,
 				Opts: []genai.GenOption{
 					&genai.GenOptionWeb{Search: false},
 					&perplexity.GenOption{DisableRelatedQuestions: true},
 				},
+				Skip: webSearchEnabled,
 			}
 			if model.Reason {
 				for _, sc := range c.Scoreboard().Scenarios {
@@ -186,34 +185,13 @@ func TestClient(t *testing.T) {
 	})
 }
 
-// injectOptions generally inject the option unless "Quackiland" is in the last message.
-type injectOptions struct {
-	genai.Provider
-	Opts []genai.GenOption
-}
-
-func (i *injectOptions) Unwrap() genai.Provider {
-	return i.Provider
-}
-
-func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	if !slices.ContainsFunc(opts, func(o genai.GenOption) bool {
+// webSearchEnabled reports whether the caller explicitly enabled web search, in which case the smoke test
+// cost-saving options must not be injected.
+func webSearchEnabled(opts []genai.GenOption) bool {
+	return slices.ContainsFunc(opts, func(o genai.GenOption) bool {
 		v, ok := o.(*genai.GenOptionWeb)
 		return ok && v.Search
-	}) {
-		opts = append(opts, i.Opts...)
-	}
-	return i.Provider.GenSync(ctx, msgs, opts...)
-}
-
-func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if !slices.ContainsFunc(opts, func(o genai.GenOption) bool {
-		v, ok := o.(*genai.GenOptionWeb)
-		return ok && v.Search
-	}) {
-		opts = append(opts, i.Opts...)
-	}
-	return i.Provider.GenStream(ctx, msgs, opts...)
+	})
 }
 
 func init() {

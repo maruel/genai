@@ -187,12 +187,12 @@ func TestClient(t *testing.T) {
 			// Keep the unsupported smoke cases out of the CLI while retaining text
 			// and image coverage.
 			p := skipMediaClient{Provider: c}
-			smokeOpts := []genai.GenOption{
-				// Scoreboard calls are independent probes, not a conversation.
-				&GenOption{SessionPersistence: false},
-			}
+			var smokeOpts []genai.GenOption
 			if model.Reason {
-				smokeOpts = append(smokeOpts, &GenOption{Effort: EffortMedium})
+				smokeOpts = append(smokeOpts, &GenOption{SessionPersistence: false, Effort: EffortMedium})
+			} else {
+				// Scoreboard calls are independent probes, not a conversation.
+				smokeOpts = append(smokeOpts, &GenOption{SessionPersistence: false})
 			}
 			return &internaltest.InjectOptions{Provider: p, Opts: smokeOpts}
 		}

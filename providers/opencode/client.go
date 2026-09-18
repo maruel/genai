@@ -95,10 +95,13 @@ type callOpts struct {
 // parseOpts validates and collects the per-call options.
 func parseOpts(opts []genai.GenOption) (callOpts, error) {
 	var co callOpts
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return co, err
+	}
 	var unsupported []string
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
-			return callOpts{}, err
+			return co, err
 		}
 		switch v := opt.(type) {
 		case *GenOption:

@@ -120,6 +120,9 @@ func (c *Client) HTTPClient() *http.Client {
 //
 // Recommended reading: https://docs.typesafe.ai/concepts/state
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	res := genai.Result{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err

@@ -104,6 +104,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return err
+	}
 	var errs []error
 	var unsupported []string
 	sp := ""

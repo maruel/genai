@@ -224,6 +224,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	return c.genImage(ctx, &msgs[0], opts...)
 }
 

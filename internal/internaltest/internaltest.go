@@ -18,6 +18,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"slices"
 	"strings"
@@ -250,25 +251,83 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 }
 
 // InjectOptions injects options into the provider GenSync and GenStream calls.
-// InjectOptions wraps a provider to inject additional GenOption values into every call.
+//
+// Injected options are merged into the caller's options: an injected option of a type the caller already
+// provided only fills the fields the caller left unset, so a provider never receives the same GenOption type
+// twice. Injected options of a type the caller did not provide are appended.
+//
+// When Skip is set, it is called with the caller's options and injection is disabled for the call when it
+// returns true. This is used to preserve a caller's explicit request, for example keeping web search enabled
+// when a provider toggles it off by default.
 type InjectOptions struct {
 	genai.Provider
 	Opts []genai.GenOption
+	Skip func(opts []genai.GenOption) bool
 }
 
 // GenSync implements genai.Provider.
 func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return i.Provider.GenSync(ctx, msgs, append(opts, i.Opts...)...)
+	return i.Provider.GenSync(ctx, msgs, i.inject(opts)...)
 }
 
 // GenStream implements genai.Provider.
 func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return i.Provider.GenStream(ctx, msgs, append(opts, i.Opts...)...)
+	return i.Provider.GenStream(ctx, msgs, i.inject(opts)...)
 }
 
 // Unwrap returns the wrapped provider.
 func (i *InjectOptions) Unwrap() genai.Provider {
 	return i.Provider
+}
+
+func (i *InjectOptions) inject(opts []genai.GenOption) []genai.GenOption {
+	if i.Skip != nil && i.Skip(opts) {
+		return opts
+	}
+	return mergeGenOptions(opts, i.Opts)
+}
+
+// mergeGenOptions returns base with injected merged in.
+//
+// Injected options of a type absent from base are appended. For a type already in base, injected fills only
+// the fields left unset in base so caller-supplied values win. base is not mutated.
+func mergeGenOptions(base, injected []genai.GenOption) []genai.GenOption {
+	if len(injected) == 0 {
+		return base
+	}
+	out := slices.Clone(base)
+	for _, inj := range injected {
+		t := reflect.TypeOf(inj)
+		idx := slices.IndexFunc(out, func(o genai.GenOption) bool { return reflect.TypeOf(o) == t })
+		if idx == -1 {
+			out = append(out, inj)
+			continue
+		}
+		if merged := fillUnset(out[idx], inj); merged != nil {
+			out[idx] = merged
+		}
+	}
+	return out
+}
+
+// fillUnset returns a copy of dst with src's non-zero fields filling dst's zero fields.
+//
+// It returns nil when the options are not pointers to the same struct type, in which case dst is kept as-is.
+func fillUnset(dst, src genai.GenOption) genai.GenOption {
+	dv, sv := reflect.ValueOf(dst), reflect.ValueOf(src)
+	if dv.Kind() != reflect.Pointer || sv.Kind() != reflect.Pointer || dv.IsNil() || sv.IsNil() ||
+		dv.Elem().Kind() != reflect.Struct || dv.Elem().Type() != sv.Elem().Type() {
+		return nil
+	}
+	out := reflect.New(dv.Elem().Type())
+	out.Elem().Set(dv.Elem())
+	ov, svElem := out.Elem(), sv.Elem()
+	for i := range ov.NumField() {
+		if ov.Field(i).CanSet() && ov.Field(i).IsZero() && !svElem.Field(i).IsZero() {
+			ov.Field(i).Set(svElem.Field(i))
+		}
+	}
+	return out.Interface().(genai.GenOption)
 }
 
 // RetryOnRateLimit wraps a provider to retry without FallbackOpts when a rate
@@ -283,7 +342,7 @@ type RetryOnRateLimit struct {
 func (r *RetryOnRateLimit) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	res, err := r.Provider.GenSync(ctx, msgs, opts...)
 	if err != nil && isRateLimited(err) {
-		return r.Provider.GenSync(ctx, msgs, append(opts, r.FallbackOpts...)...)
+		return r.Provider.GenSync(ctx, msgs, mergeGenOptions(opts, r.FallbackOpts)...)
 	}
 	return res, err
 }
@@ -294,7 +353,7 @@ func (r *RetryOnRateLimit) GenStream(ctx context.Context, msgs genai.Messages, o
 	return fragments, func() (genai.Result, error) {
 		res, err := finish()
 		if err != nil && isRateLimited(err) {
-			fragments2, finish2 := r.Provider.GenStream(ctx, msgs, append(opts, r.FallbackOpts...)...)
+			fragments2, finish2 := r.Provider.GenStream(ctx, msgs, mergeGenOptions(opts, r.FallbackOpts)...)
 			for range fragments2 {
 			}
 			return finish2()

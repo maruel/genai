@@ -115,6 +115,9 @@ func (c *Client) Capabilities() genai.ProviderCapabilities {
 //
 // https://platform.openai.com/docs/api-reference/responses/create
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return "", err
+	}
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
@@ -207,6 +210,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
 // only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	if c.shared.IsAudio() {
 		return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
 	}
@@ -248,6 +254,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 // It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
 // only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
 	if c.shared.IsAudio() {
 		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
 			return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")

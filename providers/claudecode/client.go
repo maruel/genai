@@ -441,6 +441,9 @@ func (c *Client) ListModels(_ context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	records, err := c.GenSyncRaw(ctx, msgs, opts...)
 	if len(records) == 0 {
 		return genai.Result{}, err
@@ -491,6 +494,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenSyncRaw returns the raw Claude Code stdout records for one synchronous turn.
 func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (records []json.RawMessage, err error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return nil, err
+	}
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
@@ -556,6 +562,9 @@ func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...ge
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}

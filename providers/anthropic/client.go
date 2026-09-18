@@ -201,6 +201,9 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return "", err
+	}
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}

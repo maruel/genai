@@ -14,6 +14,32 @@ import (
 	"github.com/maruel/genai"
 )
 
+func TestCheckDuplicateGenOptions(t *testing.T) {
+	t.Run("no_duplicates", func(t *testing.T) {
+		opts := []genai.GenOption{
+			genai.GenOptionSeed(1),
+			&genai.GenOptionText{},
+		}
+		if err := CheckDuplicateGenOptions(opts); err != nil {
+			t.Fatal(err)
+		}
+	})
+	t.Run("duplicate", func(t *testing.T) {
+		opts := []genai.GenOption{
+			genai.GenOptionSeed(1),
+			genai.GenOptionSeed(2),
+		}
+		if err := CheckDuplicateGenOptions(opts); err == nil {
+			t.Fatal("expected error for duplicate option")
+		}
+	})
+	t.Run("empty", func(t *testing.T) {
+		if err := CheckDuplicateGenOptions(nil); err != nil {
+			t.Fatal(err)
+		}
+	})
+}
+
 func TestCheckDuplicateProviderOptions(t *testing.T) {
 	t.Run("no_duplicates", func(t *testing.T) {
 		opts := []genai.ProviderOption{

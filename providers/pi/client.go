@@ -240,6 +240,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (r genai.Result, err error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
 	}
@@ -281,6 +284,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}

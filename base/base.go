@@ -46,6 +46,19 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 	},
 }
 
+// CheckDuplicateGenOptions returns an error if the same GenOption concrete type appears more than once.
+func CheckDuplicateGenOptions(opts []genai.GenOption) error {
+	seen := map[reflect.Type]struct{}{}
+	for _, opt := range opts {
+		t := reflect.TypeOf(opt)
+		if _, ok := seen[t]; ok {
+			return fmt.Errorf("duplicate option %T", opt)
+		}
+		seen[t] = struct{}{}
+	}
+	return nil
+}
+
 // CheckDuplicateProviderOptions returns an error if the same ProviderOption concrete type appears more than once.
 func CheckDuplicateProviderOptions(opts []genai.ProviderOption) error {
 	seen := map[reflect.Type]struct{}{}
@@ -404,6 +417,9 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	res := genai.Result{}
 	c.lateInit()
+	if err := CheckDuplicateGenOptions(opts); err != nil {
+		return res, err
+	}
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	if err := in.Init(msgs, c.Model, opts...); err != nil {
 		return res, err
@@ -436,6 +452,10 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		c.lateInit()
+		if err := CheckDuplicateGenOptions(opts); err != nil {
+			finalErr = err
+			return
+		}
 		in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 		if err := in.Init(msgs, c.Model, opts...); err != nil {
 			finalErr = err

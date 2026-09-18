@@ -171,6 +171,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return "", err
+	}
 	fileID, err := c.CacheAddRequest(ctx, msgs, "TODO", "batch.json", 24*time.Hour, opts...)
 	if err != nil {
 		return "", err
@@ -356,6 +359,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	if c.shared.IsImage() || c.shared.IsVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
@@ -386,6 +392,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
 	if c.shared.IsImage() || c.shared.IsVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}

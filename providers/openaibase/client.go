@@ -89,6 +89,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // GenDoc generates an image document from a single message.
 func (c *Client) GenDoc(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	if err := c.Impl.Validate(); err != nil {

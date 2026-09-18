@@ -143,6 +143,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 //
 // It requests the providers' asynchronous API and returns the job ID.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return "", err
+	}
 	req := ImageRequest{}
 	if err := req.Init(msgs, c.impl.Model, opts...); err != nil {
 		return "", err

@@ -111,7 +111,9 @@ type Functionality struct {
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.
 	JSON bool `json:"json,omitzero"`
-	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
+	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema. It is
+	// measured with an object at the root of the reply, which is what the smoke test asks for and what the
+	// providers accept: OpenAI and Anthropic reject an array at the root, Gemini accepts it.
 	JSONSchema bool `json:"jsonSchema,omitzero"`
 	// Citations is set when the provider and model combination supports citations in the response.
 	Citations bool `json:"citations,omitzero"`

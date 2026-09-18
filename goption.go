@@ -139,8 +139,12 @@ type GenOptionText struct {
 	// ReplyAsJSON enforces the output to be valid JSON, any JSON. It is
 	// important to tell the model to reply in JSON in the prompt itself.
 	ReplyAsJSON bool
-	// DecodeAs enforces a reply with a specific JSON structure. It must be either a pointer to a struct that can be
-	// decoded by encoding/json and can have jsonschema tags, or a JSONSchema.
+	// DecodeAs enforces a reply with a specific JSON structure. It must be either a JSON object or array
+	// that can be decoded by encoding/json and can have jsonschema tags, usually a pointer to a struct, or
+	// a JSONSchema.
+	//
+	// Not every provider accepts an array at the root of the reply, e.g. OpenAI and Anthropic require an
+	// object. Wrap the slice in a struct with a single field when the provider rejects it.
 	//
 	// It is important to request the model to "reply in JSON" in the prompt itself.
 	//
@@ -389,10 +393,21 @@ func (o *GenOptionVideo) Validate() error {
 
 // Private
 
+// validateReflectedToJSON ensures a JSON schema can be reflected from r.
+//
+// A struct or a map is a JSON object and a slice or an array is a JSON array; a pointer to any of them is
+// accepted too, so the reply can be decoded into it. Scalars are rejected, they are not a reply structure.
 func validateReflectedToJSON(r any) error {
 	tp := reflect.TypeOf(r)
-	if tp.Kind() != reflect.Pointer || tp.Elem().Kind() != reflect.Struct {
-		return fmt.Errorf("must be a pointer to a struct, got %T", r)
+	if tp == nil {
+		return errors.New("must be a JSON object or array, or a pointer to one, got nil")
+	}
+	if tp.Kind() == reflect.Pointer {
+		tp = tp.Elem()
+	}
+	// A struct or a map is a JSON object, a slice or an array is a JSON array.
+	if k := tp.Kind(); k != reflect.Struct && k != reflect.Map && k != reflect.Slice && k != reflect.Array {
+		return fmt.Errorf("must be a JSON object or array, or a pointer to one, got %T", r)
 	}
 	return nil
 }

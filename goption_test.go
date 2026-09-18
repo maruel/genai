@@ -207,14 +207,14 @@ func TestGenOptionText(t *testing.T) {
 					errMsg: "field Stop[1]: must not be empty",
 				},
 				{
-					name:   "Invalid DecodeAs non-pointer struct",
-					in:     GenOptionText{DecodeAs: struct{}{}},
-					errMsg: "field DecodeAs: must be a pointer to a struct, got struct {}",
+					name:   "Invalid DecodeAs int",
+					in:     GenOptionText{DecodeAs: 123},
+					errMsg: "field DecodeAs: must be a JSON object or array, or a pointer to one, got int",
 				},
 				{
 					name:   "Invalid DecodeAs string",
 					in:     GenOptionText{DecodeAs: "string"},
-					errMsg: "field DecodeAs: must be a pointer to a struct, got string",
+					errMsg: "field DecodeAs: must be a JSON object or array, or a pointer to one, got string",
 				},
 			}
 			for _, tt := range tests {
@@ -524,8 +524,12 @@ func TestGenOptionVideo(t *testing.T) {
 func TestValidateReflectedToJSON(t *testing.T) {
 	type testStruct struct{}
 	t.Run("valid", func(t *testing.T) {
-		if err := validateReflectedToJSON(&testStruct{}); err != nil {
-			t.Fatalf("unexpected error: %v", err)
+		for _, in := range []any{
+			testStruct{}, &testStruct{}, map[string]any{}, &map[string]any{}, []any{}, &[]any{}, [2]int{}, &[2]int{},
+		} {
+			if err := validateReflectedToJSON(in); err != nil {
+				t.Fatalf("%T: unexpected error: %v", in, err)
+			}
 		}
 	})
 	t.Run("error", func(t *testing.T) {
@@ -535,19 +539,24 @@ func TestValidateReflectedToJSON(t *testing.T) {
 			errMsg string
 		}{
 			{
-				name:   "non-pointer struct",
-				in:     testStruct{},
-				errMsg: "must be a pointer to a struct, got genai.testStruct",
+				name:   "nil",
+				in:     nil,
+				errMsg: "must be a JSON object or array, or a pointer to one, got nil",
 			},
 			{
 				name:   "string type",
 				in:     "hello",
-				errMsg: "must be a pointer to a struct, got string",
+				errMsg: `must be a JSON object or array, or a pointer to one, got string`,
 			},
 			{
 				name:   "int type",
 				in:     123,
-				errMsg: "must be a pointer to a struct, got int",
+				errMsg: "must be a JSON object or array, or a pointer to one, got int",
+			},
+			{
+				name:   "pointer to string",
+				in:     new(string),
+				errMsg: "must be a JSON object or array, or a pointer to one, got *string",
 			},
 		}
 		for _, tt := range tests {

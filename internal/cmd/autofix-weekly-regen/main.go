@@ -63,6 +63,7 @@ var forwardedEnvNames = [...]string{
 	"PERPLEXITY_API_KEY",
 	"POLLINATIONS_API_KEY",
 	"TOGETHER_API_KEY",
+	"TYPESAFE_API_KEY",
 }
 
 func main() {

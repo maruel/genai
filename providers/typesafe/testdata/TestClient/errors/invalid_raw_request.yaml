@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 43
+        host: api.typesafe.ai
+        body: |
+            {"state":null,"model":"","questions":null}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.typesafe.ai/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 116
+        body: '{"detail":[{"type":"dict_type","loc":["body","questions"],"msg":"Input should be a valid dictionary","input":null}]}'
+        headers:
+            Content-Length:
+                - "116"
+            Content-Type:
+                - application/json
+            Server:
+                - istio-envoy
+            X-Envoy-Upstream-Service-Time:
+                - "30"
+            X-Typesafe-Request-Id:
+                - req_01a0b22414b27d9c91db5e49dabf6487
+        status: 422 Unprocessable Entity
+        code: 422
+        duration: 231ms

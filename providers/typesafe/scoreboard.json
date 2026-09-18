@@ -1,0 +1,45 @@
+{
+  "warnings": [
+    "TypeSafe does not generate free form text. Every request sends a state and typed questions, and returns one typed answer per question. The questions are declared with genai.GenOptionText.DecodeAs and the reply is always the JSON object of the answers keyed by question name, which the same struct decodes.",
+    "There is no streaming API. GenStream is simulated from GenSync and returns the whole reply at once.",
+    "The API does not report rate limits, but it enforces 1,200 requests per minute and 250,000 tokens per second for jev-1.13.0."
+  ],
+  "country": "US",
+  "dashboardURL": "https://console.typesafe.ai/",
+  "scenarios": [
+    {
+      "models": [
+        "jev-latest"
+      ],
+      "sota": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "comments": "Alias tracking the most recent release, whether or not it is official. It currently points to the same model as jev-latest.",
+      "models": [
+        "jev-preview"
+      ]
+    },
+    {
+      "comments": "Versioned model ID that jev-latest resolves to. Versioned IDs are accepted by the model field even though GET /v1/models only lists aliases.",
+      "models": [
+        "jev-1.13.0"
+      ]
+    }
+  ]
+}

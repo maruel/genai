@@ -61,6 +61,7 @@ require_all mistral MISTRAL_API_KEY
 require_all openai OPENAI_API_KEY
 require_all openrouter OPENROUTER_API_KEY
 require_all togetherai TOGETHER_API_KEY
+require_all typesafe TYPESAFE_API_KEY
 require_all xiaomi MIMO_API_KEY
 if [[ ${#MISSING[@]} -ne 0 ]]; then
 	echo "missing required environment for weekly model regeneration:" >&2

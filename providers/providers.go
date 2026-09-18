@@ -36,6 +36,7 @@ import (
 	"github.com/maruel/genai/providers/pi"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/providers/togetherai"
+	"github.com/maruel/genai/providers/typesafe"
 	"github.com/maruel/genai/providers/xiaomi"
 )
 
@@ -309,6 +310,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "TOGETHER_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := togetherai.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"typesafe": {
+		APIKeyEnvVar: "TYPESAFE_API_KEY",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := typesafe.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

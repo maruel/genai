@@ -73,6 +73,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [typesafe](docs/typesafe.md)               | 🇺🇸   | Sync          | 💬         | 💬     | ❌     | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠 | 🎤🎥💬📸   | 🎤💬   | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
@@ -528,6 +529,82 @@ Snippet:
 This will print:
 
 > Round: true
+
+
+### Text to Typed Answers ❓
+
+[examples/txt\_to\_txt\_questions/main.go](examples/txt_to_txt_questions/main.go): TypeSafe does not write
+prose, it answers typed questions about a state. Ask a yes/no, a choice and a score question about the same
+state in one request and read the answers back as Go values, each with the confidence and the probability
+distribution the model reported. The example prints the state it judges, the answers, and how long the request
+took.
+💡 Set [`TYPESAFE_API_KEY`](https://console.typesafe.ai/settings/keys).
+
+The questions are declared as struct fields of `typesafe.Noul`, `typesafe.Choice` and `typesafe.Score` and
+passed with `genai.GenOptionText.DecodeAs`; the state is a JSON document, and the same struct holds the
+answers afterwards.
+
+```go
+	// The state is the ticket with its subject, passed as a JSON document.
+	ticket := map[string]string{
+		"subject": "Charged twice this month",
+		"body":    "Hi, I see two charges of $49 on my card for August. …",
+	}
+	raw, _ := json.Marshal(ticket)
+	// Each field is a question, the name the answer comes back under is its json tag.
+	q := struct {
+		Billing typesafe.Noul   `json:"billing"`
+		Tone    typesafe.Choice `json:"tone"`
+		Urgency typesafe.Score  `json:"urgency"`
+	}{
+		Billing: typesafe.Noul{
+			Instructions: typesafe.Text("Is this request about billing?"),
+			Criteria:     &typesafe.NoulCriteria{True: typesafe.Text("…"), False: typesafe.Text("…")},
+		},
+		Tone: typesafe.Choice{
+			Instructions: typesafe.Text("What is the tone of the customer?"),
+			Criteria:     map[string]typesafe.Content{"calm": nil, "frustrated": nil, "angry": nil},
+		},
+		Urgency: typesafe.Score{
+			Instructions: typesafe.Text("How soon does this need to be handled?"),
+			Criteria:     []typesafe.Content{typesafe.Text("can wait"), typesafe.Text("today"), typesafe.Text("right now")},
+		},
+	}
+	res, _ := c.GenSync(ctx, genai.Messages{genai.Message{Requests: []genai.Request{{
+		Doc: genai.Doc{Filename: "ticket.json", Src: bytes.NewReader(raw)},
+	}}}}, &genai.GenOptionText{DecodeAs: &q})
+	res.Decode(&q)
+	fmt.Println(q.Billing.Probability, q.Tone.Label, q.Urgency.Value)
+```
+
+Try it locally:
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_txt_questions@latest
+```
+
+This may print:
+
+```
+State:
+{
+  "body": "Hi, I see two charges of $49 on my card for August. I only have one account. Please fix this ASAP, I'm pretty frustrated.",
+  "subject": "Charged twice this month"
+}
+Answers:
+- billing: 0.99 likely to be a yes
+- tone:    frustrated with 100% confidence
+    angry: 0.00
+    calm: 0.00
+    frustrated: 1.00
+- urgency: 2.33 over 4 levels with 61% confidence
+    0 (can wait): 0.00
+    1 (this week): 0.03
+    2 (today): 0.61
+    3 (right now): 0.36
+in: 469, out: 75, total: 544
+took 312ms
+```
 
 
 ### Text to Image 📸

@@ -2132,6 +2132,11 @@ Snapshot of the models available on each provider as of 2026-09-06
 - zai-org/GLM-5.3-FP8: chat Context: 1048576
 - zai-org/GLM-OCR (2026-03-16): chat Context: 131072
 
+## typesafe
+
+- jev-latest (2026-09-10) 🥇 🥈 🥉
+- jev-preview (2026-09-10)
+
 ## xiaomi
 
 - mimo-v2.5 🥉

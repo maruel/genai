@@ -1,0 +1,35 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: api.typesafe.ai
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.typesafe.ai/v1/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 311
+        body: '{"models":[{"name":"jev-latest","description":"The latest iteration of TypeSafe''s System One Model: Jev","release_date":"2026-09-10T18:38:01.391457+00:00"},{"name":"jev-preview","description":"A preview version of `jev-latest`: should be better in most ways","release_date":"2026-09-10T18:39:06.057655+00:00"}]}'
+        headers:
+            Content-Length:
+                - "311"
+            Content-Type:
+                - application/json
+            Server:
+                - istio-envoy
+            X-Envoy-Upstream-Service-Time:
+                - "25"
+            X-Typesafe-Request-Id:
+                - req_01a0b225512978a98a83a196f54eb833
+        status: 200 OK
+        code: 200
+        duration: 250ms

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 256
+        host: api.typesafe.ai
+        body: |
+            {"state":{"order":{"amount_usd":49,"id":"A-104"},"refund_policy":"Duplicate charges are eligible for a refund."},"model":"jev-latest","questions":{"refund":{"type":"noul","instructions":"Does the policy say duplicate charges are eligible for a refund?"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.typesafe.ai/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 119
+        body: '{"model":"jev-1.13.0","answers":{"refund":{"type":"noul","noul":0.99}},"usage":{"input_tokens":320,"output_tokens":20}}'
+        headers:
+            Content-Length:
+                - "119"
+            Content-Type:
+                - application/json
+            Server:
+                - istio-envoy
+            X-Envoy-Upstream-Service-Time:
+                - "74"
+            X-Typesafe-Request-Id:
+                - req_01a0b48710ea742ba9cee3cb475ce550
+        status: 200 OK
+        code: 200
+        duration: 294ms

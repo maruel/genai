@@ -53,6 +53,7 @@ jobs:
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
         run: |
           ./scripts/regen_weekly.sh
       - name: Create auto-fix PR with pi.dev
@@ -82,6 +83,7 @@ jobs:
           PI_TELEMETRY: "0"
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
         run: |
           # The failed regeneration may delete stale recordings before exiting.
           # md -apply-patch requires a clean host checkout to integrate the agent's commit.

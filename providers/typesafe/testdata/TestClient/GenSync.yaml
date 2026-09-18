@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 630
+        host: api.typesafe.ai
+        body: |
+            {"state":"I was charged twice for order A-104. Please refund the duplicate charge. This is unacceptable.","model":"jev-latest","questions":{"billing":{"type":"noul","instructions":"Is this request about billing?","criteria":{"true":"the customer is asking about a charge or an invoice","false":"the customer is asking about anything else"}},"tone":{"type":"choice","instructions":"What is the tone of the customer?","criteria":{"angry":null,"calm":null,"frustrated":"annoyed but polite"}},"urgency":{"type":"score","instructions":"How soon does this need to be handled?","criteria":["can wait","this week","today","right now"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.typesafe.ai/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 422
+        body: '{"model":"jev-1.13.0","answers":{"billing":{"type":"noul","noul":0.99},"tone":{"type":"choice","choice":"angry","confidence":0.46,"probabilities":{"angry":0.63,"calm":0.01,"frustrated":0.36}},"urgency":{"type":"score","score":2.03,"confidence":0.68,"legend":{"0":"can wait","1":"this week","2":"today","3":"right now"},"probabilities":{"0":0.0,"1":0.14,"2":0.68,"3":0.17}}},"usage":{"input_tokens":433,"output_tokens":74}}'
+        headers:
+            Content-Length:
+                - "422"
+            Content-Type:
+                - application/json
+            Server:
+                - istio-envoy
+            X-Envoy-Upstream-Service-Time:
+                - "77"
+            X-Typesafe-Request-Id:
+                - req_01a0b11374d274ef85c107ca64fd1c8e
+        status: 200 OK
+        code: 200
+        duration: 145ms

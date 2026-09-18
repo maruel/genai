@@ -208,7 +208,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var preloadedModels []genai.Model
 	remote := "https://api.typesafe.ai"
 	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
 	for _, opt := range opts {

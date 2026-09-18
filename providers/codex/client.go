@@ -190,7 +190,7 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //     "medium", "high", "xhigh"). Defaults to "medium".
 func New(opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{effort: ReasoningEffortMedium}
-	if err := base.CheckDuplicateOptions(opts); err != nil {
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
 	for _, opt := range opts {

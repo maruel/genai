@@ -323,7 +323,7 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //     environment. By default the key is stripped so Claude Code uses OAuth.
 func New(opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
-	if err := base.CheckDuplicateOptions(opts); err != nil {
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
 	for _, opt := range opts {

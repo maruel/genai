@@ -223,7 +223,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var apiKey, model, remote string
 	var modalities genai.Modalities
 	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateOptions(opts); err != nil {
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
 	for _, opt := range opts {

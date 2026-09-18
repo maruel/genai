@@ -46,8 +46,8 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 	},
 }
 
-// CheckDuplicateOptions returns an error if the same ProviderOption concrete type appears more than once.
-func CheckDuplicateOptions(opts []genai.ProviderOption) error {
+// CheckDuplicateProviderOptions returns an error if the same ProviderOption concrete type appears more than once.
+func CheckDuplicateProviderOptions(opts []genai.ProviderOption) error {
 	seen := map[reflect.Type]struct{}{}
 	for _, opt := range opts {
 		t := reflect.TypeOf(opt)

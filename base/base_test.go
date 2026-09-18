@@ -14,13 +14,13 @@ import (
 	"github.com/maruel/genai"
 )
 
-func TestCheckDuplicateOptions(t *testing.T) {
+func TestCheckDuplicateProviderOptions(t *testing.T) {
 	t.Run("no_duplicates", func(t *testing.T) {
 		opts := []genai.ProviderOption{
 			genai.ProviderOptionAPIKey("key"),
 			genai.ProviderOptionModel("model"),
 		}
-		if err := CheckDuplicateOptions(opts); err != nil {
+		if err := CheckDuplicateProviderOptions(opts); err != nil {
 			t.Fatal(err)
 		}
 	})
@@ -29,12 +29,12 @@ func TestCheckDuplicateOptions(t *testing.T) {
 			genai.ProviderOptionModel("model1"),
 			genai.ProviderOptionModel("model2"),
 		}
-		if err := CheckDuplicateOptions(opts); err == nil {
+		if err := CheckDuplicateProviderOptions(opts); err == nil {
 			t.Fatal("expected error for duplicate option")
 		}
 	})
 	t.Run("empty", func(t *testing.T) {
-		if err := CheckDuplicateOptions(nil); err != nil {
+		if err := CheckDuplicateProviderOptions(nil); err != nil {
 			t.Fatal(err)
 		}
 	})

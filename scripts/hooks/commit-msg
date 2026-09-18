@@ -1,14 +1,15 @@
 #!/bin/bash
-# Rejects incomplete, overlong, or co-authored commit messages.
+# Rejects malformed, overlong, or co-authored commit messages.
 
 set -euo pipefail
 
 print_commit_guidance() {
+
 	printf '%s\n' \
 		'Commit guidance for coding agents:' \
-		'  - Use a concise subject.' \
-		'  - After a blank line, explain the rationale and consequential tradeoffs.' \
-		'  - Scale detail with the change; do not merely restate the diff.' >&2
+		'  - Use a concise subject no longer than 120 characters.' \
+		'  - Separate an optional body from the subject with a blank line.' \
+		'  - When useful, explain the rationale and tradeoffs; do not restate the diff.' >&2
 }
 
 if (($# != 1)); then
@@ -52,26 +53,17 @@ if ! awk '
     invalid_separator = 1
     next
   }
-  NF { body = 1 }
-  END { exit !(subject && separator && body) || invalid_separator }
+  END { exit !subject || invalid_separator }
 ' "$message_file"; then
-	printf '%s\n' 'Commit messages need a subject, blank line, and rationale body.' >&2
+	printf '%s\n' 'Commit messages need a subject and a blank line before any body.' >&2
 	print_commit_guidance
 	exit 1
 fi
 
 if ! awk '
   /^[[:space:]]*#/ { next }
-  !subject {
-    if (NF) subject = 1
-    next
-  }
-  !separator {
-    if (!NF) separator = 1
-    next
-  }
   NF && length($0) > 120 {
-    printf "Commit body line %d is %d characters; maximum is 120.\n", NR, length($0) > "/dev/stderr"
+    printf "Commit message line %d is %d characters; maximum is 120.\n", NR, length($0) > "/dev/stderr"
     exit 1
   }
 ' "$message_file"; then

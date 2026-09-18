@@ -354,13 +354,55 @@ type imageToText struct {
 // ChatResponse is somewhat documented at https://developers.cloudflare.com/api/resources/ai/methods/run/
 // See UnionMember7.
 type ChatResponse struct {
-	Result struct {
-		MessageResponse
-		Usage Usage `json:"usage"`
-	} `json:"result"`
+	Result   Result     `json:"result"`
 	Success  bool       `json:"success"`
 	Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
+}
+
+// Result is the payload of a chat response.
+//
+// Newer models return an OpenAI-compatible completion in addition to Response
+// and ToolCalls. Only the latter two are converted; the rest is declared so
+// strict decoding accepts it. Fields that are null or whose exact type is not
+// known are kept raw.
+type Result struct {
+	MessageResponse
+	ID               string          `json:"id"`
+	Model            string          `json:"model"`
+	Object           string          `json:"object"`
+	Created          base.TimeS      `json:"created"`
+	ServiceTier      string          `json:"service_tier"`
+	Choices          []Choice        `json:"choices"`
+	Usage            Usage           `json:"usage"`
+	ECTransferParams json.RawMessage `json:"ec_transfer_params"`
+	KVTransferParams json.RawMessage `json:"kv_transfer_params"`
+	Metrics          json.RawMessage `json:"metrics"`
+	PromptLogprobs   json.RawMessage `json:"prompt_logprobs"`
+	PromptText       json.RawMessage `json:"prompt_text"`
+	PromptTokenIDs   json.RawMessage `json:"prompt_token_ids"`
+}
+
+// Choice is an OpenAI-compatible completion choice.
+type Choice struct {
+	FinishReason  string          `json:"finish_reason"`
+	Index         int64           `json:"index"`
+	Logprobs      json.RawMessage `json:"logprobs"`
+	Message       ChoiceMessage   `json:"message"`
+	RoutedExperts json.RawMessage `json:"routed_experts"`
+	StopReason    json.RawMessage `json:"stop_reason"`
+	TokenIDs      json.RawMessage `json:"token_ids"`
+}
+
+// ChoiceMessage is the message of an OpenAI-compatible completion choice.
+type ChoiceMessage struct {
+	Annotations  json.RawMessage `json:"annotations"`
+	Audio        json.RawMessage `json:"audio"`
+	Content      string          `json:"content"`
+	FunctionCall json.RawMessage `json:"function_call"`
+	Reasoning    json.RawMessage `json:"reasoning"`
+	Refusal      json.RawMessage `json:"refusal"`
+	Role         string          `json:"role"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -415,10 +457,33 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 // ChatStreamChunkResponse is not documented.
 // If you find the documentation for this please tell me!
 type ChatStreamChunkResponse struct {
-	Response  Response   `json:"response"`
-	P         string     `json:"p"`
-	ToolCalls []ToolCall `json:"tool_calls"`
-	Usage     Usage      `json:"usage"`
+	Response       Response        `json:"response"`
+	P              string          `json:"p"`
+	ToolCalls      []ToolCall      `json:"tool_calls"`
+	Usage          Usage           `json:"usage"`
+	ID             string          `json:"id"`
+	Model          string          `json:"model"`
+	Object         string          `json:"object"`
+	Created        base.TimeS      `json:"created"`
+	Choices        []StreamChoice  `json:"choices"`
+	PromptText     json.RawMessage `json:"prompt_text"`
+	PromptTokenIDs json.RawMessage `json:"prompt_token_ids"`
+}
+
+// StreamChoice is an OpenAI-compatible streaming choice.
+type StreamChoice struct {
+	FinishReason string            `json:"finish_reason"`
+	Index        int64             `json:"index"`
+	Logprobs     json.RawMessage   `json:"logprobs"`
+	Delta        StreamChoiceDelta `json:"delta"`
+	StopReason   json.RawMessage   `json:"stop_reason"`
+	TokenIDs     json.RawMessage   `json:"token_ids"`
+}
+
+// StreamChoiceDelta is the delta of an OpenAI-compatible streaming choice.
+type StreamChoiceDelta struct {
+	Content string `json:"content"`
+	Role    string `json:"role"`
 }
 
 // Response is normally the response but it can be true (bool) sometimes?
@@ -436,9 +501,10 @@ func (r *Response) UnmarshalJSON(b []byte) error {
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	CompletionTokens   int64 `json:"completion_tokens"`
-	PromptTokens       int64 `json:"prompt_tokens"`
-	TotalTokens        int64 `json:"total_tokens"`
+	CompletionTokens   int64   `json:"completion_tokens"`
+	PromptTokens       int64   `json:"prompt_tokens"`
+	TotalTokens        int64   `json:"total_tokens"`
+	Neurons            float64 `json:"neurons"` // Billed usage, not tokens.
 	PromptTokensDetail struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details,omitzero"`

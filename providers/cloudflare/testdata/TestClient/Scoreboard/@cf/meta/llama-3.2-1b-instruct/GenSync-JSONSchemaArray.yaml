@@ -1,0 +1,40 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 406
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":[{"message":"AiError: Ai: This model doesn''t support JSON Schema. (8e1a9d61-a3cb-40f3-8e04-15da0e5af53e)","code":5025}],"success":false,"result":{},"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-09-25.epoch
+            Cf-Ai-Req-Id:
+                - 8e1a9d61-a3cb-40f3-8e04-15da0e5af53e
+            Cf-Auditlog-Id:
+                - 01a0b4e2-7b55-7736-bb63-3033f5b07296
+            Cf-Ray:
+                - a3d0fb986e49a29a-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 403 Forbidden
+        code: 403
+        duration: 182ms

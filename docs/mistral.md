@@ -2,28 +2,28 @@
 
 | Model                                 | Mode   | ➛In    | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------- | ------ | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| mistral-large-latest🥇                 | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| mistral-large-latest🥇                 | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| mistral-medium-latest🥈                | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| mistral-medium-latest🥈                | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| mistral-small-latest🥉                 | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| mistral-small-latest🥉                 | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| ministral-14b-2512                    | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| ministral-14b-2512                    | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| ministral-14b-latest                  | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| ministral-14b-latest                  | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| ministral-3b-2512                     | Sync   | 💬📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| ministral-3b-2512                     | Stream | 💬📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| ministral-3b-latest                   | Sync   | 💬📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| ministral-3b-latest                   | Stream | 💬📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| ministral-8b-2512                     | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| ministral-8b-2512                     | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| mistral-large-2512                    | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| mistral-large-2512                    | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| mistral-vibe-cli-latest               | Sync   | 💬📄   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| mistral-vibe-cli-latest               | Stream | 💬📄   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| voxtral-small-latest                  | Sync   | 🎤💬   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| voxtral-small-latest                  | Stream | 🎤💬   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| mistral-large-latest🥇                 | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| mistral-large-latest🥇                 | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| mistral-medium-latest🥈                | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| mistral-medium-latest🥈                | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| mistral-small-latest🥉                 | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| mistral-small-latest🥉                 | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| ministral-14b-2512                    | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| ministral-14b-2512                    | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| ministral-14b-latest                  | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| ministral-14b-latest                  | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| ministral-3b-2512                     | Sync   | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| ministral-3b-2512                     | Stream | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| ministral-3b-latest                   | Sync   | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| ministral-3b-latest                   | Stream | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| ministral-8b-2512                     | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| ministral-8b-2512                     | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| mistral-large-2512                    | Sync   | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| mistral-large-2512                    | Stream | 💬📄📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| mistral-vibe-cli-latest               | Sync   | 💬📄   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| mistral-vibe-cli-latest               | Stream | 💬📄   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| voxtral-small-latest                  | Sync   | 🎤💬   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| voxtral-small-latest                  | Stream | 🎤💬   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | codestral-2411-rc5                    | ?      | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | codestral-2412                        | ?      | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | codestral-2501                        | ?      | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -129,6 +129,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

@@ -39,7 +39,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -54,7 +56,9 @@
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -84,7 +88,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true
       },
@@ -97,7 +103,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true
       }

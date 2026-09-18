@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"items":{"properties":{"color":{"type":"STRING"},"name":{"type":"STRING"}},"required":["name","color"],"type":"OBJECT"},"type":"ARRAY"},"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"[{\\\"name\\\":\\\"Apple\\\",\\\"color\\\":\\\"Red\\\"},{\\\"name\\\":\\\"Banana\\\",\\\"color\\\":\\\"Yellow\\\"}]\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 19,\"candidatesTokenCount\": 2,\"totalTokenCount\": 258,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 237,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"PkitatnWH_XCjMcPvL-IqAc\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"ErAICq0IAWkUfRPzV/G9FVZ95faK1BAlDPrNhw6afploQRj/7H6ZsVVXu1u3gos8FrWnRubU2tWe4s1hV8Z/EcM5PV2xJ3b3VvaZ1jIuZZemTijDezGxi8FcpSFpqXPB2DGms7UdIJ+E99nfdatW8+zIxF5Npx+aZVlQx29wiwruGQvCkAPP56OrSeDlRchaMKu5v29xxQWd/zZFANgzd7oOtEemJEMptU5vk1H44wMmT85PxeNgb1ARrHi6aiW7j5JJDYXjmP8oxE1+3iHlyqQfde6qPCItF6j0aAgW7zHEVA2oeN56FlhFvtlypnkGyRX+aQLDUjG7fwS+1cD+AfZG93LKWxBQemDJodrVsl4m/oRR8SZEs4mcel/NOtvJdQGSCas39rGsFRMGUYF5U0sSUQnMjv3yEm2k6WOK6umX36ccP5ADFG8cvYSGFpxWMm/ltm4GXMFc6BKiHMY2+bQg190qJkjZ+VZ9jgVkCdRT/Bb3O1QB5CAbZpt8vHfRn7fj5Vp01QAnma331nd69Kn9P18GZHbJXcTZLfCRqss2/qbbb6/PI99sGKDqAnMfx8aIjCP3VTIYg315oKRzVOLKs7RlxVWz8xxZT4BbrC7bnfYMneVDQ/Em1N/tUD5Qx3QeN3+xoeE8ioGsVKm7lAWt+vmlCYBRLx0e4Mjf/cSP+349sbchomq/xCKBXuKvgGuRpoNAzxtHhVsIuGRc2gHV9HsE7ok5YiVwhMFn9Czym40Jae3jBJ7EeMUEHQWmDHh2DvEwpPgCyI2c5ntYtWkAYffpYd+KXi5JD5jrfaG6Sb/u3H6xq10PFdmrjyG4ykpRQlrTUbIcffJ7HFyYa5LtnI4kT4omflFwoVv4rBXaW9s5CBdZ8SGZJWLGT6q54nf6lTIpInbed71ZIjjTBnIQQkxLDZL1WemK9oXfZfyGsE/4MpcPKKmVVqbW/QRUHpNNbIdxAM4K0EvN4vB2pKgbFnB7kzd+XGmRDqtkF6ajVRQax7M1col+jeIO91N9fTUpPdGm9pZv2imBy70N9/Xhnxwy24H2bhgsVEEVSfiBJT8BM954yfPjw/O0pDpqiSIeg55J+dWBGuqMrxNwmkmh6vbKcOR3xZRQ3oq4z1lMNDq1rR1JGJhXao6t9iN7jANlR/YD2kCixYKOE80YzAVqLBkJalyM0ucPpeaRMXLuib1QHKE1SSuIauqytCsfC5HIWg+A2+y+RaUrprA+fw6ECqdzuoKJC4KbkRbBKh/v9J7OeojI+yB8y2M0Sf+WDBEZ92wNHjHEZH/elV1slq9MnozS0S4GyGgVTIUyIkSkbOH3+Zc0ykPQi6i2UIRVvEuWTRVgkZ5PY46Ci7rGB1UNLbyHHkfdgLrAjN680qfTkdUF5JytkNoLuRbJDRkR4WDDmpyTQ1cETR30ik459eTe5Q==\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 19,\"candidatesTokenCount\": 2,\"totalTokenCount\": 258,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 237,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"PkitatnWH_XCjMcPvL-IqAc\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1994
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.064s

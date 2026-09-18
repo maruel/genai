@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 446
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "p1nJ43G-z1gNr-a3d0fb28caeb2df2",
+              "object": "chat.completion",
+              "created": 1789741120,
+              "model": "openai/gpt-oss-120b",
+              "system_fingerprint": "default",
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "[\n  {\n    \"name\": \"Apple\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Banana\",\n    \"color\": \"Yellow\"\n  }\n]",
+                    "tool_calls": [],
+                    "reasoning": "The user wants: \"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON.\" So we need a JSON object or array containing two entries each with fruit and color. No extra text. So output JSON only. Perhaps like [{\"fruit\":\"Apple\",\"color\":\"Red\"},{\"fruit\":\"Banana\",\"color\":\"Yellow\"}]. No explanation. Ensure valid JSON."
+                  },
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 87,
+                "completion_tokens": 128,
+                "total_tokens": 215,
+                "prompt_tokens_details": {
+                  "cached_tokens": 86
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 78
+                }
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb28caeb2df2-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"46f-1y+V4yw23KIY6sUd38qtgifG6NA"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - f75a4fb9-cd26-426f-9d29-fbe854325512-noamzn
+            X-Api-Call-End:
+                - "2026-09-18T14:18:41.387Z"
+            X-Api-Call-Start:
+                - "2026-09-18T14:18:40.002Z"
+            X-Api-Received:
+                - "2026-09-18T14:18:39.015Z"
+            X-Inference-Version:
+                - v2
+        status: 200 OK
+        code: 200
+        duration: 2.564s

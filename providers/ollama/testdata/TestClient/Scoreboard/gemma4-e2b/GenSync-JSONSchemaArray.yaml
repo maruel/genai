@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 410
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"stream":false,"format":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 428
+        body: '{"model":"gemma4:e2b","created_at":"2026-09-18T14:43:36.883652418Z","message":{"role":"assistant","content":"[\n  {\n    \"name\": \"Apple\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Banana\",\n    \"color\": \"Yellow\"\n  }\n]"},"done":true,"done_reason":"stop","total_duration":6370588668,"load_duration":4166555065,"prompt_eval_count":27,"prompt_eval_duration":193942099,"eval_count":48,"eval_duration":1655118647}'
+        headers:
+            Content-Length:
+                - "428"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 6.371s

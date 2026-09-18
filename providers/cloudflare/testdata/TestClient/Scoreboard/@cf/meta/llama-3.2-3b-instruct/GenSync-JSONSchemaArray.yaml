@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 406
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-3b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"choices":[{"finish_reason":"stop","index":0,"logprobs":null,"message":{"annotations":null,"audio":null,"content":"[\n  {\"color\": \"red\", \"name\": \"apple\"},\n  {\"color\": \"yellow\", \"name\": \"banana\"}\n]","function_call":null,"reasoning":null,"refusal":null,"role":"assistant"},"routed_experts":null,"stop_reason":null,"token_ids":null}],"created":1789741118,"ec_transfer_params":null,"id":"chatcmpl-e43fda57-7b17-474a-a3e7-9df1908d576c","kv_transfer_params":null,"metrics":null,"model":"@cf/meta/llama-3.2-3b-instruct-v2","object":"chat.completion","prompt_logprobs":null,"prompt_text":null,"prompt_token_ids":null,"response":[{"color":"red","name":"apple"},{"color":"yellow","name":"banana"}],"service_tier":null,"tool_calls":[],"usage":{"prompt_tokens":53,"completion_tokens":29,"total_tokens":82,"prompt_tokens_details":{"cached_tokens":0},"neurons":1.128871202468872}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-09-25.epoch
+            Cf-Ai-Neurons:
+                - "1.13"
+            Cf-Ai-Req-Id:
+                - e43fda57-7b17-474a-a3e7-9df1908d576c
+            Cf-Auditlog-Id:
+                - 01a0b4e2-2fae-7cea-99ee-adbdb48b8a33
+            Cf-Ray:
+                - a3d0fb1f6d8ea29a-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 200 OK
+        code: 200
+        duration: 1.225s

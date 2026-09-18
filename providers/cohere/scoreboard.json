@@ -32,7 +32,9 @@
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -45,7 +47,9 @@
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "citations": true
       }
     },
@@ -74,7 +78,9 @@
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "citations": true,
         "topLogprobs": true,
         "maxTokens": true,
@@ -88,7 +94,9 @@
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "citations": true,
         "topLogprobs": true,
         "maxTokens": true,

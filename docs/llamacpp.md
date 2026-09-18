@@ -2,14 +2,14 @@
 
 | Model                                                      | Mode    | ➛In    | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ---------------------------------------------------------- | ------- | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠   | 💬📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠 | 💬📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠   | 🎤💬📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠 | 🎤💬📸 | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync    | 🎤💬   | 💬     | ❌   | 📐    | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream  | 🎤💬   | 💬     | ❌   | 📐    | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync    | 💬📸   | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream  | 💬📸   | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠   | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠 | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠   | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠 | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync    | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream  | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync    | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream  | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -37,6 +37,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

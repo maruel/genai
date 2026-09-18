@@ -2,14 +2,14 @@
 
 | Model       | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ----------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| qwen3.5:2b🥇 | Sync🧠   | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| qwen3.5:2b🥇 | Stream🧠 | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3.5:2b🥇 | Sync🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3.5:2b🥇 | Stream🧠 | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | qwen3.5:2b🥈 | Sync    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | qwen3.5:2b🥈 | Stream  | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b🥉 | Sync    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b🥉 | Stream  | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b  | Sync🧠   | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b  | Stream🧠 | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b🥉 | Sync    | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b🥉 | Stream  | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b  | Sync🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b  | Stream🧠 | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -37,6 +37,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

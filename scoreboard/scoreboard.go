@@ -111,10 +111,8 @@ type Functionality struct {
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.
 	JSON bool `json:"json,omitzero"`
-	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema. It is
-	// measured with an object at the root of the reply, which is what the smoke test asks for and what the
-	// providers accept: OpenAI and Anthropic reject an array at the root, Gemini accepts it.
-	JSONSchema bool `json:"jsonSchema,omitzero"`
+	// JSONSchema describes the reply structure the model supports enforcing.
+	JSONSchema JSONSchema `json:"jsonSchema,omitzero"`
 	// Citations is set when the provider and model combination supports citations in the response.
 	Citations bool `json:"citations,omitzero"`
 	// TopLogprobs is set when the provider and model combination supports top_logprobs.
@@ -157,7 +155,7 @@ func (f *Functionality) Less(rhs *Functionality) bool {
 	if !f.JSON && rhs.JSON {
 		return true
 	}
-	if !f.JSONSchema && rhs.JSONSchema {
+	if f.JSONSchema.Less(rhs.JSONSchema) {
 		return true
 	}
 	if !f.Citations && rhs.Citations {
@@ -190,6 +188,9 @@ func (f *Functionality) Validate() error {
 	if err := f.ToolsIndecisive.Validate(); err != nil {
 		return fmt.Errorf("invalid ToolsIndecisive: %w", err)
 	}
+	if err := f.JSONSchema.Validate(); err != nil {
+		return fmt.Errorf("invalid JSONSchema: %w", err)
+	}
 	if f.Tools == False {
 		if f.ToolsBiased != False {
 			return fmt.Errorf("invalid ToolsBiased %s when Tools is false", f.ToolsBiased.String())
@@ -200,6 +201,39 @@ func (f *Functionality) Validate() error {
 		if f.ToolCallRequired {
 			return fmt.Errorf("invalid ToolCallRequired %t when Tools is false", f.ToolCallRequired)
 		}
+	}
+	return nil
+}
+
+// JSONSchema is the reply structure the model supports enforcing with genai.GenOptionText.DecodeAs.
+//
+// The zero value means no structure can be enforced.
+type JSONSchema struct {
+	// Object means the reply root can be enforced to be an object, i.e. a struct or a map.
+	Object TriState `json:"object,omitzero"`
+	// Array means the reply root can be enforced to be an array, i.e. a slice or an array. Most providers
+	// reject it, OpenAI and Anthropic require an object at the root, Gemini accepts an array.
+	Array TriState `json:"array,omitzero"`
+}
+
+// Less returns true if the JSONSchema is less capable than the other.
+func (j JSONSchema) Less(rhs JSONSchema) bool {
+	if j.Object == False && rhs.Object != False {
+		return true
+	}
+	if j.Array == False && rhs.Array != False {
+		return true
+	}
+	return false
+}
+
+// Validate returns an error if the JSONSchema contains invalid values.
+func (j JSONSchema) Validate() error {
+	if err := j.Object.Validate(); err != nil {
+		return fmt.Errorf("invalid Object: %w", err)
+	}
+	if err := j.Array.Validate(); err != nil {
+		return fmt.Errorf("invalid Array: %w", err)
 	}
 	return nil
 }

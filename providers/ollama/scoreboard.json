@@ -37,7 +37,10 @@
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -49,7 +52,10 @@
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -83,7 +89,9 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -93,7 +101,9 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -127,7 +137,10 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -137,7 +150,10 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -174,7 +190,10 @@
         "toolsBiased": "flaky",
         "toolsIndecisive": "true",
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -187,7 +206,10 @@
         "toolsBiased": "flaky",
         "toolsIndecisive": "true",
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true

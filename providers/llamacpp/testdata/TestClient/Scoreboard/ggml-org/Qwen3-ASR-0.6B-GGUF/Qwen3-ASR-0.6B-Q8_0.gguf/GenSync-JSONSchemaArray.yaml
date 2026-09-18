@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 511
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}},"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 774
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"[\n  {\n    \"name\": \"Apple\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Orange\",\n    \"color\": \"Yellow\"\n  }\n]"}}],"created":1789743112,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":43,"prompt_tokens":26,"total_tokens":69,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-hEiVsHLlWOU9vhUrutkhEpOsM5cAxo5O","timings":{"cache_n":0,"prompt_n":26,"prompt_ms":68.837,"prompt_per_token_ms":2.6475769230769233,"prompt_per_second":377.70385112657436,"predicted_n":43,"predicted_ms":976.342,"predicted_per_token_ms":23.246238095238095,"predicted_per_second":43.017713055466224}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "774"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.048s

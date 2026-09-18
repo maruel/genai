@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 464
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 153
+        body: '{"message":"Payment required to access this resource. Visit your billing tab.","type":"payment_required_error","param":"quota","code":"payment_required"}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb1dda9f4cc4-YYZ
+            Content-Length:
+                - "153"
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=19,cfOrigin;dur=17
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Should-Retry:
+                - "false"
+        status: 402 Payment Required
+        code: 402
+        duration: 147ms

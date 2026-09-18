@@ -95,8 +95,11 @@ func functionality(f *scoreboard.Functionality) string {
 	if f.JSON {
 		items = append(items, "✅json")
 	}
-	if f.JSONSchema {
+	if f.JSONSchema.Object != scoreboard.False {
 		items = append(items, "✅jsonschema")
+	}
+	if f.JSONSchema.Array != scoreboard.False {
+		items = append(items, "✅jsonschemaarray")
 	}
 	flakyTool := false
 	switch f.Tools {

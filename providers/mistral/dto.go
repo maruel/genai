@@ -417,11 +417,12 @@ type ChatResponse struct {
 // ToResult converts the ChatResponse to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		// At the moment, Mistral doesn't support cached tokens.
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
-			TotalTokens:  c.Usage.TotalTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
+			TotalTokens:       c.Usage.TotalTokens,
+			ServiceTier:       c.Usage.ServiceTier,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -464,10 +465,14 @@ const (
 
 // Usage represents token usage information.
 type Usage struct {
-	PromptTokens     int64          `json:"prompt_tokens"`
-	CompletionTokens int64          `json:"completion_tokens"`
-	TotalTokens      int64          `json:"total_tokens"`
-	PromptAudio      base.DurationS `json:"prompt_audio_seconds"`
+	PromptTokens        int64          `json:"prompt_tokens"`
+	CompletionTokens    int64          `json:"completion_tokens"`
+	TotalTokens         int64          `json:"total_tokens"`
+	PromptAudio         base.DurationS `json:"prompt_audio_seconds"`
+	ServiceTier         string         `json:"service_tier"` // "standard", "batch"
+	PromptTokensDetails struct {
+		CachedTokens int64 `json:"cached_tokens"`
+	} `json:"prompt_tokens_details"`
 }
 
 // MessageResponse represents a message in the API response.

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"items":{"properties":{"color":{"type":"STRING"},"name":{"type":"STRING"}},"required":["name","color"],"type":"OBJECT"},"type":"ARRAY"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"[{\\\"name\\\":\\\"Apple\\\",\\\"color\\\":\\\"Red\\\"},{\\\"name\\\":\\\"Banana\\\",\\\"color\\\":\\\"Yellow\\\"}]\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 19,\"candidatesTokenCount\": 15,\"totalTokenCount\": 422,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 388,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"QEitapWcKpTSjMcPkKzPiAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 19,\"candidatesTokenCount\": 15,\"totalTokenCount\": 422,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 388,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"QEitapWcKpTSjMcPkKzPiAQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1828
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.834s

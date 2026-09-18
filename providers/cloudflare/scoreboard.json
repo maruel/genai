@@ -32,7 +32,10 @@
         "reportTokenUsage": "flaky",
         "reportFinishReason": "flaky",
         "seed": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "maxTokens": true
       },
       "GenStream": {
@@ -65,7 +68,10 @@
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "maxTokens": true
       },
       "GenStream": {
@@ -73,6 +79,9 @@
         "reportFinishReason": "flaky",
         "seed": true,
         "json": true,
+        "jsonSchema": {
+          "array": "true"
+        },
         "maxTokens": true
       }
     },
@@ -128,6 +137,9 @@
         "seed": true,
         "tools": "flaky",
         "json": true,
+        "jsonSchema": {
+          "array": "true"
+        },
         "maxTokens": true
       },
       "GenStream": {
@@ -135,6 +147,9 @@
         "reportFinishReason": "flaky",
         "seed": true,
         "json": true,
+        "jsonSchema": {
+          "array": "true"
+        },
         "maxTokens": true
       }
     },
@@ -160,7 +175,10 @@
         "tools": "true",
         "toolsIndecisive": "true",
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "maxTokens": true
       },
       "GenStream": {
@@ -168,7 +186,10 @@
         "reportFinishReason": "flaky",
         "seed": true,
         "json": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "maxTokens": true
       }
     },

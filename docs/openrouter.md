@@ -2,12 +2,12 @@
 
 | Model                                                         | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| qwen/qwen3.5-397b-a17b🥇                                       | Sync🧠   | 💬📸  | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| qwen/qwen3.5-397b-a17b🥇                                       | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| qwen/qwen3.5-397b-a17b🥇                                       | Sync🧠   | 💬📸  | 💬     | ❌   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| qwen/qwen3.5-397b-a17b🥇                                       | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
 | qwen/qwen3.5-122b-a10b🥈                                       | Sync🧠   | 💬📸  | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
 | qwen/qwen3.5-122b-a10b🥈                                       | Stream🧠 | 💬📸  | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
-| qwen/qwen3.5-35b-a3b🥉                                         | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| qwen/qwen3.5-35b-a3b🥉                                         | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
+| qwen/qwen3.5-35b-a3b🥉                                         | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| qwen/qwen3.5-35b-a3b🥉                                         | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️[] | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | ai21/jamba-large-1.7                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | aion-labs/aion-1.0                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | aion-labs/aion-1.0-mini                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -627,6 +627,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

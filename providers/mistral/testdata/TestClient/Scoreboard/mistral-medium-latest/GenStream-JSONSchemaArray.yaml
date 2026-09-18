@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 520
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-medium-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"["},"finish_reason":null}],"p":"abcdefghij"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"{\"name\":"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz01234"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":" \"Apple\", \""},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz01234"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"color\": \"Red"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz0123"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"\"}, {\"name\":"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuv"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":" \"Banana\","},"finish_reason":null}],"p":"abcdefghijklmnopqrstu"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":" \"color\": \""},"finish_reason":null}],"p":"abcdefghij"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"Yellow\""},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz012"}
+
+            data: {"id":"33c5b99fb3a94ffa9ca1b7d34f2ca1b0","object":"chat.completion.chunk","created":1789741125,"model":"mistral-medium-latest","choices":[{"index":0,"delta":{"content":"}]"},"finish_reason":"stop"}],"usage":{"prompt_tokens":21,"total_tokens":49,"completion_tokens":28,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"p":"abcdefghijklmn"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb514ec853f0-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a0b4e2-4f07-7ee8-98dd-b28191460c80
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=111,cfOrigin;dur=298
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "173"
+            X-Kong-Proxy-Latency:
+                - "119"
+            X-Kong-Request-Id:
+                - 01a0b4e2-4f07-7ee8-98dd-b28191460c80
+            X-Kong-Upstream-Latency:
+                - "174"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+        status: 200 OK
+        code: 200
+        duration: 417ms

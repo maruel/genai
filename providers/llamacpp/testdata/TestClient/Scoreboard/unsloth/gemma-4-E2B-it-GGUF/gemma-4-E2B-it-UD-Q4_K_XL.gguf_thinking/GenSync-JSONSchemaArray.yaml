@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 540
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1854
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"[\n  {\n    \"name\": \"Strawberry\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Lemon\",\n    \"color\": \"Yellow\"\n  }\n]","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Name two fruits with their color.\n    *   Constraint 1: Do not include an explanation.\n    *   Constraint 2: Reply ONLY as JSON.\n\n2.  **Select Fruits and Colors (Brainstorming):**\n    *   Fruit 1: Apple (Red/Green). Let''s choose Red.\n    *   Fruit 2: Banana (Yellow).\n    *   Fruit 3: Grape (Purple).\n\n3.  **Format the Output (JSON structure):**\n    *   The output needs to be a JSON object or array listing the fruit and its color.\n\n4.  **Draft the JSON:**\n    *   Option A (Array of objects): `[{\"fruit\": \"Apple\", \"color\": \"Red\"}, {\"fruit\": \"Banana\", \"color\": \"Yellow\"}]`\n    *   Option B (Key-Value pairs): `{\"fruit1\": \"Apple\", \"color1\": \"Red\", \"fruit2\": \"Banana\", \"color2\": \"Yellow\"}`\n\n5.  **Final Selection and Review against Constraints:**\n    *   Two fruits? Yes.\n    *   With their color? Yes.\n    *   No explanation? Yes.\n    *   Reply ONLY as JSON? Yes.\n\n6.  **Generate the Final Output.** (Using Option A for simplicity.)"}}],"created":1789743109,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":360,"prompt_tokens":34,"total_tokens":394,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-bQGpcsGJwTVWKggQBsowVXKktDXP75vw","timings":{"cache_n":0,"prompt_n":34,"prompt_ms":394.078,"prompt_per_token_ms":11.590529411764706,"prompt_per_second":86.27733595887109,"predicted_n":360,"predicted_ms":14782.125,"predicted_per_token_ms":41.1758356545961,"predicted_per_second":24.286088772757637}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1854"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 15.179s

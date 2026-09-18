@@ -49,6 +49,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

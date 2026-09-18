@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 529
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"strict":true}},"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 139
+        body: |
+            {
+            	"error": {
+            		"code": "400",
+            		"message": "Validation: `response_format.json_schema.name` cannot be empty",
+            		"type": "Bad Request"
+            	}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789741117332"
+            X-Baseten-Model-Id:
+                - qk55ozdq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - q92ojl9
+            X-Baseten-Received-At:
+                - "1789741117332"
+            X-Baseten-Request-Id:
+                - 54ca701a0b4e22f947674878e910c60c3cb51
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjIzNTM3NjIgKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789741117371"
+            X-Baseten-Session-Id:
+                - 54ca701a0b4e22f947674878e910c60c3cb51
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "60"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 400 Bad Request
+        code: 400
+        duration: 77ms

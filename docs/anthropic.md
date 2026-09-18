@@ -2,16 +2,16 @@
 
 | Model                      | Mode    | ➛In    | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | -------------------------- | ------- | ------ | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| claude-opus-5🥇             | Sync🧠   | 💬📄📸 | 💬     | ✅🕸️   | 📐    | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
-| claude-opus-5🥇             | Stream🧠 | 💬📄📸 | 💬     | ✅🕸️   | 📐    | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
-| claude-sonnet-5🥈           | Sync🧠   | 💬📄📸 | 💬     | ✅🕸️   | 📐    | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
-| claude-sonnet-5🥈           | Stream🧠 | 💬📄📸 | 💬     | ✅🕸️   | 📐    | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
-| claude-haiku-4-5-20251001  | Sync    | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| claude-haiku-4-5-20251001  | Stream  | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
-| claude-opus-4-8            | Sync    | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| claude-opus-4-8            | Stream  | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| claude-sonnet-5            | Sync    | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| claude-sonnet-5            | Stream  | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| claude-opus-5🥇             | Sync🧠   | 💬📄📸 | 💬     | ✅🕸️   | 📐[]  | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
+| claude-opus-5🥇             | Stream🧠 | 💬📄📸 | 💬     | ✅🕸️   | 📐[]  | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
+| claude-sonnet-5🥈           | Sync🧠   | 💬📄📸 | 💬     | ✅🕸️   | 📐[]  | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
+| claude-sonnet-5🥈           | Stream🧠 | 💬📄📸 | 💬     | ✅🕸️   | 📐[]  | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
+| claude-haiku-4-5-20251001  | Sync    | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| claude-haiku-4-5-20251001  | Stream  | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐[]  | ✅    | ❌   | ✅   | 📏    | ❌    | ✅     | ✅    | ✅     |
+| claude-opus-4-8            | Sync    | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| claude-opus-4-8            | Stream  | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| claude-sonnet-5            | Sync    | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| claude-sonnet-5            | Stream  | 💬📄📸 | 💬     | ✅🪨🕸️ | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
 | claude-fable-5             | ?       | ?      | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-fable-5-1           | ?       | ?      | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-opus-4-1-20250805   | ?       | ?      | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -49,6 +49,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

@@ -1288,6 +1288,13 @@ type Tool struct {
 	MaxUses          int64 `json:"max_uses,omitzero"`           // Max number of fetches per request. Default is 5.
 }
 
+// Container describes the container a response was generated in, for example
+// when using server-side code execution.
+type Container struct {
+	ExpiresAt time.Time `json:"expires_at"`
+	ID        string    `json:"id"`
+}
+
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	Message                         // Role is always "assistant"
@@ -1298,10 +1305,7 @@ type ChatResponse struct {
 	StopDetails  RefusalStopDetails `json:"stop_details"`
 	Type         string             `json:"type"` // "message"
 	Usage        Usage              `json:"usage"`
-	Container    struct {
-		ExpiresAt time.Time `json:"expires_at"`
-		ID        string    `json:"id"`
-	} `json:"container"`
+	Container    Container          `json:"container"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -1410,6 +1414,7 @@ type StreamMessage struct {
 	StopSequence string             `json:"stop_sequence"`
 	StopDetails  RefusalStopDetails `json:"stop_details"`
 	Usage        Usage              `json:"usage"`
+	Container    Container          `json:"container"`
 }
 
 // StreamContentBlock is the content_block payload in a content_block_start streaming chunk.
@@ -1464,6 +1469,7 @@ type StreamDelta struct {
 	StopReason   StopReason         `json:"stop_reason"`
 	StopSequence string             `json:"stop_sequence"`
 	StopDetails  RefusalStopDetails `json:"stop_details"`
+	Container    Container          `json:"container"`
 }
 
 // ChunkType is the type of a streaming chunk.

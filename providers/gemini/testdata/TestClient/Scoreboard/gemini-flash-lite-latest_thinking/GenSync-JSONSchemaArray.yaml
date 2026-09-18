@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"items":{"properties":{"color":{"type":"STRING"},"name":{"type":"STRING"}},"required":["name","color"],"type":"OBJECT"},"type":"ARRAY"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "[{\"name\": \"Apple\", \"color\": \"Red\"}, {\"name\": \"Banana\", \"color\": \"Yellow\"}]",
+                        "thoughtSignature": "EuAKCt0KAWkUfRPAGYBsGNfrFFQ85BqmpB2jWhTiSzoPnjBYdYpJPgjYH2ejpkV+lrrmAMF+tf4POju4bOQknBf6AwF9r1Zr8f3HSZyDvfCOARdqrzh+R9zoGd9avGrh6JXBd3FzpkxJCmLFQwlTOWG98hiAW9yArmvzrX6VZ5BPM3kiQw4PsUrukVdyi9nrH349y9fg37DRbFCRmbYz+fS0HIlITKM+DSQKiaAqzsTlBR59GxdZ+8ZOAblNuGcVsv6DYUWMKZGLnUGZB9kTWiQt/JqmxxvB5WZmjLF56pFb0UA/PSHocft/eu/sbkii81lJL8aRm8THYvXYp9bTphb/DMhywnc/qqIw35cr0vbnQhaG5xKwkvnE+xaUkz6hrl07Oh9p3MDofiWT+R4GAAyJVTU7CpzN+EHcAngqmMhZlf5WR0/RO3GVHHPPF2wq/ywI4kLA+CT+8PARKpV1vbeOD5vT6Qte01Bii7zqPFBZi/3o3/JtC7YmtwO3VtBhWt+w32xcDSya+R2XQnEqS0bPkmkOTznDMDBGAAna/8Pt/byuWbn/Hp8DI91YSJTdmAQtV5K3CuTiKe0a+/Q9Xq3emZR9wNE8r36MHf0OO04LTmhy8fVL4d8nxgGrgtAdycgfHLMTi/5HrwerlOYz2WFgdGLeYO4IKFWbtktwqTkiOe5pLb3enJ10xkPPPrwg9LngD1gjaC8+CG2t3M8yd7gjg5K81KO/wnhwZvr0BddpyhwSIHCg4wXPjnl59XNPYT66GUoJxErbWpClaUyh+o2vkFg/mYov7yjihuJwYxdfQmgpROuAJsrCTEQ/Nj3QRyAA/g5Hcy3yonCr75fKmBoCEQ75a+EbsIes5veAr2kJS0f0YJpY9SQASL6bMFy+BXMpgYgcJchxggEcQ+mrX623wKccekDgeCbWwjcfYVXoCsN672wkoWjYiLMwl9UWCADjGIkXQXSOjznV3AWJbhdR/+mH0IHkMCuLz97FpQWajotyWDSCpF73vw/pPzSGeUqHtQigFBLIdINEPMSv/zJmuMFcE8d02u+jIITr+FvRGkXKGhXlX3p9tNSwVuJaAsjlplL06dY8AMtFo8NINgQf4S0lzGs2lNWttjm9tKpgJBjHHUWdrpzuQUPYjR2TgFqJX02R2nAye6RgbKt3mWEKgMyH6we4vfTm4nR4vO0HiA49OiaL3zlgoIzOugsEr0ek/cubMT6tZtEzX5wMEoi0sMOQTAeKm9DUfAYdZUIOKFeb4zKe87OYqJvOwweUla48JchQnxC4ZYGItblSngFaj2gzRAnvcFB3Cy+HtZ/2r/QueEIZagcLRsT+9/bJzjaxh+PqtNRTgXUCB+ixB9KMir1iE9/zEBbkILD30s4EzA5eZSgBCaeaAvUGNmm5l5wA29CjOWbd1lzXpFzPQ30ZlWicONWTwgji5rXenR4q6+RzISY6lAxPA7OS1FJDzubWsR+EXb0AN3t+lHWsXg+P6g4tgvqVDrsQrLNG7BqwWxMjPwbCXz4rzGdmXNztjbl/eBB3Tz0XxXAsOYJmTKrrvYZYbf9+b9+cwpdK7+5lnBq7jdZJ128SzpPMt0s0UYGhm2aSXEyGYv6TjxbqfJL5zDqv+wM5w/pnIG3NO6pKU3DvjbnHfmpiuJyDlSRmBfkQpv7AxaA9Ss28T7ppv8FgU1t+VSXobQ4iSE56CWUl4KE34c25Gia2ikokbFpt+fTDoVQc/D0kWfnVEwJUIYUQV9sRq7cY4d/S4x/XG7OsJyadX8Yok5du5sW59XVcMNw61/38E4kI8CjkWfBFL7jYjLJlbJFC8cHYPCeBa5CCgcY="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 19,
+                "candidatesTokenCount": 26,
+                "totalTokenCount": 439,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 19
+                  }
+                ],
+                "thoughtsTokenCount": 394,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "QEitau2wIpvI-sAPhNv16Ag"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1905
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.911s

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 519
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"18dde467d98c4c938592062831fc8c4b","created":1789741122,"model":"ministral-3b-latest","usage":{"prompt_tokens":21,"total_tokens":63,"completion_tokens":42,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"[\n    {\n        \"name\": \"Strawberry\",\n        \"color\": \"red\"\n    },\n    {\n        \"name\": \"Banana\",\n        \"color\": \"yellow\"\n    }\n]"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb3f4a7253f0-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a0b4e2-43c2-74db-9c95-c89c7e5fd2a1
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=108,cfOrigin;dur=269
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "245"
+            X-Kong-Proxy-Latency:
+                - "19"
+            X-Kong-Request-Id:
+                - 01a0b4e2-43c2-74db-9c95-c89c7e5fd2a1
+            X-Kong-Upstream-Latency:
+                - "246"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "3000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "2997"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999813"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "63"
+        status: 200 OK
+        code: 200
+        duration: 384ms

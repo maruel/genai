@@ -2,12 +2,12 @@
 
 | Model                                         | Mode    | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | --------------------------------------------- | ------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| gemini-pro-latest🥇                            | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
-| gemini-pro-latest🥇                            | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
-| gemini-flash-latest🥈                          | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-latest🥈                          | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
-| gemini-flash-lite-latest🥉                     | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
-| gemini-flash-lite-latest🥉                     | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
+| gemini-pro-latest🥇                            | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| gemini-pro-latest🥇                            | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
+| gemini-flash-latest🥈                          | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| gemini-flash-latest🥈                          | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
+| gemini-flash-lite-latest🥉                     | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| gemini-flash-lite-latest🥉                     | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
 | gemini-3.5-flash-lite                         | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-transcribe                         | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-transcribe-live                    | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -113,6 +113,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

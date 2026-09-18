@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 597
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-terra","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 266
+        body: |-
+            {
+              "error": {
+                "message": "Invalid schema for response_format 'response': schema must be a JSON Schema of 'type: \"object\"', got 'type: \"array\"'.",
+                "type": "invalid_request_error",
+                "param": "text.format.schema",
+                "code": "invalid_json_schema"
+              }
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb27dda8ef5d-YUL
+            Content-Length:
+                - "266"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "29"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 1.165s

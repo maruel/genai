@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 484
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"command-a-reasoning-08-2025","messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3436b188-acb4-41f0-a9f6-91e26e0699c8","message":"invalid request: response_format validation: invalid ''json_schema'' provided: ''type'' field must be ''object''"}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin,Accept-Encoding
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 26451d1ef9bec0692662244f5328879a
+            X-Envoy-Upstream-Service-Time:
+                - "10"
+        status: 400 Bad Request
+        code: 400
+        duration: 165ms

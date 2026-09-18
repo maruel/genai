@@ -1,0 +1,40 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 420
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":[{"message":"AiError: Ai: JSON Schema mode is not supported with stream mode. (5b6b5415-9e16-4926-976f-9cdad1dec6be)","code":5023}],"success":false,"result":{},"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-09-25.epoch
+            Cf-Ai-Req-Id:
+                - 5b6b5415-9e16-4926-976f-9cdad1dec6be
+            Cf-Auditlog-Id:
+                - 01a0b4e2-3429-7964-abff-a81c6e42b0e5
+            Cf-Ray:
+                - a3d0fb268eefa29a-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 403 Forbidden
+        code: 403
+        duration: 84ms

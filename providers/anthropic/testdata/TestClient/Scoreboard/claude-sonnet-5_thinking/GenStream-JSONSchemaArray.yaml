@@ -1,0 +1,148 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 622
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-5","id":"msg_011CfB3a9jvfZfJeU1XpLfao","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":299,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":2,"service_tier":"standard","inference_geo":"global"}}            }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}   }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" need to produ"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ce a sim"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ple JSON array containing two"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" fruits,"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" each with an"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" associ"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ated color."}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EqQCCpABCBEYAipAF9smHwRP4BxHkL48h5UDa+MBIlcyCRFPRwnIAJ4TGuwraavnU/U22UTH90C+FqfNBgdd+m9ga9HucqAIMumaOjIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWaoAeuOtdUGEgy27TmhR/hsLGB4zxwaDPSkiNgfE5fm7TZqpSIwNtIy/Meigp/zTfS+07/uyUwuaKFy/WLV8f75fbcZv+xfyfELOriYNDZ9WUedlAZEKkHcYmL29hyjJAPPqrObhcHKf+jH1e2b7EBGQrVJYgngtGr6qAnCVRNAtiAZ1tu3lIzyJwqRK9xWmvhqqbBXTNkkTRgB"}              }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0              }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"["} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"{\"name\":\"Apple"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\",\"color\":\"Red\"},"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"{\"name\":\"Banana"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\",\"color\":\"Yellow"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"\"}]"}               }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1            }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"container":null},"usage":{"input_tokens":299,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":57,"output_tokens_details":{"thinking_tokens":18}}    }
+
+            event: message_stop
+            data: {"type":"message_stop"  }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-09-18T14:15:05Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-09-18T14:15:05Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-09-18T14:15:05Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-09-18T14:15:05Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0f5f0fabb8f26-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-2a99ea8c1a295b4865b1f28f7645b880-8af261b722e0d202-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.017s

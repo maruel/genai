@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"items":{"properties":{"color":{"type":"STRING"},"name":{"type":"STRING"}},"required":["name","color"],"type":"OBJECT"},"type":"ARRAY"},"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"[{\\\"name\\\":\\\"Apple\\\",\\\"color\\\":\\\"Red\\\"},{\\\"name\\\":\\\"Banana\\\",\\\"color\\\":\\\"Yellow\\\"}]\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 19,\"candidatesTokenCount\": 19,\"totalTokenCount\": 307,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 269,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"QkitauqTKPjj-sAP7NiNsAM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EscJCsQJAWkUfRPFkAH3PjPMgb1nwMONy4cxuXhpEmTTfb4giIhw5KA2ZlMFnkH9ocBSSgiHk7Brp7Y0AqIZhCobo+XFBrezUroHKajChCwezvv9hjdnkuhkL8q6jbzbpSuNoBPla2KnVQwTOXjdEIx3FwKyy9xUbPx7Oaw+kxNTwj8EWzNQZdNru7XTMrlZrKk7xevwtBegAzW6xBYFhlVG6bAa5VI6Oo/KzsQSr41oZnhtbO2NfGEqpIMXBnfojiORUdMB/iPLKvLUsoRDzv0zPHLzhxLgZj2VK4WPPSm+KZ1rSh7YUN2fd8A1IvVdbCuGj7uNd0gUnRPYK8c5BCV36+OPkFSVJUC/CGHBmuiWATTKKDnEQCyUVA+hxl1W1dzXEYjVdJHPgQqiFpXTRmtXTA7ow4icPAT89eqvQKK0Kl1qyKWCb5UEBQkOkJ7E693AzDZHQOa4T5vrgHpkRJd43eYhhdxZQrTYTRbLBlbZJ+PN6yp+QBJav5FAvsPNZ6w13sQVMMXPS+cqnndGxAujHJ6hMvJBBSx3BQzF2k1sGXhorbyOc9MnB8WYhTU8T7GQkdy6PCrF4C9xqK5WlhPdU5T56WdvMYg67G3KdJfBzbPUZGwrBTOwwE8oInEeYkdayyuYsjSYxNdVL8F3LQ+wMotLMvTDNirPoGFbRIAHVIpRbpPhZChxDYT4/et/xxlY0VQGGafXoh5hcUYh8kDPOqpr+ubGbCC/7gxWqs1ylK8MkZfaUt+JqJrWwD4msh2ACyvi1Y8iojBXeh4mT4iSj3M852hxD9ypUEnaJ3gB2K7/eZvQi0YujvvaLoFIVpBRWn+8nYQwI+yiywuOuIYIoQ7wuMRVGIVD9G+O6Kf0sAT1Bsup7bTRDp0Hev2o2gGeT25tNGURnC6JQNT5WzbCZalsXEHbwJXSSYh0vwyHbm648VxeGPFEMMqNqik/HEEezZjIFFA5HNZbVuO0ggobqrPN79oBCP8fjGYgPvdZ0sBkaiJZaLX7S66m+Y4dC+Om8p46nuAtkx33LvzQzTuKJuHSZg2H652gFsKkq9d5JDkppmcpHMi0daxO72sUFXQ9/SXIdxszNSCV8S2NaeTt1JaW/9R2q/8YsAaL7nCGZRN2HSTE+VnOP6P350AGOOMYu6RSZ6Ow9bAj49pCedcyYd7NxW+7nXl5UY+diARzlzHCfte2A8QmK6rYR2qM5THCx4ZLpFlUFb7JfMjJW+3OWiW9wEfQhZw7Qr3zs3qwdEC4Z+fgAhxfzmvzpbRkcW+hEvcUiRw1mQoAXjwXFS6Z7g2V8c1QuxpnPBY/Fj2Vvv+xMXJ/WosUA2Bw5VhiDdeEDog6J4O6vlUFswoGfd4Cs32u8+7ULOqGV3Q6py/vqGW3Ppa3I6+qf2w7Rtho//x6V4DCelkEuGyXbDZ0ILj9R5WgMLtTojxOBPJgX0aYnfMMK04bVw+0kj2pbRo4H1z62w16PGhAU5B2A6YPJqQgb6xqLwymhDGH1XBJJGazEVB7O3JhW6TnJp6zDIRmERZR2lIDJvlmeNLhzxzyHsggzq8iK11PC2tlqQ4l0/zn4NslWHkfAMt0+hUPcGRXmYnYgLPOW1X3qR/AAG243t8JNdz+lz2EIpw=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 19,\"candidatesTokenCount\": 19,\"totalTokenCount\": 307,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 19}],\"thoughtsTokenCount\": 269,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"QkitauqTKPjj-sAP7NiNsAM\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6239
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.246s

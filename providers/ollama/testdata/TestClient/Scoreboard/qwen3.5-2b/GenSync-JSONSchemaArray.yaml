@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 410
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"stream":false,"format":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 412
+        body: '{"model":"qwen3.5:2b","created_at":"2026-09-18T14:43:30.494065576Z","message":{"role":"assistant","content":"{\"fruit1\": {\"color\": \"Red\", \"name\": \"Apple\"}, \"fruit2\": {\"color\": \"Yellow\", \"name\": \"Orange\"}}"},"done":true,"done_reason":"stop","total_duration":4461638730,"load_duration":135670379,"prompt_eval_count":30,"prompt_eval_duration":351528993,"eval_count":34,"eval_duration":1981820728}'
+        headers:
+            Content-Length:
+                - "412"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 4.462s

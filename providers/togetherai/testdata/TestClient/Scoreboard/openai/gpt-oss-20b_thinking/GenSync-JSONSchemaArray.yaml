@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 445
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 352
+        body: |-
+            {
+              "id": "p1nJ4qp-2kFHot-a3d0fb391e292df2",
+              "error": {
+                "message": "Unable to access non-serverless model openai/gpt-oss-20b. Please visit https://api.together.ai/models/openai/gpt-oss-20b to create and start a new dedicated endpoint for the model.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "model_not_available"
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb391e292df2-YUL
+            Content-Length:
+                - "352"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"160-HkEbhl12uLTr8dWgxqBlImIAmmE"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Api-Received:
+                - "2026-09-18T14:18:41.716Z"
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 330ms

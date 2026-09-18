@@ -33,6 +33,9 @@
         "reportFinishReason": "flaky",
         "seed": true,
         "json": true,
+        "jsonSchema": {
+          "array": "true"
+        },
         "maxTokens": true
       },
       "GenStream": {
@@ -43,6 +46,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "jsonSchema": {
+          "array": "true"
+        },
         "maxTokens": true
       }
     },
@@ -126,6 +132,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "jsonSchema": {
+          "array": "true"
+        },
         "maxTokens": true,
         "stopSequence": true
       },
@@ -136,7 +145,10 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
-        "json": true
+        "json": true,
+        "jsonSchema": {
+          "array": "true"
+        }
       }
     },
     {

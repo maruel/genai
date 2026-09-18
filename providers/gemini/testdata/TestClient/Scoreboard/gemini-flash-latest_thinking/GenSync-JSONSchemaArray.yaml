@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"items":{"properties":{"color":{"type":"STRING"},"name":{"type":"STRING"}},"required":["name","color"],"type":"OBJECT"},"type":"ARRAY"},"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "[{\"name\":\"Apple\",\"color\":\"Red\"},{\"name\":\"Banana\",\"color\":\"Yellow\"}]",
+                        "thoughtSignature": "Ep0JCpoJAWkUfRNvy+DZpCdWcUSqa0+U8reIKbv86vLzbZxo5vgkdyA1H7t3q+CRMQWWwYeD8gVK5cHcC5ytvuHGQWrmL/QDl21KeTuEnBCvcx4Fdh2C3R6ud1f+knCr67fqJjldlt3hQdhCXR/9QqnfWBAKRrOKhpTC9z/lR0rYbsHSx5YUOFEMGJOx+SeQmlM2RmoxMz7stKMMPpPHQT/lH9OcwQh1/WJVYoPTf3d8jeGAqbBaRmk8TykoKni8FpoHKaO8dgQmHwQxgwKWk82801z1zk91+hpvmlYHsZVxGwLSj5NN93JdkcmEvG6j0WKsO1hSXnq7De1NfnJhWqjQu1OS3GsrQPNctr1jkzPNb2vk/OszvP+Pz8slxRH8zloopx57D3ZIqh+0vdFP5kxIxOgC6lI2MkpfrW1f2K5eGhoznoKA05QRH3VbxAFLSYLWXKtywQDd7fkV5vKMJ6IAFfbtA/l/kk1OCbGg82IJaD+UJxwWIlbVs//KW0h4CC1xT7G8doXuSPDv4BIxgVgIwY7afXkYFTZBd7EXemeUjYV4t2veh466wvCJuDvRQSAMtvViFLmJrzYjosIfmU9aox6AY4UMruR8HGVlaSkaYRbu7ZekjrBD6Hnrep+YN/RjAHAxQNGMlIDpn42SMvGkBBuQArBv6O3eofSoWgEuiH+ZJh7pcc1GfahP764jsCJ5g8y9MIWPFknepbHeJh8E5IqfQU0JzAVejG2AaTP/6Xo1sVKWKDItL83pM/SniuEo+zDUAfw78zWLwZMr7jg5NZ9Fgv30Z5/B7i8h/Por152ER97jtCppirQc4++MWdhiFjkimnTe9Oj7kGtn6fsPDN5hZnCiuSUgQd1cYVstHAnb6fi3dBWlFymQJ/hRyFFKjJMdz0TJNlh45tUUaR4/dU4I/frdMWk6f5aVPBkZvMbgPu4drpYcs3AMaVBH7/sPSqWGwY1M1KIOb6si5wPbmWmRwU4D3IdVnd7MihTb7YGonIgv6idcPuda17/i0UcCOt2R2R6VquU/QkgyWeHfU2eN7GLJHkrVNigN06ZqUp7tVy3AtqFDeyLMwx9+E4qAgq9T2J/a13bPjWtX5v5ZHJvc4OXz0ntiXwU63ZZPbeoop7muJ2ZvAwsSoo/auicZqB4xLRuLYPK9aMlphcMcxgrt107iBdWsmD5hAEUtcw1c6oATmFcrnTVmXnJYjFkjwaVDj/Tetj9rwcv5VfbovuVvujyOyCU8PaPMfDMnNbXSnFKdtw2maYgxwkihIpososiHg2RZM7Z009J5PVs6YByGlceBzOM5nWWpHyb6PIAdZBY5I/fM1cWnEsba+ZoqFK5ebzwp1dl/0nBTVz303Pr9icdvt8wNn2ixjRjAHsOVEiJ8XIG8tbBMPaPjpmGU3pLZEAaBeGIbx4LbVUtGZxihwQhYutnteGgljjt6QjmrCPu4UWHFle9nTHQeu9+Wt0PMeggPmEth0EAEL8ucAO+E8MxgHz2Jp8oxbXRNMPI9cSON+txaVrnGfUqsshuoIhgDJX8StBtI3DgEIlb2S2wa2zbTnWTkdPKYkGw="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 19,
+                "candidatesTokenCount": 19,
+                "totalTokenCount": 346,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 19
+                  }
+                ],
+                "thoughtsTokenCount": 308,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "PkitauyVJ83f-sAP9emYyAc"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1908
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.981s

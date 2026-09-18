@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 573
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.3-Flash","messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"strict":true}},"stream":true,"stream_options":{"include_usage":true},"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 139
+        body: |
+            {
+            	"error": {
+            		"code": "400",
+            		"message": "Validation: `response_format.json_schema.name` cannot be empty",
+            		"type": "Bad Request"
+            	}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "139"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1789741117104"
+            X-Baseten-Model-Id:
+                - wx4mod7q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wgkvovo
+            X-Baseten-Received-At:
+                - "1789741117104"
+            X-Baseten-Request-Id:
+                - 54ca701a0b4e22eb078869c48a376094f2a3e
+            X-Baseten-Route-Trail:
+                - CjQKD3VzLWVhc3Q0LXByb2QtMSgCMAI6HXJ1bGVzZXQgMjIxNTA0MzEgKGZpbGxfZmlyc3QpChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1789741117137"
+            X-Baseten-Session-Id:
+                - 54ca701a0b4e22eb078869c48a376094f2a3e
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "59"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 400 Bad Request
+        code: 400
+        duration: 70ms

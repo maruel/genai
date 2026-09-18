@@ -10,8 +10,8 @@
 | openai/gpt-oss-20b🥉                                          | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | openai/gpt-oss-20b🥉                                          | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
 | black-forest-labs/FLUX.2-pro🥉                                | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
-| openai/gpt-oss-120b                                          | Sync🧠   | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b                                          | Stream🧠 | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b                                          | Sync🧠   | 💬    | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b                                          | Stream🧠 | 💬    | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
 | Qwen/Qwen3.5-0.8B-Lora                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.5-122B-A10B-FP8                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.5-122B-A10B-Lora                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -427,6 +427,7 @@
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

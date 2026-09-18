@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 396
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"stream":false,"format":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1447
+        body: '{"model":"gemma4:e2b","created_at":"2026-09-18T14:43:59.230449746Z","message":{"role":"assistant","content":"[\n  {\n    \"name\": \"Apple\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Banana\",\n    \"color\": \"Yellow\"\n  }\n]","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Name two fruits and their colors.\n    *   Constraint: Do not include an explanation.\n    *   Format Constraint: Reply ONLY as JSON.\n\n2.  **Determine Data Points (Fruits and Colors):**\n    *   Fruit 1: Apple (Red/Green)\n    *   Fruit 2: Banana (Yellow)\n    *   Fruit 3: Grape (Purple/Green)\n    *   Fruit 4: Orange (Orange)\n\n3.  **Select Two Pairs and Format as JSON:** I need to ensure the output is a valid JSON structure. An array of objects or a simple key-value structure works best.\n\n4.  **Draft the JSON Output:**\n\n    *Option A (List of items):*\n    ```json\n    [\n      {\"fruit\": \"Apple\", \"color\": \"Red\"},\n      {\"fruit\": \"Banana\", \"color\": \"Yellow\"}\n    ]\n    ```\n\n5.  **Final Review against Constraints:**\n    *   Two fruits? Yes.\n    *   Colors included? Yes.\n    *   No explanation? Yes.\n    *   Reply ONLY as JSON? Yes.\n\n6.  **Generate Final Response.** (The drafted JSON is suitable.)"},"done":true,"done_reason":"stop","total_duration":20385037029,"load_duration":178132231,"prompt_eval_count":39,"prompt_eval_duration":56368800,"eval_count":48,"eval_duration":1655092067}'
+        headers:
+            Content-Length:
+                - "1447"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 20.386s

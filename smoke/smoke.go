@@ -370,20 +370,39 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 	if err == nil {
 		data := schema{}
-		f.JSONSchema = resp.Decode(&data) == nil && data.IsFruit
-		if f.JSONSchema {
+		if resp.Decode(&data) == nil && data.IsFruit {
+			f.JSONSchema.Object = scoreboard.True
 			if isZeroUsage(&resp.Usage) {
 				if f.ReportTokenUsage != scoreboard.False {
 					internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 					f.ReportTokenUsage = scoreboard.Flaky
 				}
 			}
-			if expectedFR := genai.FinishedStop; f.JSONSchema && resp.Usage.FinishReason != expectedFR {
+			if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
 				if f.ReportTokenUsage != scoreboard.False {
 					internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 					f.ReportFinishReason = scoreboard.Flaky
 				}
 			}
+		}
+	}
+
+	// JSONSchemaArray is separate because most providers only accept an object at the root of the schema.
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "JSONSchemaArray"))
+	msgs = genai.Messages{genai.NewTextMessage(`Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON.`)}
+	type fruit struct {
+		Name  string `json:"name"`
+		Color string `json:"color"`
+	}
+	type fruits []fruit
+	resp, err = cs.callGen(ctxCheck, prefix+"JSONSchemaArray", msgs, &genai.GenOptionText{DecodeAs: &fruits{}})
+	if isBadError(ctxCheck, err) {
+		return f, err
+	}
+	if err == nil {
+		data := fruits{}
+		if resp.Decode(&data) == nil && len(data) >= 1 {
+			f.JSONSchema.Array = scoreboard.True
 		}
 	}
 
@@ -1105,7 +1124,8 @@ func mergeFunctionality(dst, src *scoreboard.Functionality) {
 	dst.WebSearch = dst.WebSearch || src.WebSearch
 	dst.WebFetch = dst.WebFetch || src.WebFetch
 	dst.JSON = dst.JSON || src.JSON
-	dst.JSONSchema = dst.JSONSchema || src.JSONSchema
+	dst.JSONSchema.Object = mergeTriState(dst.JSONSchema.Object, src.JSONSchema.Object)
+	dst.JSONSchema.Array = mergeTriState(dst.JSONSchema.Array, src.JSONSchema.Array)
 	dst.Citations = dst.Citations || src.Citations
 	dst.TopLogprobs = dst.TopLogprobs || src.TopLogprobs
 	dst.MaxTokens = dst.MaxTokens || src.MaxTokens

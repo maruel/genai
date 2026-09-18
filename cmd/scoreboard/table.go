@@ -48,6 +48,7 @@ const legend = `<details>
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output
@@ -183,12 +184,15 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	}
 	t.Outputs = sortString(t.Outputs)
 	switch {
-	case f.JSON && f.JSONSchema:
+	case f.JSON && f.JSONSchema.Object != scoreboard.False:
 		t.JSON = "✅"
 	case f.JSON && !strings.Contains(t.JSON, "✅"):
 		t.JSON = "☁️"
-	case f.JSONSchema && !strings.Contains(t.JSON, "✅"):
+	case f.JSONSchema.Object != scoreboard.False && !strings.Contains(t.JSON, "✅"):
 		t.JSON = "📐"
+	}
+	if f.JSONSchema.Array != scoreboard.False {
+		t.JSON += "[]"
 	}
 	switch {
 	case f.Tools == scoreboard.True && !strings.Contains(t.Tools, "✅"):

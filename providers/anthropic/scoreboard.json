@@ -49,7 +49,10 @@
         "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true
       },
@@ -61,7 +64,10 @@
         "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true
       }
@@ -107,7 +113,10 @@
         "toolsBiased": "true",
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true
       },
@@ -119,7 +128,10 @@
         "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true
       }
@@ -164,7 +176,10 @@
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -178,7 +193,10 @@
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true
       }
@@ -223,7 +241,10 @@
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -237,7 +258,10 @@
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -283,7 +307,10 @@
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -297,7 +324,10 @@
         "toolCallRequired": true,
         "webSearch": true,
         "webFetch": true,
-        "jsonSchema": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
         "citations": true,
         "maxTokens": true,
         "stopSequence": true

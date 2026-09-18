@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 406
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":[{"name":"apple","color":"red"},{"name":"banana","color":"yellow"}]},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-09-25.epoch
+            Cf-Ai-Neurons:
+                - "230.95"
+            Cf-Ai-Req-Id:
+                - 8445bebf-4048-43a5-ad8f-6d5cd5e02a15
+            Cf-Auditlog-Id:
+                - 01a0b4e2-3426-7573-b6b4-3a8e6921e643
+            Cf-Ray:
+                - a3d0fb268ef3a29a-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 200 OK
+        code: 200
+        duration: 18.211s

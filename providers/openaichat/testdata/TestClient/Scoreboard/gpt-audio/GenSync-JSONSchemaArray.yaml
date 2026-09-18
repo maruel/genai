@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 593
+        host: api.openai.com
+        body: |
+            {"model":"gpt-audio","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"store":true,"modalities":["text","audio"],"audio":{"voice":"alloy","format":"mp3"},"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 330
+        body: |-
+            {
+              "error": {
+                "message": "Invalid parameter: 'response_format' of type 'json_schema' is not supported with this model. Learn more about supported models at the Structured Outputs guide: https://platform.openai.com/docs/guides/structured-outputs",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a3d0fb261cd40fd5-YUL
+            Content-Length:
+                - "330"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "30"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "40000"
+            X-Ratelimit-Remaining-Requests:
+                - "999"
+            X-Ratelimit-Remaining-Tokens:
+                - "39977"
+            X-Ratelimit-Reset-Requests:
+                - 1m26.4s
+            X-Ratelimit-Reset-Tokens:
+                - 34ms
+        status: 400 Bad Request
+        code: 400
+        duration: 1.19s

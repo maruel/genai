@@ -50,29 +50,29 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | Provider                                   | 🌐   | Mode          | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------ | ---- | ------------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🕸️🪨 | 📐    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🕸️🪨 | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
 | [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
 | [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅     | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅     | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
 | [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 💨🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream🧠 | 🎤💬📸     | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | ✅     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream🧠 | 🎤💬📸     | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | ✅     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 🎤💬📸 | ✅🪨   | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ❌    | ✅     | ✅    | ✅     |
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
 | [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠 | 🎤🎥💬📸   | 🎤💬   | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
@@ -102,6 +102,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
 		- 📐: Supports only a schema
+		- []: Also supports an array at the root of the schema, most providers require an object
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

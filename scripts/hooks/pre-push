@@ -1,5 +1,5 @@
 #!/bin/bash
-# Rejects binary executables, WIP commits, multiple-commit pushes, and lints on main pushes.
+# Rejects non-checked-out, dirty, WIP, binary, and multi-commit main pushes; lints Go code.
 
 set -euo pipefail
 
@@ -8,39 +8,65 @@ if (($# != 2)); then
 	exit 2
 fi
 
-remote="$1"
+script_dir="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+readonly script_dir
+repo_root="$(CDPATH='' cd -- "$script_dir/../.." && pwd)"
+readonly repo_root
+
+cd -- "$repo_root"
+
 zero=$(git hash-object --stdin </dev/null | tr '0-9a-f' '0')
+readonly zero
+head_oid=$(git rev-parse --verify HEAD 2>/dev/null || true)
+readonly head_oid
+has_ref_update=false
 
 while read -r local_ref local_oid remote_ref remote_oid; do
-	if [ "$local_oid" = "$zero" ]; then
+	# Deleting a remote ref does not push local content and is always allowed.
+	if [[ "$local_ref" == '(delete)' || "$local_oid" == "$zero" ]]; then
 		continue
 	fi
-	if [ "$remote_oid" = "$zero" ]; then
+	# Worktree-based checks below only describe the checked-out commit, so
+	# refuse anything else instead of validating the wrong tree.
+	if [[ -z "$head_oid" || "$local_oid" != "$head_oid" ]]; then
+		printf 'Push blocked: %s is not checked out; only HEAD can be pushed.\n' "$local_ref" >&2
+		exit 1
+	fi
+	has_ref_update=true
+	if [[ "$remote_oid" == "$zero" ]]; then
 		range="$local_oid"
 	else
 		range="$remote_oid..$local_oid"
 	fi
-	binaries=$(git diff-tree -r --name-only --diff-filter=ACM "$range" | while read -r file; do
-		git cat-file -e "$local_oid:$file" 2>/dev/null && git show "$local_oid:$file" | file --mime-type - 2>/dev/null | grep -qE 'application/(x-executable|x-mach-binary|x-dosexec|x-pie-executable|x-sharedlib)' && echo "$file"
-	done || true)
-	if [ -n "$binaries" ]; then
-		echo >&2 '✗ Binary executables cannot be pushed:'
-		echo >&2 "$binaries"
+	wip_commit=$(git rev-list -n 1 --grep '^WIP' "$range")
+	if [[ -n "$wip_commit" ]]; then
+		printf 'Found WIP commit in %s; not pushing.\n' "$local_ref" >&2
 		exit 1
 	fi
-	commit=$(git rev-list -n 1 --grep '^WIP' "$range")
-	if [ -n "$commit" ]; then
-		echo >&2 "Found WIP commit in $local_ref, not pushing"
-		exit 1
-	fi
-	if [ "$remote" = origin ] && [ "$remote_ref" = refs/heads/main ]; then
-		golangci-lint run ./...
-
-		commit_count=$(git rev-list --count "$range" 2>/dev/null || true)
-		if [ -n "$commit_count" ] && [ "$commit_count" -gt 1 ]; then
-			echo >&2 "✗ Push blocked: $commit_count commits on $local_ref (limit is 1 per push)."
-			echo >&2 "  Squash with: git reset --soft HEAD~$commit_count && git commit"
+	if [[ "$remote_ref" == 'refs/heads/main' ]]; then
+		commit_count=$(git rev-list --count "$range")
+		if ((commit_count > 1)); then
+			printf 'Push blocked: %d commits to main; push one commit at a time.\n' "$commit_count" >&2
 			exit 1
 		fi
 	fi
 done
+
+if ! "$has_ref_update"; then
+	exit 0
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+	printf '%s\n' 'Commit or remove all changes before pushing.' >&2
+	exit 1
+fi
+
+python3 scripts/lint_binaries.py
+
+# Repository-specific verification.
+golangci-lint run ./...
+
+if [[ -n "$(git status --porcelain)" ]]; then
+	printf '%s\n' 'Verification modified the worktree; commit or remove those changes before pushing.' >&2
+	exit 1
+fi

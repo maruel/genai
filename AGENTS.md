@@ -29,9 +29,9 @@ Before submitting changes, run:
 ## Git Hooks
 
 Run `scripts/install-git-hooks.sh` after cloning or whenever Git hooks need to be restored. The hooks reject
-binary executables, stale `AGENTS.md` indexes, unformatted staged Go files, incomplete or co-authored commit
-messages, WIP commits, multi-commit pushes to `origin/main`, and run `golangci-lint` before pushes to
-`origin/main`. Refresh indexes with `python3 scripts/update_agents_file_index.py`.
+dirty worktrees, unexpected binary files, stale `AGENTS.md` indexes, unformatted staged Go files, incomplete
+or co-authored commit messages, WIP commits, non-checked-out pushes, and multi-commit pushes to `main`;
+pre-push then runs `golangci-lint run ./...`. Refresh indexes with `python3 scripts/update_agents_file_index.py`.
 
 ## Directory Structure
 

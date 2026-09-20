@@ -360,6 +360,21 @@ type ChatResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+// ToResult converts the response to a genai.Result.
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{
+		Usage: genai.Usage{
+			InputTokens:       c.Result.Usage.PromptTokens,
+			InputCachedTokens: c.Result.Usage.PromptTokensDetail.CachedTokens,
+			OutputTokens:      c.Result.Usage.CompletionTokens,
+			TotalTokens:       c.Result.Usage.TotalTokens,
+			// Cloudflare doesn't provide FinishReason (!?)
+		},
+	}
+	err := c.Result.To(&out.Message)
+	return out, err
+}
+
 // Result is the payload of a chat response.
 //
 // Newer models return an OpenAI-compatible completion in addition to Response
@@ -403,21 +418,6 @@ type ChoiceMessage struct {
 	Reasoning    json.RawMessage `json:"reasoning"`
 	Refusal      json.RawMessage `json:"refusal"`
 	Role         string          `json:"role"`
-}
-
-// ToResult converts the response to a genai.Result.
-func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Result.Usage.PromptTokens,
-			InputCachedTokens: c.Result.Usage.PromptTokensDetail.CachedTokens,
-			OutputTokens:      c.Result.Usage.CompletionTokens,
-			TotalTokens:       c.Result.Usage.TotalTokens,
-			// Cloudflare doesn't provide FinishReason (!?)
-		},
-	}
-	err := c.Result.To(&out.Message)
-	return out, err
 }
 
 // MessageResponse is a message in a provider-specific response.

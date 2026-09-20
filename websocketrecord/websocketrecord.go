@@ -58,6 +58,40 @@ type Recorder struct {
 	replaySrv *httptest.Server
 }
 
+// New creates a Recorder for the given path.
+//
+// The path should not include the ".ndjson" extension; it is appended
+// automatically. If the fixture file already exists, the recorder replays it.
+// Otherwise it records.
+func New(path string) (*Recorder, error) {
+	fixture := path + ".ndjson"
+	r := &Recorder{fixture: fixture}
+	if _, err := os.Stat(fixture); err == nil {
+		r.replay = true
+		data, err := os.ReadFile(fixture)
+		if err != nil {
+			return nil, fmt.Errorf("websocketrecord: failed to read fixture: %w", err)
+		}
+		br := bytesReader(data)
+		sc := bufio.NewScanner(&br)
+		for sc.Scan() {
+			line := sc.Bytes()
+			if len(line) == 0 {
+				continue
+			}
+			var m message
+			if err := json.Unmarshal(line, &m); err != nil {
+				return nil, fmt.Errorf("websocketrecord: invalid fixture line: %w", err)
+			}
+			r.lines = append(r.lines, m)
+		}
+		if err := sc.Err(); err != nil {
+			return nil, fmt.Errorf("websocketrecord: failed to scan fixture: %w", err)
+		}
+	}
+	return r, nil
+}
+
 // Stop closes the recording file (record mode) or the replay server (replay
 // mode).
 //
@@ -170,40 +204,6 @@ func (r *Recorder) replayDial(ctx context.Context, cfg *websocket.Config) (*Conn
 		return nil, fmt.Errorf("websocketrecord: failed to dial local server: %w", err)
 	}
 	return &Conn{ws: ws, rec: r, replay: true}, nil
-}
-
-// New creates a Recorder for the given path.
-//
-// The path should not include the ".ndjson" extension; it is appended
-// automatically. If the fixture file already exists, the recorder replays it.
-// Otherwise it records.
-func New(path string) (*Recorder, error) {
-	fixture := path + ".ndjson"
-	r := &Recorder{fixture: fixture}
-	if _, err := os.Stat(fixture); err == nil {
-		r.replay = true
-		data, err := os.ReadFile(fixture)
-		if err != nil {
-			return nil, fmt.Errorf("websocketrecord: failed to read fixture: %w", err)
-		}
-		br := bytesReader(data)
-		sc := bufio.NewScanner(&br)
-		for sc.Scan() {
-			line := sc.Bytes()
-			if len(line) == 0 {
-				continue
-			}
-			var m message
-			if err := json.Unmarshal(line, &m); err != nil {
-				return nil, fmt.Errorf("websocketrecord: invalid fixture line: %w", err)
-			}
-			r.lines = append(r.lines, m)
-		}
-		if err := sc.Err(); err != nil {
-			return nil, fmt.Errorf("websocketrecord: failed to scan fixture: %w", err)
-		}
-	}
-	return r, nil
 }
 
 // Conn wraps a *websocket.Conn with message-level recording or replay.

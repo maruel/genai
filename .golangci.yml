@@ -19,6 +19,7 @@ linters:
     - gocritic
     - godot
     - gosec
+    - methodfilecheck
     - misspell
     - nilerr
     - nilnil
@@ -32,6 +33,11 @@ linters:
     - usestdlibvars
     - whitespace
   settings:
+    custom:
+      methodfilecheck:
+        type: module
+        description: Methods must be declared in the same file as their receiver type, in one contiguous block.
+        settings: {}
     exhaustive:
       default-signifies-exhaustive: true
     gocritic:

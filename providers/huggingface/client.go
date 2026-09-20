@@ -58,6 +58,109 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
+// New creates a new client to talk to the HuggingFace serverless inference API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the HUGGINGFACE_API_KEY environment variable.
+// Otherwise, it tries to load it from the huggingface python client's cache.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://huggingface.co/settings/tokens
+//
+// To use multiple models, create multiple clients.
+// Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
+//
+// ProviderOptionTransportWrapper can be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
+// https://huggingface.co/docs/inference-providers/pricing#organization-billing
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://huggingface.co/settings/tokens"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("HUGGINGFACE_API_KEY"); apiKey == "" {
+			// Fallback to loading from the python client's cache.
+			h, errHome := os.UserHomeDir()
+			if errHome != nil {
+				err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
+			} else {
+				// TODO: Windows.
+				b, errRead := os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
+				if errRead != nil {
+					err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
+				} else {
+					if apiKey = strings.TrimSpace(string(b)); apiKey == "" {
+						err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
+					}
+				}
+			}
+		}
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		// https://huggingface.co/docs/inference-providers/index
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      "https://router.huggingface.co/v1/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProcessHeaders:  processHeaders,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = mod
+		default:
+			c.impl.Model = model
+			c.impl.OutputModalities = mod
+		}
+	}
+	return c, err
+}
+
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
 
 // selectBestTextModel selects the most recent model based on the preference (cheap, good, or SOTA).
@@ -190,109 +293,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
-}
-
-// New creates a new client to talk to the HuggingFace serverless inference API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the HUGGINGFACE_API_KEY environment variable.
-// Otherwise, it tries to load it from the huggingface python client's cache.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://huggingface.co/settings/tokens
-//
-// To use multiple models, create multiple clients.
-// Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
-//
-// ProviderOptionTransportWrapper can be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
-// https://huggingface.co/docs/inference-providers/pricing#organization-billing
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://huggingface.co/settings/tokens"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("HUGGINGFACE_API_KEY"); apiKey == "" {
-			// Fallback to loading from the python client's cache.
-			h, errHome := os.UserHomeDir()
-			if errHome != nil {
-				err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
-			} else {
-				// TODO: Windows.
-				b, errRead := os.ReadFile(filepath.Join(h, ".cache", "huggingface", "token"))
-				if errRead != nil {
-					err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
-				} else {
-					if apiKey = strings.TrimSpace(string(b)); apiKey == "" {
-						err = &base.ErrAPIKeyRequired{EnvVar: "HUGGINGFACE_API_KEY", URL: apiKeyURL}
-					}
-				}
-			}
-		}
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		// https://huggingface.co/docs/inference-providers/index
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://router.huggingface.co/v1/chat/completions",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProcessHeaders:  processHeaders,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = mod
-		default:
-			c.impl.Model = model
-			c.impl.OutputModalities = mod
-		}
-	}
-	return c, err
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

@@ -617,14 +617,6 @@ type SystemOneResponse struct {
 	Usage Usage `json:"usage"`
 }
 
-// Usage reports the token usage of a request.
-type Usage struct {
-	// InputTokens is the number of input tokens evaluated. TypeSafe charges per input token.
-	InputTokens int64 `json:"input_tokens"`
-	// OutputTokens is the number of output tokens generated. It is not charged.
-	OutputTokens int64 `json:"output_tokens"`
-}
-
 // ToResult converts the response to a genai.Result.
 //
 // The reply is the JSON object of the answers keyed by question name, which Result.Decode decodes into
@@ -647,6 +639,14 @@ func (r *SystemOneResponse) ToResult() (genai.Result, error) {
 	}
 	out.Replies = []genai.Reply{{Text: string(raw)}}
 	return out, nil
+}
+
+// Usage reports the token usage of a request.
+type Usage struct {
+	// InputTokens is the number of input tokens evaluated. TypeSafe charges per input token.
+	InputTokens int64 `json:"input_tokens"`
+	// OutputTokens is the number of output tokens generated. It is not charged.
+	OutputTokens int64 `json:"output_tokens"`
 }
 
 // marshalAnswers marshals the answers for genai.Result.

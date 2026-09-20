@@ -43,24 +43,6 @@ type Server struct {
 	cmd  *exec.Cmd
 }
 
-// Close stops the Ollama server and waits for it to exit.
-func (s *Server) Close() error {
-	_ = s.cmd.Cancel()
-	err := <-s.done
-	return err
-}
-
-// URL returns the URL to the server.
-func (s *Server) URL() string {
-	return s.url
-}
-
-// Done is a channel to listen to the server's termination. No need to call
-// Close() if it is set.
-func (s *Server) Done() <-chan error {
-	return s.done
-}
-
 // New creates a new instance of the ollama serve server and ensures the server is healthy.
 //
 // hostPort can be one of the forms "localhost", "localhost:11434", "localhost:0", ":11434", ":0" or "". "" is effectively
@@ -177,6 +159,24 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	}
 
 	return &Server{url: u, done: done, cmd: cmd}, nil
+}
+
+// Close stops the Ollama server and waits for it to exit.
+func (s *Server) Close() error {
+	_ = s.cmd.Cancel()
+	err := <-s.done
+	return err
+}
+
+// URL returns the URL to the server.
+func (s *Server) URL() string {
+	return s.url
+}
+
+// Done is a channel to listen to the server's termination. No need to call
+// Close() if it is set.
+func (s *Server) Done() <-chan error {
+	return s.done
 }
 
 // DownloadRelease downloads a specific release from GitHub into the specified

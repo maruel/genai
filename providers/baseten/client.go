@@ -57,6 +57,92 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
+// New creates a new client to talk to the Baseten inference API.
+//
+// If apiKey is not provided via ProviderOptionAPIKey, it tries to load it from the BASETEN_API_KEY environment
+// variable. If none is found, it will still return a client coupled with a base.ErrAPIKeyRequired error.
+// Get an API key at https://app.baseten.co/settings/account/api_keys
+//
+// To use multiple models, create multiple clients.
+// Use one of the models from https://docs.baseten.co/development/model-apis/overview
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://app.baseten.co/settings/account/api_keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("BASETEN_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "BASETEN_API_KEY", URL: apiKeyURL}
+		}
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      "https://inference.baseten.co/v1/chat/completions",
+			ProcessStream:   ProcessStream,
+			ProcessHeaders:  processHeaders,
+			PreloadedModels: preloadedModels,
+			LieToolCalls:    true,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					// Baseten uses "Api-Key" prefix instead of "Bearer".
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Api-Key " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = mod
+		default:
+			c.impl.Model = model
+			c.impl.OutputModalities = mod
+		}
+	}
+	return c, err
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
 //
 // It reads the scoreboard to find the reference model for the preference, extracts its family prefix,
@@ -173,92 +259,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	mdls := resp.ToModels()
 	cacheModelFeatures(mdls)
 	return mdls, nil
-}
-
-// New creates a new client to talk to the Baseten inference API.
-//
-// If apiKey is not provided via ProviderOptionAPIKey, it tries to load it from the BASETEN_API_KEY environment
-// variable. If none is found, it will still return a client coupled with a base.ErrAPIKeyRequired error.
-// Get an API key at https://app.baseten.co/settings/account/api_keys
-//
-// To use multiple models, create multiple clients.
-// Use one of the models from https://docs.baseten.co/development/model-apis/overview
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://app.baseten.co/settings/account/api_keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("BASETEN_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "BASETEN_API_KEY", URL: apiKeyURL}
-		}
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://inference.baseten.co/v1/chat/completions",
-			ProcessStream:   ProcessStream,
-			ProcessHeaders:  processHeaders,
-			PreloadedModels: preloadedModels,
-			LieToolCalls:    true,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					// Baseten uses "Api-Key" prefix instead of "Bearer".
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Api-Key " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = mod
-		default:
-			c.impl.Model = model
-			c.impl.OutputModalities = mod
-		}
-	}
-	return c, err
 }
 
 // modelFamilyPrefix extracts the model family prefix by stripping the trailing version number.

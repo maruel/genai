@@ -64,6 +64,86 @@ type Client struct {
 	preloadedModels []genai.Model
 }
 
+// New creates a new client to talk to the TypeSafe API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the TYPESAFE_API_KEY environment
+// variable. If not found, it will still return a client
+// coupled with a base.ErrAPIKeyRequired error. Get your API key at
+// https://console.typesafe.ai/settings/keys
+//
+// ProviderOptionModel accepts a model ID or alias, e.g. "jev-latest", "jev-preview" or "jev-1.13.0".
+// ModelCheap, ModelGood and ModelSOTA all resolve to "jev-latest", TypeSafe serving a single model.
+//
+// ProviderOptionRemote defaults to "https://api.typesafe.ai".
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var preloadedModels []genai.Model
+	remote := "https://api.typesafe.ai"
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			if mod := genai.Modalities(v); len(mod) != 0 && !slices.Equal(mod, genai.Modalities{genai.ModalityText}) {
+				return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+			}
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionRemote:
+			remote = string(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://console.typesafe.ai/settings/keys"
+	var err error
+	if apiKey == "" {
+		if apiKey = os.Getenv("TYPESAFE_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "TYPESAFE_API_KEY", URL: apiKeyURL}
+		}
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		remote:          remote,
+		preloadedModels: preloadedModels,
+		impl: base.ProviderBase[*ErrorResponse]{
+			APIKeyURL: apiKeyURL,
+			Lenient:   internal.BeLenient,
+			Client: http.Client{
+				Transport: &roundtrippers.Header{
+					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+					Transport: &roundtrippers.RequestID{Transport: t},
+				},
+			},
+		},
+	}
+	if err == nil {
+		c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			c.impl.Model = c.selectBestModel(model)
+		default:
+			c.impl.Model = model
+		}
+	}
+	return c, err
+}
+
 // selectBestModel selects the model based on the preference (cheap, good, or SOTA).
 //
 // We may want to make this function overridable in the future by the client since this is going to break
@@ -193,84 +273,4 @@ func (c *Client) ListModelsRaw(ctx context.Context) ([]Model, error) {
 		return nil, err
 	}
 	return out.Models, nil
-}
-
-// New creates a new client to talk to the TypeSafe API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the TYPESAFE_API_KEY environment
-// variable. If not found, it will still return a client
-// coupled with a base.ErrAPIKeyRequired error. Get your API key at
-// https://console.typesafe.ai/settings/keys
-//
-// ProviderOptionModel accepts a model ID or alias, e.g. "jev-latest", "jev-preview" or "jev-1.13.0".
-// ModelCheap, ModelGood and ModelSOTA all resolve to "jev-latest", TypeSafe serving a single model.
-//
-// ProviderOptionRemote defaults to "https://api.typesafe.ai".
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
-	var preloadedModels []genai.Model
-	remote := "https://api.typesafe.ai"
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			if mod := genai.Modalities(v); len(mod) != 0 && !slices.Equal(mod, genai.Modalities{genai.ModalityText}) {
-				return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-			}
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionRemote:
-			remote = string(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://console.typesafe.ai/settings/keys"
-	var err error
-	if apiKey == "" {
-		if apiKey = os.Getenv("TYPESAFE_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "TYPESAFE_API_KEY", URL: apiKeyURL}
-		}
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		remote:          remote,
-		preloadedModels: preloadedModels,
-		impl: base.ProviderBase[*ErrorResponse]{
-			APIKeyURL: apiKeyURL,
-			Lenient:   internal.BeLenient,
-			Client: http.Client{
-				Transport: &roundtrippers.Header{
-					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-					Transport: &roundtrippers.RequestID{Transport: t},
-				},
-			},
-		},
-	}
-	if err == nil {
-		c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			c.impl.Model = c.selectBestModel(model)
-		default:
-			c.impl.Model = model
-		}
-	}
-	return c, err
 }

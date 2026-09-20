@@ -381,6 +381,12 @@ type Message struct {
 	_ struct{}
 }
 
+// NewTextMessage is a shorthand function to create a Message with a single
+// text block.
+func NewTextMessage(text string) Message {
+	return Message{Requests: []Request{{Text: text}}}
+}
+
 // IsZero returns true if the message is empty.
 func (m *Message) IsZero() bool {
 	return m.User == "" && len(m.Requests) == 0 && len(m.Replies) == 0 && len(m.ToolCallResults) == 0
@@ -631,12 +637,6 @@ func (m *Message) Accumulate(mf *Reply) error {
 
 	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
 	return nil
-}
-
-// NewTextMessage is a shorthand function to create a Message with a single
-// text block.
-func NewTextMessage(text string) Message {
-	return Message{Requests: []Request{{Text: text}}}
 }
 
 // Request is a block of content in the message meant to be visible in a

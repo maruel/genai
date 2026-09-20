@@ -1,0 +1,5 @@
+# golangci-lint custom binary build config: methodfilecheck module plugin.
+version: "2"
+plugins:
+  - module: github.com/maruel/methodfilecheck
+    version: v0.1.0

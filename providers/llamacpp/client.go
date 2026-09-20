@@ -155,6 +155,83 @@ type Client struct {
 	encoding       *PromptEncoding
 }
 
+// New creates a new client to talk to a llama-server instance.
+//
+// ProviderOptionRemote defaults to "http://localhost:8080".
+//
+// llama-server doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
+//
+// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
+// to determine which model is already loaded.
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var baseURL, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionRemote:
+			baseURL = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      baseURL + "/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				ModelOptional: true,
+				Lenient:       internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.RequestID{Transport: t},
+				},
+			},
+		},
+		baseURL:        baseURL,
+		completionsURL: baseURL + "/completions",
+		modelsURL:      baseURL + "/v1/models",
+	}
+	var err error
+	switch model {
+	case "":
+	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
+			c.impl.OutputModalities = mod
+		}
+	default:
+		c.impl.Model = model
+		c.impl.OutputModalities = mod
+	}
+	return c, err
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -509,83 +586,6 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 		}
 	}
 	return nil
-}
-
-// New creates a new client to talk to a llama-server instance.
-//
-// ProviderOptionRemote defaults to "http://localhost:8080".
-//
-// llama-server doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
-//
-// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
-// to determine which model is already loaded.
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var baseURL, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionRemote:
-			baseURL = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	if baseURL == "" {
-		baseURL = "http://localhost:8080"
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      baseURL + "/chat/completions",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				ModelOptional: true,
-				Lenient:       internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.RequestID{Transport: t},
-				},
-			},
-		},
-		baseURL:        baseURL,
-		completionsURL: baseURL + "/completions",
-		modelsURL:      baseURL + "/v1/models",
-	}
-	var err error
-	switch model {
-	case "":
-	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
-			c.impl.OutputModalities = mod
-		}
-	default:
-		c.impl.Model = model
-		c.impl.OutputModalities = mod
-	}
-	return c, err
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

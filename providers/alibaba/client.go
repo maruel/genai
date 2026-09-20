@@ -69,6 +69,130 @@ type Client struct {
 	backend ProviderOptionBackend
 }
 
+// New creates a new client for the Alibaba Cloud DashScope API.
+//
+// If ProviderOptionAPIKey is not provided, it tries DASHSCOPE_API_KEY_INTL,
+// DASHSCOPE_API_KEY_US, DASHSCOPE_API_KEY_CN (auto-selecting the backend),
+// then DASHSCOPE_API_KEY.
+//
+// ProviderOptionBackend selects a named regional endpoint (e.g. BackendUS).
+// When set, the matching DASHSCOPE_API_KEY_<region> is tried first.
+// ProviderOptionRemote overrides all other endpoint selection with a full URL.
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model, remote string
+	var backend ProviderOptionBackend
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			remote = string(v)
+		case ProviderOptionBackend:
+			backend = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://modelstudio.console.alibabacloud.com/"
+	var err error
+	if apiKey == "" {
+		// When backend is set, try its matching region key first.
+		switch backend {
+		case BackendIntl:
+			apiKey = os.Getenv("DASHSCOPE_API_KEY_INTL")
+		case BackendUS:
+			apiKey = os.Getenv("DASHSCOPE_API_KEY_US")
+		case BackendCN:
+			apiKey = os.Getenv("DASHSCOPE_API_KEY_CN")
+		default:
+			// Auto-detect: first region key found sets the backend.
+			if v := os.Getenv("DASHSCOPE_API_KEY_INTL"); v != "" {
+				apiKey = v
+				backend = BackendIntl
+			} else if v := os.Getenv("DASHSCOPE_API_KEY_US"); v != "" {
+				apiKey = v
+				backend = BackendUS
+			} else if v := os.Getenv("DASHSCOPE_API_KEY_CN"); v != "" {
+				apiKey = v
+				backend = BackendCN
+			}
+		}
+		if apiKey == "" {
+			if apiKey = os.Getenv("DASHSCOPE_API_KEY"); apiKey == "" {
+				err = &base.ErrAPIKeyRequired{EnvVar: "DASHSCOPE_API_KEY", URL: apiKeyURL}
+			}
+		}
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	if remote == "" {
+		switch backend {
+		case BackendUS:
+			remote = "https://dashscope-us.aliyuncs.com/compatible-mode/v1"
+		case BackendCN:
+			remote = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+		default:
+			remote = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+		}
+	}
+	c := &Client{
+		baseURL: remote,
+		backend: backend,
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			GenSyncURL:      remote + "/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			c.impl.OutputModalities = mod
+		default:
+			c.impl.Model = model
+			c.impl.OutputModalities = mod
+		}
+	}
+	return c, err
+}
+
 // Name implements genai.Provider.
 func (c *Client) Name() string {
 	return "alibaba"
@@ -247,130 +371,6 @@ type GenOption struct {
 // Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
 	return nil
-}
-
-// New creates a new client for the Alibaba Cloud DashScope API.
-//
-// If ProviderOptionAPIKey is not provided, it tries DASHSCOPE_API_KEY_INTL,
-// DASHSCOPE_API_KEY_US, DASHSCOPE_API_KEY_CN (auto-selecting the backend),
-// then DASHSCOPE_API_KEY.
-//
-// ProviderOptionBackend selects a named regional endpoint (e.g. BackendUS).
-// When set, the matching DASHSCOPE_API_KEY_<region> is tried first.
-// ProviderOptionRemote overrides all other endpoint selection with a full URL.
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model, remote string
-	var backend ProviderOptionBackend
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		case genai.ProviderOptionRemote:
-			remote = string(v)
-		case ProviderOptionBackend:
-			backend = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://modelstudio.console.alibabacloud.com/"
-	var err error
-	if apiKey == "" {
-		// When backend is set, try its matching region key first.
-		switch backend {
-		case BackendIntl:
-			apiKey = os.Getenv("DASHSCOPE_API_KEY_INTL")
-		case BackendUS:
-			apiKey = os.Getenv("DASHSCOPE_API_KEY_US")
-		case BackendCN:
-			apiKey = os.Getenv("DASHSCOPE_API_KEY_CN")
-		default:
-			// Auto-detect: first region key found sets the backend.
-			if v := os.Getenv("DASHSCOPE_API_KEY_INTL"); v != "" {
-				apiKey = v
-				backend = BackendIntl
-			} else if v := os.Getenv("DASHSCOPE_API_KEY_US"); v != "" {
-				apiKey = v
-				backend = BackendUS
-			} else if v := os.Getenv("DASHSCOPE_API_KEY_CN"); v != "" {
-				apiKey = v
-				backend = BackendCN
-			}
-		}
-		if apiKey == "" {
-			if apiKey = os.Getenv("DASHSCOPE_API_KEY"); apiKey == "" {
-				err = &base.ErrAPIKeyRequired{EnvVar: "DASHSCOPE_API_KEY", URL: apiKeyURL}
-			}
-		}
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	if remote == "" {
-		switch backend {
-		case BackendUS:
-			remote = "https://dashscope-us.aliyuncs.com/compatible-mode/v1"
-		case BackendCN:
-			remote = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-		default:
-			remote = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
-		}
-	}
-	c := &Client{
-		baseURL: remote,
-		backend: backend,
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      remote + "/chat/completions",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			c.impl.OutputModalities = mod
-		default:
-			c.impl.Model = model
-			c.impl.OutputModalities = mod
-		}
-	}
-	return c, err
 }
 
 // ProcessStream converts raw stream chunks to genai.Reply fragments.

@@ -40,6 +40,30 @@ type Recorder struct {
 	sanitize LineSanitizer
 }
 
+// New creates a Recorder for the given path.
+//
+// The path should not include the ".ndjson" extension; it is appended
+// automatically. A non-empty fixture is replayed. Empty fixtures are removed
+// because they are incomplete recordings, then recorded again. If sanitize is
+// non-nil, it transforms each recorded line before persistence.
+func New(path string, sanitize LineSanitizer) (*Recorder, error) {
+	fixture := path + ".ndjson"
+	r := &Recorder{fixture: fixture, sanitize: sanitize}
+	st, err := os.Stat(fixture)
+	if err == nil && st.Size() != 0 {
+		r.replay = true
+		return r, nil
+	}
+	if err == nil {
+		if err := os.Remove(fixture); err != nil {
+			return nil, fmt.Errorf("remove empty fixture: %w", err)
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("stat fixture: %w", err)
+	}
+	return r, nil
+}
+
 // Stop is called when the recording session is done.
 //
 // It discards an empty fixture because it is an incomplete recording and must
@@ -93,30 +117,6 @@ func (r *Recorder) Wrap(inner genai.Starter) genai.Starter {
 // LineSanitizer transforms one recorded stdout line without changing the data
 // returned to the subprocess client.
 type LineSanitizer func([]byte) ([]byte, error)
-
-// New creates a Recorder for the given path.
-//
-// The path should not include the ".ndjson" extension; it is appended
-// automatically. A non-empty fixture is replayed. Empty fixtures are removed
-// because they are incomplete recordings, then recorded again. If sanitize is
-// non-nil, it transforms each recorded line before persistence.
-func New(path string, sanitize LineSanitizer) (*Recorder, error) {
-	fixture := path + ".ndjson"
-	r := &Recorder{fixture: fixture, sanitize: sanitize}
-	st, err := os.Stat(fixture)
-	if err == nil && st.Size() != 0 {
-		r.replay = true
-		return r, nil
-	}
-	if err == nil {
-		if err := os.Remove(fixture); err != nil {
-			return nil, fmt.Errorf("remove empty fixture: %w", err)
-		}
-	} else if !errors.Is(err, os.ErrNotExist) {
-		return nil, fmt.Errorf("stat fixture: %w", err)
-	}
-	return r, nil
-}
 
 func replayFixture(fixture string) (io.WriteCloser, io.ReadCloser, func() error, error) {
 	data, err := os.ReadFile(fixture)

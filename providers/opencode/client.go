@@ -418,106 +418,6 @@ type handshakeResult struct {
 	configOptions   []SessionConfigOption
 }
 
-func (h *handshakeResult) setConfigOptions(opts []SessionConfigOption) {
-	h.configOptions = opts
-	for i := range opts {
-		if opts[i].ID != ConfigOptionModel {
-			continue
-		}
-		h.availableModels = make([]ModelInfo, len(opts[i].Options))
-		for j := range opts[i].Options {
-			h.availableModels[j] = ModelInfo{ModelID: opts[i].Options[j].Value, Name: opts[i].Options[j].Name}
-		}
-		return
-	}
-}
-
-func (h *handshakeResult) configOption(id ConfigOptionID) *SessionConfigOption {
-	for i := range h.configOptions {
-		if h.configOptions[i].ID == id {
-			return &h.configOptions[i]
-		}
-	}
-	return nil
-}
-
-func (h *handshakeResult) setSessionConfigOption(stdin io.Writer, sc *bufio.Scanner, id ConfigOptionID, value string) error {
-	option := h.configOption(id)
-	if option == nil {
-		return fmt.Errorf("opencode ACP does not expose %q for the selected model", id)
-	}
-	if option.Type != ConfigOptionTypeSelect {
-		return fmt.Errorf("opencode ACP %q option has unsupported type %q", id, option.Type)
-	}
-	// Model selections may append a valid OpenCode variant to the advertised
-	// base model ID, so the server must validate them. Other options are exact.
-	valid := id == ConfigOptionModel
-	if !valid {
-		for i := range option.Options {
-			if option.Options[i].Value == value {
-				valid = true
-				break
-			}
-		}
-	}
-	if !valid {
-		available := make([]string, len(option.Options))
-		for i := range option.Options {
-			available[i] = option.Options[i].Value
-		}
-		return fmt.Errorf("opencode ACP %q %q is unavailable; supported values: %s", id, value, strings.Join(available, ", "))
-	}
-
-	h.nextID++
-	params, err := marshalJSONRaw(SetSessionConfigOptionParams{SessionID: h.sessionID, ConfigID: id, Value: value})
-	if err != nil {
-		return fmt.Errorf("marshal session/set_config_option params: %w", err)
-	}
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		ID:      h.nextID,
-		Method:  MethodSessionSetConfigOption,
-		Params:  params,
-	}); err != nil {
-		return fmt.Errorf("write session/set_config_option: %w", err)
-	}
-	data, err := readResponse(sc, stdin, h.nextID)
-	if err != nil {
-		return fmt.Errorf("read session/set_config_option response: %w", err)
-	}
-	var result SetSessionConfigOptionResult
-	if err := internal.UnmarshalJSON(data, &result); err != nil {
-		return fmt.Errorf("parse session/set_config_option response: %w", err)
-	}
-	if len(result.ConfigOptions) == 0 {
-		return errors.New("session/set_config_option response missing configOptions")
-	}
-	h.setConfigOptions(result.ConfigOptions)
-	return nil
-}
-
-func (h *handshakeResult) setSessionModel(stdin io.Writer, sc *bufio.Scanner, model string) error {
-	if h.configOption(ConfigOptionModel) != nil {
-		return h.setSessionConfigOption(stdin, sc, ConfigOptionModel, model)
-	}
-
-	h.nextID++
-	params, err := marshalJSONRaw(SetSessionModelParams{SessionID: h.sessionID, ModelID: model})
-	if err != nil {
-		return fmt.Errorf("marshal session/set_model params: %w", err)
-	}
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		ID:      h.nextID,
-		Method:  MethodSessionSetModel,
-		Params:  params,
-	}); err != nil {
-		return fmt.Errorf("write session/set_model: %w", err)
-	}
-	_, err = readResponse(sc, stdin, h.nextID)
-	return err
-}
-
 // handshake performs the ACP initialize → session/new sequence.
 func handshake(stdin io.Writer, sc *bufio.Scanner, mdl string, effort Effort, mode Mode, resumeSessionID string) (*handshakeResult, error) {
 	hs := &handshakeResult{}
@@ -619,6 +519,106 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl string, effort Effort, mo
 	}
 
 	return hs, nil
+}
+
+func (h *handshakeResult) setConfigOptions(opts []SessionConfigOption) {
+	h.configOptions = opts
+	for i := range opts {
+		if opts[i].ID != ConfigOptionModel {
+			continue
+		}
+		h.availableModels = make([]ModelInfo, len(opts[i].Options))
+		for j := range opts[i].Options {
+			h.availableModels[j] = ModelInfo{ModelID: opts[i].Options[j].Value, Name: opts[i].Options[j].Name}
+		}
+		return
+	}
+}
+
+func (h *handshakeResult) configOption(id ConfigOptionID) *SessionConfigOption {
+	for i := range h.configOptions {
+		if h.configOptions[i].ID == id {
+			return &h.configOptions[i]
+		}
+	}
+	return nil
+}
+
+func (h *handshakeResult) setSessionConfigOption(stdin io.Writer, sc *bufio.Scanner, id ConfigOptionID, value string) error {
+	option := h.configOption(id)
+	if option == nil {
+		return fmt.Errorf("opencode ACP does not expose %q for the selected model", id)
+	}
+	if option.Type != ConfigOptionTypeSelect {
+		return fmt.Errorf("opencode ACP %q option has unsupported type %q", id, option.Type)
+	}
+	// Model selections may append a valid OpenCode variant to the advertised
+	// base model ID, so the server must validate them. Other options are exact.
+	valid := id == ConfigOptionModel
+	if !valid {
+		for i := range option.Options {
+			if option.Options[i].Value == value {
+				valid = true
+				break
+			}
+		}
+	}
+	if !valid {
+		available := make([]string, len(option.Options))
+		for i := range option.Options {
+			available[i] = option.Options[i].Value
+		}
+		return fmt.Errorf("opencode ACP %q %q is unavailable; supported values: %s", id, value, strings.Join(available, ", "))
+	}
+
+	h.nextID++
+	params, err := marshalJSONRaw(SetSessionConfigOptionParams{SessionID: h.sessionID, ConfigID: id, Value: value})
+	if err != nil {
+		return fmt.Errorf("marshal session/set_config_option params: %w", err)
+	}
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      h.nextID,
+		Method:  MethodSessionSetConfigOption,
+		Params:  params,
+	}); err != nil {
+		return fmt.Errorf("write session/set_config_option: %w", err)
+	}
+	data, err := readResponse(sc, stdin, h.nextID)
+	if err != nil {
+		return fmt.Errorf("read session/set_config_option response: %w", err)
+	}
+	var result SetSessionConfigOptionResult
+	if err := internal.UnmarshalJSON(data, &result); err != nil {
+		return fmt.Errorf("parse session/set_config_option response: %w", err)
+	}
+	if len(result.ConfigOptions) == 0 {
+		return errors.New("session/set_config_option response missing configOptions")
+	}
+	h.setConfigOptions(result.ConfigOptions)
+	return nil
+}
+
+func (h *handshakeResult) setSessionModel(stdin io.Writer, sc *bufio.Scanner, model string) error {
+	if h.configOption(ConfigOptionModel) != nil {
+		return h.setSessionConfigOption(stdin, sc, ConfigOptionModel, model)
+	}
+
+	h.nextID++
+	params, err := marshalJSONRaw(SetSessionModelParams{SessionID: h.sessionID, ModelID: model})
+	if err != nil {
+		return fmt.Errorf("marshal session/set_model params: %w", err)
+	}
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
+		JSONRPC: "2.0",
+		ID:      h.nextID,
+		Method:  MethodSessionSetModel,
+		Params:  params,
+	}); err != nil {
+		return fmt.Errorf("write session/set_model: %w", err)
+	}
+	_, err = readResponse(sc, stdin, h.nextID)
+	return err
 }
 
 // sendUserPrompt sends a session/prompt JSON-RPC request with the user message.

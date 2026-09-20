@@ -76,6 +76,157 @@ type Client struct {
 	baseURL string
 }
 
+// New creates a new client to talk to the OpenAI Responses API.
+//
+// If ProviderOptionAPIKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your API key at https://platform.openai.com/settings/organization/api-keys
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://platform.openai.com/docs/models
+//
+// # Documents
+//
+// OpenAI supports many types of documents, listed at
+// https://platform.openai.com/docs/assistants/tools/file-search#supported-files
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model, remote string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			remote = string(v)
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
+	var err error
+	if apiKey == "" {
+		apiKey = os.Getenv("OPENAI_API_KEY")
+		if apiKey == "" && wrapper == nil {
+			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
+		}
+	}
+	switch len(modalities) {
+	case 0:
+		// Auto-detect below.
+	case 1:
+		switch modalities[0] {
+		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityDocument:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+	}
+	baseURL := "https://api.openai.com/v1"
+	if remote != "" {
+		baseURL = strings.TrimRight(remote, "/")
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		baseURL: baseURL,
+		impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
+			GenSyncURL:      baseURL + "/responses",
+			GenStreamURL:    baseURL + "/responses",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProcessHeaders:  openaibase.ProcessHeaders,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: "", // OpenAI error message prints the api key URL already.
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+	}
+	c.shared = openaibase.Client{
+		Impl:            &c.impl.ProviderBase,
+		BaseURL:         baseURL,
+		PreloadedModels: preloadedModels,
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			var mod genai.Modality
+			switch len(modalities) {
+			case 0:
+				mod = genai.ModalityText
+			case 1:
+				mod = modalities[0]
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
+			}
+			switch mod {
+			case genai.ModalityText:
+				if c.impl.Model, err = c.shared.SelectBestTextModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityImage:
+				if c.impl.Model, err = c.shared.SelectBestImageModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityVideo:
+				if c.impl.Model, err = c.shared.SelectBestVideoModel(ctx, model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityAudio:
+				return nil, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+			case genai.ModalityDocument:
+				// TODO: Implement document modality model selection.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
+			default:
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
+			}
+		default:
+			c.impl.Model = model
+			switch len(modalities) {
+			case 0:
+				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
+			case 1:
+				c.impl.OutputModalities = modalities
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
+			}
+		}
+	}
+	return c, err
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.
@@ -385,157 +536,6 @@ func (c *Client) prepareDelta(msgs genai.Messages, opts []genai.GenOption) (clea
 		return cleaned, respID
 	}
 	return msgs, ""
-}
-
-// New creates a new client to talk to the OpenAI Responses API.
-//
-// If ProviderOptionAPIKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your API key at https://platform.openai.com/settings/organization/api-keys
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://platform.openai.com/docs/models
-//
-// # Documents
-//
-// OpenAI supports many types of documents, listed at
-// https://platform.openai.com/docs/assistants/tools/file-search#supported-files
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model, remote string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		case genai.ProviderOptionRemote:
-			remote = string(v)
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
-	var err error
-	if apiKey == "" {
-		apiKey = os.Getenv("OPENAI_API_KEY")
-		if apiKey == "" && wrapper == nil {
-			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
-		}
-	}
-	switch len(modalities) {
-	case 0:
-		// Auto-detect below.
-	case 1:
-		switch modalities[0] {
-		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
-		case genai.ModalityDocument:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
-		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
-		}
-	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
-	}
-	baseURL := "https://api.openai.com/v1"
-	if remote != "" {
-		baseURL = strings.TrimRight(remote, "/")
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		baseURL: baseURL,
-		impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
-			GenSyncURL:      baseURL + "/responses",
-			GenStreamURL:    baseURL + "/responses",
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProcessHeaders:  openaibase.ProcessHeaders,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: "", // OpenAI error message prints the api key URL already.
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-	}
-	c.shared = openaibase.Client{
-		Impl:            &c.impl.ProviderBase,
-		BaseURL:         baseURL,
-		PreloadedModels: preloadedModels,
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			var mod genai.Modality
-			switch len(modalities) {
-			case 0:
-				mod = genai.ModalityText
-			case 1:
-				mod = modalities[0]
-			default:
-				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
-			}
-			switch mod {
-			case genai.ModalityText:
-				if c.impl.Model, err = c.shared.SelectBestTextModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityImage:
-				if c.impl.Model, err = c.shared.SelectBestImageModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityVideo:
-				if c.impl.Model, err = c.shared.SelectBestVideoModel(ctx, model); err != nil {
-					return nil, err
-				}
-				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityAudio:
-				return nil, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
-			case genai.ModalityDocument:
-				// TODO: Implement document modality model selection.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
-			default:
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
-			}
-		default:
-			c.impl.Model = model
-			switch len(modalities) {
-			case 0:
-				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
-			case 1:
-				c.impl.OutputModalities = modalities
-			default:
-				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
-			}
-		}
-	}
-	return c, err
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

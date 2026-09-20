@@ -59,6 +59,79 @@ type Client struct {
 	chatURL         string
 }
 
+// New creates a new client to talk to the Ollama API.
+//
+// ProviderOptionRemote defaults to "http://localhost:11434".
+//
+// Ollama doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://ollama.com/library
+//
+// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is using hardcoded models. Before using an
+// hardcoded model ID, it will ask ollama to determine if a model is already loaded and it will use that
+// instead.
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var baseURL, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionRemote:
+			baseURL = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	if baseURL == "" {
+		baseURL = "http://localhost:11434"
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	c := &Client{
+		impl: base.ProviderBase[*ErrorResponse]{
+			Lenient: internal.BeLenient,
+			Client: http.Client{
+				Transport: &roundtrippers.RequestID{Transport: t},
+			},
+		},
+		preloadedModels: preloadedModels,
+		baseURL:         baseURL,
+		chatURL:         baseURL + "/api/chat",
+	}
+	switch model {
+	case "":
+	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+		c.impl.Model = c.selectBestTextModel(ctx, model)
+		c.impl.OutputModalities = mod
+	default:
+		c.impl.Model = model
+		c.impl.OutputModalities = mod
+	}
+	return c, nil
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -316,79 +389,6 @@ func (c *Client) Validate() error {
 		return errors.New("a model is required")
 	}
 	return nil
-}
-
-// New creates a new client to talk to the Ollama API.
-//
-// ProviderOptionRemote defaults to "http://localhost:11434".
-//
-// Ollama doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://ollama.com/library
-//
-// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is using hardcoded models. Before using an
-// hardcoded model ID, it will ask ollama to determine if a model is already loaded and it will use that
-// instead.
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var baseURL, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionRemote:
-			baseURL = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	if baseURL == "" {
-		baseURL = "http://localhost:11434"
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	c := &Client{
-		impl: base.ProviderBase[*ErrorResponse]{
-			Lenient: internal.BeLenient,
-			Client: http.Client{
-				Transport: &roundtrippers.RequestID{Transport: t},
-			},
-		},
-		preloadedModels: preloadedModels,
-		baseURL:         baseURL,
-		chatURL:         baseURL + "/api/chat",
-	}
-	switch model {
-	case "":
-	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-		c.impl.Model = c.selectBestTextModel(ctx, model)
-		c.impl.OutputModalities = mod
-	default:
-		c.impl.Model = model
-		c.impl.OutputModalities = mod
-	}
-	return c, nil
 }
 
 // processJSONStream processes a \n separated JSON stream. This is different from other backends which use

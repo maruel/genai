@@ -19,20 +19,27 @@ tools:
 	@command -v uv > /dev/null 2>&1 || { echo 'uv is required to install the Python tools; see https://docs.astral.sh/uv/' >&2; exit 1; }
 	@ruff --version 2>/dev/null | grep -Fqw "$(RUFF_VERSION)" || uv tool install --force --quiet ruff==$(RUFF_VERSION)
 
+
+# methodfilecheck (see .golangci.yml) is a golangci-lint module plugin, so the
+# Go linting must run through the custom binary built from the published
+# plugin module.
+custom-gcl: .custom-gcl.yml
+	@golangci-lint custom --version $(GOLANGCI_LINT_VERSION)
+
 build:
 	@go build ./...
 
 test:
 	@go test ./...
 
-lint: tools
-	@golangci-lint run --show-stats=false ./...
+lint: tools custom-gcl
+	@./custom-gcl run --show-stats=false ./...
 	@ruff check --quiet .
 	@python3 scripts/lint_binaries.py
 	@python3 scripts/update_agents_file_index.py --check
 
 lint-fix: tools
-	@golangci-lint run --show-stats=false ./... --fix
+	@./custom-gcl run --show-stats=false ./... --fix
 	@ruff check --quiet --fix .
 	@ruff format --quiet .
 	@python3 scripts/update_agents_file_index.py

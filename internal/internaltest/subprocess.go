@@ -31,13 +31,6 @@ type SubprocessRecorder struct {
 	forceRR bool // true when a fresh trace should be recorded
 }
 
-// Wrap returns a starter wrapper that either records or replays subprocess I/O.
-//
-// It implements the genai.ProviderOptionStarterWrapper signature.
-func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
-	return s.rec.Wrap(inner)
-}
-
 // NewSubprocessRecorder returns a recorder whose fixture file lives at
 // testdata/<name>.ndjson.
 //
@@ -76,4 +69,11 @@ func NewSubprocessRecorder(t testing.TB, name, binaryName string, sanitize subpr
 		}
 	})
 	return &SubprocessRecorder{rec: r, forceRR: forceRR}
+}
+
+// Wrap returns a starter wrapper that either records or replays subprocess I/O.
+//
+// It implements the genai.ProviderOptionStarterWrapper signature.
+func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
+	return s.rec.Wrap(inner)
 }

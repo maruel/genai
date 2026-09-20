@@ -65,6 +65,105 @@ type Client struct {
 	accountID string
 }
 
+// New creates a new client to talk to the Cloudflare Workers AI platform API.
+//
+// If AccountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
+// If ProviderOptionAPIKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
+// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
+// Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
+//
+// To use multiple models, create multiple clients.
+// Use one of the model from https://developers.cloudflare.com/workers-ai/models/
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, accountID, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
+		return nil, err
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case AccountID:
+			accountID = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
+	}
+	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
+	var err error
+	if accountID == "" {
+		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_ACCOUNT_ID", URL: apiKeyURL}
+		}
+	}
+	if apiKey == "" {
+		if apiKey = os.Getenv("CLOUDFLARE_API_KEY"); apiKey == "" {
+			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_API_KEY", URL: apiKeyURL}
+		}
+	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+		// TODO: Cloudflare supports non-text modalities but it is not currently implemented.
+		// https://developers.cloudflare.com/workers-ai/models/?tasks=Text-to-Image
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
+	}
+	t := base.DefaultTransport
+	if wrapper != nil {
+		t = wrapper(t)
+	}
+	// Investigate websockets?
+	// https://blog.cloudflare.com/workers-ai-streaming/ and
+	// https://developers.cloudflare.com/workers/examples/websockets/
+	c := &Client{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+			ProcessStream:   ProcessStream,
+			PreloadedModels: preloadedModels,
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				APIKeyURL: apiKeyURL,
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
+					},
+				},
+			},
+		},
+		accountID: accountID,
+	}
+	if err == nil {
+		switch model {
+		case "":
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
+			// Important: the model must not be path escaped!
+			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
+			c.impl.OutputModalities = mod
+		default:
+			c.impl.Model = model
+			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
+			c.impl.OutputModalities = mod
+		}
+	}
+	return c, err
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
@@ -191,105 +290,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		}
 	}
 	return models, nil
-}
-
-// New creates a new client to talk to the Cloudflare Workers AI platform API.
-//
-// If AccountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
-// If ProviderOptionAPIKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
-// If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
-// Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
-//
-// To use multiple models, create multiple clients.
-// Use one of the model from https://developers.cloudflare.com/workers-ai/models/
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, accountID, model string
-	var modalities genai.Modalities
-	var preloadedModels []genai.Model
-	var wrapper func(http.RoundTripper) http.RoundTripper
-	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
-		return nil, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return nil, err
-		}
-		switch v := opt.(type) {
-		case genai.ProviderOptionAPIKey:
-			apiKey = string(v)
-		case AccountID:
-			accountID = string(v)
-		case genai.ProviderOptionModel:
-			model = string(v)
-		case genai.ProviderOptionModalities:
-			modalities = genai.Modalities(v)
-		case genai.ProviderOptionPreloadedModels:
-			preloadedModels = []genai.Model(v)
-		case genai.ProviderOptionTransportWrapper:
-			wrapper = v
-		default:
-			return nil, fmt.Errorf("unsupported option type %T", opt)
-		}
-	}
-	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
-	var err error
-	if accountID == "" {
-		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_ACCOUNT_ID", URL: apiKeyURL}
-		}
-	}
-	if apiKey == "" {
-		if apiKey = os.Getenv("CLOUDFLARE_API_KEY"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_API_KEY", URL: apiKeyURL}
-		}
-	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		// TODO: Cloudflare supports non-text modalities but it is not currently implemented.
-		// https://developers.cloudflare.com/workers-ai/models/?tasks=Text-to-Image
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
-	}
-	t := base.DefaultTransport
-	if wrapper != nil {
-		t = wrapper(t)
-	}
-	// Investigate websockets?
-	// https://blog.cloudflare.com/workers-ai-streaming/ and
-	// https://developers.cloudflare.com/workers/examples/websockets/
-	c := &Client{
-		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			ProcessStream:   ProcessStream,
-			PreloadedModels: preloadedModels,
-			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				APIKeyURL: apiKeyURL,
-				Lenient:   internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
-				},
-			},
-		},
-		accountID: accountID,
-	}
-	if err == nil {
-		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
-			// Important: the model must not be path escaped!
-			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
-			c.impl.OutputModalities = mod
-		default:
-			c.impl.Model = model
-			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
-			c.impl.OutputModalities = mod
-		}
-	}
-	return c, err
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

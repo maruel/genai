@@ -104,46 +104,6 @@ type cachedTokens struct {
 	AccountID    string `json:"account_id,omitempty"`
 }
 
-// load reads cached tokens from disk.
-func (t *cachedTokens) load() error {
-	p, err := cachePath()
-	if err != nil {
-		return err
-	}
-	b, err := os.ReadFile(p)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(b, t)
-}
-
-// save writes tokens to disk.
-func (t *cachedTokens) save() error {
-	p, err := cachePath()
-	if err != nil {
-		return err
-	}
-	if err := os.MkdirAll(filepath.Dir(p), 0o700); err != nil {
-		return err
-	}
-	b, err := json.Marshal(t)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(p, b, 0o600)
-}
-
-// OAuth2 flow.
-
-// cachePath returns the path to the token cache file.
-func cachePath() (string, error) {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(dir, "genai-oauth2-example", "codex-tokens.json"), nil
-}
-
 // getTokens returns valid tokens, using cached tokens if available and
 // refreshing if needed. Falls back to a full browser login.
 func getTokens(ctx context.Context) (*cachedTokens, error) {
@@ -203,43 +163,6 @@ func doBrowserLogin(ctx context.Context) (*cachedTokens, error) {
 	}, nil
 }
 
-// codeExchangeResponse is the JSON response from the authorization code exchange.
-type codeExchangeResponse struct {
-	IDToken      string `json:"id_token"`
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-// exchangeCode exchanges an authorization code for tokens.
-func exchangeCode(ctx context.Context, redirectURI, verifier, code string) (*codeExchangeResponse, error) {
-	form := url.Values{
-		"grant_type":    {"authorization_code"},
-		"client_id":     {openAIClientID},
-		"code":          {code},
-		"redirect_uri":  {redirectURI},
-		"code_verifier": {verifier},
-	}
-	req, err := http.NewRequestWithContext(ctx, "POST", openAIIssuer+"/oauth/token", strings.NewReader(form.Encode()))
-	if err != nil {
-		return nil, fmt.Errorf("creating request: %w", err)
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("exchanging code for tokens: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		b, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("token exchange returned %s: %s", resp.Status, b)
-	}
-	var tok codeExchangeResponse
-	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
-		return nil, fmt.Errorf("decoding token response: %w", err)
-	}
-	return &tok, nil
-}
-
 // refreshToken uses a refresh token to obtain a new access token.
 func refreshToken(ctx context.Context, old *cachedTokens) (*cachedTokens, error) {
 	body, err := json.Marshal(map[string]string{
@@ -288,6 +211,83 @@ func refreshToken(ctx context.Context, old *cachedTokens) (*cachedTokens, error)
 		}
 	}
 	return result, nil
+}
+
+// load reads cached tokens from disk.
+func (t *cachedTokens) load() error {
+	p, err := cachePath()
+	if err != nil {
+		return err
+	}
+	b, err := os.ReadFile(p)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(b, t)
+}
+
+// save writes tokens to disk.
+func (t *cachedTokens) save() error {
+	p, err := cachePath()
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(p), 0o700); err != nil {
+		return err
+	}
+	b, err := json.Marshal(t)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(p, b, 0o600)
+}
+
+// OAuth2 flow.
+
+// cachePath returns the path to the token cache file.
+func cachePath() (string, error) {
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, "genai-oauth2-example", "codex-tokens.json"), nil
+}
+
+// codeExchangeResponse is the JSON response from the authorization code exchange.
+type codeExchangeResponse struct {
+	IDToken      string `json:"id_token"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+// exchangeCode exchanges an authorization code for tokens.
+func exchangeCode(ctx context.Context, redirectURI, verifier, code string) (*codeExchangeResponse, error) {
+	form := url.Values{
+		"grant_type":    {"authorization_code"},
+		"client_id":     {openAIClientID},
+		"code":          {code},
+		"redirect_uri":  {redirectURI},
+		"code_verifier": {verifier},
+	}
+	req, err := http.NewRequestWithContext(ctx, "POST", openAIIssuer+"/oauth/token", strings.NewReader(form.Encode()))
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("exchanging code for tokens: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		b, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("token exchange returned %s: %s", resp.Status, b)
+	}
+	var tok codeExchangeResponse
+	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
+		return nil, fmt.Errorf("decoding token response: %w", err)
+	}
+	return &tok, nil
 }
 
 // extractAccountID decodes a JWT id_token and extracts the

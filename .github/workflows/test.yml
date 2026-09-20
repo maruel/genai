@@ -122,9 +122,8 @@ jobs:
         if: always()
         run: |
           go generate ./...
-          # Also test for untracked files. go generate should not generate ignored
-          # files either.
-          TOUCHED=$(git status --porcelain --ignored)
+          # Also test for untracked files.
+          TOUCHED=$(git status --porcelain)
           if ! test -z "$TOUCHED"; then
             echo "go generate created these files, please fix:"
             echo "$TOUCHED"
@@ -134,7 +133,7 @@ jobs:
         if: always()
         run: |
           go mod tidy
-          TOUCHED=$(git status --porcelain --ignored)
+          TOUCHED=$(git status --porcelain)
           if ! test -z "$TOUCHED"; then
             echo "go mod tidy was not clean, please update:"
             git diff

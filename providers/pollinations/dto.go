@@ -746,6 +746,16 @@ type PendingChangePricing struct {
 	PromptTextTokens          string `json:"promptTextTokens,omitzero"`
 }
 
+// Health is the current operational state of a model endpoint.
+type Health struct {
+	// Status is one of "healthy", "degraded", "down" or "unknown".
+	Status string `json:"status,omitzero"`
+	// SuccessRate is the fraction of requests that succeeded.
+	SuccessRate base.Float64 `json:"success_rate,omitzero"`
+	// Requests is the number of requests observed in the current window.
+	Requests int64 `json:"requests,omitzero"`
+}
+
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
 	AddedDate           int64               `json:"added_date,omitzero"`
@@ -754,6 +764,7 @@ type ImageModel struct {
 	Brand               string              `json:"brand"`
 	Publisher           string              `json:"publisher"`
 	BrandURL            string              `json:"brand_url,omitzero"`
+	BrandIconURL        string              `json:"brand_icon_url,omitzero"`
 	Capabilities        []string            `json:"capabilities,omitzero"`
 	Category            string              `json:"category"`
 	Community           bool                `json:"community,omitzero"`
@@ -773,6 +784,7 @@ type ImageModel struct {
 	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
 	RequiredSafety      []string            `json:"required_safety,omitzero"`
 	SupportedEndpoints  []string            `json:"supported_endpoints,omitzero"`
+	Health              Health              `json:"health,omitzero"`
 	// Video generation duration limits. Only set on video models.
 	MaxDuration     base.DurationS `json:"max_duration,omitzero"`
 	MinDuration     base.DurationS `json:"min_duration,omitzero"`
@@ -856,6 +868,7 @@ type TextModel struct {
 	BaseModel           string              `json:"base_model,omitzero"`
 	Brand               string              `json:"brand"`
 	BrandURL            string              `json:"brand_url,omitzero"`
+	BrandIconURL        string              `json:"brand_icon_url,omitzero"`
 	Capabilities        []string            `json:"capabilities,omitzero"`
 	Category            string              `json:"category"`
 	Community           bool                `json:"community"`
@@ -908,6 +921,7 @@ type TextModel struct {
 	RequiredSafety         []string `json:"required_safety,omitzero"`
 	SupportedEndpoints     []string `json:"supported_endpoints,omitzero"`
 	SupportedParameters    []string `json:"supported_parameters,omitzero"`
+	Health                 Health   `json:"health,omitzero"`
 }
 
 // GetID implements genai.Model.

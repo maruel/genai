@@ -62,7 +62,7 @@ func getClientInner(t *testing.T, opts *providerOptions, fn func(http.RoundTripp
 
 func TestImageModelsResponse(t *testing.T) {
 	t.Run("metadata fields", func(t *testing.T) {
-		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","publisher":"Black Forest Labs","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000,"min_duration":6,"max_duration":120,"default_duration":6,"duration_step":6}]`
+		body := `[{"name":"klein","aliases":["flux-klein"],"category":"image","brand":"Black Forest Labs","publisher":"Black Forest Labs","brand_icon_url":"https://media.pollinations.ai/test.png","pricing":{"currency":"pollen","completionImageTokens":"0.01"},"title":"FLUX.2 Klein 4B","description":"FLUX.2 Klein 4B - Fast image generation and editing","input_modalities":["text","image"],"output_modalities":["image"],"max_reference_images":10,"capabilities":[],"alpha":true,"added_date":1768608000000,"min_duration":6,"max_duration":120,"default_duration":6,"duration_step":6,"health":{"status":"healthy","success_rate":99.9,"requests":42}}]`
 		var resp pollinations.ImageModelsResponse
 		dec := json.NewDecoder(strings.NewReader(body))
 		dec.DisallowUnknownFields()
@@ -87,12 +87,24 @@ func TestImageModelsResponse(t *testing.T) {
 		if got := resp[0].DurationStep.AsDuration(); got != 6*time.Second {
 			t.Fatalf("DurationStep = %s, want 6s", got)
 		}
+		if got := resp[0].BrandIconURL; got != "https://media.pollinations.ai/test.png" {
+			t.Fatalf("BrandIconURL = %q, want test URL", got)
+		}
+		if got := resp[0].Health.Status; got != "healthy" {
+			t.Fatalf("Health.Status = %q, want healthy", got)
+		}
+		if got := float64(resp[0].Health.SuccessRate); got != 99.9 {
+			t.Fatalf("Health.SuccessRate = %v, want 99.9", got)
+		}
+		if got := resp[0].Health.Requests; got != 42 {
+			t.Fatalf("Health.Requests = %d, want 42", got)
+		}
 	})
 }
 
 func TestTextModelsResponse(t *testing.T) {
 	t.Run("metadata fields", func(t *testing.T) {
-		body := `[{"name":"openai","aliases":["gpt-5.4-nano"],"category":"text","brand":"OpenAI","publisher":"OpenAI","supported_parameters":["max_tokens","stream"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000015","promptCachedTokens":"0.000000015","completionTextTokens":"0.0000009375"},"title":"GPT-5.4 Nano","description":"GPT-5.4 Nano - Fast & Balanced","input_modalities":["text","image"],"output_modalities":["text"],"max_reference_images":10,"capabilities":["tool_calling"],"tools":true,"context_length":400000,"is_specialized":false,"alpha":true,"added_date":1759795200000}]`
+		body := `[{"name":"openai","aliases":["gpt-5.4-nano"],"category":"text","brand":"OpenAI","publisher":"OpenAI","brand_icon_url":"https://media.pollinations.ai/test.png","supported_parameters":["max_tokens","stream"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000015","promptCachedTokens":"0.000000015","completionTextTokens":"0.0000009375"},"title":"GPT-5.4 Nano","description":"GPT-5.4 Nano - Fast & Balanced","input_modalities":["text","image"],"output_modalities":["text"],"max_reference_images":10,"capabilities":["tool_calling"],"tools":true,"context_length":400000,"is_specialized":false,"alpha":true,"added_date":1759795200000,"health":{"status":"degraded","success_rate":90.5,"requests":7}}]`
 		var resp pollinations.TextModelsResponse
 		dec := json.NewDecoder(strings.NewReader(body))
 		dec.DisallowUnknownFields()
@@ -107,6 +119,18 @@ func TestTextModelsResponse(t *testing.T) {
 		}
 		if resp[0].AddedDate != 1759795200000 {
 			t.Fatalf("AddedDate = %d, want 1759795200000", resp[0].AddedDate)
+		}
+		if got := resp[0].BrandIconURL; got != "https://media.pollinations.ai/test.png" {
+			t.Fatalf("BrandIconURL = %q, want test URL", got)
+		}
+		if got := resp[0].Health.Status; got != "degraded" {
+			t.Fatalf("Health.Status = %q, want degraded", got)
+		}
+		if got := float64(resp[0].Health.SuccessRate); got != 90.5 {
+			t.Fatalf("Health.SuccessRate = %v, want 90.5", got)
+		}
+		if got := resp[0].Health.Requests; got != 7 {
+			t.Fatalf("Health.Requests = %d, want 7", got)
 		}
 	})
 }

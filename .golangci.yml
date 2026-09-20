@@ -10,6 +10,7 @@ run:
 linters:
   enable:
     - bodyclose
+    - commentcheck
     - contextcheck
     - copyloopvar
     - dupword
@@ -34,6 +35,10 @@ linters:
     - whitespace
   settings:
     custom:
+      commentcheck:
+        type: module
+        description: Exported declarations need doc comments starting with their name; doc comments must attach to their declaration.
+        settings: {}
       methodfilecheck:
         type: module
         description: Methods must be declared in the same file as their receiver type, in one contiguous block.

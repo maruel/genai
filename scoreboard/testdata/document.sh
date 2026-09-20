@@ -8,6 +8,6 @@ set -eu
 # sudo apt install texlive-latex-base
 
 if [ ! -f document.pdf ]; then
-	pdflatex document.tex
-	rm document.aux document.log
+  pdflatex document.tex
+  rm document.aux document.log
 fi

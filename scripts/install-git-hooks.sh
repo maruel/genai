@@ -13,7 +13,7 @@ repo_root="$(CDPATH='' cd -- "$script_dir/.." && pwd)"
 readonly repo_root
 
 if ! git -C "$repo_root" rev-parse --git-dir >/dev/null 2>&1; then
-	exit 0
+  exit 0
 fi
 
 git -C "$repo_root" config --local core.hooksPath scripts/hooks

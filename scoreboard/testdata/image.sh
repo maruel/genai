@@ -11,7 +11,7 @@ set -eu
 # Source: https://en.m.wikipedia.org/wiki/File:Banana-Single.jpg
 
 if [ ! -f image.jpg ]; then
-	curl -sSL -o image.jpg 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/330px-Banana-Single.jpg'
+  curl -sSL -o image.jpg 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/330px-Banana-Single.jpg'
 fi
 
 if [ ! -f image.gif ]; then

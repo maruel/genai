@@ -5,11 +5,11 @@
 # Python tool configuration.
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py312"
 line-length = 120
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B"]
+select = ["E", "F", "W", "I", "B", "UP"]
 
 [tool.ruff.format]
 quote-style = "double"

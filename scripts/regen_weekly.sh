@@ -14,10 +14,10 @@ readonly repo_root
 cd -- "$repo_root"
 
 if [[ -f "./.env" ]]; then
-	set -a
-	# shellcheck disable=SC1091
-	source "./.env"
-	set +a
+  set -a
+  # shellcheck disable=SC1091
+  source "./.env"
+  set +a
 fi
 
 go install ./cmd/list-models ./cmd/scoreboard
@@ -25,10 +25,10 @@ go install ./cmd/list-models ./cmd/scoreboard
 EXCLUDE="bfl claudecode codex llamacpp ollama openaicompatible opencode openaibase openaichat openairesponses perplexity pi"
 PROVIDERS=()
 for d in providers/*/; do
-	name=$(basename "$d")
-	if [[ " $EXCLUDE " != *" $name "* ]]; then
-		PROVIDERS+=("$name")
-	fi
+  name=$(basename "$d")
+  if [[ " $EXCLUDE " != *" $name "* ]]; then
+    PROVIDERS+=("$name")
+  fi
 done
 # "openai" is an alias for openairesponses but list-models treats it as a distinct provider.
 PROVIDERS+=("openai")
@@ -36,14 +36,14 @@ mapfile -t PROVIDERS < <(printf '%s\n' "${PROVIDERS[@]}" | sort)
 
 MISSING=()
 require_all() {
-	local provider=$1
-	shift
-	local key
-	for key in "$@"; do
-		if [[ -z "${!key:-}" ]]; then
-			MISSING+=("$provider: $key")
-		fi
-	done
+  local provider=$1
+  shift
+  local key
+  for key in "$@"; do
+    if [[ -z "${!key:-}" ]]; then
+      MISSING+=("$provider: $key")
+    fi
+  done
 }
 
 # Fail before touching generated files or test recordings.
@@ -64,43 +64,43 @@ require_all togetherai TOGETHER_API_KEY
 require_all typesafe TYPESAFE_API_KEY
 require_all xiaomi MIMO_API_KEY
 if [[ ${#MISSING[@]} -ne 0 ]]; then
-	echo "missing required environment for weekly model regeneration:" >&2
-	printf '  - %s\n' "${MISSING[@]}" >&2
-	exit 1
+  echo "missing required environment for weekly model regeneration:" >&2
+  printf '  - %s\n' "${MISSING[@]}" >&2
+  exit 1
 fi
 
 list_models() {
-	local provider=$1
-	local out=$2
-	local delay=10
-	local err="$out.err"
-	local attempt
-	for attempt in {1..3}; do
-		if list-models -strict -provider "$provider" >"$out" 2>"$err"; then
-			rm -f "$err"
-			return 0
-		fi
-		cat "$err" >&2
-		rm -f "$out"
-		if grep -Fq "http 410" "$err"; then
-			echo "list-models returned HTTP 410 for $provider; not retrying" >&2
-			return 1
-		fi
-		if [[ $attempt == 3 ]]; then
-			break
-		fi
-		echo "list-models failed for $provider on attempt $attempt/3; retrying in ${delay}s" >&2
-		sleep "$delay"
-		delay=$((delay * 2))
-	done
-	rm -f "$err"
-	return 1
+  local provider=$1
+  local out=$2
+  local delay=10
+  local err="$out.err"
+  local attempt
+  for attempt in {1..3}; do
+    if list-models -strict -provider "$provider" >"$out" 2>"$err"; then
+      rm -f "$err"
+      return 0
+    fi
+    cat "$err" >&2
+    rm -f "$out"
+    if grep -Fq "http 410" "$err"; then
+      echo "list-models returned HTTP 410 for $provider; not retrying" >&2
+      return 1
+    fi
+    if [[ $attempt == 3 ]]; then
+      break
+    fi
+    echo "list-models failed for $provider on attempt $attempt/3; retrying in ${delay}s" >&2
+    sleep "$delay"
+    delay=$((delay * 2))
+  done
+  rm -f "$err"
+  return 1
 }
 
 tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/genai-models.XXXXXX")
 tmp="$tmpdir/MODELS.md"
 cleanup() {
-	rm -rf "$tmpdir"
+  rm -rf "$tmpdir"
 }
 trap cleanup EXIT
 
@@ -109,19 +109,19 @@ echo "" >>"$tmp"
 echo "Snapshot of the models available on each provider as of $(date +%Y-%m-%d)" >>"$tmp"
 
 for i in "${PROVIDERS[@]}"; do
-	echo "- $i"
-	{
-		echo ""
-		echo "## $i"
-		echo ""
-	} >>"$tmp"
-	provider_tmp="$tmpdir/$i.txt"
-	if ! list_models "$i" "$provider_tmp"; then
-		find "./providers/$i" -name Warmup.yaml -delete
-		go test "./providers/$i/..."
-		exit 1
-	fi
-	sed 's/^/- /' "$provider_tmp" >>"$tmp"
+  echo "- $i"
+  {
+    echo ""
+    echo "## $i"
+    echo ""
+  } >>"$tmp"
+  provider_tmp="$tmpdir/$i.txt"
+  if ! list_models "$i" "$provider_tmp"; then
+    find "./providers/$i" -name Warmup.yaml -delete
+    go test "./providers/$i/..."
+    exit 1
+  fi
+  sed 's/^/- /' "$provider_tmp" >>"$tmp"
 done
 mv "$tmp" docs/MODELS.md
 

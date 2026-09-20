@@ -30,7 +30,7 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: print_bodies.py <filename>")
         return 1
-    with open(sys.argv[1], "r") as f:
+    with open(sys.argv[1]) as f:
         data = yaml.safe_load(f)
     for interaction in data["interactions"]:
         req = interaction["request"].get("body")

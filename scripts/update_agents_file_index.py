@@ -206,7 +206,7 @@ def discover_configs(all_files):
     candidates = sorted(f for f in all_files if os.path.basename(f) == "AGENTS.md")
     configs = {"AGENTS.md": set()}
     for f in candidates:
-        with open(f, "r", encoding="utf-8") as fh:
+        with open(f, encoding="utf-8") as fh:
             if "<!-- BEGIN FILE INDEX -->" in fh.read():
                 configs[f] = set()
     # For each config, find child workspaces and add them to exclude_dirs.
@@ -273,7 +273,7 @@ def update_markdown(target_file: str, content: str, check: bool) -> bool:
         return False
     start = "<!-- BEGIN FILE INDEX -->"
     end = "<!-- END FILE INDEX -->"
-    with open(target_file, "r", encoding="utf-8") as f:
+    with open(target_file, encoding="utf-8") as f:
         original = f.read()
     new_section = f"{start}\n{content}\n{end}"
     if start in original and end in original:

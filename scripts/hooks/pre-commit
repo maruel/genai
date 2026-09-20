@@ -9,17 +9,17 @@ python3 scripts/update_agents_file_index.py --check
 
 declare -a unformatted=()
 while IFS= read -r -d '' file; do
-	if ! formatted=$(git show ":$file" | gofmt -d); then
-		printf 'Could not format staged Go file: %s\n' "$file" >&2
-		exit 1
-	fi
-	if [ -n "$formatted" ]; then
-		unformatted+=("$file")
-	fi
+  if ! formatted=$(git show ":$file" | gofmt -d); then
+    printf 'Could not format staged Go file: %s\n' "$file" >&2
+    exit 1
+  fi
+  if [ -n "$formatted" ]; then
+    unformatted+=("$file")
+  fi
 done < <(git diff --cached --name-only --diff-filter=ACMR -z -- '*.go')
 
 if ((${#unformatted[@]} > 0)); then
-	echo '✗ Go files must be formatted before committing:'
-	printf '  %s\n' "${unformatted[@]}"
-	exit 1
+  echo '✗ Go files must be formatted before committing:'
+  printf '  %s\n' "${unformatted[@]}"
+  exit 1
 fi

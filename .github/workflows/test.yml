@@ -105,12 +105,9 @@ jobs:
           python-version: '3.x'
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         if: always() && matrix.os == 'ubuntu-latest'
-      - name: "Check: formatting; gofmt, goimports, ruff, shfmt (ubuntu)"
+      - name: "Check: verify; golangci-lint, gofmt, ruff, shfmt, binary, file index (ubuntu)"
         if: always() && matrix.os == 'ubuntu-latest'
-        run: make format-check
-      - name: "Check: lint; golangci-lint, ruff, binary, file index (ubuntu)"
-        if: always() && matrix.os == 'ubuntu-latest'
-        run: make lint-check
+        run: make verify
       - name: "go install necessary tools (ubuntu)"
         if: always() && matrix.os == 'ubuntu-latest'
         run: |

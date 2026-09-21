@@ -6,6 +6,7 @@
 
 [tool.ruff]
 target-version = "py312"
+# Ruff does not read .editorconfig, so this duplicates the width from there.
 line-length = 120
 
 [tool.ruff.lint]

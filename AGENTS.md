@@ -4,7 +4,7 @@
 
 - **Test:** `go test ./...`
 - **Test with filter**: `go test ./<directory>`
-- **Format source files**: `make format` (gofmt with `-s`)
+- **Format source files**: `make fix` (gofmt with `-s`, ruff, shfmt)
 - **Retrieve documentation**: `godoc -all ./<directory>`
 - **Weekly model regeneration**: `./scripts/regen_weekly.sh`
   - Requires live provider credentials. The script fails before changing files if any required env var is missing.
@@ -19,15 +19,12 @@
 
 ## Gating Checks
 
-Before submitting changes run `make lint`, then `make format`, then `make verify`.
+Before submitting changes run `make fix`, then `make verify`.
 
-`make lint` applies the autofixes (golangci-lint, ruff), refreshes the file indexes, then runs `make
-lint-check`, which is the read-only check that `make verify` and CI run.
-
-`make verify` re-checks formatting (gofmt, ruff format, shfmt) and lint (golangci-lint, ruff check, binary and
-file-index checks). Also run `go generate ./...` and `go test ./...`. `.editorconfig` is the source of truth
-for indentation and width; Ruff keeps its own copy of the width in `pyproject.toml` because it does not read
-`.editorconfig`.
+`make fix` applies every autofix (golangci-lint, ruff, shfmt) and refreshes the file index. `make verify` is
+the read-only gate (also run by CI and the pre-push hook) re-checking formatting (gofmt, ruff format, shfmt)
+and lint (golangci-lint, ruff check, binary and file-index checks). Also run `go generate ./...` and
+`go test ./...`. `.editorconfig` is the source of truth for indentation and width.
 
 ## Git Hooks
 

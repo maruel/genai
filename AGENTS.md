@@ -19,7 +19,10 @@
 
 ## Gating Checks
 
-Before submitting changes run `make lint-fix`, then `make format`, then `make verify`.
+Before submitting changes run `make lint`, then `make format`, then `make verify`.
+
+`make lint` applies the autofixes (golangci-lint, ruff), refreshes the file indexes, then runs `make
+lint-check`, which is the read-only check that `make verify` and CI run.
 
 `make verify` re-checks formatting (gofmt, ruff format, shfmt) and lint (golangci-lint, ruff check, binary and
 file-index checks). Also run `go generate ./...` and `go test ./...`. `.editorconfig` is the source of truth

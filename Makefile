@@ -1,5 +1,5 @@
 # Build, test, lint, and format the repository.
-.PHONY: build test lint lint-fix format format-check verify git-hooks tools
+.PHONY: build test lint lint-check format format-check verify git-hooks tools
 
 # Tool versions. The tools target installs a tool that is missing or at another version, so
 # these are the only places the versions are written down.
@@ -32,17 +32,19 @@ build:
 test:
 	@go test ./...
 
-lint: tools custom-gcl
+lint-check: tools custom-gcl
 	@./custom-gcl run --show-stats=false ./...
 	@ruff check --quiet .
 	@python3 scripts/lint_binaries.py
 	@python3 scripts/update_agents_file_index.py --check
 
-lint-fix: tools
+# Apply the autofixes, then report what is left to fix by hand.
+lint: tools custom-gcl
 	@./custom-gcl run --show-stats=false ./... --fix
 	@ruff check --quiet --fix .
 	@ruff format --quiet .
 	@python3 scripts/update_agents_file_index.py
+	@$(MAKE) --no-print-directory lint-check
 
 # Apply and verify the shared formatters: gofmt and goimports through
 # golangci-lint for Go, ruff format for the Python scripts, and shfmt for the
@@ -57,7 +59,7 @@ format-check: tools
 	@ruff format --check --quiet .
 	@files=$$(git ls-files '*.sh' 'scripts/hooks/*'); [ -z "$$files" ] || { out=$$(shfmt -l $$files); [ -z "$$out" ] || { echo 'Shell files need shfmt:' >&2; echo "$$out" >&2; exit 1; }; }
 
-verify: format-check lint
+verify: format-check lint-check
 
 git-hooks:
 	@./scripts/install-git-hooks.sh

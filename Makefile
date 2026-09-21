@@ -42,7 +42,6 @@ lint-check: tools custom-gcl
 lint: tools custom-gcl
 	@./custom-gcl run --show-stats=false ./... --fix
 	@ruff check --quiet --fix .
-	@ruff format --quiet .
 	@python3 scripts/update_agents_file_index.py
 	@$(MAKE) --no-print-directory lint-check
 

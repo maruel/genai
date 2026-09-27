@@ -697,6 +697,14 @@ type PricingOption struct {
 	Default bool   `json:"default,omitzero"`
 }
 
+// PricingDimension describes an aspect of a model's pricing, such as image size tiers.
+type PricingDimension struct {
+	Key    string            `json:"key,omitzero"`
+	Label  string            `json:"label,omitzero"`
+	Unit   string            `json:"unit,omitzero"`
+	Values map[string]string `json:"values,omitzero"`
+}
+
 // PricingVariant is an alternative pricing schedule for a model.
 type PricingVariant struct {
 	Name        string       `json:"name"`
@@ -779,6 +787,7 @@ type ImageModel struct {
 	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
 	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
+	PricingDimensions   []PricingDimension  `json:"pricing_dimensions,omitzero"`
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
 	Title               string              `json:"title"`
 	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
@@ -877,6 +886,7 @@ type TextModel struct {
 	Description         string              `json:"description"`
 	InputModalities     []string            `json:"input_modalities"` // "text", "image", "audio"
 	IsSpecialized       bool                `json:"is_specialized,omitzero"`
+	MaxCompletionTokens int64               `json:"max_completion_tokens,omitzero"`
 	MaxInputChars       int64               `json:"maxInputChars"`
 	MaxReferenceImages  int64               `json:"max_reference_images,omitzero"`
 	Name                string              `json:"name"`
@@ -887,6 +897,7 @@ type TextModel struct {
 	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
 	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
+	PricingDimensions   []PricingDimension  `json:"pricing_dimensions,omitzero"`
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
 	Pricing             struct {
 		AudioInputPrice           base.Float64 `json:"audio_input_price,omitzero"`

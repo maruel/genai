@@ -19,8 +19,8 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 188
-        body: '{"success":false,"error":{"message":"A valid API key is required. Get one at https://enter.pollinations.ai/keys","code":"UNAUTHORIZED","timestamp":"2026-09-14T01:07:44.857Z"},"status":401}'
+        content_length: 601
+        body: '{"success":false,"error":{"message":"400 Bad Request: azure-openai error: Invalid ''messages[0]''. Content blocks are expected to be either text or image_url type.","code":"BAD_REQUEST","timestamp":"2026-09-27T02:38:34.784Z","details":{"name":"UpstreamError","upstreamStatus":400,"upstreamHost":"portkey.myceli.ai","upstreamBody":"{\"error\":{\"message\":\"azure-openai error: Invalid ''messages[0]''. Content blocks are expected to be either text or image_url type.\",\"type\":\"invalid_request_error\",\"param\":\"messages[0]\",\"code\":\"invalid_value\"},\"provider\":\"azure-openai\"}"}},"status":400}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -29,25 +29,25 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - a3ab7f1c7adef337-YYZ
+                - a41721fffdcc2bc1-SEA
             Content-Length:
-                - "188"
+                - "601"
             Content-Type:
                 - application/json
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=utQeEHWbwyCXLhitogHb4WkYgyD7dfhCZ3%2BJ4myFSrDXA1Z9CMyYFLcIYmWYdMIfWYWp%2Bj7XtZzKgAqxBNkE0XVV%2F2C86Xd7J6wM8gqzaQEG%2FqZCoMxMWonC6H3K8%2BZp2wP3r%2Bs7"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Xi3yaAyexSLlTXNDNiGVAKvIoG94Ct4GGy5fDyW7EwKtUIc%2BCaawDNj9F6O%2BNVlJdrjDEn7vyJ0gldf%2BnaUljBzrApplWkCTe3voTXrxyh1jYhKfVQ%2BJBtI1uHlPq2vPrFxj7exp"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=136
+                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=1870
             X-Cache:
                 - MISS
             X-Model-Requested:
                 - openai/gpt-5.4-nano
             X-Robots-Tag:
                 - noindex, nofollow
-        status: 401 Unauthorized
-        code: 401
-        duration: 155ms
+        status: 400 Bad Request
+        code: 400
+        duration: 1.884s

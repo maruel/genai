@@ -17,13 +17,13 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 153
-        body: '{"object":"list","data":[{"id":"deepseek-flash","object":"model","owned_by":"deepseek"},{"id":"deepseek-v4-pro","object":"model","owned_by":"deepseek"}]}'
+        content_length: 743
+        body: '{"object":"list","data":[{"id":"deepseek-flash","object":"model","owned_by":"deepseek","name":"DeepSeek-V4.1-Flash","context_window":1048576,"max_output_tokens":393216,"input_modalities":["text","image"],"output_modalities":["text"],"effort":{"supported_levels":["low","high","max"],"default_level":"high"},"api_capabilities":{"anthropic_messages":{"system_prompt_update":"in-history"}}},{"id":"deepseek-v4-pro","object":"model","owned_by":"deepseek","name":"DeepSeek-V4-Pro","context_window":1048576,"max_output_tokens":393216,"input_modalities":["text"],"output_modalities":["text"],"effort":{"supported_levels":["low","high","max"],"default_level":"high"},"api_capabilities":{"anthropic_messages":{"system_prompt_update":"leading-only"}}}]}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
             Content-Length:
-                - "153"
+                - "743"
             Content-Type:
                 - application/json
             Server:
@@ -33,11 +33,11 @@ interactions:
             Vary:
                 - origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 10958524dd572b571b69f94d644733fa.cloudfront.net (CloudFront)
+                - 1.1 6a52d37737133b0b8a09947e5c586ec4.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - JPsgik2PXVJJn6OYGzykNT7UDQXxEQipLhySWD6EXcst0AXEbdzrUA==
+                - 4RUm6se7h3REg2m83OGH1BuFrkXiCZJdv_DiInMJ41OX54JFL11S0w==
             X-Amz-Cf-Pop:
-                - YUL62-P3
+                - HIO52-P2
             X-Cache:
                 - Miss from cloudfront
             X-Content-Type-Options:

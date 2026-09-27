@@ -19,8 +19,8 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 188
-        body: '{"success":false,"error":{"message":"A valid API key is required. Get one at https://enter.pollinations.ai/keys","code":"UNAUTHORIZED","timestamp":"2026-09-14T01:07:45.189Z"},"status":401}'
+        content_length: 679
+        body: '{"success":false,"error":{"message":"400 Bad Request: azure-openai error: You uploaded an unsupported image. Please make sure your image has of one the following formats: [''png'', ''jpeg'', ''webp'', ''gif''].","code":"BAD_REQUEST","timestamp":"2026-09-27T02:38:40.249Z","details":{"name":"UpstreamError","upstreamStatus":400,"upstreamHost":"portkey.myceli.ai","upstreamBody":"{\"error\":{\"message\":\"azure-openai error: You uploaded an unsupported image. Please make sure your image has of one the following formats: [''png'', ''jpeg'', ''webp'', ''gif''].\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_image_format\"},\"provider\":\"azure-openai\"}"}},"status":400}'
         headers:
             Access-Control-Allow-Origin:
                 - '*'
@@ -29,25 +29,25 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - a3ab7f1e8897f337-YYZ
+                - a4172219df4c2bc1-SEA
             Content-Length:
-                - "188"
+                - "679"
             Content-Type:
                 - application/json
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=JYVBPcWHX7O%2F5mxcZ1GDJrZ8%2ByPUz0fwuiQsvuycIRKPSzdD5ft3EZxV1n60OQF5X%2FVYg9UKBye4adSy6SRb5wnhvR%2B38W%2B1iyMqeaN2pzOWhZEqXLYrLXszsOwcQdVLF%2BEwrJGn"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=wVhbqsJQpO4Sjj4cH9NQava3Hgk6d3vWUPYQNZ9TqWlf9Sola2X7pJRN%2Bb%2BC2zw4c414sIGHKwn1mmKLjKbmCUjdUQ2Xaf1qdVfgDyUQZ8%2FhrFuAN8lmW2O%2Bj4sOjHKvv67LiWlK"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=140
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=3233
             X-Cache:
                 - MISS
             X-Model-Requested:
                 - openai/gpt-5.4-nano
             X-Robots-Tag:
                 - noindex, nofollow
-        status: 401 Unauthorized
-        code: 401
-        duration: 158ms
+        status: 400 Bad Request
+        code: 400
+        duration: 3.246s

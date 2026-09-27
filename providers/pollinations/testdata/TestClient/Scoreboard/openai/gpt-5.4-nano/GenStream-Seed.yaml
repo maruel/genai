@@ -43,7 +43,7 @@ interactions:
             Cache-Control:
                 - public, max-age=31536000, immutable
             Cf-Ray:
-                - a3ab7f0809daf337-YYZ
+                - a4172158fd692bc1-SEA
             Content-Length:
                 - "2263"
             Content-Type:
@@ -51,11 +51,11 @@ interactions:
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=eefEFJS5uGYla5lYtQoA7zn5GC4pIDfyGfDqGucL9kk2%2BachXo1lpJqOEac7hvdWNjwysA%2BCR7CFZho6pA2aeH2tVbkq4dvQgzS77MoAW%2FlgxBXbQ3l2Ty5MMrv94e%2FJZlh4Aynt"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=1%2FimZ0DwsAuc7JV02EVZpG%2FOqc341ajbahda4sfb628DzAY1uwcbANULYwdhhyUCrDUF2qDLw6hYKlUzHbsAnGTSXC96aK73mOZz5NpPC7VT4N2D%2BSDi5%2F4IMNXuiGm7nQzxpWBP"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=485
+                - cfEdge;dur=13,cfOrigin;dur=0,cfWorker;dur=1384
             X-Cache:
                 - HIT
             X-Cache-Date:
@@ -70,4 +70,4 @@ interactions:
                 - noindex, nofollow
         status: 200 OK
         code: 200
-        duration: 502ms
+        duration: 1.405s

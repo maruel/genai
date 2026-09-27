@@ -492,11 +492,34 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// EffortConfig controls the reasoning effort configuration for a model.
+type EffortConfig struct {
+	DefaultLevel    string   `json:"default_level,omitzero"`
+	SupportedLevels []string `json:"supported_levels,omitzero"`
+}
+
+// AnthropicMessagesConfig describes the anthropic messages capability.
+type AnthropicMessagesConfig struct {
+	SystemPromptUpdate string `json:"system_prompt_update,omitzero"`
+}
+
+// APICapabilities describes the API capabilities of a model.
+type APICapabilities struct {
+	AnthropicMessages AnthropicMessagesConfig `json:"anthropic_messages,omitzero"`
+}
+
 // Model is the provider-specific model metadata.
 type Model struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // model
-	OwnedBy string `json:"owned_by"`
+	ID               string          `json:"id"`
+	Object           string          `json:"object"` // model
+	OwnedBy          string          `json:"owned_by"`
+	Name             string          `json:"name,omitzero"`
+	InputModalities  []string        `json:"input_modalities,omitzero"`
+	OutputModalities []string        `json:"output_modalities,omitzero"`
+	ContextWindow    int64           `json:"context_window,omitzero"`
+	MaxOutputTokens  int64           `json:"max_output_tokens,omitzero"`
+	Effort           EffortConfig    `json:"effort,omitzero"`
+	APICapabilities  APICapabilities `json:"api_capabilities,omitzero"`
 }
 
 // GetID implements genai.Model.
@@ -510,7 +533,7 @@ func (m *Model) String() string {
 
 // Context implements genai.Model.
 func (m *Model) Context() int64 {
-	return 0
+	return m.ContextWindow
 }
 
 // ModelsResponse represents the response structure for DeepSeek models listing.

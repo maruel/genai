@@ -33,7 +33,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
+        content_length: 12212
         body: !!binary |
             /9j/4Qv8RXhpZgAASUkqAAgAAAAIAA8BAgAFAAAAfgAAABIBAwABAAAAAQAAABoBBQABAA
             AAbgAAABsBBQABAAAAdgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAApgsA
@@ -269,59 +269,32 @@ interactions:
             gz6gZpvTehL3StJh0rSuq9atdOgwYYwsLvERg/TIyFlGR+UHFbvFHTaaxFt0RdpdXDXHUm
             o3Fvd6hDqd3C0FuonniaNkOQgKjMMfC1taVRYqI//9k=
         headers:
-            Access-Control-Allow-Headers:
-                - Content-Type, X-PAYMENT
-            Access-Control-Allow-Methods:
-                - GET, POST, OPTIONS
             Access-Control-Allow-Origin:
                 - '*'
-            Access-Control-Expose-Headers:
-                - X-Auth-Status
-                - X-Auth-Reason
-                - X-PAYMENT-RESPONSE
-                - X-Debug-Token
-                - X-Debug-Token-Source
-                - X-Debug-Referrer
-                - X-Debug-Legacy-Token-Match
-                - X-Debug-Allowlist-Match
-                - X-Debug-User-Id
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cache-Control:
                 - public, max-age=31536000, immutable
-            Cf-Cache-Status:
-                - DYNAMIC
             Cf-Ray:
-                - a3ab29364b01e403-YYZ
+                - a417214d2afc9366-SEA
             Content-Disposition:
                 - inline; filename="generateonesquare2cwhite-backgrounddoodlewithsmooth2cvibrantlycoloredimagedepictingado.jpg"
+            Content-Length:
+                - "12212"
             Content-Type:
                 - image/jpeg
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=dSE4w4CD16GwdiK6688mmW3L3Knwbddp5W63li%2FpmW1D%2FWA%2BUuj0l3vmkF0PuUgJcAsv1KL29%2F1tqhX7BabNDMDh6jbtyJ2OOAZY0%2FqA1Z5B9eBy%2BSqbCLTvEZZme3LtRDlzhq8jZGI%3D"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=2oPpir8ZBHDULkHX9bYJug0Thg4ATaGdRJI2MneV85PkUZbW%2B5TBvTBIkyfv7RNCGrUwuwudeW7Ota%2F0YK9bhfIazJXbUV4imtnX3mY72%2BSBlLMZ7XuZDaqivmeq29rWOQSb1kwFD80%3D"}]}'
             Server:
                 - cloudflare
             Server-Timing:
-                - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=2039
-            X-Auth-Result:
-                - NONE
-            X-Auth-Status:
-                - unauthenticated
+                - cfEdge;dur=19,cfOrigin;dur=0,cfWorker;dur=729
             X-Cache:
-                - MISS
-            X-Debug-Token:
-                - sk_0...k9MC
-            X-Debug-Token-Source:
-                - header:authorization
-            X-Model-Used:
-                - sana
-            X-Usage-Completion-Image-Tokens:
-                - "1"
-            X-Usage-Total-Tokens:
-                - "1"
+                - HIT
+            X-Cache-Type:
+                - EXACT
         status: 200 OK
         code: 200
-        duration: 2.117s
+        duration: 808ms

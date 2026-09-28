@@ -31,7 +31,7 @@ and lint (golangci-lint, ruff check, binary and file-index checks). Also run `go
 Run `scripts/install-git-hooks.sh` after cloning or whenever Git hooks need to be restored. The hooks reject
 dirty worktrees, unexpected binary files, stale `AGENTS.md` indexes, unformatted staged Go files, incomplete
 or co-authored commit messages, WIP commits, non-checked-out pushes, and multi-commit pushes to `main`;
-pre-push then runs `golangci-lint run ./...`. Refresh indexes with `python3 scripts/update_agents_file_index.py`.
+pre-push then runs `make verify`. Refresh indexes with `python3 scripts/update_agents_file_index.py`.
 
 ## Directory Structure
 

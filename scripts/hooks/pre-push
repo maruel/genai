@@ -1,5 +1,5 @@
 #!/bin/bash
-# Rejects non-checked-out, dirty, WIP, binary, and multi-commit main pushes; runs make verify.
+# Validates the checked-out, clean commit before pushing.
 
 set -euo pipefail
 

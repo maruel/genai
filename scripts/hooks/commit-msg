@@ -4,7 +4,6 @@
 set -euo pipefail
 
 print_commit_guidance() {
-
   printf '%s\n' \
     'Commit guidance for coding agents:' \
     '  - Use a concise subject no longer than 120 characters.' \

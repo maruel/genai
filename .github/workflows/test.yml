@@ -105,16 +105,8 @@ jobs:
           python-version: '3.x'
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         if: always() && matrix.os == 'ubuntu-latest'
-      - name: "Check: verify; golangci-lint, gofmt, ruff, shfmt, binary, file index (ubuntu)"
+      - run: make verify
         if: always() && matrix.os == 'ubuntu-latest'
-        run: make verify
-      - name: "go install necessary tools (ubuntu)"
-        if: always() && matrix.os == 'ubuntu-latest'
-        run: |
-          go install github.com/google/addlicense@latest
-      - name: "Check: addlicense; all sources have a license header (ubuntu)"
-        if: always() && matrix.os == 'ubuntu-latest'
-        run: addlicense -ignore default_config.yml -ignore "examples/**" -ignore "**/testdata/**" -check .
       - name: "Check: go generate doesn't modify files"
         if: always()
         run: |

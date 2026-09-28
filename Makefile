@@ -43,6 +43,7 @@ verify: tools custom-gcl
 	@ruff format --check --quiet .
 	@ruff check --quiet .
 	@files=$$(git ls-files '*.sh' 'scripts/hooks/*'); [ -z "$$files" ] || go tool shfmt -l $$files
+	@go tool addlicense -ignore 'examples/**' -ignore '**/testdata/**' -check .
 	@python3 scripts/lint_binaries.py
 	@python3 scripts/update_agents_file_index.py --check
 
@@ -70,7 +71,7 @@ help:
 	@echo ''
 	@echo 'Available targets:'
 	@printf '  %-14s - %s\n' 'make fix' 'Apply every autofix, then refresh the file index'
-	@printf '  %-14s - %s\n' 'make verify' 'Fast static gate: gofmt, ruff, shfmt, binaries, docs (pre-push gate)'
+	@printf '  %-14s - %s\n' 'make verify' 'Static gate: gofmt, ruff, shfmt, licenses, binaries, docs'
 	@printf '  %-14s - %s\n' 'make test' 'Run Go tests'
 	@printf '  %-14s - %s\n' 'make build' 'Build all Go packages'
 	@printf '  %-14s - %s\n' 'make git-hooks' 'Install git hooks'

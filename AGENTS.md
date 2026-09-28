@@ -22,8 +22,8 @@
 Before submitting changes run `make fix`, then `make verify`.
 
 `make fix` applies every autofix (golangci-lint, ruff, shfmt) and refreshes the file index. `make verify` is
-the read-only gate (also run by CI and the pre-push hook) re-checking formatting (gofmt, ruff format, shfmt)
-and lint (golangci-lint, ruff check, binary and file-index checks). Also run `go generate ./...` and
+the read-only gate (also run by CI and the pre-push hook) re-checking formatting (gofmt, ruff format, shfmt),
+license headers, and lint (golangci-lint, ruff check, binary and file-index checks). Also run `go generate ./...` and
 `go test ./...`. `.editorconfig` is the source of truth for indentation and width.
 
 ## Git Hooks

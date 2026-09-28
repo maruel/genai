@@ -149,7 +149,7 @@ This may print:
 
 ### Multiple Text Completions
 
-[examples/txt\_to\_txt\_sync\_multi/main.go](examples/txt_to_txt_sync_multi.go): This shows how to do multiple message
+[examples/txt\_to\_txt\_sync\_multi/main.go](examples/txt_to_txt_sync_multi/main.go): This shows how to do multiple message
 round trips adding additional follow-up messages from users. Set [`OPENAI_API_KEY`](https://platform.openai.com/api-keys).
 
 ```go

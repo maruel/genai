@@ -1,0 +1,63 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 821
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning_content":"The user wants me to use the get_hostname tool and reply with only the hostname.","tool_calls":[{"id":"call_00_geYZNYjYuDILZsBe0Jua2689","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_00_geYZNYjYuDILZsBe0Jua2689"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"94e0d4c6-4dc6-473b-aa4b-010b80d22c4f","object":"chat.completion.chunk","created":1791036629,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"role":"assistant","content":null,"reasoning_content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"94e0d4c6-4dc6-473b-aa4b-010b80d22c4f","object":"chat.completion.chunk","created":1791036629,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"gen","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"94e0d4c6-4dc6-473b-aa4b-010b80d22c4f","object":"chat.completion.chunk","created":1791036629,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"ai","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"94e0d4c6-4dc6-473b-aa4b-010b80d22c4f","object":"chat.completion.chunk","created":1791036629,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"-sm","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"94e0d4c6-4dc6-473b-aa4b-010b80d22c4f","object":"chat.completion.chunk","created":1791036629,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"oke","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"94e0d4c6-4dc6-473b-aa4b-010b80d22c4f","object":"chat.completion.chunk","created":1791036629,"model":"deepseek-flash","system_fingerprint":"aeb56401ca74e127821c4f9126dcb669","choices":[{"index":0,"delta":{"content":"","reasoning_content":null},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":386,"completion_tokens":5,"total_tokens":391,"prompt_tokens_details":{"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":0},"prompt_cache_hit_tokens":128,"prompt_cache_miss_tokens":258}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 19298b403c16e472e8e1bf4122960db4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 3ohUEv09eci-kYpLQJrMJ884mjLWS55cl4pOnxZenLqJqpXoa3KBcw==
+            X-Amz-Cf-Pop:
+                - YUL62-P1
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 330ms

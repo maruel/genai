@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 649
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_qw5y3pwu","function":{"name":"get_hostname","arguments":{}}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_qw5y3pwu","tool_name":"get_hostname"}],"stream":false,"tools":[{"type":"function","function":{"description":"Returns the machine's hostname","name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 576
+        body: '{"model":"gemma4:e2b","created_at":"2026-10-03T14:30:08.299587574Z","message":{"role":"assistant","content":"genai-smoke","thinking":"The user wants me to use the `get_hostname` tool to retrieve the machine''s hostname and reply *only* with the hostname.\nThe tool has been called and returned the value \"genai-smoke\".\nI need to output just \"genai-smoke\"."},"done":true,"done_reason":"stop","total_duration":3770629556,"load_duration":4191507,"prompt_eval_count":97,"prompt_eval_cached_count":64,"prompt_eval_duration":244151000,"eval_count":63,"eval_duration":1167104000}'
+        headers:
+            Content-Length:
+                - "576"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 3.771s

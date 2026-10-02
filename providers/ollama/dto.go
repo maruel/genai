@@ -512,13 +512,14 @@ type ChatResponse struct {
 	RemoteHost  string `json:"remote_host,omitzero"`
 
 	// https://pkg.go.dev/github.com/ollama/ollama/api#Metrics
-	TotalDuration      time.Duration `json:"total_duration"`
-	LoadDuration       time.Duration `json:"load_duration"`
-	PromptEvalCount    int64         `json:"prompt_eval_count"`
-	PromptEvalDuration time.Duration `json:"prompt_eval_duration"`
-	EvalCount          int64         `json:"eval_count"`
-	EvalDuration       time.Duration `json:"eval_duration"`
-	PeakMemory         uint64        `json:"peak_memory,omitzero"`
+	TotalDuration         time.Duration `json:"total_duration"`
+	LoadDuration          time.Duration `json:"load_duration"`
+	PromptEvalCount       int64         `json:"prompt_eval_count"`
+	PromptEvalDuration    time.Duration `json:"prompt_eval_duration"`
+	PromptEvalCachedCount int64         `json:"prompt_eval_cached_count,omitzero"`
+	EvalCount             int64         `json:"eval_count"`
+	EvalDuration          time.Duration `json:"eval_duration"`
+	PeakMemory            uint64        `json:"peak_memory,omitzero"`
 }
 
 // ToResult converts the ChatResponse to a genai.Result.
@@ -592,7 +593,10 @@ type Model struct {
 		Families          []string `json:"families"`
 		ParameterSize     string   `json:"parameter_size"`
 		QuantizationLevel string   `json:"quantization_level"`
+		ContextLength     int64    `json:"context_length,omitzero"`
+		EmbeddingLength   int64    `json:"embedding_length,omitzero"`
 	} `json:"details"`
+	Capabilities []string `json:"capabilities,omitzero"`
 }
 
 // GetID implements genai.Model.

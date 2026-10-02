@@ -1,0 +1,172 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 591
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"auto","tools":[{"type":"function","name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_05c2b85c55464d14006ac10ce274fc87d2b5ddb9c283a45db9",
+              "object": "response",
+              "created_at": 1791036642,
+              "status": "completed",
+              "access_programs": null,
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1791036643,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.6-terra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_05c2b85c55464d14006ac10ce2e64487d28fc82ebe0d34404a",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqwQzjCXaQX_Fqzg_OxOwJJjHL9aEBueGV19EolycMoOU7r9LnRGIpfve1Gzvg9feJXBi1DCnqAlFhnVW0JZnt1qi59gnbaJ5Boijh9EHypsCexxTYQx7jhk4lQuAMlv5LFOGlh-ccg7OR3qpuYBDlGbjo8Rybg-0X1lT2F9xdMngaIyXON54F02wxTV2Ls0ShmTWbEirU_Gokzb-eghl7rT2u53WlES6LpjjTnqGzgOCRNAN5qDN1nTZkgUPigBkzfAjSrAqUAFWGQe8_0DbbIHJ1j9VHTBFvWFC_nAtHIOALBFdIIKTQGLxJqPMwsbKKOfUc-NQL7e7dcYlB2YEdB1OWKJTcoaqj--esWCTh_igFMsuDvJ3uo1ExzuwUL1QGnJ-TAYPVEQ8WjIqlwkYa2bP4igQeKOla92FNFUnwbDpKxKI62OzUoAvMkuPEX8bSMIgZf42IweKF-KmnmqGakulHO92u1b68HGzJ_Le_MLtIFELiMDn1jl6UasQt6kesW3TA_A1C40-qqXrDN6uoURyS2Ti4RxWd336DBnEIlhEwLuYC-ZcCoTBdUB0yfvKX_NOb5ERWSVbZgppdF6IdlDSHOX2eh8XdsPevWkJUoNTZ1Q9J14Igb6RtNijoDammvYSiwPvsGzvwsynVHpIXvU0nvH6aVmZygZColRe3dpjT8qQh7QJ91pOzhhhJ_gRckM2eJtIVDOAgVWqg2USL0vBqghBEQh-Qmp-vhB_dUrAZnLPBX1VU7WWW1rM_F91n9x7En3emehe0aYrzgCAsuc5hzPUiC31PGN-L5ad7jqYy1sFauveG02RzzPk73XIPbFImIaTx-TCfYDg-BMFeIuswLu8KvCJpu5fsBVbAfBU6PhQwTDMr0-gU9N3JgXlq4aCCsKsOL1dUiJphlHxVlRlJh1dkuQmsim8iHgKNKkzbxDlo1vOJCZxowQNHiUYtE8hw92P55LBjE7cQ4jceiLRlfhEuvQawrLNHvAJ2-f1ThqjDntvfHtKE6e6RSxlMQ7QQy6ZcUTzPBP8LkQLkMGN8JRAvGHSZUWEOASpKxMcsSuxxtRK2VD0eK8qZo9p0hLvhwilVKPQFVNiSS9HvWJyyK5PWoc0Y800Pg0RA4qrOUP44wmRytow8rJFxtxJiUHE67vSt16I4ywbDLnifv1oQ4Czg_6eCO3B7WMgro4odsxXN3emuVwGVTtdidzNaUhAa",
+                  "summary": []
+                },
+                {
+                  "id": "fc_05c2b85c55464d14006ac10ce33ccc87d28798ad84e5fcd478",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{}",
+                  "call_id": "call_adlT90McybTFymLkUAKllQS0",
+                  "name": "get_hostname"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Returns the machine's hostname",
+                  "name": "get_hostname",
+                  "output_schema": null,
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "properties": {},
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": []
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 60,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 26,
+                "output_tokens_details": {
+                  "reasoning_tokens": 10
+                },
+                "total_tokens": 86
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c8826de715b05-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "987"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 1.064s

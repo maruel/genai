@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 147
-        transfer_encoding: []
-        trailer: {}
         host: api.cerebras.ai
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"llama-3.1-8b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"stream":true,"temperature":0.01}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
             data: {"id":"chatcmpl-bd3f90e9-fd95-4877-8f76-86f7f9994191","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1748890762,"model":"llama3.1-8b","system_fingerprint":"fp_bf7f141e20927499c729","object":"chat.completion.chunk"}
 

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 559
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"functionDeclarations":[{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"get_hostname\",\"args\": {},\"id\": \"call_570550\"},\"thoughtSignature\": \"EpMFCpAFAWkUfRP7sWPEBg6dzHCOstXqdNrsCBm45osCwtudyXsbCoE8W2l3kz2tyrBsl1NMEXzMVmOa5q0b2q4pwttm8ZcezxVbBsz6nMvaCdEPAqBcg+0JGRNK/4KxWayzlfpX5hDBXCoWfbcuogNXHiFlcM0JPlnHivYeskV1GtWI3w0QsjwgUA6nGkmUW8IdwCLU7t5jQnE3UgVZDWIQUpPPgGt17Ntv/oOt7xZjlAX+TlOnKhwa2MgGimKqAlLfp/WJvyJLboOWQnDbkNI7C75s/q3lJMp481q2ZMVENpD6xR93pgk0oDsvdPczKlUf5puyene9tzG4cyXtKRa8og/W6lq+WVJTUJUvqSO2ldzgsntkmde4h/KMWvBnux1u+qpYLQtLxj78pvQhD9KZyfjP8jItWwqg436xG6GwQ+oHnsOTo7GIrSMr+4flbiEoHPIhRkUZuuI9MJ/zAs30yc/FS+hhkokgmDHxllDaNynxd0GoWE7pOHIkIfzJNjmtFAv1qk+L8NgFsBR8WWUjKHUYhf7wB5ksYnvVbuft3IQoo8LBd9p9aYhjUkMfX1ymYiQReED0wcj4canCB6yZWFyXiHOyTSBEBvpIPT8ID+PhPTeXCWq9jMlQBX6839ihERdY8txhGY+SLgnBL8CHdnQR9Wo9uv1VPUREd+v8rca7gzwgibw6yEvS5Y8IW1O3Rz/wB9HPrVlKjXDzGkIpTk++D/QSlocNY3ocRJM4NeqsdHcBb9NSTYOxhhHA4T6PyxMMU5B3O5CQwoZCra8s79tt6wH2VpP8a6xhHVGvy88//9odRqlf7VoM2Vyx+X96Lz9w3cnK2iSGz0EG5RtIHKQJuNPOyim7XWiDPVSoKHQu0RU=\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 78,\"candidatesTokenCount\": 10,\"totalTokenCount\": 208,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 78}],\"thoughtsTokenCount\": 120,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"2gzBatOvOJrGjMcPz5W98QQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 78,\"candidatesTokenCount\": 10,\"totalTokenCount\": 208,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 78}],\"thoughtsTokenCount\": 120,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"2gzBatOvOJrGjMcPz5W98QQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1037
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.044s

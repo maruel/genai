@@ -171,6 +171,66 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		}
 	}
 
+	// Exercise a tool with no arguments. Callbacks always take a pointer to a struct as second argument, so a
+	// no-argument tool sends an empty JSON schema. Some providers reject it. The tool returns a fixed hostname
+	// and the prompt asks for it back, which the model is likely to reply verbatim, so the second completion
+	// verifies that the tool result was used.
+	type noArgs struct{}
+	hostname := "genai-smoke"
+	optsNoArgs := genai.GenOptionTools{
+		Tools: []genai.ToolDef{
+			{
+				Name:        "get_hostname",
+				Description: "Returns the machine's hostname",
+				Callback: func(ctx context.Context, _ *noArgs) (string, error) {
+					return hostname, nil
+				},
+			},
+		},
+	}
+	msgs = genai.Messages{genai.NewTextMessage("Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation.")}
+	res, err = cs.callGen(ctx, prefix+"NoArgs-1", msgs, &optsNoArgs)
+	if isBadError(ctx, err) {
+		internal.Logger(ctx).DebugContext(ctx, "NoArgs-1", "err", err)
+		return err
+	}
+	if err != nil || !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		// The model didn't call the tool, nothing to verify.
+		internal.Logger(ctx).DebugContext(ctx, "NoArgs-1", "err", err)
+		f.Tools = scoreboard.Flaky
+	} else {
+		// Some models emit several parallel tool calls for this single-answer prompt. Accept the first tool call
+		// and drop the rest so the follow-up stays balanced.
+		asst = res.Message
+		seenToolCall = false
+		asst.Replies = slices.DeleteFunc(slices.Clone(asst.Replies), func(r genai.Reply) bool {
+			if r.ToolCall.IsZero() {
+				return false
+			}
+			drop := seenToolCall
+			seenToolCall = true
+			return drop
+		})
+		if tr, terr := asst.DoToolCalls(ctx, optsNoArgs.Tools); terr != nil {
+			internal.Logger(ctx).DebugContext(ctx, "NoArgs-1 (do calls)", "err", terr)
+			f.Tools = scoreboard.Flaky
+		} else {
+			// The second completion should reply with the tool result as-is.
+			msgs = append(msgs, asst, tr)
+			res, err = cs.callGen(ctx, prefix+"NoArgs-2", msgs, &optsNoArgs)
+			if isBadError(ctx, err) {
+				internal.Logger(ctx).DebugContext(ctx, "NoArgs-2", "err", err)
+				return err
+			}
+			if err != nil || !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
+				return r.ToolCall.IsZero() && strings.Contains(strings.ToLower(r.Text), hostname)
+			}) {
+				internal.Logger(ctx).DebugContext(ctx, "NoArgs-2", "err", err)
+				f.Tools = scoreboard.Flaky
+			}
+		}
+	}
+
 	// BiasedTool and IndecisiveTool
 	type gotCanadaFirst struct {
 		Country string `json:"country" jsonschema:"enum=Canada,enum=USA"`

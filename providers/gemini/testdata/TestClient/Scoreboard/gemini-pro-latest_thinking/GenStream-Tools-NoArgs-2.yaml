@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1614
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"model","parts":[{"thoughtSignature":"EtsECtgEAWkUfRNO1+LJeZR+uFQDm2t9NpuI+eauF3hKligDFPuNponv6hEtXutv/uJSpZUpFIzJSdpblbO2/kLm4wiyfcja/cyBahkglDJtqiXnBDtF82rkSRa4BhNjmNjNm1il7ycy88F87Iy455w5JYCSP/J6gJ4Ua9KSn9IkYJwyLD9ufXMnYsZbKzm4dC2dlMmLUOBW2phDOtdVXlheranPzdG6C2YEHUzm/770IlK1l38TwsNg1y79VDtOEEfRWjA2alZWPi6ChFXsJiSmQal90CHLS1iULD55y2t2p9MNxiKAfkVL19y2+/fmysqPq9ZiYCSw/xZM70btPc9viepZr/leLHAcWHV/KjucDOYwO09fk7fKw4ULT2G/4ibDHGkAc65Mc400R9s0NN8giL0SkjuQP02EbDYkWvSbkJ+i66Z8USr5TWAL5OAtvc3Cui5Y1RGoLf9Q/V/O6T+AidzKhSItveThU4QlyVRB8N7Szx/3ZmtY36einP1VY0YTwn9usw2CUPk+qja8JY+oP9FWlXT02ZHbppiYtN7uBpptSwfynasLHYMH9ALDg+eJqPxiYGOQVfestWoyW21+3hz4Aw+kMYRnNz7qgEKuxUJ2JeHPhvQzuUD+cjiJrnQnWHTAAZElNNXG2VPzvUCajWwCb10D2I4uPSY2EhUzVY5Vo5dJCSAUCpjPX+SlhsFmQpYIqqPK/5ckXy3f8Lkqpjx03Xn5gPtIHJfQVxuqus9r3r9AkfkZsD/FKv7Rd/2Fk8CCaBPEf5GgkiWiK4bQ6+CyJfbdwqCKoIzg","functionCall":{"id":"call_530347","name":"get_hostname","args":{}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_530347","name":"get_hostname","response":{"response":"genai-smoke"}}}]}],"tools":[{"functionDeclarations":[{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"genai-smoke\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 105,\"candidatesTokenCount\": 4,\"totalTokenCount\": 175,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 105}],\"thoughtsTokenCount\": 66,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"3wzBatSII6fH-sAPjerf0QY\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EpoDCpcDAWkUfRPCtiqOHJCfCpIW9Ug+4NlSLfEd+Qzo7h9tJuICnFscrfhKQBHL5KJ58uJywMzFVPetTDEZnceAWZ99N2Xslvkl+H0bmN7sd2zB0Di/KQ7LERE+imVXkjZpYXx8vsoGmZr696LoMX1tY2x/jNbGjDEiQLBxY2/Di0fv65WRSuaZFJCe4m6HmOxAsEVwgLSFnolSsBYsKFI3J6YqVXht8AIh/FT40ScK+rZNCS4cAYH8H0SyHwFjaWEGl/1fX7wyLfs7Ms0lCWm6AOUeCMtgZK1jcHETdE0bciXDfw2TAv0Q8efxwmx9htUUUhPE1vUEbctaNSQGJv2EqQuqJ3RIj+Jz+ylquC56i2/ru3qMAijca2VnsDATp+XkzEppcWFyMQHH/iVbeWQ+V0KKGBQqCxCfoKYfw4qxeA7Yd026kNnNHN9lWdrHaR9iHI5OkVAqKVguVt77pWdL8RuveLrAnmt1FdjDRHkC45rluuikVNri1zFZrKJIn8DH5TCFeS2cITenXmJnnm0eD7vN8uK0JO/sh20=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 209,\"candidatesTokenCount\": 4,\"totalTokenCount\": 279,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 209}],\"thoughtsTokenCount\": 66,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.1-pro-preview\",\"responseId\": \"3wzBatSII6fH-sAPjerf0QY\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2386
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.393s

@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 477
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-8e9a6161-2d9b-432f-8743-cdd2b495ea9c","choices":[{"finish_reason":"tool_calls","index":0,"message":{"reasoning":"The user asks to use the get_hostname tool and reply with only the hostname, no explanation. So we need to call function get_hostname (no parameters). Then output result only.","tool_calls":[{"function":{"name":"get_hostname","arguments":"{}"},"type":"function","id":"3578d5386"}],"role":"assistant"}}],"created":1791036626,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion","usage":{"total_tokens":195,"completion_tokens":56,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":36},"prompt_tokens":139,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1791036626.554249,"queue_time":0.076867272,"prompt_time":0.00913822,"completion_time":0.042587998,"total_time":0.13002896308898926}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87c39ef8a310-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=35,cfOrigin;dur=188
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "2400"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "150"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "5"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "2399"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "149"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "4"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "983587"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "2983587"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "13587"
+        status: 200 OK
+        code: 200
+        duration: 279ms

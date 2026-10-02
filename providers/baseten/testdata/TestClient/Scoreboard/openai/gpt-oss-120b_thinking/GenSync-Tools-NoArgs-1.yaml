@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 484
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 744
+        body: '{"id":"chatcmpl-cda7e325573a4c9bacc49cbccb565c17","choices":[{"index":0,"message":{"content":null,"tool_calls":[{"id":"chatcmpl-tool-4bca1de9873c402f92349d203997ca10","type":"function","function":{"name":"get_hostname","arguments":"{}"}}],"role":"assistant","reasoning_content":" need to call the function get_hostname with empty parameters. Then output just hostname."},"finish_reason":"tool_calls"}],"created":1791036626,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":146,"completion_tokens":34,"total_tokens":180,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "744"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791036626529"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "4610454111724713750"
+            X-Baseten-Dyn-Worker-Id:
+                - "4610454111724713750"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - q40l7ly
+            X-Baseten-Received-At:
+                - "1791036626529"
+            X-Baseten-Request-Id:
+                - 54ca701a1021a166178158c2868f5510ca230
+            X-Baseten-Route-Trail:
+                - ChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791036626831"
+            X-Baseten-Session-Id:
+                - 54ca701a1021a166178158c2868f5510ca230
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "60"
+            X-Ratelimit-Remaining-Tokens:
+                - "300000"
+        status: 200 OK
+        code: 200
+        duration: 406ms

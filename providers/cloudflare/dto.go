@@ -404,8 +404,10 @@ type Choice struct {
 	Logprobs      base.Unknown  `json:"logprobs"`
 	Message       ChoiceMessage `json:"message"`
 	RoutedExperts base.Unknown  `json:"routed_experts"`
-	StopReason    base.Unknown  `json:"stop_reason"`
-	TokenIDs      base.Unknown  `json:"token_ids"`
+	// StopReason is an undocumented integer stop token emitted by some models, null otherwise. The meaningful
+	// reason is FinishReason.
+	StopReason *int64       `json:"stop_reason,omitzero"`
+	TokenIDs   base.Unknown `json:"token_ids"`
 }
 
 // ChoiceMessage is the message of an OpenAI-compatible completion choice.
@@ -417,6 +419,9 @@ type ChoiceMessage struct {
 	Reasoning    base.Unknown `json:"reasoning"`
 	Refusal      base.Unknown `json:"refusal"`
 	Role         string       `json:"role"`
+	// Some models echo an OpenAI-compatible tool_calls list in the message. The tool calls are converted from
+	// MessageResponse.ToolCalls, this is only declared so strict decoding accepts it.
+	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
 }
 
 // MessageResponse is a message in a provider-specific response.
@@ -475,8 +480,10 @@ type StreamChoice struct {
 	Index        int64             `json:"index"`
 	Logprobs     base.Unknown      `json:"logprobs"`
 	Delta        StreamChoiceDelta `json:"delta"`
-	StopReason   base.Unknown      `json:"stop_reason"`
-	TokenIDs     base.Unknown      `json:"token_ids"`
+	// StopReason is an undocumented integer stop token emitted by some models, null otherwise. The meaningful
+	// reason is FinishReason.
+	StopReason *int64       `json:"stop_reason,omitzero"`
+	TokenIDs   base.Unknown `json:"token_ids"`
 }
 
 // StreamChoiceDelta is the delta of an OpenAI-compatible streaming choice.

@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 482
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","content":"{}"},{"role":"tool","content":"genai-smoke"}],"tools":[{"type":"function","function":{"description":"Returns the machine's hostname","name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"choices":[{"finish_reason":"tool_calls","index":0,"logprobs":null,"message":{"annotations":null,"audio":null,"content":null,"function_call":null,"reasoning":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"{}","name":"get_hostname"},"id":"chatcmpl-tool-b2dcf8fc242e2620","type":"function"}]},"routed_experts":null,"stop_reason":null,"token_ids":null}],"created":1791036627,"ec_transfer_params":null,"id":"chatcmpl-08cd6a87-9308-4dec-bc9e-291b5dcece55","kv_transfer_params":null,"metrics":null,"model":"@cf/meta/llama-3.3-70b-json","object":"chat.completion","prompt_logprobs":null,"prompt_text":null,"prompt_token_ids":null,"response":null,"service_tier":null,"tool_calls":[{"arguments":{},"name":"get_hostname"}],"usage":{"prompt_tokens":278,"completion_tokens":13,"total_tokens":291,"prompt_tokens_details":{"cached_tokens":0},"neurons":10.076081275939941}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-10-01.epoch
+            Cache-Control:
+                - no-store
+            Cf-Ai-Neurons:
+                - "10.08"
+            Cf-Ai-Req-Id:
+                - 08cd6a87-9308-4dec-bc9e-291b5dcece55
+            Cf-Auditlog-Id:
+                - 01a1021a-19b9-76fd-8d14-9242a309a4a0
+            Cf-Ray:
+                - a44c87c92fa8d7a3-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 200 OK
+        code: 200
+        duration: 426ms

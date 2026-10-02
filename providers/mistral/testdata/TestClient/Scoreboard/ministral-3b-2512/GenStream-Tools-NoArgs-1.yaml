@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 508
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-2512","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"720e9df6b4694f3d9270e25a7a364eb3","object":"chat.completion.chunk","created":1791036630,"model":"ministral-3b-2512","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"720e9df6b4694f3d9270e25a7a364eb3","object":"chat.completion.chunk","created":1791036630,"model":"ministral-3b-2512","choices":[{"index":0,"delta":{"tool_calls":[{"id":"Cq5xzXDXi","type":"function","function":{"name":"get_hostname","arguments":"{}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":101,"total_tokens":108,"completion_tokens":7,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"p":"abcdefghijklmnopqrst"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87de1f67a25b-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a1021a-2709-7298-a9a3-e916832fc443
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=105,cfOrigin;dur=195
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "178"
+            X-Kong-Proxy-Latency:
+                - "11"
+            X-Kong-Request-Id:
+                - 01a1021a-2709-7298-a9a3-e916832fc443
+            X-Kong-Upstream-Latency:
+                - "179"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+        status: 200 OK
+        code: 200
+        duration: 307ms

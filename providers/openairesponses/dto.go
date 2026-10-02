@@ -697,7 +697,12 @@ func (m *Message) To(out *genai.Message) error {
 			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Summary[i].Text})
 		}
 	case MessageFunctionCall:
-		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
+		// The model sends an empty string when it sends no arguments.
+		args := m.Arguments
+		if args == "" {
+			args = "{}"
+		}
+		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: args}})
 	case MessageWebSearchCall:
 		if m.Status != "" && m.Status != "completed" {
 			return nil
@@ -936,8 +941,9 @@ func (c *Content) FromReply(in *genai.Reply) error {
 
 // APIError represents an API error in the response.
 type APIError struct {
-	Code    string `json:"code"` // "server_error"
-	Message string `json:"message"`
+	Code    string            `json:"code"` // "server_error"
+	Message string            `json:"message"`
+	Headers map[string]string `json:"headers,omitzero"` // e.g. retry-after on rate limit errors.
 }
 
 func (e *APIError) Error() string {

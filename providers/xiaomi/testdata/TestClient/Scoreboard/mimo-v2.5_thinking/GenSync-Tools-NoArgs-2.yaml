@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 812
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning_content":"The user wants me to call the get_hostname tool and reply with only the hostname.","tool_calls":[{"id":"call_c2152e0998e242a6bb9e99d2","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_c2152e0998e242a6bb9e99d2"}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"86394a8c-bc95-4de9-9e6b-da0779ae101c_c78ea781d77f466a987a3d7bdb0da44d","choices":[{"finish_reason":"stop","index":0,"message":{"content":"genai-smoke","role":"assistant","tool_calls":null,"reasoning_content":"The tool returned \"genai-smoke\". Reply with only the hostname."}}],"created":1791036630,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":22,"prompt_tokens":161,"total_tokens":183,"completion_tokens_details":{"reasoning_tokens":16},"prompt_tokens_details":null}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.3s

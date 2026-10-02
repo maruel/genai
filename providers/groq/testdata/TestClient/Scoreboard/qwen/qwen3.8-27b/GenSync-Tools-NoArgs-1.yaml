@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 469
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"model":"qwen/qwen3.8-27b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-03a79dda-25e5-4e97-a819-457684252d01","object":"chat.completion","created":1791036627,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"sayhhsrhn","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.065809443,"prompt_tokens":306,"prompt_time":0.023758053,"completion_tokens":14,"completion_time":0.027618336,"total_tokens":320,"total_time":0.051376389},"usage_breakdown":null,"system_fingerprint":"fp_ddcc9cf349","x_groq":{"id":"req_01m411m5xhehptawwqpzhwgxmh","seed":1847728964},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87c5aaf7a272-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "248438"
+            X-Ratelimit-Reset-Requests:
+                - 345ms
+            X-Ratelimit-Reset-Tokens:
+                - 374ms
+        status: 200 OK
+        code: 200
+        duration: 201ms

@@ -1,0 +1,82 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 586
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5.3-Flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-e4887a0a6d414853ac41dc58de595ad6","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"index":0,"id":"chatcmpl-tool-ea8f6b4550fa45b3a88fb4c6bd261750","type":"function","function":{"name":"get_hostname","arguments":"{}"}}],"role":"assistant"}}],"created":1791036627,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":188,"completion_tokens":6,"total_tokens":194,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":5,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e4887a0a6d414853ac41dc58de595ad6","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}],"created":1791036627,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":188,"completion_tokens":6,"total_tokens":194,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":5,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e4887a0a6d414853ac41dc58de595ad6","choices":[],"created":1791036627,"model":"zai-org/GLM-5.3-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":188,"completion_tokens":6,"total_tokens":194,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":5,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791036627497"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073480424361497861"
+            X-Baseten-Dyn-Worker-Id:
+                - "5073480424361497861"
+            X-Baseten-Model-Id:
+                - wx4mod7q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - q88r4pg
+            X-Baseten-Received-At:
+                - "1791036627497"
+            X-Baseten-Request-Id:
+                - 54ca701a1021a1a297ef2a2aeacf949a8b1e4
+            X-Baseten-Route-Trail:
+                - ChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791036627762"
+            X-Baseten-Session-Id:
+                - 54ca701a1021a1a297ef2a2aeacf949a8b1e4
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "60"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+        status: 200 OK
+        code: 200
+        duration: 310ms

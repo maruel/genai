@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 691
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"3578d5386","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"3578d5386","name":"get_hostname"}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-40ecc62f-d75b-4aaf-8274-1f0453e79b9a","choices":[{"finish_reason":"stop","index":0,"message":{"content":"genai-smoke","role":"assistant"}}],"created":1791036626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion","usage":{"total_tokens":179,"completion_tokens":8,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":171,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1791036626.781876,"queue_time":0.16047165100000002,"prompt_time":0.009769885999999998,"completion_time":0.002776811,"total_time":1.573760747909546}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87c50866a310-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=32,cfOrigin;dur=1626
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "2400"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "150"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "5"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "2398"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "148"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "3"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "983517"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "2983389"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "13517"
+        status: 200 OK
+        code: 200
+        duration: 1.665s

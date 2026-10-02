@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 749
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"YbiPAVMQW","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"YbiPAVMQW","name":"get_hostname"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"65695266a84e4f95aecb0d40ba7f954b","object":"chat.completion.chunk","created":1791036631,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"65695266a84e4f95aecb0d40ba7f954b","object":"chat.completion.chunk","created":1791036631,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"gen"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz012"}
+
+            data: {"id":"65695266a84e4f95aecb0d40ba7f954b","object":"chat.completion.chunk","created":1791036631,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"ai"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz"}
+
+            data: {"id":"65695266a84e4f95aecb0d40ba7f954b","object":"chat.completion.chunk","created":1791036631,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"-sm"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz0123456789"}
+
+            data: {"id":"65695266a84e4f95aecb0d40ba7f954b","object":"chat.completion.chunk","created":1791036631,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"oke"},"finish_reason":null}],"p":"abcdefghijklmnopqrstuvwxyz0123456"}
+
+            data: {"id":"65695266a84e4f95aecb0d40ba7f954b","object":"chat.completion.chunk","created":1791036631,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":114,"total_tokens":119,"completion_tokens":5,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"p":"abcdef"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87e4bfdca25b-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a1021a-2b34-7b12-bcc0-b7517b9bc5b7
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=108,cfOrigin;dur=123
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "107"
+            X-Kong-Proxy-Latency:
+                - "11"
+            X-Kong-Request-Id:
+                - 01a1021a-2b34-7b12-bcc0-b7517b9bc5b7
+            X-Kong-Upstream-Latency:
+                - "109"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+        status: 200 OK
+        code: 200
+        duration: 243ms

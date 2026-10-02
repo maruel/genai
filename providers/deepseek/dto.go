@@ -339,7 +339,11 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
+	// The model sends an empty string when it sends no arguments.
 	out.Arguments = t.Function.Arguments
+	if out.Arguments == "" {
+		out.Arguments = "{}"
+	}
 }
 
 // Tool is a provider-specific tool definition.

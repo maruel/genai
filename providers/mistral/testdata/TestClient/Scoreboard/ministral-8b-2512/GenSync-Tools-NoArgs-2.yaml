@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 748
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-8b-2512","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"ipdKiWWZE","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"ipdKiWWZE","name":"get_hostname"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"f9bf2089df32478593a1f419837f1f35","created":1791036633,"model":"ministral-8b-2512","usage":{"prompt_tokens":114,"total_tokens":119,"completion_tokens":5,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"genai-smoke"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87ed6bbba25b-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a1021a-309f-7455-8b6e-83b8aed9343d
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=106,cfOrigin;dur=244
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "226"
+            X-Kong-Proxy-Latency:
+                - "14"
+            X-Kong-Request-Id:
+                - 01a1021a-309f-7455-8b6e-83b8aed9343d
+            X-Kong-Upstream-Latency:
+                - "227"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "750"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "1000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "747"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "999665"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "119"
+        status: 200 OK
+        code: 200
+        duration: 367ms

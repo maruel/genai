@@ -7,11 +7,11 @@
 | deepseek-ai/DeepSeek-V4.1-Flash🥈                             | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | deepseek-ai/DeepSeek-V4.1-Flash🥈                             | Stream🧠 | 💬📸  | 💬     | 💨🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ❌    | ✅     |
 | black-forest-labs/FLUX.2-dev🥈                                | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
-| openai/gpt-oss-20b🥉                                          | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-20b🥉                                          | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-20b🥉                                          | Sync🧠   | 💬    | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-20b🥉                                          | Stream🧠 | 💬    | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
 | black-forest-labs/FLUX.2-pro🥉                                | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
-| openai/gpt-oss-120b                                          | Sync🧠   | 💬    | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b                                          | Stream🧠 | 💬    | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b                                          | Sync🧠   | 💬    | 💬     | 💨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b                                          | Stream🧠 | 💬    | 💬     | 💨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
 | Qwen/Qwen3.5-0.8B-Lora                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.5-122B-A10B-FP8                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3.5-122B-A10B-Lora                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

@@ -4,13 +4,13 @@
 | --------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | @cf/deepseek-ai/deepseek-r1-distill-qwen-32b🥇 | Sync🧠   | 💬    | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | 💨    | 💨     |
 | @cf/deepseek-ai/deepseek-r1-distill-qwen-32b🥇 | Stream🧠 | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| @cf/meta/llama-3.3-70b-instruct-fp8-fast🥈     | Sync    | 💬    | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | 💨    | 💨     |
+| @cf/meta/llama-3.3-70b-instruct-fp8-fast🥈     | Sync    | 💬    | 💬     | 💨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | 💨    | 💨     |
 | @cf/meta/llama-3.3-70b-instruct-fp8-fast🥈     | Stream  | 💬    | 💬     | ❌   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-1b-instruct🥉               | Sync    | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-1b-instruct🥉               | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-3b-instruct                | Sync    | 💬    | 💬     | 💨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-3b-instruct                | Stream  | 💬    | 💬     | ❌   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| @cf/meta/llama-4-scout-17b-16e-instruct       | Sync    | 💬    | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| @cf/meta/llama-4-scout-17b-16e-instruct       | Sync    | 💬    | 💬     | 💨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-4-scout-17b-16e-instruct       | Stream  | 💬    | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/ai4bharat/indictrans2-en-indic-1B         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/aisingapore/gemma-sea-lion-v4-27b-it      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

@@ -1,38 +1,39 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 1145
-    host: api.bfl.ai
-    body: "{\"prompt\":\"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\\n\\n*Mandatory Requirements (Compacted):**\\n\\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\\n**Format:** Square image (1:1 aspect ratio).\\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.\",\"safety_tolerance\":0}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.bfl.ai/v1/flux-dev
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 183
-    body: "{\"id\":\"d177c3f2-f928-4aaf-9dc8-8a4105adaace\",\"polling_url\":\"https://api.eu4.bfl.ai/v1/get_result?id=d177c3f2-f928-4aaf-9dc8-8a4105adaace\",\"cost\":null,\"input_mp\":null,\"output_mp\":null}"
-    headers:
-      Accept-Ranges:
-      - bytes
-      Content-Length:
-      - "183"
-      Content-Type:
-      - application/json
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Azure-Ref:
-      - 20251218T171637Z-r176c9d9f87xzdr4hC1YMQggk800000002q00000000014gg
-      X-Cache:
-      - CONFIG_NOCACHE
-    status: 200 OK
-    code: 200
-    duration: 616ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1145
+        host: api.bfl.ai
+        body: |
+            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","safety_tolerance":0}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.bfl.ai/v1/flux-dev
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 183
+        body: '{"id":"d177c3f2-f928-4aaf-9dc8-8a4105adaace","polling_url":"https://api.eu4.bfl.ai/v1/get_result?id=d177c3f2-f928-4aaf-9dc8-8a4105adaace","cost":null,"input_mp":null,"output_mp":null}'
+        headers:
+            Accept-Ranges:
+                - bytes
+            Content-Length:
+                - "183"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            X-Azure-Ref:
+                - 20251218T171637Z-r176c9d9f87xzdr4hC1YMQggk800000002q00000000014gg
+            X-Cache:
+                - CONFIG_NOCACHE
+        status: 200 OK
+        code: 200
+        duration: 616ms

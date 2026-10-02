@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 173
-        transfer_encoding: []
-        trailer: {}
         host: api.together.xyz
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"stream":true,"temperature":0.01}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
             data: {"id":"nwYVJK3-57nCBj-949930029db9a315","object":"chat.completion.chunk","created":1748890762,"choices":[{"index":0,"text":"Hello","logprobs":null,"finish_reason":null,"seed":null,"delta":{"token_id":9906,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","usage":null}
 

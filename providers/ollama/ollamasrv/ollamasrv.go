@@ -31,7 +31,7 @@ import (
 // https://github.com/ollama/ollama/releases
 //
 // You are free to use the version number that works best for you.
-const Version = "v0.24.0"
+const Version = "v0.35.1"
 
 // When updating the value above, regenerate the recordings with:
 // RECORD=all go test ./providers/ollama/...

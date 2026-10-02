@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 148
-        transfer_encoding: []
-        trailer: {}
         host: api.deepseek.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"deepseek-chat","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"stream":true,"temperature":0.01}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
             data: {"id":"55f2e435-bdd6-4e70-a4d3-702fcf51d344","object":"chat.completion.chunk","created":1748890762,"model":"deepseek-chat","system_fingerprint":"fp_8802369eaa_prod0425fp8","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
 

@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 722
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","content":"\n\n","tool_calls":[{"type":"function","id":"cbfd1b8f3","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"cbfd1b8f3","name":"get_hostname"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"reasoning":" user is asking for only the hostname"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"reasoning":" and no explanation. The tool"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"reasoning":" returned \"gen"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"reasoning":"ai-smoke\".\n"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{"content":"\n\ngenai-smoke"},"index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-2d2ace5a-fad4-47e7-b2ab-31c36a97da03","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1791036687,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":406,"completion_tokens":29,"completion_tokens_details":{"reasoning_tokens":23},"prompt_tokens":377,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1791036687.4269502,"queue_time":0.003376304,"prompt_time":0.010021673,"completion_time":0.021632812,"total_time":0.03692269325256348}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c89400a62a310-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=31,cfOrigin;dur=93
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647997"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26997"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "447"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215982816"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44982816"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "132816"
+        status: 200 OK
+        code: 200
+        duration: 132ms

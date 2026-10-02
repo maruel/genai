@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 476
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"},"description":"Returns the machine's hostname"}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"8c7305b6-337d-4545-92b6-5728386576ef","message":{"role":"assistant","content":[{"type":"text","text":"The hostname is: hostname"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":72,"output_tokens":5},"tokens":{"input_tokens":1471,"output_tokens":19},"cached_tokens":1456}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Num_chars:
+                - "6895"
+            Num_tokens:
+                - "77"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin,Accept-Encoding
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - a2fa9f48851f2d59bbbc465c2d6d6422
+            X-Envoy-Upstream-Service-Time:
+                - "336"
+        status: 200 OK
+        code: 200
+        duration: 377ms

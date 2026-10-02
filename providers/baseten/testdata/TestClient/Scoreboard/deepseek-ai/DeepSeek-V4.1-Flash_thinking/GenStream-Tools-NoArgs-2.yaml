@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 901
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","content":"\n\n","tool_calls":[{"type":"function","id":"chatcmpl-tool-cd9b90e38d7c48deb4e3f0b85b3fcd8e","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"chatcmpl-tool-cd9b90e38d7c48deb4e3f0b85b3fcd8e","name":"get_hostname"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-651405b4465a4431897562a697ae393f","choices":[{"index":0,"delta":{"content":"genai-smoke","role":"assistant"}}],"created":1791036628,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":368,"completion_tokens":5,"total_tokens":373,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-651405b4465a4431897562a697ae393f","choices":[{"index":0,"delta":{"content":""}}],"created":1791036628,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":368,"completion_tokens":6,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":4,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":2}}}
+
+            data: {"id":"chatcmpl-651405b4465a4431897562a697ae393f","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"created":1791036628,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":368,"completion_tokens":6,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":4,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":2}}}
+
+            data: {"id":"chatcmpl-651405b4465a4431897562a697ae393f","choices":[],"created":1791036628,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":368,"completion_tokens":6,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":4,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":2}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791036628516"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073481647403690642"
+            X-Baseten-Dyn-Worker-Id:
+                - "5073481647403690642"
+            X-Baseten-Model-Id:
+                - qe258p1q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wpg1o9z
+            X-Baseten-Received-At:
+                - "1791036628516"
+            X-Baseten-Request-Id:
+                - 54ca701a1021a1e24752182f1f6532a0e4c10
+            X-Baseten-Route-Trail:
+                - ChYKDnZ1bC1tc3AtcHJvZC0xKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791036628714"
+            X-Baseten-Session-Id:
+                - 54ca701a1021a1e24752182f1f6532a0e4c10
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "60"
+            X-Ratelimit-Remaining-Tokens:
+                - "499789"
+        status: 200 OK
+        code: 200
+        duration: 240ms

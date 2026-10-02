@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1188
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"model","parts":[{"thoughtSignature":"ErsCCrgCAWkUfRPobIcx1sn0OtIKNcqlzpW0UQip7PP2zyuU32SDNt4ZvZy83lZ9VESyDb4U9q8OxtFDE+eteK1gKiHZ9hb7iCh7NOg3XUm7Q5VJkAN5uJDHml5OjifrqCy4Ms4gkiom5RJBpRABn7ALOaf9xBFXQIQwTBBtRdyh6dlCugxkSslWz0jy3UQZpvHs8y66TZfS0mFtcCraopqNI9BYrJdwbCkXN8DtDaNqlNgyE3nuIlGrS7SYd3ufOQjrIY+OELjiTLWHAb85rKaFZsOtyy+Ep5DFC/dzG2aSywRJxHXT/GsJytuKcOrwLjRx9vI3w7et7zrAbq0s3za8+qpwslTJMfMyN8tOGg5Lr+kumAjvqGLQyBHOjUq55udzKMW5n+xh5HQw5cjxRLUfVEwhfmCcu4c/GwHH","functionCall":{"id":"call_364640","name":"get_hostname","args":{}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_364640","name":"get_hostname","response":{"response":"genai-smoke"}}}]}],"tools":[{"functionDeclarations":[{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"genai-smoke\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 105,\"candidatesTokenCount\": 4,\"totalTokenCount\": 147,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 105}],\"thoughtsTokenCount\": 38,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"1gzBasH7EYzXjMcP0IutuQg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"EpQCCpECAWkUfROYeKSGu2VKOlNfXLyknjf36Vv/aF4wC/WguV6Ozn86XnPqZ0uK1j/0x7Gn3GS5BY5UnaIL7EzWSNLF8J3w1QPEuqwHnzfuA53OB65W/wsuet+NdANQjfZvJ2xYqF+KCm3Tf7NUg9t+A4wJ4ZnPRbfI9h+tbmpQ9eq7WFVvphykH4Zfev3Oy/GdT/NI4NemINQw6APtbuIseEbV7xkcnuz2r/aJTkdHxvCehwJ/eKO5OjAB/o04diGOOK3Lp2oh8kp7WvJo7zVm/yXWRXwbBwHAMazFu74lUtBoWN3LaDhOxo21HO0nbszxiagWmoA8Dtn0PKH2naKYImCrase0i0EfJSaM8ZacH8bmMJX4\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 148,\"candidatesTokenCount\": 4,\"totalTokenCount\": 190,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 148}],\"thoughtsTokenCount\": 38,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"1gzBasH7EYzXjMcP0IutuQg\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4435
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.442s

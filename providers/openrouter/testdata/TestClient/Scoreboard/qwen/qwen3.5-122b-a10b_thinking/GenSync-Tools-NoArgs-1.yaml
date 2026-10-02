@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 475
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"model":"qwen/qwen3.5-122b-a10b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n{\"id\":\"gen-1791036628-OTZGiSQGTEkE84cLcBSh\",\"object\":\"chat.completion\",\"created\":1791036628,\"model\":\"qwen/qwen3.5-122b-a10b\",\"provider\":\"Alibaba\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"The user wants me to use the get_hostname tool to get the machine's hostname and reply with only the hostname without any explanation. This is straightforward - I need to call the get_hostname function which doesn't require any parameters.\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"call_d811b5843b124193a604034f\",\"function\":{\"name\":\"get_hostname\",\"arguments\":\"{}\"}}],\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user wants me to use the get_hostname tool to get the machine's hostname and reply with only the hostname without any explanation. This is straightforward - I need to call the get_hostname function which doesn't require any parameters.\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":304,\"completion_tokens\":63,\"total_tokens\":367,\"cost\":0.00021008,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00021008,\"upstream_inference_prompt_cost\":0.00007904,\"upstream_inference_completions_cost\":0.00013104},\"completion_tokens_details\":{\"reasoning_tokens\":45,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,X-Provider-Name,request-id,cf-ray
+            Cf-Ray:
+                - a44c87d12d5e4e9c-YUL
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=512
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1791036628-OTZGiSQGTEkE84cLcBSh
+        status: 200 OK
+        code: 200
+        duration: 525ms

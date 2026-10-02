@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1558
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"model","parts":[{"thoughtSignature":"Eq8ECqwEAWkUfRMXED7n8GX7I690BmpLhdJdbWLNITjkpzJaVZVrL1VudHlMYo/JSC3Zlex+TsMOBSMw6imUSb0i3d392br2KRuZgaa6JcLEXotuitcPOIisVQtzc0c4A13EbQ3qhRIGIRGGeHWv7pAt/5BwT7jOc8NY95hcpMrlCWUvXTBCUN6t9PDG3iKrJQ74zsNryjgG3ed3GPkZaRCe8HJ2Uae8XV1HMP4TnMUnUvVqY8EmY9CCIT6ZI+CVsmZx0pCUdihzhCHJXTqc80spytC8V2hVZQiCtinfQszuBUr9mwgNb+z/VM/ZJAf7HKsGJrgNJFeEcDlrQKFwZq1sNrHtaKh75WemxeYq1NN22+jYJQhOlYPIZqn5c6NhrBHRXpFCEM++KhRJNJ74whq5CktFOsxDI5p94j8bsTPbv7EWoPAqzxiLDz0gxOtkJO4+LG0BH6LwruSZX0FKeQKbDrA0pm9TR3h0NjMrxQBRiVxng9WLm+vFZI3sosldT16Wx9LB03XWR7lMABpR9alxqDTKQPIzKaa474GLV0P6ISN0WDnfdXnrivoGKpEfhTUkhKvTJ/TVMlINXJeUazQoMeBhWpm7HXytLYKwjTo1QQ3lT/QLszOcrvbKGUeaajBfgfYQcFP2J/l70ZwaJR7bvY+0GdIL2+6wrG9ZA/XdM/gfbIJJo9Nxp/ptG4rtxXHqd/XxyiG86PEim8k6cpgUtk5InLdgWmKzVec7Qc4SYQ==","functionCall":{"id":"call_547637","name":"get_hostname","args":{}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_547637","name":"get_hostname","response":{"response":"genai-smoke"}}}]}],"tools":[{"functionDeclarations":[{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "genai-smoke",
+                        "thoughtSignature": "EmAKXgFpFH0T2SvT6LFNHAT0j6fIbfDGrxnrkHg7QAbJ6o3WRv7ayV4ktvQ/Wuwe7rm9z6gZqcv/qSmCU0kICDGdNjmF6LLxjC1nmo3LS+UlmU6FOgLioUq3EqemLm9fPtE="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 222,
+                "candidatesTokenCount": 4,
+                "totalTokenCount": 226,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 222
+                  }
+                ],
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "2wzBatLFKoHVjMcPve3suAg"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=594
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 600ms

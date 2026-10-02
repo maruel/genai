@@ -1012,6 +1012,37 @@ func TestToolCall(t *testing.T) {
 			}
 		})
 
+		t.Run("with no arguments", func(t *testing.T) {
+			ctx := t.Context()
+			noArgsTool := ToolDef{
+				Name:        "noArgsTool",
+				Description: "A tool that takes no input",
+				Callback: func(ctx context.Context, _ *struct{}) (string, error) {
+					return "12:34:56", nil
+				},
+			}
+			if err := noArgsTool.Validate(); err != nil {
+				t.Fatal(err)
+			}
+
+			// An empty arguments string is a provider bug, it must be normalized by the provider.
+			tc := ToolCall{ID: "call6", Name: "noArgsTool", Arguments: ""}
+			if err := tc.Validate(); err == nil {
+				t.Fatal("expected error for empty arguments, got nil")
+			}
+			tc = ToolCall{ID: "call6", Name: "noArgsTool", Arguments: "{}"}
+			if err := tc.Validate(); err != nil {
+				t.Fatalf("Validate failed: %v", err)
+			}
+			result, err := tc.Call(ctx, []ToolDef{noArgsTool})
+			if err != nil {
+				t.Fatalf("Call failed: %v", err)
+			}
+			if result != "12:34:56" {
+				t.Fatalf("unexpected result: got %q, want %q", result, "12:34:56")
+			}
+		})
+
 		t.Run("with callback returning error", func(t *testing.T) {
 			ctx := t.Context()
 			errorTool := ToolDef{

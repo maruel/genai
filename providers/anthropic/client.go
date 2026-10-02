@@ -827,6 +827,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				case ChunkContentBlockStop:
 					// Marks a closure of the block pkt.Index. Flush accumulated JSON if appropriate.
 					if pendingToolCall.ID != "" {
+						// The model sends no deltas when the tool takes no arguments.
+						if pendingJSON == "" {
+							pendingJSON = "{}"
+						}
 						pendingToolCall.Arguments = pendingJSON
 						f.ToolCall = pendingToolCall
 						pendingToolCall = genai.ToolCall{}

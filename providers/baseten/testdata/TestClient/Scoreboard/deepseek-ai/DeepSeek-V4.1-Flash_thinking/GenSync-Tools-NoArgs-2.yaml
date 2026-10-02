@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 847
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","content":"\n\n","tool_calls":[{"type":"function","id":"chatcmpl-tool-f86a9105eeba453a97788bb244ae2fb1","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"chatcmpl-tool-f86a9105eeba453a97788bb244ae2fb1","name":"get_hostname"}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 504
+        body: '{"id":"chatcmpl-20e885f291994b7199150c7ce8598585","choices":[{"index":0,"message":{"content":"genai-smoke","role":"assistant"},"finish_reason":"stop"}],"created":1791036628,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion","usage":{"prompt_tokens":368,"completion_tokens":6,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":4,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":2}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "504"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791036628879"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755214040991574651"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755214040991574651"
+            X-Baseten-Model-Id:
+                - qe258p1q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wpg1o9z
+            X-Baseten-Received-At:
+                - "1791036628879"
+            X-Baseten-Request-Id:
+                - 54ca701a1021a1f8f74c7aa7bd03fa11f82e3
+            X-Baseten-Route-Trail:
+                - ChYKDnZ1bC1tc3AtcHJvZC0xKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791036629037"
+            X-Baseten-Session-Id:
+                - 54ca701a1021a1f8f74c7aa7bd03fa11f82e3
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "58"
+            X-Ratelimit-Remaining-Tokens:
+                - "499802"
+        status: 200 OK
+        code: 200
+        duration: 195ms

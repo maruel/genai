@@ -306,6 +306,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 					u.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
 					u.InputCachedTokens = pkt.Delta.Usage.CachedTokens
+					u.ReasoningTokens = pkt.Delta.Usage.Tokens.ReasoningTokens
 					u.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
 					u.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 				case ChunkContentStart:

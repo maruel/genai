@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 483
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":true,"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","reasoning_content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" user wants me"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" to call the get"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"_hostname tool and reply with"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" only the hostname."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_01a1021a14fb702aaee94d2e","type":"function","function":{"name":"get_hostname","arguments":""}}],"reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}"}}],"reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"c6e9ca65-aws_ue1","object":"chat.completion.chunk","created":1791036626,"model":"deepseek-ai/DeepSeek-V4.1-Flash","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":null},"logprobs":null,"finish_reason":"tool_calls"}]}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87c52beedb3d-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-c83f937489bde870daa79f8e7a6064c1-32ad5a8d5e9a7caf-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-03T14:10:26.858Z"
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 297ms

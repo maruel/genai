@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 816
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning_content":"The user wants me to use the get_hostname tool and reply with only the hostname.","tool_calls":[{"id":"call_09739cfbe6af4b338925b63c","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_09739cfbe6af4b338925b63c"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The tool"},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" returned the"},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" hostname. The"},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user wants only"},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the hostname with"},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" no explanation."},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":"genai-smoke","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"1c258f0f-5120-46de-b0fa-0dc07f24e2bf_7e7d21944a1847f68db02892b47b3b9c","choices":[],"created":1791036650,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":{"completion_tokens":23,"prompt_tokens":161,"total_tokens":184,"completion_tokens_details":{"reasoning_tokens":17},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.248s

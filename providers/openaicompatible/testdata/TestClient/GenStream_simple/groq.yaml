@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 149
-        transfer_encoding: []
-        trailer: {}
         host: api.groq.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"llama3-8b-8192","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"stream":true,"temperature":0.01}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
             data: {"id":"chatcmpl-49cffdce-1c87-4104-8355-be649e522358","object":"chat.completion.chunk","created":1748890762,"model":"llama3-8b-8192","system_fingerprint":"fp_f974fb141b","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01jws06fdwe17vsr5vtbjeavww"}}
 

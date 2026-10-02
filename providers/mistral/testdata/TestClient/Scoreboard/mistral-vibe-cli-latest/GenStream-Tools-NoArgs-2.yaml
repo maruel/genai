@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 753
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-vibe-cli-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"VYATjPhIb","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"VYATjPhIb","name":"get_hostname"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"47932240624643e3bf654e4e640c77cf","object":"chat.completion.chunk","created":1791036637,"model":"mistral-vibe-cli-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"47932240624643e3bf654e4e640c77cf","object":"chat.completion.chunk","created":1791036637,"model":"mistral-vibe-cli-latest","choices":[{"index":0,"delta":{"content":"gen"},"finish_reason":null}],"p":"abcdefghijklmnopqrst"}
+
+            data: {"id":"47932240624643e3bf654e4e640c77cf","object":"chat.completion.chunk","created":1791036637,"model":"mistral-vibe-cli-latest","choices":[{"index":0,"delta":{"content":"ai-smoke"},"finish_reason":"stop"}],"usage":{"prompt_tokens":126,"total_tokens":131,"completion_tokens":5,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"p":"abcdefghijk"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c88093916a25b-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a1021a-41f5-7bf4-a1d6-c4635592773b
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=6,cfOrigin;dur=330
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "192"
+            X-Kong-Proxy-Latency:
+                - "17"
+            X-Kong-Request-Id:
+                - 01a1021a-41f5-7bf4-a1d6-c4635592773b
+            X-Kong-Upstream-Latency:
+                - "192"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+        status: 200 OK
+        code: 200
+        duration: 343ms

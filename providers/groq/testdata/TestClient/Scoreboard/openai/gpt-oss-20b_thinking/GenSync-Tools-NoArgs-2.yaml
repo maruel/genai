@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 723
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_d16bebeb-1b86-41a7-b4f2-99ac0892203d","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"fc_d16bebeb-1b86-41a7-b4f2-99ac0892203d"}],"model":"openai/gpt-oss-20b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-60782f3b-5b86-44b6-91ba-65d895091e54","object":"chat.completion","created":1791036627,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","content":"genai-smoke","reasoning":"We need to respond with only the hostname. We have the hostname returned: \"genai-smoke\". So reply with that."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.031304267,"prompt_tokens":169,"prompt_time":0.008223366,"completion_tokens":40,"completion_time":0.043278151,"total_tokens":209,"total_time":0.051501517,"completion_tokens_details":{"reasoning_tokens":27}},"usage_breakdown":null,"system_fingerprint":"fp_92d51d08e5","x_groq":{"id":"req_01m411m6jqemts029m12m5j4vx","seed":916386078},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87c9ef83a272-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "249326"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 161ms
+        status: 200 OK
+        code: 200
+        duration: 137ms

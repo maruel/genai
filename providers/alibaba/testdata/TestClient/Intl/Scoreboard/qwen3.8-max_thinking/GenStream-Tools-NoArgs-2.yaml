@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 758
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_2cad2a9bc07244558df146d3","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_2cad2a9bc07244558df146d3"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","created":1791036633,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"","reasoning_content":"The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"","reasoning_content":" tool returned \"gen"},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"","reasoning_content":"ai-smoke\"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"","reasoning_content":" Reply with only the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"","reasoning_content":" hostname."},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"genai-sm","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"oke","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1791036633,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1791036633,"id":"chatcmpl-34923987-b66d-9294-88b1-5c01b0395637","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":22,"completion_tokens_details":{"reasoning_tokens":15,"text_tokens":22},"prompt_tokens":386,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":386},"total_tokens":408}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791036633191"
+            Req-Cost-Time:
+                - "1114"
+            Resp-Start-Time:
+                - "1791036634305"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1113"
+        status: 200 OK
+        code: 200
+        duration: 1.359s

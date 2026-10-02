@@ -552,6 +552,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			// What about BilledUnits, especially for SearchUnits and Classifications?
 			InputTokens:       c.Usage.Tokens.InputTokens,
 			InputCachedTokens: c.Usage.CachedTokens,
+			ReasoningTokens:   c.Usage.Tokens.ReasoningTokens,
 			OutputTokens:      c.Usage.Tokens.OutputTokens,
 			FinishReason:      c.FinishReason.ToFinishReason(),
 		},
@@ -626,9 +627,10 @@ type Usage struct {
 		Classifications int64 `json:"classifications"`
 	} `json:"billed_units"`
 	Tokens struct {
-		InputTokens  int64 `json:"input_tokens"`
-		OutputTokens int64 `json:"output_tokens"`
-		ImageTokens  int64 `json:"image_tokens"`
+		InputTokens     int64 `json:"input_tokens"`
+		OutputTokens    int64 `json:"output_tokens"`
+		ImageTokens     int64 `json:"image_tokens"`
+		ReasoningTokens int64 `json:"reasoning_tokens,omitzero"`
 	} `json:"tokens"`
 	CachedTokens int64 `json:"cached_tokens,omitzero"`
 }
@@ -745,7 +747,11 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
+	// Cohere sends an empty string when the LLM sends no arguments.
 	out.Arguments = t.Function.Arguments
+	if out.Arguments == "" {
+		out.Arguments = "{}"
+	}
 }
 
 // ToolCalls is a slice of ToolCall with custom unmarshalling.

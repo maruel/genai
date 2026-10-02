@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1140
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"model","parts":[{"thoughtSignature":"EpUCCpICAWkUfROqM1DI/HfTkmVi/en4DxJltxHFn8DTy4LpvMNmG9ltWYEH0bVh8xW0cHwIciCdnANddPcwHdklNjh3G747fYw2kRFiIpFgd0piQp5xM2d7EFfq2/5YHCBIkS8WJBqKOg4rfIFyM+x0o72EtO6iUiDbdthwKwaUMxEctTZOxcAPWQHSHYzqbBSd2fZuT6SQM8Gi5PLszt+JhQD67tuqCWdJv5mH6c3Kgo6iCHMWhJ7ZffNtm+FtMLm3dh8X6gGACicMzd3N3oA+A+2vSzTDhZvfHYWHd/wv0bhy9UyvLWZPErl0CNl712HiRHQ16W5vu/UcACC/vP1Dw1MFdWWAMAIMZOK7jzAxkfu2c6VilA==","functionCall":{"id":"call_542377","name":"get_hostname","args":{}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_542377","name":"get_hostname","response":{"response":"genai-smoke"}}}]}],"tools":[{"functionDeclarations":[{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "genai-smoke",
+                        "thoughtSignature": "Eo4CCosCAWkUfRPP5HS3CTtlYIBb2H4zk1dbwKpcrWr0dDXVb6ummC65gRtyZrRAHjgU3ouqFzcHn3OQ6kv2nK1BLk79bSRXezeghDudi6CE1KIYGRoWtSOCvulO3mUs3TsJVu2cXhJeWnn8CM+waIX/5GjdxmXkah8erMsvSngxYnQ9qC8dSpu4OYnQgG/2lLKKaAKFKLKtKpW0zRvA/jipx+osmtYU+ND9TjAjT9gWoeHsZH2/xhnvqhGrapCZMbv+wxOcv5USQ1DNLZp2AHFX8t6kAp1bqRDLzRvH+MLRnsvrkmZ+rYIjCnAk4ddqyQqL5f070BLVc71g8EFoEO8SSPtHXsCh8OvABcXOatb2"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 149,
+                "candidatesTokenCount": 4,
+                "totalTokenCount": 194,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 149
+                  }
+                ],
+                "thoughtsTokenCount": 41,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "1gzBapmdHL7VjMcP35P6-AY"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=995
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.002s

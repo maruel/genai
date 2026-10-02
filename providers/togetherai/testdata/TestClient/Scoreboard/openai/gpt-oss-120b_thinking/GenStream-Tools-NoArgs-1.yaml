@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 471
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-120b","stream":true,"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 166
+        body: |-
+            {
+              "id": "p3kmsYM-z1gNr-a44c87c83804db3d",
+              "error": {
+                "message": "Internal server error",
+                "type": "server_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87c83804db3d-YUL
+            Content-Length:
+                - "166"
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"a6-FF9lo+W1qAPjhkG00OI+/+R5a2I"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 8a96e01e-8127-476c-a289-f81d1d5c25fc-noamzn
+            X-Api-Received:
+                - "2026-10-03T14:10:27.379Z"
+            X-Api-Retries:
+                - "5"
+            X-Inference-Version:
+                - v2
+        status: 500 Internal Server Error
+        code: 500
+        duration: 782ms

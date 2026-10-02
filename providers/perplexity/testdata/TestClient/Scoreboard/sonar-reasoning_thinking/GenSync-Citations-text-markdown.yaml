@@ -1,37 +1,38 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 307
-    host: api.perplexity.ai
-    body: "{\"model\":\"sonar-reasoning\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.perplexity.ai/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\": \"b388b36f-a4ba-4e11-88c3-4c201d435ee8\", \"model\": \"sonar-reasoning\", \"created\": 1756858783, \"usage\": {\"prompt_tokens\": 34, \"completion_tokens\": 118, \"total_tokens\": 152, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.001, \"request_cost\": 0.005, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2021/12/QUACK_OH_DEAR.jpg\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/message-about-mayor-dr-quacks-community-codes/\", \"height\": 264, \"width\": 560}, {\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2017/01/Dr-Quack-Mayor-Waving.png\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/special-announcement-from-dr-quack/\", \"height\": 632, \"width\": 507}, {\"image_url\": \"https://assets.coingecko.com/coin_social_images/coin_social_image/crypto_symbol_image/36174/original/coin_social_image_crypto_symbol_3749320250417-7-8du1da.webp?1744915133\", \"origin_url\": \"https://www.coingecko.com/en/coins/quack-capital\", \"height\": 630, \"width\": 1200}, {\"image_url\": \"https://static.coinpaprika.com/coin/quack-quack-capital/card.png?11257573\", \"origin_url\": \"https://coinpaprika.com/coin/quack-quack-capital/\", \"height\": 768, \"width\": 1536}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking about the capital of \\\"Quackiland.\\\" From the information provided in their message, they state that \\\"The capital of Quackiland is Quack.\\\" So the answer is clearly stated right there in their prompt - the capital of Quackiland is Quack.\\n\\nThis seems to be a fictional place (Quackiland with a capital called Quack and a Big Canard Statue), but I should answer based on the information they've provided.\\n</think>\\n\\nBased on the information you provided, the capital of Quackiland is **Quack**.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
-    headers:
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9791139faaa5ac9c-YYZ
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains; preload
-    status: 200 OK
-    code: 200
-    duration: 6.179s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 307
+        host: api.perplexity.ai
+        body: |
+            {"model":"sonar-reasoning","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"return_images":true,"stream":false,"disable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.perplexity.ai/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id": "b388b36f-a4ba-4e11-88c3-4c201d435ee8", "model": "sonar-reasoning", "created": 1756858783, "usage": {"prompt_tokens": 34, "completion_tokens": 118, "total_tokens": 152, "search_context_size": "low", "cost": {"input_tokens_cost": 0.0, "output_tokens_cost": 0.001, "request_cost": 0.005, "total_cost": 0.006}}, "citations": [], "search_results": [], "images": [{"image_url": "https://webkinznewz.ganzworld.com/wp-content/uploads/2021/12/QUACK_OH_DEAR.jpg", "origin_url": "https://webkinznewz.ganzworld.com/announcements/message-about-mayor-dr-quacks-community-codes/", "height": 264, "width": 560}, {"image_url": "https://webkinznewz.ganzworld.com/wp-content/uploads/2017/01/Dr-Quack-Mayor-Waving.png", "origin_url": "https://webkinznewz.ganzworld.com/announcements/special-announcement-from-dr-quack/", "height": 632, "width": 507}, {"image_url": "https://assets.coingecko.com/coin_social_images/coin_social_image/crypto_symbol_image/36174/original/coin_social_image_crypto_symbol_3749320250417-7-8du1da.webp?1744915133", "origin_url": "https://www.coingecko.com/en/coins/quack-capital", "height": 630, "width": 1200}, {"image_url": "https://static.coinpaprika.com/coin/quack-quack-capital/card.png?11257573", "origin_url": "https://coinpaprika.com/coin/quack-quack-capital/", "height": 768, "width": 1536}], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "<think>\nThe user is asking about the capital of \"Quackiland.\" From the information provided in their message, they state that \"The capital of Quackiland is Quack.\" So the answer is clearly stated right there in their prompt - the capital of Quackiland is Quack.\n\nThis seems to be a fictional place (Quackiland with a capital called Quack and a Big Canard Statue), but I should answer based on the information they''ve provided.\n</think>\n\nBased on the information you provided, the capital of Quackiland is **Quack**."}, "delta": {"role": "assistant", "content": ""}}]}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9791139faaa5ac9c-YYZ
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+        status: 200 OK
+        code: 200
+        duration: 6.179s

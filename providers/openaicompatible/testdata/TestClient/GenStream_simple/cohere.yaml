@@ -7,14 +7,9 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 154
-        transfer_encoding: []
-        trailer: {}
         host: api.cohere.com
-        remote_addr: ""
-        request_uri: ""
         body: |
             {"model":"command-r7b-12-2024","messages":[{"role":"user","content":"Say hello. Use only one word."}],"max_tokens":2000,"stream":true,"temperature":0.01}
-        form: {}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -24,10 +19,7 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
         content_length: -1
-        uncompressed: false
         body: |+
             event: message-start
             data: {"id":"cc616f7b-8392-4fc9-9b92-7fa21e88bed4","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}

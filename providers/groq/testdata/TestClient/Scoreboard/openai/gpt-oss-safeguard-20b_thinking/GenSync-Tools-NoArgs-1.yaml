@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 481
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"model":"openai/gpt-oss-safeguard-20b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-452cbcd9-9e66-4042-8ada-aa8e2494b826","object":"chat.completion","created":1791036627,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user asks to use the get_hostname tool, returning only the hostname. Must not give explanation. We must call function.","tool_calls":[{"id":"fc_f0e6e59e-dcb5-4f9d-a1fd-811aa2456466","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.031042257,"prompt_tokens":145,"prompt_time":0.009706907,"completion_tokens":45,"completion_time":0.048875101,"total_tokens":190,"total_time":0.058582008,"completion_tokens_details":{"reasoning_tokens":26}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01m411m6w6eaka4wdpvbzjgb5z","seed":1795530085},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87cbd95aa272-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "150000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "149588"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 164ms
+        status: 200 OK
+        code: 200
+        duration: 135ms

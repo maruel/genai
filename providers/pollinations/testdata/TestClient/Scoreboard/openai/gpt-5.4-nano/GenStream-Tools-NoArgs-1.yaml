@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 526
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"model":"openai/gpt-5.4-nano","stream":true,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2471
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"","name":"get_hostname"},"id":"call_fIMNACenfFRKySrpa2MEAeCa","index":0,"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1791034307,"id":"chatcmpl-EUu83qsftdpxmyTj8MAKKe4zCMUQd","model":"gpt-5.4-nano-2026-03-17","obfuscation":"vhuF8BJqMTgxX","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_text":{"detected":false,"filtered":false}},"delta":{"tool_calls":[{"function":{"arguments":"{}"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1791034307,"id":"chatcmpl-EUu83qsftdpxmyTj8MAKKe4zCMUQd","model":"gpt-5.4-nano-2026-03-17","obfuscation":"ANlDvoa4R","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"tool_calls","index":0,"logprobs":null}],"created":1791034307,"id":"chatcmpl-EUu83qsftdpxmyTj8MAKKe4zCMUQd","model":"gpt-5.4-nano-2026-03-17","obfuscation":"qdXrU6dlQ","object":"chat.completion.chunk","service_tier":"default","system_fingerprint":null,"usage":null}
+
+            data: {"choices":[],"created":1791034307,"id":"chatcmpl-EUu83qsftdpxmyTj8MAKKe4zCMUQd","latency_checkpoint":{"engine_tbt_ms":5,"engine_ttft_ms":25,"engine_ttlt_ms":92,"pre_inference_ms":96,"service_tbt_ms":5,"service_ttft_ms":370,"service_ttlt_ms":431,"user_visible_ttft_ms":274},"model":"gpt-5.4-nano-2026-03-17","obfuscation":"aCwp36pl1CjLW","object":"chat.completion.chunk","routing":{"serving_pipereplica":"d20260920115741-e29064b4-default-r2-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":13,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":142,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":155}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a44c87c51a44a272-YUL
+            Content-Length:
+                - "2471"
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-10-03T13:31:48.287Z"
+            X-Cache-Key:
+                - 0cb4e9e22922eaca
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 200 OK
+        code: 200
+        duration: 917ms

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 577
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1047
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to use the get_hostname tool to get the machine''s hostname and only reply with the hostname. They want me not to give an explanation.\n\nI need to call the get_hostname function and then output the hostname that it returns.\n","tool_calls":[{"type":"function","function":{"name":"get_hostname","arguments":"{}"},"id":"QrqqMaXhKfd9s1wfcyKEW1Xiz1i0pi8G"}]}}],"created":1791037827,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":68,"prompt_tokens":304,"total_tokens":372,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-w2Xj9bhElptcDatBSzzwE4xJVlQZFRm7","timings":{"cache_n":0,"prompt_n":304,"prompt_ms":2668.836,"prompt_per_token_ms":8.779065789473684,"prompt_per_second":113.90733638185338,"predicted_n":68,"predicted_ms":2994.882,"predicted_per_token_ms":44.69973134328358,"predicted_per_second":22.371499110816387}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1047"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 5.668s

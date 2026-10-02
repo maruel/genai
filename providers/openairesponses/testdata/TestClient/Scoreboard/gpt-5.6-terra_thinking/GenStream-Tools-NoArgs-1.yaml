@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 605
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-terra","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"auto","tools":[{"type":"function","name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0ee06058a4de9c55006ac10ce2786087d2b9fc4125f0a6b6b7","object":"response","created_at":1791036642,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Returns the machine's hostname","name":"get_hostname","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object","required":[]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0ee06058a4de9c55006ac10ce2786087d2b9fc4125f0a6b6b7","object":"response","created_at":1791036642,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Returns the machine's hostname","name":"get_hostname","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object","required":[]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"rs_0ee06058a4de9c55006ac10ce2d80c87d2903f38039b495402","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwQziSElNow2oavq32Z5vCYcF4YC2F49-k1R6rqix6TRgzHowD9E-PJfFwQMX_nH4952xW8coxPBUVkt1BGYmawDJQ54UFJiZUcCYk3hzmNegCsEnEWtJO3-saNUnu69pk6jtyCXee_ToPEoFzXuJAky39e6qnw21PNhRaT13WrLjHQz_57f3yJcWl8MR2TGMAIYEF_mQMDkR1-QK7DEfomDiSUqkJt6HgWP4W_dB2feYogrvFq4dj5i7Pl9ebWtF063SL6Ov268vCLfFzHWvV00jerOKYj4-BVo_3m4X7lgs2YCk-NKaAG-b6RZJf_sJ2KgJiBKQltLsIDuF80fm7mblN5PR-VTiUsHtsUNOPm8mRvAaqvE0nRKIT7pc9jG-bsGmCo7lf8B4AbchxwPFW5Bu6smA4BT3kc1jzjvrrY-UF0LVHwHxnJ5mUq4rwHZJYawvPAI-9OQILHFj9bZ0qyLQTIFIRqgd1f40CF4hMvwkgwS7iGMMYHr1Jc5fZd4xnCiB5IGxI-Haq1reo2vCcOEWY0-uNQOUrIpVjwkpc1FZJV9x5JD6KnZQYEkXQo2KgVFdHA_fEFBog-kmkqdumGnCoflVpyVB_GbBDPg1WdFqvAfkToVEb21Jk35iCpMXAeDuY6tPJCajva5E9wQ2HC2WNgNQL8vhIdumiqA5pmC2-xFaxytowkmZbpAyNS2-R1Wp37zj7L4HIwis-dz8myW4bIyvVy5sGkWtsveUXWQPPR6O20577Maa_0cga_Hy_qV39IMsdwuTrP8NB4skvXBYZ97xEVcyMrRfVlozDftkUvIi93RzmfGmxhOR_DhE9luNF94-Vv-Rhqf6AprBqDUJ1phel3mHhlFbvM9PPFNUMW7zHx9FZEi87nXA3mmcB6PGrs2zEid22KnCTQiVKCEX10UX_O7nMbmhYaT9B8gUpdz53YJCgkvjfT2QnmPzbZRPj9LyaGw2eB18b_DUZ7MbY9rlKkMwqh6ox3hSfQXEUNAo2gGpHT7vJa9zXvNjse7Dl6Zo6tvyDlw1hDtEaydOwiXATzx_3p_6LpkWXeICULpLNnkvKTClOLtEFZbqUvYjfSLA7HdWngSprZlZh0bVNUtzwVbSk37yjJ35K8_n47ne58Jga-hRniu2h3VmDFkFSaAOBBW82s87NtsUNi0NSA==","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"rs_0ee06058a4de9c55006ac10ce2d80c87d2903f38039b495402","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwQzj4Vd100imomrFAZatGbajdQhqiwXIo6Y_ZTe4UBZljknH2doLy0KtIBB-Jz9c925wSjbYu7dyBhOnakrigCSa6MXkhZrvXRdrT-f6Tov63Zfh0wjXw9XuuWcf1XuJmm6GwvzUcC1lX6Jpbe1-xoGg1MV5_rlSrMsX8nS1XYs55_CeDBeAAF7-oGJB8Ur-xJMdtm4-enV_4udUBL2n5k-2ApZ_i2B2mBKK9vvIWHvTQqxoJpSvybgG6u-8pQX-lewnrqYFu0jg6vwwlDS4QyPIYnpFUsrP2l-PkziQMuicLIlZNslFQ-8gkhaHwIpnJJOQY_FbVRfM2oETLQjrrZVjUK9JePF8CpNk1xA9r7NHBA_tF-xnI6X3yFpbpmXYDOucI4h_Q7Wj6L1cwCpBCrAS-rTDCwrE_WrLoJRB1wYqsHZkzfc8fngF28wuFRCkULt3MBDicb-pw2ex_8EQ8hFE1yqjNRRjINuvSx2oMsfUqr7GTdqF9NrMGuyVCDosT3AriJ09F-HlUYSOECXSzKrTVC6C1H_G0BJcxQI54JH58oZFnI7FRk_DTukJ5E4T5vk_1VpcQGLWnPlhVYgGk8RIjudiB9Sd7j6DLAyYwT7hUaGAKpiLQSdqKq3-Ut9wDJBRlQMP7Hrh1QoVb6u5YFj_G8ZVTbF3_Y3R5iUlvnNE5cHeMaE4dkt0v6o3pk4hB8j5MyagfhQ8B0aHBOoibEW-dX4rcg9RMVMYvZibo9QSJMkRWUN1UcqAbtBhbFHCli-qFU-ufOJuoPd-wibhBf72BnGaRuImGByhiG497QHe83gXJVhH1Y2vEFTw33thayOCSf8XfbODxLiiUSKOKW7uglyikkLasxxcOKiRL2ZHMzTzZmexWglYI_GfAY3urzZ5nImQQn2-Ze8ggCj-Rm0OlwXq8DpHSTwvRuXkDnmwLG3z3mTJ1aiiz0icN0hg5shzVlkEvt_t79Xa6pd1CZqlqiB_SCW83NpGJS3m59rA5Bk69rFrG9RvSXPKlJY94-mpE37KFzV7emJYwghXjL7PH9ervPKRKQ7GUVpTafKAgtcfRaRjiCwJ4rbvalDCjfAY0RledGUE2ambd6X1RwEfuaCPnpR-wMQDWIs4xHxy4BuU_0N98vdA5DjMWo272O1nMpF9OhKhX5VwrCFZjOhABx8PUXSrNbMfJMqW_-RsjqI=","summary":[]},"output_index":0,"sequence_number":3}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_0ee06058a4de9c55006ac10ce31d7487d299b3a80a4bf47e2a","type":"function_call","status":"in_progress","arguments":"","call_id":"call_WRoDVcaJlx3Dpgt62o5dNTQv","name":"get_hostname"},"output_index":1,"sequence_number":4}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{}","item_id":"fc_0ee06058a4de9c55006ac10ce31d7487d299b3a80a4bf47e2a","obfuscation":"4eOGJfyBELOcY1","output_index":1,"sequence_number":5}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{}","item_id":"fc_0ee06058a4de9c55006ac10ce31d7487d299b3a80a4bf47e2a","output_index":1,"sequence_number":6}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_0ee06058a4de9c55006ac10ce31d7487d299b3a80a4bf47e2a","type":"function_call","status":"completed","arguments":"{}","call_id":"call_WRoDVcaJlx3Dpgt62o5dNTQv","name":"get_hostname"},"output_index":1,"sequence_number":7}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_0ee06058a4de9c55006ac10ce2786087d2b9fc4125f0a6b6b7","object":"response","created_at":1791036642,"status":"completed","access_programs":null,"background":false,"completed_at":1791036643,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[{"id":"rs_0ee06058a4de9c55006ac10ce2d80c87d2903f38039b495402","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwQzjhmT0xgcOYnoxqDjUB0K3Uw5DWWE3I1U17hlTPEj3nZc0SK2swuYmH8ZXvPzuxJYsRi066Hb8-cPzg28krIhB3F5Yfa2qrXK4bJvMizr5T_4jOsa6qKSX3fmDV8kOlKp0bafqD3HRRqbUmS3jHf8GeTCQ_yozAog-Y_qAth7j5exlffC13rFooveSbfYVD9qS_FPXmnccXAAl08qJxN5X1wpj4M-dUtYSLW9jyuVETZd1PsgP7ZCi7rpvgtZZaGhzJ7pQPXVvOrL8AdOz1LUIqpPb473QGF83E3Mll07kjsb-xg4MDFq7UY8BrYn2fGlr_E7QvJ15LOeT9HKUqacQ1dSAJlimRXHt4lIMGpKNybNZwON6RNQFh0zVer5-YMcCWxK2gL-yPOdufx_VDdnpSIcM1TufnZZYKXw2SUEZaw44LALd79YEvtPOLJ90CiQLpg-e2UCUGxVvKU359wZWYyAfidfQTxEr-5cops0iWW7RZVrHW5p7jN2BkAcoV9ppX4PdrJ-N5yq1jEwuiNrU7bplvaBCZc7WNeI-JlllJzpe-qbzrNMwuAtl_8byu4EPsbXGPs9lSzx3kY27sYe1oi07cSev99ItyMXCquXi5PJBZojkn52UpwU9Kkaa8VlMQBCXGP2v5yHwqFXq2y_HV2K8UUCzCURrLjUtMQEXgUFajzqyOtl9qw_c3J_jgCVcFB3lSOfrTLFhAVqJWxVk-Ikp_RkNszDSHXgdLbpYuTUQVwSACDK_0J5vWVJA6xjxcJZW8wk5neHNfJ_3Jz2W_unREjXsqnCDTo_ItjEtmsZ6eOmGU5mxY3JejSXGfamtPVggs80bVcOgxyRdqUHWJpdZ1f_a50HJMCJyuXGlIqFcolbc0vf3g8aiedFwg2JZXAMlL_Wla8AzwqQRDOBxH6fFLItxUphxrMGp5dIq4E7q8k_0opP7m5ty5R9eQ6i3en6hHaLH0prxHdZ2ebDhel5YqW0C09AdzKmWcrEzZqpT3U6lCttyTNVP6Fn4DQaBUeH2U9btPbny4u8GD52BZETm1Wlz8_coM0dVElhye1xqE5RB2GSeJYNbcYiZzF32liZqPZ8GUbgB5LELNJ8qRh3QhO0kXJGndsoBhveaTmUH7WrD2EDYq2xQNtTkBckReDXnVDNjybRwfBGAVKQecqgd-zeHMHthfZBTD06SRpY=","summary":[]},{"id":"fc_0ee06058a4de9c55006ac10ce31d7487d299b3a80a4bf47e2a","type":"function_call","status":"completed","arguments":"{}","call_id":"call_WRoDVcaJlx3Dpgt62o5dNTQv","name":"get_hostname"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Returns the machine's hostname","name":"get_hostname","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object","required":[]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":60,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":24,"output_tokens_details":{"reasoning_tokens":8},"total_tokens":84},"user":null,"metadata":{}},"sequence_number":8}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c8826de755b05-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "235"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "499010"
+            X-Ratelimit-Reset-Requests:
+                - 240ms
+            X-Ratelimit-Reset-Tokens:
+                - 118ms
+        status: 200 OK
+        code: 200
+        duration: 320ms

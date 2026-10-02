@@ -1,0 +1,119 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 475
+        host: api.cohere.com
+        body: |
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"},"description":"Returns the machine's hostname"}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message-start
+            data: {"id":"36f3a4d4-100b-4481-b084-404889e52094","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: content-start
+            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"The"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" hostname"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" is"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":":"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" "}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"coh"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"ere"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"-"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"text"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"-"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"generator"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"-"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"5"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"7"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"3"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"5"}}}}
+
+            event: citation-start
+            data: {"type":"citation-start","index":0,"delta":{"message":{"citations":{"start":17,"end":43,"text":"cohere-text-generator-5735","sources":null,"type":"TEXT_CONTENT"}}}}
+
+            event: citation-end
+            data: {"type":"citation-end","index":0}
+
+            event: content-end
+            data: {"type":"content-end","index":0}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":72,"output_tokens":15},"tokens":{"input_tokens":1471,"output_tokens":29},"cached_tokens":1456}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - text/event-stream
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - e73224b72e4a88393db45406265c874d
+            X-Envoy-Upstream-Service-Time:
+                - "115"
+        status: 200 OK
+        code: 200
+        duration: 158ms

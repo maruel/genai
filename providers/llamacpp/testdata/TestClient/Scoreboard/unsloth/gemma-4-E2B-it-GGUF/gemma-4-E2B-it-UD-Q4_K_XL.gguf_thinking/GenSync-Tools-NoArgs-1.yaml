@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 577
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1261
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants to retrieve the machine''s hostname using the `get_hostname` tool and return only the hostname.\nI need to call the `get_hostname` tool.\nThen, I need to output the result of that call directly, without any extra explanation.\n\n1.  **Identify the tool:** `get_hostname`.\n2.  **Call the tool:** `get_hostname()`.\n3.  **Process the output:** The tool will return the hostname.\n4.  **Format the final response:** Reply with *only* the hostname.","tool_calls":[{"type":"function","function":{"name":"get_hostname","arguments":"{}"},"id":"stemqbLBld2XBDcV9W1YRLCTrX0Gohn2"}]}}],"created":1791037841,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b10452-b94041a98","object":"chat.completion","usage":{"completion_tokens":132,"prompt_tokens":69,"total_tokens":201,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-UbJXpWK9CvsUMCbHJGI3csemVelt6cQN","timings":{"cache_n":0,"prompt_n":69,"prompt_ms":669.858,"prompt_per_token_ms":9.708086956521738,"prompt_per_second":103.0069059412592,"predicted_n":132,"predicted_ms":6438.505,"predicted_per_token_ms":49.14889312977099,"predicted_per_second":20.346338163906065}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1261"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 7.111s

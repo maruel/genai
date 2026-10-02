@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 750
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"7fToZSuWj","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"7fToZSuWj","name":"get_hostname"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"759ce971123f4f5a9c7e81760d269720","created":1791036631,"model":"ministral-3b-latest","usage":{"prompt_tokens":114,"total_tokens":119,"completion_tokens":5,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"genai-smoke"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87e51843a25b-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a1021a-2b6c-7bf8-9e0f-ef895c1dd4eb
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=8,cfOrigin;dur=955
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "819"
+            X-Kong-Proxy-Latency:
+                - "16"
+            X-Kong-Request-Id:
+                - 01a1021a-2b6c-7bf8-9e0f-ef895c1dd4eb
+            X-Kong-Upstream-Latency:
+                - "819"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "3000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "2992"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999211"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "119"
+        status: 200 OK
+        code: 200
+        duration: 972ms

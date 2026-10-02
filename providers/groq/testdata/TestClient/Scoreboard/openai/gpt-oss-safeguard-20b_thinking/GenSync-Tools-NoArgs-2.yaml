@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 733
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_f0e6e59e-dcb5-4f9d-a1fd-811aa2456466","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"fc_f0e6e59e-dcb5-4f9d-a1fd-811aa2456466"}],"model":"openai/gpt-oss-safeguard-20b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-33a3ea93-2744-42b1-bf86-e1a8eb671f50","object":"chat.completion","created":1791036628,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"genai-smoke","reasoning":"We need to output only the hostname. According to instruction: \"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation.\"\n\nWe've called get_hostname and got \"genai-smoke\". So we must output just that, nothing else."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.097838533,"prompt_tokens":169,"prompt_time":0.021635882,"completion_tokens":73,"completion_time":0.077772815,"total_tokens":242,"total_time":0.099408697,"completion_tokens_details":{"reasoning_tokens":60}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01m411m70eewetb7bd9xet78q8","seed":204294286},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44c87ccaa32a272-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "150000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "149236"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 305ms
+        status: 200 OK
+        code: 200
+        duration: 241ms

@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 473
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"model":"qwen/qwen3.5-35b-a3b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n{\"id\":\"gen-1791036626-OyeTz1rID7Sa5UpDHZIy\",\"object\":\"chat.completion\",\"created\":1791036626,\"model\":\"qwen/qwen3.5-35b-a3b\",\"provider\":\"Darkbloom\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"The user wants me to use the get_hostname tool to get the machine's hostname and reply with only the hostname. There's no explanation needed.\\n\\nLet me call the get_hostname function.\\n\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"call_98D249CF04224078BFE1D4EB\",\"function\":{\"name\":\"get_hostname\",\"arguments\":\"{}\"}}],\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user wants me to use the get_hostname tool to get the machine's hostname and reply with only the hostname. There's no explanation needed.\\n\\nLet me call the get_hostname function.\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":293,\"completion_tokens\":55,\"total_tokens\":348,\"cost\":0.00006469,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00006469,\"upstream_inference_prompt_cost\":0.00002344,\"upstream_inference_completions_cost\":0.00004125},\"completion_tokens_details\":{\"reasoning_tokens\":39,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,X-Provider-Name,request-id,cf-ray
+            Cf-Ray:
+                - a44c87c53aef4e9c-YUL
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=583
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1791036626-OyeTz1rID7Sa5UpDHZIy
+        status: 200 OK
+        code: 200
+        duration: 630ms

@@ -36,7 +36,7 @@ interactions:
             Vary:
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
             X-Accel-Buffering:
-                - "no"
+                - 'no'
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Dashscope-Finished:

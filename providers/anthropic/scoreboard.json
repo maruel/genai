@@ -8,9 +8,9 @@
   "dashboardURL": "https://console.anthropic.com/settings/billing",
   "scenarios": [
     {
-      "comments": "Claude Fable 5 is more capable, but it is much more expensive. Keep Opus 5 as SOTA default for now.",
+      "comments": "Claude Fable 5 is more capable, but it is much more expensive. Keep Opus 5.5 as SOTA default for now.",
       "models": [
-        "claude-opus-5"
+        "claude-opus-5-5"
       ],
       "sota": true,
       "reason": true,
@@ -61,7 +61,7 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
+        "tools": "flaky",
         "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
@@ -76,7 +76,7 @@
     },
     {
       "models": [
-        "claude-sonnet-5"
+        "claude-sonnet-5-5"
       ],
       "good": true,
       "reason": true,
@@ -111,8 +111,8 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": {
@@ -127,8 +127,7 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "flaky",
+        "tools": "flaky",
         "webSearch": true,
         "webFetch": true,
         "jsonSchema": {
@@ -206,138 +205,6 @@
       }
     },
     {
-      "models": [
-        "claude-opus-4-8"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "webFetch": true,
-        "jsonSchema": {
-          "object": "true",
-          "array": "true"
-        },
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "webFetch": true,
-        "jsonSchema": {
-          "object": "true",
-          "array": "true"
-        },
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "claude-sonnet-5"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "webFetch": true,
-        "jsonSchema": {
-          "object": "true",
-          "array": "true"
-        },
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "webFetch": true,
-        "jsonSchema": {
-          "object": "true",
-          "array": "true"
-        },
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "comments": "Other models",
       "models": [
         "claude-fable-5",
@@ -347,9 +214,12 @@
         "claude-opus-4-5-20251101",
         "claude-opus-4-6",
         "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-opus-5",
         "claude-sonnet-4-20250514",
         "claude-sonnet-4-5-20250929",
-        "claude-sonnet-4-6"
+        "claude-sonnet-4-6",
+        "claude-sonnet-5"
       ]
     }
   ]

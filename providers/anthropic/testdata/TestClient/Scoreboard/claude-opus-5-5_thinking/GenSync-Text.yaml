@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5-5","id":"msg_011CfeDkpkkP673v8DxJ7zC1","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"Just a simple \"Hello\" seems like the right response here.\n\n","signature":"CAQSxAQKEAgSGAI4AUIIdGhpbmtpbmcSDI26CboqMY8fKl8jCRoMXei8MLasxyIXdVZ4IjBVnaglvmG4a0t1v6aWB3C0yRTiVJ5mHpHXdFzZ0aGEwJign02hTdRApgQM9dARYgkq4QPFgNeTGW9xDZkF6p28w5VhUF1aLYtjqF5TCaUb+4AosYviH31PA7UnH3wGE1j+lPJ2fruj5m7F8aeEnWVDULSeeS7CDWhbamXvVDzBtroT9r0lwhskSKPMEygH9YNKKtNaJaXY090obA1nl59RhBqatvgkvMdcQNwoyon551zKWlKw4JUtZpY86tXce8CZ67fE15JmaYBM2FGnbmtHzR/oLOmaq9SAjp6Pfd7Fp74PKP3mk6pBcXn5ogJ5Nk2aAxtdNCpd6AIGepnUNy/U71ao9x281F7yE3jKVrnFMcFWoouc0U9w0Irm5KnqeZCWtYqQ/BkB9P+9Sw/xMond18EUryvDHYj2k33Y6RMhMOB3jtLZXe3VIG9mjSq3U9hjvLqE4K8ap7HszzXi5QHCNI186KqJiuugp9VIdrGlMDpgLdROFztI87wMjyBlXuuFeQI9s+esaprn+0bFKK2akxSQ4q/06T/PnSxFUWYZvLt7SFagFXMZf2SIAhQsH0bsskrA9TuTZvMKanjZ8gMYx7xW0H3ZuOP+UHqGX5ur7BGs4jeIbZWo/NdL+ai6+mM0ANCba6SvtjOA8XdWOUxa1kuERaxdaGffRlcWwbr1g+rD69toAOqXEGA/pAmbuRK56DzMGAE="},{"type":"text","text":"Hello."}],"container":null,"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":29,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":17,"output_tokens_details":{"thinking_tokens":11},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:44:41Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:44:43Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:44:40Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:44:41Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473baa28ecb225-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-00aefd25817b8d16c311cd965606f2da-35dbf67afe420b48-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.565s

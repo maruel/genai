@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 517
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"document","cache_control":{"type":"ephemeral"},"citations":{"enabled":true},"source":{"type":"text","media_type":"text/plain","data":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}},{"type":"text","text":"What is the capital of Quackiland?"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5-5","id":"msg_011CfeE2uVw9fr7RLNMb6Tbv","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"That''s straightforward—the span from 1 to 1 covers the heading and the capitalized sentence.\n\n","signature":"CAQS8wQKEAgSGAI4AUIIdGhpbmtpbmcSDIwJoAR1Qa+OIz7W/hoM0wZfO+bTsjL0bQSyIjCpu0e7JxsM0OgV31leifuc0mklQPlhzIJXOH3h9JCQFoGZhim2kK+ctowgprX4hfgqkAQgyAKXK3Z7pj+ojfYDpJ4WnatyJE7JDU9gzChC1ST7NHZk/1/cxtpuh/5h8t+wtL4RrkYOm4X7i+qmqDzGRqT8e2eMoh2qxWpNQ9ahjTqVc4JkgQXdRbldK+oUDbGgEGBclRT3FXfoJCRaKlQxSX0dhyPyNv8yDuYhtQfJIRQFkRocXLRqxLaBx4uZimyrdAPger1iJ8ZkrKn136DR4TkeRcBx0EmcvWMW24LQYx3SoKuXOmxb5w/4NGH8jOBx+AYecVz8IWJcP5Ee7NZjz2Zmcf2hOoLaW0nXF3NFdsXIfAdQiMSszXzaecl9mCJFMMnJHcCH6FFPA1GFK2qgkJTfWD4sNm0kcQwsZg3UF3CHQFMfwFf038haMkcVXGaf7Nli5vEOKgL32/ZwEZgQsOFqeVCPIhkc6zj4+cN7pX/WdNLu7d5bEjlUCfIxg1CGZipvJVQ8O/SyVr+CotZozOTSyYyXRzCkViakSieaGLZZcOOGJES6Nljjb5syaqt6x4WJvjKit2x62347IpYAEt5LSjWpgFG2KN9lCOTZMYIPFntN/coJwl84mo/wlNZ1KfUUKs9DL5btdXTgqXkiZYqYB54LMBtdrLPJd3xkNzNAONS/2W6qjfxMRg4XNyDWKEuk15C4oXDYSPm7OL5cko61TXFcEreDUUFCirwUi2X4KUE7y5qchqF/czjX9DMzG7QYAQ=="},{"type":"text","text":"The capital of Quackiland is Quack, according to the document: "},{"citations":[{"type":"char_location","cited_text":"# Quackiland\n\nThe capital of Quackiland is Quack. ","document_index":0,"document_title":null,"start_char_index":0,"end_char_index":50}],"type":"text","text":"The capital of Quackiland is Quack."},{"type":"text","text":" The city is also home to a landmark, as "},{"citations":[{"type":"char_location","cited_text":"The Big Canard Statue is located in Quack.","document_index":0,"document_title":null,"start_char_index":50,"end_char_index":92}],"type":"text","text":"the Big Canard Statue is located in Quack."}],"container":null,"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":17,"cache_creation_input_tokens":844,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":844,"ephemeral_1h_input_tokens":0},"output_tokens":126,"output_tokens_details":{"thinking_tokens":25},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:48:19Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:48:20Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:48:18Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:48:19Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44740fd9b080a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-144456b9d80bab2108bd85b63c4f8ec1-c4d7512cd774ef42-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.183s

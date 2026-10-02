@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 347
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-5-5","id":"msg_011CfeDvz958dNYBTUMDjK5p","type":"message","role":"assistant","content":[{"type":"server_tool_use","id":"srvtoolu_01Vt88XKdiXWXUd1QabADid8","name":"web_fetch","input":{"url":"https://perdu.com"}},{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_01Vt88XKdiXWXUd1QabADid8","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-10-02T07:38:15.519000+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"---\ntitle: Vous Etes Perdu ?\n---\n\n# Perdu sur l''Internet ?\n\n## Pas de panique, on va vous aider\n\n**```\n* <----- vous êtes ici\n```**"},"title":"Vous Etes Perdu ?"}},"caller":{"type":"direct"}},{"type":"text","text":"The page at https://perdu.com is a well-known French joke site. Its title is \"Vous Etes Perdu ?\", which means \"Are you lost?\" The page reads:\n\n- **Heading:** \"Perdu sur l''Internet ?\" (Lost on the Internet?)\n- **Subheading:** \"Pas de panique, on va vous aider\" (Don''t panic, we''re going to help you)\n- **Text block:** `* <----- vous êtes ici` (you are here), with an arrow pointing at an asterisk\n\nThe joke is that the page gives you no real directions. It just tells you where you already are."}],"container":null,"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":2348,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":248,"output_tokens_details":{"thinking_tokens":0},"service_tier":"standard","inference_geo":"global","server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:47:01Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:47:01Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:46:58Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:47:01Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473f078d870a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-3daee74e7b560d98818c72077e51d3cc-c886dc0d8c27c19f-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.168s

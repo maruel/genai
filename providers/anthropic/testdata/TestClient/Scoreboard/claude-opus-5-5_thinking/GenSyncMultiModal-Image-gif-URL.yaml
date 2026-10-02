@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 464
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5-5","id":"msg_011CfeE3s9ada8ekP9AHF9zC","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"That''s clearly a banana — curved, yellow, with a dark stem and a few brown spots. Since the user wants just one word, I''ll answer simply.\n\n","signature":"CAQS3gUKEAgSGAI4AUIIdGhpbmtpbmcSDOajHGQCr093fqu58hoMxcBAno27hXNrSTvvIjCoyu3vC35WE5/YSjxOLE6W/KQhrPOVvXgCkRFOb09GPK/e92PbMMiXauJMJZfoxeQq+wSH9mFomm1X3OKbbKRC4tGwT8O6WetiU2j3S6sYSiY3OPfbjXfU/5pTyd71jBewb90q4bEGkZFCm9763PPcuy0kEmg5DGiAdwJ/C5x9rLqkcrt7bFQfkGo5bB8KA40UOpj8h+9RAkcozX9zhrb727RrXY4qs/mzpRwneYB2/M876kgpKx3+iHBmQPrXWOyrj+/DgKCKlTxu0FAmqYYlszyRiwU3MR0MT83NFVZ0wahL/Te0p016n39quFJCFXvr1GFuAd2gs3KiN6W/TJDATRWFLYTVgDp1o7ak39OiIAJRSCMt7J4dy0Q5vYApYO8aigj70wIwTWHoUXVB1a2ArcHsU3mktkj5CyTNDFVDGuUIPFw5P4N7XC/lr6lfLflJLvD4+TlyLGluzUYHex3/0Ic/P3stvy+2EBWbKwilyOPDFt4BbUbKwjIdcY80mgljhFpdpCO6deDYIX44LfoDDGEyUgWHXnMTeYw0/b4MZ3BAgp4YOV7pEDmoeiA6Beef2K5Zm5WFy9xcGCr9CT72lkoE3BqCIvGFPqgmekPmG7rUk0CxVWqgFryDmt8jvO4SplrBzlnC0HRX4uvLMZSfQi6vDGlorBfkIq3hYpSxMudZIeiHMYT5Od+0/r7CxU/eZBJvyXNYaW2ehIFbAmnUUVpNDFBAZ1SWTvjktRDY3EPobtduQySOLRmOOV/U1phM8Bg/ta2PDsScQ+MLvm3+UZbdlPAnrZTx2Kuj+rchkKTyJn8u0nX9edyaDJSFZacSa9bdxMTwqbgQWN9mFZEcS4EEwuO6vdARWS5HhL04bj1JdlA4npf3m4TFgMSd7iH7bvmOmeiGgtfpYeuQURgB"},{"type":"text","text":"Banana"}],"container":null,"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":168,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":61,"output_tokens_details":{"thinking_tokens":56},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:48:33Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:48:34Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:48:31Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:48:33Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a447414f1d160a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-67c081c63ea049a42bdea2691e673a4a-3a251b5f32fc8f50-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.425s

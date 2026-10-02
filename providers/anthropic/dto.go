@@ -1295,9 +1295,21 @@ type Container struct {
 	ID        string    `json:"id"`
 }
 
+// Diagnostics describes prompt-cache divergence from a previous request.
+type Diagnostics struct {
+	CacheMissReason *CacheMissReason `json:"cache_miss_reason"`
+}
+
+// CacheMissReason describes why the prompt-cache prefix did not match.
+type CacheMissReason struct {
+	CacheMissedInputTokens int64  `json:"cache_missed_input_tokens,omitzero"`
+	Type                   string `json:"type"` // model_changed, system_changed, tools_changed, messages_changed, previous_message_not_found, or unavailable.
+}
+
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	Message                         // Role is always "assistant"
+	Diagnostics  *Diagnostics       `json:"diagnostics,omitzero"`
 	ID           string             `json:"id"`
 	Model        string             `json:"model"`
 	StopReason   StopReason         `json:"stop_reason"`
@@ -1405,6 +1417,7 @@ type ChatStreamChunkResponse struct {
 
 // StreamMessage is the message payload in a message_start streaming chunk.
 type StreamMessage struct {
+	Diagnostics  *Diagnostics       `json:"diagnostics,omitzero"`
 	ID           string             `json:"id"`
 	Type         string             `json:"type"` // "message", "thinking"
 	Role         string             `json:"role"`
@@ -1707,6 +1720,7 @@ type Model struct {
 	CreatedAt      time.Time         `json:"created_at"`
 	DisplayName    string            `json:"display_name"`
 	ID             string            `json:"id"`
+	Line           string            `json:"line,omitzero"`
 	MaxInputTokens int64             `json:"max_input_tokens"`
 	MaxTokens      int64             `json:"max_tokens"`
 	Type           string            `json:"type"`

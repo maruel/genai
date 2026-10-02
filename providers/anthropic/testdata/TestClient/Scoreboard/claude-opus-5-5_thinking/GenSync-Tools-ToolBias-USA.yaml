@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 687
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5-5","id":"msg_011CfeE1bA6qWzUmAVxZGZLR","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"This is subjective, and the tool only lets me choose between USA or Canada, so picking one and presenting it as objective fact would be misleading. I''m weighing whether to answer with a caveated choice explaining it''s subjective, or to decline the forced pick despite the user''s explicit request to call the tool.\n\n","signature":"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"},{"type":"text","text":"I''ll make the call, but there''s no objective answer to which country is \"best.\" It depends on what you care about. I''m choosing based on common quality-of-life measures:"},{"type":"tool_use","id":"toolu_01RTEGP6eCyHRbBXm4b8t96W","name":"best_country","input":{"country":"Canada"},"caller":{"type":"direct"}}],"container":null,"stop_reason":"tool_use","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":461,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":407,"output_tokens_details":{"thinking_tokens":308},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:48:01Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:48:05Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:48:01Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:48:01Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a447408de98c0a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-96d60947484c0ffb77a5fc76dd46f8ab-1f474a945ff1d0ea-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 5.027s

@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 464
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5-5","id":"msg_011CfeE4EG5PVrU7siXiJcrV","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The image clearly shows a curved yellow fruit with a brown stem and dark tip — it''s a banana. Since the user wants just one word, that''s my answer.\n\n","signature":"CAQSwAUKEAgSGAI4AUIIdGhpbmtpbmcSDOxeyZ5YELxPvSY8rxoM8NLAPZXIz7/kejvPIjAzzI2kmNZu8pPM5WRhwIP8buMypEUNeQ60aSNFZTOtWAMBT86oQqqQfK12nr5pWe8q3QTMp9LfMOLu0Bct1jb7bcq+OWGn/0Q9vvWsJCESenoZ4bAZ8I/k3HRpeyM8z1wP7K9zy9CHhr+UI6jDbwPnDYwYi9rE7eGoL+VQ5wAprRgFdRIxtoq1KY2TGZbIj9VtIalq63+fcVR18YbGG+VEQWGV1CLRNFN2KzVigFGFx+1JnQGUaJxyf/zO52Kf3aVKYd8eHUY7ehoWGkCI5Zt3Ah/EIA6ZvdP24GCjqUsOjp9XoELGn/llg0kgRxbm9Df/WyCZO/yYSHKyqUHaouqzY/3f29D7jupt1Zjn+dzuqop67m+LgHiSuCD7gnICC/L92Ns5Ff1EbS8kmtUYw3oGEpJ9S5nLbIxcVAKWYE/YqX1m5c3Od+TuNHwsfPlrh+v2unh/1SWlk3MkSu/IrKf2zS5DEu903XdV0x5+Co018MavxiFLqjioj7NkH+5GNyF8ydnm9eVcHnZ6uhdeTWsOYcVJCd4wAAM86+USztkyVNDZUek8iWT2TAS/Rnr5Ut/fm8F1O8O5+5rXPBW0wFyMLIisoU0jd90lKX26JjrDaXBLVw4bCdAD72FOUqOomHNLafvx27N9ZavbS5A+m2krj2Xp1cMCAmKw1gTx3U2IlE3fLECOwz3dv9iRU9yWT84v1Ovo+lFGTRea2hxGqsRsNC2zM56pj46FKb0EIkI858S9trS7mpKqpVrSs3ddC8wa8dYHvLxPB+YNDyNnI14j/E+owNxSteY4CCxAYoZNgPGImgLT6WN7X4gDhgjDaYqW+2IYoNBBUG+NQbWN1WVy9h5de8xsnFqX4eZdHGVi8RgB"},{"type":"text","text":"Banana"}],"container":null,"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":168,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":53,"output_tokens_details":{"thinking_tokens":48},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:48:38Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:48:40Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:48:36Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:48:38Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a447416dda080a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-ba1f9ef64c869008cc9b40594654061c-5f24b6a76f777b85-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.391s

@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 290
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5-5","max_tokens":16,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-5-5","id":"msg_011CfeDteEx9xnkXxxSHECUQ","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"They want a thorough breakdown of the theory, so I should explain it carefully and with depth.\n\n","signature":"CAQS7gQKEAgSGAI4AUIIdGhpbmtpbmcSDF1SQ5a7g7E42qCtfRoMdyQGSZyTi0dCV8XQIjC+y1t1R6xFDR+zcU39/AasUGxf/nHHWN9g0TggT/qzKctG9tELfYpY7YQDlj6fL9MqiwRpOjVR57lglOOlpyC/S8+xcvnJ14EzYGSiekW9yPzTB5ZS3n3Lyq/O753I9hwjaLJiMiWvaPs5doI/CnaQIwlyN1Vv/GQc2dphvI0+8qp5oOyHxKlxJM2eOk+SigE4F8yXCZyWtJNiiMm5m/Zlw55HExVuZizg4+GVaX/U7kfaRf943hbtALnC/fUc4FLLw45uUYS5tY6o9iPtoBPmK0IrIoog/JoYYRCIptI6L7JMB6Gj5BxHzkUKR4wWtGFQoPkDHqMMuneUEYyWGswR5DLDmVGbMNdvQAy1byrdBrWdwBbkJBhIvhHvPuRN/GOKXGUL0UZdoE3kUGhB/hBJBaPQWhuuKrhIhMDavPRSndQMKWz5noYH7udUbC3I1mJA6Wjhvc2R4cakcdalSheOBQCR3BWRp7LNiqqBodMJT3v67mav/nuo/H4GWx9rsc23e+N0slJbIfoNOSyGHrCGUkhbkr5zdfScFb+0mhDbA50qlBK0ZaxWd9VXiQCGmfohMQthRgnIZuvIeyvMTsDquQX0ghvQT/iJluAd+knh2YLPbgS02AZsFV9ognFdHcv204kCOsKCj4GrYrBT3r8+JuWiXlc4pp8zlWFw8lfwQSCpBtuSLFHdFIhMPUr2SpJ0pzkh8ozPueW0naTZq5aAR6mENJb/9a1A1xjkbjLI56gZPqiW0kZnuyraleqzGAE="}],"container":null,"stop_reason":"max_tokens","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":32,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":16,"output_tokens_details":{"thinking_tokens":16},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:46:27Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:46:27Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:46:26Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:46:27Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473e410b3b0a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-9b6b958b8f0cd6f09fb8ea4c37105258-c78406879c8bbc7b-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.537s

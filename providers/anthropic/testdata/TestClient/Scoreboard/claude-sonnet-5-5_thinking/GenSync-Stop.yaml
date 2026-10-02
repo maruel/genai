@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 325
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop_sequences":["is"],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-5-5","id":"msg_011CfeDtkmc71joecUfVY613","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"I''m gathering key facts to cover: Canada''s size as the second-largest country, its provinces and territories, population, capital and largest city, official languages, and the 1867 Confederation that formed it.\n\nAlso lining up government structure (constitutional monarchy, parliamentary democracy, current King, Governor General, and PM), geography and landmarks, Indigenous peoples, and a condensed historical timeline from early European contact through Confederation and subsequent provincial additions up to Nunavut in 1999, plus notable milestones like the 1982 Constitution, multiculturalism policy, and the economy.\n\n","signature":"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"},{"type":"text","text":"Canada "}],"container":null,"stop_reason":"stop_sequence","stop_sequence":"is","stop_details":null,"usage":{"input_tokens":37,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1117,"output_tokens_details":{"thinking_tokens":816},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:46:29Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:46:36Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:46:28Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:46:29Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473e4aae950a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-876c56ce48334ff3ad7da8324cf1b64e-92fabbff351f9139-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 8.729s

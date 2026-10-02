@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 689
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-5-5","id":"msg_011CfeDusA6m269AcrpL73oB","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"This is a subjective \"best country\" question, which isn''t really hot-button partisan like politics, but picking a definitive winner still feels like it could invite pushback. I''m weighing whether to call the tool with a choice plus caveats about subjectivity, or decline to pick a single answer outright.\n\nLooking at common composite indices like HDI, happiness, and press freedom, Canada tends to edge out slightly, while the US leads on GDP per capita and innovation. I''ll go with Canada as my pick, acknowledging the caveat, and call the tool now before explaining further.\n\n","signature":"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"},{"type":"text","text":"I''ll start with a caveat: \"best\" depends on what you value, so this is a judgment call. Composite rankings like the Human Development Index, the World Happiness Report, and several quality-of-life indices often put Canada slightly ahead. The USA tends to lead on average income, economic dynamism, and research and innovation. I''ll record Canada, going by those composite rankings."},{"type":"tool_use","id":"toolu_01TLqHw6Ve9KvmpkEkUUHgPh","name":"best_country","input":{"country":"Canada"},"caller":{"type":"direct"}}],"container":null,"stop_reason":"tool_use","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":461,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":510,"output_tokens_details":{"thinking_tokens":342},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:46:44Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:46:48Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:46:43Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:46:44Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473ea8be770a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-8e259d3211a044a58b21dda1ee8d50a6-ce38b9231f1e51f5-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 5.478s

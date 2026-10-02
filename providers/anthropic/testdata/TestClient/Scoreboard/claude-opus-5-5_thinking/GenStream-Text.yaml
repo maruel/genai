@@ -1,0 +1,127 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-5-5","id":"msg_011CfeDkpoiEB9GtxHaeuL7L","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":29,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":4,"service_tier":"standard","inference_geo":"global"},"diagnostics":null}         }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}    }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"This is a"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" simple request - just need"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"s a"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" one"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"-word greeting in"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" response."}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"CAQSggUKEAgSGAI4AUIIdGhpbmtpbmcSDJ3eZr/3HMyFSyVgDhoMzqOJafkvWBBHv9XNIjCsWaO9WYE25BU9xvsm/0RPMrZ0ElIaJjbe6Nvbezmaz/Nr09tP6/yO839R5Vrv2rkqnwRj693uXm4RH30ihDZIeD0qA5N79NgY6o52AmXXdgRCKso2AxcV/e66I+Toqdp4261aWGCz6q/qfT8M0L5x+CNbnuNB9F05YmanCBJsEaJR26yAEV7kCyrgRGFG3KfKRdePlJDZq6Y/2BoseP+CXoNYt/tTNYg4X2T+L9tF7vks9wPvCofexcSVndFdi/ossW64bym+L6n8msRtXdwHJcr+BY7SaMHeUJEDfMXI+vEdkJlyRMZ7prmaozqHYN5Ksi9hxsZQKOdHBBz5iG+AA1VqPx2HsIAz9u9Pto6izaJwxdrhW9DtIrRi3gk2RdCA9eZC4zgjPozMTVGbFkhph04O4R0B2R/IBAXRAGDwe3w5+m36pyNi/dZjl3NQH9C0qOl32+9L3n7T+G5+3/auBzLHEfVotrw8YVrbGNFpa1vg1aDwTPMp3paC5Aiz6LUuPYNtoSMXe7+IRp68P2CxY83/gZbI6PuwvQPPHUdlHTG5Jrfz2pUssKnDfiz/HegS4QQ+bxbk/Q28CnlzEO7IGyhJ5bztHmpEyLGawViEXJhKD8jz9B+KQ5we+pstg2xTEg2ld60GYrj4dldZ7IfMgrI4IyJx7aonU4XY6uJogrz/OMfmnjOVMV8gHEKImbBuA3m5txrwJ6Ji1d1E7PqLYKDlhxSianAPELiOb0J61CU085mQozZcK6dxXMMiONxh+zGhignoH9TymEsbwQGPWvwYAQ=="} }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello"}}
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1           }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"container":null},"usage":{"input_tokens":29,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":35,"output_tokens_details":{"thinking_tokens":30}}  }
+
+            event: message_stop
+            data: {"type":"message_stop"      }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:44:40Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:44:40Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:44:40Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:44:40Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473baa28dcb225-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-13958e5929c1fc0e31f8696fe614a332-cfc5059a4b80d901-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 7.989s

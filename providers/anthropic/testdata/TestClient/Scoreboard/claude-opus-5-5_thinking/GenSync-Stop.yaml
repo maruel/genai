@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 323
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop_sequences":["is"],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-5-5","id":"msg_011CfeDxXm8NrJZdm2tCDMeC","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"I''m planning a thorough overview of Canada covering geography, history, government, economy, culture, and more, organized with clear headers. I''m noting key facts to include, like its status as the second-largest country by area and its extensive coastline.\n\nI''m now gathering specifics on population and major cities, the provincial and territorial structure, the path to Confederation and constitutional patriation, and the current federal government setup including the monarchy, governor general, prime minister, and Parliament. I''m also noting Canada''s bilingual official language framework and Quebec''s distinct linguistic status.\n\nI''m tracing Indigenous history and the legacy of residential schools alongside the broader timeline of European contact, colonization, and political evolution—from Norse landings and French/British colonial rivalry through the Seven Years'' War, Loyalist settlement, the Act of Union, and the eventual move to responsible government leading up to Confederation.\n\nMoving forward, I''m covering Macdonald''s westward expansion—Manitoba''s entry and the Riel resistance, BC and PEI joining, the CPR, the North-West Rebellion—then into the twentieth century with the Prairie provinces, Yukon''s gold rush, the World Wars and Vimy Ridge, Newfoundland''s late entry into Confederation, the new flag, Medicare''s roots in Saskatchewan, Quebec''s Quiet Revolution, the October Crisis, multiculturalism policy, and the two sovereignty referendums.\n\nNow I''m adding the failed constitutional accords, NAFTA and its successor CUSMA, the legalization of same-sex marriage and cannabis. Then I''m shifting to geography: the Shield, Rockies, Appalachians, prairies, Arctic islands, Hudson Bay, Great Lakes, St. Lawrence, Mount Logan as the highest peak, the Mackenzie as the longest river, and Canada''s vast lake and freshwater claims—though I want to be careful with the often-repeated freshwater percentage figures since sources vary.\n\nNoting temperature extremes, then moving into the economy: GDP ranking, membership in G7/G20/NATO/Commonwealth, key resources like oil sands, potash, uranium, and canola, the dominance of the US as a trading partner, and the big five banks with the Canadian dollar and Bank of Canada. Now I''m starting into culture, beginning with hockey as the national pastime.\n\nAlso noting James Cameron, Hollywood North, CBC; demographics like high immigration rates, diversity, most Canadians living near the US border, and religious makeup; healthcare as single-payer Medicare under the Canada Health Act with wait time issues; provincial education systems with top-tier OECD attainment; and symbols like the maple leaf, beaver, O Canada, RCMP, and Tim Hortons.\n\nThen I should cover current challenges—housing affordability, US trade tensions and 2025 tariffs, Indigenous reconciliation, climate change and the record 2023 wildfires, Arctic sovereignty, Quebec nationalism, Western alienation, and productivity concerns. I''ll write this as a long, well-structured response starting exactly with \"Canada is\".\n\n","signature":"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"},{"type":"text","text":"Canada "}],"container":null,"stop_reason":"stop_sequence","stop_sequence":"is","stop_details":null,"usage":{"input_tokens":37,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":2596,"output_tokens_details":{"thinking_tokens":2318},"service_tier":"standard","inference_geo":"global"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-02T22:47:20Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-02T22:47:45Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "20000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "19999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-02T22:47:19Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-02T22:47:20Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4473f8ac8640a15-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-33ba2dac6271a58ba4dcd21a81fdada3-5395086f7a7f9ed8-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 25.607s

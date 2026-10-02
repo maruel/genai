@@ -853,7 +853,7 @@ const (
 // ReasoningEffort controls how much reasoning the model performs.
 type ReasoningEffort string
 
-// Validate implements genai.ProviderOption.
+// Validate returns an error when p is not a known effort level.
 func (p ReasoningEffort) Validate() error {
 	switch p {
 	case ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh, ReasoningEffortMax, ReasoningEffortUltra:

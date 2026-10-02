@@ -63,6 +63,88 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+// ProviderOption configures the pi process. It implements
+// genai.ProviderOption.
+//
+// All fields are opt-in. By default pi runs with its default thinking level
+// and skills disabled.
+type ProviderOption struct {
+	// Effort sets the default thinking level (--thinking). GenOption.Effort
+	// overrides it per call.
+	Effort ThinkingLevel
+	// Skills enables skill discovery and loading. By default the provider
+	// passes --no-skills.
+	Skills bool
+	// ExtraArgs are appended to the pi command line after the provider's
+	// flags. --mode is rejected because the provider owns the RPC protocol.
+	ExtraArgs []string
+
+	_ struct{}
+}
+
+// Validate implements genai.ProviderOption.
+func (p *ProviderOption) Validate() error {
+	if err := p.Effort.validate(); err != nil {
+		return fmt.Errorf("ProviderOption.Effort: %w", err)
+	}
+	return msgutil.CheckExtraArgs(p.ExtraArgs, "mode")
+}
+
+// args returns the pi command line.
+func (p *ProviderOption) args() []string {
+	args := []string{"--mode", "rpc", "--no-session"}
+	if !p.Skills {
+		args = append(args, "--no-skills")
+	}
+	if p.Effort != "" {
+		args = append(args, "--thinking", string(p.Effort))
+	}
+	return append(args, p.ExtraArgs...)
+}
+
+// GenOption configures one prompt of a running pi process.
+type GenOption struct {
+	// Effort sets the thinking level with the set_thinking_level command,
+	// overriding ProviderOption.Effort.
+	Effort ThinkingLevel
+
+	_ struct{}
+}
+
+// Validate implements genai.GenOption.
+func (g *GenOption) Validate() error {
+	if err := g.Effort.validate(); err != nil {
+		return fmt.Errorf("GenOption.Effort: %w", err)
+	}
+	return nil
+}
+
+// parseOpts returns the per-call thinking level.
+//
+// It returns a *base.ErrNotSupported alongside the level when an option is
+// ignored, so the call can proceed.
+func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return "", err
+	}
+	var effort ThinkingLevel
+	var unsupported []string
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return "", err
+		}
+		if v, ok := opt.(*GenOption); ok {
+			effort = v.Effort
+		} else {
+			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
+		}
+	}
+	if len(unsupported) != 0 {
+		return effort, &base.ErrNotSupported{Options: unsupported}
+	}
+	return effort, nil
+}
+
 // commandDiscriminator is a command without parameters or a correlation ID.
 type commandDiscriminator struct {
 	Type EventType `json:"type"`
@@ -108,9 +190,12 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // Ping, so New succeeds even when the CLI is not installed.
 //
 // Supported ProviderOptions:
-//   - genai.ProviderOptionModel — model ID (e.g. "claude-sonnet-4-20250514").
-//     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
-func New(opts ...genai.ProviderOption) (*Client, error) {
+//   - genai.ProviderOptionModel — model ID, optionally prefixed by the
+//     provider (e.g. "google/gemini-3.1-flash-lite-preview").
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//   - *ProviderOption — process settings.
+//   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
+func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
@@ -121,10 +206,12 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			// Pi models are set via set_model command with provider+modelId.
-			// For now, store the raw string; we'll resolve shortcuts when we
-			// have the model list.
+			if err := msgutil.RejectModelMarker(v); err != nil {
+				return nil, err
+			}
 			c.model = string(v)
+		case *ProviderOption:
+			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -141,6 +228,7 @@ type Client struct {
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
 	model          string
+	opts           ProviderOption
 
 	binOnce sync.Once
 	binErr  error
@@ -210,7 +298,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, err := c.exec(ctx, []string{"--mode", "rpc", "--no-session"})
+	stdin, stdout, wait, err := c.exec(ctx, c.opts.args())
 	if err != nil {
 		return nil, err
 	}
@@ -240,30 +328,26 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (r genai.Result, err error) {
-	if err := base.CheckDuplicateGenOptions(opts); err != nil {
-		return genai.Result{}, err
+	effort, optsErr := parseOpts(opts)
+	if optsErr != nil {
+		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
+			return genai.Result{}, optsErr
+		}
+		defer func() {
+			if err == nil {
+				err = optsErr
+			}
+		}()
 	}
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return genai.Result{}, err
-		}
-	}
-	if len(opts) > 0 {
-		defer func() {
-			if err == nil {
-				err = &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opts[0])}}
-			}
-		}()
 	}
 	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return genai.Result{}, err
 	}
 
-	stdin, stdout, wait, err := c.exec(ctx, []string{"--mode", "rpc", "--no-session"})
+	stdin, stdout, wait, err := c.exec(ctx, c.opts.args())
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -276,6 +360,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.setupModel(stdin, sc); err != nil {
 		return genai.Result{}, err
 	}
+	if err := setThinking(stdin, sc, effort); err != nil {
+		return genai.Result{}, err
+	}
 	if err := sendPrompt(stdin, &userMsg); err != nil {
 		return genai.Result{}, err
 	}
@@ -284,20 +371,14 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if err := base.CheckDuplicateGenOptions(opts); err != nil {
-		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	effort, optsErr := parseOpts(opts)
+	if optsErr != nil {
+		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
+			return yieldNothing, errFinish(optsErr)
+		}
 	}
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return yieldNothing, errFinish(err)
-		}
-	}
-	var optsErr error
-	if len(opts) > 0 {
-		optsErr = &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opts[0])}}
 	}
 	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
@@ -309,7 +390,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec(ctx, []string{"--mode", "rpc", "--no-session"})
+		stdin, stdout, wait, startErr := c.exec(ctx, c.opts.args())
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -322,6 +403,10 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		sc := newScanner(stdout)
 		if setupErr := c.setupModel(stdin, sc); setupErr != nil {
 			finalErr = setupErr
+			return
+		}
+		if err := setThinking(stdin, sc, effort); err != nil {
+			finalErr = err
 			return
 		}
 		if err := sendPrompt(stdin, &userMsg); err != nil {
@@ -348,9 +433,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 
 // setupModel sends set_model if a model is configured.
 func (c *Client) setupModel(stdin io.Writer, sc *bufio.Scanner) error {
-	if c.model == "" || c.model == string(genai.ModelCheap) || c.model == string(genai.ModelGood) || c.model == string(genai.ModelSOTA) {
-		// Pi defaults to a good model; skip set_model for marker values.
-		// TODO: resolve marker values against get_available_models.
+	if c.model == "" {
 		return nil
 	}
 	// The set_model command requires provider + modelId. If the model string
@@ -369,6 +452,18 @@ func (c *Client) setupModel(stdin io.Writer, sc *bufio.Scanner) error {
 		return fmt.Errorf("write set_model: %w", err)
 	}
 	_, err := readResponseForCommand(sc, CmdSetModel)
+	return err
+}
+
+// setThinking sends set_thinking_level when level is set.
+func setThinking(stdin io.Writer, sc *bufio.Scanner, level ThinkingLevel) error {
+	if level == "" {
+		return nil
+	}
+	if err := msgutil.WriteNDJSON(stdin, SetThinkingCmd{Type: CmdSetThinking, Level: level}); err != nil {
+		return fmt.Errorf("write set_thinking_level: %w", err)
+	}
+	_, err := readResponseForCommand(sc, CmdSetThinking)
 	return err
 }
 

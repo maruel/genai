@@ -18,17 +18,16 @@
 // # Safe defaults
 //
 // To minimize side-effects the provider disables all tools, slash-command
-// skills, and project/local CLAUDE.md loading by default. Individual
-// capabilities can be unlocked per-call with the GenOption* types in this
-// package.
+// skills, and project/local CLAUDE.md loading by default. ProviderOption
+// unlocks individual capabilities.
 //
 // # Session / multi-turn
 //
 // Each GenSync or GenStream call launches a fresh subprocess. The session ID is
-// returned inside Reply.Opaque["session_id"]. To make it resumable, the first
-// call must set GenOption.SessionPersistence. When the message history contains
-// a previous session ID, it is automatically picked up: --resume <id> is passed
-// and only the last user message is sent.
+// returned inside Reply.Opaque["session_id"]. To make it resumable, set
+// ProviderOption.SessionPersistence before the first call. When the message
+// history contains a previous session ID, --resume <id> is passed and only the
+// last user message is sent.
 package claudecode
 
 import (
@@ -46,6 +45,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -72,38 +72,31 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// ProviderOptionAPIKeyAuth keeps the ANTHROPIC_API_KEY environment variable in
-// the subprocess environment, causing Claude Code to authenticate with the API
-// key instead of OAuth.
-//
-// By default the provider strips ANTHROPIC_API_KEY so that Claude Code uses the
-// user's subscription (OAuth). Set this option when the caller intentionally
-// wants API key billing.
-type ProviderOptionAPIKeyAuth bool
-
-// Validate implements genai.Validatable.
-func (p ProviderOptionAPIKeyAuth) Validate() error { return nil }
-
 // ControlHandler answers Claude Code control requests emitted on stdout.
 //
 // The returned response may omit Type and Response.RequestID; the provider
 // fills them from the control request before writing the response to stdin.
 type ControlHandler func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error)
 
-// Effort levels for the Effort field in GenOption.
+// Effort is a reasoning effort level, as accepted by `claude --effort`.
+type Effort string
+
+// Effort levels.
 const (
-	EffortLow    = "low"
-	EffortMedium = "medium"
-	EffortHigh   = "high"
-	EffortXHigh  = "xhigh"
-	EffortMax    = "max"
+	EffortLow    Effort = "low"
+	EffortMedium Effort = "medium"
+	EffortHigh   Effort = "high"
+	EffortXHigh  Effort = "xhigh"
+	EffortMax    Effort = "max"
 )
 
-// GenOption configures a Claude Code CLI call.
+// ProviderOption configures the claude process. It implements
+// genai.ProviderOption.
 //
 // All fields are opt-in. By default the subprocess runs with all tools
 // disabled, no slash-command skills, no user settings, and no budget cap.
-type GenOption struct {
+// Generation settings use command-line flags, so the provider has no GenOption type.
+type ProviderOption struct {
 	// Tools enables specific Claude Code built-in tools.
 	// Nil (default) disables all tools (--tools "").
 	// When set, you likely also need PermissionMode.
@@ -118,45 +111,57 @@ type GenOption struct {
 	// PermissionMode sets the permission mode (--permission-mode).
 	// Valid values: "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan".
 	PermissionMode string
+	// DangerouslySkipPermissions auto-approves every tool permission request
+	// (--permission-mode bypassPermissions). It conflicts with any other
+	// PermissionMode.
+	DangerouslySkipPermissions bool
 	// ControlHandler handles Claude Code stdout control requests. When set, the
 	// provider enables the stdio permission prompt tool and sends the returned
 	// control response back to Claude on stdin.
 	ControlHandler ControlHandler
 	// Effort sets the reasoning effort level (--effort).
-	// Use the Effort* constants.
-	Effort string
+	Effort Effort
 	// SessionPersistence saves a new session so its opaque session ID can be
 	// resumed in a later call. It is disabled by default for independent calls.
 	SessionPersistence bool
+	// ExtraArgs are appended to the claude command line after the provider's
+	// flags. Flags that select print mode or the input and output formats are
+	// rejected because the provider owns the protocol.
+	ExtraArgs []string
+	// APIKeyAuth keeps ANTHROPIC_API_KEY in the subprocess environment, so
+	// Claude Code bills the API key instead of the user's subscription (OAuth).
+	// By default the provider strips the key when an OAuth session exists.
+	APIKeyAuth bool
 
 	_ struct{}
 }
 
-// Validate implements genai.GenOption.
-func (g *GenOption) Validate() error {
-	for _, t := range g.Tools {
+// Validate implements genai.ProviderOption.
+func (p *ProviderOption) Validate() error {
+	for _, t := range p.Tools {
 		if strings.TrimSpace(t) == "" {
-			return errors.New("GenOption.Tools: tool name must not be empty")
+			return errors.New("ProviderOption.Tools: tool name must not be empty")
 		}
 	}
-	if g.MaxBudgetUSD < 0 {
-		return fmt.Errorf("GenOption.MaxBudgetUSD must be non-negative, got %g", g.MaxBudgetUSD)
+	if p.MaxBudgetUSD < 0 {
+		return fmt.Errorf("ProviderOption.MaxBudgetUSD must be non-negative, got %g", p.MaxBudgetUSD)
 	}
-	if g.PermissionMode != "" {
-		switch g.PermissionMode {
+	if p.PermissionMode != "" {
+		switch p.PermissionMode {
 		case "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan":
 		default:
-			return fmt.Errorf("GenOption.PermissionMode: invalid mode %q; must be one of acceptEdits, auto, bypassPermissions, default, dontAsk, plan", g.PermissionMode)
+			return fmt.Errorf("ProviderOption.PermissionMode: invalid mode %q; must be one of acceptEdits, auto, bypassPermissions, default, dontAsk, plan", p.PermissionMode)
 		}
 	}
-	if g.Effort != "" {
-		switch g.Effort {
-		case "low", "medium", "high", "xhigh", "max":
-		default:
-			return fmt.Errorf("GenOption.Effort: invalid level %q; must be one of low, medium, high, xhigh, max", g.Effort)
-		}
+	if p.DangerouslySkipPermissions && p.PermissionMode != "" && p.PermissionMode != "bypassPermissions" {
+		return fmt.Errorf("ProviderOption.DangerouslySkipPermissions conflicts with PermissionMode %q", p.PermissionMode)
 	}
-	return nil
+	switch p.Effort {
+	case "", EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
+	default:
+		return fmt.Errorf("ProviderOption.Effort: invalid level %q; must be one of low, medium, high, xhigh, max", p.Effort)
+	}
+	return msgutil.CheckExtraArgs(p.ExtraArgs, "input-format", "output-format", "p", "print")
 }
 
 // callOpts holds per-call options parsed from the GenOption slice.
@@ -167,15 +172,31 @@ type callOpts struct {
 	maxBudgetUSD       float64
 	permissionMode     string
 	controlHandler     ControlHandler
-	effort             string
+	effort             Effort
 	sessionPersistence bool
 	systemPrompt       string
 	progressSummaries  bool
+	extraArgs          []string
 }
 
-// parseOpts validates and collects the per-call options.
-func parseOpts(opts []genai.GenOption) (callOpts, error) {
-	var co callOpts
+// parseOpts collects the call options from the process settings p and the
+// generic genai options.
+func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
+	co := callOpts{
+		tools:              slices.Clone(p.Tools),
+		skills:             p.Skills,
+		projSettings:       p.ProjectSettings,
+		maxBudgetUSD:       p.MaxBudgetUSD,
+		permissionMode:     p.PermissionMode,
+		controlHandler:     p.ControlHandler,
+		effort:             p.Effort,
+		sessionPersistence: p.SessionPersistence,
+		progressSummaries:  p.Effort != "",
+		extraArgs:          p.ExtraArgs,
+	}
+	if p.DangerouslySkipPermissions {
+		co.permissionMode = "bypassPermissions"
+	}
 	var unsupported []string
 	var webTools []string
 	for _, opt := range opts {
@@ -183,21 +204,6 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			co.tools = append(co.tools, v.Tools...)
-			co.skills = v.Skills
-			co.projSettings = v.ProjectSettings
-			co.maxBudgetUSD = v.MaxBudgetUSD
-			co.permissionMode = v.PermissionMode
-			if v.ControlHandler != nil {
-				if co.controlHandler != nil {
-					return callOpts{}, errors.New("GenOption.ControlHandler: multiple handlers configured")
-				}
-				co.controlHandler = v.ControlHandler
-			}
-			co.effort = v.Effort
-			co.sessionPersistence = co.sessionPersistence || v.SessionPersistence
-			co.progressSummaries = v.Effort != ""
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {
@@ -271,7 +277,7 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 	// Unset ANTHROPIC_API_KEY so that Claude Code uses OAuth (subscription)
 	// instead of consuming API key credits. The key is typically set in the
 	// parent process for HTTP-based providers (e.g. anthropic), not for the CLI.
-	// Use GenOption.APIKeyAuth = true to keep it.
+	// Use ProviderOption.APIKeyAuth to keep it.
 	strip := []string{"CLAUDECODE"}
 	useOAuth := !e.apiKeyAuth && hasOAuth()
 	if useOAuth {
@@ -317,11 +323,12 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // requiring the binary.
 //
 // Supported ProviderOptions:
-//   - genai.ProviderOptionModel — model alias ("opus", "sonnet", "haiku") or full ID.
-//     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
-//   - ProviderOptionAPIKeyAuth — keep ANTHROPIC_API_KEY in the subprocess
-//     environment. By default the key is stripped so Claude Code uses OAuth.
-func New(opts ...genai.ProviderOption) (*Client, error) {
+//   - genai.ProviderOptionModel — model alias ("opus", "sonnet", "haiku") or
+//     full ID. genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are
+//     rejected.
+//   - *ProviderOption — process settings.
+//   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
+func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
@@ -332,18 +339,12 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			switch v {
-			case genai.ModelCheap:
-				c.model = "haiku"
-			case genai.ModelGood:
-				c.model = "sonnet"
-			case genai.ModelSOTA:
-				c.model = "opus"
-			default:
-				c.model = string(v)
+			if err := msgutil.RejectModelMarker(v); err != nil {
+				return nil, err
 			}
-		case ProviderOptionAPIKeyAuth:
-			c.apiKeyAuth = bool(v)
+			c.model = string(v)
+		case *ProviderOption:
+			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -360,7 +361,7 @@ type Client struct {
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
 	model          string
-	apiKeyAuth     bool // keep ANTHROPIC_API_KEY in subprocess environment
+	opts           ProviderOption
 
 	binOnce sync.Once
 	binErr  error
@@ -381,7 +382,7 @@ func (c *Client) ensureBin() error {
 			bin = "claude"
 		}
 		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin, apiKeyAuth: c.apiKeyAuth}).start)
+		s := genai.Starter((&cmdExecutor{bin: bin, apiKeyAuth: c.opts.APIKeyAuth}).start)
 		if c.starterWrapper != nil {
 			s = c.starterWrapper(s)
 		}
@@ -500,7 +501,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, msgs genai.Messages, opts ...ge
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	co, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(&c.opts, opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return nil, optsErr
@@ -568,7 +569,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	co, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(&c.opts, opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -784,7 +785,7 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 
 	// Optional reasoning effort.
 	if co.effort != "" {
-		args = append(args, "--effort", co.effort)
+		args = append(args, "--effort", string(co.effort))
 	}
 
 	// Optional system prompt.
@@ -792,7 +793,7 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 		args = append(args, "--system-prompt", co.systemPrompt)
 	}
 
-	return args
+	return append(args, co.extraArgs...)
 }
 
 func handleControlRequest(ctx context.Context, w io.Writer, h ControlHandler, line []byte) error {

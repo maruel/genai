@@ -43,8 +43,8 @@ func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Cli
 
 // newOutputClient returns a client whose subprocess prints output and records
 // its arguments into args.
-func newOutputClient(t *testing.T, output string, args *[]string) *Client {
-	c, err := New(t.Context(), genai.ProviderOptionModel(testModel), genai.ProviderOptionStarterWrapper(func(genai.Starter) genai.Starter {
+func newOutputClient(t *testing.T, output string, args *[]string, opts ...genai.ProviderOption) *Client {
+	opts = append(opts, genai.ProviderOptionModel(testModel), genai.ProviderOptionStarterWrapper(func(genai.Starter) genai.Starter {
 		return func(_ context.Context, a []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
 			if args != nil {
 				*args = slices.Clone(a)
@@ -54,6 +54,7 @@ func newOutputClient(t *testing.T, output string, args *[]string) *Client {
 			return pw, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
 		}
 	}))
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -98,17 +99,6 @@ func TestClient(t *testing.T) {
 		for i := range all {
 			models[i] = model(all[i].ID)
 		}
-		// Smoke test the tier models even when the scoreboard lists them as
-		// untested, so -update-scoreboard follows new releases.
-		tiers := []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA}
-		qualify := make([]scoreboard.Model, len(tiers))
-		for i, m := range tiers {
-			id, err := selectModel(all, m)
-			if err != nil {
-				t.Fatal(err)
-			}
-			qualify[i] = model(id)
-		}
 		if err := os.MkdirAll(filepath.Join("testdata", "TestClient", "Scoreboard"), 0o755); err != nil {
 			t.Fatal(err)
 		}
@@ -131,17 +121,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: qualify})
-	})
-
-	t.Run("PreferredModels", func(t *testing.T) {
-		internaltest.TestPreferredModels(t, func(st *testing.T, model string, _ genai.Modality) (genai.Provider, error) {
-			if model == "" {
-				return New(st.Context())
-			}
-			rec := internaltest.NewSubprocessRecorder(st, "ListModels", "agy", nil)
-			return New(st.Context(), genai.ProviderOptionModel(model), genai.ProviderOptionStarterWrapper(rec.Wrap))
-		})
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
 	t.Run("ListModels", func(t *testing.T) {
@@ -231,71 +211,41 @@ func TestClient(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
-		if _, err := New(t.Context(), genai.ProviderOptionRemote("http://localhost")); err == nil {
-			t.Fatal("expected error for unsupported option")
+		for _, opt := range []genai.ProviderOption{
+			genai.ProviderOptionRemote("http://localhost"),
+			genai.ModelCheap,
+			genai.ModelGood,
+			genai.ModelSOTA,
+		} {
+			if _, err := New(t.Context(), opt); err == nil {
+				t.Errorf("%v: expected error", opt)
+			}
 		}
 	})
 }
 
-func TestGenOption(t *testing.T) {
+func TestProviderOption(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			for _, e := range []string{"", EffortLow, EffortMedium, EffortHigh, EffortMax} {
-				if err := (&GenOption{Effort: e}).Validate(); err != nil {
+			for _, e := range []Effort{"", EffortLow, EffortMedium, EffortHigh, EffortMax} {
+				if err := (&ProviderOption{Effort: e}).Validate(); err != nil {
 					t.Errorf("Effort %q: %v", e, err)
 				}
 			}
 		})
 		t.Run("error", func(t *testing.T) {
-			for _, g := range []GenOption{
+			for _, p := range []ProviderOption{
 				{Effort: "xhigh"},
 				{Mode: "auto"},
 				{ExtraArgs: []string{"--output-format=json"}},
 				{ExtraArgs: []string{"-input-format", "text"}},
 				{ExtraArgs: []string{"-p"}},
 			} {
-				if err := g.Validate(); err == nil {
-					t.Errorf("%+v: expected error", g)
+				if err := p.Validate(); err == nil {
+					t.Errorf("%+v: expected error", p)
 				}
 			}
 		})
-	})
-}
-
-func TestSelectModel(t *testing.T) {
-	models := []Model{
-		{ID: "claude-opus-4-6-thinking"},
-		{ID: "gemini-3.10-flash-low"},
-		{ID: "gemini-3.10-flash-medium"},
-		{ID: "gemini-3.9-flash-low"},
-		{ID: "gemini-3.1-pro-high"},
-		{ID: "gemini-3.1-pro-low"},
-		{ID: "gemini-2.9-pro-high"},
-	}
-	t.Run("valid", func(t *testing.T) {
-		for _, tc := range []struct {
-			marker genai.ProviderOptionModel
-			want   string
-		}{
-			{genai.ModelCheap, "gemini-3.10-flash-low"},
-			{genai.ModelGood, "gemini-3.10-flash-medium"},
-			{genai.ModelSOTA, "gemini-3.1-pro-high"},
-		} {
-			t.Run(string(tc.marker), func(t *testing.T) {
-				got, err := selectModel(models, tc.marker)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if got != tc.want {
-					t.Errorf("got %q, want %q", got, tc.want)
-				}
-			})
-		}
-	})
-	t.Run("error", func(t *testing.T) {
-		if _, err := selectModel([]Model{{ID: "gemini-x.y-pro-high"}, {ID: "gpt-oss-120b-medium"}}, genai.ModelSOTA); err == nil {
-			t.Error("expected error")
-		}
 	})
 }
 
@@ -320,6 +270,9 @@ func TestGenSync(t *testing.T) {
 			if got := replyText(&res); got != "Hello" {
 				t.Errorf("text = %q, want Hello", got)
 			}
+			if got := msgutil.ExtractOpaqueID(genai.Messages{res.Message}, "conversation_id"); got != "c1" {
+				t.Errorf("conversation_id = %q, want c1", got)
+			}
 			want := genai.Usage{InputTokens: 30, InputCachedTokens: 2, ReasoningTokens: 1, OutputTokens: 7, TotalTokens: 37, FinishReason: genai.FinishedStop}
 			if res.Usage.InputTokens != want.InputTokens || res.Usage.InputCachedTokens != want.InputCachedTokens ||
 				res.Usage.ReasoningTokens != want.ReasoningTokens || res.Usage.OutputTokens != want.OutputTokens ||
@@ -331,13 +284,13 @@ func TestGenSync(t *testing.T) {
 			out := `{"event":"result","result":{"conversation_id":"c1","status":"SUCCESS","response":"","duration_seconds":0,"num_turns":1,"usage":{"input_tokens":0,"output_tokens":0,"thinking_tokens":0,"cache_read_tokens":0,"total_tokens":0}}}`
 			resumed := genai.Messages{
 				genai.NewTextMessage("first"),
-				{Replies: []genai.Reply{{Opaque: map[string]any{conversationIDKey: "prev"}}}},
+				{Replies: []genai.Reply{{Opaque: map[string]any{"conversation_id": "prev"}}}},
 				genai.NewTextMessage("second"),
 			}
 			for _, tc := range []struct {
 				name    string
 				msgs    genai.Messages
-				opt     GenOption
+				opt     ProviderOption
 				want    []string
 				notWant []string
 			}{
@@ -350,12 +303,12 @@ func TestGenSync(t *testing.T) {
 				{
 					name: "options",
 					msgs: resumed,
-					opt: GenOption{
-						Effort: EffortHigh, Mode: ModePlan, DangerouslySkipPermissions: true, Sandbox: true, SlashCommands: true,
+					opt: ProviderOption{
+						Effort: EffortHigh, Mode: ModePlan, DangerouslySkipPermissions: true, Sandbox: true, Skills: true,
 						ExtraArgs: []string{"--add-dir", "/tmp/x"},
 					},
 					want: []string{
-						"--conversation prev", "--dangerously-skip-permissions", "--effort " + EffortHigh,
+						"--conversation prev", "--dangerously-skip-permissions", "--effort " + string(EffortHigh),
 						"--mode " + string(ModePlan), "--sandbox", "--add-dir /tmp/x",
 					},
 					notWant: []string{"--disable-slash-commands"},
@@ -363,7 +316,7 @@ func TestGenSync(t *testing.T) {
 			} {
 				t.Run(tc.name, func(t *testing.T) {
 					var args []string
-					if _, err := newOutputClient(t, out, &args).GenSync(t.Context(), tc.msgs, &tc.opt); err != nil {
+					if _, err := newOutputClient(t, out, &args, &tc.opt).GenSync(t.Context(), tc.msgs); err != nil {
 						t.Fatal(err)
 					}
 					joined := " " + strings.Join(args, " ") + " "

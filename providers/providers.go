@@ -120,7 +120,7 @@ var All = map[string]Config{
 	"claudecode": {
 		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
-			p, err := claudecode.New(opts...)
+			p, err := claudecode.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -130,7 +130,7 @@ var All = map[string]Config{
 	"codex": {
 		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
-			p, err := codex.New(opts...)
+			p, err := codex.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -270,7 +270,7 @@ var All = map[string]Config{
 	"opencode": {
 		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
-			p, err := opencode.New(opts...)
+			p, err := opencode.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -280,7 +280,7 @@ var All = map[string]Config{
 	"pi": {
 		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
-			p, err := pi.New(opts...)
+			p, err := pi.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

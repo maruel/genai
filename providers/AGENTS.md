@@ -24,6 +24,22 @@ investigate more efficiently. Only then look at the online documentation to conf
    - Handle provider-specific limitations gracefully
    - Implement `Raw` suffix methods for raw API access
 
+### CLI provider options
+
+CLI providers (antigravity, claudecode, codex, opencode, pi) take process settings through a package-level
+`ProviderOption` passed to `New(ctx, ...)`. Only settings sent to a running process belong in `GenOption`:
+codex and pi support per-call `Effort`; opencode supports per-call `Effort` and `Mode`.
+
+- `Effort`: typed reasoning level holding the CLI's values. Antigravity, claudecode, and opencode use
+  `Effort`; codex uses `ReasoningEffort`; pi uses `ThinkingLevel`.
+- `DangerouslySkipPermissions bool`: approve every tool permission request. The default rejects or fails
+  them.
+- `Skills bool`: enable skill and slash-command expansion. The default disables it.
+- `ExtraArgs []string`: appended after the provider's arguments. `Validate` rejects the flags that drive the
+  protocol with `msgutil.CheckExtraArgs`.
+
+Omit a field the CLI cannot honor. Keep CLI-specific settings (`Mode`, `Sandbox`, `Tools`) as extra fields.
+
 ### Authentication
 
 - Support environment variables for API keys

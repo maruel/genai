@@ -28,6 +28,7 @@ package opencode
 import (
 	"bufio"
 	"bytes"
+	"cmp"
 	"context"
 	_ "embed"
 	"encoding/base64"
@@ -64,15 +65,43 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// GenOption configures an OpenCode generation call.
+// ProviderOption configures the opencode process. It implements
+// genai.ProviderOption.
+//
+// All fields are opt-in. By default the provider rejects every permission
+// request the agent makes.
+type ProviderOption struct {
+	// Effort selects the default reasoning-effort model variant. Use the
+	// Effort* constants or a provider-specific variant returned by OpenCode.
+	// GenOption.Effort overrides it per call.
+	Effort Effort
+	// DangerouslySkipPermissions approves every permission request the agent
+	// makes, such as file edits and shell commands.
+	DangerouslySkipPermissions bool
+	// ExtraArgs are appended to the `opencode acp` command line.
+	ExtraArgs []string
+
+	_ struct{}
+}
+
+// Validate implements genai.ProviderOption.
+func (p *ProviderOption) Validate() error {
+	if p.Effort != "" && strings.TrimSpace(string(p.Effort)) == "" {
+		return errors.New("ProviderOption.Effort: level must not be whitespace")
+	}
+	return msgutil.CheckExtraArgs(p.ExtraArgs)
+}
+
+// GenOption configures one prompt of a running opencode session.
 type GenOption struct {
-	// Effort selects the reasoning-effort model variant. Use the Effort*
-	// constants or a provider-specific variant returned by OpenCode. An empty
-	// value leaves OpenCode's current effort intact.
+	// Effort selects the reasoning-effort model variant, overriding
+	// ProviderOption.Effort. An empty value keeps the session's effort.
 	Effort Effort
 	// Mode selects an OpenCode session mode returned by ACP. An empty value
 	// leaves OpenCode's current mode intact.
 	Mode Mode
+
+	_ struct{}
 }
 
 // Validate implements genai.GenOption.
@@ -86,15 +115,15 @@ func (g *GenOption) Validate() error {
 	return nil
 }
 
-// callOpts holds per-call options parsed from the GenOption slice.
+// callOpts holds the settings of one call.
 type callOpts struct {
 	effort Effort
 	mode   Mode
 }
 
-// parseOpts validates and collects the per-call options.
-func parseOpts(opts []genai.GenOption) (callOpts, error) {
-	var co callOpts
+// parseOpts collects the call settings from the process settings p and opts.
+func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
+	co := callOpts{effort: p.Effort}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return co, err
 	}
@@ -105,7 +134,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 		}
 		switch v := opt.(type) {
 		case *GenOption:
-			co.effort = v.Effort
+			co.effort = cmp.Or(v.Effort, co.effort)
 			co.mode = v.Mode
 		default:
 			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
@@ -169,8 +198,10 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID (e.g. "opencode/big-pickle").
-//     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
-func New(opts ...genai.ProviderOption) (*Client, error) {
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//   - *ProviderOption — process settings.
+//   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
+func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
@@ -181,16 +212,12 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			switch v {
-			case genai.ModelCheap:
-				c.model = "opencode/gpt-5-nano"
-			case genai.ModelGood:
-				c.model = "opencode/big-pickle"
-			case genai.ModelSOTA:
-				c.model = "openai/gpt-5.4/xhigh"
-			default:
-				c.model = string(v)
+			if err := msgutil.RejectModelMarker(v); err != nil {
+				return nil, err
 			}
+			c.model = string(v)
+		case *ProviderOption:
+			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -207,6 +234,7 @@ type Client struct {
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
 	model          string
+	opts           ProviderOption
 	binOnce        sync.Once
 	binErr         error
 }
@@ -307,7 +335,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
 	}
-	co, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(&c.opts, opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
@@ -324,7 +352,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	resumeSessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 
-	stdin, stdout, wait, err := c.exec(ctx, []string{"acp"})
+	stdin, stdout, wait, err := c.exec(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -344,7 +372,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		return genai.Result{}, err
 	}
 
-	return readTurn(sc, stdin, hs.sessionID, promptID, func(string, string) bool { return true })
+	return readTurn(sc, stdin, hs.sessionID, promptID, c.opts.DangerouslySkipPermissions, func(string, string) bool { return true })
 }
 
 // GenStream implements genai.Provider.
@@ -352,7 +380,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	co, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(&c.opts, opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -369,7 +397,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec(ctx, []string{"acp"})
+		stdin, stdout, wait, startErr := c.exec(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -391,7 +419,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			return
 		}
 
-		result, finalErr = readTurn(sc, stdin, hs.sessionID, promptID, func(text, reasoning string) bool {
+		result, finalErr = readTurn(sc, stdin, hs.sessionID, promptID, c.opts.DangerouslySkipPermissions, func(text, reasoning string) bool {
 			if text != "" && !yield(genai.Reply{Text: text}) {
 				return false
 			}
@@ -715,7 +743,7 @@ func readResponse(sc *bufio.Scanner, stdin io.Writer, expectedID int64) (json.Ra
 			return nil, fmt.Errorf("unmarshal JSON-RPC message: %w", err)
 		}
 		if msg.IsAgentRequest() {
-			if err := handleAgentRequest(stdin, line); err != nil {
+			if err := handleAgentRequest(stdin, line, false); err != nil {
 				return nil, fmt.Errorf("handle agent request during handshake: %w", err)
 			}
 			continue
@@ -747,7 +775,9 @@ func readResponse(sc *bufio.Scanner, stdin io.Writer, expectedID int64) (json.Ra
 // readTurn reads session/update notifications until the session/prompt response
 // arrives. For each text or reasoning delta, onDelta is called; returning false
 // stops the read loop early (used by GenStream when the caller breaks).
-func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int64, onDelta func(text, reasoning string) bool) (genai.Result, error) {
+//
+// allow approves permission requests; otherwise they are rejected.
+func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int64, allow bool, onDelta func(text, reasoning string) bool) (genai.Result, error) {
 	var textBuf, thinkBuf strings.Builder
 	for sc.Scan() {
 		line := sc.Bytes()
@@ -768,9 +798,8 @@ func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int
 			return buildPromptResult(line, textBuf.String(), thinkBuf.String(), sessionID)
 		}
 
-		// Request from agent (permission) → auto-approve.
 		if msg.IsAgentRequest() {
-			if err := handleAgentRequest(stdin, line); err != nil {
+			if err := handleAgentRequest(stdin, line, allow); err != nil {
 				return genai.Result{}, fmt.Errorf("handle agent request: %w", err)
 			}
 			continue
@@ -866,9 +895,10 @@ func decodeSessionUpdate[T any](data json.RawMessage, updateType UpdateType) err
 	return nil
 }
 
-// handleAgentRequest responds to JSON-RPC requests from the agent (e.g.
-// permission requests) by auto-approving with the first "allow" option.
-func handleAgentRequest(stdin io.Writer, line []byte) error {
+// handleAgentRequest responds to JSON-RPC requests from the agent. A permission
+// request selects the first allow option when allow is set and the first
+// reject option otherwise, and is cancelled when no such option exists.
+func handleAgentRequest(stdin io.Writer, line []byte, allow bool) error {
 	var msg JSONRPCMessage
 	if err := internal.UnmarshalJSON(line, &msg); err != nil {
 		return fmt.Errorf("unmarshal agent request: %w", err)
@@ -894,16 +924,14 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 	if err := internal.UnmarshalJSON(msg.Params, &params); err != nil {
 		return fmt.Errorf("unmarshal permission request: %w", err)
 	}
-	// Find the first allow option.
 	optionID := ""
 	for _, o := range params.Options {
-		if o.Kind == PermissionAllowOnce || o.Kind == PermissionAllowAlways {
+		isAllow := o.Kind == PermissionAllowOnce || o.Kind == PermissionAllowAlways
+		isReject := o.Kind == PermissionRejectOnce || o.Kind == PermissionRejectAlways
+		if allow && isAllow || !allow && isReject {
 			optionID = o.OptionID
 			break
 		}
-	}
-	if optionID == "" && len(params.Options) > 0 {
-		optionID = params.Options[0].OptionID
 	}
 	outcome := PermissionOutcome{Outcome: PermissionOutcomeCancelled}
 	if optionID != "" {

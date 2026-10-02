@@ -30,7 +30,7 @@ import (
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
 	rec := internaltest.NewSubprocessRecorder(t, name, "codex", sanitizeCodexFixtureLine)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
-	c, err := New(opts...)
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -45,7 +45,7 @@ func newOutputClient(t *testing.T, lines ...string) *Client {
 			return pw, io.NopCloser(strings.NewReader(strings.Join(lines, "\n"))), func() error { return nil }, nil
 		}
 	})
-	c, err := New(starter)
+	c, err := New(t.Context(), starter)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -289,7 +289,7 @@ func TestClient(t *testing.T) {
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
-			c, err := New(opts...)
+			c, err := New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -298,26 +298,11 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
-	t.Run("model_mapping", func(t *testing.T) {
-		cases := []struct {
-			opt  genai.ProviderOptionModel
-			want string
-		}{
-			{genai.ModelCheap, "gpt-5.6-luna"},
-			{genai.ModelGood, "gpt-5.6-terra"},
-			{genai.ModelSOTA, "gpt-5.6-sol"},
-			{"gpt-5.6-terra", "gpt-5.6-terra"},
-		}
-		for _, tc := range cases {
-			t.Run(string(tc.opt), func(t *testing.T) {
-				c, err := New(tc.opt)
-				if err != nil {
-					t.Fatalf("New: %v", err)
-				}
-				if got := c.ModelID(); got != tc.want {
-					t.Errorf("got %q, want %q", got, tc.want)
-				}
-			})
+	t.Run("model_markers", func(t *testing.T) {
+		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
+			if _, err := New(t.Context(), m); err == nil {
+				t.Errorf("%s: expected error", m)
+			}
 		}
 	})
 

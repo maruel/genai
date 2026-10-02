@@ -27,6 +27,7 @@ package codex
 import (
 	"bufio"
 	"bytes"
+	"cmp"
 	"context"
 	_ "embed"
 	"encoding/base64"
@@ -63,14 +64,66 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// callOpts holds per-call options parsed from the GenOption slice.
-type callOpts struct {
-	systemPrompt string
+// ProviderOption configures the codex process. It implements
+// genai.ProviderOption.
+//
+// All fields are opt-in. By default turns run at ReasoningEffortMedium and
+// Codex fails the call when it requests an approval.
+type ProviderOption struct {
+	// Effort sets the default reasoning effort of every turn. Defaults to
+	// ReasoningEffortMedium. GenOption.Effort overrides it per call.
+	Effort ReasoningEffort
+	// DangerouslySkipPermissions starts or resumes the thread with approval
+	// policy "never" and sandbox "danger-full-access", so shell commands run
+	// unsandboxed without approval requests.
+	DangerouslySkipPermissions bool
+	// ExtraArgs are appended to the `codex app-server` command line, e.g.
+	// []string{"-c", "key=value"}. --listen is rejected because the provider
+	// owns the stdio transport.
+	ExtraArgs []string
+
+	_ struct{}
 }
 
-// parseOpts validates and collects the per-call options.
-func parseOpts(opts []genai.GenOption) (callOpts, error) {
-	var co callOpts
+// Validate implements genai.ProviderOption.
+func (p *ProviderOption) Validate() error {
+	if p.Effort != "" {
+		if err := p.Effort.Validate(); err != nil {
+			return fmt.Errorf("ProviderOption.Effort: %w", err)
+		}
+	}
+	return msgutil.CheckExtraArgs(p.ExtraArgs, "listen")
+}
+
+// GenOption configures one turn of a running codex process.
+type GenOption struct {
+	// Effort sets the reasoning effort of the turn, overriding
+	// ProviderOption.Effort.
+	Effort ReasoningEffort
+
+	_ struct{}
+}
+
+// Validate implements genai.GenOption.
+func (g *GenOption) Validate() error {
+	if g.Effort != "" {
+		if err := g.Effort.Validate(); err != nil {
+			return fmt.Errorf("GenOption.Effort: %w", err)
+		}
+	}
+	return nil
+}
+
+// callOpts holds the settings of one call.
+type callOpts struct {
+	systemPrompt    string
+	effort          ReasoningEffort
+	skipPermissions bool
+}
+
+// parseOpts collects the call settings from the process settings p and opts.
+func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
+	co := callOpts{effort: cmp.Or(p.Effort, ReasoningEffortMedium), skipPermissions: p.DangerouslySkipPermissions}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return co, err
 	}
@@ -80,6 +133,8 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
+		case *GenOption:
+			co.effort = cmp.Or(v.Effort, co.effort)
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {
@@ -188,11 +243,11 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID (e.g. "gpt-5.6-sol", "gpt-5.6-terra").
-//     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
-//   - ReasoningEffort — reasoning depth ("none", "minimal", "low",
-//     "medium", "high", "xhigh"). Defaults to "medium".
-func New(opts ...genai.ProviderOption) (*Client, error) {
-	c := &Client{effort: ReasoningEffortMedium}
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//   - *ProviderOption — process settings.
+//   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
+func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	c := &Client{}
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
@@ -202,18 +257,12 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			switch v {
-			case genai.ModelCheap:
-				c.model = "gpt-5.6-luna"
-			case genai.ModelGood:
-				c.model = "gpt-5.6-terra"
-			case genai.ModelSOTA:
-				c.model = "gpt-5.6-sol"
-			default:
-				c.model = string(v)
+			if err := msgutil.RejectModelMarker(v); err != nil {
+				return nil, err
 			}
-		case ReasoningEffort:
-			c.effort = v
+			c.model = string(v)
+		case *ProviderOption:
+			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -230,7 +279,7 @@ type Client struct {
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
 	model          string
-	effort         ReasoningEffort
+	opts           ProviderOption
 	binOnce        sync.Once
 	binErr         error
 }
@@ -331,7 +380,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
 	}
-	co, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(&c.opts, opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
@@ -348,7 +397,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	threadID := msgutil.ExtractOpaqueID(msgs, threadIDKey)
 
-	stdin, stdout, wait, err := c.exec(ctx, []string{"app-server"})
+	stdin, stdout, wait, err := c.exec(ctx, append([]string{"app-server"}, c.opts.ExtraArgs...))
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -358,12 +407,12 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}()
 
 	sc := newScanner(stdout)
-	newThreadID, err := handshake(stdin, sc, c.model, threadID, co.systemPrompt)
+	newThreadID, err := handshake(stdin, sc, c.model, threadID, &co)
 	if err != nil {
 		return genai.Result{}, err
 	}
 
-	if err := sendTurnStart(stdin, newThreadID, c.effort, &userMsg); err != nil {
+	if err := sendTurnStart(stdin, newThreadID, co.effort, &userMsg); err != nil {
 		return genai.Result{}, err
 	}
 
@@ -375,7 +424,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	co, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(&c.opts, opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -392,7 +441,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec(ctx, []string{"app-server"})
+		stdin, stdout, wait, startErr := c.exec(ctx, append([]string{"app-server"}, c.opts.ExtraArgs...))
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -403,12 +452,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		}()
 
 		sc := newScanner(stdout)
-		newThreadID, hsErr := handshake(stdin, sc, c.model, threadID, co.systemPrompt)
+		newThreadID, hsErr := handshake(stdin, sc, c.model, threadID, &co)
 		if hsErr != nil {
 			finalErr = hsErr
 			return
 		}
-		if err := sendTurnStart(stdin, newThreadID, c.effort, &userMsg); err != nil {
+		if err := sendTurnStart(stdin, newThreadID, co.effort, &userMsg); err != nil {
 			finalErr = err
 			return
 		}
@@ -583,10 +632,15 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, int64, 
 
 // handshake performs the JSON-RPC initialize → initialized → model/list →
 // thread/start (or thread/resume) sequence. Returns the thread ID.
-func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPrompt string) (string, error) {
+func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, co *callOpts) (string, error) {
 	_, nextID, err := initAndListModels(stdin, sc)
 	if err != nil {
 		return "", err
+	}
+	var approval json.RawMessage
+	var sandbox SandboxMode
+	if co.skipPermissions {
+		approval, sandbox = json.RawMessage(`"never"`), SandboxModeDangerFullAccess
 	}
 
 	// Send thread/start or thread/resume.
@@ -594,7 +648,9 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPr
 	if resumeThreadID != "" {
 		params, err := marshalJSONRaw(ThreadResumeParams{
 			ThreadID:              resumeThreadID,
-			DeveloperInstructions: systemPrompt,
+			ApprovalPolicy:        approval,
+			Sandbox:               sandbox,
+			DeveloperInstructions: co.systemPrompt,
 		})
 		if err != nil {
 			return "", fmt.Errorf("marshal thread/resume params: %w", err)
@@ -608,7 +664,9 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID, systemPr
 	} else {
 		params, err := marshalJSONRaw(ThreadStartParams{
 			Model:                 mdl,
-			DeveloperInstructions: systemPrompt,
+			ApprovalPolicy:        approval,
+			Sandbox:               sandbox,
+			DeveloperInstructions: co.systemPrompt,
 		})
 		if err != nil {
 			return "", fmt.Errorf("marshal thread/start params: %w", err)

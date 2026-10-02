@@ -106,3 +106,49 @@ func TestWriteNDJSON(t *testing.T) {
 		}
 	})
 }
+
+func TestCheckExtraArgs(t *testing.T) {
+	reserved := []string{"output-format", "p"}
+	t.Run("valid", func(t *testing.T) {
+		for _, args := range [][]string{
+			nil,
+			{"--add-dir", "/tmp"},
+			{"--model=x", "value-p"},
+			{"-c", "p=1"},
+		} {
+			if err := CheckExtraArgs(args, reserved...); err != nil {
+				t.Errorf("%q: %v", args, err)
+			}
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, args := range [][]string{
+			{""},
+			{"-p"},
+			{"--p=x"},
+			{"--output-format", "json"},
+			{"-output-format=json"},
+		} {
+			if err := CheckExtraArgs(args, reserved...); err == nil {
+				t.Errorf("%q: expected error", args)
+			}
+		}
+	})
+}
+
+func TestRejectModelMarker(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, m := range []genai.ProviderOptionModel{"", "sonnet"} {
+			if err := RejectModelMarker(m); err != nil {
+				t.Errorf("%q: %v", m, err)
+			}
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
+			if err := RejectModelMarker(m); err == nil {
+				t.Errorf("%q: expected error", m)
+			}
+		}
+	})
+}

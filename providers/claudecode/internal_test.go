@@ -41,6 +41,19 @@ func TestBuildArgs(t *testing.T) {
 			t.Errorf("got  %v\nwant %v", args, want)
 		}
 	})
+	t.Run("dangerously_skip_permissions_and_extra_args", func(t *testing.T) {
+		co, err := parseOpts(&ProviderOption{DangerouslySkipPermissions: true, ExtraArgs: []string{"--add-dir", "/src"}}, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		args := (&Client{}).buildArgs(&co, "", false)
+		if i := slices.Index(args, "--permission-mode"); i < 0 || args[i+1] != "bypassPermissions" {
+			t.Errorf("want --permission-mode bypassPermissions: %v", args)
+		}
+		if !slices.Equal(args[len(args)-2:], []string{"--add-dir", "/src"}) {
+			t.Errorf("want ExtraArgs last: %v", args)
+		}
+	})
 	t.Run("new_sessions_are_not_persisted", func(t *testing.T) {
 		c := &Client{}
 		args := c.buildArgs(&callOpts{}, "", false)
@@ -1080,35 +1093,41 @@ func TestWriteUserMsg(t *testing.T) {
 	})
 }
 
-func TestGenOption(t *testing.T) {
+func TestProviderOption(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		for _, m := range []string{"acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan"} {
-			if err := (&GenOption{PermissionMode: m}).Validate(); err != nil {
+			if err := (&ProviderOption{PermissionMode: m}).Validate(); err != nil {
 				t.Errorf("mode %q: unexpected error: %v", m, err)
 			}
 		}
-		for _, e := range []string{EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax} {
-			if err := (&GenOption{Effort: e}).Validate(); err != nil {
+		for _, e := range []Effort{EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax} {
+			if err := (&ProviderOption{Effort: e}).Validate(); err != nil {
 				t.Errorf("effort %q: unexpected error: %v", e, err)
 			}
 		}
 	})
 	t.Run("errors", func(t *testing.T) {
-		if err := (&GenOption{Tools: []string{""}}).Validate(); err == nil {
+		if err := (&ProviderOption{Tools: []string{""}}).Validate(); err == nil {
 			t.Error("expected error for empty tool name")
 		}
-		if err := (&GenOption{MaxBudgetUSD: -1}).Validate(); err == nil {
+		if err := (&ProviderOption{MaxBudgetUSD: -1}).Validate(); err == nil {
 			t.Error("expected error for negative budget")
 		}
-		if err := (&GenOption{PermissionMode: "hack"}).Validate(); err == nil {
+		if err := (&ProviderOption{PermissionMode: "hack"}).Validate(); err == nil {
 			t.Error("expected error for invalid mode")
 		}
-		if err := (&GenOption{Effort: "extreme"}).Validate(); err == nil {
+		if err := (&ProviderOption{Effort: "extreme"}).Validate(); err == nil {
 			t.Error("expected error for invalid effort")
+		}
+		if err := (&ProviderOption{DangerouslySkipPermissions: true, PermissionMode: "plan"}).Validate(); err == nil {
+			t.Error("expected error for conflicting permission mode")
+		}
+		if err := (&ProviderOption{ExtraArgs: []string{"--output-format", "text"}}).Validate(); err == nil {
+			t.Error("expected error for reserved ExtraArgs flag")
 		}
 	})
 	t.Run("system_prompt", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
+		co, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -1117,7 +1136,7 @@ func TestGenOption(t *testing.T) {
 		}
 	})
 	t.Run("web_search", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&genai.GenOptionWeb{Search: true}})
+		co, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionWeb{Search: true}})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -1127,7 +1146,7 @@ func TestGenOption(t *testing.T) {
 		}
 	})
 	t.Run("web_fetch", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&genai.GenOptionWeb{Fetch: true}})
+		co, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionWeb{Fetch: true}})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -1137,10 +1156,7 @@ func TestGenOption(t *testing.T) {
 		}
 	})
 	t.Run("web_with_tools", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{
-			&GenOption{Tools: []string{"Bash"}},
-			&genai.GenOptionWeb{Search: true, Fetch: true},
-		})
+		co, err := parseOpts(&ProviderOption{Tools: []string{"Bash"}}, []genai.GenOption{&genai.GenOptionWeb{Search: true, Fetch: true}})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -1150,7 +1166,7 @@ func TestGenOption(t *testing.T) {
 		}
 	})
 	t.Run("effort_enables_progress_summaries", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&GenOption{Effort: EffortMedium}})
+		co, err := parseOpts(&ProviderOption{Effort: EffortMedium}, nil)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -1168,7 +1184,7 @@ func TestGenOption(t *testing.T) {
 			{"Seed", []genai.GenOption{genai.GenOptionSeed(42)}, "GenOptionSeed"},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				_, err := parseOpts(tc.opts)
+				_, err := parseOpts(&ProviderOption{}, tc.opts)
 				uerr, ok := errors.AsType[*base.ErrNotSupported](err)
 				if !ok {
 					t.Fatalf("expected ErrNotSupported, got %v", err)

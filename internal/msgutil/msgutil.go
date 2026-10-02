@@ -9,7 +9,10 @@ package msgutil
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"slices"
+	"strings"
 
 	"github.com/maruel/genai"
 )
@@ -58,4 +61,39 @@ func WriteNDJSON(w io.Writer, v any) error {
 	data = append(data, '\n')
 	_, err = w.Write(data)
 	return err
+}
+
+// CheckExtraArgs rejects command-line arguments that set a reserved flag.
+//
+// It is used by subprocess-based providers to validate GenOption.ExtraArgs
+// against the flags the provider owns to drive its protocol. A flag matches
+// with one or two leading dashes and with or without an "=value" suffix.
+func CheckExtraArgs(args []string, reserved ...string) error {
+	for _, a := range args {
+		if a == "" {
+			return errors.New("GenOption.ExtraArgs: empty argument")
+		}
+		if !strings.HasPrefix(a, "-") {
+			continue
+		}
+		name, _, _ := strings.Cut(strings.TrimPrefix(strings.TrimPrefix(a, "-"), "-"), "=")
+		if slices.Contains(reserved, name) {
+			return fmt.Errorf("GenOption.ExtraArgs: %q is reserved by the provider", a)
+		}
+	}
+	return nil
+}
+
+// RejectModelMarker returns an error when m is genai.ModelCheap,
+// genai.ModelGood, or genai.ModelSOTA.
+//
+// Subprocess-based providers do not resolve these markers: listing the models
+// requires launching the CLI, which makes construction slow.
+func RejectModelMarker(m genai.ProviderOptionModel) error {
+	switch m {
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		return fmt.Errorf("automatic model selection %q is not supported; pass a model ID, or none for the CLI default", m)
+	default:
+		return nil
+	}
 }

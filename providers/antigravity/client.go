@@ -20,7 +20,7 @@
 // agy always exposes its built-in agent tools (file edits, shell commands, web
 // search, browser) and has no flag to disable them. In print mode it
 // auto-approves workspace writes and soft-denies requests that need review;
-// GenOption.DangerouslySkipPermissions approves them all. The provider runs
+// ProviderOption.DangerouslySkipPermissions approves them all. The provider runs
 // each subprocess in a fresh empty temporary directory, removed after the
 // call, to contain workspace writes.
 //
@@ -28,15 +28,14 @@
 //
 // Each GenSync or GenStream call launches a fresh subprocess. agy persists
 // every conversation under ~/.gemini/antigravity-cli and has no flag to
-// disable it. The conversation ID is returned in
-// Reply.Opaque["conversation_id"]. When the message history contains one, the
-// provider passes --conversation <id> and sends only the last user message.
+// disable it. The conversation ID is returned in Reply.Opaque["conversation_id"].
+// When the message history contains one, the provider passes --conversation
+// <id> and sends only the last user message.
 package antigravity
 
 import (
 	"bufio"
 	"bytes"
-	"cmp"
 	"context"
 	_ "embed"
 	"encoding/json"
@@ -47,7 +46,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -72,12 +70,15 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// Effort levels for GenOption.Effort, as accepted by `agy --effort`.
+// Effort is a reasoning effort level, as accepted by `agy --effort`.
+type Effort string
+
+// Effort levels.
 const (
-	EffortLow    = "low"
-	EffortMedium = "medium"
-	EffortHigh   = "high"
-	EffortMax    = "max"
+	EffortLow    Effort = "low"
+	EffortMedium Effort = "medium"
+	EffortHigh   Effort = "high"
+	EffortMax    Effort = "max"
 )
 
 // Mode is an agent execution mode, as accepted by `agy --mode`.
@@ -89,99 +90,85 @@ const (
 	ModePlan        Mode = "plan"
 )
 
-// GenOption configures an Antigravity CLI call.
+// ProviderOption configures the agy process. It implements
+// genai.ProviderOption.
 //
 // All fields are opt-in. By default agy runs with its default mode, review
-// permissions, no terminal sandbox, and slash commands disabled.
-type GenOption struct {
-	// Effort sets the reasoning effort (--effort). Use the Effort* constants.
-	// Model IDs already encode a default effort, e.g. "gemini-3.8-flash-low".
-	Effort string
-	// Mode sets the agent execution mode (--mode).
-	Mode Mode
+// permissions, no terminal sandbox, and skills disabled. agy accepts no
+// settings once running, so the provider has no GenOption type.
+type ProviderOption struct {
+	// Effort sets the reasoning effort (--effort). Model IDs already encode a
+	// default effort, e.g. "gemini-3.8-flash-low".
+	Effort Effort
 	// DangerouslySkipPermissions auto-approves every tool permission request
 	// (--dangerously-skip-permissions), including shell commands and file
 	// access outside the temporary workspace.
 	DangerouslySkipPermissions bool
-	// Sandbox runs terminal commands with restrictions (--sandbox).
-	Sandbox bool
-	// SlashCommands expands slash commands and skills in the prompt. By
-	// default the provider passes --disable-slash-commands so that a prompt
-	// starting with "/" reaches the model verbatim.
-	SlashCommands bool
+	// Skills expands slash commands and skills in the prompt. By default the
+	// provider passes --disable-slash-commands so that a prompt starting with
+	// "/" reaches the model verbatim.
+	Skills bool
 	// ExtraArgs are appended to the agy command line after the provider's
 	// flags. A repeated flag overrides the earlier value. Flags that select the
 	// print mode or the input and output formats are rejected because the
 	// provider owns the protocol.
 	ExtraArgs []string
+	// Mode sets the agent execution mode (--mode).
+	Mode Mode
+	// Sandbox runs terminal commands with restrictions (--sandbox).
+	Sandbox bool
 
 	_ struct{}
 }
 
-// Validate implements genai.GenOption.
-func (g *GenOption) Validate() error {
-	switch g.Effort {
+// Validate implements genai.ProviderOption.
+func (p *ProviderOption) Validate() error {
+	switch p.Effort {
 	case "", EffortLow, EffortMedium, EffortHigh, EffortMax:
 	default:
-		return fmt.Errorf("GenOption.Effort: invalid level %q; must be one of low, medium, high, max", g.Effort)
+		return fmt.Errorf("ProviderOption.Effort: invalid level %q; must be one of low, medium, high, max", p.Effort)
 	}
-	switch g.Mode {
+	switch p.Mode {
 	case "", ModeAcceptEdits, ModePlan:
 	default:
-		return fmt.Errorf("GenOption.Mode: invalid mode %q; must be one of accept-edits, plan", g.Mode)
+		return fmt.Errorf("ProviderOption.Mode: invalid mode %q; must be one of accept-edits, plan", p.Mode)
 	}
-	for _, a := range g.ExtraArgs {
-		name, _, _ := strings.Cut(strings.TrimPrefix(strings.TrimPrefix(a, "-"), "-"), "=")
-		switch name {
-		case "i", "input-format", "output-format", "p", "print", "prompt", "prompt-interactive":
-			return fmt.Errorf("GenOption.ExtraArgs: %q conflicts with the stream-json protocol", a)
-		default:
-		}
-	}
-	return nil
+	return msgutil.CheckExtraArgs(p.ExtraArgs, "i", "input-format", "output-format", "p", "print", "prompt", "prompt-interactive")
 }
 
 // New creates a Client for the `agy` CLI.
 //
-// The binary is located lazily, so New succeeds without the CLI unless a model
-// marker requires listing the models.
+// The binary is located lazily, so New succeeds even when the CLI is not
+// installed.
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID as listed by `agy models`, e.g.
-//     "gemini-3.8-flash-low". genai.ModelCheap, genai.ModelGood, and
-//     genai.ModelSOTA are resolved against the live model list by running
-//     `agy models`.
+//     "gemini-3.8-flash-low". Without one, agy uses its default model.
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
-func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
 	c := &Client{}
-	var model genai.ProviderOptionModel
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return nil, err
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			model = v
+			if err := msgutil.RejectModelMarker(v); err != nil {
+				return nil, err
+			}
+			c.model = string(v)
+		case *ProviderOption:
+			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
-	}
-	switch model {
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
-		models, err := c.listModels(ctx)
-		if err != nil {
-			return nil, err
-		}
-		if c.model, err = selectModel(models, model); err != nil {
-			return nil, err
-		}
-	default:
-		c.model = string(model)
 	}
 	return c, nil
 }
@@ -191,6 +178,7 @@ type Client struct {
 	base.NotImplemented
 	starterWrapper genai.ProviderOptionStarterWrapper
 	model          string
+	opts           ProviderOption
 
 	binOnce sync.Once
 	binErr  error
@@ -293,7 +281,6 @@ const conversationIDKey = "conversation_id"
 
 // callOpts holds per-call options parsed from the GenOption slice.
 type callOpts struct {
-	gen        GenOption
 	jsonSchema genai.JSONSchema
 }
 
@@ -312,8 +299,6 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			co.gen = *v
 		case *genai.GenOptionText:
 			if v.DecodeAs != nil {
 				s, err := v.DecodeSchema()
@@ -432,57 +417,6 @@ func readModels(sc *bufio.Scanner) ([]Model, error) {
 	return nil, errors.New("agy exited without a result event")
 }
 
-// selectModel picks the newest model of the family and effort matching the
-// marker. Model IDs follow "gemini-<major>.<minor>-<family>-<effort>".
-//
-//   - Cheap: newest flash, low effort.
-//   - Good: newest flash, medium effort.
-//   - SOTA: newest pro, high effort.
-func selectModel(models []Model, marker genai.ProviderOptionModel) (string, error) {
-	family, effort := "flash", "low"
-	switch marker {
-	case genai.ModelGood:
-		effort = "medium"
-	case genai.ModelSOTA:
-		family, effort = "pro", "high"
-	default:
-	}
-	var best string
-	var bestVer [2]int
-	for i := range models {
-		ver, ok := parseGeminiID(models[i].ID, family, effort)
-		if ok && (best == "" || cmp.Or(cmp.Compare(ver[0], bestVer[0]), cmp.Compare(ver[1], bestVer[1])) > 0) {
-			best, bestVer = models[i].ID, ver
-		}
-	}
-	if best == "" {
-		return "", fmt.Errorf("no gemini %s model with %s effort for %s", family, effort, marker)
-	}
-	return best, nil
-}
-
-// parseGeminiID returns the version of a "gemini-<major>.<minor>-<family>-<effort>" ID.
-func parseGeminiID(id, family, effort string) ([2]int, bool) {
-	rest, ok := strings.CutPrefix(id, "gemini-")
-	if !ok {
-		return [2]int{}, false
-	}
-	rest, ok = strings.CutSuffix(rest, "-"+family+"-"+effort)
-	if !ok {
-		return [2]int{}, false
-	}
-	major, minor, ok := strings.Cut(rest, ".")
-	if !ok {
-		return [2]int{}, false
-	}
-	a, err1 := strconv.Atoi(major)
-	b, err2 := strconv.Atoi(minor)
-	if err1 != nil || err2 != nil {
-		return [2]int{}, false
-	}
-	return [2]int{a, b}, true
-}
-
 // run executes one turn. When onText is non-nil, it receives text deltas and
 // returning false stops the call.
 func (c *Client) run(ctx context.Context, msgs genai.Messages, co *callOpts, onText func(string) bool) (res genai.Result, err error) {
@@ -546,22 +480,22 @@ func (c *Client) buildArgs(co *callOpts, conversationID string) []string {
 		"--input-format", "stream-json",
 		"--output-format", "stream-json",
 	}
-	if !co.gen.SlashCommands {
+	if !c.opts.Skills {
 		args = append(args, "--disable-slash-commands")
 	}
 	if c.model != "" {
 		args = append(args, "--model", c.model)
 	}
-	if co.gen.Effort != "" {
-		args = append(args, "--effort", co.gen.Effort)
+	if c.opts.Effort != "" {
+		args = append(args, "--effort", string(c.opts.Effort))
 	}
-	if co.gen.Mode != "" {
-		args = append(args, "--mode", string(co.gen.Mode))
+	if c.opts.Mode != "" {
+		args = append(args, "--mode", string(c.opts.Mode))
 	}
-	if co.gen.DangerouslySkipPermissions {
+	if c.opts.DangerouslySkipPermissions {
 		args = append(args, "--dangerously-skip-permissions")
 	}
-	if co.gen.Sandbox {
+	if c.opts.Sandbox {
 		args = append(args, "--sandbox")
 	}
 	if co.jsonSchema != nil {
@@ -570,7 +504,7 @@ func (c *Client) buildArgs(co *callOpts, conversationID string) []string {
 	if conversationID != "" {
 		args = append(args, "--conversation", conversationID)
 	}
-	return append(args, co.gen.ExtraArgs...)
+	return append(args, c.opts.ExtraArgs...)
 }
 
 // userMsgToInput converts a genai user message into an agy stdin message.

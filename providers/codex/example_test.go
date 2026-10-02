@@ -16,11 +16,12 @@ import (
 )
 
 func Example() {
-	c, err := codex.New(genai.ProviderOptionModel("gpt-5.6-terra"), codex.ReasoningEffortHigh)
+	c, err := codex.New(context.Background(), genai.ProviderOptionModel("gpt-5.6-terra"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	res, err := c.GenSync(context.Background(), genai.Messages{genai.NewTextMessage("Say hello")})
+	msgs := genai.Messages{genai.NewTextMessage("Say hello")}
+	res, err := c.GenSync(context.Background(), msgs, &codex.GenOption{Effort: codex.ReasoningEffortHigh})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -16,7 +16,7 @@ import (
 )
 
 func Example() {
-	c, err := opencode.New(genai.ProviderOptionModel("opencode/big-pickle"))
+	c, err := opencode.New(context.Background(), genai.ProviderOptionModel("opencode/big-pickle"))
 	if err != nil {
 		log.Fatal(err)
 	}

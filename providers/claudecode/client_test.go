@@ -31,7 +31,7 @@ import (
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
 	rec := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
-	c, err := New(opts...)
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -49,7 +49,7 @@ func newOutputClient(t *testing.T, output string, captureArgs *[]string, opts ..
 			return pw, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
 		}
 	}))
-	c, err := New(opts...)
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -137,7 +137,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		c, err := New()
+		c, err := New(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -178,7 +178,10 @@ func TestClient(t *testing.T) {
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
-			c, err := New(opts...)
+			if model.Reason {
+				opts = append(opts, &ProviderOption{Effort: EffortMedium})
+			}
+			c, err := New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -186,44 +189,21 @@ func TestClient(t *testing.T) {
 			// it hallucinates Bash commands as text instead of rejecting the input.
 			// Keep the unsupported smoke cases out of the CLI while retaining text
 			// and image coverage.
-			p := skipMediaClient{Provider: c}
-			var smokeOpts []genai.GenOption
-			if model.Reason {
-				smokeOpts = append(smokeOpts, &GenOption{SessionPersistence: false, Effort: EffortMedium})
-			} else {
-				// Scoreboard calls are independent probes, not a conversation.
-				smokeOpts = append(smokeOpts, &GenOption{SessionPersistence: false})
-			}
-			return &internaltest.InjectOptions{Provider: p, Opts: smokeOpts}
+			return skipMediaClient{Provider: c}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
-	t.Run("model_mapping", func(t *testing.T) {
-		cases := []struct {
-			opt  genai.ProviderOptionModel
-			want string
-		}{
-			{genai.ModelCheap, "haiku"},
-			{genai.ModelGood, "sonnet"},
-			{genai.ModelSOTA, "opus"},
-			{"claude-sonnet-4-6", "claude-sonnet-4-6"},
-		}
-		for _, tc := range cases {
-			t.Run(string(tc.opt), func(t *testing.T) {
-				c, err := New(tc.opt)
-				if err != nil {
-					t.Fatalf("New: %v", err)
-				}
-				if got := c.ModelID(); got != tc.want {
-					t.Errorf("got %q, want %q", got, tc.want)
-				}
-			})
+	t.Run("model_markers", func(t *testing.T) {
+		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
+			if _, err := New(t.Context(), m); err == nil {
+				t.Errorf("%s: expected error", m)
+			}
 		}
 	})
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_hello", genai.ModelGood)
+			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("sonnet"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			res, err := c.GenSync(t.Context(), msgs)
 			if err != nil {
@@ -299,13 +279,13 @@ func TestClient(t *testing.T) {
 			if os.Getenv("CLAUDECODE_LIVE_SESSION_TEST") == "" {
 				t.Skip("set CLAUDECODE_LIVE_SESSION_TEST=1 to check CLI session persistence")
 			}
-			c, err := New(genai.ModelGood)
+			c, err := New(t.Context(), genai.ProviderOptionModel("sonnet"), &ProviderOption{MaxBudgetUSD: 0.05, SessionPersistence: true})
 			if err != nil {
 				t.Fatalf("New: %v", err)
 			}
 			first := make(genai.Messages, 1, 3)
 			first[0] = genai.NewTextMessage("Remember the token cedar-ember-47. Reply with exactly that token and nothing else.")
-			res, err := c.GenSync(t.Context(), first, &GenOption{MaxBudgetUSD: 0.05, SessionPersistence: true})
+			res, err := c.GenSync(t.Context(), first)
 			if err != nil {
 				t.Fatalf("first GenSync: %v", err)
 			}
@@ -313,7 +293,7 @@ func TestClient(t *testing.T) {
 				t.Fatal("first result has no session ID")
 			}
 			msgs := append(first, res.Message, genai.NewTextMessage("What token did I ask you to remember? Reply with exactly that token and nothing else."))
-			res, err = c.GenSync(t.Context(), msgs, &GenOption{MaxBudgetUSD: 0.05})
+			res, err = c.GenSync(t.Context(), msgs)
 			if err != nil {
 				t.Fatalf("resumed GenSync: %v", err)
 			}
@@ -325,14 +305,11 @@ func TestClient(t *testing.T) {
 			if os.Getenv("CLAUDECODE_LIVE_SESSION_TEST") == "" {
 				t.Skip("set CLAUDECODE_LIVE_SESSION_TEST=1 to check a stateless CLI call")
 			}
-			c, err := New(genai.ModelGood)
+			c, err := New(t.Context(), genai.ProviderOptionModel("sonnet"), &ProviderOption{MaxBudgetUSD: 0.05})
 			if err != nil {
 				t.Fatalf("New: %v", err)
 			}
-			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Reply with exactly hello and nothing else.")}, &GenOption{
-				MaxBudgetUSD:       0.05,
-				SessionPersistence: false,
-			})
+			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Reply with exactly hello and nothing else.")})
 			if err != nil {
 				t.Fatalf("GenSync: %v", err)
 			}
@@ -363,12 +340,11 @@ func TestClient(t *testing.T) {
 		t.Run("ask_user_question_haiku", func(t *testing.T) {
 			const question = "Which login boundary should Google use in caic?"
 			const answer = "Identity only"
-			c := newTestClient(t, "GenSync_ask_user_question_haiku", genai.ProviderOptionModel("haiku"))
 			msg := genai.NewTextMessage(`Use the AskUserQuestion tool exactly once.
 Set the question field exactly to: "` + question + `"
 Use exactly two options with labels "Identity only" and "Forge-coupled".
 Do not answer the question yourself.`)
-			raw, err := c.GenSyncRaw(t.Context(), genai.Messages{msg}, &GenOption{
+			po := &ProviderOption{
 				Tools:        []string{"AskUserQuestion"},
 				MaxBudgetUSD: 0.05,
 				ControlHandler: func(_ context.Context, req OutputControlRequestMsg) (InputControlResponseMsg, error) {
@@ -410,7 +386,9 @@ Do not answer the question yourself.`)
 						},
 					}, nil
 				},
-			})
+			}
+			c := newTestClient(t, "GenSync_ask_user_question_haiku", genai.ProviderOptionModel("haiku"), po)
+			raw, err := c.GenSyncRaw(t.Context(), genai.Messages{msg})
 
 			var got, toolUseID string
 			var controlSeen bool
@@ -538,7 +516,7 @@ Do not answer the question yourself.`)
 	})
 	t.Run("gen_stream", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_hello", genai.ModelGood)
+			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("sonnet"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 
@@ -573,9 +551,9 @@ Do not answer the question yourself.`)
 {"type":"system","subtype":"post_turn_summary","summarizes_uuid":"assistant-1","status_category":"completed","status_detail":"thinking summary: greeted the user.","needs_action":"","uuid":"summary-1","session_id":"session"}
 {"type":"result","subtype":"success","is_error":false,"duration_ms":1,"num_turns":1,"result":"Hello","stop_reason":"end_turn","usage":{"input_tokens":1,"output_tokens":1},"session_id":"session"}
 `
-			c := newOutputClient(t, output, nil, genai.ProviderOptionModel("claude-opus-4-6"))
+			c := newOutputClient(t, output, nil, genai.ProviderOptionModel("claude-opus-4-6"), &ProviderOption{Effort: EffortMedium})
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
-			seq, finish := c.GenStream(t.Context(), msgs, &GenOption{Effort: EffortMedium})
+			seq, finish := c.GenStream(t.Context(), msgs)
 
 			var text, reasoning strings.Builder
 			for r := range seq {

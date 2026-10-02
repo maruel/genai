@@ -21,40 +21,66 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
-func TestReasoningEffort(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		for _, v := range []ReasoningEffort{
-			ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow,
-			ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh,
-		} {
-			c, err := New(v)
-			if err != nil {
-				t.Fatalf("New(%q): %v", v, err)
+func TestProviderOption(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, p := range []ProviderOption{
+				{},
+				{Effort: ReasoningEffortHigh},
+				{DangerouslySkipPermissions: true, ExtraArgs: []string{"-c", "model_verbosity=\"low\""}},
+			} {
+				if err := p.Validate(); err != nil {
+					t.Errorf("%+v: %v", p, err)
+				}
 			}
-			if c.effort != v {
-				t.Errorf("effort: got %q, want %q", c.effort, v)
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, p := range []ProviderOption{
+				{Effort: "turbo"},
+				{ExtraArgs: []string{"--listen", "ws://127.0.0.1:1"}},
+			} {
+				if err := p.Validate(); err == nil {
+					t.Errorf("%+v: expected error", p)
+				}
 			}
-		}
+		})
 	})
-	t.Run("invalid", func(t *testing.T) {
-		if _, err := New(ReasoningEffort("turbo")); err == nil {
-			t.Fatal("expected error for invalid effort")
+}
+
+func TestGenOption(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		if err := (&GenOption{Effort: ReasoningEffortHigh}).Validate(); err != nil {
+			t.Error(err)
 		}
-	})
-	t.Run("default", func(t *testing.T) {
-		c, err := New()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if c.effort != ReasoningEffortMedium {
-			t.Errorf("default effort: got %q, want %q", c.effort, ReasoningEffortMedium)
+		if err := (&GenOption{Effort: "turbo"}).Validate(); err == nil {
+			t.Error("expected error")
 		}
 	})
 }
 
 func TestParseOpts(t *testing.T) {
+	t.Run("default_effort", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			p    ProviderOption
+			opts []genai.GenOption
+			want ReasoningEffort
+		}{
+			{"default", ProviderOption{}, nil, ReasoningEffortMedium},
+			{"provider", ProviderOption{Effort: ReasoningEffortLow}, nil, ReasoningEffortLow},
+			{"turn", ProviderOption{Effort: ReasoningEffortLow}, []genai.GenOption{&GenOption{Effort: ReasoningEffortHigh}}, ReasoningEffortHigh},
+		} {
+			co, err := parseOpts(&tc.p, tc.opts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if co.effort != tc.want {
+				t.Errorf("%s: effort = %q, want %q", tc.name, co.effort, tc.want)
+			}
+		}
+	})
 	t.Run("system_prompt", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
+		co, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -72,7 +98,7 @@ func TestParseOpts(t *testing.T) {
 			{"Seed", []genai.GenOption{genai.GenOptionSeed(42)}, "GenOptionSeed"},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				_, err := parseOpts(tc.opts)
+				_, err := parseOpts(&ProviderOption{}, tc.opts)
 				uerr, ok := errors.AsType[*base.ErrNotSupported](err)
 				if !ok {
 					t.Fatalf("expected ErrNotSupported, got %v", err)
@@ -93,7 +119,7 @@ func TestHandshake(t *testing.T) {
 			`{"id":3,"result":{"thread":{"id":"thread"}}}`,
 		}, "\n")
 		var out bytes.Buffer
-		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", "write commit messages")
+		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", &callOpts{systemPrompt: "write commit messages"})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -115,6 +141,33 @@ func TestHandshake(t *testing.T) {
 		if params.DeveloperInstructions != "write commit messages" {
 			t.Errorf("developer instructions = %q, want write commit messages", params.DeveloperInstructions)
 		}
+		if params.ApprovalPolicy != nil || params.Sandbox != "" {
+			t.Errorf("approval = %s, sandbox = %q, want defaults", params.ApprovalPolicy, params.Sandbox)
+		}
+	})
+	t.Run("dangerously_skip_permissions", func(t *testing.T) {
+		responses := strings.Join([]string{
+			`{"id":1,"result":{}}`,
+			`{"id":2,"result":{"data":[]}}`,
+			`{"id":3,"result":{"thread":{"id":"thread"}}}`,
+		}, "\n")
+		var out bytes.Buffer
+		co := callOpts{skipPermissions: true}
+		if _, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", &co); err != nil {
+			t.Fatal(err)
+		}
+		lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+		var req JSONRPCRequest
+		if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
+			t.Fatal(err)
+		}
+		var params ThreadStartParams
+		if err := json.Unmarshal(req.Params, &params); err != nil {
+			t.Fatal(err)
+		}
+		if string(params.ApprovalPolicy) != `"never"` || params.Sandbox != SandboxModeDangerFullAccess {
+			t.Errorf("approval = %s, sandbox = %q, want never and danger-full-access", params.ApprovalPolicy, params.Sandbox)
+		}
 	})
 	t.Run("resume", func(t *testing.T) {
 		responses := strings.Join([]string{
@@ -123,7 +176,7 @@ func TestHandshake(t *testing.T) {
 			`{"id":3,"result":{"thread":{"id":"thread"},"sandbox":{"type":"workspaceWrite","writableRoots":["/src"],"networkAccess":false,"excludeTmpdirEnvVar":false,"excludeSlashTmp":false},"turnsBackwardsCursor":null,"itemsBackwardsCursor":"items"}}`,
 		}, "\n")
 		var out bytes.Buffer
-		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "thread", "")
+		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "thread", &callOpts{})
 		if err != nil {
 			t.Fatal(err)
 		}

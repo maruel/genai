@@ -31,7 +31,7 @@ import (
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
 	rec := internaltest.NewSubprocessRecorder(t, name, "opencode", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
-	c, err := New(opts...)
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -46,7 +46,7 @@ func newOutputClient(t *testing.T, output string, opts ...genai.ProviderOption) 
 			return pw, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
 		}
 	}))
-	c, err := New(opts...)
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -101,7 +101,7 @@ func TestClient(t *testing.T) {
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
-			c, err := New(opts...)
+			c, err := New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -110,26 +110,11 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
-	t.Run("model_mapping", func(t *testing.T) {
-		cases := []struct {
-			opt  genai.ProviderOptionModel
-			want string
-		}{
-			{genai.ModelCheap, "opencode/gpt-5-nano"},
-			{genai.ModelGood, "opencode/big-pickle"},
-			{genai.ModelSOTA, "openai/gpt-5.4/xhigh"},
-			{"opencode/big-pickle", "opencode/big-pickle"},
-		}
-		for _, tc := range cases {
-			t.Run(string(tc.opt), func(t *testing.T) {
-				c, err := New(tc.opt)
-				if err != nil {
-					t.Fatalf("New: %v", err)
-				}
-				if got := c.ModelID(); got != tc.want {
-					t.Errorf("got %q, want %q", got, tc.want)
-				}
-			})
+	t.Run("model_markers", func(t *testing.T) {
+		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
+			if _, err := New(t.Context(), m); err == nil {
+				t.Errorf("%s: expected error", m)
+			}
 		}
 	})
 
@@ -331,32 +316,37 @@ func TestClient(t *testing.T) {
 
 	t.Run("agent_requests", func(t *testing.T) {
 		t.Run("permission", func(t *testing.T) {
-			line := []byte(`{"jsonrpc":"2.0","id":7,"method":"session/request_permission","params":{"sessionId":"session-1","toolCall":{"toolCallId":"tool-1","title":"Edit file","status":"pending","content":[{"type":"diff","path":"a.txt","oldText":"old","newText":"new"}],"_meta":{"source":"opencode"}},"options":[{"optionId":"once","kind":"allow_once","name":"Allow once"}],"_meta":{}}}`)
-			var out bytes.Buffer
-			if err := handleAgentRequest(&out, line); err != nil {
-				t.Fatalf("handleAgentRequest: %v", err)
-			}
-			var got struct {
-				ID     int `json:"id"`
-				Result struct {
-					Outcome struct {
-						Outcome  string `json:"outcome"`
-						OptionID string `json:"optionId"`
-					} `json:"outcome"`
-				} `json:"result"`
-			}
-			if err := json.Unmarshal(out.Bytes(), &got); err != nil {
-				t.Fatalf("unmarshal response: %v", err)
-			}
-			if got.ID != 7 || got.Result.Outcome.Outcome != "selected" || got.Result.Outcome.OptionID != "once" {
-				t.Errorf("unexpected permission response: %#v", got)
+			line := []byte(`{"jsonrpc":"2.0","id":7,"method":"session/request_permission","params":{"sessionId":"session-1","toolCall":{"toolCallId":"tool-1","title":"Edit file","status":"pending","content":[{"type":"diff","path":"a.txt","oldText":"old","newText":"new"}],"_meta":{"source":"opencode"}},"options":[{"optionId":"once","kind":"allow_once","name":"Allow once"},{"optionId":"no","kind":"reject_once","name":"Reject"}],"_meta":{}}}`)
+			for _, tc := range []struct {
+				allow bool
+				want  string
+			}{{true, "once"}, {false, "no"}} {
+				var out bytes.Buffer
+				if err := handleAgentRequest(&out, line, tc.allow); err != nil {
+					t.Fatalf("handleAgentRequest: %v", err)
+				}
+				var got struct {
+					ID     int `json:"id"`
+					Result struct {
+						Outcome struct {
+							Outcome  string `json:"outcome"`
+							OptionID string `json:"optionId"`
+						} `json:"outcome"`
+					} `json:"result"`
+				}
+				if err := json.Unmarshal(out.Bytes(), &got); err != nil {
+					t.Fatalf("unmarshal response: %v", err)
+				}
+				if got.ID != 7 || got.Result.Outcome.Outcome != "selected" || got.Result.Outcome.OptionID != tc.want {
+					t.Errorf("allow=%v: unexpected permission response: %#v", tc.allow, got)
+				}
 			}
 		})
 
 		t.Run("unsupported", func(t *testing.T) {
 			line := []byte(`{"jsonrpc":"2.0","id":"request-1","method":"fs/write_text_file","params":{"sessionId":"session-1","path":"a.txt","content":"new"}}`)
 			var out bytes.Buffer
-			if err := handleAgentRequest(&out, line); err != nil {
+			if err := handleAgentRequest(&out, line, false); err != nil {
 				t.Fatalf("handleAgentRequest: %v", err)
 			}
 			var got struct {
@@ -375,7 +365,7 @@ func TestClient(t *testing.T) {
 	t.Run("stream_cancel", func(t *testing.T) {
 		line := `{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-1","update":{"sessionUpdate":"agent_message_chunk","messageId":"message-1","content":{"type":"text","text":"partial"}}}}`
 		var out bytes.Buffer
-		if _, err := readTurn(newScanner(strings.NewReader(line)), &out, "session-1", 3, func(string, string) bool { return false }); err != nil {
+		if _, err := readTurn(newScanner(strings.NewReader(line)), &out, "session-1", 3, false, func(string, string) bool { return false }); err != nil {
 			t.Fatalf("readTurn: %v", err)
 		}
 		var got JSONRPCRequest
@@ -542,7 +532,7 @@ func TestReadResponse(t *testing.T) {
 		if _, err := readResponse(newScanner(strings.NewReader(input)), &out, 1); err != nil {
 			t.Fatal(err)
 		}
-		if !strings.Contains(out.String(), `"id":"permission-1"`) || !strings.Contains(out.String(), `"outcome":"selected"`) {
+		if !strings.Contains(out.String(), `"id":"permission-1"`) || !strings.Contains(out.String(), `"outcome":"cancelled"`) {
 			t.Fatalf("agent response = %s", out.String())
 		}
 	})
@@ -576,21 +566,21 @@ func TestJSONRPCMessageClassification(t *testing.T) {
 
 func TestReadTurn(t *testing.T) {
 	t.Run("malformed JSON", func(t *testing.T) {
-		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":3`)), io.Discard, "session-1", 3, func(string, string) bool { return true })
+		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":3`)), io.Discard, "session-1", 3, false, func(string, string) bool { return true })
 		if err == nil || !strings.Contains(err.Error(), "unmarshal JSON-RPC message") {
 			t.Fatalf("expected malformed JSON error, got %v", err)
 		}
 	})
 
 	t.Run("unexpected ID", func(t *testing.T) {
-		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":4,"result":{}}`)), io.Discard, "session-1", 3, func(string, string) bool { return true })
+		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":4,"result":{}}`)), io.Discard, "session-1", 3, false, func(string, string) bool { return true })
 		if err == nil || !strings.Contains(err.Error(), "unexpected JSON-RPC response id 4, want 3") {
 			t.Fatalf("expected unexpected ID error, got %v", err)
 		}
 	})
 
 	t.Run("JSON-RPC error data", func(t *testing.T) {
-		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":3,"error":{"code":-32000,"message":"turn failed","data":{"retry":false}}}`)), io.Discard, "session-1", 3, func(string, string) bool { return true })
+		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":3,"error":{"code":-32000,"message":"turn failed","data":{"retry":false}}}`)), io.Discard, "session-1", 3, false, func(string, string) bool { return true })
 		if err == nil || !strings.Contains(err.Error(), `JSON-RPC error -32000: turn failed: {"retry":false}`) {
 			t.Fatalf("expected complete JSON-RPC error, got %v", err)
 		}
@@ -600,7 +590,7 @@ func TestReadTurn(t *testing.T) {
 		input := `{"jsonrpc":"2.0","id":"permission-1","method":"session/request_permission","params":{"sessionId":"session-1","toolCall":{"toolCallId":"tool-1"},"options":[{"optionId":"once","kind":"allow_once","name":"Allow once"}]}}` + "\n" +
 			`{"jsonrpc":"2.0","id":3,"result":{"stopReason":"end_turn"}}`
 		var out bytes.Buffer
-		if _, err := readTurn(newScanner(strings.NewReader(input)), &out, "session-1", 3, func(string, string) bool { return true }); err != nil {
+		if _, err := readTurn(newScanner(strings.NewReader(input)), &out, "session-1", 3, true, func(string, string) bool { return true }); err != nil {
 			t.Fatal(err)
 		}
 		if !strings.Contains(out.String(), `"id":"permission-1"`) || !strings.Contains(out.String(), `"outcome":"selected"`) {
@@ -636,6 +626,32 @@ func TestExtractSessionID(t *testing.T) {
 			t.Errorf("got %q, want empty", got)
 		}
 	})
+}
+
+func TestProviderOption(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		if err := (&ProviderOption{Effort: EffortHigh, DangerouslySkipPermissions: true, ExtraArgs: []string{"--pure"}}).Validate(); err != nil {
+			t.Error(err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, p := range []ProviderOption{{Effort: "   "}, {ExtraArgs: []string{""}}} {
+			if err := p.Validate(); err == nil {
+				t.Errorf("%+v: expected error", p)
+			}
+		}
+	})
+}
+
+func TestParseOpts(t *testing.T) {
+	co, err := parseOpts(&ProviderOption{Effort: EffortLow}, nil)
+	if err != nil || co.effort != EffortLow {
+		t.Errorf("effort = %q, err = %v, want low", co.effort, err)
+	}
+	co, err = parseOpts(&ProviderOption{Effort: EffortLow}, []genai.GenOption{&GenOption{Effort: EffortHigh, Mode: "plan"}})
+	if err != nil || co.effort != EffortHigh || co.mode != "plan" {
+		t.Errorf("co = %+v, err = %v, want high and plan", co, err)
+	}
 }
 
 func TestGenOption(t *testing.T) {

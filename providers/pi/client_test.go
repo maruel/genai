@@ -7,6 +7,9 @@
 package pi
 
 import (
+	"bufio"
+	"bytes"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -16,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
@@ -25,7 +29,7 @@ import (
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
 	rec := internaltest.NewSubprocessRecorder(t, name, "pi", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
-	c, err := New(opts...)
+	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -80,7 +84,7 @@ func TestClient(t *testing.T) {
 					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
 			}
-			c, err := New(opts...)
+			c, err := New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -159,7 +163,7 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			t.Skip("Pi has no generation option to force thinking; a trivial greeting does not reliably emit thought chunks")
+			t.Skip("A thinking level does not force thought chunks for a trivial greeting")
 			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("google/gemini-3.1-flash-lite-preview"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
@@ -328,4 +332,90 @@ func TestScoreboard(t *testing.T) {
 	if s.Scenarios == nil {
 		t.Fatal("scoreboard scenarios is nil")
 	}
+}
+
+func TestProviderOption(t *testing.T) {
+	t.Run("args", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			p    ProviderOption
+			want []string
+		}{
+			{"default", ProviderOption{}, []string{"--mode", "rpc", "--no-session", "--no-skills"}},
+			{
+				"options",
+				ProviderOption{Effort: ThinkingHigh, Skills: true, ExtraArgs: []string{"--no-tools"}},
+				[]string{"--mode", "rpc", "--no-session", "--thinking", "high", "--no-tools"},
+			},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				if got := tc.p.args(); !slices.Equal(got, tc.want) {
+					t.Errorf("args = %q, want %q", got, tc.want)
+				}
+			})
+		}
+	})
+	t.Run("Validate", func(t *testing.T) {
+		for _, p := range []ProviderOption{{Effort: "turbo"}, {ExtraArgs: []string{"--mode", "json"}}} {
+			if err := p.Validate(); err == nil {
+				t.Errorf("%+v: expected error", p)
+			}
+		}
+	})
+}
+
+func TestSetThinking(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		var out bytes.Buffer
+		sc := bufio.NewScanner(strings.NewReader(`{"type":"response","command":"set_thinking_level","success":true}`))
+		if err := setThinking(&out, sc, ThinkingHigh); err != nil {
+			t.Fatal(err)
+		}
+		if got := out.String(); got != "{\"type\":\"set_thinking_level\",\"level\":\"high\"}\n" {
+			t.Errorf("command = %q", got)
+		}
+	})
+	t.Run("unset", func(t *testing.T) {
+		var out bytes.Buffer
+		if err := setThinking(&out, bufio.NewScanner(strings.NewReader("")), ""); err != nil || out.Len() != 0 {
+			t.Errorf("command = %q, err = %v", out.String(), err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, response := range []string{
+			`{"type":"response","command":"set_thinking_level","success":false,"error":"unsupported level"}`,
+			"",
+		} {
+			if err := setThinking(io.Discard, bufio.NewScanner(strings.NewReader(response)), ThinkingHigh); err == nil {
+				t.Errorf("response %q: expected error", response)
+			}
+		}
+	})
+}
+
+func TestNew(t *testing.T) {
+	for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
+		if _, err := New(t.Context(), m); err == nil {
+			t.Errorf("%s: expected error", m)
+		}
+	}
+}
+
+func TestParseOpts(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		got, err := parseOpts([]genai.GenOption{&GenOption{Effort: ThinkingLow}})
+		if err != nil || got != ThinkingLow {
+			t.Errorf("effort = %q, err = %v, want low", got, err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		if _, err := parseOpts([]genai.GenOption{&GenOption{Effort: "turbo"}}); err == nil {
+			t.Error("expected error")
+		}
+		if _, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "x"}}); err == nil {
+			t.Error("expected ErrNotSupported")
+		} else if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+			t.Errorf("err = %v, want ErrNotSupported", err)
+		}
+	})
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/alibaba"
 	"github.com/maruel/genai/providers/anthropic"
+	"github.com/maruel/genai/providers/antigravity"
 	"github.com/maruel/genai/providers/baseten"
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/providers/cerebras"
@@ -70,6 +71,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "ANTHROPIC_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := anthropic.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"antigravity": {
+		IsCLI: true,
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := antigravity.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

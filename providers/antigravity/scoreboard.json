@@ -1,0 +1,114 @@
+{
+  "country": "US",
+  "dashboardURL": "https://antigravity.google",
+  "scenarios": [
+    {
+      "models": [
+        "gemini-3.1-pro-high"
+      ],
+      "sota": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "models": [
+        "gemini-3.8-flash-medium"
+      ],
+      "good": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "models": [
+        "gemini-3.8-flash-low"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "models": [
+        "claude-opus-4-6-thinking",
+        "claude-sonnet-4-6",
+        "gemini-3.1-pro-low",
+        "gemini-3.6-flash-high",
+        "gemini-3.6-flash-low",
+        "gemini-3.6-flash-medium",
+        "gemini-3.7-flash-high",
+        "gemini-3.7-flash-low",
+        "gemini-3.7-flash-medium",
+        "gemini-3.8-flash-high",
+        "gpt-oss-120b-medium"
+      ]
+    }
+  ]
+}

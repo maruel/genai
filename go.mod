@@ -6,7 +6,7 @@ require (
 	github.com/google/go-cmp v0.7.0
 	github.com/invopop/jsonschema v0.14.0
 	github.com/klauspost/compress v1.20.0
-	github.com/maruel/httpjson v0.5.2
+	github.com/maruel/httpjson v0.5.3
 	github.com/maruel/roundtrippers v0.5.0
 	golang.org/x/net v0.59.0
 	golang.org/x/sync v0.23.0
@@ -49,7 +49,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bkielbasa/cyclop v1.2.3 // indirect
 	github.com/blizzy78/varnamelen v0.8.0 // indirect
-	github.com/bmatcuk/doublestar/v4 v4.0.2 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.10.0 // indirect
 	github.com/bombsimon/wsl/v4 v4.7.0 // indirect
 	github.com/bombsimon/wsl/v5 v5.9.0 // indirect
 	github.com/breml/bidichk v0.3.3 // indirect

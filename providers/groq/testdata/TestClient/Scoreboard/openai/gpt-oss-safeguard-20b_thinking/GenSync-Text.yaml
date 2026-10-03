@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-e48400b0-7683-494d-bc8b-f0b9bc2ddef4","object":"chat.completion","created":1765638634,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"User says: \"Say hello. Use only one word.\"\n\nThey want us to respond with a single word: \"Hello\"? Or \"Hi\"? They say \"Say hello. Use only one word.\" So we should respond with \"Hello\". Probably the answer is just \"Hello\". Should not add any other text. Just one word. Let's output \"Hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.03696069,"prompt_tokens":79,"prompt_time":0.004447181,"completion_tokens":83,"completion_time":0.085595657,"total_tokens":162,"total_time":0.090042838,"completion_tokens_details":{"reasoning_tokens":73}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc46zakenkv6qz8kt05wrqd","seed":781242944},"service_tier":"on_demand"}
+            {"id":"chatcmpl-0658ed39-6e22-4fac-89a9-fb56c4a320a0","object":"chat.completion","created":1790988251,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"The user says: \"Say hello. Use only one word.\" We must respond with a single word greeting. For example \"Hello\". That is one word. Or \"Hi\". The instruction is to say hello. So respond with \"Hello\". Probably that is correct. We'll output just \"Hello\". No punctuation? Single word \"Hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.030585003,"prompt_tokens":79,"prompt_time":0.005314044,"completion_tokens":79,"completion_time":0.082254743,"total_tokens":158,"total_time":0.087568787,"completion_tokens_details":{"reasoning_tokens":69}},"usage_breakdown":null,"system_fingerprint":"fp_ac10423237","x_groq":{"id":"req_01m3zkfwc2ehbbn4v2pv2g21za","seed":1138350582},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6639ba87fa316-YUL
+                - a447eabbcc50dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -49,11 +49,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "149841"
+                - "149433"
             X-Ratelimit-Reset-Requests:
                 - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 63ms
+                - 226ms
         status: 200 OK
         code: 200
-        duration: 147ms
+        duration: 163ms

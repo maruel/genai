@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-8a69d3f7-99ad-4f0b-910f-baaba9ac9b23","object":"chat.completion","created":1765638737,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"User says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\" This is straightforward: answer is Quack. According to policy, we can repeat. No problem. There's no policy issue. So respond: Quack."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003076279,"prompt_tokens":100,"prompt_time":0.004931163,"completion_tokens":86,"completion_time":0.089753591,"total_tokens":186,"total_time":0.094684754,"completion_tokens_details":{"reasoning_tokens":65}},"usage_breakdown":null,"system_fingerprint":"fp_99996fee8e","x_groq":{"id":"req_01kcc4a34nehvr5mb4f25ajj2r","seed":415023652},"service_tier":"on_demand"}
+            {"id":"chatcmpl-a34fffe1-6cbf-4f0f-b47f-466ec290b501","object":"chat.completion","created":1790988251,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\" So answer: Quack. It's straightforward."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.063030072,"prompt_tokens":100,"prompt_time":0.0048362,"completion_tokens":65,"completion_time":0.068815594,"total_tokens":165,"total_time":0.073651794,"completion_tokens_details":{"reasoning_tokens":44}},"usage_breakdown":null,"system_fingerprint":"fp_66f3850a1a","x_groq":{"id":"req_01m3zkfvsje6fbh7s5e38s6vgz","seed":568508439},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6661a7d79a316-YUL
+                - a447eab81d10dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -49,11 +49,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "227179"
+                - "233421"
             X-Ratelimit-Reset-Requests:
                 - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 5.477s
+                - 3.978s
         status: 200 OK
         code: 200
-        duration: 118ms
+        duration: 179ms

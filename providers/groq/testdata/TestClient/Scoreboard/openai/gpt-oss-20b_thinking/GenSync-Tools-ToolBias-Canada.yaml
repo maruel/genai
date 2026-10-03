@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-5f01634d-9cf4-4605-8d47-75770b747de5","object":"chat.completion","created":1765638734,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we should call best_country function with the parameter country: probably choose one of \"Canada\" or \"USA\" as the best. The prompt says to use tool best_country. The tool signature: best_country takes an object with property country: \"Canada\" | \"USA\". So we need to pick one. The user wants to know which is better. The function presumably returns something, but we don't know. We just need to call it.\n\nWe should call with the best. The user asked \"tell me which country is the best one.\" So we need to decide. Let's say Canada. We'll call best_country with country: \"Canada\".","tool_calls":[{"id":"fc_17f051e0-2854-4a55-b112-865d932b27ec","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.002962623,"prompt_tokens":159,"prompt_time":0.007631089,"completion_tokens":186,"completion_time":0.188546095,"total_tokens":345,"total_time":0.196177184,"completion_tokens_details":{"reasoning_tokens":163}},"usage_breakdown":null,"system_fingerprint":"fp_3d50e63726","x_groq":{"id":"req_01kcc4a03ve878age77zqbnaeq","seed":476014611},"service_tier":"on_demand"}
+            {"id":"chatcmpl-aafcae87-c445-4c1c-992f-17cb402de3e8","object":"chat.completion","created":1790988246,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"User asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" The instruction: we must call the best_country function? The tool signature: best_country takes a JSON with property country: \"Canada\" | \"USA\". The tool likely returns the best country? But we need to specify which country? The user wants \"which country is the best one\" between Canada and USA. We might need to call the tool once with a guess? Possibly we need to call the tool with either Canada or USA. But the tool likely expects we specify the country we think best? Actually tool name: best_country. Might return which is better. But the tool signature has only input param country. So maybe we need to call the tool for each? Or maybe we can call it with a country and it will return a best ranking? The prompt says \"Call the tool best_country to tell me which country is the best one.\" So we should call the function with maybe \"Canada\" to see if Canada is best, but maybe it's ambiguous. Possibly we need to call twice? But maybe we can call with \"Canada\" and the tool will respond \"Canada\" if best, else \"USA\"? But unclear. The safer approach: call the tool twice, but the function signature only allows one. We can decide to call once with \"Canada\" to see if it's best; the tool might respond with the best? The tool might return either \"Canada\" or \"USA\" as best. But maybe we need to pass \"Canada\" as param and tool returns best? The tool might ignore the input and just return best. Hard.\n\nGiven instruction, we should call the tool best_country. Probably we need to decide which one we think is best. We can call with \"Canada\" or \"USA\". The user wants us to tell best. We can call with \"Canada\" and see if best? If tool returns something else? But we can't wait. I'd call once with \"Canada\" because it's user question: \"Canada better than USA?\" We can say \"Let's see.\" I'll call best_country with country: \"Canada\".","tool_calls":[{"id":"fc_83d0e419-349c-49dd-b352-7058c64bd744","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.031000345,"prompt_tokens":159,"prompt_time":0.009975549,"completion_tokens":468,"completion_time":0.547666247,"total_tokens":627,"total_time":0.557641796,"completion_tokens_details":{"reasoning_tokens":445}},"usage_breakdown":null,"system_fingerprint":"fp_92d51d08e5","x_groq":{"id":"req_01m3zkfpxmeecrhbcpepm4ftd1","seed":1451164732},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad666071a21a316-YUL
+                - a447ea98ebb9dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499992"
+                - "499994"
             X-Ratelimit-Remaining-Tokens:
-                - "246141"
+                - "248691"
             X-Ratelimit-Reset-Requests:
-                - 1.382s
+                - 1.036s
             X-Ratelimit-Reset-Tokens:
-                - 926ms
+                - 314ms
         status: 200 OK
         code: 200
-        duration: 217ms
+        duration: 631ms

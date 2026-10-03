@@ -14,11 +14,17 @@
 | gemini-3.6-flash                              | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.7-flash                              | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.8-flash                              | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-flash-lite-tts                     | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-flash-tts                          | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-live                               | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-live-extended-thinking             | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-omni-1.1-flash                         | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-omni-flash-preview                     | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-2-preview                  | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-2-streaming-preview        | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | antigravity-preview-05-2026                   | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| antigravity-preview-09-2026                   | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| antigravity-preview-latest                    | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | aqa                                           | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deep-research-max-preview-04-2026             | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deep-research-preview-04-2026                 | ?       | ?          | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

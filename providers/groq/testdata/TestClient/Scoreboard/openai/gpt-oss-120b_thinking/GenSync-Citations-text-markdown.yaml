@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-ac210c7b-3b17-4980-b62d-29abb31c501d","object":"chat.completion","created":1765638725,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"The user asks: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quake...\". The answer: \"Quack\". So just answer."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003896059,"prompt_tokens":105,"prompt_time":0.005078584,"completion_tokens":68,"completion_time":0.151009465,"total_tokens":173,"total_time":0.156088049,"completion_tokens_details":{"reasoning_tokens":47}},"usage_breakdown":null,"system_fingerprint":"fp_0060895c89","x_groq":{"id":"req_01kcc49r33e7xs7tnnr0zqgt41","seed":985940858},"service_tier":"on_demand"}
+            {"id":"chatcmpl-0ac2153f-c959-4202-a7c1-658e2eb43584","object":"chat.completion","created":1790988241,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"We have a conversation. System message: ChatGPT, large language model, knowledge cutoff 2024-06. The user asks: \"Quackiland. The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" It's a simple factual recall. The user asks again \"What is the capital of Quackiland?\" The answer is \"Quack\". Probably we just answer with \"Quack\". There's no policy violation. Provide concise answer."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.140574252,"prompt_tokens":105,"prompt_time":0.004834435,"completion_tokens":129,"completion_time":0.267525973,"total_tokens":234,"total_time":0.272360408,"completion_tokens_details":{"reasoning_tokens":108}},"usage_breakdown":null,"system_fingerprint":"fp_f640395b96","x_groq":{"id":"req_01m3zkfjgweykags1rv9vrrd4g","seed":1473301306},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad665d3cdf2a316-YUL
+                - a447ea7ccf56dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -49,11 +49,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "204850"
+                - "146"
             X-Ratelimit-Reset-Requests:
                 - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 10.836s
+                - 59.964s
         status: 200 OK
         code: 200
-        duration: 180ms
+        duration: 452ms

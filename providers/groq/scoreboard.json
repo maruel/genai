@@ -7,6 +7,56 @@
   "scenarios": [
     {
       "models": [
+        "qwen/qwen3.8-27b"
+      ],
+      "sota": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
         "openai/gpt-oss-120b"
       ],
       "good": true,
@@ -93,69 +143,6 @@
     },
     {
       "models": [
-        "groq/compound"
-      ],
-      "reason": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "webSearch": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "webSearch": true,
-        "json": true
-      }
-    },
-    {
-      "models": [
-        "groq/compound-mini"
-      ],
-      "reason": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "webSearch": true,
-        "json": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "webSearch": true,
-        "json": true
-      }
-    },
-    {
-      "models": [
         "openai/gpt-oss-safeguard-20b"
       ],
       "reason": true,
@@ -208,7 +195,6 @@
         "playai-tts",
         "playai-tts-arabic",
         "qwen/qwen3.6-27b",
-        "qwen/qwen3.8-27b",
         "whisper-large-v3",
         "whisper-large-v3-turbo"
       ]

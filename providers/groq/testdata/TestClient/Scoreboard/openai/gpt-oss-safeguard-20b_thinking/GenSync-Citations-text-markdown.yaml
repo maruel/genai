@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-9e28089e-80e5-4442-acaf-705b9decbd57","object":"chat.completion","created":1765638644,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"Quack.","reasoning":"We have a question: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\"\n\nThus it's a straightforward answer: Quack. But maybe they want explanation? The question is a trick? The prompt states: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\n\nThus answer: Quack. So output that. Probably no extra text? We can answer in plain."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.033103717,"prompt_tokens":105,"prompt_time":0.005708165,"completion_tokens":125,"completion_time":0.125753691,"total_tokens":230,"total_time":0.131461856,"completion_tokens_details":{"reasoning_tokens":113}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc4784cenmvq7erb8v1gghw","seed":876578341},"service_tier":"on_demand"}
+            {"id":"chatcmpl-97c4b879-39ef-489f-9faf-f71cc6b0a9f6","object":"chat.completion","created":1790988266,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"The user asks: \"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\" This seems like a trick: they already say the capital is Quack. They ask \"What is the capital of Quackiland?\" Answer: Quack. Probably just respond with Quack. Also mention that it's Quack.\n\nThe prompt also includes the phrase \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" So answer accordingly. It's a simple question."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.048436946,"prompt_tokens":105,"prompt_time":0.004991198,"completion_tokens":144,"completion_time":0.153041327,"total_tokens":249,"total_time":0.158032525,"completion_tokens_details":{"reasoning_tokens":123}},"usage_breakdown":null,"system_fingerprint":"fp_ac10423237","x_groq":{"id":"req_01m3zkgas6erftwq10dn6jdgsb","seed":1194017286},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad663d40f03a316-YUL
+                - a447eb180c0bdfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "150000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "127976"
+                - "135525"
             X-Ratelimit-Reset-Requests:
-                - 345ms
+                - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 8.809s
+                - 5.79s
         status: 200 OK
         code: 200
-        duration: 186ms
+        duration: 246ms

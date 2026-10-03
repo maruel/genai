@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-8819a365-6fbf-47e6-aa29-cfc24b056f34","object":"chat.completion","created":1765638733,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}","reasoning":"The user wants: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to output JSON, compact, no explanation. So: {\"is_fruit\": true}. Ensure valid JSON. Probably no spaces. Use compact: {\"is_fruit\":true} is compact. Should we include quotes? They gave schema: {\"is_fruit\": bool}. So output as {\"is_fruit\": true}. That is compact JSON. Ensure it's just that line. No explanation."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.003039919,"prompt_tokens":124,"prompt_time":0.006983849,"completion_tokens":133,"completion_time":0.134550517,"total_tokens":257,"total_time":0.141534366,"completion_tokens_details":{"reasoning_tokens":117}},"usage_breakdown":null,"system_fingerprint":"fp_d8063b0a5c","x_groq":{"id":"req_01kcc49zcze878bxfq9ernkvck","seed":1350782954},"service_tier":"on_demand"}
+            {"id":"chatcmpl-caac97d2-a2da-4e40-920d-a89bae5bd71e","object":"chat.completion","created":1790988244,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}","reasoning":"The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to output a JSON with a boolean property is_fruit. Should be compact JSON formatting. No explanation.\n\nAnswer: {\"is_fruit\": true}\n\nEnsure JSON is valid. Return as final."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.031066765,"prompt_tokens":124,"prompt_time":0.006995959,"completion_tokens":93,"completion_time":0.099534495,"total_tokens":217,"total_time":0.106530454,"completion_tokens_details":{"reasoning_tokens":77}},"usage_breakdown":null,"system_fingerprint":"fp_92d51d08e5","x_groq":{"id":"req_01m3zkfnn0e3dt2jyqr5e82y4a","seed":596113643},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad666028aa9a316-YUL
+                - a447ea90c906dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499997"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "245011"
+                - "247898"
             X-Ratelimit-Reset-Requests:
-                - 518ms
+                - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 1.197s
+                - 504ms
         status: 200 OK
         code: 200
-        duration: 168ms
+        duration: 179ms

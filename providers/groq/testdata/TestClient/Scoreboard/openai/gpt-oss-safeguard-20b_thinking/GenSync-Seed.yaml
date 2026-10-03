@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-36cd73b1-546b-448a-a1d1-ac8abdfcd47d","object":"chat.completion","created":1765638635,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"The user says: \"Say hello. Use only one word.\"\n\nThus the assistant should respond with a single word: \"Hello\". Or \"Hi\". But \"Use only one word\". Probably \"Hello\". Should I consider any constraints? The user: \"Say hello. Use only one word.\" So respond with \"Hello\". That's one word. Should it be capitalized? \"Hello\". Good. There's no other context. The assistant must respond with a single word. So \"Hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.033257256,"prompt_tokens":79,"prompt_time":0.004413102,"completion_tokens":109,"completion_time":0.112185162,"total_tokens":188,"total_time":0.116598264,"completion_tokens_details":{"reasoning_tokens":99}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc46zffenktah3y9f32aafs","seed":42},"service_tier":"on_demand"}
+            {"id":"chatcmpl-57a5f703-0dab-4a29-827a-8ea3f32416bb","object":"chat.completion","created":1790988251,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"The user says: \"Say hello. Use only one word.\"\n\nThus the assistant should respond with a single word: \"Hello\". Or \"Hi\". But \"Use only one word\". Probably \"Hello\". Should I add punctuation? Maybe just \"Hello\". The instruction says say hello using only one word. So \"Hello\" is one word. That's presumably acceptable. Just output \"Hello\". Ensure no additional words. The output: Hello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.059782652,"prompt_tokens":79,"prompt_time":0.005321155,"completion_tokens":99,"completion_time":0.103163723,"total_tokens":178,"total_time":0.108484878,"completion_tokens_details":{"reasoning_tokens":89}},"usage_breakdown":null,"system_fingerprint":"fp_ac10423237","x_groq":{"id":"req_01m3zkfwh5e0wrhg0jfv9yw8gy","seed":42},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6639c99e8a316-YUL
+                - a447eabcd89ddfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "150000"
             X-Ratelimit-Remaining-Requests:
-                - "499996"
+                - "499997"
             X-Ratelimit-Remaining-Tokens:
-                - "149805"
+                - "149598"
             X-Ratelimit-Reset-Requests:
-                - 691ms
+                - 518ms
             X-Ratelimit-Reset-Tokens:
-                - 78ms
+                - 160ms
         status: 200 OK
         code: 200
-        duration: 186ms
+        duration: 232ms

@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-d967371b-150c-42fa-b60b-2baf63985421","object":"chat.completion","created":1765638718,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user wants us to call the tool best_country with either Canada or USA. The tool expects a country property with value \"Canada\" or \"USA\". We need to decide which is better. The user asks \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we should call the tool. Which one to choose? The tool returns something; we don't know what. Likely it's a deterministic function that says which is best. Probably we need to pass \"Canada\" or \"USA\". Since the user is asking if Canada is better than USA, we might choose Canada to see if it says it's best. But the instruction says \"Call the tool best_country to tell me which country is the best one.\" So we should call it with a country value? Actually the tool takes a country, maybe it returns whether it's best? It might just echo something. We need to decide which argument to use. Possibly we pass \"Canada\" to see if it's best, but the tool might return a boolean? Not sure.\n\nGiven the request: \"Call the tool best_country to tell me which country is the best one.\" So maybe we call it with a placeholder? The tool expects a country property; we must provide one. Could pass \"Canada\". Then the tool will respond with something indicating Canada is the best? That matches the request. Let's do that.","tool_calls":[{"id":"fc_35d53174-07fe-4c10-b24b-c1f8b4a5b934","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.111372699,"prompt_tokens":159,"prompt_time":0.034203155,"completion_tokens":318,"completion_time":0.736262287,"total_tokens":477,"total_time":0.770465442,"completion_tokens_details":{"reasoning_tokens":291}},"usage_breakdown":null,"system_fingerprint":"fp_8c2cca97f9","x_groq":{"id":"req_01kcc49g0nepn9y21bsc7r849r","seed":736219692},"service_tier":"on_demand"}
+            {"id":"chatcmpl-45217b9d-b9d3-42ea-b65e-7a0d804c6a0e","object":"chat.completion","created":1790988208,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user wants to compare Canada vs USA and wants us to call the tool best_country to tell which is the best. The tool expects a \"country\" param, which must be \"Canada\" or \"USA\". It returns any. The prompt: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we should call the tool with perhaps a country? But the tool is \"specify the best country\". It takes a single parameter \"country\": \"Canada\" | \"USA\". Likely we need to pass which is best. We need to decide which is best based on something? The user asks \"Call the tool best_country to tell me which country is the best one.\" So we need to call the tool with the best country. We must decide which is best. Might be ambiguous, but maybe we need to call both? The tool only accepts one country. We can interpret that the tool will return something indicating if that country is best? Probably we should call with the one we think is best, perhaps Canada? Or we could call with USA. But the user wants the tool to tell which is best. We can try both? But tool only one param.\n\nWe could decide: According to many metrics, Canada often ranks higher in quality of life. So we call best_country with country: \"Canada\".","tool_calls":[{"id":"fc_37449be7-1331-406b-b087-868fe33035de","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.004894187,"prompt_tokens":159,"prompt_time":0.006434686,"completion_tokens":311,"completion_time":0.666314342,"total_tokens":470,"total_time":0.672749028,"completion_tokens_details":{"reasoning_tokens":284}},"usage_breakdown":null,"system_fingerprint":"fp_be28f5c9f2","x_groq":{"id":"req_01m3zkehpbez9tczs3dtrrd6rc","seed":227783425},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad665a00beba316-YUL
+                - a447e9aaae2ddfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499997"
+                - "499994"
             X-Ratelimit-Remaining-Tokens:
-                - "248050"
+                - "242620"
             X-Ratelimit-Reset-Requests:
-                - 518ms
+                - 1.036s
             X-Ratelimit-Reset-Tokens:
-                - 468ms
+                - 1.771s
         status: 200 OK
         code: 200
-        duration: 904ms
+        duration: 720ms

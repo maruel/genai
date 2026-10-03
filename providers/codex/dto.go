@@ -801,14 +801,38 @@ type ThreadStartResponse struct {
 	ActivePermissionProfile *ActivePermissionProfile `json:"activePermissionProfile,omitzero"`
 	ReasoningEffort         *ReasoningEffort         `json:"reasoningEffort,omitzero"`
 	MultiAgentMode          string                   `json:"multiAgentMode,omitzero"`
+	DisabledPluginIDs       []string                 `json:"disabledPluginIds,omitzero"`
 	InitialTurnsPage        json.RawMessage          `json:"initialTurnsPage,omitzero"`
 }
 
 // ThreadResumeResponse is the result object from a thread/resume JSON-RPC response.
 type ThreadResumeResponse struct {
 	ThreadStartResponse
-	TurnsBackwardsCursor string `json:"turnsBackwardsCursor,omitzero"`
-	ItemsBackwardsCursor string `json:"itemsBackwardsCursor,omitzero"`
+	TurnsBackwardsCursor string             `json:"turnsBackwardsCursor,omitzero"`
+	ItemsBackwardsCursor string             `json:"itemsBackwardsCursor,omitzero"`
+	CollaborationMode    *CollaborationMode `json:"collaborationMode,omitzero"`
+}
+
+// CollaborationMode holds the collaboration settings for a Codex session.
+type CollaborationMode struct {
+	Mode     ModeKind              `json:"mode"`
+	Settings CollaborationSettings `json:"settings"`
+}
+
+// ModeKind identifies a collaboration mode.
+type ModeKind string
+
+// Collaboration modes.
+const (
+	ModeKindDefault ModeKind = "default"
+	ModeKindPlan    ModeKind = "plan"
+)
+
+// CollaborationSettings holds the model and instructions for a collaboration mode.
+type CollaborationSettings struct {
+	Model                 string           `json:"model"`
+	ReasoningEffort       *ReasoningEffort `json:"reasoning_effort"`
+	DeveloperInstructions *string          `json:"developer_instructions"`
 }
 
 // SandboxPolicy describes the active filesystem and network sandbox.
@@ -1803,7 +1827,23 @@ type ModelInfo struct {
 	DefaultServiceTier        string               `json:"defaultServiceTier,omitzero"`
 	ModelSpecialty            ModelSpecialty       `json:"modelSpecialty,omitzero"`
 	MultiAgentVersion         MultiAgentVersion    `json:"multiAgentVersion,omitzero"`
+	AvailableAccessPrograms   *ModelAccessPrograms `json:"availableAccessPrograms,omitzero"`
 }
+
+// ModelAccessPrograms lists caller-specific explicit access programs from model discovery.
+type ModelAccessPrograms struct {
+	Cyber []CyberAccessProgram `json:"cyber"`
+}
+
+// CyberAccessProgram identifies an explicit cyber access selection.
+type CyberAccessProgram string
+
+// Cyber access programs.
+const (
+	CyberAccessProgramDaybreakBlue CyberAccessProgram = "daybreakBlue"
+	CyberAccessProgramDaybreakRed  CyberAccessProgram = "daybreakRed"
+	CyberAccessProgramStandard     CyberAccessProgram = "standard"
+)
 
 // ModelSpecialty identifies a model optimized for a specialized workload.
 type ModelSpecialty string
@@ -2119,6 +2159,7 @@ type ThreadSettings struct {
 	CollaborationMode       json.RawMessage          `json:"collaborationMode"`
 	MultiAgentMode          string                   `json:"multiAgentMode,omitzero"`
 	Personality             *Personality             `json:"personality,omitzero"`
+	DisabledPluginIDs       []string                 `json:"disabledPluginIds,omitzero"`
 }
 
 // ModelVerificationNotification holds params for model/verification.

@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-e3fd9be3-5ef2-414b-b361-cb1514866352","object":"chat.completion","created":1765638638,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}","reasoning":"We need to produce a JSON with key is_fruit bool. Should answer yes: true. Use compact formatting: {\"is_fruit\":true}. Also no explanation. Also ensure JSON is valid. Let's output that."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.033303205,"prompt_tokens":124,"prompt_time":0.006883461,"completion_tokens":61,"completion_time":0.062130231,"total_tokens":185,"total_time":0.069013692,"completion_tokens_details":{"reasoning_tokens":45}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc472ecenktwphfm8cj8cf2","seed":1677157031},"service_tier":"on_demand"}
+            {"id":"chatcmpl-b6d267c0-054e-4ee0-b2bf-277bc3e74fbf","object":"chat.completion","created":1790988255,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}","reasoning":"The user: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nNeed to output JSON only. According to schema, key is \"is_fruit\" with bool. So output {\"is_fruit\": true}. Must be compact. That is the answer."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.048392509,"prompt_tokens":124,"prompt_time":0.008365225,"completion_tokens":89,"completion_time":0.089860442,"total_tokens":213,"total_time":0.098225667,"completion_tokens_details":{"reasoning_tokens":73}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01m3zkfzyte8maa25e7ps3dbnp","seed":2061203254},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad663af9bb2a316-YUL
+                - a447ead2c845dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "150000"
             X-Ratelimit-Remaining-Requests:
-                - "499997"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "145258"
+                - "147353"
             X-Ratelimit-Reset-Requests:
-                - 518ms
+                - 345ms
             X-Ratelimit-Reset-Tokens:
-                - 1.896s
+                - 1.058s
         status: 200 OK
         code: 200
-        duration: 123ms
+        duration: 187ms

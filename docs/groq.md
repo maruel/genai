@@ -2,14 +2,12 @@
 
 | Model                               | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ----------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| qwen/qwen3.8-27b🥇                   | Sync    | 💬📸  | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| qwen/qwen3.8-27b🥇                   | Stream  | 💬📸  | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-120b🥈                | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-120b🥈                | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-20b🥉                 | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-20b🥉                 | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| groq/compound                       | Sync🧠   | 💬    | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| groq/compound                       | Stream🧠 | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| groq/compound-mini                  | Sync🧠   | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| groq/compound-mini                  | Stream🧠 | 💬    | 💬     | 🕸️     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-safeguard-20b        | Sync🧠   | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-safeguard-20b        | Stream🧠 | 💬    | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | allam-2-7b                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -21,7 +19,6 @@
 | playai-tts                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | playai-tts-arabic                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen3.6-27b                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| qwen/qwen3.8-27b                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | whisper-large-v3                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | whisper-large-v3-turbo              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>

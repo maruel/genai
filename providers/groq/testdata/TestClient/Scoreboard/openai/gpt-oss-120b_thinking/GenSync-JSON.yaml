@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-e2a5fc3d-12a7-4941-8429-e7475a18010d","object":"chat.completion","created":1765638717,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}","reasoning":"The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to respond with JSON: {\"is_fruit\": true} (or false). Banana is a fruit, so true.\n\nWe must ensure JSON is compact, valid, no extra whitespace? Compact means no unnecessary spaces, but it's okay to have spaces after colon? Typically compact means minimal whitespace, e.g., {\"is_fruit\":true}. Let's do that.\n\nWe should not include any extra text. Only JSON."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.073266257,"prompt_tokens":124,"prompt_time":0.004950219,"completion_tokens":141,"completion_time":0.291550625,"total_tokens":265,"total_time":0.296500844,"completion_tokens_details":{"reasoning_tokens":121}},"usage_breakdown":null,"system_fingerprint":"fp_029931c09b","x_groq":{"id":"req_01kcc49fcmepkrcn3n4evqvh7v","seed":512468548},"service_tier":"on_demand"}
+            {"id":"chatcmpl-2d41ee33-5ad7-459d-9ca3-cc3b98c6e59d","object":"chat.completion","created":1790988207,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}","reasoning":"We need to output JSON with key \"is_fruit\" and a boolean. The answer: banana is a fruit =\u003e true. Must be compact JSON. So {\"is_fruit\":true}. No extra."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.032651137,"prompt_tokens":124,"prompt_time":0.005135046,"completion_tokens":63,"completion_time":0.132042821,"total_tokens":187,"total_time":0.137177867,"completion_tokens_details":{"reasoning_tokens":43}},"usage_breakdown":null,"system_fingerprint":"fp_6b677c2caf","x_groq":{"id":"req_01m3zkeh3ves5aswht5jwvyw1g","seed":1320640790},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6659c1dd1a316-YUL
+                - a447e9a6f806dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -49,11 +49,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "246074"
+                - "246947"
             X-Ratelimit-Reset-Requests:
                 - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 942ms
+                - 732ms
         status: 200 OK
         code: 200
-        duration: 388ms
+        duration: 209ms

@@ -351,7 +351,7 @@ func TestClient(t *testing.T) {
 		t.Run("thread_resumed_from_opaque", func(t *testing.T) {
 			// Turn 1: establish a session with a unique fact.
 			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("gpt-5.6-terra"))
-			msgs1 := genai.Messages{genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it.")}
+			msgs1 := genai.Messages{genai.NewTextMessage("Remember this test marker: blue-fox-42. Just confirm you noted it.")}
 			res1, err := c1.GenSync(t.Context(), msgs1)
 			if err != nil {
 				t.Fatalf("turn 1: %v", err)
@@ -369,9 +369,9 @@ func TestClient(t *testing.T) {
 			// Turn 2: resume the session and ask it to recall the fact.
 			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("gpt-5.6-terra"))
 			msgs2 := genai.Messages{
-				genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it."),
+				msgs1[0],
 				{Replies: res1.Replies},
-				genai.NewTextMessage("What was the secret code I told you?"),
+				genai.NewTextMessage("What was the test marker I told you?"),
 			}
 			res2, err := c2.GenSync(t.Context(), msgs2)
 			if err != nil {

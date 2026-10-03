@@ -38,6 +38,37 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 	return groq.New(t.Context(), opts...)
 }
 
+func TestNew(t *testing.T) {
+	t.Run("SOTA", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, reverse := range []bool{false, true} {
+				models := genai.ProviderOptionPreloadedModels{
+					&groq.Model{ID: "qwen/qwen3.6-27b", Created: 100},
+					&groq.Model{ID: "qwen/qwen3.8-27b", Created: 200},
+				}
+				if reverse {
+					slices.Reverse(models)
+				}
+				c, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA, models)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if c.ModelID() != "qwen/qwen3.8-27b" {
+					t.Fatalf("model = %q", c.ModelID())
+				}
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			_, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
+				genai.ProviderOptionPreloadedModels{&groq.Model{ID: "openai/gpt-oss-120b"}},
+			)
+			if err == nil || !strings.Contains(err.Error(), "failed to find a model automatically") {
+				t.Fatalf("unexpected error: %v", err)
+			}
+		})
+	})
+}
+
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -114,7 +145,7 @@ func TestClient(t *testing.T) {
 			if strings.HasPrefix(model.Model, "qwen/") && model.Reason {
 				c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 			}
-			// Groq models with native reasoning support (groq/compound, etc.) already return reasoning in a
+			// Groq models with native reasoning support (openai/gpt-oss, etc.) already return reasoning in a
 			// separate field. Don't wrap with ProviderReasoning which expects reasoning embedded in text.
 			// Only apply ProviderReasoning to models that need text-based reasoning extraction.
 			if model.Reason && strings.HasPrefix(model.Model, "qwen/") {

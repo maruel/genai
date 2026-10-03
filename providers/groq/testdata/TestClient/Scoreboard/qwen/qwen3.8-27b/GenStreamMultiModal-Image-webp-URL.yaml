@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 290
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"model":"qwen/qwen3.8-27b","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f9c43e72-7a47-47c5-adfb-18235f72bfab","object":"chat.completion.chunk","created":1790988690,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m3zkx88cep8ahxx8rvd83cdm","seed":1442174878}}
+
+            data: {"id":"chatcmpl-f9c43e72-7a47-47c5-adfb-18235f72bfab","object":"chat.completion.chunk","created":1790988690,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" Banana"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-f9c43e72-7a47-47c5-adfb-18235f72bfab","object":"chat.completion.chunk","created":1790988690,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m3zkx88cep8ahxx8rvd83cdm","usage":{"queue_time":0.513344162,"prompt_tokens":1305,"prompt_time":0.096344614,"completion_tokens":2,"completion_time":0.004411332,"total_tokens":1307,"total_time":0.100755946}},"usage":{"queue_time":0.513344162,"prompt_tokens":1305,"prompt_time":0.096344614,"completion_tokens":2,"completion_time":0.004411332,"total_tokens":1307,"total_time":0.100755946}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a447f56e481c3189-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "217332"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 7.84s
+        status: 200 OK
+        code: 200
+        duration: 577ms

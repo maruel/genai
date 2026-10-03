@@ -219,6 +219,76 @@ func TestInitAndListModels(t *testing.T) {
 	})
 }
 
+func TestThreadStartResponse(t *testing.T) {
+	var got ThreadStartResponse
+	if err := internal.UnmarshalJSON([]byte(`{"disabledPluginIds":["plugin-1"]}`), &got); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(got.DisabledPluginIDs, []string{"plugin-1"}) {
+		t.Fatalf("disabled plugins = %+v", got.DisabledPluginIDs)
+	}
+}
+
+func TestThreadResumeResponse(t *testing.T) {
+	var got ThreadResumeResponse
+	if err := internal.UnmarshalJSON([]byte(`{"disabledPluginIds":["plugin-1"],"collaborationMode":{"mode":"default","settings":{"developer_instructions":null,"model":"gpt-5.6-terra","reasoning_effort":"medium"}}}`), &got); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(got.DisabledPluginIDs, []string{"plugin-1"}) {
+		t.Fatalf("disabled plugins = %+v", got.DisabledPluginIDs)
+	}
+	cm := got.CollaborationMode
+	if cm == nil || cm.Mode != ModeKindDefault || cm.Settings.Model != "gpt-5.6-terra" || cm.Settings.ReasoningEffort == nil || *cm.Settings.ReasoningEffort != ReasoningEffortMedium || cm.Settings.DeveloperInstructions != nil {
+		t.Fatalf("unexpected collaboration mode: %+v", cm)
+	}
+}
+
+func TestThreadSettings(t *testing.T) {
+	var got ThreadSettings
+	if err := internal.UnmarshalJSON([]byte(`{"disabledPluginIds":["plugin-1"]}`), &got); err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(got.DisabledPluginIDs, []string{"plugin-1"}) {
+		t.Fatalf("disabled plugins = %+v", got.DisabledPluginIDs)
+	}
+}
+
+func TestModelListResponse(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		raw  string
+		want *ModelAccessPrograms
+	}{
+		{name: "null", raw: `null`},
+		{name: "empty", raw: `{"cyber":[]}`, want: &ModelAccessPrograms{Cyber: []CyberAccessProgram{}}},
+		{name: "programs", raw: `{"cyber":["standard","daybreakBlue","daybreakRed"]}`, want: &ModelAccessPrograms{Cyber: []CyberAccessProgram{CyberAccessProgramStandard, CyberAccessProgramDaybreakBlue, CyberAccessProgramDaybreakRed}}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw := tc.raw
+			var got ModelListResponse
+			if err := internal.UnmarshalJSON([]byte(`{"data":[{"id":"model-1","availableAccessPrograms":`+raw+`}]}`), &got); err != nil {
+				t.Fatal(err)
+			}
+			if len(got.Data) != 1 {
+				t.Fatalf("unexpected models: %+v", got.Data)
+			}
+			ap := got.Data[0].AvailableAccessPrograms
+			if tc.want == nil {
+				if ap != nil {
+					t.Fatal("expected no access-program metadata")
+				}
+				return
+			}
+			if ap == nil {
+				t.Fatal("expected access-program metadata")
+			}
+			if !slices.Equal(ap.Cyber, tc.want.Cyber) {
+				t.Fatalf("unexpected programs: %+v", ap.Cyber)
+			}
+		})
+	}
+}
+
 func TestJSONRPCMessage(t *testing.T) {
 	t.Run("notification", func(t *testing.T) {
 		var m JSONRPCMessage

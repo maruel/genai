@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-d4598c0c-7119-4bc4-a07e-d1b10529b947","object":"chat.completion","created":1765638638,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning":"The user requests: \"Talk about Canada in great details. Start with: Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.032919309,"prompt_tokens":83,"prompt_time":0.004552388,"completion_tokens":2648,"completion_time":2.7269880410000003,"total_tokens":2731,"total_time":2.731540429,"completion_tokens_details":{"reasoning_tokens":18}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc46zqaenksxwv1azm1z24x","seed":3813597},"service_tier":"on_demand"}
+            {"id":"chatcmpl-4b34a974-e06e-4df3-911e-51144bf27e21","object":"chat.completion","created":1790988255,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning":"We need to talk about Canada in great detail. Start with: \"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.030625523,"prompt_tokens":83,"prompt_time":0.029594288,"completion_tokens":2930,"completion_time":3.065849889,"total_tokens":3013,"total_time":3.095444177,"completion_tokens_details":{"reasoning_tokens":17}},"usage_breakdown":null,"system_fingerprint":"fp_ac10423237","x_groq":{"id":"req_01m3zkfwvxe7fvpdte0c3gtdax","seed":2139818284},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6639e3c4ca316-YUL
+                - a447eabef822dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "150000"
             X-Ratelimit-Remaining-Requests:
-                - "499992"
+                - "499993"
             X-Ratelimit-Remaining-Tokens:
-                - "149740"
+                - "149249"
             X-Ratelimit-Reset-Requests:
-                - 1.382s
+                - 1.209s
             X-Ratelimit-Reset-Tokens:
-                - 104ms
+                - 300ms
         status: 200 OK
         code: 200
-        duration: 2.784s
+        duration: 3.167s

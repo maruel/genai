@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-2770a432-102f-49c0-b914-1e74523d6de0","object":"chat.completion","created":1765638733,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to call the square_root function.","tool_calls":[{"id":"fc_3c66028e-5ad6-457b-950f-e255a990346b","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003134591,"prompt_tokens":156,"prompt_time":0.008634166,"completion_tokens":34,"completion_time":0.034330746,"total_tokens":190,"total_time":0.042964912,"completion_tokens_details":{"reasoning_tokens":10}},"usage_breakdown":null,"system_fingerprint":"fp_34cb00738d","x_groq":{"id":"req_01kcc49zn7e8790hnch4shakyj","seed":241953328},"service_tier":"on_demand"}
+            {"id":"chatcmpl-4793a0d3-01e8-4218-9b30-f8ce4d30e122","object":"chat.completion","created":1790988245,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to use the square_root tool to compute sqrt(132413). Then reply with only the result. Probably return a numeric value. Let's compute sqrt(132413). 364^2 = 132,496. 363^2 = 131,769. So sqrt is about 363.6? Let's calculate more precisely. Let's compute: 363.5^2 = (363+0.5)^2 = 363^2 + 2*363*0.5 + 0.25 = 131,769 + 363 + 0.25 = 132,132.25. Too low. 363.7^2 = 363^2 + 2*363*0.7 + 0.49 = 131,769 + 508.2 + 0.49 = 132,277.69. Still low. 363.8^2 = 131,769 + 2*363*0.8 + 0.64 = 131,769 + 580.8 + 0.64 = 132,350.44. Low. 363.9^2 = 131,769 + 2*363*0.9 + 0.81 = 131,769 + 653.4 + 0.81 = 132,423.21. Slightly above 132,413? 132,423.21 is 10.21 too high. 363.88^2? Let's approximate linear: difference from 363.8 to 363.9 is 73.77. We need 132,413 - 132,350.44 = 62.56. Ratio 62.56/73.77 ~ 0.847. So add 0.847*0.1=0.0847 to 363.8 =\u003e 363.8847. Let's check 363.8847^2: Use (363.8847)^2 = (363.8847*363.8847). But easier: Use earlier 363.8^2 = 132,350.44. The incremental difference: (2*363.8*0.0847) + 0.0847^2. 2*363.8*0.0847 = 727.6*0.0847? Wait 2*363.8=727.6. Times 0.0847 = 61.62. Plus 0.00718 ~ 61.627. Add to 132,350.44 gives 132,412.067. Slightly below 132,413. Need 0.933 more. So we need additional ~0.933/(2*363.8847)=0.933/727.769=0.00128. So 363.8847 + 0.00128 = 363.88598. That is ~363.886. Let's compute square: 363.88598^2? Should be close. We'll output 363.886. The tool might produce more decimal. But we just need result. Use tool.","tool_calls":[{"id":"fc_3ca83ea1-bc40-4922-8a45-4b4db43bba89","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.030999709,"prompt_tokens":156,"prompt_time":0.007604838,"completion_tokens":672,"completion_time":0.769506901,"total_tokens":828,"total_time":0.777111739,"completion_tokens_details":{"reasoning_tokens":648}},"usage_breakdown":null,"system_fingerprint":"fp_334cc21c60","x_groq":{"id":"req_01m3zkfnx1eme8hc7f5n4czx6m","seed":2062867798},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad66603bc9ba316-YUL
+                - a447ea926fb1dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499994"
+                - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "245386"
+                - "248724"
             X-Ratelimit-Reset-Requests:
-                - 1.036s
+                - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 1.107s
+                - 306ms
         status: 200 OK
         code: 200
-        duration: 143ms
+        duration: 874ms

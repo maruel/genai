@@ -9,7 +9,7 @@ interactions:
         content_length: 806
         host: api.groq.com
         body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_ff25387d-614a-4fbe-b606-b10051015236","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"fc_ff25387d-614a-4fbe-b606-b10051015236"}],"model":"openai/gpt-oss-120b","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_973e3aff-338d-4492-a209-6f8cb85d9206","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"fc_973e3aff-338d-4492-a209-6f8cb85d9206"}],"model":"openai/gpt-oss-120b","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170","object":"chat.completion.chunk","created":1765638712,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_6d92cd46cb","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01kcc49b5ye7mr4n9rq4pb75ae","seed":411014540}}
+            data: {"id":"chatcmpl-1c5b3643-210b-40f7-80f4-0a09a96edc2d","object":"chat.completion.chunk","created":1790988207,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_77b12279f9","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m3zkehm8es999j9hfwyqjqm2","seed":102621971}}
 
-            data: {"id":"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170","object":"chat.completion.chunk","created":1765638712,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_6d92cd46cb","choices":[{"index":0,"delta":{"content":"363"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-1c5b3643-210b-40f7-80f4-0a09a96edc2d","object":"chat.completion.chunk","created":1790988207,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_77b12279f9","choices":[{"index":0,"delta":{"content":"363"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170","object":"chat.completion.chunk","created":1765638712,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_6d92cd46cb","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-1c5b3643-210b-40f7-80f4-0a09a96edc2d","object":"chat.completion.chunk","created":1790988207,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_77b12279f9","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170","object":"chat.completion.chunk","created":1765638712,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_6d92cd46cb","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}]}
+            data: {"id":"chatcmpl-1c5b3643-210b-40f7-80f4-0a09a96edc2d","object":"chat.completion.chunk","created":1790988207,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_77b12279f9","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}]}
 
-            data: {"id":"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170","object":"chat.completion.chunk","created":1765638712,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_6d92cd46cb","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01kcc49b5ye7mr4n9rq4pb75ae","usage":{"queue_time":0.034768499,"prompt_tokens":185,"prompt_time":0.010430969,"completion_tokens":7,"completion_time":0.01455291,"total_tokens":192,"total_time":0.024983879}},"usage":{"queue_time":0.034768499,"prompt_tokens":185,"prompt_time":0.010430969,"completion_tokens":7,"completion_time":0.01455291,"total_tokens":192,"total_time":0.024983879}}
+            data: {"id":"chatcmpl-1c5b3643-210b-40f7-80f4-0a09a96edc2d","object":"chat.completion.chunk","created":1790988207,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_77b12279f9","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m3zkehm8es999j9hfwyqjqm2","usage":{"queue_time":0.064777666,"prompt_tokens":185,"prompt_time":0.006957742,"completion_tokens":7,"completion_time":0.014509781,"total_tokens":192,"total_time":0.021467523}},"usage":{"queue_time":0.064777666,"prompt_tokens":185,"prompt_time":0.006957742,"completion_tokens":7,"completion_time":0.014509781,"total_tokens":192,"total_time":0.021467523}}
 
             data: [DONE]
 
@@ -41,13 +41,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad665811f84a316-YUL
+                - a447e9aa3c90dfaf-YUL
             Content-Type:
                 - text/event-stream
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -57,13 +57,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499998"
+                - "499995"
             X-Ratelimit-Remaining-Tokens:
-                - "248871"
+                - "242508"
             X-Ratelimit-Reset-Requests:
-                - 345ms
+                - 864ms
             X-Ratelimit-Reset-Tokens:
-                - 270ms
+                - 1.798s
         status: 200 OK
         code: 200
-        duration: 56ms
+        duration: 109ms

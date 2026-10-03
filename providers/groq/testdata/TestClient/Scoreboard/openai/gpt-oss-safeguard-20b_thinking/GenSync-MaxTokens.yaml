@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-8eef859e-b645-437d-817b-007d34ac28b9","object":"chat.completion","created":1765638635,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning":"The user asks: \"Explain the theory of relativity in great"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.033053074,"prompt_tokens":81,"prompt_time":0.003828692,"completion_tokens":16,"completion_time":0.016350841,"total_tokens":97,"total_time":0.020179533,"completion_tokens_details":{"reasoning_tokens":14}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc46zn0enktcvntp5bd58eb","seed":1764836218},"service_tier":"on_demand"}
+            {"id":"chatcmpl-1dd05e3e-06c7-436d-aafe-1540b9918a80","object":"chat.completion","created":1790988251,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning":"We need to explain the theory of relativity in great detail."},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.047891041,"prompt_tokens":81,"prompt_time":0.005505642,"completion_tokens":16,"completion_time":0.016355938,"total_tokens":97,"total_time":0.02186158,"completion_tokens_details":{"reasoning_tokens":14}},"usage_breakdown":null,"system_fingerprint":"fp_ac10423237","x_groq":{"id":"req_01m3zkfwree1sa2nzzgawyxy5e","seed":327128714},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6639dbbada316-YUL
+                - a447eabe4dd7dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "150000"
             X-Ratelimit-Remaining-Requests:
-                - "499994"
+                - "499995"
             X-Ratelimit-Remaining-Tokens:
-                - "149756"
+                - "149883"
             X-Ratelimit-Reset-Requests:
-                - 1.036s
+                - 864ms
             X-Ratelimit-Reset-Tokens:
-                - 97ms
+                - 46ms
         status: 200 OK
         code: 200
-        duration: 73ms
+        duration: 110ms

@@ -30,7 +30,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad663d5287ea316-YUL
+                - a447eb199b07dfaf-YUL
             Content-Length:
                 - "122"
             Content-Type:
@@ -38,11 +38,11 @@ interactions:
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
                 - yul
         status: 400 Bad Request
         code: 400
-        duration: 22ms
+        duration: 139ms

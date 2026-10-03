@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-7f2f6fe0-92a5-454b-a1bc-43224b28993a","object":"chat.completion","created":1765638734,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user asks: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nWe must use the tool best_country. According to tool signature: best_country takes an object with property country: \"USA\" | \"Canada\". So we need to call with either USA or Canada to get output. But the tool likely expects we choose one. The user wants to know which is better, but the tool only accepts one. The best we can do is decide one; but which? Possibly we can pick USA or Canada. The instruction says \"Call the tool best_country to tell me which country is the best one.\" So we should call the tool with either USA or Canada. Which? Maybe choose USA. But it's ambiguous. We could choose \"USA\" or \"Canada\". The instruction: \"Which country is the best one\" – likely they want us to pick the best. We can choose \"USA\" as best. So call best_country with country: \"USA\".","tool_calls":[{"id":"fc_b2dc5d23-aa5f-478e-89c7-9225c86f0d0e","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003218067,"prompt_tokens":159,"prompt_time":0.00766537,"completion_tokens":235,"completion_time":0.237088057,"total_tokens":394,"total_time":0.244753427,"completion_tokens_details":{"reasoning_tokens":212}},"usage_breakdown":null,"system_fingerprint":"fp_7d448090ba","x_groq":{"id":"req_01kcc4a0anehrsm1k3616r4h2g","seed":332538760},"service_tier":"on_demand"}
+            {"id":"chatcmpl-33811b17-f883-4616-a717-b0380a16c7ea","object":"chat.completion","created":1790988246,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"User: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nWe need to call the function best_country. The tool requires \"country\" argument \"USA\" | \"Canada\". We must supply one? The prompt: \"Call the tool best_country to tell me which country is the best one.\" Might require to choose between USA or Canada. Maybe we can call with \"USA\" and interpret? But tool signature: best_country({_ : {country: \"USA\" | \"Canada\"}}). It returns any.\n\nWe need to provide one argument, choose country. But the user asks \"Which is the best one?\" So we could choose \"USA\" to test. But maybe the tool is to determine best among those two. But function only accepts one input: choose a country, returns something. Possibly it will output which is best. We need to call it with some argument. Let's decide to call with \"USA\". Because it's likely the tool might output best? Not sure. The tool's name best_country maybe returns a ranking. We can choose \"USA\" or \"Canada\". I'd pick \"USA\".","tool_calls":[{"id":"fc_4c5df12e-f005-489f-ae7e-b6484990026a","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.00322718,"prompt_tokens":159,"prompt_time":0.009131668,"completion_tokens":264,"completion_time":0.352829406,"total_tokens":423,"total_time":0.361961074,"completion_tokens_details":{"reasoning_tokens":241}},"usage_breakdown":null,"system_fingerprint":"fp_99996fee8e","x_groq":{"id":"req_01m3zkfqhmetp8fmmq390vhwhb","seed":543190270},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad666087c2da316-YUL
+                - a447ea9cec69dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "250000"
             X-Ratelimit-Remaining-Requests:
-                - "499992"
+                - "499995"
             X-Ratelimit-Remaining-Tokens:
-                - "246709"
+                - "249086"
             X-Ratelimit-Reset-Requests:
-                - 1.382s
+                - 864ms
             X-Ratelimit-Reset-Tokens:
-                - 789ms
+                - 219ms
         status: 200 OK
         code: 200
-        duration: 266ms
+        duration: 417ms

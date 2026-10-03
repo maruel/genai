@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-b5f8ccc0-1713-4164-a9cb-818c101cca19","object":"chat.completion","created":1765638707,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"User wants: \"Say hello. Use only one word.\" So respond with a single word greeting, like \"Hello\". Must be one word. So output \"Hello\"."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.00400475,"prompt_tokens":79,"prompt_time":0.003908881,"completion_tokens":45,"completion_time":0.098495856,"total_tokens":124,"total_time":0.102404737,"completion_tokens_details":{"reasoning_tokens":35}},"usage_breakdown":null,"system_fingerprint":"fp_c5da83ab22","x_groq":{"id":"req_01kcc495taeh8t7yvxayvaqe9g","seed":342393701},"service_tier":"on_demand"}
+            {"id":"chatcmpl-a43e3803-81c2-4ab6-ab05-f796ee65d578","object":"chat.completion","created":1790988200,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello","reasoning":"The user says: \"Say hello. Use only one word.\" So they want a single word response, likely \"Hello\". That's one word. Must obey."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.004893601,"prompt_tokens":79,"prompt_time":0.003313995,"completion_tokens":43,"completion_time":0.094727647,"total_tokens":122,"total_time":0.098041642,"completion_tokens_details":{"reasoning_tokens":33}},"usage_breakdown":null,"system_fingerprint":"fp_6fb4303df4","x_groq":{"id":"req_01m3zkeac1epj9p9xgg9gb0zd1","seed":2056941058},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad6655ecdf6a316-YUL
+                - a447e97bdf46dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -49,11 +49,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499999"
             X-Ratelimit-Remaining-Tokens:
-                - "249920"
+                - "249645"
             X-Ratelimit-Reset-Requests:
                 - 172ms
             X-Ratelimit-Reset-Tokens:
-                - 19ms
+                - 85ms
         status: 200 OK
         code: 200
-        duration: 125ms
+        duration: 142ms

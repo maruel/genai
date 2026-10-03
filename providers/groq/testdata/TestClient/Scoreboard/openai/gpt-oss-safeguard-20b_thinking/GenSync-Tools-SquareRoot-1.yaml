@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"chatcmpl-bd6e7540-4b74-48e7-9c08-e4b78ce05dfc","object":"chat.completion","created":1765638638,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user wants to calculate sqrt of 132413 using the square_root tool. I need to call the tool.","tool_calls":[{"id":"fc_0c991dcf-4adc-4b61-8b30-886318097314","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.033640857,"prompt_tokens":156,"prompt_time":0.008645236,"completion_tokens":48,"completion_time":0.049077492,"total_tokens":204,"total_time":0.057722728,"completion_tokens_details":{"reasoning_tokens":24}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01kcc472jtenkt8sq441saqbne","seed":1686816262},"service_tier":"on_demand"}
+            {"id":"chatcmpl-eb4d3c18-ed14-4582-bf66-ca105d4e5887","object":"chat.completion","created":1790988259,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to call the square_root function with number 132413. Then output only the result. Let's do that.","tool_calls":[{"id":"fc_a24a87d1-2c54-4279-9663-8367989c1173","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.031155588,"prompt_tokens":156,"prompt_time":3.436632906,"completion_tokens":49,"completion_time":0.04971275,"total_tokens":205,"total_time":3.486345656,"completion_tokens_details":{"reasoning_tokens":25}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01m3zkg075evjt3wnmhrqjh29c","seed":499783756},"service_tier":"on_demand"}
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
@@ -31,13 +31,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ad663b07cf3a316-YUL
+                - a447ead47f44dfaf-YUL
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
-                - max-age=2592000
+                - max-age=15552000
             Vary:
                 - Origin
             X-Groq-Region:
@@ -47,13 +47,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "150000"
             X-Ratelimit-Remaining-Requests:
-                - "499995"
+                - "499998"
             X-Ratelimit-Remaining-Tokens:
-                - "145163"
+                - "147773"
             X-Ratelimit-Reset-Requests:
-                - 864ms
+                - 345ms
             X-Ratelimit-Reset-Tokens:
-                - 1.934s
+                - 890ms
         status: 200 OK
         code: 200
-        duration: 112ms
+        duration: 3.579s

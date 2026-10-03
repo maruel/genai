@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 289
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"model":"qwen/qwen3.8-27b","stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f88b63b9-1d8b-4889-b96a-fd5c5df9979a","object":"chat.completion.chunk","created":1790988687,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_c7e30c203c","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m3zkx5v0ey7tp19f1jqrx5d0","seed":723229238}}
+
+            data: {"id":"chatcmpl-f88b63b9-1d8b-4889-b96a-fd5c5df9979a","object":"chat.completion.chunk","created":1790988687,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_c7e30c203c","choices":[{"index":0,"delta":{"content":" Banana"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-f88b63b9-1d8b-4889-b96a-fd5c5df9979a","object":"chat.completion.chunk","created":1790988687,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_c7e30c203c","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m3zkx5v0ey7tp19f1jqrx5d0","usage":{"queue_time":0.385440366,"prompt_tokens":1305,"prompt_time":0.114079365,"completion_tokens":2,"completion_time":0.004393685,"total_tokens":1307,"total_time":0.11847305}},"usage":{"queue_time":0.385440366,"prompt_tokens":1305,"prompt_time":0.114079365,"completion_tokens":2,"completion_time":0.004393685,"total_tokens":1307,"total_time":0.11847305}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a447f55ecaf03189-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "236090"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.338s
+        status: 200 OK
+        code: 200
+        duration: 542ms

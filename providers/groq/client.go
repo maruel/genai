@@ -167,6 +167,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
+	var date base.TimeS
 	nb := regexp.MustCompile(`(\d+)`)
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
@@ -203,8 +204,9 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.ID
 			}
 		default:
-			if strings.HasPrefix(m.ID, "moonshotai/") {
+			if strings.HasPrefix(m.ID, "qwen/") && (selectedModel == "" || m.Created > date) {
 				selectedModel = m.ID
+				date = m.Created
 			}
 		}
 	}

@@ -28,11 +28,9 @@ import (
 	"github.com/maruel/genai/providers/llamacpp"
 )
 
-// BuildNumber is the build number that was last tried from
-// https://github.com/ggml-org/llama.cpp/releases
-//
-// You are free to use the build number that works best for you.
-const BuildNumber = 10452
+// Version is the stable llama.cpp release last tested.
+// Stable releases point to the nightly build containing their binaries.
+const Version = "v0.5.0"
 
 // Server is a llama-server instance.
 type Server struct {
@@ -181,11 +179,63 @@ func (s *Server) Done() <-chan error {
 	return s.done
 }
 
+// DownloadVersion downloads a stable release (vX.Y.Z) or nightly build (bNNNN)
+// into cache and returns the path to llama-server. Stable releases are resolved
+// through their nightly-tag.txt asset; binaries report that nightly build number.
+// Existing DownloadRelease callers can continue passing integer build numbers.
+func DownloadVersion(ctx context.Context, cache, version string) (string, error) {
+	if regexp.MustCompile(`^b[1-9]\d*$`).MatchString(version) {
+		n, err := strconv.Atoi(version[1:])
+		if err != nil {
+			return "", fmt.Errorf("invalid build tag %q: %w", version, err)
+		}
+		return DownloadRelease(ctx, cache, n)
+	}
+	if !regexp.MustCompile(`^v\d+\.\d+\.\d+$`).MatchString(version) {
+		return "", fmt.Errorf("invalid llama.cpp release tag %q", version)
+	}
+	rel, err := ghrelease.GetRelease(ctx, "ggml-org", "llama.cpp", version)
+	if err != nil {
+		return "", err
+	}
+	var asset *ghrelease.Asset
+	for i := range rel.Assets {
+		if rel.Assets[i].Name == "nightly-tag.txt" {
+			asset = &rel.Assets[i]
+			break
+		}
+	}
+	if asset == nil {
+		return "", fmt.Errorf("release %s has no nightly-tag.txt asset", version)
+	}
+	dir, err := os.MkdirTemp("", "llama-release-*")
+	if err != nil {
+		return "", err
+	}
+	defer func() { _ = os.RemoveAll(dir) }()
+	p := filepath.Join(dir, "nightly-tag.txt")
+	if err := ghrelease.DownloadFile(ctx, asset.URL, p); err != nil {
+		return "", fmt.Errorf("resolving %s: %w", version, err)
+	}
+	b, err := os.ReadFile(p)
+	if err != nil {
+		return "", err
+	}
+	tag := strings.TrimSpace(string(b))
+	if !regexp.MustCompile(`^b[1-9]\d*$`).MatchString(tag) {
+		return "", fmt.Errorf("invalid nightly tag %q in release %s", tag, version)
+	}
+	return DownloadVersion(ctx, cache, tag)
+}
+
 // DownloadRelease downloads a specific release from GitHub into the specified
 // directory and returns the file path to llama.cpp executable.
 //
 // Returns the file path to the executable.
 func DownloadRelease(ctx context.Context, cache string, version int) (string, error) {
+	if version <= 0 {
+		return "", fmt.Errorf("invalid llama.cpp build number %d", version)
+	}
 	execSuffix := ""
 	if runtime.GOOS == "windows" {
 		execSuffix = ".exe"
@@ -209,22 +259,55 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	if err != nil {
 		return "", fmt.Errorf("failed to get llama.cpp release %s: %w", build, err)
 	}
-	suffix, err := assetSuffix()
+	cuda := false
+	if runtime.GOOS == "windows" && runtime.GOARCH == "amd64" {
+		cuda = exec.CommandContext(ctx, "nvcc", "--version").Run() == nil
+	}
+	assets, err := releaseAssets(rel, runtime.GOOS, runtime.GOARCH, cuda)
 	if err != nil {
 		return "", err
 	}
-	var asset *ghrelease.Asset
-	for i := range rel.Assets {
-		if strings.Contains(rel.Assets[i].Name, suffix) {
-			asset = &rel.Assets[i]
-			break
+	if err := os.MkdirAll(cache, 0o755); err != nil {
+		return "", err
+	}
+	// Extract into a clean directory so missing files and a partial download
+	// cannot make an old executable appear to be a successful installation.
+	dir, err := os.MkdirTemp(cache, ".llama-*")
+	if err != nil {
+		return "", err
+	}
+	defer func() { _ = os.RemoveAll(dir) }()
+	for _, asset := range assets {
+		if err := ghrelease.DownloadAndExtract(ctx, asset.URL, dir, []string{"*"}, false); err != nil {
+			return "", fmt.Errorf("failed to download %s from github: %w", asset.Name, err)
 		}
 	}
-	if asset == nil {
-		return "", fmt.Errorf("no matching asset with suffix %q in release %s", suffix, build)
+	if !cachedExecutable(filepath.Join(dir, "llama-server"+execSuffix)) {
+		return "", fmt.Errorf("release %s did not contain llama-server%s", build, execSuffix)
 	}
-	if err := ghrelease.DownloadAndExtract(ctx, asset.URL, cache, []string{"*"}, false); err != nil {
-		return "", fmt.Errorf("failed to download %s from github: %w", asset.Name, err)
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return "", err
+	}
+	// Symlink targets created by ghrelease are absolute, so re-create them in
+	// the final directory before removing the staging directory.
+	for _, entry := range entries {
+		src := filepath.Join(dir, entry.Name())
+		dst := filepath.Join(cache, entry.Name())
+		if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
+			return "", err
+		}
+		if entry.Type()&os.ModeSymlink != 0 {
+			target, err := os.Readlink(src)
+			if err != nil {
+				return "", err
+			}
+			if err := os.Symlink(filepath.Base(target), dst); err != nil {
+				return "", err
+			}
+		} else if err := os.Rename(src, dst); err != nil {
+			return "", err
+		}
 	}
 	return llamaserver, nil
 }
@@ -235,7 +318,7 @@ func cachedExecutable(path string) bool {
 }
 
 func parseBuildNumber(out []byte) (int, bool) {
-	re := regexp.MustCompile(`(?m)^\s*version:\s*b?(\d+)\b`)
+	re := regexp.MustCompile(`(?m)^\s*version:\s*(?:[^\n]+\(build\s+)?b?(\d+)(?:[ ,)\r\n]|$)`)
 	m := re.FindSubmatch(out)
 	if len(m) != 2 {
 		return 0, false
@@ -256,41 +339,52 @@ func serverEnv(dir string) []string {
 	return env
 }
 
-// assetSuffix returns the substring to match in release asset names for the
-// current OS/arch.
-func assetSuffix() (string, error) {
-	switch runtime.GOOS {
+// releaseAssets selects the binary archive and, for Windows CUDA, its matching
+// runtime DLL archive. Runtime-only assets must never be selected as binaries.
+func releaseAssets(rel *ghrelease.Release, goos, arch string, cuda bool) ([]ghrelease.Asset, error) {
+	a := ""
+	switch arch {
+	case "amd64":
+		a = "x64"
+	case "arm64":
+		a = "arm64"
+	default:
+		return nil, fmt.Errorf("unsupported llama.cpp platform %s/%s", goos, arch)
+	}
+	pattern := ""
+	switch goos {
 	case "darwin":
-		return "macos-arm64", nil
+		pattern = "macos-" + a + ".*"
 	case "linux":
-		switch runtime.GOARCH {
-		case "amd64":
-			return "ubuntu-x64", nil
-		case "arm64":
-			return "ubuntu-arm64", nil
-		default:
-			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
-		}
+		pattern = "ubuntu-" + a + ".*"
 	case "windows":
-		if _, err := exec.Command("nvcc", "--version").CombinedOutput(); err == nil {
-			// Use CUDA build. The release API lets us pick the right archive
-			// dynamically regardless of CUDA version.
-			switch runtime.GOARCH {
-			case "amd64":
-				return "win-cuda", nil
-			default:
-				return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH + " with cuda")
-			}
-		}
-		switch runtime.GOARCH {
-		case "arm64":
-			return "win-cpu-arm64", nil
-		case "amd64":
-			return "win-cpu-x64", nil
-		default:
-			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		pattern = "win-cpu-" + a + ".zip"
+		if cuda && arch == "amd64" {
+			pattern = "win-cuda-*-" + a + ".zip"
 		}
 	default:
-		return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		return nil, fmt.Errorf("unsupported llama.cpp platform %s/%s", goos, arch)
 	}
+	prefix := "llama-" + rel.TagName + "-bin-"
+	for i := range rel.Assets {
+		asset := &rel.Assets[i]
+		if !strings.HasPrefix(asset.Name, prefix) || (!strings.HasSuffix(asset.Name, ".tar.gz") && !strings.HasSuffix(asset.Name, ".zip")) {
+			continue
+		}
+		if ok, _ := filepath.Match(pattern, strings.TrimPrefix(asset.Name, prefix)); !ok {
+			continue
+		}
+		out := []ghrelease.Asset{*asset}
+		if goos == "windows" && cuda && arch == "amd64" {
+			name := "cudart-llama-bin-" + strings.TrimPrefix(asset.Name, prefix)
+			for j := range rel.Assets {
+				if rel.Assets[j].Name == name {
+					return append(out, rel.Assets[j]), nil
+				}
+			}
+			return nil, fmt.Errorf("release %s has no CUDA runtime asset %s", rel.TagName, name)
+		}
+		return out, nil
+	}
+	return nil, fmt.Errorf("no binary asset matching %q in release %s", pattern, rel.TagName)
 }

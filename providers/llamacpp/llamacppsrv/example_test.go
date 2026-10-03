@@ -72,7 +72,7 @@ func startServer(ctx context.Context, author, repo, modelfile string) (*llamacpp
 	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return nil, err
 	}
-	exe, err := llamacppsrv.DownloadRelease(ctx, cache, llamacppsrv.BuildNumber)
+	exe, err := llamacppsrv.DownloadVersion(ctx, cache, llamacppsrv.Version)
 	if err != nil {
 		return nil, err
 	}

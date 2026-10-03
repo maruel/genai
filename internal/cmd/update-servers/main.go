@@ -25,7 +25,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/maruel/genai/internal/ghrelease"
@@ -56,25 +55,24 @@ var updates = []update{
 		ghOwner: "ggml-org",
 		ghRepo:  "llama.cpp",
 		parse: func(tag string) (string, error) {
-			// Tags are like "b9020".
-			if !strings.HasPrefix(tag, "b") {
+			if !strings.HasPrefix(tag, "v") {
 				return "", fmt.Errorf("unexpected llama.cpp tag %q", tag)
 			}
-			return tag[1:], nil
+			return tag, nil
 		},
 		current: func(content string) (string, error) {
-			re := regexp.MustCompile(`const BuildNumber\s*=\s*(\d+)`)
+			re := regexp.MustCompile(`const Version\s*=\s*"([^"]+)"`)
 			m := re.FindStringSubmatch(content)
 			if len(m) < 2 {
-				return "", errors.New("build number not found")
+				return "", errors.New("version not found")
 			}
 			return m[1], nil
 		},
 		apply: func(orig, newVersion string) (string, error) {
-			re := regexp.MustCompile(`(const BuildNumber\s*=\s*)\d+`)
-			result := re.ReplaceAllString(orig, `${1}`+newVersion)
+			re := regexp.MustCompile(`(const Version\s*=\s*)"[^"]*"`)
+			result := re.ReplaceAllString(orig, `${1}"`+newVersion+`"`)
 			if result == orig {
-				return "", errors.New("build number replacement had no effect")
+				return "", errors.New("version replacement had no effect")
 			}
 			return result, nil
 		},
@@ -141,18 +139,18 @@ func main() {
 			log.Fatal(err)
 		}
 		if cur == latest {
-			fmt.Printf("%s %sup-to-date%s (%s)\n", u.name, colorGreen, colorReset, formatVersion(u.name, cur))
+			fmt.Printf("%s %sup-to-date%s (%s)\n", u.name, colorGreen, colorReset, cur)
 			continue
 		}
 		outdated = true
-		fmt.Printf("%s %s%s -> %s%s\n", u.name, colorYellow, formatVersion(u.name, cur), formatVersion(u.name, latest), colorReset)
+		fmt.Printf("%s %s%s -> %s%s\n", u.name, colorYellow, cur, latest, colorReset)
 		if !*apply {
 			continue
 		}
 		if err := applyUpdate(root, &u, latest); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s %supdated to %s%s\n", u.name, colorGreen, formatVersion(u.name, latest), colorReset)
+		fmt.Printf("%s %supdated to %s%s\n", u.name, colorGreen, latest, colorReset)
 		needRecord[u.name] = struct{}{}
 	}
 
@@ -246,18 +244,8 @@ func applyUpdate(root string, u *update, latest string) error {
 func runTests(root, pkg string) error {
 	cmd := exec.Command("go", "test", pkg, "-update-scoreboard")
 	cmd.Dir = root
-	cmd.Env = append(os.Environ(), "RECORD=all")
+	cmd.Env = append(os.Environ(), "RECORD=failure_only")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-}
-
-func formatVersion(name, v string) string {
-	switch name {
-	case "llamacpp":
-		n, _ := strconv.Atoi(v)
-		return fmt.Sprintf("b%d", n)
-	default:
-		return v
-	}
 }

@@ -15,7 +15,7 @@ RECORD=failure_only go test ./providers/llamacpp -update-scoreboard
 ## Version Management
 
 Run `go run ./internal/cmd/update-servers` to check for newer llama.cpp
-releases. Pass `--apply` to update `BuildNumber` and re-record tests.
+releases. Pass `--apply` to update `Version` and re-record tests.
 
 ## Known Issues
 

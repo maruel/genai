@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -213,7 +213,7 @@ func (l *lazyServer) ensureExe(ctx context.Context) (string, error) {
 	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return "", err
 	}
-	exe, err := llamacppsrv.DownloadRelease(ctx, cache, llamacppsrv.BuildNumber)
+	exe, err := llamacppsrv.DownloadVersion(ctx, cache, llamacppsrv.Version)
 	if err != nil {
 		return "", err
 	}

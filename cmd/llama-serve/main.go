@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -38,20 +38,24 @@ func mainImpl() error {
 		_, _ = fmt.Fprintf(o, "  Use Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf for improved quality.\n")
 	}
 	modelFlag := flag.String("model", "", "HuggingFace model reference (e.g., 'Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf')")
-	cacheDir := flag.String("cache", "", "Cache directory for models and server (default: ~/.cache/llama-server/<buildnumber>)")
+	cacheDir := flag.String("cache", "", "Cache directory for models and server (default: ~/.cache/llama-server/<version>)")
 	hostPort := flag.String("http", "127.0.0.1:8080", "IP and Port to serve on; use 0.0.0.0 to listen on all IPs")
 	threads := flag.Int("threads", 0, "Number of threads to use (default: CPU count - 2)")
-	build := flag.Int("build", llamacppsrv.BuildNumber, "llama.cpp release build number to fetch; see https://github.com/ggml-org/llama.cpp/releases")
+	version := flag.String("version", llamacppsrv.Version, "llama.cpp stable release or nightly tag to fetch")
+	build := flag.Int("build", 0, "llama.cpp release build number to fetch; see https://github.com/ggml-org/llama.cpp/releases")
 	flag.Parse()
 	if *modelFlag == "" {
 		return errors.New("-model flag is required")
+	}
+	if *build != 0 {
+		*version = "b" + strconv.Itoa(*build)
 	}
 	if *cacheDir == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			return err
 		}
-		*cacheDir = filepath.Join(home, ".cache", "llama-server", strconv.Itoa(*build))
+		*cacheDir = filepath.Join(home, ".cache", "llama-server", *version)
 	}
 	if err := os.MkdirAll(*cacheDir, 0o755); err != nil {
 		return err
@@ -67,8 +71,8 @@ func mainImpl() error {
 		filename = parts[2]
 	}
 
-	log.Printf("Ensuring llama-server (build %d)...", *build)
-	exe, err := llamacppsrv.DownloadRelease(ctx, *cacheDir, *build)
+	log.Printf("Ensuring llama-server (%s)...", *version)
+	exe, err := llamacppsrv.DownloadVersion(ctx, *cacheDir, *version)
 	if err != nil {
 		return err
 	}

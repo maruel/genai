@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -80,6 +80,9 @@ type ChatRequest struct {
 	Mirostat            int32             `json:"mirostat,omitzero"`
 	MirostatTau         float64           `json:"mirostat_tau,omitzero"`
 	MirostatEta         float64           `json:"mirostat_eta,omitzero"`
+	AdaptiveTarget      float64           `json:"adaptive_target,omitzero"`
+	AdaptiveDecay       float64           `json:"adaptive_decay,omitzero"`
+	TopNSigma           float64           `json:"top_n_sigma,omitzero"`
 	Seed                int64             `json:"seed,omitzero"`
 	IgnoreEos           bool              `json:"ignore_eos,omitzero"`
 	LogitBias           []json.RawMessage `json:"logit_bias,omitzero"`
@@ -90,6 +93,7 @@ type ChatRequest struct {
 	IDSlot              int64             `json:"id_slot,omitzero"`
 	CachePrompt         bool              `json:"cache_prompt,omitzero"`
 	ReturnTokens        bool              `json:"return_tokens,omitzero"`
+	ReturnProgress      bool              `json:"return_progress,omitzero"`
 	Samplers            []string          `json:"samplers,omitzero"`
 	PostSamplingProbs   bool              `json:"post_sampling_probs,omitzero"`
 	ResponseFields      []string          `json:"response_fields,omitzero"`
@@ -344,8 +348,10 @@ type ReasoningFormat string
 
 // Valid ReasoningFormat values.
 const (
-	ReasoningFormatNone     ReasoningFormat = "none"
-	ReasoningFormatDeepSeek ReasoningFormat = "deepseek"
+	ReasoningFormatAuto           ReasoningFormat = "auto"
+	ReasoningFormatDeepSeek       ReasoningFormat = "deepseek"
+	ReasoningFormatDeepSeekLegacy ReasoningFormat = "deepseek-legacy"
+	ReasoningFormatNone           ReasoningFormat = "none"
 )
 
 // ChatStreamChunkResponse is a single chunk in a streaming chat response.
@@ -366,8 +372,9 @@ type ChatStreamChunkResponse struct {
 		} `json:"delta"`
 		Logprobs Logprobs `json:"logprobs"`
 	} `json:"choices"`
-	Usage   Usage   `json:"usage"`
-	Timings Timings `json:"timings"`
+	Usage          Usage          `json:"usage"`
+	Timings        Timings        `json:"timings"`
+	PromptProgress PromptProgress `json:"prompt_progress"`
 }
 
 // HealthResponse is documented at
@@ -409,6 +416,9 @@ type CompletionRequest struct {
 	Mirostat            int32             `json:"mirostat,omitzero"`
 	MirostatTau         float64           `json:"mirostat_tau,omitzero"`
 	MirostatEta         float64           `json:"mirostat_eta,omitzero"`
+	AdaptiveTarget      float64           `json:"adaptive_target,omitzero"`
+	AdaptiveDecay       float64           `json:"adaptive_decay,omitzero"`
+	TopNSigma           float64           `json:"top_n_sigma,omitzero"`
 	Grammar             string            `json:"grammar,omitzero"`
 	JSONSchema          genai.JSONSchema  `json:"json_schema,omitzero"`
 	Seed                int64             `json:"seed,omitzero"`
@@ -421,6 +431,7 @@ type CompletionRequest struct {
 	IDSlot              int64             `json:"id_slot,omitzero"`
 	CachePrompt         bool              `json:"cache_prompt,omitzero"`
 	ReturnTokens        bool              `json:"return_tokens,omitzero"`
+	ReturnProgress      bool              `json:"return_progress,omitzero"`
 	Samplers            []string          `json:"samplers,omitzero"`
 	TimingsPerToken     bool              `json:"timings_per_token,omitzero"`
 	PostSamplingProbs   bool              `json:"post_sampling_probs,omitzero"`
@@ -498,6 +509,8 @@ type GenerationSettings struct {
 	Mirostat            int32             `json:"mirostat"`
 	MirostatTau         float64           `json:"mirostat_tau"`
 	MirostatEta         float64           `json:"mirostat_eta"`
+	AdaptiveTarget      float64           `json:"adaptive_target"`
+	AdaptiveDecay       float64           `json:"adaptive_decay"`
 	Stop                []string          `json:"stop"`
 	MaxTokens           int64             `json:"max_tokens"`
 	NKeep               int64             `json:"n_keep"`
@@ -514,6 +527,9 @@ type GenerationSettings struct {
 	ChatFormat          string            `json:"chat_format"`
 	ReasoningFormat     string            `json:"reasoning_format"`
 	ReasoningInContent  bool              `json:"reasoning_in_content"`
+	GenerationPrompt    string            `json:"generation_prompt"`
+	BackendSampling     bool              `json:"backend_sampling"`
+	SpeculativeTypes    string            `json:"speculative.types"`
 	ThinkingForcedOpen  bool              `json:"thinking_forced_open"`
 	Samplers            []string          `json:"samplers"`
 	SpeculativeNMax     int64             `json:"speculative.n_max"`
@@ -601,16 +617,25 @@ type Timings struct {
 	DraftNAccepted     int64           `json:"draft_n_accepted"`
 }
 
+// PromptProgress reports streaming prompt processing progress.
+type PromptProgress struct {
+	Total     int64           `json:"total"`
+	Cache     int64           `json:"cache"`
+	Processed int64           `json:"processed"`
+	Time      base.DurationMS `json:"time_ms"`
+}
+
 // CompletionStreamChunkResponse is a single chunk in a streaming completion response.
 type CompletionStreamChunkResponse struct {
 	// Always
-	Index           int64   `json:"index"`
-	Content         string  `json:"content"`
-	Tokens          []int64 `json:"tokens"`
-	Stop            bool    `json:"stop"`
-	IDSlot          int64   `json:"id_slot"`
-	TokensPredicted int64   `json:"tokens_predicted"`
-	TokensEvaluated int64   `json:"tokens_evaluated"`
+	Index           int64          `json:"index"`
+	Content         string         `json:"content"`
+	Tokens          []int64        `json:"tokens"`
+	Stop            bool           `json:"stop"`
+	IDSlot          int64          `json:"id_slot"`
+	TokensPredicted int64          `json:"tokens_predicted"`
+	TokensEvaluated int64          `json:"tokens_evaluated"`
+	PromptProgress  PromptProgress `json:"prompt_progress"`
 
 	// Last message
 	Model              string       `json:"model"`
@@ -790,7 +815,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 // You can look at how it's used in oaicompat_chat_params_parse() in
 // https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
 type Content struct {
-	Type string `json:"type"` // "text", "image_url", "input_audio"
+	Type string `json:"type"` // "text", "image_url", "input_audio", "input_video", "video_url"
 
 	// Type == "text"
 	Text string `json:"text,omitzero"`
@@ -799,6 +824,9 @@ type Content struct {
 	ImageURL struct {
 		URL string `json:"url,omitzero"`
 	} `json:"image_url,omitzero"`
+
+	InputVideo VideoInput `json:"input_video,omitzero"`
+	VideoURL   VideoInput `json:"video_url,omitzero"`
 
 	InputAudio struct {
 		Data   []byte `json:"data,omitzero"`
@@ -934,6 +962,12 @@ func (c *Content) To(out *genai.Reply) error {
 	default:
 		return fmt.Errorf("unexpected content type %q", c.Type)
 	}
+}
+
+// VideoInput identifies a video by URL or a data URI containing base64 media.
+type VideoInput struct {
+	URL  string `json:"url,omitzero"`
+	Data string `json:"data,omitzero"`
 }
 
 // ToolCall is not documented.

@@ -29,8 +29,9 @@ llama-serve -model Menlo/Jan-nano-gguf/jan-nano-4b-Q8_0.gguf -- \
 
 ## Frequently used flags
 
-- `-build 1234` to use a specific build instead of the [default
-  one](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp/llamacppsrv#BuildNumber).
+- `-version v0.5.0` to select a stable release, or `-version b11146` for a nightly build.
+  Defaults to [Version](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp/llamacppsrv#Version).
+  The existing `-build 1234` flag still selects a nightly build.
 - `-http 0.0.0.0:8080` to be accessible from other machines. By default, only localhost is accessible.
 - `--cache-type-k q8_0 --cache-type-v q8_0` to reduce KV cache memory usage. May negatively affect both
   performance and accuracy.

@@ -4,6 +4,14 @@ A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/lla
 
 ## Examples
 
+Kev 4B answers typed questions through `/v1/systemone`. Use
+`llamacpp.ProviderOption{SystemOne: true}` with the client. This endpoint requires
+nightly build b11361 or newer; the default stable v0.5.0 predates it.
+
+```bash
+go run github.com/maruel/genai/cmd/llama-serve@latest -version b11361 -model ggml-org/Kev-4B-GGUF
+```
+
 Qwen3.5 2B is a tiny but capable model, great for testing:
 
 ```bash

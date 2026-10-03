@@ -83,3 +83,29 @@ func startServer(ctx context.Context, author, repo, modelfile string) (*llamacpp
 	defer func() { _ = l.Close() }()
 	return llamacppsrv.New(ctx, exe, "", l, "", 0, extraArgs)
 }
+
+// ExampleClient_GenSync_systemOne evaluates typed questions using a decision model.
+// Start the server first: go run ./cmd/llama-serve -version b11361 -model ggml-org/Kev-4B-GGUF.
+func ExampleClient_GenSync_systemOne() {
+	ctx := context.Background()
+	c, err := llamacpp.New(ctx, &llamacpp.ProviderOption{SystemOne: true})
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	q := struct {
+		Billing llamacpp.Noul `json:"billing"`
+	}{
+		Billing: llamacpp.Noul{Instructions: llamacpp.Text("Is this request about billing?")},
+	}
+	res, err := c.GenSync(ctx, genai.Messages{genai.NewTextMessage("I was charged twice for my order.")}, &genai.GenOptionText{DecodeAs: &q})
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	if err := res.Decode(&q); err != nil {
+		log.Print(err)
+		return
+	}
+	fmt.Println(q.Billing.Probability)
+}

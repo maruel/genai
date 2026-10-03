@@ -9,6 +9,11 @@
 // https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#api-endpoints
 //
 // The implementation is at https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
+//
+// Decision models such as Kev use /v1/systemone. Enable ProviderOption.SystemOne and pass
+// a questionnaire of Noul, Choice and Score fields with
+// genai.GenOptionText.DecodeAs. The single message supplies the state as text or a JSON document,
+// with optional inline images for models that support them. GenStream yields the complete answer.
 package llamacpp
 
 import (
@@ -16,6 +21,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"iter"
@@ -145,6 +151,19 @@ type Metrics struct {
 
 //
 
+// ProviderOption configures the llama.cpp client.
+type ProviderOption struct {
+	// SystemOne routes GenSync and GenStream to /v1/systemone for decision models.
+	// Questions use the llama.cpp questionnaire types. Only DecodeAs is accepted
+	// as a generation option; streaming is simulated because the endpoint does not stream.
+	SystemOne bool
+}
+
+// Validate implements genai.Validatable.
+func (o *ProviderOption) Validate() error {
+	return nil
+}
+
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
@@ -153,6 +172,7 @@ type Client struct {
 	completionsURL string
 	modelsURL      string
 	encoding       *PromptEncoding
+	systemOne      bool
 }
 
 // New creates a new client to talk to a llama-server instance.
@@ -164,6 +184,7 @@ type Client struct {
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
 // to determine which model is already loaded.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var systemOne bool
 	var baseURL, model string
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
@@ -176,6 +197,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			return nil, err
 		}
 		switch v := opt.(type) {
+		case *ProviderOption:
+			systemOne = v.SystemOne
 		case genai.ProviderOptionRemote:
 			baseURL = string(v)
 		case genai.ProviderOptionModel:
@@ -202,6 +225,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		t = wrapper(t)
 	}
 	c := &Client{
+		systemOne: systemOne,
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      baseURL + "/chat/completions",
 			ProcessStream:   ProcessStream,
@@ -217,6 +241,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		baseURL:        baseURL,
 		completionsURL: baseURL + "/completions",
 		modelsURL:      baseURL + "/v1/models",
+	}
+	if systemOne {
+		c.impl.OutputModalities = mod
 	}
 	var err error
 	switch model {
@@ -287,7 +314,54 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if c.systemOne {
+		return c.genSystemOne(ctx, msgs, opts...)
+	}
 	return c.impl.GenSync(ctx, msgs, opts...)
+}
+
+// GenSystemOneRaw answers typed questions using the native /v1/systemone endpoint.
+// It can be used regardless of ProviderOption.SystemOne.
+func (c *Client) GenSystemOneRaw(ctx context.Context, in *SystemOneRequest, out *SystemOneResponse) error {
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	return c.impl.DoRequest(ctx, "POST", c.baseURL+"/v1/systemone", in, out)
+}
+
+// genSystemOne converts a questionnaire and state to a decision request.
+func (c *Client) genSystemOne(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return genai.Result{}, err
+	}
+	if len(msgs) != 1 {
+		return genai.Result{}, errors.New("must pass exactly one message as the decision state")
+	}
+	req := &SystemOneRequest{Model: c.impl.Model}
+	if err := req.From(&msgs[0]); err != nil {
+		return genai.Result{}, err
+	}
+	if err := req.FromOptions(opts...); err != nil {
+		return genai.Result{}, err
+	}
+	resp := &SystemOneResponse{}
+	if err := c.GenSystemOneRaw(ctx, req, resp); err != nil {
+		return genai.Result{}, err
+	}
+	res, err := resp.ToResult()
+	if err != nil {
+		return res, &internal.BadError{Err: err}
+	}
+	for name, q := range req.Questions {
+		a, ok := resp.Answers[name]
+		if !ok || a.Type != q.Type {
+			return res, &internal.BadError{Err: fmt.Errorf("missing or mismatched answer for question %q", name)}
+		}
+	}
+	if err := res.Validate(); err != nil {
+		return res, &internal.BadError{Err: err}
+	}
+	return res, nil
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -297,6 +371,9 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (fragments iter.Seq[genai.Reply], finish func() (genai.Result, error)) {
+	if c.systemOne {
+		return base.SimulateStream(ctx, c, msgs, opts...)
+	}
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

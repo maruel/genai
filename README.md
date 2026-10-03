@@ -587,9 +587,9 @@ This will print:
 > Round: true
 
 
-### Text to Typed Answers ❓
+### Text to Typed Decisions ❓
 
-[examples/txt\_to\_txt\_questions/main.go](examples/txt_to_txt_questions/main.go): TypeSafe does not write
+[examples/txt\_to\_decisions/main.go](examples/txt_to_decisions/main.go): TypeSafe does not write
 prose, it answers typed questions about a state. Ask a yes/no, a choice and a score question about the same
 state in one request and read the answers back as Go values, each with the confidence and the probability
 distribution the model reported. The example prints the state it judges, the answers, and how long the request
@@ -599,6 +599,7 @@ took.
 The questions are declared as struct fields of `typesafe.Noul`, `typesafe.Choice` and `typesafe.Score` and
 passed with `genai.GenOptionText.DecodeAs`; the state is a JSON document, and the same struct holds the
 answers afterwards.
+
 
 ```go
 	// The state is the ticket with its subject, passed as a JSON document.
@@ -636,7 +637,7 @@ answers afterwards.
 Try it locally:
 
 ```bash
-go run github.com/maruel/genai/examples/txt_to_txt_questions@latest
+go run github.com/maruel/genai/examples/txt_to_decisions@latest
 ```
 
 This may print:
@@ -660,6 +661,53 @@ Answers:
     3 (right now): 0.36
 in: 469, out: 75, total: 544
 took 312ms
+```
+
+
+### Text to Typed Decisions Locally ❓
+
+[examples/txt\_to\_decisions\_local/main.go](examples/txt_to_decisions_local/main.go): Ask the same
+billing, tone and urgency questions using a local Kev-4B model. The example downloads and starts llama-server,
+connects to it, and stops it on exit. Downloads are cached, and no API key is required.
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_decisions_local@latest
+```
+
+Use `-subject` and `-text` to evaluate a different ticket:
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_decisions_local@latest \
+  -subject "Lost package" -text "My order never arrived. Can you help?"
+```
+
+llama.cpp decision models use `llamacpp.Noul`, `llamacpp.Choice` and `llamacpp.Score` (and
+`llamacpp.Text` / `llamacpp.DecisionContent` for descriptions). Enable `llamacpp.ProviderOption{SystemOne: true}`
+when constructing the client.
+Pass one message containing the full state and call `GenSync` with `DecodeAs`. See the
+[llama.cpp System One example](providers/llamacpp/example_test.go) for a complete questionnaire. Every question
+must include instructions, and score rubrics must contain 2 to 10 levels. `GenStream` yields the complete
+answer at once. Models with image support can also receive inline image documents in the message.
+Use `GenSystemOneRaw` with `llamacpp.SystemOneRequest` and `llamacpp.SystemOneResponse` for direct API access.
+
+### Image and Text to Typed Decisions Locally ❓
+
+[examples/img\-txt\_to\_decisions\_local/main.go](examples/img-txt_to_decisions_local/main.go): Ask whether an image
+contains readable text, classify its kind, and rate its usefulness for a supplied text context. The example
+prints typed answers, probability distributions, token usage, and elapsed time.
+
+The example downloads and starts a local OpenJev server with its multimodal projector, then stops it on exit.
+The server and model downloads are cached for subsequent runs. With no arguments, it uses a bundled sample image:
+
+```bash
+go run github.com/maruel/genai/examples/img-txt_to_decisions_local@latest
+```
+
+To evaluate your own image and text context:
+
+```bash
+go run github.com/maruel/genai/examples/img-txt_to_decisions_local@latest \
+  -image screenshot.png -text "Review this screenshot of a billing error."
 ```
 
 
@@ -991,7 +1039,7 @@ via OpenAI's auth server (same flow as Codex CLI) and talk to the ChatGPT backen
 cached and refreshed automatically. No configuration needed.
 
 ```bash
-go run ./examples/txt_to_txt_oauth2_codex
+go run github.com/maruel/genai/examples/txt_to_txt_oauth2_codex@latest
 ```
 
 [examples/txt\_to\_txt\_oauth2\_gemini/main.go](examples/txt_to_txt_oauth2_gemini/main.go): Authenticate
@@ -999,7 +1047,7 @@ via Google OAuth2 and talk to the Gemini API. Requires a Google Cloud project wi
 credentials.
 
 ```bash
-go run ./examples/txt_to_txt_oauth2_gemini -client-id=ID -client-secret=SECRET
+go run github.com/maruel/genai/examples/txt_to_txt_oauth2_gemini@latest -client-id=ID -client-secret=SECRET
 ```
 
 

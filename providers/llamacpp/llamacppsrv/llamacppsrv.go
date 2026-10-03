@@ -180,19 +180,31 @@ func (s *Server) Done() <-chan error {
 }
 
 // DownloadVersion downloads a stable release (vX.Y.Z) or nightly build (bNNNN)
-// into cache and returns the path to llama-server. Stable releases are resolved
-// through their nightly-tag.txt asset; binaries report that nightly build number.
-// Existing DownloadRelease callers can continue passing integer build numbers.
+// into cache and returns the path to llama-server in a build-specific directory.
+//
+// Stable releases are resolved through their nightly-tag.txt asset. A relative
+// symlink from the stable tag to its build directory persists that resolution
+// after successful installation. When symlinks are unsupported or Windows
+// lacks symlink privileges, a text file containing the build tag and a trailing
+// newline serves as the alias.
+// A cached resolution and matching executable need no GitHub requests.
+// Missing or invalid executables are downloaded again for the resolved build.
 func DownloadVersion(ctx context.Context, cache, version string) (string, error) {
 	if regexp.MustCompile(`^b[1-9]\d*$`).MatchString(version) {
 		n, err := strconv.Atoi(version[1:])
 		if err != nil {
 			return "", fmt.Errorf("invalid build tag %q: %w", version, err)
 		}
-		return DownloadRelease(ctx, cache, n)
+		return DownloadRelease(ctx, filepath.Join(cache, version), n)
 	}
 	if !regexp.MustCompile(`^v\d+\.\d+\.\d+$`).MatchString(version) {
 		return "", fmt.Errorf("invalid llama.cpp release tag %q", version)
+	}
+	link := filepath.Join(cache, version)
+	if tag, err := readReleaseAlias(link); err == nil {
+		return DownloadVersion(ctx, cache, tag)
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return "", fmt.Errorf("reading cached release %s: %w", version, err)
 	}
 	rel, err := ghrelease.GetRelease(ctx, "ggml-org", "llama.cpp", version)
 	if err != nil {
@@ -225,7 +237,26 @@ func DownloadVersion(ctx context.Context, cache, version string) (string, error)
 	if !regexp.MustCompile(`^b[1-9]\d*$`).MatchString(tag) {
 		return "", fmt.Errorf("invalid nightly tag %q in release %s", tag, version)
 	}
-	return DownloadVersion(ctx, cache, tag)
+	exe, err := DownloadVersion(ctx, cache, tag)
+	if err != nil {
+		return "", err
+	}
+	// Symlink creation publishes the resolution atomically after installation.
+	if err := os.Symlink(tag, link); err != nil {
+		if errors.Is(err, os.ErrExist) {
+			// Another caller may have published the same resolution.
+			if target, er := readReleaseAlias(link); er == nil && target == tag {
+				return exe, nil
+			}
+		}
+		if !symlinkUnsupported(err) {
+			return "", fmt.Errorf("caching release %s: %w", version, err)
+		}
+		if err := writeReleaseAlias(link, tag); err != nil {
+			return "", fmt.Errorf("caching release %s as text: %w", version, err)
+		}
+	}
+	return exe, nil
 }
 
 // DownloadRelease downloads a specific release from GitHub into the specified
@@ -310,6 +341,68 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		}
 	}
 	return llamaserver, nil
+}
+
+// readReleaseAlias reads only the two supported alias types, without following
+// a symlink whose target could be outside the cache.
+func readReleaseAlias(path string) (string, error) {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return "", err
+	}
+	var tag string
+	switch {
+	case info.Mode()&os.ModeSymlink != 0:
+		tag, err = os.Readlink(path)
+	case info.Mode().IsRegular():
+		var b []byte
+		b, err = os.ReadFile(path)
+		if err == nil {
+			var ok bool
+			if tag, ok = strings.CutSuffix(string(b), "\n"); !ok {
+				return "", fmt.Errorf("release alias %s has no trailing newline", path)
+			}
+		}
+	default:
+		return "", fmt.Errorf("release alias %s is not a symlink or regular file", path)
+	}
+	if err != nil {
+		return "", err
+	}
+	if !regexp.MustCompile(`^b[1-9]\d*$`).MatchString(tag) {
+		return "", fmt.Errorf("invalid nightly tag %q in release alias %s", tag, path)
+	}
+	return tag, nil
+}
+
+func symlinkUnsupported(err error) bool {
+	// Win32 ERROR_PRIVILEGE_NOT_HELD is not exported on other platforms.
+	return errors.Is(err, errors.ErrUnsupported) || runtime.GOOS == "windows" && errors.Is(err, syscall.Errno(1314))
+}
+
+// writeReleaseAlias publishes complete text metadata, never a partially written tag.
+func writeReleaseAlias(path, tag string) error {
+	f, err := os.CreateTemp(filepath.Dir(path), ".llama-alias-*")
+	if err != nil {
+		return err
+	}
+	defer func() { _ = os.Remove(f.Name()) }()
+	_, err = f.WriteString(tag + "\n")
+	if err == nil {
+		err = f.Sync()
+	}
+	if er := f.Close(); err != nil || er != nil {
+		return errors.Join(err, er)
+	}
+	if target, err := readReleaseAlias(path); err == nil {
+		if target == tag {
+			return nil
+		}
+		return fmt.Errorf("release alias %s already targets %s, not %s", path, target, tag)
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+	return os.Rename(f.Name(), path)
 }
 
 func cachedExecutable(path string) bool {

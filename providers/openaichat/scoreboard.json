@@ -85,7 +85,7 @@
     },
     {
       "models": [
-        "gpt-5.6-terra"
+        "gpt-6.1-sol"
       ],
       "good": true,
       "reason": true,
@@ -120,9 +120,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
           "object": "true"
@@ -133,9 +130,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
           "object": "true"
@@ -144,9 +138,81 @@
     },
     {
       "models": [
-        "gpt-5.6-luna"
+        "gpt-6-luna"
       ],
       "cheap": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "models": [
+        "gpt-image-1-mini"
+      ],
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {}
+    },
+    {
+      "models": [
+        "gpt-5.6-luna"
+      ],
       "reason": true,
       "in": {
         "document": {
@@ -203,23 +269,61 @@
     },
     {
       "models": [
-        "gpt-image-1-mini"
+        "gpt-5.6-terra"
       ],
-      "cheap": true,
+      "reason": true,
       "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
       },
       "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
+        "text": {
+          "inline": true
         }
       },
-      "GenSync": {}
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
     },
     {
       "comments": "gpt-audio supports audio output via modalities parameter",
@@ -278,7 +382,8 @@
     },
     {
       "models": [
-        "gpt-5.6-sol"
+        "gpt-5.6-sol",
+        "gpt-6-sol"
       ],
       "reason": true
     },

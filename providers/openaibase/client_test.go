@@ -17,6 +17,8 @@ import (
 func TestClient(t *testing.T) {
 	t.Run("SelectBestTextModel", func(t *testing.T) {
 		models := []genai.Model{
+			&Model{ID: "gpt-6-astra", Created: base.TimeS(600)},
+			&Model{ID: "gpt-6.1-sol", Created: base.TimeS(700)},
 			&Model{ID: "gpt-5.6", Created: base.TimeS(300)},
 			&Model{ID: "gpt-5.6-sol", Created: base.TimeS(300)},
 			&Model{ID: "gpt-5.6-terra", Created: base.TimeS(300)},
@@ -36,10 +38,10 @@ func TestClient(t *testing.T) {
 			in   genai.ProviderOptionModel
 			want string
 		}{
-			{name: "sota", in: genai.ModelSOTA, want: "gpt-5.6-sol"},
-			{name: "good", in: genai.ModelGood, want: "gpt-5.6-terra"},
+			{name: "sota", in: genai.ModelSOTA, want: "gpt-6-astra"},
+			{name: "good", in: genai.ModelGood, want: "gpt-6.1-sol"},
 			{name: "cheap", in: genai.ModelCheap, want: "gpt-5.6-luna"},
-			{name: "default", in: "", want: "gpt-5.6-terra"},
+			{name: "default", in: "", want: "gpt-6.1-sol"},
 		}
 		for _, tc := range data {
 			t.Run(tc.name, func(t *testing.T) {

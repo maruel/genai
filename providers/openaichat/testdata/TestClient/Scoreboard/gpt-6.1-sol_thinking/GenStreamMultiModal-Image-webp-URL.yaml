@@ -1,0 +1,155 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 385
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-sol","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"store":true,"reasoning_effort":"low","service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 369
+        body: |-
+            {
+              "error": {
+                "message": "The server had an error processing your request. Sorry about that! You can retry your request, or contact us through our help center at help.openai.com if you keep seeing this error. (Please include the request ID req_84e608ce0080451398c7aecca115cf87 in your email.)",
+                "type": "server_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44820000a7ddf96-YUL
+            Content-Length:
+                - "369"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "697"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Input-Images:
+                - "50000"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Input-Images:
+                - "49999"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "499222"
+            X-Ratelimit-Reset-Input-Images:
+                - 1ms
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 93ms
+        status: 500 Internal Server Error
+        code: 500
+        duration: 810ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 388
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-sol","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"store":true,"reasoning_effort":"low","service_tier":"default","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-EUiiQULkyKB8g9Yzr6ttTeBDARmLX","object":"chat.completion.chunk","created":1790990434,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"froOnFHEr7psasn"}
+
+            data: {"id":"chatcmpl-EUiiQULkyKB8g9Yzr6ttTeBDARmLX","object":"chat.completion.chunk","created":1790990434,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}],"usage":null,"obfuscation":"ozuHZr8liSNG6E"}
+
+            data: {"id":"chatcmpl-EUiiQULkyKB8g9Yzr6ttTeBDARmLX","object":"chat.completion.chunk","created":1790990434,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}],"usage":null,"obfuscation":"WrnI3wKFWSD2C3"}
+
+            data: {"id":"chatcmpl-EUiiQULkyKB8g9Yzr6ttTeBDARmLX","object":"chat.completion.chunk","created":1790990434,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"TnWj7Wiy4bQ"}
+
+            data: {"id":"chatcmpl-EUiiQULkyKB8g9Yzr6ttTeBDARmLX","object":"chat.completion.chunk","created":1790990434,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":149,"completion_tokens":5,"total_tokens":154,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"D4ZqXECXNstgKrF"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a44820051a58df96-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "977"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Input-Images:
+                - "50000"
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Input-Images:
+                - "49998"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "499068"
+            X-Ratelimit-Reset-Input-Images:
+                - 2ms
+            X-Ratelimit-Reset-Requests:
+                - 240ms
+            X-Ratelimit-Reset-Tokens:
+                - 111ms
+        status: 200 OK
+        code: 200
+        duration: 1.064s

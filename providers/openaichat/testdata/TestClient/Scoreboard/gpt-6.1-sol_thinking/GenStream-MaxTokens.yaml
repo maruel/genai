@@ -1,0 +1,139 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-sol","max_completion_tokens":16,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"store":true,"reasoning_effort":"low","service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 369
+        body: |-
+            {
+              "error": {
+                "message": "The server had an error processing your request. Sorry about that! You can retry your request, or contact us through our help center at help.openai.com if you keep seeing this error. (Please include the request ID req_72b6b0245cbf490185fd3d56f6741b1d in your email.)",
+                "type": "server_error",
+                "param": null,
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4481ed5fb09df96-YUL
+            Content-Length:
+                - "369"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "578"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "499966"
+            X-Ratelimit-Reset-Requests:
+                - 240ms
+            X-Ratelimit-Reset-Tokens:
+                - 4ms
+        status: 500 Internal Server Error
+        code: 500
+        duration: 680ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-sol","max_completion_tokens":16,"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"store":true,"reasoning_effort":"low","service_tier":"default","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-EUiheY2xjxYN2joPiJz8xCpDZdH9T","object":"chat.completion.chunk","created":1790990386,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"PmXpTYiD8eQjpRY"}
+
+            data: {"id":"chatcmpl-EUiheY2xjxYN2joPiJz8xCpDZdH9T","object":"chat.completion.chunk","created":1790990386,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"length"}],"usage":null,"obfuscation":"gxf1qrOhu"}
+
+            data: {"id":"chatcmpl-EUiheY2xjxYN2joPiJz8xCpDZdH9T","object":"chat.completion.chunk","created":1790990386,"model":"gpt-6.1-sol","service_tier":"default","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":16,"completion_tokens":16,"total_tokens":32,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":16,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"QFrgTfFC"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4481eda3f36df96-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "1476"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "497"
+            X-Ratelimit-Remaining-Tokens:
+                - "499951"
+            X-Ratelimit-Reset-Requests:
+                - 360ms
+            X-Ratelimit-Reset-Tokens:
+                - 5ms
+        status: 200 OK
+        code: 200
+        duration: 1.572s

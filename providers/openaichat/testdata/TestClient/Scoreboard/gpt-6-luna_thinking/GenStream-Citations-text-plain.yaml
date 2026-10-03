@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 342
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-luna","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"store":true,"reasoning_effort":"low","service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"fD7"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null}],"usage":null,"obfuscation":"o3"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":" capital"},"finish_reason":null}],"usage":null,"obfuscation":"CjFYfPSZGqCoW"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":" of"},"finish_reason":null}],"usage":null,"obfuscation":"I0"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":" Qu"},"finish_reason":null}],"usage":null,"obfuscation":"jb"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ack"},"finish_reason":null}],"usage":null,"obfuscation":"zP"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"iland"},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":" is"},"finish_reason":null}],"usage":null,"obfuscation":"Or"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":" Qu"},"finish_reason":null}],"usage":null,"obfuscation":"9l"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"ack"},"finish_reason":null}],"usage":null,"obfuscation":"0k"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}],"usage":null,"obfuscation":"1OIY"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"uw7b6FkfPLqdEiB"}
+
+            data: {"id":"chatcmpl-EUihNpiZxt9Tq4TYN1i816uuDPeH0","object":"chat.completion.chunk","created":1790990369,"model":"gpt-6-luna","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":35,"completion_tokens":13,"total_tokens":48,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"AmRi6CL1sdTzc"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4481e6e7ac4df96-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "379"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "494"
+            X-Ratelimit-Remaining-Tokens:
+                - "199768"
+            X-Ratelimit-Reset-Requests:
+                - 720ms
+            X-Ratelimit-Reset-Tokens:
+                - 69ms
+        status: 200 OK
+        code: 200
+        duration: 484ms

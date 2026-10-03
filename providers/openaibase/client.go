@@ -44,6 +44,9 @@ func textModelRank(id string, cheap, good bool) int {
 		return 0
 	}
 	if good {
+		if strings.HasSuffix(id, "-sol") {
+			return 3
+		}
 		if strings.HasSuffix(id, "-terra") {
 			return 2
 		}
@@ -51,6 +54,9 @@ func textModelRank(id string, cheap, good bool) int {
 			return 1
 		}
 		return 0
+	}
+	if strings.HasSuffix(id, "-astra") {
+		return 3
 	}
 	if strings.HasSuffix(id, "-sol") {
 		return 2
@@ -252,7 +258,12 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 		if rank == 0 {
 			continue
 		}
-		if selectedModel == "" || m.Created > created || m.Created == created && rank > selectedRank {
+		better := m.Created > created || m.Created == created && rank > selectedRank
+		// SOTA prefers Astra over newer Sol models; other tiers prefer recency.
+		if !cheap && !good && rank != selectedRank {
+			better = rank > selectedRank
+		}
+		if selectedModel == "" || better {
 			created = m.Created
 			selectedRank = rank
 			selectedModel = m.ID

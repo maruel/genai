@@ -29,9 +29,17 @@ func Example_all_ListModel() {
 	for name, cfg := range providers.All {
 		c, err := cfg.Factory(ctx)
 		if err != nil {
+			if c != nil {
+				if err := c.Close(); err != nil {
+					log.Printf("Close: %v", err)
+				}
+			}
 			continue
 		}
 		models, err := c.ListModels(context.Background())
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
 		if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 			continue
 		}
@@ -50,7 +58,11 @@ func Example_all_Provider() {
 	for name, cfg := range providers.All {
 		c, err := cfg.Factory(ctx, genai.ModelCheap)
 		if err != nil {
-			log.Fatal(err)
+			if c != nil {
+				err = errors.Join(err, c.Close())
+			}
+			log.Print(err)
+			return
 		}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Tell a story in 10 words."),
@@ -61,6 +73,9 @@ func Example_all_Provider() {
 			MaxTokens: 512,
 		}
 		response, err := c.GenSync(context.Background(), msgs, opts)
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
 		if err != nil {
 			fmt.Printf("- %s: %v\n", name, err)
 		} else {
@@ -90,7 +105,8 @@ func Example_all_Full() {
 
 	query := strings.Join(flag.Args(), " ")
 	if query == "" {
-		log.Fatal("provide a query")
+		log.Print("provide a query")
+		return
 	}
 	var opts []genai.ProviderOption
 	if *model != "" {
@@ -100,12 +116,21 @@ func Example_all_Full() {
 		opts = append(opts, genai.ProviderOptionRemote(*remote))
 	}
 	p, err := LoadProvider(ctx, *provider, opts...)
+	if p != nil {
+		defer func() {
+			if err := p.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
 	if err != nil {
-		log.Fatalf("failed to use provider %q: %s", *provider, err)
+		log.Printf("failed to use provider %q: %s", *provider, err)
+		return
 	}
 	fmt.Printf("%s\n", resp.String())
 }
@@ -121,6 +146,9 @@ func LoadProvider(ctx context.Context, provider string, opts ...genai.ProviderOp
 	}
 	c, err := cfg.Factory(ctx, opts...)
 	if err != nil {
+		if c != nil {
+			err = errors.Join(err, c.Close())
+		}
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
 	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
@@ -146,8 +174,16 @@ func Example_available() {
 	// Provider.
 	ctx := context.Background()
 	c, err := LoadDefaultProvider(ctx)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		return
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
 	opts := genai.GenOptionText{}

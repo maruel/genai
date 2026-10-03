@@ -19,11 +19,13 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/internaltest"
 )
 
 func TestBuildArgs(t *testing.T) {
 	t.Run("defaults", func(t *testing.T) {
 		c := &Client{model: ""}
+		internaltest.CleanupCloser(t, c)
 		args := c.buildArgs(&callOpts{}, "", false)
 		want := []string{
 			"-p",
@@ -46,7 +48,9 @@ func TestBuildArgs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		args := (&Client{}).buildArgs(&co, "", false)
+		c := &Client{}
+		internaltest.CleanupCloser(t, c)
+		args := c.buildArgs(&co, "", false)
 		if i := slices.Index(args, "--permission-mode"); i < 0 || args[i+1] != "bypassPermissions" {
 			t.Errorf("want --permission-mode bypassPermissions: %v", args)
 		}
@@ -56,6 +60,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("new_sessions_are_not_persisted", func(t *testing.T) {
 		c := &Client{}
+		internaltest.CleanupCloser(t, c)
 		args := c.buildArgs(&callOpts{}, "", false)
 		if !slices.Contains(args, "--no-session-persistence") {
 			t.Fatalf("new sessions must not be persisted: %v", args)
@@ -63,6 +68,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("new_sessions_can_enable_persistence", func(t *testing.T) {
 		c := &Client{}
+		internaltest.CleanupCloser(t, c)
 		args := c.buildArgs(&callOpts{sessionPersistence: true}, "", false)
 		if slices.Contains(args, "--no-session-persistence") {
 			t.Fatalf("new sessions must be persisted: %v", args)
@@ -70,6 +76,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("with_tools", func(t *testing.T) {
 		c := &Client{model: "sonnet"}
+		internaltest.CleanupCloser(t, c)
 		co := callOpts{tools: []string{"Bash", "Read"}, permissionMode: "bypassPermissions"}
 		args := c.buildArgs(&co, "", false)
 		check := func(flag, val string) {
@@ -86,6 +93,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("with_control_handler", func(t *testing.T) {
 		c := &Client{model: "haiku"}
+		internaltest.CleanupCloser(t, c)
 		co := callOpts{
 			tools: []string{"AskUserQuestion"},
 			controlHandler: func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error) {
@@ -111,6 +119,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("with_session_resume", func(t *testing.T) {
 		c := &Client{}
+		internaltest.CleanupCloser(t, c)
 		args := c.buildArgs(&callOpts{}, "my-session-id", false)
 		for _, a := range args {
 			if a == "--no-session-persistence" {
@@ -129,6 +138,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("streaming", func(t *testing.T) {
 		c := &Client{}
+		internaltest.CleanupCloser(t, c)
 		args := c.buildArgs(&callOpts{}, "", true)
 		if !slices.Contains(args, "--include-partial-messages") {
 			t.Error("--include-partial-messages not found in streaming args")
@@ -136,6 +146,7 @@ func TestBuildArgs(t *testing.T) {
 	})
 	t.Run("with_system_prompt", func(t *testing.T) {
 		c := &Client{}
+		internaltest.CleanupCloser(t, c)
 		co := callOpts{systemPrompt: "Be helpful"}
 		args := c.buildArgs(&co, "", false)
 		check := func(flag, val string) {

@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"maps"
@@ -19,11 +20,14 @@ import (
 	"github.com/maruel/genai/providers/typesafe"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	c, err := typesafe.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	// The state is the material to judge, the ticket and its subject. It is passed as a document with a
 	// JSON media type; text messages are accepted as is.
@@ -33,7 +37,7 @@ func main() {
 	}
 	raw, err := json.Marshal(ticket)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	// Each field is a question, the name the answer comes back under is its json tag.
 	q := struct {
@@ -74,7 +78,7 @@ func main() {
 	// typesafe.Questions, to review or tune them.
 	pretty, err := json.MarshalIndent(ticket, "", "  ")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Printf("%s:\n%s\n", "State", pretty)
 	start := time.Now()
@@ -82,11 +86,11 @@ func main() {
 		Doc: genai.Doc{Filename: "ticket.json", Src: bytes.NewReader(raw)},
 	}}}}, &genai.GenOptionText{DecodeAs: &q})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	elapsed := time.Since(start)
 	if err = res.Decode(&q); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	// The answers are typed by the question they reply to, and keep the probability of each option and
 	// each level.
@@ -102,4 +106,11 @@ func main() {
 	}
 	fmt.Printf("in: %d, out: %d, total: %d\n", res.Usage.InputTokens, res.Usage.OutputTokens, res.Usage.TotalTokens)
 	fmt.Printf("took %s\n", elapsed.Round(time.Millisecond))
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

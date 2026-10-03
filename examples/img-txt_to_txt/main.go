@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 	"os"
 
@@ -15,12 +16,15 @@ import (
 	"github.com/maruel/genai/providers/mistral"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// Most SOTA providers support vision. Notable exceptions (as of 2025-08) are cerebras and groq.
 	c, err := mistral.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	// Uses a banana picture from wikipedia directly via URL. Source: https://en.m.wikipedia.org/wiki/File:Banana-Single.jpg
 	msgs := genai.Messages{
@@ -37,6 +41,13 @@ func main() {
 	}
 	_, _ = os.Stdout.WriteString("\n")
 	if _, err = finish(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
 		log.Fatal(err)
 	}
 }

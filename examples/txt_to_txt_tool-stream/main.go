@@ -9,6 +9,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -19,13 +20,16 @@ import (
 	"github.com/maruel/genai/providers/groq"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// Some explicit chain-of-thoughts model-provider combinations only support GenSync and not GenStream.
 	// Refer to the Scoreboard().
 	c, err := groq.New(ctx, genai.ProviderOptionModel("openai/gpt-oss-120b"))
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	p := adapters.WrapReasoning(c)
 	type math struct {
@@ -85,6 +89,13 @@ func main() {
 	}
 	_, _ = os.Stdout.WriteString("\n")
 	if _, _, err := finish(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -28,6 +28,13 @@ func Example() {
 	}
 	defer func() { _ = srv.Close() }()
 	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(srv.URL()))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
 		log.Print(err)
 		return

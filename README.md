@@ -120,7 +120,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 ## Examples
 
 The following examples intentionally use a variety of providers to show the extent at which you can pick and
-chose.
+chose. Close each provider client when finished.
 
 ### Text Basic ✅
 
@@ -132,6 +132,17 @@ on Anthropic's currently published models, sends a prompt and prints the respons
 func main() {
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
@@ -157,6 +168,17 @@ round trips adding additional follow-up messages from users. Set [`OPENAI_API_KE
 func main() {
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Let's play a word association game. You pick a single word, then I pick the first word I think of, then you respond with a word, and so on.")
 	}
@@ -186,6 +208,17 @@ iterators](https://go.dev/blog/range-functions). Notice how little difference th
 func main() {
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
@@ -208,7 +241,18 @@ automatically handle explicit Chain-of-Thoughts models, generally using `<think>
 Snippet:
 
 ```go
-	c, _ := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-reasoner"))
+	c, err := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-reasoner"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
@@ -276,7 +320,18 @@ to answer your question.
 Snippet:
 
 ```go
-	c, _ := perplexity.New(ctx, genai.ModelCheap)
+	c, err := perplexity.New(ctx, genai.ModelCheap)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	msgs := genai.Messages{{
 		Requests: []genai.Request{
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
@@ -667,7 +722,18 @@ Snippet:
 
 ```go
 	// Warning: this is expensive.
-	c, _ := gemini.New(ctx, genai.ProviderOptionModel("veo-3.0-fast-generate-preview"))
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("veo-3.0-fast-generate-preview"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	f, _ := os.Open("content.jpg")
 	defer f.Close()
 	msgs := genai.Messages{
@@ -724,10 +790,21 @@ Snippet:
 
 ```go
 	// Warning: This is a bit expensive.
-	c, _ := gemini.New(ctx,
+	c, err := gemini.New(ctx,
 		genai.ProviderOptionModel("gemini-2.5-flash-image-preview"),
 		genai.ProviderOptionModalities{genai.ModalityImage, genai.ModalityText},
 	)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	// ...
 	res, _ := c.GenSync(ctx, msgs, &gemini.GenOption{ReasoningBudget: 0})
 ```
@@ -880,7 +957,18 @@ Snippet:
 	flag.Parse()
 
 	cfg := providers.All[*provider]
-	c, _ := cfg.Factory(ctx, genai.ModelGood)
+	c, err := cfg.Factory(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	p := adapters.WrapReasoning(c)
 	res, _ := p.GenSync(...)
 ```
@@ -920,18 +1008,55 @@ go run ./examples/txt_to_txt_oauth2_gemini -client-id=ID -client-secret=SECRET
 For automatic model selection, pass one of the marker constants directly:
 
 ```go
-// Automatic selection - the provider picks the best model for the tier
-c, _ := anthropic.New(ctx, genai.ModelCheap) // Cheapest model
-c, _ := anthropic.New(ctx, genai.ModelGood)  // Good everyday model (recommended)
-c, _ := anthropic.New(ctx, genai.ModelSOTA)  // State-of-the-art model
+// Use genai.ModelCheap for the cheapest model, genai.ModelGood for a good
+// everyday model, or genai.ModelSOTA for the state-of-the-art model.
+c, err := anthropic.New(ctx, genai.ModelGood)
+if c != nil {
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+}
+if err != nil {
+	log.Print(err)
+	return
+}
 ```
 
 For a specific model, wrap the model ID with `ProviderOptionModel`:
 
 ```go
 // Specific model selection
-c, _ := anthropic.New(ctx, genai.ProviderOptionModel("claude-sonnet-4-20250514"))
-c, _ := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
+c, err := anthropic.New(ctx, genai.ProviderOptionModel("claude-sonnet-4-20250514"))
+if c != nil {
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+}
+if err != nil {
+	log.Print(err)
+	return
+}
+```
+
+For Gemini, the same option selects a Gemini model:
+
+```go
+c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
+if c != nil {
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+}
+if err != nil {
+	log.Print(err)
+	return
+}
 ```
 
 

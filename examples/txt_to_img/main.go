@@ -10,6 +10,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -20,22 +21,25 @@ import (
 	"github.com/maruel/genai/providers/togetherai"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// Other options (as of 2025-08):
 	// - "gpt-image-1" from openai
 	// - "imagen-4.0-*" from gemini
 	// - pollinations
 	c, err := togetherai.New(ctx, genai.ProviderOptionModel("black-forest-labs/FLUX.1-schnell-Free"))
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Carton drawing of a husky playing on the beach."),
 	}
 	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	for i := range res.Replies {
 		r := &res.Replies[i]
@@ -48,9 +52,9 @@ func main() {
 		if r.Doc.URL != "" {
 			req, err := c.HTTPClient().Get(r.Doc.URL)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			} else if req.StatusCode != http.StatusOK {
-				log.Fatal(req.StatusCode)
+				return fmt.Errorf("unexpected HTTP status %d", req.StatusCode)
 			}
 			src = req.Body
 			defer func() { _ = req.Body.Close() }()
@@ -59,12 +63,19 @@ func main() {
 		}
 		b, err := io.ReadAll(src)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		name := r.Doc.GetFilename()
 		fmt.Printf("Wrote: %s\n", name)
 		if err = os.WriteFile(name, b, 0o644); err != nil {
-			log.Fatal(err)
+			return err
 		}
+	}
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
 	}
 }

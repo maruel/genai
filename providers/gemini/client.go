@@ -504,6 +504,11 @@ func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
 	return selectedModel, nil
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.

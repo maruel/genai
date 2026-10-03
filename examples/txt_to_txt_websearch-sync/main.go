@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -14,7 +15,7 @@ import (
 	"github.com/maruel/genai/providers/perplexity"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// Warning: this is surpringly expensive.
 	// Other options (as of 2025-09):
@@ -23,8 +24,11 @@ func main() {
 	// - groq
 	// - openai
 	c, err := perplexity.New(ctx, genai.ModelCheap)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	msgs := genai.Messages{{
@@ -37,7 +41,7 @@ func main() {
 	opts := genai.GenOptionWeb{Search: true}
 	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	for i := range res.Replies {
 		r := &res.Replies[i]
@@ -56,4 +60,11 @@ func main() {
 		}
 	}
 	fmt.Printf("\nAnswer: %s\n", res.String())
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

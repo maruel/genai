@@ -43,6 +43,9 @@ func TestClient(t *testing.T) {
 			}
 		}
 		c, err := openaicompatible.New(t.Context(), genai.ProviderOptionTransportWrapper(wrapper), genai.ProviderOptionRemote(p.chatURL), genai.ProviderOptionModel(p.model))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 	"os"
 
@@ -14,13 +15,16 @@ import (
 	"github.com/maruel/genai/providers/deepseek"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// Most SOTA providers support thinking but do not provide the full tokens.
 	// As of 2025-08, qwen-3-235b-a22b-instruct-2507 is quite solid.
 	c, err := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-reasoner"))
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
@@ -52,6 +56,13 @@ func main() {
 	}
 	_, _ = os.Stdout.WriteString("\n")
 	if _, err = finish(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
 		log.Fatal(err)
 	}
 }

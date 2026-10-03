@@ -33,6 +33,13 @@ func Example() {
 	// Connect the provider.
 	// Using small model for testing.
 	c, err := ollama.New(ctx, genai.ProviderOptionRemote(srv.URL()), genai.ProviderOptionModel("qwen2.5:0.5b"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
 		log.Print(err)
 		return

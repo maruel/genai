@@ -422,6 +422,10 @@ type mockProviderGenSync struct {
 	err       error
 }
 
+func (*mockProviderGenSync) Close() error {
+	return nil
+}
+
 func (m *mockProviderGenSync) Name() string {
 	return "mock"
 }
@@ -461,6 +465,10 @@ type mockProviderGenStream struct {
 	msgs            genai.Messages // Messages from the client
 	callIndex       int
 	err             error
+}
+
+func (*mockProviderGenStream) Close() error {
+	return nil
 }
 
 func (m *mockProviderGenStream) Name() string {

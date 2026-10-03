@@ -56,7 +56,11 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 	if fn != nil {
 		opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
 	}
-	return typesafe.New(t.Context(), opts...)
+	c, err := typesafe.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestClient(t *testing.T) {
@@ -679,6 +683,9 @@ func TestQuestionsValidate(t *testing.T) {
 
 func TestGenSyncErrors(t *testing.T) {
 	c, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey("x"), genai.ProviderOptionModel("jev-latest"))
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1285,33 +1292,47 @@ func TestScoreboard(t *testing.T) {
 
 func TestNewErrors(t *testing.T) {
 	t.Run("unsupported option", func(t *testing.T) {
-		_, err := typesafe.New(t.Context(), bogusOption{})
+		cl, err := typesafe.New(t.Context(), bogusOption{})
+		if cl != nil {
+			internaltest.CleanupCloser(t, cl)
+		}
 		if err == nil || !strings.Contains(err.Error(), "unsupported option type") {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
 	t.Run("duplicate options", func(t *testing.T) {
-		_, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey("a"), genai.ProviderOptionAPIKey("b"))
+		cl, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey("a"), genai.ProviderOptionAPIKey("b"))
+		if cl != nil {
+			internaltest.CleanupCloser(t, cl)
+		}
 		if err == nil || !strings.Contains(err.Error(), "duplicate provider option") {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
 	t.Run("invalid option", func(t *testing.T) {
-		_, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey(""))
+		cl, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey(""))
+		if cl != nil {
+			internaltest.CleanupCloser(t, cl)
+		}
 		if err == nil || !strings.Contains(err.Error(), "cannot be empty") {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
 	t.Run("modalities text", func(t *testing.T) {
-		if _, err := typesafe.New(t.Context(),
+		if cl, err := typesafe.New(t.Context(),
 			genai.ProviderOptionAPIKey("x"),
 			genai.ProviderOptionModalities{genai.ModalityText},
 		); err != nil {
 			t.Fatal(err)
+		} else {
+			internaltest.CleanupCloser(t, cl)
 		}
 	})
 	t.Run("modalities", func(t *testing.T) {
-		_, err := typesafe.New(t.Context(), genai.ProviderOptionModalities{genai.ModalityImage})
+		cl, err := typesafe.New(t.Context(), genai.ProviderOptionModalities{genai.ModalityImage})
+		if cl != nil {
+			internaltest.CleanupCloser(t, cl)
+		}
 		if err == nil || !strings.Contains(err.Error(), "only text is supported") {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -1319,6 +1340,9 @@ func TestNewErrors(t *testing.T) {
 	t.Run("missing api key", func(t *testing.T) {
 		t.Setenv("TYPESAFE_API_KEY", "")
 		c, err := typesafe.New(t.Context(), genai.ProviderOptionModel("jev-latest"))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if c == nil {
 			t.Fatal("expected a client")
 		}
@@ -1365,6 +1389,9 @@ func TestGenSyncInvalidResponse(t *testing.T) {
 				genai.ProviderOptionModel("jev-latest"),
 				genai.ProviderOptionRemote(srv.URL),
 			)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1395,6 +1422,9 @@ func TestAccessors(t *testing.T) {
 		genai.ProviderOptionModalities{genai.ModalityText},
 		genai.ModelCheap,
 	)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1415,6 +1445,9 @@ func TestAccessors(t *testing.T) {
 		genai.ProviderOptionAPIKey("x"),
 		genai.ProviderOptionPreloadedModels([]genai.Model{&typesafe.Model{Name: "jev-latest"}}),
 	)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -48,6 +48,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -79,12 +80,12 @@ const (
 	googleScope = "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/generative-language.tuning https://www.googleapis.com/auth/generative-language.retriever"
 )
 
-func main() {
+func mainImpl() (err error) {
 	clientID := flag.String("client-id", os.Getenv("GOOGLE_CLIENT_ID"), "OAuth2 client ID (or GOOGLE_CLIENT_ID env)")
 	clientSecret := flag.String("client-secret", os.Getenv("GOOGLE_CLIENT_SECRET"), "OAuth2 client secret (or GOOGLE_CLIENT_SECRET env)")
 	flag.Parse()
 	if *clientID == "" || *clientSecret == "" {
-		log.Fatal("-client-id and -client-secret are required (or set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET); use http://localhost:8080/callback as Authorized redirect URI")
+		return errors.New("-client-id and -client-secret are required (or set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET); use http://localhost:8080/callback as Authorized redirect URI")
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -92,7 +93,7 @@ func main() {
 
 	tok, err := getTokens(ctx, *clientID, *clientSecret)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	wrapper := genai.ProviderOptionTransportWrapper(func(t http.RoundTripper) http.RoundTripper {
@@ -102,17 +103,21 @@ func main() {
 		}
 	})
 	c, err := gemini.New(ctx, genai.ModelGood, wrapper)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
 	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Println(res.String())
+	return nil
 }
 
 // Token cache.
@@ -375,5 +380,11 @@ func openBrowser(u string) error {
 		return exec.Command("cmd", "/c", "start", strings.ReplaceAll(u, "&", "^&")).Start()
 	default:
 		return fmt.Errorf("unsupported platform %s", runtime.GOOS)
+	}
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
 	}
 }

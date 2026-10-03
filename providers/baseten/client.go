@@ -200,6 +200,11 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	return selected, nil
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 func (c *Client) Name() string {
 	return "baseten"

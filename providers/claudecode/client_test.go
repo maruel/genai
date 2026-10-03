@@ -32,6 +32,9 @@ func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Cli
 	rec := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -50,6 +53,9 @@ func newOutputClient(t *testing.T, output string, captureArgs *[]string, opts ..
 		}
 	}))
 	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -138,6 +144,9 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		c, err := New(t.Context())
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -182,6 +191,9 @@ func TestClient(t *testing.T) {
 				opts = append(opts, &ProviderOption{Effort: EffortMedium})
 			}
 			c, err := New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -196,7 +208,8 @@ func TestClient(t *testing.T) {
 
 	t.Run("model_markers", func(t *testing.T) {
 		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-			if _, err := New(t.Context(), m); err == nil {
+			if cl, err := New(t.Context(), m); err == nil {
+				internaltest.CleanupCloser(t, cl)
 				t.Errorf("%s: expected error", m)
 			}
 		}
@@ -280,6 +293,9 @@ func TestClient(t *testing.T) {
 				t.Skip("set CLAUDECODE_LIVE_SESSION_TEST=1 to check CLI session persistence")
 			}
 			c, err := New(t.Context(), genai.ProviderOptionModel("sonnet"), &ProviderOption{MaxBudgetUSD: 0.05, SessionPersistence: true})
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatalf("New: %v", err)
 			}
@@ -306,6 +322,9 @@ func TestClient(t *testing.T) {
 				t.Skip("set CLAUDECODE_LIVE_SESSION_TEST=1 to check a stateless CLI call")
 			}
 			c, err := New(t.Context(), genai.ProviderOptionModel("sonnet"), &ProviderOption{MaxBudgetUSD: 0.05})
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatalf("New: %v", err)
 			}

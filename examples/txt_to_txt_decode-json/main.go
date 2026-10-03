@@ -11,6 +11,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -18,12 +19,15 @@ import (
 	"github.com/maruel/genai/providers/openaichat"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// See ../../docs/MODELS.md to see which providers support this.
 	c, err := openaichat.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Is a circle round? Reply as JSON."),
@@ -34,10 +38,17 @@ func main() {
 	opts := genai.GenOptionText{DecodeAs: &circle}
 	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	if err = res.Decode(&circle); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Printf("Round: %v\n", circle.Round)
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

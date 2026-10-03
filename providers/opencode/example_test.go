@@ -17,8 +17,16 @@ import (
 
 func Example() {
 	c, err := opencode.New(context.Background(), genai.ProviderOptionModel("opencode/big-pickle"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	res, err := c.GenSync(
 		context.Background(),
@@ -26,7 +34,8 @@ func Example() {
 		&opencode.GenOption{Effort: opencode.EffortXHigh},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Println(res.Replies[0].Text)
 }

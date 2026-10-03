@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cerebras"
 )
 
@@ -276,6 +277,9 @@ func TestQueueThreshold(t *testing.T) {
 					})
 				}),
 			)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -296,7 +300,10 @@ func TestQueueThreshold(t *testing.T) {
 			}
 		})
 		t.Run("providerOptionError", func(t *testing.T) {
-			_, err := cerebras.New(t.Context(), cerebras.ProviderOptionQueueThreshold(49*time.Millisecond))
+			cl, err := cerebras.New(t.Context(), cerebras.ProviderOptionQueueThreshold(49*time.Millisecond))
+			if cl != nil {
+				internaltest.CleanupCloser(t, cl)
+			}
 			if err == nil {
 				t.Fatal("New() succeeded, want error")
 			}

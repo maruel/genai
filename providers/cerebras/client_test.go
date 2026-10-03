@@ -41,17 +41,24 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
-	return cerebras.New(t.Context(), opts...)
+	c, err := cerebras.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestNew(t *testing.T) {
 	t.Run("preferredModel", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
-			_, err := cerebras.New(t.Context(),
+			cl, err := cerebras.New(t.Context(),
 				genai.ProviderOptionAPIKey("test-key"),
 				genai.ModelGood,
 				genai.ProviderOptionPreloadedModels{&cerebras.Model{ID: "qwen-3.8-27b"}},
 			)
+			if cl != nil {
+				internaltest.CleanupCloser(t, cl)
+			}
 			if err == nil || !strings.Contains(err.Error(), `failed to find preferred model "gpt-oss-120b"`) {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -71,6 +78,9 @@ func TestNew(t *testing.T) {
 				}, nil
 			})
 		}))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -162,6 +172,9 @@ func TestClient(t *testing.T) {
 				provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fnWithLog)}, provOpts...)
 			}
 			c, err2 := cerebras.New(ctx, provOpts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err2 != nil {
 				t.Fatal(err2)
 			}

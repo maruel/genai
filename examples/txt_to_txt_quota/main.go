@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -15,19 +16,29 @@ import (
 	"github.com/maruel/genai/providers/groq"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	c, err := groq.New(ctx, genai.ProviderOptionModel("openai/gpt-oss-120b"))
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Describe poutine as a French person who just arrived in Québec"),
 	}
 	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Println(res.String())
 	fmt.Printf("\nTokens usage: %s\n", res.Usage.String())
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

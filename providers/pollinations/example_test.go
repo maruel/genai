@@ -50,12 +50,21 @@ func ExampleNew_hTTP_record() {
 	// Don't set a placeholder key for playback - leave empty to skip auth header.
 	ctx := context.Background()
 	c, err := pollinations.New(ctx, genai.ProviderOptionTransportWrapper(wrapper))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	models, err := c.ListModels(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	if len(models) > 1 {
 		fmt.Println("Found multiple models")

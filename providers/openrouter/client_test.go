@@ -32,7 +32,11 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 	if fn != nil {
 		opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
 	}
-	return openrouter.New(t.Context(), opts...)
+	c, err := openrouter.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestChatRequest(t *testing.T) {
@@ -163,6 +167,9 @@ func TestClient(t *testing.T) {
 				opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
 			}
 			c, err := openrouter.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

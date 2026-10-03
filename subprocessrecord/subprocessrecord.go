@@ -31,9 +31,27 @@ import (
 // Use Wrap as a genai.ProviderOptionStarterWrapper:
 //
 //	rec, err := subprocessrecord.New("testdata/scenario", nil)
+//	if err != nil {
+//		log.Print(err)
+//		return
+//	}
+//	defer func() {
+//		if err := rec.Stop(); err != nil {
+//			log.Print(err)
+//		}
+//	}()
+//	ctx := context.Background()
 //	opts := []genai.ProviderOption{genai.ProviderOptionStarterWrapper(rec.Wrap)}
-//	c, err := codex.New(opts...)
-//	defer rec.Stop()
+//	c, err := codex.New(ctx, opts...)
+//	if err != nil {
+//		log.Print(err)
+//		return
+//	}
+//	defer func() {
+//		if err := c.Close(); err != nil {
+//			log.Print(err)
+//		}
+//	}()
 type Recorder struct {
 	fixture  string
 	replay   bool

@@ -9,6 +9,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -18,11 +19,14 @@ import (
 	"github.com/maruel/genai/providers/cerebras"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	c, err := cerebras.New(ctx, genai.ProviderOptionModel("qwen-3-235b-a22b-instruct-2507"))
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	type numbers struct {
 		A int `json:"a"`
@@ -48,8 +52,15 @@ func main() {
 	// Run the loop.
 	res, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	// Print the answer which is the last message generated.
 	fmt.Println(res[len(res)-1].String())
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

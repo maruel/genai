@@ -151,6 +151,11 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	return "", errors.New("failed to find a model automatically")
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.

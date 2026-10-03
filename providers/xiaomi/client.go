@@ -212,6 +212,11 @@ func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
 	return "", errors.New("failed to find an audio model automatically")
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.

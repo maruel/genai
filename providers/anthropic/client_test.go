@@ -48,7 +48,11 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
-	return anthropic.New(t.Context(), opts...)
+	c, err := anthropic.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 // modelsMeta is the same as in client.go.
@@ -206,6 +210,9 @@ func TestClient(t *testing.T) {
 				popts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, popts...)
 			}
 			c, err := anthropic.New(t.Context(), popts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

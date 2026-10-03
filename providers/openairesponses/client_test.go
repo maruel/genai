@@ -39,7 +39,11 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
-	return openairesponses.New(t.Context(), opts...)
+	c, err := openairesponses.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestClient(t *testing.T) {
@@ -103,6 +107,9 @@ func TestClient(t *testing.T) {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 			}
 			c, err := openairesponses.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

@@ -193,6 +193,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	return c, err
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 func (c *Client) Name() string {
 	return "alibaba"

@@ -9,6 +9,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -17,12 +18,15 @@ import (
 	"github.com/maruel/genai/providers/openaichat"
 )
 
-func main() {
+func mainImpl() (err error) {
 	// Set up the OpenAI client
 	ctx := context.Background()
 	c, err := openaichat.New(ctx, genai.ModelCheap)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Tell the user what we're doing. We'll also use this as a prompt for the
@@ -37,7 +41,7 @@ func main() {
 		line := scanner.Text()
 		if line == "q" || line == "quit" {
 			fmt.Println("Seeya.")
-			os.Exit(0)
+			return nil
 		}
 
 		// If this is the first time we've gotten input we need to structure it with both
@@ -50,12 +54,18 @@ func main() {
 
 		res, err := c.GenSync(ctx, msgs)
 		if err != nil {
-			log.Fatal(err)
-			os.Exit(1)
+			return err
 		}
 		fmt.Printf("ChatGPT: %s\n> ", res.String())
 		// Add the response from the LLM to the set of messages so that the context continues
 		// to grow as the user continues to engage.
 		msgs = append(msgs, res.Message)
+	}
+	return scanner.Err()
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
 	}
 }

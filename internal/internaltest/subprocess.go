@@ -25,7 +25,11 @@ import (
 // Use it as a ProviderOptionStarterWrapper:
 //
 //	rec := internaltest.NewSubprocessRecorder(t, "scenario", "claude", nil)
-//	c, err := claudecode.New(genai.ProviderOptionStarterWrapper(rec.Wrap))
+//	c, err := claudecode.New(t.Context(), genai.ProviderOptionStarterWrapper(rec.Wrap))
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	internaltest.CleanupCloser(t, c)
 type SubprocessRecorder struct {
 	rec     *subprocessrecord.Recorder
 	forceRR bool // true when a fresh trace should be recorded

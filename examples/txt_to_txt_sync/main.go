@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -15,18 +16,28 @@ import (
 	"github.com/maruel/genai/providers/anthropic"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
 	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Println(res.String())
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

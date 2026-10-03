@@ -35,7 +35,11 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 	if fn != nil {
 		opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
 	}
-	return groq.New(t.Context(), opts...)
+	c, err := groq.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestNew(t *testing.T) {
@@ -50,6 +54,9 @@ func TestNew(t *testing.T) {
 					slices.Reverse(models)
 				}
 				c, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA, models)
+				if c != nil {
+					internaltest.CleanupCloser(t, c)
+				}
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -59,9 +66,12 @@ func TestNew(t *testing.T) {
 			}
 		})
 		t.Run("error", func(t *testing.T) {
-			_, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
+			cl, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
 				genai.ProviderOptionPreloadedModels{&groq.Model{ID: "openai/gpt-oss-120b"}},
 			)
+			if cl != nil {
+				internaltest.CleanupCloser(t, cl)
+			}
 			if err == nil || !strings.Contains(err.Error(), "failed to find a model automatically") {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -138,6 +148,9 @@ func TestClient(t *testing.T) {
 				opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
 			}
 			cl, err := groq.New(t.Context(), opts...)
+			if cl != nil {
+				internaltest.CleanupCloser(t, cl)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

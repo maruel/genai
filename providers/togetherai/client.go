@@ -296,6 +296,11 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	return selectedModel, nil
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.

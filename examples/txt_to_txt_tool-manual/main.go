@@ -11,6 +11,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -19,14 +20,17 @@ import (
 	"github.com/maruel/genai/providers/cerebras"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// While most provider support tool calling in theory, most fail reliability smoke tests.
 	// See ../../docs/MODELS.md for the scoreboard and each provider's Scoreboard().
 	// This is continuously improving.
 	c, err := cerebras.New(ctx, genai.ProviderOptionModel("qwen-3-235b-a22b-instruct-2507"))
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	type math struct {
 		A int `json:"a"`
@@ -50,7 +54,7 @@ func main() {
 	}
 	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Add the assistant's message to the messages list.
@@ -59,10 +63,10 @@ func main() {
 	// Process the tool call from the assistant.
 	msg, err := res.DoToolCalls(ctx, opts.Tools)
 	if err != nil {
-		log.Fatalf("Error calling tool: %v", err)
+		return fmt.Errorf("error calling tool: %w", err)
 	}
 	if msg.IsZero() {
-		log.Fatal("Expected a tool call")
+		return errors.New("expected a tool call")
 	}
 
 	// Add the tool call response to the messages list.
@@ -72,9 +76,16 @@ func main() {
 	opts.Force = genai.ToolCallNone
 	res, err = c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Print the result.
 	fmt.Println(res.String())
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

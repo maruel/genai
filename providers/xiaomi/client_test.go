@@ -72,7 +72,11 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
-	return xiaomi.New(t.Context(), opts...)
+	c, err := xiaomi.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestNew(t *testing.T) {
@@ -100,6 +104,9 @@ func TestNew(t *testing.T) {
 							slices.Reverse(models)
 						}
 						c, err := xiaomi.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), tc.pref, models)
+						if c != nil {
+							internaltest.CleanupCloser(t, c)
+						}
 						if err != nil {
 							t.Fatal(err)
 						}
@@ -125,9 +132,12 @@ func TestNew(t *testing.T) {
 			{name: "minor_overflow", id: "mimo-v2.999999999999999999999-pro"},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				_, err := xiaomi.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
+				cl, err := xiaomi.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
 					genai.ProviderOptionPreloadedModels{&xiaomi.Model{ID: tc.id}},
 				)
+				if cl != nil {
+					internaltest.CleanupCloser(t, cl)
+				}
 				if err == nil || !strings.Contains(err.Error(), "failed to find a model automatically") {
 					t.Fatalf("unexpected error: %v", err)
 				}
@@ -199,6 +209,9 @@ func TestClient(t *testing.T) {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 			}
 			c, err := xiaomi.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

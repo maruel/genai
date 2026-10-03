@@ -41,6 +41,9 @@ func TestClient(t *testing.T) {
 
 	t.Run("Capabilities", func(t *testing.T) {
 		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(s.lazyStart(t)))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -72,6 +75,9 @@ func TestClient(t *testing.T) {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
 			c, err := ollama.New(ctx, opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -97,7 +103,11 @@ func TestClient(t *testing.T) {
 			if model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model))
 			}
-			return ollama.New(st.Context(), opts...)
+			c, err := ollama.New(st.Context(), opts...)
+			if err == nil {
+				internaltest.CleanupCloser(st, c)
+			}
+			return c, err
 		})
 	})
 
@@ -111,6 +121,9 @@ func TestClient(t *testing.T) {
 				}),
 			}
 			c, err := ollama.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -146,7 +159,11 @@ func TestClient(t *testing.T) {
 				serverURL = s.lazyStart(t)
 			}
 			opts = append(opts, genai.ProviderOptionRemote(serverURL), genai.ProviderOptionTransportWrapper(wrapper))
-			return ollama.New(t.Context(), opts...)
+			c, err := ollama.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
+			return c, err
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

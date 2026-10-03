@@ -428,3 +428,12 @@ func (tw *WriterToLog) Write(p []byte) (n int, err error) {
 }
 
 var superVerbose = flag.Bool("superv", false, "super verbose; enables internaltest.Log() to log more")
+
+// CleanupCloser registers c to be closed at the end of the test and reports any error.
+func CleanupCloser(t testing.TB, c io.Closer) {
+	t.Cleanup(func() {
+		if err := c.Close(); err != nil {
+			t.Errorf("Close: %v", err)
+		}
+	})
+}

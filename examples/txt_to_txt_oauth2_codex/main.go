@@ -23,6 +23,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -51,13 +52,13 @@ const (
 	openAIScopes = "openid profile email offline_access api.connectors.read api.connectors.invoke"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
 	tok, err := getTokens(ctx)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// The ChatGPT backend requires the ChatGPT-Account-ID header alongside
@@ -77,8 +78,11 @@ func main() {
 		}))
 	}
 	c, err := openairesponses.New(ctx, opts...)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
@@ -91,8 +95,9 @@ func main() {
 	}
 	fmt.Println()
 	if _, err := usage(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 // Token cache.
@@ -420,5 +425,11 @@ func openBrowser(u string) error {
 		return exec.Command("cmd", "/c", "start", strings.ReplaceAll(u, "&", "^&")).Start()
 	default:
 		return fmt.Errorf("unsupported platform %s", runtime.GOOS)
+	}
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
 	}
 }

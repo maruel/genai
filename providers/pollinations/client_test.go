@@ -57,7 +57,11 @@ func getClientInner(t *testing.T, opts *providerOptions, fn func(http.RoundTripp
 	if fn != nil {
 		provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, provOpts...)
 	}
-	return pollinations.New(t.Context(), provOpts...)
+	c, err := pollinations.New(t.Context(), provOpts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestImageModelsResponse(t *testing.T) {
@@ -185,6 +189,9 @@ func TestClient(t *testing.T) {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 			}
 			c, err := pollinations.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -242,9 +249,13 @@ func TestClient(t *testing.T) {
 			if !hasModalities(opts) {
 				opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
 			}
-			return pollinations.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			c, err := pollinations.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			})}, opts...)...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
+			return c, err
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

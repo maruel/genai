@@ -11,6 +11,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/internaltest"
 )
 
 func TestResponse(t *testing.T) {
@@ -90,7 +91,9 @@ func TestPrepareDelta(t *testing.T) {
 		}}},
 	}
 
-	got, respID := (&Client{}).prepareDelta(msgs, nil)
+	c := &Client{}
+	internaltest.CleanupCloser(t, c)
+	got, respID := c.prepareDelta(msgs, nil)
 	if respID != "resp_123" {
 		t.Errorf("response ID = %q, want %q", respID, "resp_123")
 	}

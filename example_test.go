@@ -31,12 +31,21 @@ func ExampleProvider_genSync_vision() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	bananaJpg, err := os.ReadFile("internal/internaltest/testdata/banana.jpg")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		{
@@ -48,7 +57,8 @@ func ExampleProvider_genSync_vision() {
 	}
 	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Banana: %v\n", resp.String())
 	// This would Output: Banana: yes
@@ -61,8 +71,16 @@ func ExampleClient_GenSync_jSON() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
-	if err == nil {
-		log.Fatal(err)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
@@ -70,11 +88,13 @@ func ExampleClient_GenSync_jSON() {
 	opts := genai.GenOptionText{ReplyAsJSON: true}
 	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	got := map[string]any{}
 	if err := resp.Decode(&got); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Round: %v\n", got["round"])
 	// This would Output: Round: true
@@ -87,8 +107,16 @@ func ExampleClient_GenSync_jSON_schema() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
-	if err == nil {
-		log.Fatal(err)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Is a circle round? Reply as JSON."),
@@ -99,10 +127,12 @@ func ExampleClient_GenSync_jSON_schema() {
 	opts := genai.GenOptionText{DecodeAs: got}
 	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	if err := resp.Decode(&got); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Round: %v\n", got.Round)
 	// This would Output: Round: true
@@ -116,8 +146,16 @@ func ExampleClient_GenSync_jSON_schema_raw() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
-	if err == nil {
-		log.Fatal(err)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Is a circle round? Reply as JSON."),
@@ -132,13 +170,15 @@ func ExampleClient_GenSync_jSON_schema_raw() {
 	opts := genai.GenOptionText{DecodeAs: schema}
 	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	var got struct {
 		Round bool `json:"round"`
 	}
 	if err := resp.Decode(&got); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Round: %v\n", got.Round)
 	// This would Output: Round: true
@@ -151,12 +191,21 @@ func ExampleProvider_genSync_pdf() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	f, err := os.Open("internal/internaltest/testdata/hidden_word.pdf")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer func() { _ = f.Close() }()
 	msgs := genai.Messages{
@@ -169,7 +218,8 @@ func ExampleProvider_genSync_pdf() {
 	}
 	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.String()))
 	// This would Output: Hidden word in PDF: orange
@@ -182,12 +232,21 @@ func ExampleProvider_genSync_audio() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	f, err := os.Open("internal/internaltest/testdata/mystery_word.mp3")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer func() { _ = f.Close() }()
 	msgs := genai.Messages{
@@ -200,7 +259,8 @@ func ExampleProvider_genSync_audio() {
 	}
 	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Heard: %v\n", strings.TrimRight(strings.ToLower(resp.String()), "."))
 	// This would Output: Heard: orange
@@ -213,12 +273,21 @@ func ExampleProvider_genSync_video() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	f, err := os.Open("internal/internaltest/testdata/animation.mp4")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	defer func() { _ = f.Close() }()
 	// TogetherAI seems to require separate messages for text and images.
@@ -228,7 +297,8 @@ func ExampleProvider_genSync_video() {
 	}
 	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Saw: %v\n", strings.ToLower(resp.String()))
 	// This would Output: Saw: banana
@@ -241,8 +311,16 @@ func ExampleProvider_GenStream() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Use only one word."),
@@ -255,7 +333,8 @@ func ExampleProvider_GenStream() {
 		_, _ = os.Stdout.WriteString(f.Text)
 	}
 	if _, err := finish(); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	// This would Output: Response: hello
 }
@@ -273,8 +352,16 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 	}
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, genai.ProviderOptionModel("claude-sonnet-4-20250514"), genai.ProviderOptionTransportWrapper(wrapper))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season is Montréal currently in?")}
 	opts := genai.GenOptionTools{
@@ -284,7 +371,8 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 	}
 	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].String())
 }

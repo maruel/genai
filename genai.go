@@ -39,6 +39,9 @@ import (
 //
 // The rest is supported by a limited number of providers.
 type Provider interface {
+	// Close releases resources held by the provider.
+	io.Closer
+
 	// Name returns the name of the provider.
 	Name() string
 	// ModelID returns the model currently used by the provider. It can be an empty string.

@@ -20,6 +20,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/websocketrecord"
 )
 
@@ -89,12 +90,14 @@ func TestWSRequest(t *testing.T) {
 }
 
 func TestWebSocketConn(t *testing.T) {
-	newClient := func(model string) *Client {
-		return &Client{
+	newClient := func(t *testing.T, model string) *Client {
+		c := &Client{
 			impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
 				ProviderBase: base.ProviderBase[*ErrorResponse]{Model: model},
 			},
 		}
+		internaltest.CleanupCloser(t, c)
+		return c
 	}
 
 	t.Run("Smoke", func(t *testing.T) {
@@ -294,7 +297,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient("gpt-5.6-luna")}
+		w := &WebSocketConn{client: newClient(t, "gpt-5.6-luna")}
 		msgs := genai.Messages{genai.NewTextMessage("Hello")}
 		req, err := w.buildRequest(msgs)
 		if err != nil {
@@ -312,7 +315,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest_with_meta", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient("gpt-5.6-luna")}
+		w := &WebSocketConn{client: newClient(t, "gpt-5.6-luna")}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Hello"),
 			{Replies: []genai.Reply{
@@ -338,7 +341,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest_user_override", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient("gpt-5.6-luna")}
+		w := &WebSocketConn{client: newClient(t, "gpt-5.6-luna")}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Hello"),
 			{Replies: []genai.Reply{{Opaque: map[string]any{
@@ -357,7 +360,9 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("name", func(t *testing.T) {
-		w := &WebSocketConn{client: &Client{}}
+		c := &Client{}
+		internaltest.CleanupCloser(t, c)
+		w := &WebSocketConn{client: c}
 		if got := w.Name(); got != "openairesponses" {
 			t.Errorf("Name() = %q, want %q", got, "openairesponses")
 		}
@@ -383,6 +388,7 @@ func TestWebSocketConn(t *testing.T) {
 
 	t.Run("http_client", func(t *testing.T) {
 		c := &Client{}
+		internaltest.CleanupCloser(t, c)
 		w := &WebSocketConn{client: c}
 		if got, want := w.HTTPClient(), c.HTTPClient(); got != want {
 			t.Errorf("HTTPClient() = %v, want %v", got, want)
@@ -399,7 +405,11 @@ func makeTestClient(t *testing.T, model string) (*Client, error) {
 		genai.ProviderOptionAPIKey(apiKey),
 		genai.ProviderOptionModel(model),
 	}
-	return New(t.Context(), opts...)
+	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 // buildWSConfig creates a websocket.Config for the OpenAI Responses API,

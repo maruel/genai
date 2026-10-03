@@ -32,6 +32,9 @@ func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Cli
 	rec := internaltest.NewSubprocessRecorder(t, name, "opencode", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -47,6 +50,9 @@ func newOutputClient(t *testing.T, output string, opts ...genai.ProviderOption) 
 		}
 	}))
 	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -102,6 +108,9 @@ func TestClient(t *testing.T) {
 				}
 			}
 			c, err := New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -112,7 +121,8 @@ func TestClient(t *testing.T) {
 
 	t.Run("model_markers", func(t *testing.T) {
 		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-			if _, err := New(t.Context(), m); err == nil {
+			if cl, err := New(t.Context(), m); err == nil {
+				internaltest.CleanupCloser(t, cl)
 				t.Errorf("%s: expected error", m)
 			}
 		}

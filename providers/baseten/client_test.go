@@ -39,7 +39,11 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
-	return baseten.New(t.Context(), opts...)
+	c, err := baseten.New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
+	return c, err
 }
 
 func TestClient(t *testing.T) {
@@ -113,6 +117,9 @@ func TestClient(t *testing.T) {
 				provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, provOpts...)
 			}
 			c, err2 := baseten.New(t.Context(), provOpts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err2 != nil {
 				t.Fatal(err2)
 			}
@@ -248,6 +255,9 @@ func TestGenOption(t *testing.T) {
 				&baseten.Model{ID: model, SupportedFeatures: []string{"reasoning"}},
 			},
 		)
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}

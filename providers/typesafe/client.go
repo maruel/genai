@@ -154,6 +154,11 @@ func (c *Client) selectBestModel(preference string) string {
 	return "jev-latest"
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.

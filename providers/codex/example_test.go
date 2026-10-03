@@ -17,13 +17,22 @@ import (
 
 func Example() {
 	c, err := codex.New(context.Background(), genai.ProviderOptionModel("gpt-5.6-terra"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Say hello")}
 	res, err := c.GenSync(context.Background(), msgs, &codex.GenOption{Effort: codex.ReasoningEffortHigh})
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Println(res.Replies[0].Text)
 }

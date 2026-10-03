@@ -26,8 +26,16 @@ func ExampleGenSyncWithToolCallLoop() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
 	opts := genai.GenOptionTools{
@@ -39,7 +47,8 @@ func ExampleGenSyncWithToolCallLoop() {
 	}
 	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].String())
 }
@@ -52,8 +61,16 @@ func ExampleGenStreamWithToolCallLoop() {
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
 	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
 	opts := genai.GenOptionTools{
@@ -68,7 +85,8 @@ func ExampleGenStreamWithToolCallLoop() {
 		_, _ = os.Stdout.WriteString(f.Text)
 	}
 	if _, _, err = finish(); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 }
 

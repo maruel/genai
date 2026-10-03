@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -47,7 +48,7 @@ func run(ctx context.Context, c genai.Provider) {
 	}
 }
 
-func main() {
+func mainImpl() error {
 	ctx := context.Background()
 	// Providers supporting logprobs (2025-09):
 	supported := []string{
@@ -57,19 +58,26 @@ func main() {
 		"gemini",
 		"huggingface",
 	}
-	seen := false
 	for _, name := range supported {
 		cfg := providers.All[name]
-		if c, err := cfg.Factory(ctx, genai.ModelGood); err == nil {
-			if seen {
-				fmt.Printf("\n")
+		c, err := cfg.Factory(ctx, genai.ModelGood)
+		if err != nil {
+			if c != nil {
+				if err := c.Close(); err != nil {
+					return err
+				}
 			}
-			seen = true
-			run(ctx, c)
-			break
+			continue
 		}
+		run(ctx, c)
+		return c.Close()
 	}
-	if !seen {
-		fmt.Printf("No supported provider found\n")
+	fmt.Printf("No supported provider found\n")
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
 	}
 }

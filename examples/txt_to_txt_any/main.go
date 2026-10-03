@@ -26,7 +26,7 @@ import (
 	"github.com/maruel/genai/providers"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	names := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
 	if names == "" {
@@ -39,7 +39,7 @@ func main() {
 
 	query := strings.Join(flag.Args(), " ")
 	if query == "" {
-		log.Fatal("provide a query")
+		return errors.New("provide a query")
 	}
 	var opts []genai.ProviderOption
 	if *model == "" {
@@ -51,14 +51,18 @@ func main() {
 		opts = append(opts, genai.ProviderOptionRemote(*remote))
 	}
 	p, err := LoadProvider(ctx, *provider, opts...)
+	if p != nil {
+		defer func() { err = errors.Join(err, p.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	res, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
 	if err != nil {
-		log.Fatalf("failed to use provider %q: %s", *provider, err)
+		return fmt.Errorf("failed to use provider %q: %w", *provider, err)
 	}
 	fmt.Printf("%s\n", res.String())
+	return nil
 }
 
 // LoadProvider loads a provider.
@@ -72,8 +76,17 @@ func LoadProvider(ctx context.Context, provider string, opts ...genai.ProviderOp
 	}
 	c, err := cfg.Factory(ctx, opts...)
 	if err != nil {
+		if c != nil {
+			err = errors.Join(err, c.Close())
+		}
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
 	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
 	return adapters.WrapReasoning(c), nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

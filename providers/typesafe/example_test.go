@@ -56,8 +56,16 @@ func ExampleNew_hTTP_record() {
 		genai.ProviderOptionModel("jev-latest"),
 		genai.ProviderOptionTransportWrapper(wrapper),
 	}, opts...)...)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 
 	// Ask three different kinds of questions about the same state. Each field is a question, the name the
@@ -87,11 +95,13 @@ func ExampleNew_hTTP_record() {
 	}
 	res, err := c.GenSync(ctx, genai.Messages{genai.NewTextMessage("I was charged twice for order A-104, please refund the duplicate.")}, &genai.GenOptionText{DecodeAs: &q})
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	// The same struct holds the answers.
 	if err = res.Decode(&q); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	// Every answer keeps the confidence and the probability of each option or level.
 	fmt.Printf("billing: %.2f likely to be a yes\n", q.Billing.Probability)
@@ -127,11 +137,13 @@ func ExampleQuestionsFrom() {
 	q.Tone.Criteria = map[string]typesafe.Content{"calm": nil, "angry": nil}
 	questions, err := typesafe.QuestionsFrom(&q)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	raw, err := json.MarshalIndent(questions, "", "  ")
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("%s\n", raw)
 	// Output:

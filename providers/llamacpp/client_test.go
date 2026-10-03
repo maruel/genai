@@ -54,6 +54,9 @@ func TestClient(t *testing.T) {
 				Transport: h,
 			})
 		}), genai.ProviderOptionRemote(s.lazyStart(t)))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -84,6 +87,9 @@ func TestClient(t *testing.T) {
 				})}, opts...)
 			}
 			c2, err2 := llamacpp.New(ctx, opts...)
+			if c2 != nil {
+				internaltest.CleanupCloser(t, c2)
+			}
 			if err2 != nil {
 				t.Fatal(err2)
 			}
@@ -117,6 +123,9 @@ func TestClient(t *testing.T) {
 					Transport: h,
 				})
 			}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ModelCheap)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -132,6 +141,9 @@ func TestClient(t *testing.T) {
 				Transport: h,
 			})
 		}), genai.ProviderOptionRemote(s.lazyStart(t)))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -153,6 +165,9 @@ func TestClient(t *testing.T) {
 				Transport: h,
 			})
 		}), genai.ProviderOptionRemote(s.lazyStart(t)))
+		if c != nil {
+			internaltest.CleanupCloser(t, c)
+		}
 		if err != nil {
 			t.Fatal(err)
 		}

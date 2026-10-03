@@ -168,6 +168,11 @@ func (c *Client) selectBestTextModel(preference string) string {
 	}
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 func (c *Client) Name() string {
 	return "openrouter"

@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -16,13 +17,16 @@ import (
 	"github.com/maruel/genai/providers/cohere"
 )
 
-func main() {
+func mainImpl() (err error) {
 	ctx := context.Background()
 	// Other options (as of 2025-08):
 	// - anthropic
 	c, err := cohere.New(ctx, genai.ModelGood)
+	if c != nil {
+		defer func() { err = errors.Join(err, c.Close()) }()
+	}
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Source: On the Origin of Species by Charles Darwin
@@ -53,7 +57,7 @@ been hasty in coming to a decision.
 	}}
 	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	for i := range res.Replies {
 		if !res.Replies[i].Citation.IsZero() {
@@ -64,4 +68,11 @@ been hasty in coming to a decision.
 		}
 	}
 	fmt.Printf("\nAnswer: %s\n", res.String())
+	return nil
+}
+
+func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
 }

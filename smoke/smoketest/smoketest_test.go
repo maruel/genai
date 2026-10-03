@@ -62,6 +62,10 @@ type scoreboardProvider struct {
 	base.NotImplemented
 }
 
+func (*scoreboardProvider) Close() error {
+	return nil
+}
+
 func (s *scoreboardProvider) Name() string {
 	return "scoreboard"
 }

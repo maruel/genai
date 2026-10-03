@@ -32,8 +32,16 @@ func ExampleNew_mCP_client() {
 	}
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, genai.ProviderOptionTransportWrapper(wrapper))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 
 	msgs := genai.Messages{
@@ -42,7 +50,8 @@ func ExampleNew_mCP_client() {
 	// Use raw calls to use the MCP client. It is not yet generalized in genai.
 	in := anthropic.ChatRequest{}
 	if err = in.Init(msgs, c.ModelID()); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	// Use an echo MCP server for testing purposes.
 	in.MCPServers = []anthropic.MCPServer{
@@ -56,11 +65,13 @@ func ExampleNew_mCP_client() {
 	}
 	out := anthropic.ChatResponse{}
 	if err = c.GenSyncRaw(ctx, &in, &out); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	res, err := out.ToResult()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	fmt.Printf("Reply: %s\n", res.String())
 }
@@ -98,12 +109,21 @@ func ExampleNew_hTTP_record() {
 	}
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(wrapper)}, opts...)...)
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	models, err := c.ListModels(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return
 	}
 	if len(models) > 1 {
 		fmt.Println("Found multiple models")

@@ -35,6 +35,9 @@ func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Cli
 	rec := internaltest.NewSubprocessRecorder(t, name, "agy", nil)
 	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
@@ -55,6 +58,9 @@ func newOutputClient(t *testing.T, output string, args *[]string, opts ...genai.
 		}
 	}))
 	c, err := New(t.Context(), opts...)
+	if c != nil {
+		internaltest.CleanupCloser(t, c)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -116,6 +122,9 @@ func TestClient(t *testing.T) {
 				}
 			}
 			c, err := New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -217,7 +226,8 @@ func TestNew(t *testing.T) {
 			genai.ModelGood,
 			genai.ModelSOTA,
 		} {
-			if _, err := New(t.Context(), opt); err == nil {
+			if cl, err := New(t.Context(), opt); err == nil {
+				internaltest.CleanupCloser(t, cl)
 				t.Errorf("%v: expected error", opt)
 			}
 		}

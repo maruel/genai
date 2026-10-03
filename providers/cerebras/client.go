@@ -257,6 +257,11 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	return "", fmt.Errorf("failed to find preferred model %q", model)
 }
 
+// Close implements io.Closer. It currently does nothing.
+func (c *Client) Close() error {
+	return nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.

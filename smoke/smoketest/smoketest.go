@@ -46,7 +46,9 @@ import (
 	"github.com/maruel/genai/smoke"
 )
 
-// ProviderFactory is the client to assert the scoreboard. It will have the HTTP requests recorded.
+// ProviderFactory creates a client to assert the scoreboard with recorded HTTP requests.
+//
+// The factory must register client cleanup with t.
 type ProviderFactory func(t testing.TB, m scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
 var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")

@@ -9,8 +9,10 @@ package providers
 
 import (
 	"context"
+	"sync"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers/alibaba"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/antigravity"
@@ -350,17 +352,33 @@ var All = map[string]Config{
 }
 
 // Available returns the factories that are valid.
+//
+// It probes all factories concurrently and closes each probe client before
+// returning. Close errors are logged and do not affect availability.
 func Available(ctx context.Context) map[string]Config {
+	var mu sync.Mutex
 	avail := map[string]Config{}
+	var wg sync.WaitGroup
 	for name, cfg := range All {
-		if c, err := cfg.Factory(ctx); err == nil {
-			if p, ok := c.(genai.ProviderPing); ok {
-				if err = p.Ping(ctx); err != nil {
-					continue
+		wg.Go(func() {
+			c, err := cfg.Factory(ctx)
+			if err == nil {
+				if p, ok := c.(genai.ProviderPing); ok {
+					err = p.Ping(ctx)
+				}
+				if err == nil {
+					mu.Lock()
+					avail[name] = cfg
+					mu.Unlock()
 				}
 			}
-			avail[name] = cfg
-		}
+			if c != nil {
+				if err := c.Close(); err != nil {
+					internal.Logger(ctx).WarnContext(ctx, "Failed to close availability probe", "provider", name, "err", err)
+				}
+			}
+		})
 	}
+	wg.Wait()
 	return avail
 }

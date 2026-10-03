@@ -7,11 +7,14 @@
 package base
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 )
 
 func TestCheckDuplicateGenOptions(t *testing.T) {
@@ -321,4 +324,94 @@ func TestDurationSAsDuration(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestUnknown(t *testing.T) {
+	old := internal.BeLenient
+	t.Cleanup(func() { internal.BeLenient = old })
+	for _, lenient := range []bool{false, true} {
+		t.Run(fmt.Sprintf("lenient=%t", lenient), func(t *testing.T) {
+			internal.BeLenient = lenient
+			for _, tc := range []struct {
+				name  string
+				value string
+				empty bool
+			}{
+				{"null", "null", true},
+				{"object", "{}", true},
+				{"whitespace", " { \n\t } ", true},
+				{"populated_object", `{"new":1}`, false},
+				{"array", "[]", false},
+				{"string", `""`, false},
+				{"number", "0", false},
+				{"boolean", "false", false},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					var u Unknown
+					defer func() {
+						v := recover()
+						if want := !lenient && !tc.empty; (v != nil) != want {
+							t.Fatalf("panic = %v, want panic %t", v, want)
+						}
+					}()
+					b := []byte(tc.value)
+					if err := json.Unmarshal(b, &u); err != nil {
+						t.Fatal(err)
+					}
+					want := string(bytes.TrimSpace(b))
+					if want == "null" {
+						want = ""
+					}
+					b[0] = 'x'
+					if string(u) != want {
+						t.Fatalf("value = %s, want %s", u, want)
+					}
+					out, err := json.Marshal(u)
+					if err != nil {
+						t.Fatal(err)
+					}
+					var compact bytes.Buffer
+					if err := json.Compact(&compact, []byte(tc.value)); err != nil {
+						t.Fatal(err)
+					}
+					if string(out) != compact.String() {
+						t.Fatalf("round trip = %s, want %s", out, compact.String())
+					}
+				})
+			}
+		})
+	}
+	t.Run("null_resets", func(t *testing.T) {
+		for _, lenient := range []bool{false, true} {
+			internal.BeLenient = lenient
+			u := Unknown(`{"previous":true}`)
+			if err := json.Unmarshal([]byte("null"), &u); err != nil {
+				t.Fatal(err)
+			}
+			if u != nil {
+				t.Fatalf("null = %s, want nil", u)
+			}
+			b, err := json.Marshal(struct {
+				Value Unknown `json:"value,omitzero"`
+			}{u})
+			if err != nil || string(b) != "{}" {
+				t.Fatalf("omitted null = %s, %v", b, err)
+			}
+		}
+	})
+	t.Run("marshal", func(t *testing.T) {
+		b, err := json.Marshal(Unknown(nil))
+		if err != nil || string(b) != "null" {
+			t.Fatalf("nil = %s, %v", b, err)
+		}
+		if _, err := json.Marshal(Unknown("invalid")); err == nil {
+			t.Fatal("expected invalid JSON error")
+		}
+		b, err = json.Marshal(struct {
+			Value Unknown `json:"value,omitzero"`
+		}{})
+		if err != nil || string(b) != "{}" {
+			t.Fatalf("omitted = %s, %v", b, err)
+		}
+	})
 }

@@ -522,7 +522,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					continue
 				}
 				// Check for streaming errors.
-				if len(pkt.Choices[0].Error) != 0 && string(pkt.Choices[0].Error) != "null" {
+				if pkt.Choices[0].Error != "" {
 					finalErr = fmt.Errorf("streaming error: %s", pkt.Choices[0].Error)
 					return
 				}

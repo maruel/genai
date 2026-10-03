@@ -425,10 +425,10 @@ type ChatResponse struct {
 	SystemFingerprint string `json:"system_fingerprint"`
 	RequestID         string `json:"request_id"` // DashScope-specific
 	Choices           []struct {
-		FinishReason FinishReason    `json:"finish_reason"`
-		Index        int64           `json:"index"`
-		Message      Message         `json:"message"`
-		Logprobs     json.RawMessage `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Message      Message      `json:"message"`
+		Logprobs     base.Unknown `json:"logprobs"`
 	} `json:"choices"`
 	Created int64  `json:"created"`
 	Model   string `json:"model"`
@@ -510,10 +510,10 @@ type ChatStreamChunkResponse struct {
 	Created           int64  `json:"created"`    // Unix timestamp
 	Model             string `json:"model"`
 	Choices           []struct {
-		Index        int64           `json:"index"`
-		Delta        Message         `json:"delta"`
-		Logprobs     json.RawMessage `json:"logprobs"`
-		FinishReason FinishReason    `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Delta        Message      `json:"delta"`
+		Logprobs     base.Unknown `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }

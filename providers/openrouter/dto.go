@@ -741,18 +741,18 @@ type Model struct {
 		MaxCompletionTokens int64 `json:"max_completion_tokens"`
 		IsModerated         bool  `json:"is_moderated"`
 	} `json:"top_provider"`
-	HuggingFaceID       string                     `json:"hugging_face_id,omitzero"`
-	PerRequestLimits    map[string]json.RawMessage `json:"per_request_limits"`
-	SupportedParameters []string                   `json:"supported_parameters"`
-	DefaultParameters   ModelDefaultParameters     `json:"default_parameters"`
-	Reasoning           ModelReasoning             `json:"reasoning,omitzero"`
-	Benchmarks          ModelBenchmarks            `json:"benchmarks,omitzero"`
-	CanonicalSlug       string                     `json:"canonical_slug"`
-	AliasTarget         ModelAliasTarget           `json:"alias_target,omitzero"`
-	KnowledgeCutoff     string                     `json:"knowledge_cutoff,omitzero"`
-	ExpirationDate      string                     `json:"expiration_date"`
-	Links               ModelLinks                 `json:"links,omitzero"` // Provider-specific links
-	SupportedVoices     []string                   `json:"supported_voices,omitzero"`
+	HuggingFaceID       string                  `json:"hugging_face_id,omitzero"`
+	PerRequestLimits    map[string]base.Unknown `json:"per_request_limits"`
+	SupportedParameters []string                `json:"supported_parameters"`
+	DefaultParameters   ModelDefaultParameters  `json:"default_parameters"`
+	Reasoning           ModelReasoning          `json:"reasoning,omitzero"`
+	Benchmarks          ModelBenchmarks         `json:"benchmarks,omitzero"`
+	CanonicalSlug       string                  `json:"canonical_slug"`
+	AliasTarget         ModelAliasTarget        `json:"alias_target,omitzero"`
+	KnowledgeCutoff     string                  `json:"knowledge_cutoff,omitzero"`
+	ExpirationDate      string                  `json:"expiration_date"`
+	Links               ModelLinks              `json:"links,omitzero"` // Provider-specific links
+	SupportedVoices     []string                `json:"supported_voices,omitzero"`
 }
 
 // GetID implements genai.Model.

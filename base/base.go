@@ -32,6 +32,34 @@ import (
 	"github.com/maruel/genai/internal/sse"
 )
 
+// Unknown preserves JSON for a provider field whose structure is not yet implemented.
+//
+// When internal.BeLenient is false, decoding panics unless the value is null or
+// an empty object. This makes populated placeholder fields visible in tests.
+// JSON null resets the value to nil without allocating.
+// Fields that intentionally accept arbitrary JSON should use json.RawMessage instead.
+type Unknown json.RawMessage
+
+// MarshalJSON implements json.Marshaler, preserving the raw JSON value.
+func (u Unknown) MarshalJSON() ([]byte, error) {
+	return json.RawMessage(u).MarshalJSON()
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (u *Unknown) UnmarshalJSON(b []byte) error {
+	v := bytes.TrimSpace(b)
+	if bytes.Equal(v, []byte("null")) {
+		*u = nil
+		return nil
+	}
+	if !internal.BeLenient {
+		if len(v) < 2 || v[0] != '{' || v[len(v)-1] != '}' || len(bytes.TrimSpace(v[1:len(v)-1])) != 0 {
+			panic(fmt.Sprintf("base.Unknown: unimplemented JSON value: %s", b))
+		}
+	}
+	return (*json.RawMessage)(u).UnmarshalJSON(b)
+}
+
 // DefaultTransport integrates HTTP retries.
 //
 // It uses a quite long retry count. If latency matters for you, you may want to use a shorter retry policy.

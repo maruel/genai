@@ -25,6 +25,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/maruel/genai/base"
 )
 
 // ============================================================
@@ -926,9 +928,9 @@ type TurnStartEvent struct {
 
 // TurnEndEvent is emitted when a turn finishes.
 type TurnEndEvent struct {
-	Type        EventType         `json:"type"`
-	Message     AgentMessage      `json:"message"`
-	ToolResults []json.RawMessage `json:"toolResults,omitzero"`
+	Type        EventType      `json:"type"`
+	Message     AgentMessage   `json:"message"`
+	ToolResults []AgentMessage `json:"toolResults,omitzero"`
 }
 
 // MessageStartEvent is emitted when a message begins.
@@ -1064,39 +1066,39 @@ type ExtensionUIRequest struct {
 // AgentMessage is the union of Pi AI messages and coding-agent custom messages.
 // We only care about assistant messages for building genai.Result.
 type AgentMessage struct {
-	Role                  Role              `json:"role"`
-	Content               ContentBlocks     `json:"content,omitzero"`
-	API                   string            `json:"api,omitzero"`
-	Provider              string            `json:"provider,omitzero"`
-	Model                 string            `json:"model,omitzero"`
-	ResponseModel         string            `json:"responseModel,omitzero"`
-	ResponseID            string            `json:"responseId,omitzero"`
-	ProviderThinkingLevel string            `json:"providerThinkingLevel,omitzero"`
-	Diagnostics           []json.RawMessage `json:"diagnostics,omitzero"`
-	Usage                 MessageUsage      `json:"usage,omitzero"`
-	StopReason            StopReason        `json:"stopReason,omitzero"`
-	Deferred              *DeferredHandle   `json:"deferred,omitzero"`
-	ErrorMessage          string            `json:"errorMessage,omitzero"`
-	RawStopReason         string            `json:"rawStopReason,omitzero"`
-	EndTurn               bool              `json:"endTurn,omitzero"`
-	Timestamp             float64           `json:"timestamp,omitzero"`
-	ToolCallID            string            `json:"toolCallId,omitzero"`
-	ToolName              string            `json:"toolName,omitzero"`
-	Details               json.RawMessage   `json:"details,omitzero"`
-	AddedToolNames        []string          `json:"addedToolNames,omitzero"`
-	IsError               bool              `json:"isError,omitzero"`
-	CustomType            string            `json:"customType,omitzero"`
-	Display               bool              `json:"display,omitzero"`
-	Command               string            `json:"command,omitzero"`
-	Output                string            `json:"output,omitzero"`
-	ExitCode              int               `json:"exitCode,omitzero"`
-	Cancelled             bool              `json:"cancelled,omitzero"`
-	Truncated             bool              `json:"truncated,omitzero"`
-	FullOutputPath        string            `json:"fullOutputPath,omitzero"`
-	ExcludeFromContext    bool              `json:"excludeFromContext,omitzero"`
-	Summary               string            `json:"summary,omitzero"`
-	FromID                string            `json:"fromId,omitzero"`
-	TokensBefore          int64             `json:"tokensBefore,omitzero"`
+	Role                  Role            `json:"role"`
+	Content               ContentBlocks   `json:"content,omitzero"`
+	API                   string          `json:"api,omitzero"`
+	Provider              string          `json:"provider,omitzero"`
+	Model                 string          `json:"model,omitzero"`
+	ResponseModel         string          `json:"responseModel,omitzero"`
+	ResponseID            string          `json:"responseId,omitzero"`
+	ProviderThinkingLevel string          `json:"providerThinkingLevel,omitzero"`
+	Diagnostics           []base.Unknown  `json:"diagnostics,omitzero"`
+	Usage                 MessageUsage    `json:"usage,omitzero"`
+	StopReason            StopReason      `json:"stopReason,omitzero"`
+	Deferred              *DeferredHandle `json:"deferred,omitzero"`
+	ErrorMessage          string          `json:"errorMessage,omitzero"`
+	RawStopReason         string          `json:"rawStopReason,omitzero"`
+	EndTurn               bool            `json:"endTurn,omitzero"`
+	Timestamp             float64         `json:"timestamp,omitzero"`
+	ToolCallID            string          `json:"toolCallId,omitzero"`
+	ToolName              string          `json:"toolName,omitzero"`
+	Details               json.RawMessage `json:"details,omitzero"`
+	AddedToolNames        []string        `json:"addedToolNames,omitzero"`
+	IsError               bool            `json:"isError,omitzero"`
+	CustomType            string          `json:"customType,omitzero"`
+	Display               bool            `json:"display,omitzero"`
+	Command               string          `json:"command,omitzero"`
+	Output                string          `json:"output,omitzero"`
+	ExitCode              int             `json:"exitCode,omitzero"`
+	Cancelled             bool            `json:"cancelled,omitzero"`
+	Truncated             bool            `json:"truncated,omitzero"`
+	FullOutputPath        string          `json:"fullOutputPath,omitzero"`
+	ExcludeFromContext    bool            `json:"excludeFromContext,omitzero"`
+	Summary               string          `json:"summary,omitzero"`
+	FromID                string          `json:"fromId,omitzero"`
+	TokensBefore          int64           `json:"tokensBefore,omitzero"`
 }
 
 // DeferredHandle identifies a provider-managed deferred response.

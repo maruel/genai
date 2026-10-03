@@ -447,15 +447,15 @@ type ChatResponse struct {
 		Index                int64               `json:"index"`
 		Message              MessageResponse     `json:"message"`
 		FinishReason         FinishReason        `json:"finish_reason"`
-		StopReason           struct{}            `json:"stop_reason"`
-		Logprobs             struct{}            `json:"logprobs"`
+		StopReason           base.Unknown        `json:"stop_reason"`
+		Logprobs             base.Unknown        `json:"logprobs"`
 		ContentFilterResults ContentFilterResult `json:"content_filter_results"`
 	} `json:"choices"`
 	Usage               Usage                `json:"usage"`
 	PromptFilterResults []PromptFilterResult `json:"prompt_filter_results"`
 	SystemFingerprint   string               `json:"system_fingerprint"`
-	PromptLogprobs      struct{}             `json:"prompt_logprobs"`
-	KVTransferParams    struct{}             `json:"kv_transfer_params"`
+	PromptLogprobs      base.Unknown         `json:"prompt_logprobs"`
+	KVTransferParams    base.Unknown         `json:"kv_transfer_params"`
 	Routing             struct {
 		ServingPipeReplica string `json:"serving_pipereplica"`
 	} `json:"routing"`
@@ -555,8 +555,8 @@ type MessageResponse struct {
 	ReasoningContent string          `json:"reasoning_content"`
 	Content          json.RawMessage `json:"content"`
 	ToolCalls        []ToolCall      `json:"tool_calls"`
-	Annotations      []struct{}      `json:"annotations"`
-	Refusal          struct{}        `json:"refusal"`
+	Annotations      []base.Unknown  `json:"annotations"`
+	Refusal          base.Unknown    `json:"refusal"`
 	Audio            struct {
 		Data []byte `json:"data"`
 	} `json:"audio"`
@@ -621,16 +621,16 @@ type ChatStreamChunkResponse struct {
 	Choices []struct {
 		ContentFilterResults ContentFilterResult `json:"content_filter_results"`
 		Index                int64               `json:"index"`
-		Logprobs             struct{}            `json:"logprobs"`
+		Logprobs             base.Unknown        `json:"logprobs"`
 		FinishReason         FinishReason        `json:"finish_reason"`
-		StopReason           struct{}            `json:"stop_reason"`
+		StopReason           base.Unknown        `json:"stop_reason"`
 		MatchedStop          int64               `json:"matched_stop"`
 		Delta                struct {
-			Role             string     `json:"role"`
-			Content          string     `json:"content"`
-			ReasoningContent string     `json:"reasoning_content"`
-			ToolCalls        []ToolCall `json:"tool_calls"`
-			Refusal          struct{}   `json:"refusal"`
+			Role             string       `json:"role"`
+			Content          string       `json:"content"`
+			ReasoningContent string       `json:"reasoning_content"`
+			ToolCalls        []ToolCall   `json:"tool_calls"`
+			Refusal          base.Unknown `json:"refusal"`
 		} `json:"delta"`
 	} `json:"choices"`
 	PromptFilterResults []PromptFilterResult `json:"prompt_filter_results"`
@@ -1029,16 +1029,16 @@ type ErrorResponse struct {
 			Code        string       `json:"code"`
 			UnionErrors []UnionError `json:"unionErrors"`
 		} `json:"errors"`
-		Success  bool       `json:"success,omitzero"`
-		Result   struct{}   `json:"result"`
-		Messages []struct{} `json:"messages"`
+		Success  bool           `json:"success,omitzero"`
+		Result   base.Unknown   `json:"result"`
+		Messages []base.Unknown `json:"messages"`
 	} `json:"details"`
 
-	Message            string   `json:"message"`
-	Debug              struct{} `json:"debug"`
-	DeprecatedEndpoint string   `json:"deprecated_endpoint,omitzero"`
-	NewEndpoint        string   `json:"new_endpoint,omitzero"`
-	Documentation      string   `json:"documentation,omitzero"`
+	Message            string       `json:"message"`
+	Debug              base.Unknown `json:"debug"`
+	DeprecatedEndpoint string       `json:"deprecated_endpoint,omitzero"`
+	NewEndpoint        string       `json:"new_endpoint,omitzero"`
+	Documentation      string       `json:"documentation,omitzero"`
 	TimingInfo         []struct {
 		Step      string `json:"step"`
 		Timestamp int64  `json:"timestamp"`

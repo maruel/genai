@@ -255,7 +255,7 @@ type Content struct {
 		URL    string `json:"url,omitzero"`    // Can be inline.
 		Detail string `json:"detail,omitzero"` // undocumented, likely "auto" like OpenAI
 	} `json:"image_url,omitzero"`
-	ModelConfig struct{} `json:"model_config,omitzero"`
+	ModelConfig base.Unknown `json:"model_config,omitzero"`
 
 	// Type == ContentDocumentURL
 	DocumentURL  string `json:"document_url,omitzero"`
@@ -409,7 +409,7 @@ type ChatResponse struct {
 		FinishReason FinishReason    `json:"finish_reason"`
 		Index        int64           `json:"index"`
 		Message      MessageResponse `json:"message"`
-		Logprobs     struct{}        `json:"logprobs"`
+		Logprobs     base.Unknown    `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }
@@ -539,7 +539,7 @@ type ChatStreamChunkResponse struct {
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		FinishReason FinishReason `json:"finish_reason"`
-		Logprobs     struct{}     `json:"logprobs"`
+		Logprobs     base.Unknown `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage  `json:"usage"`
 	P     string `json:"p"` // "abcdefghijklmnopqrstu" WTF?

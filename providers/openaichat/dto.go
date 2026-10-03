@@ -987,7 +987,7 @@ type ChatStreamChunkResponse struct {
 	Usage             Usage               `json:"usage"`
 	Obfuscation       string              `json:"obfuscation"`
 	Error             *ErrorResponseError `json:"error,omitzero"`
-	Detail            json.RawMessage     `json:"detail,omitzero"`
+	Detail            *ErrorResponseError `json:"detail,omitzero"`
 }
 
 // ============================================================

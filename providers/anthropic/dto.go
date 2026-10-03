@@ -1600,9 +1600,9 @@ type BatchQueryResponse struct {
 		Error struct {
 			Type  string `json:"type"` // "error"
 			Error struct {
-				Type    string   `json:"type"`    // "invalid_request_error"
-				Message string   `json:"message"` // e.g. "metadata.thinking: Extra inputs are not permitted"
-				Details struct{} `json:"details"`
+				Type    string       `json:"type"`    // "invalid_request_error"
+				Message string       `json:"message"` // e.g. "metadata.thinking: Extra inputs are not permitted"
+				Details base.Unknown `json:"details"`
 			} `json:"error"`
 		} `json:"error"`
 	} `json:"result"`
@@ -1784,7 +1784,7 @@ type CountTokensResponse struct {
 type ErrorResponse struct {
 	Type     string `json:"type"` // "error"
 	ErrorVal struct {
-		Details struct{} `json:"details"`
+		Details base.Unknown `json:"details"`
 		// Type is one of "invalid_request_error", "authentication_error", "billing_error", "permission_error", "not_found_error", "rate_limit_error", "timeout_error", "api_error", "overloaded_error"
 		Type    string `json:"type"`
 		Message string `json:"message"`

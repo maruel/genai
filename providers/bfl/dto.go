@@ -10,7 +10,6 @@ package bfl
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"slices"
@@ -153,9 +152,9 @@ type ImageRequestResponse struct {
 	// inaccessible.
 	PollingURL string `json:"polling_url"`
 	// Cost, InputMP, and OutputMP are optional fields returned by the API.
-	Cost     json.RawMessage `json:"cost,omitempty"`
-	InputMP  json.RawMessage `json:"input_mp,omitempty"`
-	OutputMP json.RawMessage `json:"output_mp,omitempty"`
+	Cost     float64 `json:"cost,omitempty"`
+	InputMP  float64 `json:"input_mp,omitempty"`
+	OutputMP float64 `json:"output_mp,omitempty"`
 }
 
 // ImageResult is the provider-specific image generation result.
@@ -172,9 +171,9 @@ type ImageResult struct {
 		EndTime   float64 `json:"end_time"`
 		Duration  float64 `json:"duration"`
 	} `json:"result"`
-	Progress float64  `json:"progress"` // [0, 1]
-	Details  struct{} `json:"details"`
-	Preview  struct{} `json:"preview"`
+	Progress float64      `json:"progress"` // [0, 1]
+	Details  base.Unknown `json:"details"`
+	Preview  base.Unknown `json:"preview"`
 }
 
 // ImageWebhookResponse is the provider-specific image webhook response.

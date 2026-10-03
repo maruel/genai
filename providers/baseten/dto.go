@@ -525,18 +525,18 @@ type ChatStreamChunkResponse struct {
 	Created           base.TimeS `json:"created"`
 	Choices           []struct {
 		Delta struct {
-			Role             string          `json:"role"`
-			Content          Contents        `json:"content"`
-			Reasoning        string          `json:"reasoning"`
-			ReasoningContent string          `json:"reasoning_content"`
-			FunctionCall     json.RawMessage `json:"function_call"`
-			Refusal          json.RawMessage `json:"refusal"`
-			ToolCalls        []ToolCall      `json:"tool_calls"`
+			Role             string       `json:"role"`
+			Content          Contents     `json:"content"`
+			Reasoning        string       `json:"reasoning"`
+			ReasoningContent string       `json:"reasoning_content"`
+			FunctionCall     base.Unknown `json:"function_call"`
+			Refusal          base.Unknown `json:"refusal"`
+			ToolCalls        []ToolCall   `json:"tool_calls"`
 		} `json:"delta"`
-		Index        int64           `json:"index"`
-		FinishReason FinishReason    `json:"finish_reason"`
-		StopReason   json.RawMessage `json:"stop_reason"`
-		Logprobs     Logprobs        `json:"logprobs"`
+		Index        int64        `json:"index"`
+		FinishReason FinishReason `json:"finish_reason"`
+		StopReason   base.Unknown `json:"stop_reason"`
+		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }

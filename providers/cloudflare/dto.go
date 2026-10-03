@@ -354,10 +354,10 @@ type imageToText struct {
 // ChatResponse is somewhat documented at https://developers.cloudflare.com/api/resources/ai/methods/run/
 // See UnionMember7.
 type ChatResponse struct {
-	Result   Result     `json:"result"`
-	Success  bool       `json:"success"`
-	Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
-	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
+	Result   Result         `json:"result"`
+	Success  bool           `json:"success"`
+	Errors   []base.Unknown `json:"errors"`   // Annoyingly, it's included all the time
+	Messages []base.Unknown `json:"messages"` // Annoyingly, it's included all the time
 }
 
 // ToResult converts the response to a genai.Result.
@@ -378,46 +378,45 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // Result is the payload of a chat response.
 //
 // Newer models return an OpenAI-compatible completion in addition to Response
-// and ToolCalls. Only the latter two are converted; the rest is declared so
-// strict decoding accepts it. Fields that are null or whose exact type is not
-// known are kept raw.
+// and ToolCalls. Only the latter two are converted; unimplemented fields use
+// base.Unknown so strict decoding detects populated values.
 type Result struct {
 	MessageResponse
-	ID               string          `json:"id"`
-	Model            string          `json:"model"`
-	Object           string          `json:"object"`
-	Created          base.TimeS      `json:"created"`
-	ServiceTier      string          `json:"service_tier"`
-	Choices          []Choice        `json:"choices"`
-	Usage            Usage           `json:"usage"`
-	ECTransferParams json.RawMessage `json:"ec_transfer_params"`
-	KVTransferParams json.RawMessage `json:"kv_transfer_params"`
-	Metrics          json.RawMessage `json:"metrics"`
-	PromptLogprobs   json.RawMessage `json:"prompt_logprobs"`
-	PromptText       json.RawMessage `json:"prompt_text"`
-	PromptTokenIDs   json.RawMessage `json:"prompt_token_ids"`
+	ID               string       `json:"id"`
+	Model            string       `json:"model"`
+	Object           string       `json:"object"`
+	Created          base.TimeS   `json:"created"`
+	ServiceTier      string       `json:"service_tier"`
+	Choices          []Choice     `json:"choices"`
+	Usage            Usage        `json:"usage"`
+	ECTransferParams base.Unknown `json:"ec_transfer_params"`
+	KVTransferParams base.Unknown `json:"kv_transfer_params"`
+	Metrics          base.Unknown `json:"metrics"`
+	PromptLogprobs   base.Unknown `json:"prompt_logprobs"`
+	PromptText       base.Unknown `json:"prompt_text"`
+	PromptTokenIDs   base.Unknown `json:"prompt_token_ids"`
 }
 
 // Choice is an OpenAI-compatible completion choice.
 type Choice struct {
-	FinishReason  string          `json:"finish_reason"`
-	Index         int64           `json:"index"`
-	Logprobs      json.RawMessage `json:"logprobs"`
-	Message       ChoiceMessage   `json:"message"`
-	RoutedExperts json.RawMessage `json:"routed_experts"`
-	StopReason    json.RawMessage `json:"stop_reason"`
-	TokenIDs      json.RawMessage `json:"token_ids"`
+	FinishReason  string        `json:"finish_reason"`
+	Index         int64         `json:"index"`
+	Logprobs      base.Unknown  `json:"logprobs"`
+	Message       ChoiceMessage `json:"message"`
+	RoutedExperts base.Unknown  `json:"routed_experts"`
+	StopReason    base.Unknown  `json:"stop_reason"`
+	TokenIDs      base.Unknown  `json:"token_ids"`
 }
 
 // ChoiceMessage is the message of an OpenAI-compatible completion choice.
 type ChoiceMessage struct {
-	Annotations  json.RawMessage `json:"annotations"`
-	Audio        json.RawMessage `json:"audio"`
-	Content      string          `json:"content"`
-	FunctionCall json.RawMessage `json:"function_call"`
-	Reasoning    json.RawMessage `json:"reasoning"`
-	Refusal      json.RawMessage `json:"refusal"`
-	Role         string          `json:"role"`
+	Annotations  base.Unknown `json:"annotations"`
+	Audio        base.Unknown `json:"audio"`
+	Content      string       `json:"content"`
+	FunctionCall base.Unknown `json:"function_call"`
+	Reasoning    base.Unknown `json:"reasoning"`
+	Refusal      base.Unknown `json:"refusal"`
+	Role         string       `json:"role"`
 }
 
 // MessageResponse is a message in a provider-specific response.
@@ -457,27 +456,27 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 // ChatStreamChunkResponse is not documented.
 // If you find the documentation for this please tell me!
 type ChatStreamChunkResponse struct {
-	Response       Response        `json:"response"`
-	P              string          `json:"p"`
-	ToolCalls      []ToolCall      `json:"tool_calls"`
-	Usage          Usage           `json:"usage"`
-	ID             string          `json:"id"`
-	Model          string          `json:"model"`
-	Object         string          `json:"object"`
-	Created        base.TimeS      `json:"created"`
-	Choices        []StreamChoice  `json:"choices"`
-	PromptText     json.RawMessage `json:"prompt_text"`
-	PromptTokenIDs json.RawMessage `json:"prompt_token_ids"`
+	Response       Response       `json:"response"`
+	P              string         `json:"p"`
+	ToolCalls      []ToolCall     `json:"tool_calls"`
+	Usage          Usage          `json:"usage"`
+	ID             string         `json:"id"`
+	Model          string         `json:"model"`
+	Object         string         `json:"object"`
+	Created        base.TimeS     `json:"created"`
+	Choices        []StreamChoice `json:"choices"`
+	PromptText     base.Unknown   `json:"prompt_text"`
+	PromptTokenIDs base.Unknown   `json:"prompt_token_ids"`
 }
 
 // StreamChoice is an OpenAI-compatible streaming choice.
 type StreamChoice struct {
 	FinishReason string            `json:"finish_reason"`
 	Index        int64             `json:"index"`
-	Logprobs     json.RawMessage   `json:"logprobs"`
+	Logprobs     base.Unknown      `json:"logprobs"`
 	Delta        StreamChoiceDelta `json:"delta"`
-	StopReason   json.RawMessage   `json:"stop_reason"`
-	TokenIDs     json.RawMessage   `json:"token_ids"`
+	StopReason   base.Unknown      `json:"stop_reason"`
+	TokenIDs     base.Unknown      `json:"token_ids"`
 }
 
 // StreamChoiceDelta is the delta of an OpenAI-compatible streaming choice.
@@ -708,9 +707,9 @@ type ModelsResponse struct {
 		PerPage    int64 `json:"per_page"`
 		TotalCount int64 `json:"total_count"`
 	} `json:"result_info"`
-	Success  bool       `json:"success"`
-	Errors   []struct{} `json:"errors"`   // Annoyingly, it's included all the time
-	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
+	Success  bool           `json:"success"`
+	Errors   []base.Unknown `json:"errors"`   // Annoyingly, it's included all the time
+	Messages []base.Unknown `json:"messages"` // Annoyingly, it's included all the time
 }
 
 // ErrorResponse is the provider-specific error response.
@@ -719,9 +718,9 @@ type ErrorResponse struct {
 		Message string `json:"message"`
 		Code    int    `json:"code"`
 	} `json:"errors"`
-	Success  bool       `json:"success"`
-	Result   struct{}   `json:"result"`
-	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
+	Success  bool           `json:"success"`
+	Result   base.Unknown   `json:"result"`
+	Messages []base.Unknown `json:"messages"` // Annoyingly, it's included all the time
 }
 
 func (er *ErrorResponse) Error() string {

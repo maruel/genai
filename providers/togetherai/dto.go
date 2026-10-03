@@ -512,16 +512,16 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Usage            Usage      `json:"usage"`
-	Created          base.TimeS `json:"created"`
-	Model            string     `json:"model"`
-	KVTransferParams struct{}   `json:"kv_transfer_params"`
-	Object           string     `json:"object"` // "chat.completion"
+	Usage            Usage        `json:"usage"`
+	Created          base.TimeS   `json:"created"`
+	Model            string       `json:"model"`
+	KVTransferParams base.Unknown `json:"kv_transfer_params"`
+	Object           string       `json:"object"` // "chat.completion"
 	Warnings         []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
-	SystemFingerprint string   `json:"system_fingerprint"`
-	Servicetier       struct{} `json:"service_tier"`
+	SystemFingerprint string       `json:"system_fingerprint"`
+	Servicetier       base.Unknown `json:"service_tier"`
 	Metadata          struct {
 		WeightVersion string `json:"weight_version"` // "default"
 	} `json:"metadata"`
@@ -596,10 +596,10 @@ type TokenIDs []*json.Number
 
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
-	Tokens        []string          `json:"tokens"`
-	TokenLogprobs []float64         `json:"token_logprobs"`
-	TokenIDs      TokenIDs          `json:"token_ids,omitzero"` // Not set.
-	Content       []json.RawMessage `json:"content,omitzero"`   // Complex structure with logprobs data.
+	Tokens        []string         `json:"tokens"`
+	TokenLogprobs []float64        `json:"token_logprobs"`
+	TokenIDs      TokenIDs         `json:"token_ids,omitzero"` // Not set.
+	Content       []LogprobContent `json:"content,omitzero"`   // Alternative logprobs format.
 }
 
 // To converts to the genai equivalent.
@@ -615,6 +615,19 @@ func (l *Logprobs) To() [][]genai.Logprob {
 	return out
 }
 
+// LogprobToken is a token and its log probability in the alternative format.
+type LogprobToken struct {
+	Token   string  `json:"token"`
+	Logprob float64 `json:"logprob"`
+	Bytes   []byte  `json:"bytes"`
+}
+
+// LogprobContent includes the most likely alternatives for a token.
+type LogprobContent struct {
+	LogprobToken
+	TopLogprobs []LogprobToken `json:"top_logprobs"`
+}
+
 // LogprobsChunk is a chunk of log probability data.
 type LogprobsChunk struct {
 	Tokens        []string  `json:"tokens"`
@@ -624,7 +637,7 @@ type LogprobsChunk struct {
 		Token   string  `json:"token"`
 		Logprob float64 `json:"logprob"`
 	} `json:"top_logprobs"`
-	Content json.RawMessage `json:"content,omitzero"` // Undocumented model-specific field, not in Together.AI's OpenAPI LogprobsPart spec.
+	Content base.Unknown `json:"content,omitzero"` // Undocumented model-specific field, not in Together.AI's OpenAPI LogprobsPart spec.
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -709,7 +722,7 @@ type ChatStreamChunkResponse struct {
 		Index       int64              `json:"index"`
 		Text        string             `json:"text"` // Duplicated to Delta.Text
 		Seed        big.Int            `json:"seed"`
-		Error       json.RawMessage    `json:"error,omitzero"`
+		Error       string             `json:"error,omitzero"`
 		Role        string             `json:"role,omitzero"` // Sometimes appears in streaming
 		Logprobs    LogprobsChunk      `json:"logprobs"`
 		TopLogprobs map[string]float64 `json:"top_logprobs,omitzero"`
@@ -721,10 +734,10 @@ type ChatStreamChunkResponse struct {
 			Reasoning        string     `json:"reasoning"`
 			ReasoningContent string     `json:"reasoning_content"`
 		} `json:"delta"`
-		FinishReason FinishReason    `json:"finish_reason"`
-		MatchedStop  json.RawMessage `json:"matched_stop"`
-		StopReason   StopReason      `json:"stop_reason"`
-		ToolCalls    []ToolCall      `json:"tool_calls"`
+		FinishReason FinishReason `json:"finish_reason"`
+		MatchedStop  StopReason   `json:"matched_stop"`
+		StopReason   StopReason   `json:"stop_reason"`
+		ToolCalls    []ToolCall   `json:"tool_calls"`
 	} `json:"choices"`
 	SystemFingerprint string `json:"system_fingerprint"`
 	Usage             Usage  `json:"usage"`
@@ -738,6 +751,10 @@ type StopReason string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (s *StopReason) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(bytes.TrimSpace(b), []byte("null")) {
+		*s = ""
+		return nil
+	}
 	v := 0
 	if err := json.Unmarshal(b, &v); err == nil {
 		*s = StopReason(strconv.Itoa(v))

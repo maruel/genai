@@ -179,7 +179,7 @@ type ControlReqCanUseTool struct {
 	ClassifierApprovable    bool                         `json:"classifier_approvable,omitempty"`
 	SuppressAlwaysAllowRule bool                         `json:"suppress_always_allow_rule,omitempty"`
 	DefaultToNo             bool                         `json:"default_to_no,omitempty"`
-	MatchedAskRule          json.RawMessage              `json:"matched_ask_rule,omitempty"`
+	MatchedAskRule          base.Unknown                 `json:"matched_ask_rule,omitempty"`
 }
 
 // CanUseToolDecisionReasonType identifies why Claude Code requested tool approval.
@@ -278,8 +278,8 @@ type ControlReqMcpCall struct {
 	Arguments   map[string]json.RawMessage `json:"arguments,omitempty"`
 	ExpiresAt   string                     `json:"expires_at,omitempty"`
 	TimeoutMS   base.DurationMS            `json:"timeout_ms,omitempty"`
-	InputFiles  []json.RawMessage          `json:"input_files,omitempty"`
-	OutputFiles []json.RawMessage          `json:"output_files,omitempty"`
+	InputFiles  []base.Unknown             `json:"input_files,omitempty"`
+	OutputFiles []base.Unknown             `json:"output_files,omitempty"`
 }
 
 // ControlReqFileSuggestions requests file-path completions.
@@ -637,8 +637,8 @@ type ControlResponse struct {
 	RequestID                 string                 `json:"request_id"`
 	Response                  ControlResponsePayload `json:"response,omitzero"`                     // success only
 	Error                     string                 `json:"error,omitempty"`                       // error only
-	PendingPermissionRequests json.RawMessage        `json:"pending_permission_requests,omitempty"` // error only
-	PendingUserDialogRequests json.RawMessage        `json:"pending_user_dialog_requests,omitempty"`
+	PendingPermissionRequests base.Unknown           `json:"pending_permission_requests,omitempty"` // error only
+	PendingUserDialogRequests base.Unknown           `json:"pending_user_dialog_requests,omitempty"`
 }
 
 // ---------- keep alive / env vars ----------
@@ -1484,21 +1484,21 @@ const (
 
 // OutputUserMsg is the wire representation of a user record.
 type OutputUserMsg struct {
-	Type            OutputType        `json:"type"`
-	UUID            string            `json:"uuid"`
-	SessionID       string            `json:"session_id,omitempty"`
-	Timestamp       string            `json:"timestamp,omitempty"`
-	Message         json.RawMessage   `json:"message"`
-	ParentToolUseID string            `json:"parent_tool_use_id"`
-	ToolUseResult   json.RawMessage   `json:"tool_use_result,omitempty"`
-	SubagentType    string            `json:"subagent_type,omitempty"`
-	TaskDescription string            `json:"task_description,omitempty"`
-	IsSynthetic     bool              `json:"isSynthetic,omitempty"`
-	IsReplay        bool              `json:"isReplay,omitempty"`
-	Priority        string            `json:"priority,omitempty"`
-	Origin          MessageOrigin     `json:"origin,omitzero"`
-	ShouldQuery     bool              `json:"shouldQuery,omitempty"`
-	FileAttachments []json.RawMessage `json:"file_attachments,omitempty"`
+	Type            OutputType      `json:"type"`
+	UUID            string          `json:"uuid"`
+	SessionID       string          `json:"session_id,omitempty"`
+	Timestamp       string          `json:"timestamp,omitempty"`
+	Message         json.RawMessage `json:"message"`
+	ParentToolUseID string          `json:"parent_tool_use_id"`
+	ToolUseResult   json.RawMessage `json:"tool_use_result,omitempty"`
+	SubagentType    string          `json:"subagent_type,omitempty"`
+	TaskDescription string          `json:"task_description,omitempty"`
+	IsSynthetic     bool            `json:"isSynthetic,omitempty"`
+	IsReplay        bool            `json:"isReplay,omitempty"`
+	Priority        string          `json:"priority,omitempty"`
+	Origin          MessageOrigin   `json:"origin,omitzero"`
+	ShouldQuery     bool            `json:"shouldQuery,omitempty"`
+	FileAttachments []base.Unknown  `json:"file_attachments,omitempty"`
 }
 
 // DecodeMessage decodes the raw user message body into its concrete wire shape.

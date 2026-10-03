@@ -587,7 +587,7 @@ type ChatResponse struct {
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
 		Message      Message      `json:"message"`
-		Logprobs     struct{}     `json:"logprobs"`
+		Logprobs     base.Unknown `json:"logprobs"`
 	} `json:"choices"`
 	Created           base.TimeS     `json:"created"`
 	ID                string         `json:"id"`
@@ -655,15 +655,26 @@ const (
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	QueueTime               float64                    `json:"queue_time"`
-	PromptTokens            int64                      `json:"prompt_tokens"`
-	PromptTime              float64                    `json:"prompt_time"`
-	CompletionTokens        int64                      `json:"completion_tokens"`
-	CompletionTime          float64                    `json:"completion_time"`
-	TotalTokens             int64                      `json:"total_tokens"`
-	TotalTime               float64                    `json:"total_time"`
-	PromptTokensDetails     map[string]json.RawMessage `json:"prompt_tokens_details,omitzero"`
-	CompletionTokensDetails map[string]json.RawMessage `json:"completion_tokens_details,omitzero"`
+	QueueTime               float64                 `json:"queue_time"`
+	PromptTokens            int64                   `json:"prompt_tokens"`
+	PromptTime              float64                 `json:"prompt_time"`
+	CompletionTokens        int64                   `json:"completion_tokens"`
+	CompletionTime          float64                 `json:"completion_time"`
+	TotalTokens             int64                   `json:"total_tokens"`
+	TotalTime               float64                 `json:"total_time"`
+	PromptTokensDetails     PromptTokensDetails     `json:"prompt_tokens_details,omitzero"`
+	CompletionTokensDetails CompletionTokensDetails `json:"completion_tokens_details,omitzero"`
+}
+
+// PromptTokensDetails breaks down input token usage.
+type PromptTokensDetails struct {
+	CachedTokens int64 `json:"cached_tokens,omitzero"`
+	AudioTokens  int64 `json:"audio_tokens,omitzero"`
+}
+
+// CompletionTokensDetails breaks down output token usage.
+type CompletionTokensDetails struct {
+	ReasoningTokens int64 `json:"reasoning_tokens,omitzero"`
 }
 
 // BrowserSearchArguments is the Argument for the "browser.search" tool.
@@ -695,7 +706,7 @@ type ChatStreamChunkResponse struct {
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		Delta        Message      `json:"delta"`
-		Logprobs     struct{}     `json:"logprobs"` // Groq doesn't support logprobs but still sent a null item.
+		Logprobs     base.Unknown `json:"logprobs"` // Groq doesn't support logprobs but still sent a null item.
 		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Usage Usage `json:"usage,omitzero"`

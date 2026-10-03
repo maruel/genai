@@ -86,7 +86,7 @@ type ChatRequest struct {
 	Nprobs              int64             `json:"n_probs,omitzero"`
 	MinKeep             int64             `json:"min_keep,omitzero"`
 	TMaxPredict         base.DurationMS   `json:"t_max_predict_ms,omitzero"`
-	ImageData           []json.RawMessage `json:"image_data,omitzero"`
+	ImageData           []base.Unknown    `json:"image_data,omitzero"`
 	IDSlot              int64             `json:"id_slot,omitzero"`
 	CachePrompt         bool              `json:"cache_prompt,omitzero"`
 	ReturnTokens        bool              `json:"return_tokens,omitzero"`
@@ -417,7 +417,7 @@ type CompletionRequest struct {
 	Nprobs              int64             `json:"n_probs,omitzero"`
 	MinKeep             int64             `json:"min_keep,omitzero"`
 	TMaxPredict         base.DurationMS   `json:"t_max_predict_ms,omitzero"`
-	ImageData           []json.RawMessage `json:"image_data,omitzero"`
+	ImageData           []base.Unknown    `json:"image_data,omitzero"`
 	IDSlot              int64             `json:"id_slot,omitzero"`
 	CachePrompt         bool              `json:"cache_prompt,omitzero"`
 	ReturnTokens        bool              `json:"return_tokens,omitzero"`
@@ -613,15 +613,15 @@ type CompletionStreamChunkResponse struct {
 	TokensEvaluated int64   `json:"tokens_evaluated"`
 
 	// Last message
-	Model              string   `json:"model"`
-	GenerationSettings struct{} `json:"generation_settings"`
-	Prompt             string   `json:"prompt"`
-	HasNewLine         bool     `json:"has_new_line"`
-	Truncated          bool     `json:"truncated"`
-	StopType           StopType `json:"stop_type"`
-	StoppingWord       string   `json:"stopping_word"`
-	TokensCached       int64    `json:"tokens_cached"`
-	Timings            Timings  `json:"timings"`
+	Model              string       `json:"model"`
+	GenerationSettings base.Unknown `json:"generation_settings"`
+	Prompt             string       `json:"prompt"`
+	HasNewLine         bool         `json:"has_new_line"`
+	Truncated          bool         `json:"truncated"`
+	StopType           StopType     `json:"stop_type"`
+	StoppingWord       string       `json:"stopping_word"`
+	TokensCached       int64        `json:"tokens_cached"`
+	Timings            Timings      `json:"timings"`
 }
 
 type applyTemplateRequest struct {

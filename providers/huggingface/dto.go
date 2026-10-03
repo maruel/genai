@@ -330,9 +330,9 @@ type ToolCall struct {
 	ID       string `json:"id,omitzero"`
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
-		Name        string   `json:"name,omitzero"`
-		Description struct{} `json:"description,omitzero"` // Passed in as null in response
-		Arguments   string   `json:"arguments,omitzero"`
+		Name        string       `json:"name,omitzero"`
+		Description base.Unknown `json:"description,omitzero"` // Passed in as null in response
+		Arguments   string       `json:"arguments,omitzero"`
 	} `json:"function,omitzero"`
 }
 
@@ -368,12 +368,12 @@ type Tool struct {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	Object            string            `json:"object"` // "chat.completion"
-	ID                string            `json:"id"`
-	Created           base.TimeS        `json:"created"`
-	Model             string            `json:"model"`
-	SystemFingerprint string            `json:"system_fingerprint"`
-	Prompt            []json.RawMessage `json:"prompt,omitzero"` // Some models return empty prompt field
+	Object            string         `json:"object"` // "chat.completion"
+	ID                string         `json:"id"`
+	Created           base.TimeS     `json:"created"`
+	Model             string         `json:"model"`
+	SystemFingerprint string         `json:"system_fingerprint"`
+	Prompt            []base.Unknown `json:"prompt,omitzero"` // Some models return empty prompt field
 
 	Choices []struct {
 		FinishReason         FinishReason         `json:"finish_reason"`
@@ -385,9 +385,9 @@ type ChatResponse struct {
 		Seed                 int64                `json:"seed,omitzero"`
 		TokenIDs             []int64              `json:"token_ids,omitzero"`
 	} `json:"choices"`
-	Usage          Usage    `json:"usage"`
-	PromptLogprobs struct{} `json:"prompt_logprobs"`
-	ServiceTier    string   `json:"service_tier,omitzero"`
+	Usage          Usage        `json:"usage"`
+	PromptLogprobs base.Unknown `json:"prompt_logprobs"`
+	ServiceTier    string       `json:"service_tier,omitzero"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -418,17 +418,17 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
-		Token                 string          `json:"token"`
-		Bytes                 []byte          `json:"bytes"`
-		Logprob               float64         `json:"logprob"`
-		TokenID               json.Number     `json:"token_id,omitzero"`
-		TextOffset            json.Number     `json:"text_offset,omitzero"`
-		SamplingLogprob       float64         `json:"sampling_logprob,omitzero"`
-		LastActivation        json.RawMessage `json:"last_activation,omitzero"`
-		RoutingMatrix         json.RawMessage `json:"routing_matrix,omitzero"`
-		ExtraTokens           json.RawMessage `json:"extra_tokens,omitzero"`
-		ExtraLogprobs         json.RawMessage `json:"extra_logprobs,omitzero"`
-		ExtraSamplingLogprobs json.RawMessage `json:"extra_sampling_logprobs,omitzero"`
+		Token                 string       `json:"token"`
+		Bytes                 []byte       `json:"bytes"`
+		Logprob               float64      `json:"logprob"`
+		TokenID               json.Number  `json:"token_id,omitzero"`
+		TextOffset            json.Number  `json:"text_offset,omitzero"`
+		SamplingLogprob       float64      `json:"sampling_logprob,omitzero"`
+		LastActivation        base.Unknown `json:"last_activation,omitzero"`
+		RoutingMatrix         base.Unknown `json:"routing_matrix,omitzero"`
+		ExtraTokens           base.Unknown `json:"extra_tokens,omitzero"`
+		ExtraLogprobs         base.Unknown `json:"extra_logprobs,omitzero"`
+		ExtraSamplingLogprobs base.Unknown `json:"extra_sampling_logprobs,omitzero"`
 		TopLogprobs           []struct {
 			Token   string      `json:"token"`
 			Bytes   []byte      `json:"bytes"`
@@ -437,11 +437,11 @@ type Logprobs struct {
 		} `json:"top_logprobs"`
 	} `json:"content"`
 	// Alternative format used by some models
-	Tokens         []json.RawMessage `json:"tokens,omitzero"`
-	TokenLogprobs  []json.RawMessage `json:"token_logprobs,omitzero"`
-	TokenIDs       []json.RawMessage `json:"token_ids,omitzero"`
-	TopLogprobsAlt []json.RawMessage `json:"top_logprobs,omitzero"`
-	Refusal        struct{}          `json:"refusal,omitzero"`
+	Tokens         []base.Unknown `json:"tokens,omitzero"`
+	TokenLogprobs  []base.Unknown `json:"token_logprobs,omitzero"`
+	TokenIDs       []base.Unknown `json:"token_ids,omitzero"`
+	TopLogprobsAlt []base.Unknown `json:"top_logprobs,omitzero"`
+	Refusal        base.Unknown   `json:"refusal,omitzero"`
 }
 
 // IsZero reports whether the value is zero.
@@ -546,17 +546,17 @@ type ContentFilterResults struct {
 
 // MessageResponse uses a different structure than the request Message. :(.
 type MessageResponse struct {
-	Role             string          `json:"role"`
-	Name             string          `json:"name,omitzero"`
-	Content          string          `json:"content"`
-	ToolCallID       string          `json:"tool_call_id"`
-	ToolCalls        []ToolCall      `json:"tool_calls"`
-	Refusal          struct{}        `json:"refusal"`
-	FunctionCall     struct{}        `json:"function_call"`
-	ReasoningContent string          `json:"reasoning_content,omitzero"`
-	Annotations      struct{}        `json:"annotations"`
-	Audio            struct{}        `json:"audio"`
-	Reasoning        json.RawMessage `json:"reasoning,omitzero"`
+	Role             string       `json:"role"`
+	Name             string       `json:"name,omitzero"`
+	Content          string       `json:"content"`
+	ToolCallID       string       `json:"tool_call_id"`
+	ToolCalls        []ToolCall   `json:"tool_calls"`
+	Refusal          base.Unknown `json:"refusal"`
+	FunctionCall     base.Unknown `json:"function_call"`
+	ReasoningContent string       `json:"reasoning_content,omitzero"`
+	Annotations      base.Unknown `json:"annotations"`
+	Audio            base.Unknown `json:"audio"`
+	Reasoning        string       `json:"reasoning,omitzero"`
 }
 
 // To converts to the genai equivalent.
@@ -576,26 +576,26 @@ func (m *MessageResponse) To(out *genai.Message) error {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	Object            string          `json:"object"` // "chat.completion.chunk"
-	Created           base.TimeS      `json:"created"`
-	ID                string          `json:"id"`
-	Model             string          `json:"model"`
-	SystemFingerprint string          `json:"system_fingerprint"`
-	ServiceTier       json.RawMessage `json:"service_tier,omitzero"`
+	Object            string       `json:"object"` // "chat.completion.chunk"
+	Created           base.TimeS   `json:"created"`
+	ID                string       `json:"id"`
+	Model             string       `json:"model"`
+	SystemFingerprint string       `json:"system_fingerprint"`
+	ServiceTier       base.Unknown `json:"service_tier,omitzero"`
 	Choices           []struct {
 		Index        int64        `json:"index,omitzero"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Text         string       `json:"text,omitzero"`
 		Logprobs     Logprobs     `json:"logprobs,omitzero"`
 		Delta        struct {
-			Role             string          `json:"role"`
-			Content          string          `json:"content"`
-			ToolCalls        []ToolCall      `json:"tool_calls"`
-			TokenID          int64           `json:"token_id,omitzero"`
-			Reasoning        json.RawMessage `json:"reasoning,omitzero"`
-			ReasoningContent string          `json:"reasoning_content,omitzero"`
+			Role             string     `json:"role"`
+			Content          string     `json:"content"`
+			ToolCalls        []ToolCall `json:"tool_calls"`
+			TokenID          int64      `json:"token_id,omitzero"`
+			Reasoning        string     `json:"reasoning,omitzero"`
+			ReasoningContent string     `json:"reasoning_content,omitzero"`
 		} `json:"delta"`
-		RawOutput            json.RawMessage      `json:"raw_output,omitzero"`
+		RawOutput            base.Unknown         `json:"raw_output,omitzero"`
 		ContentFilterResults ContentFilterResults `json:"content_filter_results,omitzero"`
 		StopReason           string               `json:"stop_reason,omitzero"`
 		TokenIDs             []int64              `json:"token_ids,omitzero"`
@@ -659,15 +659,15 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
-	ErrorVal  ErrorError `json:"error"`
-	ErrorType string     `json:"error_type"`
-	Detail    string     `json:"detail"`
-	Code      int64      `json:"code"`
-	Reason    string     `json:"reason"`
-	Message   string     `json:"message"`
-	Metadata  struct{}   `json:"metadata,omitzero"`
-	Type      string     `json:"type"`        // "server_error"
-	ID        string     `json:"id,omitzero"` // Some models include request ID in error response
+	ErrorVal  ErrorError   `json:"error"`
+	ErrorType string       `json:"error_type"`
+	Detail    string       `json:"detail"`
+	Code      int64        `json:"code"`
+	Reason    string       `json:"reason"`
+	Message   string       `json:"message"`
+	Metadata  base.Unknown `json:"metadata,omitzero"`
+	Type      string       `json:"type"`        // "server_error"
+	ID        string       `json:"id,omitzero"` // Some models include request ID in error response
 }
 
 func (er *ErrorResponse) Error() string {

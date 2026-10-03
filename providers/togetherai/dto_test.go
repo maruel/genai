@@ -69,3 +69,36 @@ func TestChatResponseToResult(t *testing.T) {
 		})
 	}
 }
+
+func TestStopReason(t *testing.T) {
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, tc := range []struct {
+				input string
+				want  togetherai.StopReason
+			}{
+				{"null", ""}, {" \n null ", ""}, {"0", "0"}, {"200002", "200002"}, {`"is"`, "is"},
+			} {
+				t.Run(tc.input, func(t *testing.T) {
+					s := togetherai.StopReason("previous")
+					if err := json.Unmarshal([]byte(tc.input), &s); err != nil {
+						t.Fatal(err)
+					}
+					if s != tc.want {
+						t.Fatalf("value = %q, want %q", s, tc.want)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, input := range []string{`{}`, `[]`, `true`, `1.5`} {
+				t.Run(input, func(t *testing.T) {
+					var s togetherai.StopReason
+					if err := json.Unmarshal([]byte(input), &s); err == nil {
+						t.Fatal("expected invalid stop reason error")
+					}
+				})
+			}
+		})
+	})
+}

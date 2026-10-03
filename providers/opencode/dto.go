@@ -13,7 +13,11 @@
 
 package opencode
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/maruel/genai/base"
+)
 
 // ============================================================
 // Shared types: enums, JSON-RPC envelope, routing probes.
@@ -189,15 +193,16 @@ type InitializeParams struct {
 	ProtocolVersion    int                `json:"protocolVersion"`
 	ClientCapabilities ClientCapabilities `json:"clientCapabilities"`
 	ClientInfo         ClientInfo         `json:"clientInfo"`
-	Meta               json.RawMessage    `json:"_meta,omitzero"`
+	// Meta carries arbitrary ACP extension data.
+	Meta json.RawMessage `json:"_meta,omitzero"`
 }
 
 // ClientCapabilities holds the client capability flags for the initialize request.
 type ClientCapabilities struct {
-	Auth              json.RawMessage        `json:"auth,omitzero"`
-	Elicitation       json.RawMessage        `json:"elicitation,omitzero"`
+	Auth              base.Unknown           `json:"auth,omitzero"`
+	Elicitation       base.Unknown           `json:"elicitation,omitzero"`
 	FS                FileSystemCapabilities `json:"fs,omitzero"`
-	Nes               json.RawMessage        `json:"nes,omitzero"`
+	Nes               base.Unknown           `json:"nes,omitzero"`
 	PositionEncodings []string               `json:"positionEncodings,omitzero"`
 	Terminal          bool                   `json:"terminal"`
 	Meta              json.RawMessage        `json:"_meta,omitzero"`
@@ -319,7 +324,7 @@ type PromptContent struct {
 	MimeType string          `json:"mimeType,omitzero"` // e.g. "image/png".
 	URI      string          `json:"uri,omitzero"`
 	Name     string          `json:"name,omitzero"`
-	Resource json.RawMessage `json:"resource,omitzero"` // Embedded resource object.
+	Resource base.Unknown    `json:"resource,omitzero"` // Embedded resource object.
 	Meta     json.RawMessage `json:"_meta,omitzero"`
 }
 
@@ -460,8 +465,8 @@ type ContentBlock struct {
 	MimeType    string          `json:"mimeType,omitzero"`
 	URI         string          `json:"uri,omitzero"`
 	Name        string          `json:"name,omitzero"`
-	Resource    json.RawMessage `json:"resource,omitzero"`
-	Annotations json.RawMessage `json:"annotations,omitzero"`
+	Resource    base.Unknown    `json:"resource,omitzero"`
+	Annotations base.Unknown    `json:"annotations,omitzero"`
 	Meta        json.RawMessage `json:"_meta,omitzero"`
 }
 
@@ -682,13 +687,13 @@ type AuthMethod struct {
 
 // AgentCapabilities holds the agent's declared capabilities from the initialize response.
 type AgentCapabilities struct {
-	Auth                json.RawMessage     `json:"auth,omitzero"`
+	Auth                base.Unknown        `json:"auth,omitzero"`
 	LoadSession         bool                `json:"loadSession,omitzero"`
 	MCPCapabilities     MCPCapabilities     `json:"mcpCapabilities,omitzero"`
-	Nes                 json.RawMessage     `json:"nes,omitzero"`
+	Nes                 base.Unknown        `json:"nes,omitzero"`
 	PositionEncoding    string              `json:"positionEncoding,omitzero"`
 	PromptCapabilities  PromptCapabilities  `json:"promptCapabilities,omitzero"`
-	Providers           json.RawMessage     `json:"providers,omitzero"`
+	Providers           base.Unknown        `json:"providers,omitzero"`
 	SessionCapabilities SessionCapabilities `json:"sessionCapabilities,omitzero"`
 	Meta                json.RawMessage     `json:"_meta,omitzero"`
 }

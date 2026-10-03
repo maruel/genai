@@ -802,7 +802,7 @@ type ThreadStartResponse struct {
 	ReasoningEffort         *ReasoningEffort         `json:"reasoningEffort,omitzero"`
 	MultiAgentMode          string                   `json:"multiAgentMode,omitzero"`
 	DisabledPluginIDs       []string                 `json:"disabledPluginIds,omitzero"`
-	InitialTurnsPage        json.RawMessage          `json:"initialTurnsPage,omitzero"`
+	InitialTurnsPage        base.Unknown             `json:"initialTurnsPage,omitzero"`
 }
 
 // ThreadResumeResponse is the result object from a thread/resume JSON-RPC response.
@@ -1083,9 +1083,9 @@ type Thread struct {
 	RecencyAt            base.TimeS      `json:"recencyAt,omitzero"`
 	Status               ThreadStatus    `json:"status,omitzero"`
 	Name                 string          `json:"name,omitzero"`
-	Extra                json.RawMessage `json:"extra,omitzero"`
-	Section              json.RawMessage `json:"section,omitzero"`
-	SectionEnteredAt     json.RawMessage `json:"sectionEnteredAt,omitzero"`
+	Extra                base.Unknown    `json:"extra,omitzero"`
+	Section              base.Unknown    `json:"section,omitzero"`
+	SectionEnteredAt     base.Unknown    `json:"sectionEnteredAt,omitzero"`
 	CanAcceptDirectInput bool            `json:"canAcceptDirectInput,omitzero"`
 	DaybreakEnabled      bool            `json:"daybreakEnabled,omitzero"`
 	HistoryMode          string          `json:"historyMode,omitzero"`
@@ -1934,7 +1934,7 @@ type GetAccountRateLimitsResponse struct {
 	RateLimitsByLimitID   map[string]RateLimitSnapshot  `json:"rateLimitsByLimitId,omitzero"`
 	RateLimitResetCredits *RateLimitResetCreditsSummary `json:"rateLimitResetCredits,omitzero"`
 	AccountID             string                        `json:"accountId,omitzero"`
-	RateLimitUpsell       json.RawMessage               `json:"rateLimitUpsell,omitzero"`
+	RateLimitUpsell       base.Unknown                  `json:"rateLimitUpsell,omitzero"`
 }
 
 // RateLimitResetCreditsSummary summarizes available rate-limit reset credits.

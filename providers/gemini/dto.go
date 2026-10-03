@@ -940,7 +940,7 @@ type ThinkingConfig struct {
 // ChatResponse is documented at https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
 type ChatResponse struct {
 	Candidates     []ResponseCandidate `json:"candidates"`
-	PromptFeedback struct{}            `json:"promptFeedback,omitzero"`
+	PromptFeedback base.Unknown        `json:"promptFeedback,omitzero"`
 	UsageMetadata  UsageMetadata       `json:"usageMetadata"`
 	ModelVersion   string              `json:"modelVersion"`
 	ResponseID     string              `json:"responseId"`

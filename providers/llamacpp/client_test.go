@@ -285,6 +285,12 @@ func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, model
 		"--spec-default",
 		// "--spec-type", "draft-mtp",
 		"--api-key", apiKey,
+		"--cors-origins", "",
+		"--no-cors-credentials",
+		"--no-ui",
+		"--no-slots",
+		"--parallel", "4",
+		"--kv-unified",
 	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).

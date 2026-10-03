@@ -76,7 +76,7 @@ func startServer(ctx context.Context, author, repo, modelfile string) (*llamacpp
 	if err != nil {
 		return nil, err
 	}
-	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--no-warmup", "--jinja", "--flash-attn", "on", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--no-warmup", "--jinja", "--flash-attn", "on", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--cors-origins", "", "--no-cors-credentials", "--no-ui", "--no-slots", "--parallel", "4", "--kv-unified"}
 	l, err := os.Create(filepath.Join(cache, "llama-server.log"))
 	if err != nil {
 		return nil, err

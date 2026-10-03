@@ -66,7 +66,8 @@ func mainImpl() (err error) {
 		return err
 	}
 	// The HuggingFace download also selects the model's multimodal projector.
-	srv, err := llamacppsrv.New(ctx, exe, "", os.Stderr, "localhost:0", 0, []string{"-hf", "ggml-org/OpenJev-GGUF", "--no-warmup"})
+	// Only the Go client needs access; grant no browser origins cross-origin access.
+	srv, err := llamacppsrv.New(ctx, exe, "", os.Stderr, "localhost:0", 0, []string{"-hf", "ggml-org/OpenJev-GGUF", "--no-warmup", "--cors-origins", "", "--no-cors-credentials", "--no-ui", "--no-slots", "--parallel", "4", "--kv-unified"})
 	if err != nil {
 		return err
 	}

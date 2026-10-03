@@ -7,8 +7,12 @@
 package openaicompatible_test
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"slices"
 	"testing"
 
@@ -22,6 +26,7 @@ import (
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.
 func TestClient(t *testing.T) {
+	t.Run("ToolRoundTrip", testClientTools)
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
 		if err := testRecorder.Close(); err != nil {
@@ -123,6 +128,85 @@ func TestClient(t *testing.T) {
 			})
 		}
 	})
+}
+
+func testClientTools(t *testing.T) {
+	for _, stream := range []bool{false, true} {
+		t.Run(fmt.Sprintf("stream=%t", stream), func(t *testing.T) {
+			calls := 0
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				var req openaicompatible.ChatRequest
+				if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+					t.Error(err)
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+				calls++
+				if req.ToolChoice != "auto" || len(req.Tools) != 1 || req.Tools[0].Function.Name != "weather" {
+					t.Errorf("tools: %#v", req)
+				}
+				body := `{"choices":[{"message":{"role":"assistant","tool_calls":[{"id":"a","type":"function","function":{"name":"weather","arguments":""}}]},"finish_reason":"stop"}],"extension":true}`
+				if req.Stream {
+					body = `{"choices":[{"delta":{"tool_calls":[{"index":0,"id":"a","function":{"name":"weather","arguments":""}}]},"finish_reason":"stop"}],"extension":true}`
+				}
+				if calls == 2 {
+					if len(req.Messages) != 3 || len(req.Messages[1].ToolCalls) != 1 || req.Messages[2].Role != "tool" || req.Messages[2].ToolCallID != "a" || len(req.Messages[2].Content) != 1 || req.Messages[2].Content[0].Text != "sunny" {
+						t.Errorf("tool history: %#v", req.Messages)
+					}
+					body = `{"choices":[{"message":{"role":"assistant","content":"sunny"},"finish_reason":"stop"}]}`
+					if req.Stream {
+						body = `{"choices":[{"delta":{"content":"sunny"},"finish_reason":"stop"}]}`
+					}
+				}
+				if req.Stream {
+					w.Header().Set("Content-Type", "text/event-stream")
+					body = "data: " + body + "\n\ndata: [DONE]\n\n"
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+				}
+				if _, err := w.Write([]byte(body)); err != nil {
+					t.Error(err)
+				}
+			}))
+			t.Cleanup(srv.Close)
+			c, err := openaicompatible.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			opts := &genai.GenOptionTools{Tools: []genai.ToolDef{{Name: "weather", Description: "Get weather", Callback: func(context.Context, *struct{}) (string, error) { return "sunny", nil }}}}
+			msgs := make(genai.Messages, 1, 3)
+			msgs[0] = genai.NewTextMessage("Weather?")
+			generate := func() (genai.Result, error) {
+				if !stream {
+					return c.GenSync(t.Context(), msgs, opts)
+				}
+				fragments, finish := c.GenStream(t.Context(), msgs, opts)
+				for range fragments {
+				}
+				return finish()
+			}
+			res, err := generate()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if res.Usage.FinishReason != genai.FinishedToolCalls {
+				t.Fatalf("finish: %q", res.Usage.FinishReason)
+			}
+			result, err := res.DoToolCalls(t.Context(), opts.Tools)
+			if err != nil {
+				t.Fatal(err)
+			}
+			msgs = append(msgs, res.Message, result)
+			res, err = generate()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if calls != 2 || len(res.Replies) != 1 || res.Replies[0].Text != "sunny" {
+				t.Fatalf("result: %#v; requests: %d", res, calls)
+			}
+		})
+	}
 }
 
 type provider struct {

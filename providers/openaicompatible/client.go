@@ -2,9 +2,19 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package openaicompatible implements a minimal client for "OpenAI-compatible" providers.
+// Package openaicompatible implements a lenient client for "OpenAI-compatible" providers.
 //
-// It's a good starting point to implement a client for a new platform.
+// It supports text and Chat Completions function tools without provider-specific schema
+// restrictions. Unknown response fields and finish reasons are accepted. Tool arguments
+// must still be valid JSON. Tool support depends on the remote model.
+//
+// Alibaba, Baseten, Cerebras, DeepSeek, Groq, HuggingFace, Mistral, OpenAI Chat,
+// OpenRouter, Pollinations, TogetherAI, and Xiaomi share this function-tool protocol.
+// This client does not translate Anthropic or Cohere tools, Cloudflare's model-specific
+// requests, or provider-specific reasoning modes. Perplexity does not support function
+// tools. Use a dedicated provider when a model requires its specific fields.
+//
+// See https://platform.openai.com/docs/api-reference/chat/create.
 package openaicompatible
 
 import (
@@ -48,7 +58,8 @@ type Client struct {
 
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
 //
-// It only support text exchanges (no multi-modal) and no tool calls.
+// It supports text exchanges (no multi-modal) and Chat Completions function tools.
+// Tool support and tool choice modes depend on the remote model.
 //
 // Option ProviderOptionRemote must be set.
 //
@@ -181,47 +192,36 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
+//
+// Tool calls stay pending across text and usage packets and flush at stream end.
+// Providers can repeat or omit IDs and names. A new ID starts a separate call even
+// when it reuses a stream index. TogetherAI can send whole calls outside the delta.
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
 	return func(yield func(genai.Reply) bool) {
+			var pending []ToolCall
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
 				}
+				if len(pkt.Choices) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("expected at most one choice, got %d", len(pkt.Choices))}
+					return
+				}
+				m := pkt.Delta.Message
+				var whole []ToolCall
 				if len(pkt.Choices) == 1 {
+					m = pkt.Choices[0].Delta.Message
+					whole = pkt.Choices[0].ToolCalls
 					if pkt.Choices[0].FinishReason != "" {
 						u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 					}
-					switch role := pkt.Choices[0].Delta.Role; role {
-					case "", "assistant":
-					default:
-						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-						return
-					}
-					for _, content := range pkt.Choices[0].Delta.Content {
-						switch content.Type {
-						case ContentText:
-							if !yield(genai.Reply{Text: content.Text}) {
-								return
-							}
-						default:
-							finalErr = &internal.BadError{Err: fmt.Errorf("unexpected content type %q", content.Type)}
-							return
-						}
-					}
-					continue
-				}
-				if pkt.FinishReason != "" {
+				} else if pkt.FinishReason != "" {
 					u.FinishReason = pkt.FinishReason.ToFinishReason()
-				}
-				m := pkt.Delta.Message
-				c := pkt.Delta.Message.Content
-				if m.IsZero() {
-					m = pkt.Delta.Message
 				}
 				switch role := m.Role; role {
 				case "", "assistant":
@@ -229,18 +229,78 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				if m.IsZero() {
+				if len(pkt.Choices) == 0 && m.IsZero() && pkt.Delta.Text != "" {
 					if !yield(genai.Reply{Text: pkt.Delta.Text}) {
 						return
 					}
-					continue
 				}
-				for _, content := range c {
-					if !yield(genai.Reply{Text: content.Text}) {
+				for _, content := range m.Content {
+					if content.Type != "" && content.Type != ContentText {
+						finalErr = &internal.BadError{Err: fmt.Errorf("unsupported content type %q", content.Type)}
 						return
+					}
+					if content.Text != "" {
+						if !yield(genai.Reply{Text: content.Text}) {
+							return
+						}
+					}
+				}
+				for i, tc := range m.ToolCalls {
+					idx := -1
+					for j := len(pending) - 1; j >= 0; j-- {
+						p := &pending[j]
+						if tc.ID != "" && tc.ID == p.ID || tc.Index != nil && p.Index != nil && *tc.Index == *p.Index && (tc.ID == "" || p.ID == "") {
+							idx = j
+							break
+						}
+					}
+					// Without indexes or IDs, use packet position for parallel deltas,
+					// and the last unfinished call for serial deltas.
+					if idx == -1 && tc.Index == nil && tc.ID == "" && len(pending) > 0 {
+						j := len(pending) - 1
+						if len(m.ToolCalls) > 1 {
+							j = i
+						}
+						if j < len(pending) && (tc.Function.Name == "" || tc.Function.Name == pending[j].Function.Name) && (tc.Function.Name == "" || tc.Function.Arguments == "" || !json.Valid([]byte(pending[j].Function.Arguments))) {
+							idx = j
+						}
+					}
+					if idx == -1 {
+						pending = append(pending, tc)
+						continue
+					}
+					p := &pending[idx]
+					if tc.ID != "" {
+						p.ID = tc.ID
+					}
+					if tc.Function.Name != "" && tc.Function.Name != p.Function.Name {
+						p.Function.Name += tc.Function.Name
+					}
+					p.Function.Arguments += tc.Function.Arguments
+				}
+				// Whole choice-level calls replace deltas for the same call.
+				for _, tc := range whole {
+					idx := slices.IndexFunc(pending, func(p ToolCall) bool {
+						return tc.ID != "" && tc.ID == p.ID || tc.Index != nil && p.Index != nil && *tc.Index == *p.Index && (tc.ID == "" || p.ID == "")
+					})
+					if idx == -1 {
+						pending = append(pending, tc)
+					} else {
+						pending[idx] = tc
 					}
 				}
 			}
+			for i := range pending {
+				var t genai.ToolCall
+				if err := pending[i].To(&t); err != nil {
+					finalErr = &internal.BadError{Err: fmt.Errorf("tool call: %w", err)}
+					return
+				}
+				if !yield(genai.Reply{ToolCall: t}) {
+					return
+				}
+			}
+			normalizeToolFinish(&u, len(pending) != 0)
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, nil, finalErr
 		}

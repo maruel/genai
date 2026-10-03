@@ -19,6 +19,10 @@ import (
 )
 
 // ChatRequest is the provider-specific chat completion request.
+//
+// Strict schema enforcement and parallel_tool_calls are omitted because they are
+// not common requirements across providers. ToolChoice modes depend on the remote
+// model; for example, Xiaomi's dedicated client only sends "auto".
 type ChatRequest struct {
 	Model            string    `json:"model,omitzero"`
 	Messages         []Message `json:"messages"`
@@ -29,6 +33,8 @@ type ChatRequest struct {
 	TopP             float64   `json:"top_p,omitzero"` // [0, 1.0]
 	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"`
 	PresencePenalty  float64   `json:"presence_penalty,omitzero"` // [-2, 2]
+	ToolChoice       string    `json:"tool_choice,omitzero"`      // "auto", "none", "required"
+	Tools            []Tool    `json:"tools,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -63,22 +69,57 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.DecodeAs != nil {
 				errs = append(errs, errors.New("unsupported option DecodeAs"))
 			}
+		case *genai.GenOptionTools:
+			if len(v.Tools) != 0 {
+				switch v.Force {
+				case genai.ToolCallAny:
+					c.ToolChoice = "auto"
+				case genai.ToolCallNone:
+					c.ToolChoice = "none"
+				case genai.ToolCallRequired:
+					c.ToolChoice = "required"
+				default:
+					return fmt.Errorf("unsupported tool choice %d", v.Force)
+				}
+				c.Tools = make([]Tool, len(v.Tools))
+				for i := range v.Tools {
+					t := &v.Tools[i]
+					s, err := t.GetInputSchema()
+					if err != nil {
+						errs = append(errs, fmt.Errorf("tool #%d: %w", i, err))
+						continue
+					}
+					c.Tools[i] = Tool{Type: "function", Function: ToolFunction{Name: t.Name, Description: t.Description, Parameters: s}}
+				}
+			}
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 
-	offset := 0
+	c.Messages = make([]Message, 0, len(msgs)+1)
 	if sp != "" {
-		offset = 1
-	}
-	c.Messages = make([]Message, len(msgs)+offset)
-	if sp != "" {
-		c.Messages[0] = Message{Role: "system", Content: []Content{{Type: ContentText, Text: sp}}}
+		c.Messages = append(c.Messages, Message{Role: "system", Content: []Content{{Type: ContentText, Text: sp}}})
 	}
 	for i := range msgs {
-		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
+		if len(msgs[i].ToolCallResults) > 1 {
+			for j := range msgs[i].ToolCallResults {
+				msg := msgs[i]
+				msg.ToolCallResults = msgs[i].ToolCallResults[j : j+1]
+				var m Message
+				if err := m.From(&msg); err != nil {
+					errs = append(errs, fmt.Errorf("message #%d, result #%d: %w", i, j, err))
+				} else {
+					c.Messages = append(c.Messages, m)
+				}
+			}
+			continue
+		}
+		var m Message
+		if err := m.From(&msgs[i]); err != nil {
 			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+		} else {
+			c.Messages = append(c.Messages, m)
 		}
 	}
 	// If we have unsupported features but no other errors, return a structured error.
@@ -93,22 +134,71 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-// Message is completely undocumented as of May 2025.
+// Tool is a function tool definition.
+type Tool struct {
+	Type     string       `json:"type"`
+	Function ToolFunction `json:"function"`
+}
+
+// ToolFunction describes a function and its input schema.
+type ToolFunction struct {
+	Name        string           `json:"name"`
+	Description string           `json:"description,omitzero"`
+	Parameters  genai.JSONSchema `json:"parameters"`
+}
+
+// ToolCall is a function call or a streamed function call delta.
+type ToolCall struct {
+	ID       string           `json:"id,omitzero"`
+	Type     string           `json:"type,omitzero"`
+	Function ToolCallFunction `json:"function,omitzero"`
+	// Index identifies parallel stream deltas. Nil means the provider omitted it.
+	Index *int64 `json:"index,omitzero"`
+}
+
+// To converts a complete call to genai and validates its arguments.
+// Empty arguments represent a no-argument call and become an empty JSON object.
+func (t *ToolCall) To(out *genai.ToolCall) error {
+	args := t.Function.Arguments
+	if args == "" {
+		args = "{}"
+	}
+	if !json.Valid([]byte(args)) {
+		return fmt.Errorf("invalid tool call arguments %q", args)
+	}
+	*out = genai.ToolCall{ID: t.ID, Name: t.Function.Name, Arguments: args}
+	return out.Validate()
+}
+
+// ToolCallFunction contains a function name and JSON arguments or argument fragments.
+type ToolCallFunction struct {
+	Name      string `json:"name,omitzero"`
+	Arguments string `json:"arguments,omitzero"`
+}
+
+// Message accepts the common Chat Completions message fields and content variants.
 type Message struct {
-	Role    string   `json:"role,omitzero"` // "system", "assistant", "user"
-	Content Contents `json:"content,omitzero"`
+	Role       string     `json:"role,omitzero"` // "system", "assistant", "user", "tool"
+	Content    Contents   `json:"content,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
 // IsZero reports whether the value is zero.
 func (m *Message) IsZero() bool {
-	return m.Role == "" && len(m.Content) == 0
+	return m.Role == "" && len(m.Content) == 0 && len(m.ToolCalls) == 0 && m.ToolCallID == ""
 }
 
-// From converts from a genai.Message to a Message.
+// From converts from a genai.Message to a Message. It accepts at most one tool result.
 func (m *Message) From(in *genai.Message) error {
+	if len(in.ToolCallResults) > 1 {
+		return errors.New("expected at most one tool result")
+	}
 	switch r := in.Role(); r {
 	case "user", "assistant":
 		m.Role = r
+	case "computer":
+		m.Role = "tool"
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
@@ -136,6 +226,8 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("request #%d: unknown Request type", 0)
 			}
 		}
+	}
+	if len(in.Replies) > 0 {
 		for i := range in.Replies {
 			if len(in.Replies[i].Opaque) != 0 {
 				return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
@@ -143,6 +235,12 @@ func (m *Message) From(in *genai.Message) error {
 			switch {
 			case in.Replies[i].Text != "":
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Replies[i].Text})
+			case !in.Replies[i].ToolCall.IsZero():
+				t := &in.Replies[i].ToolCall
+				if len(t.Opaque) != 0 {
+					return errors.New("field ToolCall.Opaque not supported")
+				}
+				m.ToolCalls = append(m.ToolCalls, ToolCall{ID: t.ID, Type: "function", Function: ToolCallFunction{Name: t.Name, Arguments: t.Arguments}})
 			case in.Replies[i].Reasoning != "":
 				// Ignore
 			case !in.Replies[i].Doc.IsZero():
@@ -165,20 +263,29 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		return errors.New("tool call results not supported")
+		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
+		m.ToolCallID = in.ToolCallResults[0].ID
 	}
 	return nil
 }
 
 // To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
-	if len(m.Content) != 0 {
-		out.Replies = make([]genai.Reply, len(m.Content))
-		for i, content := range m.Content {
-			if content.Type == ContentText {
-				out.Replies[i] = genai.Reply{Text: content.Text}
-			}
+	out.Replies = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
+	for _, content := range m.Content {
+		if content.Type != "" && content.Type != ContentText {
+			return fmt.Errorf("unsupported content type %q", content.Type)
 		}
+		if content.Text != "" {
+			out.Replies = append(out.Replies, genai.Reply{Text: content.Text})
+		}
+	}
+	for i := range m.ToolCalls {
+		var r genai.Reply
+		if err := m.ToolCalls[i].To(&r.ToolCall); err != nil {
+			return fmt.Errorf("tool call #%d: %w", i, err)
+		}
+		out.Replies = append(out.Replies, r)
 	}
 	return nil
 }
@@ -261,19 +368,21 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) == 1 {
 		out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 		err := c.Choices[0].Message.To(&out.Message)
+		normalizeToolFinish(&out.Usage, len(c.Choices[0].Message.ToolCalls) != 0)
 		return out, err
 	}
 	m := c.Message2
 	if m.IsZero() {
 		m = c.Message
 	}
-	if m.Role == "" {
+	if m.IsZero() {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c)
 	}
 	if err := m.To(&out.Message); err != nil {
 		return out, err
 	}
 	out.Usage.FinishReason = c.FinishReason.ToFinishReason()
+	normalizeToolFinish(&out.Usage, len(m.ToolCalls) != 0)
 	return out, nil
 }
 
@@ -287,18 +396,19 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		return genai.FinishedStop
 	case FinishLength:
 		return genai.FinishedLength
+	case FinishToolCalls, FinishFunctionCall:
+		return genai.FinishedToolCalls
 	default:
-		if !internal.BeLenient {
-			panic(f)
-		}
 		return genai.FinishReason(f)
 	}
 }
 
 // Finish reason values.
 const (
-	FinishStop   FinishReason = "stop"
-	FinishLength FinishReason = "length"
+	FinishFunctionCall FinishReason = "function_call"
+	FinishLength       FinishReason = "length"
+	FinishStop         FinishReason = "stop"
+	FinishToolCalls    FinishReason = "tool_calls"
 )
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
@@ -313,8 +423,17 @@ type ChatStreamChunkResponse struct {
 			Message
 		} `json:"delta"`
 		FinishReason FinishReason `json:"finish_reason"`
+		ToolCalls    []ToolCall   `json:"tool_calls"` // Some providers send whole calls outside delta.
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
+}
+
+// normalizeToolFinish handles providers that report stop or omit the finish reason after tool calls.
+// Other finish reasons, including truncation and provider extensions, stay unchanged.
+func normalizeToolFinish(u *genai.Usage, hasTools bool) {
+	if hasTools && (u.FinishReason == "" || u.FinishReason == genai.FinishedStop) {
+		u.FinishReason = genai.FinishedToolCalls
+	}
 }
 
 // Usage is the provider-specific token usage.

@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-0b004765-d7b6-4940-88cc-62f686f84037","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790985120,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-0b004765-d7b6-4940-88cc-62f686f84037","choices":[{"delta":{"reasoning":"We"},"index":0}],"created":1790985120,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-0b004765-d7b6-4940-88cc-62f686f84037","choices":[{"delta":{"reasoning":" need answer user: \"Explain the theory of relativity in great details"},"index":0}],"created":1790985120,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-0b004765-d7b6-4940-88cc-62f686f84037","choices":[{"delta":{},"finish_reason":"length","index":0}],"created":1790985120,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":79,"completion_tokens":16,"completion_tokens_details":{"reasoning_tokens":16},"prompt_tokens":63,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985120.4351132,"queue_time":0.46594434,"prompt_time":0.011379922,"completion_time":0.003478762,"total_time":0.4849679470062256}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e4a6ac15b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=73
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647993"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26993"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "443"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215983129"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44983129"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "133129"
+        status: 200 OK
+        code: 200
+        duration: 88ms

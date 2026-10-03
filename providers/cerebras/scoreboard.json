@@ -7,12 +7,12 @@
   "dashboardURL": "https://cloud.cerebras.ai",
   "scenarios": [
     {
+      "comments": "Only two models are available. Qwen 3.8 27B covers SOTA; GPT OSS 120B covers good and cheap at lower input and output prices: https://api.cerebras.ai/public/v1/models.",
       "models": [
-        "gemma-4-31b"
+        "qwen-3.8-27b"
       ],
       "sota": true,
-      "good": true,
-      "cheap": true,
+      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -36,7 +36,8 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
@@ -68,6 +69,8 @@
       "models": [
         "gpt-oss-120b"
       ],
+      "good": true,
+      "cheap": true,
       "reason": true,
       "in": {
         "text": {
@@ -112,7 +115,6 @@
     },
     {
       "models": [
-        "qwen-3.8-27b",
         "zai-glm-4.7"
       ]
     }

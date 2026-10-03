@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 96
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-77b3644f-5ab8-4cf8-8725-7395c6ef93f9","choices":[{"finish_reason":"stop","index":0,"message":{"content":"\n\nHello","reasoning":"We need to respond to user: \"Say hello. Use only one word.\" Must use only one word. Need final one word likely \"Hello\". Ensure no extra punctuation? One word could be Hello. Final only Hello.\n","role":"assistant"}}],"created":1790985120,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion","usage":{"total_tokens":110,"completion_tokens":50,"completion_tokens_details":{"reasoning_tokens":47},"prompt_tokens":60,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985120.1406353,"queue_time":0.000732509,"prompt_time":0.020795431,"completion_time":0.022305738,"total_time":0.04510021209716797}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e48495f5b53-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=6,cfOrigin;dur=162
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647998"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26998"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "448"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215967218"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44967218"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "117218"
+        status: 200 OK
+        code: 200
+        duration: 222ms

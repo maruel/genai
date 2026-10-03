@@ -25,6 +25,60 @@ func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 	return f(r)
 }
 
+func TestChatResponse(t *testing.T) {
+	t.Run("reasoningLogprobs", func(t *testing.T) {
+		var r cerebras.ChatResponse
+		d := json.NewDecoder(strings.NewReader(`{"choices":[{"reasoning_logprobs":{"content":[{"token":"We","logprob":-0.5,"bytes":[87,101]}]}}]}`))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&r); err != nil {
+			t.Fatal(err)
+		}
+		if len(r.Choices) != 1 || len(r.Choices[0].ReasoningLogprobs.Content) != 1 || r.Choices[0].ReasoningLogprobs.Content[0].Token != "We" || r.Choices[0].ReasoningLogprobs.Content[0].Logprob != -0.5 {
+			t.Fatalf("unexpected choices: %+v", r.Choices)
+		}
+	})
+}
+
+func TestChatStreamChunkResponse(t *testing.T) {
+	t.Run("reasoningLogprobs", func(t *testing.T) {
+		var r cerebras.ChatStreamChunkResponse
+		d := json.NewDecoder(strings.NewReader(`{"choices":[{"reasoning_logprobs":{"content":[{"token":"We","logprob":-0.5,"bytes":[87,101]}]}}]}`))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&r); err != nil {
+			t.Fatal(err)
+		}
+		if len(r.Choices) != 1 || len(r.Choices[0].ReasoningLogprobs.Content) != 1 || r.Choices[0].ReasoningLogprobs.Content[0].Token != "We" || r.Choices[0].ReasoningLogprobs.Content[0].Logprob != -0.5 {
+			t.Fatalf("unexpected choices: %+v", r.Choices)
+		}
+	})
+}
+
+func TestErrorResponse(t *testing.T) {
+	t.Run("Error", func(t *testing.T) {
+		var r cerebras.ErrorResponse
+		d := json.NewDecoder(strings.NewReader(`{"id":"request-1","message":"Invalid schema","type":"invalid_request_error","param":"response_format","code":"wrong_api_format"}`))
+		d.DisallowUnknownFields()
+		if err := d.Decode(&r); err != nil {
+			t.Fatal(err)
+		}
+		if got := r.Error(); got != "invalid_request_error/response_format/wrong_api_format: Invalid schema" {
+			t.Fatalf("error = %q", got)
+		}
+	})
+}
+
+func TestUsage(t *testing.T) {
+	var u cerebras.Usage
+	d := json.NewDecoder(strings.NewReader(`{"prompt_tokens_details":{"cached_tokens":12,"image_tokens":34},"image_tokens":56}`))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&u); err != nil {
+		t.Fatal(err)
+	}
+	if u.PromptTokensDetails.CachedTokens != 12 || u.PromptTokensDetails.ImageTokens != 34 || u.ImageTokens != 56 {
+		t.Fatalf("unexpected usage: %+v", u)
+	}
+}
+
 func TestDTOFieldsHaveJSONTag(t *testing.T) {
 	seen := map[reflect.Type]struct{}{}
 	for _, typ := range []reflect.Type{

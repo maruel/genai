@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 563
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-e9153fdd-12d3-41c7-b55d-37da485ebc46","choices":[{"finish_reason":"tool_calls","index":0,"message":{"reasoning":"The user is asking to determine which country is the best using the best_country tool. The choices are \"USA\" and \"Canada\". Calling the tool... but the user hasn''t specified which country to check. Let me think—the tool takes a single country parameter. The user asks \"Which country is the best between USA and Canada?\" So I should call the tool, but... the tool description says \"a tool to specify the best country.\" Probably I need to call it for a specific country. Since there are no other dependent pieces of info, I could call both in parallel? But then the tool might return conflicting results. Actually, reasonable interpretation: call best_country with country=USA and best_country with country=Canada, then see which one says it''s the best. Since they''re independent, I can call both in the same block.\n\nThat seems like a reasonable approach: make two independent calls in parallel.\n","tool_calls":[{"function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"type":"function","id":"b2f349ec1"},{"function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"type":"function","id":"15c641715"}],"role":"assistant"}}],"created":1790985122,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion","usage":{"total_tokens":613,"completion_tokens":242,"completion_tokens_details":{"reasoning_tokens":187},"prompt_tokens":371,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985122.3502622,"queue_time":0.002608556,"prompt_time":0.012941239,"completion_time":0.254415709,"total_time":0.27149510383605957}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e564a485b53-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=7,cfOrigin;dur=402
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647992"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26992"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "442"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215935490"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44955490"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "85490"
+        status: 200 OK
+        code: 200
+        duration: 418ms

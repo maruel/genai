@@ -45,6 +45,18 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 }
 
 func TestNew(t *testing.T) {
+	t.Run("preferredModel", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			_, err := cerebras.New(t.Context(),
+				genai.ProviderOptionAPIKey("test-key"),
+				genai.ModelGood,
+				genai.ProviderOptionPreloadedModels{&cerebras.Model{ID: "qwen-3.8-27b"}},
+			)
+			if err == nil || !strings.Contains(err.Error(), `failed to find preferred model "gpt-oss-120b"`) {
+				t.Fatalf("unexpected error: %v", err)
+			}
+		})
+	})
 	t.Run("environmentAPIKey", func(t *testing.T) {
 		t.Setenv("CEREBRAS_API_KEY", "environment-api-key")
 		var got string
@@ -176,8 +188,7 @@ func TestClient(t *testing.T) {
 			}
 			return p
 		}
-		// Gemma 4 emits reasoning content even when thinking is disabled.
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{TolerateReasoning: []string{"gemma"}})
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

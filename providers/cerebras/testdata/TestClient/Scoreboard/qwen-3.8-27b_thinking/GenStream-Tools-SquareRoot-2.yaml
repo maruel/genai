@@ -1,0 +1,102 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 788
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"1c565d158","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"1c565d158","name":"square_root"}],"stream":true,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" user asked to use the"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" square_root tool. I didn"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":"'t call it"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" in the previous response implicitly"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":"? Actually I"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" did provide output as"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" if using the"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" tool. The user"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":"'s final response likely"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" expects no mention and"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"reasoning":" result only.\n"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{"content":"\n\n363.89"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-173d5a08-99df-4fa8-bf83-7e8c00258ae1","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":193,"completion_tokens":55,"completion_tokens_details":{"reasoning_tokens":47},"prompt_tokens":138,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985121.8426862,"queue_time":0.051743966,"prompt_time":0.005409585,"completion_time":0.060349252,"total_time":0.11862707138061523}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e532adb5b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=7,cfOrigin;dur=91
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647980"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26980"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "430"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215947780"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44947780"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "97780"
+        status: 200 OK
+        code: 200
+        duration: 106ms

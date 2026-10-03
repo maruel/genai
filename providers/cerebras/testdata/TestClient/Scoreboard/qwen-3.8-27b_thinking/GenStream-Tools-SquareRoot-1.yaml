@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 567
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-99447ba7-544c-4db9-841a-9ebb18d5ff89","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-99447ba7-544c-4db9-841a-9ebb18d5ff89","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-99447ba7-544c-4db9-841a-9ebb18d5ff89","choices":[{"delta":{"reasoning":" user wants me to calculate the square root of 132413 using"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-99447ba7-544c-4db9-841a-9ebb18d5ff89","choices":[{"delta":{"reasoning":" the square_root tool and reply with only the result.\n"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-99447ba7-544c-4db9-841a-9ebb18d5ff89","choices":[{"delta":{"tool_calls":[{"function":{"name":"square_root","arguments":"{\"number\": 132413}"},"type":"function","id":"1c565d158","index":0}]},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-99447ba7-544c-4db9-841a-9ebb18d5ff89","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":433,"completion_tokens":64,"completion_tokens_details":{"reasoning_tokens":31},"prompt_tokens":369,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985121.65513,"queue_time":0.002510733,"prompt_time":0.010074932,"completion_time":0.03180647,"total_time":0.04606318473815918}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e51ecba5b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=12,cfOrigin;dur=135
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647982"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26982"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "432"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215948444"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44948444"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "98444"
+        status: 200 OK
+        code: 200
+        duration: 154ms

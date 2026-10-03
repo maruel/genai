@@ -227,7 +227,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = mod
@@ -239,9 +239,12 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	return c, err
 }
 
-// selectBestTextModel selects Gemma 4 31B, Cerebras' preferred model for text generation.
-func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
-	const model = "gemma-4-31b"
+// selectBestTextModel selects Qwen 3.8 27B for SOTA and GPT OSS 120B for good and cheap.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	model := "gpt-oss-120b"
+	if preference == string(genai.ModelSOTA) {
+		model = "qwen-3.8-27b"
+	}
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)

@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-513ed26f-c3d4-4a15-ab66-63cd06570cfa","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\n  \"is_fruit\": true\n}","reasoning":"The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\" So I need to output JSON with key \"is_fruit\" and boolean true. Must follow the schema: {\"type\":\"object\"} is given as response format? Actually the developer message sets \"Response Formats\" and shows a json_object type: {\"type\":\"object\"}. That''s just a generic format.\n\nWe must output JSON only. So:\n\n{\n  \"is_fruit\": true\n}\n\nMake sure no extra text.","role":"assistant"}}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":262,"completion_tokens":140,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":120},"prompt_tokens":122,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.5826013,"queue_time":0.004013083,"prompt_time":0.00218822,"completion_time":0.07052073,"total_time":0.07837867736816406}}'
+        body: '{"id":"chatcmpl-e49cfe9d-f524-47f5-b79d-a49c8d4078a2","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\n  \"is_fruit\": true\n}","reasoning":"The user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\" So we need to output JSON with field is_fruit true. Ensure correct format. Should be: {\"is_fruit\": true}. No extra text.","role":"assistant"}}],"created":1790984506,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion","usage":{"total_tokens":208,"completion_tokens":86,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":66},"prompt_tokens":122,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984506.36658,"queue_time":0.003078603,"prompt_time":0.00307436,"completion_time":0.031970897,"total_time":0.03956294059753418}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec95fb09dfaf-YUL
+                - a4478f4c59670026-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -37,35 +37,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=25,cfOrigin;dur=152
+                - cfEdge;dur=3,cfOrigin;dur=139
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439986"
+                - "2392"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59986"
+                - "145"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "986"
+                - "4"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999949431"
+                - "983585"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119949431"
+                - "2983585"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "949431"
+                - "13585"
         status: 200 OK
         code: 200
-        duration: 185ms
+        duration: 59.246s

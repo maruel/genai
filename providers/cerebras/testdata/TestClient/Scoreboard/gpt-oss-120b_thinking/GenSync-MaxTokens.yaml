@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-a60f0e49-5abf-45c4-b5fe-d05fc6eb6d64","choices":[{"finish_reason":"length","index":0,"message":{"reasoning":"The user wants an explanation of the theory of relativity in great","role":"assistant"}}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":93,"completion_tokens":16,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":13},"prompt_tokens":77,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.3587573,"queue_time":0.003688626,"prompt_time":0.0022607,"completion_time":0.004683054,"total_time":0.012189149856567383}}'
+        body: '{"id":"chatcmpl-b5cbb10d-dbf5-4602-b295-7e7e49f316e7","choices":[{"finish_reason":"length","index":0,"message":{"reasoning":"We need to produce a detailed explanation of the theory of relativity","role":"assistant"}}],"created":1790984447,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion","usage":{"total_tokens":93,"completion_tokens":16,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":13},"prompt_tokens":77,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984447.016684,"queue_time":0.003318346,"prompt_time":0.001794511,"completion_time":0.006975363,"total_time":0.01625680923461914}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec946e82dfaf-YUL
+                - a4478dd96d310026-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -37,35 +37,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=25,cfOrigin;dur=111
+                - cfEdge;dur=4,cfOrigin;dur=115
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439989"
+                - "2393"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59989"
+                - "145"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "989"
+                - "1"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999966331"
+                - "999597"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119966331"
+                - "2999597"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "966331"
+                - "29597"
         status: 200 OK
         code: 200
-        duration: 144ms
+        duration: 126ms

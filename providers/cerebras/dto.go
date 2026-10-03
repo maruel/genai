@@ -717,10 +717,11 @@ type ChatResponse struct {
 	SystemFingerprint string     `json:"system_fingerprint"`
 	Created           base.TimeS `json:"created"`
 	Choices           []struct {
-		Index        int64        `json:"index"`
-		FinishReason FinishReason `json:"finish_reason"`
-		Message      Message      `json:"message"`
-		Logprobs     Logprobs     `json:"logprobs"`
+		Index             int64        `json:"index"`
+		FinishReason      FinishReason `json:"finish_reason"`
+		Message           Message      `json:"message"`
+		Logprobs          Logprobs     `json:"logprobs"`
+		ReasoningLogprobs Logprobs     `json:"reasoning_logprobs,omitzero"`
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
@@ -801,9 +802,10 @@ type ChatStreamChunkResponse struct {
 			Reasoning string     `json:"reasoning"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
-		Index        int64        `json:"index"`
-		FinishReason FinishReason `json:"finish_reason"`
-		Logprobs     Logprobs     `json:"logprobs"`
+		Index             int64        `json:"index"`
+		FinishReason      FinishReason `json:"finish_reason"`
+		Logprobs          Logprobs     `json:"logprobs"`
+		ReasoningLogprobs Logprobs     `json:"reasoning_logprobs,omitzero"`
 	} `json:"choices"`
 	Usage    Usage `json:"usage"`
 	TimeInfo struct {
@@ -855,6 +857,7 @@ type Usage struct {
 	ImageTokens         int64 `json:"image_tokens"`
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
+		ImageTokens  int64 `json:"image_tokens"`
 	} `json:"prompt_tokens_details"`
 	CompletionTokensDetails struct {
 		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
@@ -905,6 +908,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
+	ID string `json:"id,omitzero"`
+
 	// Either this
 	Detail string `json:"detail"`
 

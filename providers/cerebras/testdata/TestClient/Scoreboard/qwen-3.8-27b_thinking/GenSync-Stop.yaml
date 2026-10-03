@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 138
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-e781fd09-f848-4acb-bca4-d4dba761687b","choices":[{"finish_reason":"stop","index":0,"message":{"reasoning":"The user wants a detailed description of Canada that starts with the exact phrase \"Canada ","role":"assistant"}}],"created":1790985120,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion","usage":{"total_tokens":84,"completion_tokens":17,"completion_tokens_details":{"reasoning_tokens":17},"prompt_tokens":64,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985120.6740503,"queue_time":0.00020496,"prompt_time":0.00327978,"completion_time":0.013436798,"total_time":0.01878070831298828}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e4bc8f15b53-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=9,cfOrigin;dur=114
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647991"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26991"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "441"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215982936"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44982936"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "132936"
+        status: 200 OK
+        code: 200
+        duration: 132ms

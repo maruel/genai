@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-962759a2-4e98-41fa-b1db-3cd367477288","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\":true}","reasoning":"We need to output JSON matching schema: object with required boolean is_fruit. No extra properties. So answer: {\"is_fruit\": true}.","role":"assistant"}}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":272,"completion_tokens":47,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":30},"prompt_tokens":225,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1784602499.7717323,"queue_time":0.004228689,"prompt_time":0.006522032,"completion_time":0.023955039,"total_time":0.036443471908569336}}'
+        body: '{"id":"chatcmpl-1c0e9e26-05a2-4a95-9719-f165dba1c4d4","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","reasoning":"The system wants response in JSON format adhering to schema: {\"is_fruit\": boolean}. So answer: {\"is_fruit\": true}. Must be only JSON, no extra text.","role":"assistant"}}],"created":1790984506,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion","usage":{"total_tokens":279,"completion_tokens":54,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":37},"prompt_tokens":225,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984506.5044148,"queue_time":0.003096641,"prompt_time":0.003649557,"completion_time":0.027077866,"total_time":0.03580904006958008}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec972ee6dfaf-YUL
+                - a4478f4d4d2b0026-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -37,35 +37,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=24,cfOrigin;dur=116
+                - cfEdge;dur=5,cfOrigin;dur=114
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439984"
+                - "2391"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59984"
+                - "144"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "984"
+                - "3"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999932799"
+                - "983391"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119932799"
+                - "2983391"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "932799"
+                - "13391"
         status: 200 OK
         code: 200
-        duration: 147ms
+        duration: 126ms

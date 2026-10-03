@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-95deb6de-5771-4726-bf3f-6529e976669c","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-8ca845c9-a040-4a13-a682-efd266e436a6","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-95deb6de-5771-4726-bf3f-6529e976669c","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-8ca845c9-a040-4a13-a682-efd266e436a6","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-95deb6de-5771-4726-bf3f-6529e976669c","choices":[{"delta":{"reasoning":" user asks: \"Explain the theory of relativity in great"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-8ca845c9-a040-4a13-a682-efd266e436a6","choices":[{"delta":{"reasoning":" user asks to \"Explain the theory of relativity in great"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-95deb6de-5771-4726-bf3f-6529e976669c","choices":[{"delta":{},"finish_reason":"length","index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":93,"completion_tokens":16,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":13},"prompt_tokens":77,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602498.9262955,"queue_time":0.019874901,"prompt_time":0.002432459,"completion_time":0.002201131,"total_time":0.027013063430786133}}
+            data: {"id":"chatcmpl-8ca845c9-a040-4a13-a682-efd266e436a6","choices":[{"delta":{},"finish_reason":"length","index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion.chunk","usage":{"total_tokens":93,"completion_tokens":16,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":13},"prompt_tokens":77,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984626.3329647,"queue_time":0.003157459,"prompt_time":0.002001328,"completion_time":0.005038468,"total_time":0.012048721313476562}}
 
             data: [DONE]
 
@@ -37,7 +37,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec91ff46dfaf-YUL
+                - a447923a2c8d3189-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Referrer-Policy:
@@ -46,35 +46,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=24,cfOrigin;dur=55
+                - cfEdge;dur=7,cfOrigin;dur=93
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439994"
+                - "2388"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59994"
+                - "143"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "994"
+                - "3"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999966954"
+                - "984110"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119966954"
+                - "2999847"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "966954"
+                - "29847"
         status: 200 OK
         code: 200
-        duration: 86ms
+        duration: 107ms

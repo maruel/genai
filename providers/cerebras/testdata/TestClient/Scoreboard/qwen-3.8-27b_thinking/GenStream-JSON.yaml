@@ -1,0 +1,90 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"},"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"reasoning":"We"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"reasoning":" need to respond to user: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"reasoning":": {\"is_fruit\": bool}.\"\nNeed output only JSON"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"reasoning":" object matching schema. Should be {\"is_f"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"reasoning":"ruit\": true}. Ensure valid JSON, no"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"reasoning":" extra text.\n"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{"content":"\n\n{\"is_fruit\": true}"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-f66a79c8-668a-4d5d-94ee-12bfc7d2bd1d","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":237,"completion_tokens":75,"completion_tokens_details":{"reasoning_tokens":66},"prompt_tokens":162,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985121.169944,"queue_time":0.002398425,"prompt_time":0.005732234,"completion_time":0.025276545,"total_time":0.034775733947753906}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e4eeef05b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=8,cfOrigin;dur=132
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647987"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26987"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "437"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215966055"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44966055"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "116055"
+        status: 200 OK
+        code: 200
+        duration: 149ms

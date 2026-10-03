@@ -21,25 +21,47 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":"User"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":" asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" user wants a JSON object with"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":" provided schema: {\"is_fruit\": bool}.\" The schema expects"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" {\"is_fruit\":"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":" a JSON object with a key \"is"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" bool}. They ask \""},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":"_fruit\" and a boolean value. So answer: {\""},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"Is a banana a fruit"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"reasoning":"is_fruit\": true}. Must be JSON only."},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"? Do not include an"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"content":"{\n  \"is_fruit\": true"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" explanation. Reply ONLY as"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{"content":"\n}"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" JSON according to the provided"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-1b3fed8c-06b0-4361-b29c-8c402be8a96b","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":210,"completion_tokens":88,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":68},"prompt_tokens":122,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.209547,"queue_time":0.004013568,"prompt_time":0.002557365,"completion_time":0.031589522,"total_time":0.04071402549743652}}
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" schema: {\"is_f"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"ruit\": bool}.\"\n\n"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"We should respond with JSON"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" object: {\"is_f"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"ruit\": true}. Ensure"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" it's correct format.\n\nWe"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" should not include any extra"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":" text. Provide just the JSON"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"reasoning":"."},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"content":"{\"is"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{"content":"_fruit\": true}"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-12e3bad9-1baf-4809-aa89-beae3d4c99ba","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk","usage":{"total_tokens":218,"completion_tokens":96,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":79},"prompt_tokens":122,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984626.8149602,"queue_time":0.003058698,"prompt_time":0.002489622,"completion_time":0.096188007,"total_time":0.1044008731842041}}
 
             data: [DONE]
 
@@ -49,7 +71,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec938bbbdfaf-YUL
+                - a447923d198a3189-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Referrer-Policy:
@@ -58,35 +80,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=24,cfOrigin;dur=91
+                - cfEdge;dur=10,cfOrigin;dur=109
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439991"
+                - "2386"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59991"
+                - "141"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "991"
+                - "1"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999966506"
+                - "967547"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119966506"
+                - "2983284"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "966506"
+                - "13284"
         status: 200 OK
         code: 200
-        duration: 122ms
+        duration: 127ms

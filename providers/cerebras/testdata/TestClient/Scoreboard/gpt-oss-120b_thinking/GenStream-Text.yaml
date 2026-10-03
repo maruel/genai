@@ -21,19 +21,19 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{"reasoning":"We"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{"reasoning":"User"},"index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{"reasoning":" need to respond with only one word, saying hello"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{"reasoning":" wants \"Say hello. Use only one word.\" So respond with"},"index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{"reasoning":". So maybe \"Hello!\" That's one word with"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{"reasoning":" a single word greeting like \"Hello\". That's one word. Provide"},"index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{"reasoning":" punctuation. Should be okay."},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{"reasoning":" only that."},"index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{"content":"Hello!"},"index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-670fbac7-4973-4c6d-ad56-fbb6603df06a","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":114,"completion_tokens":39,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":27},"prompt_tokens":75,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602498.5051782,"queue_time":0.004025435,"prompt_time":0.00157694,"completion_time":0.019213431,"total_time":0.02756023406982422}}
+            data: {"id":"chatcmpl-1d6ac0e3-2bd9-4391-9013-a137fa582cdf","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790984566,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk","usage":{"total_tokens":116,"completion_tokens":41,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":30},"prompt_tokens":75,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984566.8136542,"queue_time":0.003150547,"prompt_time":0.00230566,"completion_time":0.017285969,"total_time":0.02444744110107422}}
 
             data: [DONE]
 
@@ -43,7 +43,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec8f3f43dfaf-YUL
+                - a44790c628f2c03e-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Referrer-Policy:
@@ -52,35 +52,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=23,cfOrigin;dur=73
+                - cfEdge;dur=5,cfOrigin;dur=100
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439998"
+                - "2390"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59998"
+                - "144"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "998"
+                - "4"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999983609"
+                - "967411"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119983609"
+                - "2983609"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "983609"
+                - "13609"
         status: 200 OK
         code: 200
-        duration: 105ms
+        duration: 2m0.317s

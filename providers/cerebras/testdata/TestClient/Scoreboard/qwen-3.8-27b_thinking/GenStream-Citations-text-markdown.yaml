@@ -1,0 +1,100 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":"We"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":" need answer user's simple question based on given context."},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":" Need final concise. User: Qu"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":"ackiland context:"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":" capital is Quack. Ask what"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":" is"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":" capital"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":"."},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":" Answer"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"reasoning":": Quack.\n"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"content":"\n\nThe capital of Quackiland is **"},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{"content":"Quack**."},"index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-31da43aa-4bc4-4f45-b9e3-33c35c157b78","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790985123,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":145,"completion_tokens":53,"completion_tokens_details":{"reasoning_tokens":40},"prompt_tokens":92,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985123.4320974,"queue_time":0.000403541,"prompt_time":0.003406237,"completion_time":0.048242349,"total_time":0.05324697494506836}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e5d0e8c5b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=93
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647986"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26986"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "436"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215949002"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44969002"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "99002"
+        status: 200 OK
+        code: 200
+        duration: 109ms

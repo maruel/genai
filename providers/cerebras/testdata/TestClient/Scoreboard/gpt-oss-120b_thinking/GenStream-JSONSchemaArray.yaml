@@ -19,17 +19,17 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 153
-        body: '{"message":"Payment required to access this resource. Visit your billing tab.","type":"payment_required_error","param":"quota","code":"payment_required"}'
+        content_length: 158
+        body: '{"message":"Extra top level keys found in JSON schema: {''items''}.","type":"invalid_request_error","param":"response_format","code":"wrong_api_format","id":""}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3d0fb1ddaa54cc4-YYZ
+                - a44793b13d94df96-YUL
             Content-Length:
-                - "153"
+                - "158"
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -38,13 +38,11 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=21,cfOrigin;dur=28
+                - cfEdge;dur=8,cfOrigin;dur=100
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Should-Retry:
-                - "false"
-        status: 402 Payment Required
-        code: 402
-        duration: 171ms
+        status: 400 Bad Request
+        code: 400
+        duration: 59.218s

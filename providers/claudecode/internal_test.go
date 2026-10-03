@@ -277,6 +277,65 @@ func TestStreamDelta(t *testing.T) {
 }
 
 func TestOutputMessages(t *testing.T) {
+	t.Run("assistant_input_transformations", func(t *testing.T) {
+		const data = `{"type":"assistant","thinking_duration_ms":308,"message":{"input_transformations":[{"type":"thinking_dropped","path":"messages.1.content.0","reason":"model_binding_mismatch"}]}}`
+		var got OutputAssistantMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.ThinkingDurationMS != 308 || len(got.Message.InputTransformations) != 1 {
+			t.Fatalf("unexpected assistant message: %+v", got)
+		}
+		tr := got.Message.InputTransformations[0]
+		if tr.Type != InputTransformationThinkingDropped || tr.Reason != InputTransformationModelBindingMismatch || tr.Path != "messages.1.content.0" {
+			t.Fatalf("unexpected transformation: %+v", tr)
+		}
+	})
+	t.Run("result_fallback_credit", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			raw  string
+			typ  FallbackCreditType
+		}{
+			{"absent", `null`, ""},
+			{"redeemed", `{"status":{"type":"redeemed"}}`, FallbackCreditRedeemed},
+			{"notApplied", `{"status":{"type":"not_applied","reason":"variant_fields_present","remove_to_redeem":["temperature"]}}`, FallbackCreditNotApplied},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				var got OutputResultMsg
+				if err := internal.UnmarshalJSON([]byte(`{"type":"result","usage":{"fallback_credit":`+tc.raw+`},"modelUsage":{"claude-sonnet-5-5":{"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list","thinkingTokens":0}}}`), &got); err != nil {
+					t.Fatal(err)
+				}
+				if got.Usage.IsZero() != (tc.typ == "") || got.Usage.FallbackCredit.Status.Type != tc.typ {
+					t.Fatalf("unexpected usage: %+v", got.Usage)
+				}
+				if tc.typ == FallbackCreditNotApplied && (got.Usage.FallbackCredit.Status.Reason != FallbackCreditVariantFieldsPresent || !slices.Equal(got.Usage.FallbackCredit.Status.RemoveToRedeem, []string{"temperature"})) {
+					t.Fatalf("unexpected fallback credit: %+v", got.Usage.FallbackCredit)
+				}
+			})
+		}
+	})
+	t.Run("stream_input_transformations", func(t *testing.T) {
+		const data = `{"type":"stream_event","event":{"type":"message_start","message":{"input_transformations":[]}}}`
+		var got OutputStreamEventMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+	})
+	t.Run("stream_input_transformations_delta", func(t *testing.T) {
+		const data = `{"type":"stream_event","event":{"type":"message_delta","input_transformations":[{"type":"thinking_mismatch_allowed","path":"messages.1.content.0","reason":"prefix_binding_mismatch"}]}}`
+		var got OutputStreamEventMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if len(got.Event.InputTransformations) != 1 {
+			t.Fatalf("unexpected transformations: %+v", got.Event.InputTransformations)
+		}
+		tr := got.Event.InputTransformations[0]
+		if tr.Type != InputTransformationThinkingMismatchAllowed || tr.Reason != InputTransformationPrefixBindingMismatch || tr.Path != "messages.1.content.0" {
+			t.Fatalf("unexpected transformation: %+v", tr)
+		}
+	})
 	t.Run("current_assistant_metadata", func(t *testing.T) {
 		const data = `{"type":"assistant","message":{"id":"m1","role":"assistant","model":"claude-opus-4-8","content":[],"usage":{},"stop_reason":null},"parent_tool_use_id":null,"uuid":"u1","session_id":"s1","user_message_uuid":"q1","user_message_uuids":["q0","q1"],"resume_reason":"checkpoint_restore","resumed_from_incomplete_thinking":true,"supersedes":["old"],"aborted":true,"context_usage":{"model":"claude-opus-4-8","total_tokens":10,"raw_max_tokens":200000,"percentage":1,"categories":[],"mcp_tools":[],"memory_files":[],"agents":[]}}`
 		var got OutputAssistantMsg
@@ -1052,6 +1111,26 @@ func TestOutputMessages(t *testing.T) {
 			t.Fatalf("Message = %+v, want JSON-RPC tools/list", got.Message)
 		}
 	})
+}
+
+func TestControlReqGetTaskOutput(t *testing.T) {
+	b, err := json.Marshal(ControlReqGetTaskOutput{Subtype: ControlGetTaskOutput, TaskID: "task-1"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(b) != `{"subtype":"get_task_output","task_id":"task-1"}` {
+		t.Fatalf("request = %s", b)
+	}
+}
+
+func TestControlReqMcpReadResource(t *testing.T) {
+	b, err := json.Marshal(ControlReqMcpReadResource{Subtype: ControlMcpReadResource, ServerName: "app", URI: "ui://app/view"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(b) != `{"subtype":"mcp_read_resource","serverName":"app","uri":"ui://app/view"}` {
+		t.Fatalf("request = %s", b)
+	}
 }
 
 func TestWriteUserMsg(t *testing.T) {

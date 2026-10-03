@@ -21,9 +21,9 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-20de152d-eca2-4c31-ad83-0e11fc69e6f2","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk"}
+            data: {"id":"chatcmpl-49289866-d641-4377-a9d1-fb60dfd5eb6c","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
 
-            data: {"id":"chatcmpl-20de152d-eca2-4c31-ad83-0e11fc69e6f2","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion.chunk","usage":{"total_tokens":83,"completion_tokens":2,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":79,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.0610478,"queue_time":0.010213548,"prompt_time":0.002232512,"completion_time":0.001108694,"total_time":0.016687631607055664}}
+            data: {"id":"chatcmpl-49289866-d641-4377-a9d1-fb60dfd5eb6c","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790984626,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk","usage":{"total_tokens":83,"completion_tokens":2,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":79,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984626.4520795,"queue_time":0.233732747,"prompt_time":0.001558557,"completion_time":0.004313509,"total_time":0.2435166835784912}}
 
             data: [DONE]
 
@@ -33,7 +33,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec92a93adfaf-YUL
+                - a447923aefc63189-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Referrer-Policy:
@@ -42,35 +42,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=23,cfOrigin;dur=83
+                - cfEdge;dur=16,cfOrigin;dur=93
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439992"
+                - "2387"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59992"
+                - "142"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "992"
+                - "2"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999982921"
+                - "967647"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119982921"
+                - "2983384"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "982921"
+                - "13384"
         status: 200 OK
         code: 200
-        duration: 113ms
+        duration: 116ms

@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-a77bb923-f05d-4425-afc4-d5b22b226c90","choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant"}}],"created":1784602499,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":83,"completion_tokens":2,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":79,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602499.4684923,"queue_time":0.004031389,"prompt_time":0.001969812,"completion_time":0.001292136,"total_time":0.008872032165527344}}'
+        body: '{"id":"chatcmpl-4b20895e-7a41-4b51-b972-ccd9593d82aa","choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant"}}],"created":1790984447,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion","usage":{"total_tokens":83,"completion_tokens":2,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":79,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984447.1447182,"queue_time":0.002950333,"prompt_time":0.001724913,"completion_time":0.00164209,"total_time":0.008033990859985352}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec95490cdfaf-YUL
+                - a4478dda38100026-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -37,35 +37,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=23,cfOrigin;dur=74
+                - cfEdge;dur=4,cfOrigin;dur=111
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439988"
+                - "2392"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59988"
+                - "144"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "988"
+                - "0"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999966138"
+                - "983134"
             X-Ratelimit-Remaining-Tokens-Hour:
-                - "119966138"
+                - "2983134"
             X-Ratelimit-Remaining-Tokens-Minute:
-                - "966138"
+                - "13134"
         status: 200 OK
         code: 200
-        duration: 105ms
+        duration: 124ms

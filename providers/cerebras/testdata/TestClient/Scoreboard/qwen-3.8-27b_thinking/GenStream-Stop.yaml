@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 152
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-d2e6bfb1-201e-4634-9353-589550a7f014","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d2e6bfb1-201e-4634-9353-589550a7f014","choices":[{"delta":{"reasoning":"User"},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d2e6bfb1-201e-4634-9353-589550a7f014","choices":[{"delta":{"reasoning":" asked: \"Talk about Canada in great details. Start with: Canada "},"index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-d2e6bfb1-201e-4634-9353-589550a7f014","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion.chunk","usage":{"total_tokens":82,"completion_tokens":16,"completion_tokens_details":{"reasoning_tokens":16},"prompt_tokens":64,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985121.0306296,"queue_time":0.019732314,"prompt_time":0.003303518,"completion_time":0.008687169,"total_time":0.03338813781738281}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e4e0af25b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=6,cfOrigin;dur=101
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647989"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26989"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "439"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215966386"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44966386"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "116386"
+        status: 200 OK
+        code: 200
+        duration: 115ms

@@ -97,6 +97,7 @@ const (
 	ControlGetSessionCost      ControlSubtype = "get_session_cost"
 	ControlListModels          ControlSubtype = "list_models"
 	ControlGetUsage            ControlSubtype = "get_usage"
+	ControlGetTaskOutput       ControlSubtype = "get_task_output"
 	ControlGetBinaryVersion    ControlSubtype = "get_binary_version"
 	ControlMcpCall             ControlSubtype = "mcp_call"
 	ControlFileSuggestions     ControlSubtype = "file_suggestions"
@@ -110,6 +111,7 @@ const (
 	ControlReloadSkills        ControlSubtype = "reload_skills"
 	ControlReloadOutputStyles  ControlSubtype = "reload_output_styles"
 	ControlMcpReconnect        ControlSubtype = "mcp_reconnect"
+	ControlMcpReadResource     ControlSubtype = "mcp_read_resource"
 	ControlMcpToggle           ControlSubtype = "mcp_toggle"
 	ControlStopTask            ControlSubtype = "stop_task"
 	ControlBackgroundTasks     ControlSubtype = "background_tasks"
@@ -368,6 +370,14 @@ type ControlReqMcpReconnect struct {
 	ServerName string         `json:"serverName"`
 }
 
+// ControlReqMcpReadResource reads a ui:// resource from a connected MCP server.
+// The returned content is untrusted and must be rendered in a sandbox.
+type ControlReqMcpReadResource struct {
+	Subtype    ControlSubtype `json:"subtype"` // ControlMcpReadResource
+	ServerName string         `json:"serverName"`
+	URI        string         `json:"uri"`
+}
+
 // ControlReqMcpToggle enables or disables an MCP server.
 type ControlReqMcpToggle struct {
 	Subtype    ControlSubtype `json:"subtype"` // ControlMcpToggle
@@ -378,6 +388,12 @@ type ControlReqMcpToggle struct {
 // ControlReqStopTask stops a running background task.
 type ControlReqStopTask struct {
 	Subtype ControlSubtype `json:"subtype"` // ControlStopTask
+	TaskID  string         `json:"task_id"`
+}
+
+// ControlReqGetTaskOutput reads the end of a background shell or Monitor task's output.
+type ControlReqGetTaskOutput struct {
+	Subtype ControlSubtype `json:"subtype"` // ControlGetTaskOutput
 	TaskID  string         `json:"task_id"`
 }
 
@@ -1128,6 +1144,7 @@ type OutputAssistantMsg struct {
 	Supersedes                    []string                   `json:"supersedes,omitempty"`
 	Aborted                       bool                       `json:"aborted,omitempty"`
 	ContextUsage                  ContextUsage               `json:"context_usage,omitzero"`
+	ThinkingDurationMS            int64                      `json:"thinking_duration_ms,omitzero"`
 }
 
 // AssistantMessageError classifies a synthetic assistant API error.
@@ -1224,10 +1241,38 @@ type AssistantMessageBody struct {
 	StopSequence string                       `json:"stop_sequence"`
 	StopDetails  anthropic.RefusalStopDetails `json:"stop_details,omitzero"`
 
-	Container         Container         `json:"container,omitzero"`
-	ContextManagement ContextManagement `json:"context_management,omitzero"`
-	Diagnostics       Diagnostics       `json:"diagnostics,omitzero"`
+	Container            Container             `json:"container,omitzero"`
+	ContextManagement    ContextManagement     `json:"context_management,omitzero"`
+	Diagnostics          Diagnostics           `json:"diagnostics,omitzero"`
+	InputTransformations []InputTransformation `json:"input_transformations,omitzero"`
 }
+
+// InputTransformation describes a server-side change to a request's thinking blocks.
+type InputTransformation struct {
+	Path   string                    `json:"path"`
+	Reason InputTransformationReason `json:"reason"`
+	Type   InputTransformationType   `json:"type"`
+}
+
+// InputTransformationType identifies the change to a thinking block.
+type InputTransformationType string
+
+// Input transformation types.
+const (
+	InputTransformationThinkingDropped         InputTransformationType = "thinking_dropped"
+	InputTransformationThinkingMismatchAllowed InputTransformationType = "thinking_mismatch_allowed"
+)
+
+// InputTransformationReason identifies the binding check that failed.
+type InputTransformationReason string
+
+// Input transformation reasons.
+const (
+	InputTransformationEndUserBindingMismatch      InputTransformationReason = "end_user_binding_mismatch"
+	InputTransformationModelBindingMismatch        InputTransformationReason = "model_binding_mismatch"
+	InputTransformationOrganizationBindingMismatch InputTransformationReason = "organization_binding_mismatch"
+	InputTransformationPrefixBindingMismatch       InputTransformationReason = "prefix_binding_mismatch"
+)
 
 // ContentBlockStart is the content_block field in a content_block_start streaming event.
 type ContentBlockStart struct {
@@ -1652,6 +1697,51 @@ type DeferredToolUse struct {
 
 // ---------- Token usage ----------
 
+// FallbackCredit describes repricing after a model fallback.
+type FallbackCredit struct {
+	Status FallbackCreditStatus `json:"status"`
+}
+
+// IsZero reports whether f carries no fallback credit metadata.
+func (f FallbackCredit) IsZero() bool {
+	return f.Status.Type == "" && f.Status.Reason == "" && len(f.Status.RemoveToRedeem) == 0
+}
+
+// FallbackCreditStatus describes the outcome of a fallback-credit request.
+type FallbackCreditStatus struct {
+	Type           FallbackCreditType   `json:"type"`
+	Reason         FallbackCreditReason `json:"reason,omitzero"`
+	RemoveToRedeem []string             `json:"remove_to_redeem,omitzero"`
+}
+
+// FallbackCreditType identifies whether repricing was applied.
+type FallbackCreditType string
+
+// Fallback credit types.
+const (
+	FallbackCreditNotApplied FallbackCreditType = "not_applied"
+	FallbackCreditRedeemed   FallbackCreditType = "redeemed"
+)
+
+// FallbackCreditReason identifies why repricing was not applied.
+type FallbackCreditReason string
+
+// Fallback credit reasons.
+const (
+	FallbackCreditBodyMismatch           FallbackCreditReason = "body_mismatch"
+	FallbackCreditContinuationExcluded   FallbackCreditReason = "continuation_excluded"
+	FallbackCreditContinuationOnly       FallbackCreditReason = "continuation_only"
+	FallbackCreditExpired                FallbackCreditReason = "expired"
+	FallbackCreditInvalidTargetModel     FallbackCreditReason = "invalid_target_model"
+	FallbackCreditNotEnabled             FallbackCreditReason = "not_enabled"
+	FallbackCreditRepriceUnavailable     FallbackCreditReason = "reprice_unavailable"
+	FallbackCreditTemporarilyUnavailable FallbackCreditReason = "temporarily_unavailable"
+	FallbackCreditVariantFieldsPresent   FallbackCreditReason = "variant_fields_present"
+	FallbackCreditWrongOrganization      FallbackCreditReason = "wrong_organization"
+	FallbackCreditWrongPlatform          FallbackCreditReason = "wrong_platform"
+	FallbackCreditWrongWorkspace         FallbackCreditReason = "wrong_workspace"
+)
+
 // MsgUsage holds token counts from the model.
 type MsgUsage struct {
 	InputTokens              int64  `json:"input_tokens"`
@@ -1668,6 +1758,7 @@ type MsgUsage struct {
 	CacheCreation CacheCreation `json:"cache_creation,omitzero"`
 
 	OutputTokensDetails OutputTokensDetails `json:"output_tokens_details,omitzero"`
+	FallbackCredit      FallbackCredit      `json:"fallback_credit,omitzero"`
 }
 
 // IsZero reports whether m carries no usage data.
@@ -1685,7 +1776,8 @@ func (m *MsgUsage) IsZero() bool {
 		len(m.Iterations) == 0 &&
 		m.ServerToolUse.IsZero() &&
 		m.CacheCreation.IsZero() &&
-		m.OutputTokensDetails.IsZero()
+		m.OutputTokensDetails.IsZero() &&
+		m.FallbackCredit.IsZero()
 }
 
 // OutputTokensDetails breaks down output token usage.
@@ -1765,10 +1857,11 @@ type StreamEventData struct {
 	ContentBlock ContentBlockStart `json:"content_block,omitzero"`
 	// message_start carries the full message object; message_delta carries
 	// stop_reason and usage in a delta wrapper.
-	Message           AssistantMessageBody `json:"message,omitzero"`
-	Usage             MsgUsage             `json:"usage,omitzero"`
-	ContextManagement ContextManagement    `json:"context_management,omitzero"`
-	Error             json.RawMessage      `json:"error,omitempty"`
+	Message              AssistantMessageBody  `json:"message,omitzero"`
+	Usage                MsgUsage              `json:"usage,omitzero"`
+	ContextManagement    ContextManagement     `json:"context_management,omitzero"`
+	Error                json.RawMessage       `json:"error,omitempty"`
+	InputTransformations []InputTransformation `json:"input_transformations,omitzero"`
 }
 
 // ContextManagement carries Claude Code context edit metadata.

@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 401
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-6a0a20f2-7c42-40bc-ab00-81ef27b8704c","choices":[{"finish_reason":"stop","index":0,"message":{"content":"\n\n{\"is_fruit\": true}","reasoning":"We need answer user: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\" Schema requires {\"is_fruit\": boolean}. Need final JSON only. is_fruit true. Ensure no extra text.\n","role":"assistant"}}],"created":1790985121,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion","usage":{"total_tokens":268,"completion_tokens":58,"completion_tokens_details":{"reasoning_tokens":49},"prompt_tokens":210,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1790985121.1222458,"queue_time":0.056346105,"prompt_time":0.026854297,"completion_time":0.032973197,"total_time":0.11761808395385742}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4479e4eadbe5b53-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=6,cfOrigin;dur=237
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647988"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26988"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "438"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215966154"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44966154"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "116154"
+        status: 200 OK
+        code: 200
+        duration: 251ms

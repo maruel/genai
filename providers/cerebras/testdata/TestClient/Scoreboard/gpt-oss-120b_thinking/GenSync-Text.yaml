@@ -21,14 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"chatcmpl-50db21b8-bd35-4423-9efb-5aecf4d0ee0e","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","reasoning":"User asks: \"Say hello. Use only one word.\" So must respond with a single word that says hello. Could be \"Hello\". That''s one word. Provide just that.","role":"assistant"}}],"created":1784602498,"model":"gpt-oss-120b","system_fingerprint":"fp_109d9dad056b2cea1f40","object":"chat.completion","usage":{"total_tokens":122,"completion_tokens":47,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":36},"prompt_tokens":75,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1784602498.4900298,"queue_time":0.004383594,"prompt_time":0.001705411,"completion_time":0.016190621,"total_time":0.1932518482208252}}'
+        body: '{"id":"chatcmpl-9b755600-6435-46e7-9c73-dc329e13f6c8","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","reasoning":"User wants a greeting: \"Say hello. Use only one word.\" So respond with a single word greeting. Should be \"Hello\". That''s one word. Provide only that.","role":"assistant"}}],"created":1790984446,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion","usage":{"total_tokens":121,"completion_tokens":46,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":35},"prompt_tokens":75,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1790984446.5915966,"queue_time":0.003796185,"prompt_time":0.001497064,"completion_time":0.02171057,"total_time":0.02884531021118164}}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1e6ec8f3f45dfaf-YUL
+                - a4478dd6dafb0026-YUL
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -37,35 +37,35 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=23,cfOrigin;dur=256
+                - cfEdge;dur=4,cfOrigin;dur=113
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
             X-Ratelimit-Limit-Requests-Day:
-                - "1440000"
+                - "2400"
             X-Ratelimit-Limit-Requests-Hour:
-                - "60000"
+                - "150"
             X-Ratelimit-Limit-Requests-Minute:
-                - "1000"
+                - "5"
             X-Ratelimit-Limit-Tokens-Day:
-                - "2000000000"
-            X-Ratelimit-Limit-Tokens-Hour:
-                - "120000000"
-            X-Ratelimit-Limit-Tokens-Minute:
                 - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
             X-Ratelimit-Remaining-Requests-Day:
-                - "1439999"
+                - "2396"
             X-Ratelimit-Remaining-Requests-Hour:
-                - "59999"
+                - "148"
             X-Ratelimit-Remaining-Requests-Minute:
-                - "999"
+                - "4"
             X-Ratelimit-Remaining-Tokens-Day:
-                - "1999983609"
-            X-Ratelimit-Remaining-Tokens-Hour:
-                - "119983609"
-            X-Ratelimit-Remaining-Tokens-Minute:
                 - "983609"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "2983609"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "13609"
         status: 200 OK
         code: 200
-        duration: 287ms
+        duration: 126ms

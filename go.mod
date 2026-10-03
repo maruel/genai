@@ -5,9 +5,9 @@ go 1.27.0
 require (
 	github.com/google/go-cmp v0.7.0
 	github.com/invopop/jsonschema v0.14.0
-	github.com/klauspost/compress v1.20.0
+	github.com/klauspost/compress v1.20.1
 	github.com/maruel/httpjson v0.5.3
-	github.com/maruel/roundtrippers v0.5.0
+	github.com/maruel/roundtrippers v0.5.1
 	golang.org/x/net v0.59.0
 	golang.org/x/sync v0.23.0
 	gopkg.in/dnaeon/go-vcr.v4 v4.0.7
@@ -42,7 +42,7 @@ require (
 	github.com/alfatraining/structtag v1.0.0 // indirect
 	github.com/alingse/asasalint v0.0.11 // indirect
 	github.com/alingse/nilnesserr v0.2.0 // indirect
-	github.com/andybalholm/brotli v1.2.4 // indirect
+	github.com/andybalholm/brotli v1.2.6 // indirect
 	github.com/ashanbrown/forbidigo/v2 v2.3.1 // indirect
 	github.com/ashanbrown/makezero/v2 v2.2.1 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
@@ -158,7 +158,8 @@ require (
 	github.com/nishanths/exhaustive v0.13.0 // indirect
 	github.com/nishanths/predeclared v0.2.2 // indirect
 	github.com/nunnatsa/ginkgolinter v0.24.0 // indirect
-	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
+	github.com/pb33f/go-yaml v0.1.1 // indirect
+	github.com/pb33f/ordered-map/v2 v2.3.2 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/prometheus/client_golang v1.12.1 // indirect

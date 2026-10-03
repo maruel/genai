@@ -10,7 +10,37 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal"
 )
+
+func TestResponse(t *testing.T) {
+	t.Run("accessPrograms", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			raw  string
+			want CyberAccessProgram
+		}{
+			{name: "null", raw: `null`},
+			{name: "standard", raw: `{"cyber":"standard"}`, want: CyberAccessProgramStandard},
+			{name: "blue", raw: `{"cyber":"daybreak_blue"}`, want: CyberAccessProgramDaybreakBlue},
+			{name: "red", raw: `{"cyber":"daybreak_red"}`, want: CyberAccessProgramDaybreakRed},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				var got Response
+				if err := internal.UnmarshalJSON([]byte(`{"access_programs":`+tc.raw+`}`), &got); err != nil {
+					t.Fatal(err)
+				}
+				if tc.want == "" {
+					if got.AccessPrograms != nil {
+						t.Fatalf("access programs = %+v, want nil", got.AccessPrograms)
+					}
+				} else if got.AccessPrograms == nil || got.AccessPrograms.Cyber != tc.want {
+					t.Fatalf("access programs = %+v, want %q", got.AccessPrograms, tc.want)
+				}
+			})
+		}
+	})
+}
 
 func TestFindPrevMeta(t *testing.T) {
 	t.Run("found", func(t *testing.T) {

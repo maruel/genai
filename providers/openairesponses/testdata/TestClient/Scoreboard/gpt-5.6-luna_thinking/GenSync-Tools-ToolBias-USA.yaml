@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_02accf7bacf662dc006aa72d456eb887d2a976b6552f5fbb7c",
+              "id": "resp_0ec8e4580f943c11006ac06c94ecb087d290c986ccd6666785",
               "object": "response",
-              "created_at": 1789340997,
+              "created_at": 1790995604,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789340998,
+              "completed_at": 1790995606,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,11 +43,11 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "fc_02accf7bacf662dc006aa72d45ded087d2ba8c6f62233f1674",
+                  "id": "fc_0ec8e4580f943c11006ac06c95ccb887d2b59d7782531e9667",
                   "type": "function_call",
                   "status": "completed",
-                  "arguments": "{\"country\":\"USA\"}",
-                  "call_id": "call_WmhJ5XqChR20OxK3MM7Pjdpo",
+                  "arguments": "{\"country\":\"Canada\"}",
+                  "call_id": "call_BUgqg9vEYV49gj2cDUauTvEQ",
                   "name": "best_country"
                 }
               ],
@@ -144,11 +145,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad2911d9ff429-YUL
+                - a4489e424be8f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1071"
+                - "1301"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -162,13 +163,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 381ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.159s
+        duration: 1.408s

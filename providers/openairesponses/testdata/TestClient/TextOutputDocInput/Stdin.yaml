@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 300
+        content_length: 298
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-luna","reasoning":{"summary":"auto"},"store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-6-luna","reasoning":{"summary":"auto"},"store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,26 +23,39 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0529ea4f63651b3a006a553975dd1c8192bbd10233752393b1",
+              "id": "resp_0ae72986396130e3006ac0699c31e087d290e20a2bed245941",
               "object": "response",
-              "created_at": 1783970165,
+              "created_at": 1790994844,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970166,
+              "completed_at": 1790994845,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
               "instructions": null,
               "max_output_tokens": null,
               "max_tool_calls": null,
-              "model": "gpt-5.6-luna",
+              "model": "gpt-6-luna",
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0529ea4f63651b3a006a553976828c8192985c5937cd95bd8f",
+                  "id": "rs_0ae72986396130e3006ac0699c965887d29cbaedc0b90f2eb0",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqwGmdyRZBugwE6r7B8iGFWn6mQoQawwolfRw85O0ewLqqwm-2rHjespuxwxmq8_b6fN7RxrC6WRG76npOClee9ntFGmMB6TAkTp0ZS_gJTFmkhVLQbXSFf2_AUhrfU3ldf441atWLQuBmC_Klc2YXe4f4VLgVVJ6xjAni_FKUqooM6weIbOi4KG1sp6lYRyKLTDWZO923SLeFnR7wZ41Jpd8QIAkoTIfxYmDv8tSvkp1peATq0IerPi-5QcOJkljnqoTCSvTyQVvzbUVjIBV3srp5fYMJXk8P8v2AdPQCQSXBNpwl-zWF30-jAhlA2dSh7Qn1D9jaO-3sXfzvI4TNHmpNTkUfHMTtN76fuiP9KrVo0di1hE0CEU7PMHutxbxCELvzfZpBP5pvjlPnqKpGYsbpbwfMGch3Lq6qT-tdcQcIyBYci5NcF97oCeTasP0EkmiQmf7n5gjqQX3zWDODg25LPW_JhGrLY4BhKNdkBxWQwWi2bpHcC57NWLl5I28JDkdctRwx47ad4AFnF-EyuvFWCnSbrM3-PuCk05BAZ1s8y19itkMJoBHBnY7qeVOSc6ufsp40mDsFIU6ZXvBVKzwIZSCSPgHyXEeP4gfS3rW_hs-BQEocn2nlGfMOwWHezALREpxEUPtMubgWL-pLLVn8CJs3EbiqABMY3eHlNg8IsJjZb_T8eGE4tmGFF-TGjmTg8hUoxjOLQ0x2vzq0OMIbUe0qQTFG6fwCEqdKPNa3Bwyjjy4jo2h0aywNqi4YLYoLRSCidwTkHLCieNf1LML4fiWyalIMs7415V5z5kbl7taA4wJHIWx7KlfNdnIekTmUqHVxHhK5p1ezXy1yrs6x_mo10Tj0kYHu39FZ4sePqoUUjkCLXSZP_fhX9Oa8Y5tQBCvpd5orT8RGTWhWI4mGPqmwYl_1pA78tvssj-IAMFhX5NPo7NRhsa8VHm7K1Nmzpl1DScPPRhvt51h7lgAVpUMQQrPfzPdy7NLL_99vTyf3s5peX7uwbTgyKJOOXR0wWdvC8YngeFy5IJqBLUJ-enmaNJ-2GwKOXouGPxv63QBY0a-laLJjQneO3zGVqYPdfUxIAGivxRKmDQ6iZbL4yGLGh6XXrBsB10jHgfI41lFdgRBpyKt8BnBftoAlDWAapp-xfffzHiZZfIB5RYpFVi5i_6db1m7KS246WlHGr75ytzBXhBtHdalL6jKBAqeCRca4QR-OZ1S4MZv61gwrlppczO91C0oh-3gEd3_n5w6ckZWlit-ySf1mayMPva_F",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Providing a clear answer**\n\nI need to make sure the response is straightforward. I guess I can focus on the aspect of \"Capital Quackiland Quack.\" I might need to overlook any ambiguity for clarity\u2019s sake. It\u2019s important that I deliver the answer simply, so the user can understand it without confusion. Alright, I\u2019ll aim for concise and clear communication here!"
+                    }
+                  ]
+                },
+                {
+                  "id": "msg_0ae72986396130e3006ac0699dc20c87d299fa6e429ef1e911",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -107,11 +120,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 14,
+                "output_tokens": 37,
                 "output_tokens_details": {
-                  "reasoning_tokens": 0
+                  "reasoning_tokens": 21
                 },
-                "total_tokens": 49
+                "total_tokens": 72
               },
               "user": null,
               "metadata": {}
@@ -126,11 +139,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9eb7488931ac-YUL
+                - a4488baf9a645933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1262"
+                - "1821"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -153,4 +166,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 2.771s
+        duration: 1.922s

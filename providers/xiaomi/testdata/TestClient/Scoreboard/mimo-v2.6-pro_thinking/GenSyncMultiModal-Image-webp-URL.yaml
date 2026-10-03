@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"d82a9bf6-ee1c-4d2a-846e-45515da1ef38_f10bec85f08a4aa4bbd5ad5102d57127","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Banana","role":"assistant","tool_calls":null,"reasoning_content":"The user has provided an image and asked to identify the fruit.\n1.  **Analyze the image**: The image shows a single yellow, curved fruit with brown tips and some small brown spots on the skin. This is visually distinct as a banana.\n2.  **Formulate the answer**: The question asks for \"What fruit is it?\" and specifies \"Reply with only one word.\"\n3.  **Select the word**: The fruit is a banana."}}],"created":1790997145,"model":"mimo-v2.6-pro","object":"chat.completion","usage":{"completion_tokens":98,"prompt_tokens":114,"total_tokens":212,"completion_tokens_details":{"reasoning_tokens":94},"prompt_tokens_details":{"cached_tokens":0,"image_tokens":90}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 4.255s

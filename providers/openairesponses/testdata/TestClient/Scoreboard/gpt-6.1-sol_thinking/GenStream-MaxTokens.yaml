@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 279
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-sol","max_output_tokens":16,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0bf882b1d2415929006ac06bca970887d2b049d880de725a7d","object":"response","created_at":1790995402,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-6.1-sol","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0bf882b1d2415929006ac06bca970887d2b049d880de725a7d","object":"response","created_at":1790995402,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-6.1-sol","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"rs_0bf882b1d2415929006ac06bcba80887d29d863d6e90f3ace4","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwGvL64PBbftUYy0riM3gXfCjY4gfNy2f-TWP0uPTk1kL5RUONB7xki8UWtZOclb3KVxlc-7sxckYshPZ5h_owBFZdbqkMSeTBJdO6iLhs72JWFNqR2URnfBNos9inDvbfE91p4ldNldzJ6KKXNZAQnlCPVQP4nM25YwfHiqSaL3akLmQ3HXoIhrmcQ_eBboYyOJSUknhiaObCQgMbfRgkOs8BLC_plsEh4qQ0h7CLOQ5r1BcY0_VwSsd6_j8XGXQiFflM_dBCuuyGeXM7JYCDm0Mo9UEz0DvhKo0-UHLC7LkRsX1LgfFplNTX8wi0ypr8pTpQ0UVS76MmJxMolI7zzpGe6wDe7pbphgE88GY7aN7cTFt_lsxdA0YlTtcjoT3DqPcv3QkPM3PvktIi93s46414ffLxdTuZVLmHesbFQqLRKnjhCDMzHPg-YChIFFQfKUNCXLS9TbRqEXe8hUaQw97cwFpZHEhqwe1qATGFo8f3yQWhddvq5-Yhfr8stAPF-ALUfsj3X0WDWixa1nNvfUuW7k1m_iDCZMV1zMmFVe2Hrvt01qcuzYi6jW-jgK4KmtkRuAbkd8ZwFxLVJQUJEf1JdqO2Ox3QljZv2CocBfEdSeZUpEQuGbRGiH6oonG75wjxCSp2fJKixL8kv-X_1BM1Lz0P23UgRGRrxtg-EnUVlD21NKGQMDwAMlvi0GIQKD6etEj006v1WP_vDg_PCmzjhOZQ6DAmNuvZYgWCuOZkUUXQzLa25T6IryvD539TvDeZ2hskcNrFwAAoIy073eY53KTi_ShxPK0hd5pbHknyHUbJsoR3aSiKAyPy77y8ydW413Qe_ImZ6z1WZCOMLBwO7kRicGqh1PQesCFl0Gdwk3zeh_38kWhXkT9LrNAa0yrGN1-32AYOeClrSML25Rc8ugl_oWNNV2FAl-0Dim06x7AeH2KsO8A229CYq56TQQnzrp0gc5tP6a5eNZmAnGGPMz6OOHY1ogapEhYB5j9FYdMLja1JhUOulm_OSRXvjlzVkcxl0ZMmrF68p-6GCmCF1maxJjITwdaRqHz7Y66OdsnyEZzxLk7t5UM9dbtvHsCvEjxrGJgQLK4H1kUoqpUK7SLUX-hcyBruGlEbCOrDycgNRT-KALcgzWSjHvPajDnZTt_dOaupuWeRFl54eZxSg==","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"rs_0bf882b1d2415929006ac06bcba80887d29d863d6e90f3ace4","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwGvL0gw-z4zgCBpqM6PYgMdKd2wrfHpHjS6L43idwh9i6Y1iZJxu3sRiUhSG0BxppzVrCuHcrV2EoJ6Us5qk9VfqYDmleM0Q8E7SSz-38P70srur_1cgDTIL77AUSSFuqW6Z2AHKLarZuknWxCtgpNawwQum7JJQAEbCf03X-eDPoT8XuQGy78qtW5yMV1Y5cLkDXipRsjETGwDZ9epiN3D9wOOHCLeKMpuDjn4RMvOmL9eY-K4Np-08wvhFsGYUcLxil8TSh9liOD49q9Pb8p6P4zBt09r7pPOqqwpjRYAWZDCg6Qp8bVJQAzcxKNC54JPsgl2Xb5BjYWNaQAAO3jLvsiifNolyve48DEYyGsstx6igwScDlfuwwz_pvi0iWAc8dZcXNcebsGGZeM0XJqVqwjah-p-ZdvuD0flGjl8rmqPbpiCFxXEcHnnSZMRuLhnXALRiqYUFNVfHw4f4VcOfF9d2nswGzqbUKzQOYpJZ6IFYG5EHFDlUt7phlp7aGy1NOgMDp77Ji_MLPQZi9hRmHSzfQuyzk4nN_TUwlQca6uU8w3GP6L-zQeGb4ZzIyO7JaOjuumyV18RJ3_tbed1lZj4PcfqY3YiMrgOw6hs_EpXtJx0N5NTby5A0QjDNTrW9UJCXgbXY4JjBlOnW6f6I65ZT2tM8Wa4soNojKBZah4a8obQbkhM8jbgODHL163eUULM3x2zs0F09V4GKqI4IOwFSLnYb9D63z19EIo9kU1i4Gq_f6wcIXjdotzAB8Jkalk87p2WI8IFWh0D09fTiBfsBc8Ijf24XFQD6TqQ7fz78EQQoYbGyu1cLSnkRjV0jiGhXPgNrtXExm_yRmD6S0gH4EdXY39xJBqSV0zFH4x-wHcjF9ow30RbBlxAgTwm5gvtfdC-Z1FUghqN0KucVJH-du-1-Txn45nxIFT3xiyYbqIi-A7DPWPGinjRvEDs2uMXISsxkjDq3XWXCSRsWoG0e2NVRGEIrIoDnmPw2YDkBaq1dP5shRq4QSTKYWAGIPYglJuO3dDa-XvTWtj-LN5eouJ35wIeqAb-g_Bnvu3opwacDQknHm0BRq6rsIVA1uyO1cJl_TBLh3OYWF8Cvihb8iCKHWhsVPFbrFMj_SYRzvht6PmZwWCEwzafvOeJ9jlPdj6mbXHM2vFtxuucyAPnR6OILL0hkWK0tOUO8l0wkz-0GiDgMJlMgcTD3jHPRNxGVGLAa9kj8Yo8qh4gNSV79mSXP-xg1MnSYO6Pnqo9aGv92ajIfJ0GgzepJXzCI","summary":[]},"output_index":0,"sequence_number":3}
+
+            event: response.incomplete
+            data: {"type":"response.incomplete","response":{"id":"resp_0bf882b1d2415929006ac06bca970887d2b049d880de725a7d","object":"response","created_at":1790995402,"status":"incomplete","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":{"reason":"max_output_tokens"},"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-6.1-sol","moderation":null,"output":[{"id":"rs_0bf882b1d2415929006ac06bcba80887d29d863d6e90f3ace4","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwGvLrIgHJxzvFzzlkPF1nngYPSzMGGgoGQZgy14naf1YnPPithMACGRsssyQvrHLTiwE9Y2uuc1Zjc_Q1egvA9Uwm2qlgQ370D4DmY8wOJy5FUsFu40TFeioPbv0mqOcNJ041hqomkQqbTYqUC6nmr399GHfOUR-pUlKL_Hzwu4aIcTs0qx9_Vhtohw63JsCFKm8j5rtHmXwgm5nRv6ST5Zt84IJROCfkUsxDnX2MOuwTMcOos2w6lpqss4EtzvY11QTcc2fQNtO2OxPJlpLIwzpSGwBN_uyamIVXijiJzRsw6Jw2Olbg6pzTjsfmqejHl10TfW_Hw2FwZ7qjIfR2zptG78sF7yz4c02e0pqvK2fJui9bSu3d2DcssbbyI26k7t1CXjeMFcdFtSt7MQ63tFceUp3lVlyZZxsEnygODFkUonUGnfHrmSTsw3yMdZattHzqikQ_n1Cb3OThBFoEkDYBW3tZ-6JSgKCUcvLdMqPABJTsHVCFA-mtLx06P2URwNzgKbxM2P1Y-HQ3p9Hrtc_b9R8PNo1ZfDxNQke4w5xyOqmS59GpDhOmard0bCCi_4B2uXuIWs9TcS1dXOj4CSYO5kk13zddUkj1SVuuu_tQ9SfYpZ8uRHOSCP1bnFuA6hiEjCLDG7C36fb0UmnIGSoG8Z1qL1I0bMWgYlvictcpI1RpNqa2KDFIFtheDSjtsemDsZXrDszgF7IHWhppXNl_wKKISTVTvD8vgLg1bilmfrjzJ6GWSTw6SqoCfW7oEK1V2Ey5qfUUvoCf6NoN8FYheSaT6b60d-DvNjQ8kqZtsfbazVJPv1GQHBUo4niJJGfx3OlfGDgNOx7lYtwy5GRiDi2TpbAknZ8A_0vTUeYvM2LPb-QoVZ8g1NVGg6b6C5Lg5__2YZrRyt2OslRgacVysNGoPk_UVuMlUt7iao6dk60muYz_Splb3b4I02PXtr01jatNw81SHQm47ga4oHk96t0D-CjNzL6cqGG6MWeV9oeo92Pj7oFXK7bdEw3robGsDGJYgnB2XWPhigAMaq8xx3n4gQofriwm6TAFy71SB6BUVSKoXTNg8X8Fu5qgYzVRcKe6CbASlV2kqqXI4h_YDjzGVDVQSVFU9cZerruEmznwjc69kXCezDGt9NYbJLTpucAJ0qXmkfAXjxyFn2bWt9yCJXNsnysxmF2i5y7SdzhWlyM6wSx1fokOIXwPoJbxid0S4csC8mnrUAjICQCUaiYMuBTbOeEi8fW-2uhGPEanws0y2qojgUT1wqSo8mQ","summary":[]}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":16,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":16,"output_tokens_details":{"reasoning_tokens":16},"total_tokens":32},"user":null,"metadata":{}},"sequence_number":4}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4489951ab92a2a4-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "221"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "499841"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 19ms
+        status: 200 OK
+        code: 200
+        duration: 313ms

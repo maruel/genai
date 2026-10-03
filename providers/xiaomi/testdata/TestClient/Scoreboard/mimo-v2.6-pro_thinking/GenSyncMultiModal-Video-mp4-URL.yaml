@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 295
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"What is the word said? Reply with only the word."},{"role":"user","content":[{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"66657d32-d7f5-4699-b42e-2c23cbb3375b_f723d5dc7361471282f9e129de0e0b34","choices":[{"finish_reason":"stop","index":0,"message":{"content":"banana","role":"assistant","tool_calls":null,"reasoning_content":"The user wants to know the word \"said\" in the video.\nI will look at the video frames to identify any text or speech.\nThe video shows the word \"BANANA\" rotating on a black background.\nSince the prompt asks for the word \"said\", and the only word present is \"BANANA\", I will assume the question refers to the word displayed or \"spoken\" visually.\nThe word is \"BANANA\"."}}],"created":1790997168,"model":"mimo-v2.6-pro","object":"chat.completion","usage":{"completion_tokens":93,"prompt_tokens":933,"total_tokens":1026,"completion_tokens_details":{"reasoning_tokens":90},"prompt_tokens_details":{"cached_tokens":896,"video_tokens":880}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 4.329s

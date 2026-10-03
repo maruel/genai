@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 297
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"What is the word said? Reply with only the word."},{"role":"user","content":[{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"503d126f-ea18-47e3-8a29-d28c98f67d11_9aab262be9e04346b77a79feb00966c9","choices":[{"finish_reason":"stop","index":0,"message":{"content":"BANANA","role":"assistant","tool_calls":null,"reasoning_content":"The user wants to identify the word shown in the video.\n\n1.  **Analyze the video:**\n*   The video starts at 00:00 with yellow text on a black background.\n*   The text reads \"BANANA\".\n*   The word remains \"BANANA\" throughout the video, although it rotates.\n*   At 00:01, it''s tilted.\n*   At 00:02, it''s more vertical."}}],"created":1790997064,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":105,"prompt_tokens":933,"total_tokens":1038,"completion_tokens_details":{"reasoning_tokens":100},"prompt_tokens_details":{"cached_tokens":0,"video_tokens":880}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 7.278s

@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0c3f90ef3be03f6f006aa72d610d5487d2b64db12aada7a746",
+              "id": "resp_04ba23edd6d68155006ac06c612fcc87d2868442caeb355ed4",
               "object": "response",
-              "created_at": 1789341025,
+              "created_at": 1790995553,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341029,
+              "completed_at": 1790995556,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_0c3f90ef3be03f6f006aa72d61c4ac87d2ba0c3ab2e48c5d8c",
+                  "id": "ws_04ba23edd6d68155006ac06c62021087d2b2fe6c1f5f1f93dc",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
@@ -58,10 +59,6 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://www.pm.gc.ca/en/cabinet"
                       },
                       {
@@ -70,11 +67,15 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en"
+                        "url": "https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"
                       },
                       {
                         "type": "url",
                         "url": "https://www.pm.gc.ca/?pverbp="
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?page=2"
                       },
                       {
                         "type": "url",
@@ -86,15 +87,15 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.canada.ca/en/government/ministers.html"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/new"
+                        "url": "https://www.pm.gc.ca/en/news"
                       },
                       {
                         "type": "url",
                         "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers.html?lang=en"
                       },
                       {
                         "type": "url",
@@ -106,19 +107,19 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.google.com/url?q=CAESsAEB6zswFQIAYsFEVPDpVijbQp2TyK2m-FtxJgiX3AeMWdoLqpnLClGVJYwMznO5M32RBvuw51UrXvbemwgN47ypQgixt3C16L-cZiGdd4ZTb-kfB6viuJI2dxTC8rBNnKal0QmWEzW0MaqV_9j2ojLiyhbcyfhhCmAUO2s69C4g54RtxmQ-JEm4mv9TEiLVbgHeRNdvpgYZ28U0FDlLi3w4cmdK5WGlnBYABUFHNzRbWA&uoh=3"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://geds-sage.gc.ca/en/GEDS/?dn=Q049Q0FSTkVZXDJDIE1BUkssT1U9UE1PLUNQTSxPPUdDLEM9Q0E%3D&pgid=015"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/releases?page=1"
+                        "url": "https://211ontario.ca/service/68975844/canada-cabinet-du-premier-ministre-canada-cabinet-du-premier-ministre/%26alt%3D1/"
                       },
                       {
                         "type": "url",
                         "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://211ontario.ca/service/68975844/canada-office-of-the-prime-minister-canada-office-of-the-prime-minister/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://x.com/CanadianPM/with_replies?lang=en"
                       },
                       {
                         "type": "url",
@@ -130,11 +131,11 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://ised-isde.canada.ca/site/broadcasting-telecommunications-legislative-review/sites/default/files/attachments/029_AsianTelevisionNetworkATN_2b_EN_ON.pdf"
+                        "url": "https://www.pm.gc.ca/sites/pm/files/OAG%20-%202015%20EN%20-%20Updated%20Accessibility%202024.pdf"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/OAG%20-%202015%20EN%20-%20Updated%20Accessibility%202024.pdf"
+                        "url": "https://ised-isde.canada.ca/site/broadcasting-telecommunications-legislative-review/sites/default/files/attachments/029_AsianTelevisionNetworkATN_2b_EN_ON.pdf"
                       },
                       {
                         "type": "url",
@@ -142,7 +143,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/onguardforthee/comments/1welh8q/prime_minister_carney_to_strengthen_canadas_ties/"
+                        "url": "https://www.reddit.com/r/CanadaCultureClub/comments/1qu72l4/celebrating_canadas_first_openly_black_prime/"
                       },
                       {
                         "type": "url",
@@ -156,7 +157,7 @@ interactions:
                   }
                 },
                 {
-                  "id": "msg_0c3f90ef3be03f6f006aa72d64c76c87d29fef3a74154e10ba",
+                  "id": "msg_04ba23edd6d68155006ac06c64012087d2b5757f0688cfa58b",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -240,16 +241,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8395,
+                "input_tokens": 8620,
                 "input_tokens_details": {
-                  "cache_write_tokens": 0,
-                  "cached_tokens": 4402
+                  "cache_write_tokens": 4402,
+                  "cached_tokens": 0
                 },
                 "output_tokens": 54,
                 "output_tokens_details": {
                   "reasoning_tokens": 32
                 },
-                "total_tokens": 8449
+                "total_tokens": 8674
               },
               "user": null,
               "metadata": {}
@@ -264,11 +265,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad33e2e54f429-YUL
+                - a4489cfefedaf867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "4731"
+                - "3246"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -282,13 +283,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
-                - "496389"
+                - "473521"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
-                - 433ms
+                - 3.177s
         status: 200 OK
         code: 200
-        duration: 4.815s
+        duration: 3.329s

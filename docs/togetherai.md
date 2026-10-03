@@ -199,19 +199,13 @@
 | google/gemma-4-26B-A4B-it                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemma-4-31B-it                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/medgemma-27b-text-it                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| google/veo-2.0                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/veo-3.0                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/veo-3.0-audio                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/veo-3.0-fast                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/veo-3.0-fast-audio                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | hexgrad/Kokoro-82M                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| intfloat/multilingual-e5-large-instruct                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | kwaivgI/kling-1.6-pro                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| kwaivgI/kling-1.6-standard                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | kwaivgI/kling-2.0-master                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| kwaivgI/kling-2.1-master                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| kwaivgI/kling-2.1-pro                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| kwaivgI/kling-2.1-standard                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | marin-community/marin-8b-instruct                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mercor/cwm                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-2-13b-chat-hf                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -289,8 +283,6 @@
 | nvidia/NVIDIA-Nemotron-Nano-9B-v2                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/parakeet-tdt-0.6b-v3                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-image-1.5                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| openai/sora-2                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| openai/sora-2-pro                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/whisper-large-v3                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | pixverse/pixverse-v5                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | pixverse/pixverse-v5.6                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -340,6 +332,7 @@
 | HiDream-ai/HiDream-I1-Full                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | LiquidAI/LFM2.5-8B-A1B                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Lykon/DreamShaper                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| MiniMaxAI/MiniMax-H3                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | MiniMaxAI/MiniMax-M3                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Prism-ML/Ternary-Bonsai-27B                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen-Image                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -368,19 +361,14 @@
 | google/gemma-4-31B-it-lora                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemma-4-E2B-it                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemma-4-E4B-it                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| google/imagen-4.0-fast                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| google/imagen-4.0-preview                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| google/imagen-4.0-ultra                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/veo-3.1                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/veo-3.1-lite                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| google/veo-3.1-test-debug                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ideogram/ideogram-3.0                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ideogram/ideogram-4.0                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-3.3-70B-Instruct-FP8-Lora                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP4            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-4-Scout-17B-16E-Instruct-FP8-Lora           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-models/Muse-Glimmer-30B                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| minimax/h3                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | minimax/speech-2.8-turbo                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/Mixtral-8x7B-Instruct-v0.1-FP8-Lora                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/Voxtral-Mini-3B-2507                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -399,7 +387,7 @@
 | stabilityai/stable-diffusion-3-medium                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | stabilityai/stable-diffusion-xl-base-1.0                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | thinkingmachines/Inkling                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| thinkingmachines/Inkling-Small                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| together/Tev1-4B-experimental                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

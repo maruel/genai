@@ -115,6 +115,31 @@ The test framework automatically discovers models, records interactions, and upd
 After updating any `scoreboard.json`, run `go generate ./...` to regenerate the documentation files (e.g.
 `docs/*.md`).
 
+### Add a new model to scoreboard.json
+
+1. Confirm that fresh model discovery lists the model. Refresh the CLI model cache when needed.
+2. Remove the model from its untested scenario. Add a separate scenario with an empty `GenSync` or
+   `GenStream` marker. Set `reason` when testing reasoning:
+
+   ```json
+   {
+     "models": ["provider/model-id"],
+     "reason": true,
+     "GenSync": {}
+   }
+   ```
+
+   The empty marker requests qualification. Do not copy capability fields or add a temporary `Qualify`
+   option to `client_test.go`. Use one model per scenario to test each model.
+3. Record and generate its capabilities:
+
+   ```bash
+   RECORD=failure_only go test ./providers/<provider> -timeout=60m -update-scoreboard
+   ```
+
+   Inspect the generated scenario and recordings. Set tier metadata only after qualification succeeds.
+4. Run `go generate ./...`, then `go test ./providers/<provider>` to verify playback.
+
 ## TODO
 
 - When updating a provider's `Warmup.yaml` (model list), always verify that the SOTA/Good/Cheap model

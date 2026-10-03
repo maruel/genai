@@ -22,52 +22,259 @@ interactions:
         content_length: -1
         body: |+
             event: response.created
-            data: {"type":"response.created","response":{"id":"resp_01f19952c76b3180006aa72d38b18c87d2889c9076838c14b9","object":"response","created_at":1789340984,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-luna","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+            data: {"type":"response.created","response":{"id":"resp_0f31eb6727ffc11a006ac06c975c8487d297dcb78515717e19","object":"response","created_at":1790995607,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-luna","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
 
             event: response.in_progress
-            data: {"type":"response.in_progress","response":{"id":"resp_01f19952c76b3180006aa72d38b18c87d2889c9076838c14b9","object":"response","created_at":1789340984,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-luna","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+            data: {"type":"response.in_progress","response":{"id":"resp_0f31eb6727ffc11a006ac06c975c8487d297dcb78515717e19","object":"response","created_at":1790995607,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-luna","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","item":{"id":"rs_01f19952c76b3180006aa72d392bf887d29d834e2b7edc22a0","type":"reasoning","content":[],"encrypted_content":"gAAAAABqpy05S86L8lMr2JzAKvvB8DR4ZHN6lQQR6tK3wTNeKmrOpXSA4tuVlOkM7WP53iH1_MYovmHIoMfrxjdY0igKQT0Reit34O7PmKb8HnYkQ1AGQrhbU3B9MDkI0H-FMSzUJsyyN5dK252AlI23NL6kLscjrzoQUnY6tnHcNKybQJOiJBeuJvx4EEPnTCpDC2EuqugH5ZCphpU0MlKu1Pt5ywP8VNwS_q9YJRX9-vep6Td6Ome6cXyOz7mOV29Gw0IxAIAicmKMsD6LoEToz9C34ASqYE_0I-p_xTDmmTVfhwnVZDP1aR9HVaFm-HnEGRKUR6VRv4LGELVteYbQ8JExpyYytGuBlg5HZ1txyasgYtF646I9ROR7CfcbimXBqI7J27UEufHeai0h_2mnbB-T736lZAuys1GkwtIGMRjUejnbPR8ZRQdHS2VauGACn9V9pYruMRyrokCuZJOp71bBuNil1IZUstHcAiO8dTYc8W39xVaK7XPit6CnbF4hoyckatz0G4JmxzAgLkrWerCi54fVy8benvR7rZ4xXHk6d1nJnxeJr6f2kKrmAfOWVJg05ra6eWkh4Z2BurYA6AWheYGFtdrTLpV39nTI9FxT3pc5v2eivGCqSvKLRiPxmaJprxY9w-u8yprPBW-_nDVOmGYpls7PdFjGQhVPZ0NU1bR8GNcE0Adz-xOxyAdXctQ5EsvjSnb4AnGzgHtUQl8XWnBR5PoBMZX7oaXB7zBhBeUBp9Ha2_vD6YPvtJXmShVEylmQMo4jrqT7nWPXw8j1mAFlg8omcTElTn9JWo4NA7vLHv0MP7gxOT659eSwWF-mNXO4-wBIntETYNymM0DuxeW_ty04NtFquGdX600l5p0EFrlTUpVHEJK1G-_EK9RsvrY4V4j89hNW6-aSGn8J7u4w1dIqNm6FdeLzwdDX4xMVD8WJFlnWNM2Jb9hMNOmGWNK8GTjX_vBpBTQ_Uq9ZTMOAiqXOZ2V7uT8bE9RqWUaFYuRP0CFEGs0p_j0HFoAxRf3KhKXiQavyPS7j-NCzMIZaq7Tqb7JwKRqcb801WY0zxmXF1kiaspRU1mCgLn4SskAxVE3oFKDLBJy2SzAVboEr914zxkt4MnBplb1GWuC5sIUJn4TLVDEqNl68_9tAEcNdwBDCmVEtuPEI-w5U1eJeoA==","summary":[]},"output_index":0,"sequence_number":2}
+            data: {"type":"response.output_item.added","item":{"id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwGyYLbdd_vlJO6wRboq_hKmTdJPOpCxLwVX-J7mFs0oboxwAshIEqDYYykkRxRv9qlkAC6byQ2Lkge40T6kgjGHlKRCW80B2wESpj_XJfcNSC10vGx5cxHGSPPHEL8wP5aZOuGfx-Oq6wd5EZOaVLb7QS-DrVoXqB7miEYHsEnfNBlu-M4thEPiNitQQ6-ceQhfc4sVHTGDMZIcK9k9ydfO3ND4T9DPPjoGAqfLo3ejU2wXdM_BEhUnRZVdDpqM1ObiRrrlrjddSrE4G7QIYq82v29PikkYCu2T25xdfyzavx5HKZ7DfyBMy90BywGB3KnLbH6Yufv9iKO6dJVU_QXJ2SlWOrV3Xa6E318XEpJcGchRlYLA-0TVih_aM6A9tF5zZ6niYb3PaBnlu_zHjRqBM1iaeX1nzQMudWRqw-NhzxIcdRqMVmJjAaXianT8wMBcGJbE0Gi3lg5LArSiA4Fof4oSG33Gq-pVuuDjJhvMpGjjVxHcdAsD-MkK_iIocdyEAUpZGmsnf5yrf8nI44_j97nD5kOrunMsp3iyVNUKW5BnGbFG_0H-W8KYPRU3OogEs1Lf5lJ1fULozFMR1kYNyTLsekSssX85DwPHiCCFLlPfIKiISwmX5No6EQxMnNnGSTrQZ_CyEnchjPJAqZetXpshqebPfIRuYa60uM3wnv2Xy-myhdvQEWmuu0ZccpncD3cBWbJAwDrRZoeqGDb5sC7HLV_BIjsM5pakW6Jmh_1WVELe0nsoVDtWbqxme0J3o-hXDv7eOdtreJXK6KMGRt66IoNSmw1Y3G_c2dHqLhRm3JO_HL9MrrDiOzgjFY7-yJ29FNA-sm-8jwIsPwxioICyFQeY8qXUoAz4TphNUiIPTLo3wlNBtRGs9UpkYvVD_8LoQaYlHy2gE4iJHeLLYhGPTC1t5lar695G0ziiLk1MaydJShQ313b4jWEg5TTfnBnJJHREH5dWyxbwikaW0cOHc4zbCduef5dDCOenRgBQhqsVfdXsxYLSpdpIZOHNSazZ11Ds6IEkKRQ0xxZrfFoC-9Z2LxwjugRl1UNp0TlSzbnU2tlgH6DF2ED2bIuSaBzQkdrnf_VNn3q7NQXzW4-NJwL9Z5djyYpo5-QSnY2PDUKYFW4ZzF9zum0cSLPYpZDv7f4JA-bRTmHXRKPN8Hg==","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.reasoning_summary_part.added
+            data: {"type":"response.reasoning_summary_part.added","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","output_index":0,"part":{"type":"summary_text","text":""},"sequence_number":3,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"**Searching for current PM**\n\nI","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"j","output_index":0,"sequence_number":4,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" need","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"jPNYZwzGaJN","output_index":0,"sequence_number":5,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" to","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"YmqdobmawVgw2","output_index":0,"sequence_number":6,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" find","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Ur6rQIHCPKi","output_index":0,"sequence_number":7,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" out","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"NhbtpT9ygi4r","output_index":0,"sequence_number":8,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" who","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"pznOGpqmwfg2","output_index":0,"sequence_number":9,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"IfavnCJMcz4i","output_index":0,"sequence_number":10,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" current","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"BY3dD0vP","output_index":0,"sequence_number":11,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Prime","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"PnceKUwgRF","output_index":0,"sequence_number":12,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Minister","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"mTtpH1C","output_index":0,"sequence_number":13,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" is","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"v6GUT6kKKd8kj","output_index":0,"sequence_number":14,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" as","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"dFJUotzp5qtFR","output_index":0,"sequence_number":15,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" of","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Jhhd8oFSNUwgV","output_index":0,"sequence_number":16,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" now","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"RnOS3ebyE1YE","output_index":0,"sequence_number":17,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"4MGuK7UXAIMKCRt","output_index":0,"sequence_number":18,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" which","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"GSaFVG4OQM","output_index":0,"sequence_number":19,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" is","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Ra7gvjs2sg3ZW","output_index":0,"sequence_number":20,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" October","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"KyFEXw5u","output_index":0,"sequence_number":21,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" 3","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"c7gG6BMTr3RWhx","output_index":0,"sequence_number":22,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"gHH0qlzPOpW92TO","output_index":0,"sequence_number":23,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" 202","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"3Os4ezbLqntC","output_index":0,"sequence_number":24,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"6","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Rj4aCjkjmcEVfVm","output_index":0,"sequence_number":25,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"4dWHbitPP5wqezD","output_index":0,"sequence_number":26,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" The","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"04Nn7cSdtMJq","output_index":0,"sequence_number":27,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" system","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"hht0HCgK1","output_index":0,"sequence_number":28,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" doesn't","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"P2huUeSd","output_index":0,"sequence_number":29,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" specify","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"j1Fsrrti","output_index":0,"sequence_number":30,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" a","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"BSpepjYaG4kmTR","output_index":0,"sequence_number":31,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" date","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"FQgfBsdUGhb","output_index":0,"sequence_number":32,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":",","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"FpDCwo4wyj5PvY8","output_index":0,"sequence_number":33,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" but","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"lpT2mrxQqDkX","output_index":0,"sequence_number":34,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"r81YQznkBP64","output_index":0,"sequence_number":35,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" developer","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"W3AdJi","output_index":0,"sequence_number":36,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" mentioned","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"P1Fn2k","output_index":0,"sequence_number":37,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"fU9JVv9extav","output_index":0,"sequence_number":38,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" current","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"wE5EKsIB","output_index":0,"sequence_number":39,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" date","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"PsJAaIKmINc","output_index":0,"sequence_number":40,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" when","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"PIx0jGv2jrb","output_index":0,"sequence_number":41,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" needed","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Pi9f6GK91","output_index":0,"sequence_number":42,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"r3K8GpYhtdSliPr","output_index":0,"sequence_number":43,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" I'll","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"4PQeV0J21pq","output_index":0,"sequence_number":44,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" focus","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"3M5uZeBRl4","output_index":0,"sequence_number":45,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" on","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"I64QcpsN6AUnq","output_index":0,"sequence_number":46,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" searching","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"ytN691","output_index":0,"sequence_number":47,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" for","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"fgrpzyV07hvp","output_index":0,"sequence_number":48,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" just","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"IIh5QHSVRLI","output_index":0,"sequence_number":49,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" that","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Vi6gNnVnRSs","output_index":0,"sequence_number":50,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" one","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Ly5azsGZzy7e","output_index":0,"sequence_number":51,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" piece","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"PoPaIeV7wY","output_index":0,"sequence_number":52,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" of","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"IkRZ3v4ZPm2Dl","output_index":0,"sequence_number":53,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" information","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"m4mS","output_index":0,"sequence_number":54,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":".","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"V3uGkZgN8bcSc76","output_index":0,"sequence_number":55,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Let's","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"YFSkkdqrfA","output_index":0,"sequence_number":56,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" go","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"QoPOmWjKB1XCV","output_index":0,"sequence_number":57,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" ahead","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"rCBTQbJdwH","output_index":0,"sequence_number":58,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" and","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"fD2R3yrV4WxB","output_index":0,"sequence_number":59,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" query","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"eKfCC09k83","output_index":0,"sequence_number":60,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" for","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"fp7frxzQQ2EO","output_index":0,"sequence_number":61,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"Zgy788ZQS3bB","output_index":0,"sequence_number":62,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" name","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"mgPTFG5vdCT","output_index":0,"sequence_number":63,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" of","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"GEzcXSfNuTwmP","output_index":0,"sequence_number":64,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" the","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"5Klb3v03yU4p","output_index":0,"sequence_number":65,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" current","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"6Am0XAEK","output_index":0,"sequence_number":66,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Prime","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"ujZx0DSaWa","output_index":0,"sequence_number":67,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":" Minister","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"MjRlPDw","output_index":0,"sequence_number":68,"summary_index":0}
+
+            event: response.reasoning_summary_text.delta
+            data: {"type":"response.reasoning_summary_text.delta","delta":"!","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","obfuscation":"rHaefPQNnc7o3aR","output_index":0,"sequence_number":69,"summary_index":0}
+
+            event: response.reasoning_summary_text.done
+            data: {"type":"response.reasoning_summary_text.done","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","output_index":0,"sequence_number":70,"summary_index":0,"text":"**Searching for current PM**\n\nI need to find out who the current Prime Minister is as of now, which is October 3, 2026. The system doesn't specify a date, but the developer mentioned the current date when needed. I'll focus on searching for just that one piece of information. Let's go ahead and query for the name of the current Prime Minister!"}
+
+            event: response.reasoning_summary_part.done
+            data: {"type":"response.reasoning_summary_part.done","item_id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","output_index":0,"part":{"type":"summary_text","text":"**Searching for current PM**\n\nI need to find out who the current Prime Minister is as of now, which is October 3, 2026. The system doesn't specify a date, but the developer mentioned the current date when needed. I'll focus on searching for just that one piece of information. Let's go ahead and query for the name of the current Prime Minister!"},"sequence_number":71,"summary_index":0}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","item":{"id":"rs_01f19952c76b3180006aa72d392bf887d29d834e2b7edc22a0","type":"reasoning","content":[],"encrypted_content":"gAAAAABqpy05TgRf-1gkpQh9250FdimqGKO7xAR9RcCAiS6IS_47JR_djtdKM6aQErRkVw-fT-ys_oJnkVAtZFRfX4TjDQmr0y_lSzaG7gnSVjCsyb2VITGWrXd-SL2HUDxeiGPS7PLgHukwTf33eJQUQhqOgeX8SspRCyw55a1zdaG-W1-onRp8xMKXto-PAMOr1eh7ttVR7R6rofNl9vMhe6_84-IstsvhyIOJYTEnbMQ6DTAgHQBJh_25T-ifjm8g8lTEu0C3p1wWvnDx0wo5ZbWSlBTOYRuwxDmjATttOkHvIcSxShvB4BqhPlYZcpLh7-pD9GhoVMCrSI-Zbk8k-gMfocEgPLLHO8MiLa8f2HClexcoEFSP5Cq8hpPHSfzUkoaeLIUQb8vsGYILBadPzNMsd6g-dsnARlQX4qnxSInHN4VSu25yb0yx0xdK25wFgxOnfGTKV6m6b1d_gze7CviLi9oJ_y3PuULzc4T18389PFByBOaeWW3X7okBjT6bx8lNz5x8YyGd1kayUeV9hh6Zk1hqDkttC4muWAU3tj-Nslh-SIcBkqMTLxaTf42V2Upg0LjNsyzLbQrALAbkLsrmWisopvu1hewewEQ3bRKm13jGqdl5xexhvDTJBkr9K2rxrpk8g1ohXH7U__8os6zl_JfgoF1XV6ak03cL_zFdmxq0iy8GJS7ywKV50y10zQ9ji9S0hOxYNeaZklPtgAV7NNId14LXAoiYhDHzyR2-_zBe9ldCHyt6MXXGwM8A2kymxzLLHt_DbcgIYXHgQe17z-LHSaFCIDQ2eWeOIXpHMGzNz1S5u6rbMqGDRaXpy-jI2M5oUFxN71UJuRYgAFQM-fI_lki8bEiIIQ_Dly5GAtTP-mih9JgP7pqqeuPs8NWwnsAPBfX644i-hgJfPqQPa-zyNvvQ0swQFWGQQDDUZ4aLZulcQzjaBs4v2imqlLJ9YJgSoUCEI6RdLRt1YSbvuiq820xc3vt3kgPNRxOZTUR3S4rD9hx6387ukjax9AnZs0R1xT5GFGUlGumWPg-C4fVGOnWtzmkPEm3Y7HBcH6Rlc6Kh0sZ_Ee_xBZ8V-KjWiFsphb5g16N4Qqw8PYQWnMJQw-FCux0Z1_QDr_kLfg4QguAlA28AVkf2O4lhNiDrwTi_gKMUI2ka9_hhC3hkcGPdrkabBLkHzSlrjL3cpiO9WYNXpReCfdAGD51kUHFKeXwV5Qv9P5atzyNDj6mGxdu0DYyGlmS9cbsiaFslDAfFT8c=","summary":[]},"output_index":0,"sequence_number":3}
+            data: {"type":"response.output_item.done","item":{"id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwGyckwNoKAyZI67BUkQq8PI_4lqh49RNDsv-ryhM3JchGlA6RXFK49Hzm52ksiZVzO5tK-6ySnThrGwycxExn4pkCHfh9sfEar9PDsYo_uXzvs1krDnG5Bheb_pzsCTDgmaAJBIgeirpnc6aA5PmoqvBT1wMh51zLewI0ejeg2uMbm3n25c_DKGB3hesJief9YmzotASd6vhtVvB6iKpPkNo95-veCMUmzsZEKvX1J3ewjdxjrSazFiliI8a8oYWW9hkkX1lv2YbBMmrh0Hmo5G76D5abNLLes94WHON_W96EcykO9fLNHtO10hxAV_DpIONzhs4z-P1dC7_8b65b-9ubZ1ZCKumEOPxovZElFjIB6sK1aKrsjU-hOZ2rnIx2_w9pW5QVYi4HLEhJs5wwXLAH1X5SXDHw5oAMKAALl1N5NGLzb0sjpV-rMm8V8BLyR4AwIDyQk-YuGkAVcJxRl0s1vWUt2ITQZk2NDWZaDqM0FvDudLwLtrX80lYhhYJneDc32J4MkaKvggqm2IkHW0GV1-gywj8IilGp1Mixv-iIDIT5_Dl4M4v0UO9-FOQY89mohBb4nreSI19UMmYvgdNgzHeYuyUlRGQMJ2YRRbi5DLL_mhEkd3SDEgudwN8U2NYjtOtfbEC0fTOC1Q5BWEXJV1EHTzzr137Ww1HSVgjiXv34GftmtRQZA4pDxtA38bXRxJVqsYYKtCQxXBJOkriGdWIAj66r8liRnAEBn3ZPAfcyyMFmAtZDhF6536Oq_PggNUP8GH0uPnq8wNhbvQeMYRQ-A00IAE7-5TKwsXCQdVb22U5u45xlCKnjGeMF9SqcG1TAy5lKetKTfE2FVGUueI3As6v74BY4_Q60Kmjv2dyBJCREHetGptojv8gP0GqIvnd5SAsi4RbfEDu7IC0-89uLDaw4c9z1IgiEcSFshIHWlVOErgQJ0_c75rqrldru5rUrj_FKWFPqUzRm0WQoN0NAGl7sdly-KgteY5Oc6ozYAfsGzs2HtnHNNLlnei8ES9nFnu1BRLlWjIcA-rd-w96XBhPAd5KoO6HD_11GAZQy4_ydc4tK_mCCDwpMJCJG0LdFyC17PFPTLkKR_A_aUtzo92P3YNVejniAKW5M7aVDMt2o7ea1KwPqsFLqtnOk66Pmat4DpDShZROGAj9-iBlHjNp8kZ5TH824s6WPhOTtDrGMpLeg1QbzEToU40kpUVWKuHxDbIJrPhVtmZ59D5NrSOqf87bKfvrnR-TxRGMFWyJqyJ3EUmVK0rK8YFgLUEEScmZ9W5DiOCnm6PVSPOdJtA_AGtehL7oBpKCHNd_NkMQLGrna4zjdXfoyXOg7kZlazLJMVsV7AK0HzR6HBJHWfIgmXkD-Wc14KII0f6RZY-6DnHRMzBLwKl9WBh4UpytIhhoB5Pa4XScXmFvYSTd9-XvkHYc7MCR1IBwpj0=","summary":[{"type":"summary_text","text":"**Searching for current PM**\n\nI need to find out who the current Prime Minister is as of now, which is October 3, 2026. The system doesn't specify a date, but the developer mentioned the current date when needed. I'll focus on searching for just that one piece of information. Let's go ahead and query for the name of the current Prime Minister!"}]},"output_index":0,"sequence_number":72}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","item":{"id":"ws_01f19952c76b3180006aa72d397e3087d28dbc5d08f1530f9e","type":"web_search_call","status":"in_progress"},"output_index":1,"sequence_number":4}
+            data: {"type":"response.output_item.added","item":{"id":"ws_0f31eb6727ffc11a006ac06c9c3f7887d2a06be00089fa71b0","type":"web_search_call","status":"in_progress"},"output_index":1,"sequence_number":73}
 
             event: response.web_search_call.in_progress
-            data: {"type":"response.web_search_call.in_progress","item_id":"ws_01f19952c76b3180006aa72d397e3087d28dbc5d08f1530f9e","output_index":1,"sequence_number":5}
+            data: {"type":"response.web_search_call.in_progress","item_id":"ws_0f31eb6727ffc11a006ac06c9c3f7887d2a06be00089fa71b0","output_index":1,"sequence_number":74}
 
             event: response.web_search_call.searching
-            data: {"type":"response.web_search_call.searching","item_id":"ws_01f19952c76b3180006aa72d397e3087d28dbc5d08f1530f9e","output_index":1,"sequence_number":6}
+            data: {"type":"response.web_search_call.searching","item_id":"ws_0f31eb6727ffc11a006ac06c9c3f7887d2a06be00089fa71b0","output_index":1,"sequence_number":75}
 
             event: response.web_search_call.completed
-            data: {"type":"response.web_search_call.completed","item_id":"ws_01f19952c76b3180006aa72d397e3087d28dbc5d08f1530f9e","output_index":1,"sequence_number":7}
+            data: {"type":"response.web_search_call.completed","item_id":"ws_0f31eb6727ffc11a006ac06c9c3f7887d2a06be00089fa71b0","output_index":1,"sequence_number":76}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","item":{"id":"ws_01f19952c76b3180006aa72d397e3087d28dbc5d08f1530f9e","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official government"],"query":"current Prime Minister of Canada official government","sources":[{"type":"url","url":"https://www.pm.gc.ca/"},{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.canada.ca/en/government/ministers.html"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://www.pm.gc.ca/en"},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries?gender=M&ministryNumber=27"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries"},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries?view=tile"},{"type":"url","url":"https://geds-sage.gc.ca/en/GEDS?dn=T1U9UE1PLUNQTSxPPUdDLEM9Q0E%3D&pgid=014"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/30th_Canadian_Ministry"},{"type":"url","url":"https://en.wikipedia.org/wiki/Canada"},{"type":"url","url":"https://www.congress.gov/crs_external_products/R/PDF/R47620/R47620.11.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://publications.gc.ca/collections/collection_2014/bcp-pco/CP32-35-1979-1-eng.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/OAG%20-%202015%20EN%20-%20Updated%20Accessibility%202024.pdf"},{"type":"url","url":"https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"},{"type":"url","url":"https://www.canada.ca/content/dam/pch/documents/services/official-languages-bilingualism/roadmap/roadmap2013-2018-eng.pdf"},{"type":"url","url":"https://publications.gc.ca/collections/Collection/CP22-65-2002E.pdf"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"}]}},"output_index":1,"sequence_number":8}
+            data: {"type":"response.output_item.done","item":{"id":"ws_0f31eb6727ffc11a006ac06c9c3f7887d2a06be00089fa71b0","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official"],"query":"current Prime Minister of Canada official","sources":[{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://www.canada.ca/en/government/ministers.html?lang=en"},{"type":"url","url":"https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"},{"type":"url","url":"https://www.pm.gc.ca/?pverbp="},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries"},{"type":"url","url":"https://x.com/CanadianPM/with_replies?lang=en"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries?ministryNumber=29"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://211ontario.ca/service/68975844/canada-cabinet-du-premier-ministre-canada-cabinet-du-premier-ministre/%26alt%3D1/"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://ised-isde.canada.ca/site/broadcasting-telecommunications-legislative-review/sites/default/files/attachments/029_AsianTelevisionNetworkATN_2b_EN_ON.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Canada"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Justin_Trudeau"},{"type":"url","url":"https://www.japancanadatoday.ca/wp-content/uploads/2022/12/PM_Christmas-Message-2022_ENG.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"type":"url","url":"https://cpcassets.conservative.ca/wp-content/uploads/2022/04/26164618/6655497556c4933.pdf"},{"type":"url","url":"https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"},{"type":"url","url":"https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"},{"type":"url","url":"https://apnews.com/article/04ce045524fd060d5439ed61acc2cd93"},{"type":"url","url":"https://apnews.com/article/cbf3bc6cbfde27cfae7d85602126785a"},{"type":"url","url":"https://www.youtube.com/watch?v=l5YYWGUHV_I"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"}]}},"output_index":1,"sequence_number":77}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","item":{"id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":2,"sequence_number":9}
+            data: {"type":"response.output_item.added","item":{"id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":2,"sequence_number":78}
 
             event: response.content_part.added
-            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","output_index":2,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":10}
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","output_index":2,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":79}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"Mark Carney","item_id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","logprobs":[],"obfuscation":"FMeCM","output_index":2,"sequence_number":11}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"Mark Carney","item_id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","logprobs":[],"obfuscation":"fdkWA","output_index":2,"sequence_number":80}
 
             event: response.output_text.done
-            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","logprobs":[],"output_index":2,"sequence_number":12,"text":"Mark Carney"}
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","logprobs":[],"output_index":2,"sequence_number":81,"text":"Mark Carney"}
 
             event: response.content_part.done
-            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","output_index":2,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"},"sequence_number":13}
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","output_index":2,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"},"sequence_number":82}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","item":{"id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"},"output_index":2,"sequence_number":14}
+            data: {"type":"response.output_item.done","item":{"id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"},"output_index":2,"sequence_number":83}
 
             event: response.completed
-            data: {"type":"response.completed","response":{"id":"resp_01f19952c76b3180006aa72d38b18c87d2889c9076838c14b9","object":"response","created_at":1789340984,"status":"completed","background":false,"completed_at":1789340988,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-luna","moderation":null,"output":[{"id":"rs_01f19952c76b3180006aa72d392bf887d29d834e2b7edc22a0","type":"reasoning","content":[],"encrypted_content":"gAAAAABqpy085CmW4m5Ej2HpBnBHjpigSKFRPX69W88MpGoGXemigOEjfDW8tLmtiWninmhRl-oEy9nxrSwCFE0X_ID1lSrw2wtzqW1PwPsL5SR8_kJot8YDWuJkR7ly3HOOOdTOixsRcH7rgI6fVvLOl1SIOyuZuVcUOsAPj9LNseik9Vi1vmPM4I1_pUzm1hSiTz4QjnegmR53cFbRan_0l5t4dau3AxfA8x1sUfGcJPqFT2eRYEjHrLhxY_lBXXXWb_pQ7hjp4ILLL1PVUui7L--5vrR266h7qysZteM2LLHKbzklAb-UNz_D6_pI9I8VPXkhVmaFR-f1H2hlOWbC2MHb5pMbswfVl6UVpmHBajXNNQvP1CKX5zD-NONje7uzSNzXuadTbPsZPSkp1LBZ5usj-G-yXZC3MDjH3Ldg_NAviDL_r-PJyYefBp-Fv6URLwP-V18AmRjpoyuXgoXY3XKcytBuNMVDp_PyjClQZ2uRjNF61fCRFN9GxUtOSikdZ-B1GsrdFJxrHckq5OEMLGxzIViV1mQ-20TIDZtg2GfKf3UVcedTGRzSH-TNSKffeGVhovzVXueaZ9ZOOxYp6upGRTcPzNjlfjZjLgkQ0onZRRM1sKyUjTyT-7blaGaVyVb754alNqrI3OBnutQuj7p32nk4iFCwcqiVcPrKgwTCZoVsz659lRGailyiFz8Cr91n6whswCxPAgmmc2EJeKDiLebXRyTIu-as9rJE_Lp0nTHTPYQfWNhI-jXLhxq2_wLANoLB9dVhOb9PJkjcsqnRsVraJT2wdTPgnmKojnhh2uNY14J6gXDUqZZv-cTCBAyCjxtoC3DHU_oz_4UTzXNlZzLPW4VvDU6PMOC8zIxl_CTixBPpQO_xbXvJBDuTHSMb0hwgdEMPQwNGIuqrmqldlwiPVRAfJSbYy-qGLmaFKLHbgktzlfxMc5o-iR8nP58k_yeuchecacvzF8uinscgtLOv-0QAMgPP22YzHX8m936U27jkEp5lP50vBpSLkb74noxx_EeuiLniklRKaoqte0UO6_jRQGuBnUjHVnymZ2_DnfxEFHn20bgQjKxgdR2MUhn72GX-QPi_Kqnw-ocV7glBQCvWVH5rEu_4bN5CyD9qX6q8kWW9_dhIDjBFMIGvyTTdBnkL51fbj-6xrB9WGz7XqDHjCZjjAZX5dFw2f7yXyLbB8M2g8kRGjieH9aDjxptnnrGafsH_knDEzFyDEjSL-_wd6R9ocy_dIrj8ADQy-Co=","summary":[]},{"id":"ws_01f19952c76b3180006aa72d397e3087d28dbc5d08f1530f9e","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official government"],"query":"current Prime Minister of Canada official government","sources":[{"type":"url","url":"https://www.pm.gc.ca/"},{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.canada.ca/en/government/ministers.html"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://www.pm.gc.ca/en"},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries?gender=M&ministryNumber=27"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries"},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries?view=tile"},{"type":"url","url":"https://geds-sage.gc.ca/en/GEDS?dn=T1U9UE1PLUNQTSxPPUdDLEM9Q0E%3D&pgid=014"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/30th_Canadian_Ministry"},{"type":"url","url":"https://en.wikipedia.org/wiki/Canada"},{"type":"url","url":"https://www.congress.gov/crs_external_products/R/PDF/R47620/R47620.11.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://publications.gc.ca/collections/collection_2014/bcp-pco/CP32-35-1979-1-eng.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/OAG%20-%202015%20EN%20-%20Updated%20Accessibility%202024.pdf"},{"type":"url","url":"https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"},{"type":"url","url":"https://www.canada.ca/content/dam/pch/documents/services/official-languages-bilingualism/roadmap/roadmap2013-2018-eng.pdf"},{"type":"url","url":"https://publications.gc.ca/collections/Collection/CP22-65-2002E.pdf"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"}]}},{"id":"msg_01f19952c76b3180006aa72d3bc64087d284e6273eb4ce9ed3","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":1}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":8566,"input_tokens_details":{"cache_write_tokens":4402,"cached_tokens":0},"output_tokens":54,"output_tokens_details":{"reasoning_tokens":47},"total_tokens":8620},"user":null,"metadata":{}},"sequence_number":15}
+            data: {"type":"response.completed","response":{"id":"resp_0f31eb6727ffc11a006ac06c975c8487d297dcb78515717e19","object":"response","created_at":1790995607,"status":"completed","access_programs":null,"background":false,"completed_at":1790995614,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-luna","moderation":null,"output":[{"id":"rs_0f31eb6727ffc11a006ac06c98b32c87d291bbd6e3782d395e","type":"reasoning","content":[],"encrypted_content":"gAAAAABqwGyeqr2Yq4CZXZLzbUL4qCixbc7UMwYDiyr7JcaYh1aFVZVsLYVOm5H-gTlwAtWcrl6A18ZVsgxcFNB8iwgrqtyUjBH7j7yCyOFOFgn9sjtZJcgaEPdYA1Zgd6DBLnFW9nsc7eINCYAHwKzN_qPMET96EGD7RATGqddfrr5Ml-lsNPL71f-8wnZl_aaK1G-ycDfbhtU-nZtLScHNSWNLFE7LSVb9PsIWbA2kc_TydCUkWbsZShG2jOFTpcU9c2CMYkq4IJEfp-yy8aVZscBpsJzvYEHR4YOf6GkI-ODKC8cZzREaYoJ8nB3cjVCSHk-qp-A6vZYUO1UbY5uapvucZge7Q3XytKd7vLEXNbOo3j96eJhiPK52OFE2V1raKBphE7zYncI1dzfXS2DjzBg54PBMc-qM2m6Nsh4j2Ow0pxHzpC8__xjjdk3d_aZloJt2_g1YWdnn9ToES3gBsX1EuPdvESNEcrCCQLQlMuZ2uyeDH6SYe823g04OZrqL2sr4w9YGjVp9CWHdS60IPyKKLmFHexLV4q6e8Lx6QSfLhGL6Lo6cEYoZmkLvloUE5ieMTAUjyw4drBjaRISpxmcCAp3TLcdzq-9UHxke8AKbmFW7G_fcD9bvYHbQhXEPyfW2v5qY8M5YpWp66yRVDHPw0_yKqaUQ9czlniM9vJI0BHs3DPknrzByiQcapZhwXFzAbnJEKu4eKkSLpMALYgabWdnxqTGmXuMvbAsWVyFX9qxH4asval0aNNObg1X1yWFAi13BnmLG52nRS2Fw4w9FyCRH1IG3eekm3LZjatM6LTfGxl5hjYBQ6Uzy2tL0GL_OlG02Rv6FnMCc1rdntFIzwsIMSe-AO-rzAKRpfNX016r3fQGGR7tcGrzdATI2SIR1GHfAyo1A5f6LkkatfV8symONYGwYyz81Kkn_h2KavFqlyzDKjBdMljd35W9yR5eSB0_SMZNQ5K-jE7g5fIPMnISum0xzknwQQj_iDLiELFScCv7L0dEYXqcJmNNk4T9E228cXaCLdKdoJcVtZQFvv6j5kJKQKkvY4knW3QTyLxZEQo0Rlmwlwdxumg0OqluzOkvW0zgScBBr2J9s8IDpAkIvsYpT6FKr1KOoM8oDYaIgL_kJCGoir_Vrp5YkFa5GZlxpDuOP4cPWZfFjLerDUrhW74r3kUMqJuCed-74I5n4sO4p4mskOIsMfit8ehZcY1SWEXtb0YcEr2GnouDgr0MzsXD8SnY-mLYkGdR4Sd_Eifzu92v5T4VPY4qhTdrPtY9rlYkvqJMyjKUDhhz7S7tlZQVfgOAc0FJ1kPdF6RUBkMgkSLostr6WE1ho7ExB3trbxB0x-Z4nMqKDYvlkrJqlwEiS1Pjc0gF9EpOIchus5ljjZIq7ZD8Ze5krGYAI4uwni71HtJWSzq5kXSsocLRxe0VrXYQ5VIBl4eVLNjTvQxs=","summary":[{"type":"summary_text","text":"**Searching for current PM**\n\nI need to find out who the current Prime Minister is as of now, which is October 3, 2026. The system doesn't specify a date, but the developer mentioned the current date when needed. I'll focus on searching for just that one piece of information. Let's go ahead and query for the name of the current Prime Minister!"}]},{"id":"ws_0f31eb6727ffc11a006ac06c9c3f7887d2a06be00089fa71b0","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official"],"query":"current Prime Minister of Canada official","sources":[{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://www.canada.ca/en/government/ministers.html?lang=en"},{"type":"url","url":"https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"},{"type":"url","url":"https://www.pm.gc.ca/?pverbp="},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries"},{"type":"url","url":"https://x.com/CanadianPM/with_replies?lang=en"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries?ministryNumber=29"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://211ontario.ca/service/68975844/canada-cabinet-du-premier-ministre-canada-cabinet-du-premier-ministre/%26alt%3D1/"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://ised-isde.canada.ca/site/broadcasting-telecommunications-legislative-review/sites/default/files/attachments/029_AsianTelevisionNetworkATN_2b_EN_ON.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Canada"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Justin_Trudeau"},{"type":"url","url":"https://www.japancanadatoday.ca/wp-content/uploads/2022/12/PM_Christmas-Message-2022_ENG.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"type":"url","url":"https://cpcassets.conservative.ca/wp-content/uploads/2022/04/26164618/6655497556c4933.pdf"},{"type":"url","url":"https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"},{"type":"url","url":"https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"},{"type":"url","url":"https://apnews.com/article/04ce045524fd060d5439ed61acc2cd93"},{"type":"url","url":"https://apnews.com/article/cbf3bc6cbfde27cfae7d85602126785a"},{"type":"url","url":"https://www.youtube.com/watch?v=l5YYWGUHV_I"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"}]}},{"id":"msg_0f31eb6727ffc11a006ac06c9e66dc87d2be4d46d5a21c6309","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":1}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":8785,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":4402},"output_tokens":92,"output_tokens_details":{"reasoning_tokens":85},"total_tokens":8877},"user":null,"metadata":{}},"sequence_number":84}
 
         headers:
             Access-Control-Expose-Headers:
@@ -79,11 +286,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad240da32f429-YUL
+                - a4489e518b79f867-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "463"
+                - "241"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -97,13 +304,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
-                - "495161"
+                - "489062"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 480ms
             X-Ratelimit-Reset-Tokens:
-                - 580ms
+                - 1.312s
         status: 200 OK
         code: 200
-        duration: 586ms
+        duration: 319ms

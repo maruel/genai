@@ -421,9 +421,8 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			// Big Pickle no longer emits thought chunks; MiMo still exercises the
-			// OpenCode reasoning stream.
-			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("opencode/mimo-v2.5-free"))
+			// Use the available free MiMo model to exercise reasoning chunks.
+			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("opencode/mimo-v2.6-flash-free"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 

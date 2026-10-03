@@ -340,9 +340,11 @@ type Scenario struct {
 	In  map[Modality]ModalCapability `json:"in,omitzero,omitempty"`
 	Out map[Modality]ModalCapability `json:"out,omitzero,omitempty"`
 
-	// GenSync declares features supported when using Provider.GenSync
+	// GenSync declares features supported when using Provider.GenSync.
+	// An empty value requests smoke-test qualification before modalities are known.
 	GenSync *Functionality `json:"GenSync,omitzero,omitempty"`
-	// GenStream declares features supported when using Provider.GenStream
+	// GenStream declares features supported when using Provider.GenStream.
+	// An empty value requests smoke-test qualification before modalities are known.
 	GenStream *Functionality `json:"GenStream,omitzero,omitempty"`
 
 	_ struct{}
@@ -371,8 +373,12 @@ func (s *Scenario) Validate() error {
 	if (len(s.In) == 0) != (len(s.Out) == 0) {
 		return errors.New("scenario must have either both or none of In or Out")
 	}
-	if len(s.In) == 0 && (s.GenSync != nil || s.GenStream != nil) {
-		return errors.New("scenario must have be defined to have either GenSync or GenStream")
+	if len(s.In) == 0 {
+		for _, f := range []*Functionality{s.GenSync, s.GenStream} {
+			if f != nil && *f != (Functionality{}) {
+				return errors.New("scenario with functionality must define input and output modalities")
+			}
+		}
 	}
 	if s.GenSync != nil {
 		if err := s.GenSync.Validate(); err != nil {

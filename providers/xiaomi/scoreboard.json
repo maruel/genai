@@ -3,15 +3,40 @@
   "dashboardURL": "https://platform.xiaomimimo.com",
   "scenarios": [
     {
-      "comments": "Thinking mode (default). See https://platform.xiaomimimo.com/docs/en-US/api/chat/openai-api",
       "models": [
-        "mimo-v2.5-pro"
+        "mimo-v2.6-pro"
       ],
       "sota": true,
       "reason": true,
       "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
+        },
+        "video": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "video/mp4"
+          ]
         }
       },
       "out": {
@@ -23,9 +48,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
-        "webSearch": true,
         "json": true,
         "maxTokens": true,
         "stopSequence": true
@@ -36,7 +60,70 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
-        "webSearch": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "mimo-v2.6-flash"
+      ],
+      "good": true,
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        },
+        "video": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "video/mp4"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
         "stopSequence": true
@@ -47,7 +134,6 @@
       "models": [
         "mimo-v2.5"
       ],
-      "cheap": true,
       "reason": true,
       "in": {
         "audio": {
@@ -101,6 +187,45 @@
         "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Thinking mode (default). See https://platform.xiaomimimo.com/docs/en-US/api/chat/openai-api",
+      "models": [
+        "mimo-v2.5-pro"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -234,8 +359,15 @@
       }
     },
     {
+      "models": [
+        "mimo-v2.6-pro-ultraspeed"
+      ],
+      "reason": true
+    },
+    {
       "comments": "TTS with voice cloning. Requires assistant message for text to synthesize. See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5",
       "models": [
+        "mimo-v2.5-asr",
         "mimo-v2.5-tts-voiceclone"
       ]
     },

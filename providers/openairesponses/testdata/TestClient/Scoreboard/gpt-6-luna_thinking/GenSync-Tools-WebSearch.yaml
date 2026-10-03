@@ -1,0 +1,307 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 405
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-luna","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_00d61beb9bb2ef9c006ac06ba1feec87d2bee12f1e1fcd5f85",
+              "object": "response",
+              "created_at": 1790995362,
+              "status": "completed",
+              "access_programs": null,
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1790995366,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6-luna",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "ws_00d61beb9bb2ef9c006ac06ba41b8087d2b643432bc599ab89",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "current Prime Minister of Canada"
+                    ],
+                    "query": "current Prime Minister of Canada",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/68539133d6e0245fad3622263afd4aeb"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers.html?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/Procedure/procedure-and-practice-4/app06-e.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/members/en/ministries"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?pverbp="
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Mark_Carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://markcarney.libparl.ca/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://cpcassets.conservative.ca/wp-content/uploads/2022/04/26164618/6655497556c4933.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/261560d8bcff5e46074e84120848fd37"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/538688b715c16bb42ecaef93d25c3db2"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/cbf3bc6cbfde27cfae7d85602126785a"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/138c3a892ec7c49f811f69e536adce53"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/cd44b5930a2846c1d2c5f3ba5bdea3bd"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "msg_00d61beb9bb2ef9c006ac06ba6b25487d28e907f5bd6ed1472",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "Mark Carney"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 1
+                }
+              },
+              "tools": [
+                {
+                  "type": "web_search",
+                  "return_token_budget": "default",
+                  "search_content_types": [
+                    "text"
+                  ],
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8718,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4402
+                },
+                "output_tokens": 35,
+                "output_tokens_details": {
+                  "reasoning_tokens": 28
+                },
+                "total_tokens": 8753
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4489853fd14a2a4-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "6295"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "188601"
+            X-Ratelimit-Reset-Requests:
+                - 240ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.419s
+        status: 200 OK
+        code: 200
+        duration: 6.377s

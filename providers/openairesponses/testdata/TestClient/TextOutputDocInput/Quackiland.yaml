@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 300
+        content_length: 298
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-luna","reasoning":{"summary":"auto"},"store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-6-luna","reasoning":{"summary":"auto"},"store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,26 +23,34 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0da688ca231bc66e006a553975567481a1972799b0d14e18ee",
+              "id": "resp_0f99d57020839636006ac0699c301887d2915ace8f75711042",
               "object": "response",
-              "created_at": 1783970165,
+              "created_at": 1790994844,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1783970166,
+              "completed_at": 1790994845,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
               "instructions": null,
               "max_output_tokens": null,
               "max_tool_calls": null,
-              "model": "gpt-5.6-luna",
+              "model": "gpt-6-luna",
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0da688ca231bc66e006a5539760a4881a1bbb25d66f48df95d",
+                  "id": "rs_0f99d57020839636006ac0699ca7d087d2b90036c0d4ebc0f9",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqwGmdFg_pXlCo-K8oTAsCyry7Jz4Bpw0NR2BXlUWXq3KZYLIw3dMRkkd3pOV5vY0TQKzFBOK9ZR3qTNPH9fYPyJ6Hn5hDTo_V7zo3TqNoArnSBNmDDivf7Z9xjKJXloFOQVKIgKKDHIqE6Yww4JNKNw9qbpBrIhbnvs2HKukgAaU23FFWBNsrBYTZgxle7tZBM7BWsDNKVpn0XsyuwO7mQwacoqnmhig2tFNeLMcBLTXvvTbiVBjfyfC9VuhM-6JDkDXiEziRA8kHOso1iJhPEjvinYWPRR9ZZA0cCwkAT9f7uOYBNLmEMcFZADC3svGyEwiqPDva5otZSDjyt6MZakJgbJ4wnz_mrsBgTclX6fYZY_K74H41S7x4nMLpRGWeEBcY3wewYPOrRXUZwSkX7U2PDvqPVntePVGGb9wEhuzqAtFnXin6sxXhSJeHY8Wph30UUuAX-3hSHpRsP3hi_W8bqvIjvjOUQGH4D1pKWOie6UNk3JkBVxhP83B5qFQyX2GOu60G1NhmTBbc9iLA0d2DGJ5TZ-iWRSXkhQXlIvvy6LarrX58PER6Ctmmxn-wSGgkC5lUqV5PlbbnyeDMNv5x6ob725sUnfJ2cZyZ8JAuJqOrfwslXtn8Plw-TM_EJOj1hb-Mzn5zh20qElEYmYvC1u-sgtyJ7k0xHmRUixFi2bU60yptFOFwx205xTSw8b1vaZluYWU3IQOoPm3TBXiuqwAZTpBnQU3Zotxg7eZzDoMl2T_sRE78AuPWg9GFFU6Xho07n0ISFVQF-PhnypnwRLvszKnNr9tbNI1Fcab354C0Wr4MuXz1Azw7IaBU1XmzLunh-Yx-ylmmr3mIrhALOYhsMGZqpUMOemXD7XxJD74LrEq_StEO2vw5bHW5xHi0g-TzZN-Mn7qpkO8H_7YRH6wKJrLy6WZyULEDP1bIkrU1pocvKyJrNcjgdpIpdSQDYRhoKfCbea63RZHs1_IeyZ9magTiogbvPcYeOn1yL1fJbiljN0Jz_Q-lPrTioCEX8pfCn3oX-F2hgh55yxs1qCYaKFKGSEluXg6-5a-WCyfL-PZKCG4GyBBKXuoN02cQfnQ7oK1OvmrfgGEWReE9bktX1ZP8O6YT4jQHlQ5RUu8_lxoorRu5msbroLM_AbsX60CW3EgMzXmvDQ8p1r643EEB0-muNcRTw81u6Tf_9dESsJ-k3JhdYy-XR5-d0s9oc7QT1IK1MHD-WcZkZVgxG0w8ULFdthrJLyW4YgD-7U8=",
+                  "summary": []
+                },
+                {
+                  "id": "msg_0f99d57020839636006ac0699d12a887d2978334b901e80fc9",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -107,11 +115,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 14,
+                "output_tokens": 31,
                 "output_tokens_details": {
-                  "reasoning_tokens": 0
+                  "reasoning_tokens": 15
                 },
-                "total_tokens": 49
+                "total_tokens": 66
               },
               "user": null,
               "metadata": {}
@@ -126,11 +134,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a1aa9eb7388431ac-YUL
+                - a4488baf9a5a5933-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1060"
+                - "1140"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -144,13 +152,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "200000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 2.046s
+        duration: 1.281s

@@ -1,0 +1,101 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 289
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants me"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to identify the fruit in"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the provided"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" image and"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" reply with only one word.\n\n1"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". "},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" **Analyze the image:**"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" The image shows a single"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" yellow fruit"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" with a curved shape, a brown"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" stem at one"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" end, and small"},"finish_reason":null,"index":0}],"created":1790997113,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" brown spots on"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" skin"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". This is clearly"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" a banana.\n\n"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"2. "},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" **D"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"etermine the required"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" response:** The"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user requested"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \"only"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one word\".\n\n3. "},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" **Formulate"},"finish_reason":null,"index":0}],"created":1790997114,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the final"},"finish_reason":null,"index":0}],"created":1790997115,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" answer:** \"Banana\"."},"finish_reason":null,"index":0}],"created":1790997115,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":"Banana","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997115,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790997115,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"a6e40eca-edf5-4384-a0d7-6f1441877469_da4032e376444ebaa3100563d079aa43","choices":[],"created":1790997115,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":{"completion_tokens":98,"prompt_tokens":114,"total_tokens":212,"completion_tokens_details":{"reasoning_tokens":94},"prompt_tokens_details":{"cached_tokens":0,"image_tokens":90}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 3.148s

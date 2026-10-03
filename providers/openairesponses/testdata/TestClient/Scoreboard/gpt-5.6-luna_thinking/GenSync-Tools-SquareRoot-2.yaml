@@ -9,7 +9,7 @@ interactions:
         content_length: 635
         host: api.openai.com
         body: |
-            {"model":"gpt-5.6-luna","parallel_tool_calls":true,"previous_response_id":"resp_04cb2de2c6256eae006aa72d42d44087d2809f5686fe46eafb","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_jI5lzhjf5Ss8aEBlNIK8NCnq","output":"363.89"}]}
+            {"model":"gpt-5.6-luna","parallel_tool_calls":true,"previous_response_id":"resp_0888248c6c75d6a6006ac06c8cef2c87d29ea5373185e07c2d","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_mx2240ntpHbuFhz8DwqLgXJr","output":"363.89"}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_04cb2de2c6256eae006aa72d43892087d289543abe2481c451",
+              "id": "resp_0888248c6c75d6a6006ac06c8f4f6087d294cabb07b0e5d2ae",
               "object": "response",
-              "created_at": 1789340995,
+              "created_at": 1790995599,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789340996,
+              "completed_at": 1790995602,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,14 +43,19 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "rs_04cb2de2c6256eae006aa72d43e80887d2b47f1a2311d4710c",
+                  "id": "rs_0888248c6c75d6a6006ac06c8ffa7887d29d6e463cbbffe5c7",
                   "type": "reasoning",
                   "content": [],
-                  "encrypted_content": "gAAAAABqpy1EOtujbZXXAb7dwqrbfiJ086yRVRzKOkkbthlg0hrSHFAM61Ln5yYwlBjOvFoBqeGETFO_ZqQb0Idbt3zbpek69al5VLiWJ4w_WPZ86e-fL_1ie-fi7oK8nAL3eJ2CH98YEjE6CXu1L0kmu-fL_o5nHSL-N6BdYCkBRJRrP8bbr3f-ev671rn6A9dw98JaU1Rw4M8A-GdQly5FgKVzmM3KjWqzZwzKY7oL5hUs9HxX_5fCFDCRgxwHx_mV3-NXvFZDikG2BjDfHYR3EjB9gt_15Jih5S-uQKvfIYED44FP3MssCZ4AQug3x5zOvjFeAGzJi6p_FPoFBEYR5mlI2VIoayDZO7pESbVX7YPtqZMq6AL9kZTTLoKso-WfHeeOIVgZANI5oHcsOa2cP6hFPyn2-6smoAqsfrbczcW0IM8ywSB_RKfgeoy5iAimVg8kgYrj9Beb42Zy_7HqSGnlGTaSToP6V1vbWl0Zu52A1jK45GjvC8gyRZPJSY7hQw4NsRqUvvIFb7Idw6gwifchIJzStCneaxRF6heRB8q_hw3OaYiGzuqY34W2_yT1WJC9ifHwElF-dHQLAIbmTkLxfNYupOdfiO3CiaWOkIydepxM5j48KDcrqom8-HmLDa0sOLhW8bpB4TdLa_Q-MzQFJjqwibfzgyQJ7AA4OFzXx4tMosvatiSoZjF5lS9b-q7MLcV_O_P43yckH4pRmBhswEavTastI4gX01jn-eD7l7_69qzXILlIPobDUhNF4oPF5TVqs7oanARpOmrWqEebP6hfFUaAhbDONPQNbJexePRcRb7n1I5Io9cqiApCD7igW353R9vab1_mRTnyMfJXWtRK9wcdmFAQ7MMHVUxr4yJLA2K1gO4w9y1eeTsS7AyQjUZdbRuYVUhiiUR0N9daYsmeLUtBgAKlWEwMZ-9kCsAVvnfxVPYpuj6ZcQ4vNyRFJywe_peIf4SFL8lPUTcI5p5K0v6KXmAvShmIwYwTf7MP6UBCWD6VgY4Re4L8tiK4OcigO9JH6gDqlWVDVJkRCbBkD0Jf2xNXJ6z6QUHtTbDmxc-pO5f89Co7ZjCvI4M5QvVA4w4sfxpioQGL34II-YghThvqLRlQqpGQyv3bKL0oc1pV3VJrAm5N5umO7Tp1Hh2zuUYRH3V_QVAV3ELhSDQzpKYNhClCXkUnzIB4RwIwJdVyP6IqUAzLXA5U1Cpfq4NMT9vOzFfJ-kIjluRZDCH5naFXAXYvpDUM6yBGLAgfoUwS4kFUjd0A-JWLIyDrQxK_QQlSsGlK98tH5xC3DFTPSBgIGZjcEkXWLxgCeL53JVRrR-cH8-WEauEIjhxHgkIxS3AIj1i_xTVNTfmdkF2G4Q==",
-                  "summary": []
+                  "encrypted_content": "gAAAAABqwGyTD3hpfI9WHaemkraM2E8WnflKszjWeqHiJSNMrSOMW6_ACJwQeoIPq8wn-p-fzNyJQXLQ2HOiB8ubk3ldsf-WMETOrulpXngkFQMM8Rie340Facsl08uvM22d-mJH7_Cz4-q_VFe52q92VZFAq5Poy_SwYXJjNrFe7HqoqLJ46cmB0PWtz0K7U4-R5qOwpoJgL5IgqUy96BNLm1LlZDbE6TylD25SUF9nyViHOHtwS06j7MiCf8X8ZMLmiGgrWsRWT96Dlu2EdN9cnOn033pSemdBLHfcCv3thqpl56BrwZd4Ovp3Rw4E0rzzHRM9noJjTaZmffxFRAeDOCivcmQB2GZIukq0YzIG3Gnm24vbkKwIIIX3NrVRakXiFwUFfEul5wSFOjK2T0ghoRvlOBDRINl8MG1xHFgjatbhrfw0tB1KmAei7Atp9gaQpGxx2dX7NgYiYG1Nj-66vSE-Pzs7za0m6El9FP2dn29WOaer_Sw-zMZw0pmJNGN3yYTMmGQ3RwIfeB5pc8p486kZGm8CZ3blU9U3Pc1p4MjUxGh7H8peiJbECfyGoIr0Voj-DnCGozjU-tATncJH-8DPppUo1XuxBBpUvmHKDSruBuT1LHnT1_3QRnBvs03v_W7XnrOLulKA5jqrcJM1vne7RoZl34cGt3clnld1lGKRYgPPkOO7dIiya3jrOFOp1cIjQ-8jt1oF29PoUGX_ATkfcajNRFg5Nw1nEglNbcuMbvWiq4J7otPBj2f-6AX9qo5vBAGQ2GLcbnRT-lzeBMMvDvPLVdP3zGkSEfC8HQcFgVLsyQIjwBWbwHFvvdsfBTnW6HpfmpcrmxWdmgCXmBwkjHap6xfurMV8z0zKU0pYoPwtF7Q4jYG0rYWfUk6NYpv1DV1gltW1nuhS3ZHq1pP0E-0FICRbQDY8Rx8vFkSNqqgaIDcgXf2inA9UrbxqOwfE8wOdeKlmwhzEUpMwvKyRY11Y1WtfCHRiMFRWt_sRoHuF8EjXBGuG65yIKD6eS1tTWXYzxgbJ7TAUueKeHo0-pTRSLz_jpcJM1119Lw8HbEZaGzAoA3gwWwC2DjNlhA_-iNi69NVu4eFY8iinThzuetIv70HESTi6RPTJd8fsrTMhin9E1j5pkYZlj88WGGCtAZpHGH9HwYNdPS46T1f8tNVbzaGL1XbqIdQ5u-JJl67egflEEEEig3m5BzZwlJJHkQ0ayNRMzM7yMx68VGNdNphsKuoKp8snUgXf69pMpVK2oqtU2Tq1u-9X49oiEaYx16ZoPTNSWvS_pyG84Q5R3UvHNmRh05w1Mcca_hQ8z0iYD20bA3VKwb2H1XKe0_S_yjlO2OZWlSe2bf26FCq2ekUf9A==",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Confirming user request completion**\n\nIt looks like the user's request has already been fulfilled, so I don't need to do anything further. I can simply respond with the result. I'll provide the answer as 363.89 since that's what the user needs. No functions are required here; it's just about confirming that I have the right information to give."
+                    }
+                  ]
                 },
                 {
-                  "id": "msg_04cb2de2c6256eae006aa72d44406c87d2ba743fe511bca303",
+                  "id": "msg_0888248c6c75d6a6006ac06c928e5087d2bac0dd1851959662",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -66,7 +72,7 @@ interactions:
               ],
               "parallel_tool_calls": true,
               "presence_penalty": 0.0,
-              "previous_response_id": "resp_04cb2de2c6256eae006aa72d42d44087d2809f5686fe46eafb",
+              "previous_response_id": "resp_0888248c6c75d6a6006ac06c8cef2c87d29ea5373185e07c2d",
               "prompt_cache_key": null,
               "prompt_cache_retention": "24h",
               "reasoning": {
@@ -135,11 +141,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 42,
+                "output_tokens": 40,
                 "output_tokens_details": {
-                  "reasoning_tokens": 33
+                  "reasoning_tokens": 31
                 },
-                "total_tokens": 148
+                "total_tokens": 146
               },
               "user": null,
               "metadata": {}
@@ -154,11 +160,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad285b8eef429-YUL
+                - a4489e1f3a0df867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "907"
+                - "4108"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -172,13 +178,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 991ms
+        duration: 4.178s

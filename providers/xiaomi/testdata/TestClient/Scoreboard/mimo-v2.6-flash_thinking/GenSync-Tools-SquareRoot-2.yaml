@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 883
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning_content":"The user wants the square root of 132413. Let me calculate it.","tool_calls":[{"id":"call_982723e115a0467fbe236d51","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_982723e115a0467fbe236d51"}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"0d23cecd-f809-4dd4-8178-09b3aa8840f7_59974020aff840cea6041018224ce2d8","choices":[{"finish_reason":"stop","index":0,"message":{"content":"363.89","role":"assistant","tool_calls":null,"reasoning_content":"The user asked for just the result."}}],"created":1790996940,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":17,"prompt_tokens":208,"total_tokens":225,"completion_tokens_details":{"reasoning_tokens":9},"prompt_tokens_details":{"cached_tokens":0}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.849s

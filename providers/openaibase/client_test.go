@@ -12,7 +12,18 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 )
+
+func TestErrorResponse(t *testing.T) {
+	var got ErrorResponse
+	if err := internal.UnmarshalJSON([]byte(`{"error":{"type":"resource_unavailable","code":"flex_unavailable","headers":{"retry-after":"300","x-retry-metadata":"NO_MORE_RETRY"},"message":"Try standard processing.","param":null}}`), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.ErrorVal.Headers["retry-after"] != "300" || got.ErrorVal.Headers["x-retry-metadata"] != "NO_MORE_RETRY" {
+		t.Fatalf("headers = %+v", got.ErrorVal.Headers)
+	}
+}
 
 func TestClient(t *testing.T) {
 	t.Run("SelectBestTextModel", func(t *testing.T) {

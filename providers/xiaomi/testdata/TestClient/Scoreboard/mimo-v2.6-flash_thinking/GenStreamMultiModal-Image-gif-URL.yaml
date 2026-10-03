@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Got"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" it, the image shows"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" a banana,"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" and"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the user wants"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" a"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one-word answer"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". So I"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" need to reply with"},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \"Banana\"."},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":"Banana","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"dfa105c8-15a6-48ba-84cd-23cf57bc306a_8ef8cff832374452a0131131514abcb9","choices":[],"created":1790996968,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":{"completion_tokens":33,"prompt_tokens":114,"total_tokens":147,"completion_tokens_details":{"reasoning_tokens":29},"prompt_tokens_details":{"cached_tokens":0,"image_tokens":90}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.183s

@@ -1,0 +1,103 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 290
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants to"},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" identify the fruit in the image.\n\n"},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"1. "},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" **Analyze the image**: The"},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" image shows a single yellow"},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" fruit"},"finish_reason":null,"index":0}],"created":1790997139,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" with a curved shape, a brown"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tip"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" at one"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" end, and a small"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" stem"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" at the other."},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" It has"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" small"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" brown spots on the skin"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":".\n2. "},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" **Identify the fruit**: The"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" visual"},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" characteristics ("},"finish_reason":null,"index":0}],"created":1790997140,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"yellow skin"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", elong"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"ated,"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" curved shape"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", stem"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":") are"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" unmistakable"},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" for a banana."},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":"Ban","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":"ana","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"2a297a7d-7c47-48ff-af0b-907c25bfa56b_0d6990b213694821aace3ffc1592c42e","choices":[],"created":1790997141,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":{"completion_tokens":92,"prompt_tokens":114,"total_tokens":206,"completion_tokens_details":{"reasoning_tokens":88},"prompt_tokens_details":{"cached_tokens":0,"image_tokens":90}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.258s

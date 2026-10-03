@@ -10,6 +10,7 @@ import (
 	"context"
 	"iter"
 	"net/http"
+	"slices"
 	"strings"
 	"testing"
 
@@ -74,6 +75,67 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	return xiaomi.New(t.Context(), opts...)
 }
 
+func TestNew(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, tc := range []struct {
+			name   string
+			pref   genai.ProviderOptionModel
+			models []string
+			want   string
+		}{
+			{name: "sota", pref: genai.ModelSOTA, models: []string{"mimo-v2.9-pro", "mimo-v2.10-pro", "mimo-v9.0-flash", "mimo-v2.11-pro-ultraspeed"}, want: "mimo-v2.10-pro"},
+			{name: "good", pref: genai.ModelGood, models: []string{"mimo-v2.10-flash", "mimo-v3.0-flash", "mimo-v9.0-pro"}, want: "mimo-v3.0-flash"},
+			{name: "cheap_minor", pref: genai.ModelCheap, models: []string{"mimo-v2.9-flash", "mimo-v2.10-flash", "mimo-v9.0-pro"}, want: "mimo-v2.10-flash"},
+			{name: "cheap_major", pref: genai.ModelCheap, models: []string{"mimo-v2.10-flash", "mimo-v10.0-flash", "mimo-v9.9-flash"}, want: "mimo-v10.0-flash"},
+			{name: "old_pro", pref: genai.ModelSOTA, models: []string{"mimo-v2.5-pro"}, want: "mimo-v2.5-pro"},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				for _, order := range []string{"forward", "reverse"} {
+					t.Run(order, func(t *testing.T) {
+						models := make(genai.ProviderOptionPreloadedModels, 0, len(tc.models))
+						for _, id := range tc.models {
+							models = append(models, &xiaomi.Model{ID: id})
+						}
+						if order == "reverse" {
+							slices.Reverse(models)
+						}
+						c, err := xiaomi.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), tc.pref, models)
+						if err != nil {
+							t.Fatal(err)
+						}
+						if c.ModelID() != tc.want {
+							t.Fatalf("model = %q, want %q", c.ModelID(), tc.want)
+						}
+					})
+				}
+			})
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			id   string
+		}{
+			{name: "bare", id: "mimo-v2.5"},
+			{name: "wrong_variant", id: "mimo-v2.6-flash"},
+			{name: "extended_suffix", id: "mimo-v2.6-pro-ultraspeed"},
+			{name: "missing_minor", id: "mimo-v3-pro"},
+			{name: "signed", id: "mimo-v+3.0-pro"},
+			{name: "major_overflow", id: "mimo-v999999999999999999999.0-pro"},
+			{name: "minor_overflow", id: "mimo-v2.999999999999999999999-pro"},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				_, err := xiaomi.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
+					genai.ProviderOptionPreloadedModels{&xiaomi.Model{ID: tc.id}},
+				)
+				if err == nil || !strings.Contains(err.Error(), "failed to find a model automatically") {
+					t.Fatalf("unexpected error: %v", err)
+				}
+			})
+		}
+	})
+}
+
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -113,12 +175,14 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		sb := xiaomi.Scoreboard()
 		var models []scoreboard.Model
-		for _, sc := range sb.Scenarios {
-			if sc.Untested() {
-				continue
-			}
-			for _, model := range sc.Models {
-				models = append(models, scoreboard.Model{Model: model, Reason: sc.Reason})
+		for _, m := range cachedModels {
+			id := m.GetID()
+			reason := !strings.Contains(id, "tts") && !strings.Contains(id, "asr")
+			models = append(models, scoreboard.Model{Model: id, Reason: reason})
+			if reason && slices.ContainsFunc(sb.Scenarios, func(sc scoreboard.Scenario) bool {
+				return !sc.Reason && !sc.Untested() && slices.Contains(sc.Models, id)
+			}) {
+				models = append(models, scoreboard.Model{Model: id})
 			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {

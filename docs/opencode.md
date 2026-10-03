@@ -4,8 +4,8 @@
 | ----------------------------------------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | opencode/big-pickle                                                           | Sync🧠   | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | opencode/big-pickle                                                           | Stream🧠 | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| opencode/mimo-v2.5-free                                                       | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| opencode/mimo-v2.5-free                                                       | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| opencode/space-bunny-free                                                     | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| opencode/space-bunny-free                                                     | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | anthropic/claude-3-5-haiku-20241022                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-3-5-haiku-latest                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-3-5-sonnet-20240620                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -53,6 +53,8 @@
 | anthropic/claude-opus-4-8                                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-opus-4-8-fast                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-opus-5                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| anthropic/claude-opus-5-5                                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| anthropic/claude-opus-5-5-fast                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-opus-5-fast                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-sonnet-4-0                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-sonnet-4-0/high                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -72,6 +74,7 @@
 | anthropic/claude-sonnet-4-6/max                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-sonnet-4-6/medium                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-sonnet-5                                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| anthropic/claude-sonnet-5-5                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/MiniMaxAI/MiniMax-M2.5                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/deepseek-ai/DeepSeek-V3-0324                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/deepseek-ai/DeepSeek-V3.1                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -79,6 +82,7 @@
 | baseten/deepseek-ai/DeepSeek-V4-Pro                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/deepseek-ai/DeepSeek-V4-Pro-0813                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/deepseek-ai/DeepSeek-V4.1-Flash                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| baseten/deepseek-ai/DeepSeek-V4.1-Flash-Fast                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/moonshotai/Kimi-K2.5                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/moonshotai/Kimi-K2.6                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | baseten/moonshotai/Kimi-K2.7-Code                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -138,6 +142,7 @@
 | cloudflare-ai-gateway/anthropic/claude-opus-4.7                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/anthropic/claude-opus-4.8                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/anthropic/claude-opus-5                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cloudflare-ai-gateway/anthropic/claude-opus-5.5                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/anthropic/claude-sonnet-4                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/anthropic/claude-sonnet-4-5                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/anthropic/claude-sonnet-4-6                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -177,11 +182,15 @@
 | cloudflare-ai-gateway/openai/gpt-5.6-luna                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/gpt-5.6-sol                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/gpt-5.6-terra                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cloudflare-ai-gateway/openai/gpt-6-astra                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cloudflare-ai-gateway/openai/gpt-6-luna                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cloudflare-ai-gateway/openai/gpt-6-sol                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/o1                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/o3                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/o3-mini                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/o3-pro                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/openai/o4-mini                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cloudflare-ai-gateway/unbiased/pareto                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/workers-ai/@cf/ai4bharat/indictrans2-en-indic-1B        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/workers-ai/@cf/aisingapore/gemma-sea-lion-v4-27b-it     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/workers-ai/@cf/baai/bge-base-en-v1.5                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -233,6 +242,7 @@
 | cloudflare-ai-gateway/xai/grok-4.3                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/xai/grok-4.5                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-ai-gateway/xai/grok-4.6                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cloudflare-ai-gateway/xai/grok-4.7                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-workers-ai/@cf/ai4bharat/indictrans2-en-indic-1B                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-workers-ai/@cf/aisingapore/gemma-sea-lion-v4-27b-it                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cloudflare-workers-ai/@cf/baai/bge-base-en-v1.5                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -301,6 +311,11 @@
 | cohere/command-r7b-12-2024                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cohere/command-r7b-arabic-02-2025                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | cohere/north-mini-code-1-0                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cohere/north-small-translate-09-2026                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cohere/tiny-aya-earth                                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cohere/tiny-aya-fire                                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cohere/tiny-aya-global                                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| cohere/tiny-aya-water                                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-chat                                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-flash                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-reasoner                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -323,6 +338,7 @@
 | github-copilot/claude-opus-41                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-opus-41/thinking                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-opus-5                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| github-copilot/claude-opus-5.5                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-sonnet-4                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-sonnet-4.5                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-sonnet-4.5/thinking                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -330,6 +346,7 @@
 | github-copilot/claude-sonnet-4.6/thinking                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-sonnet-4/thinking                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/claude-sonnet-5                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| github-copilot/claude-sonnet-5.5                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/gemini-2.5-pro                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/gemini-3-flash-preview                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/gemini-3-pro-preview                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -396,8 +413,12 @@
 | github-copilot/gpt-5/low                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/gpt-5/medium                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/gpt-6-astra                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| github-copilot/gpt-6-luna                                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| github-copilot/gpt-6-sol                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| github-copilot/gpt-6.1-sol                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/grok-4.5                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/grok-4.6                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| github-copilot/grok-4.7                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/grok-code-fast-1                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/kimi-k2.7-code                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | github-copilot/kimi-k3                                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -758,6 +779,7 @@
 | mistral/voxtral-mini-tts-latest                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistral/voxtral-small-latest                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistral/zai-glm-5-2                                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| mistral/zai-glm-5-3                                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/chatgpt-image-latest                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/codex-mini-latest                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/codex-mini-latest/high                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -850,6 +872,7 @@
 | openai/gpt-5.4-fast                                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-5.4-mini                                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-5.4-mini-fast                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-5.4-mini-flex                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-5.4-mini/high                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-5.4-mini/low                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-5.4-mini/medium                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -885,6 +908,13 @@
 | openai/gpt-5/minimal                                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-6-astra                                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-6-astra-fast                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6-astra-ultrafast                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6-luna                                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6-luna-fast                                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6-sol                                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6-sol-fast                                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-sol                                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-sol-fast                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-image-1                                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-image-1-mini                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-image-1.5                                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -933,7 +963,7 @@
 | openai/text-embedding-ada-002                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/big-pickle/high                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/big-pickle/max                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| opencode/deepseek-v4-flash-free                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| opencode/fledge-alpha-free                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/gpt-5-nano                                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/gpt-5-nano/high                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/gpt-5-nano/low                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -942,12 +972,15 @@
 | opencode/hy3-free                                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/laguna-s-2.1-free                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/ling-3.0-flash-fin-free                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| opencode/ling-3.1-flash-free                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| opencode/longcat-2.5-preview-free                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/mimo-v2-omni-free/high                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/mimo-v2-omni-free/low                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/mimo-v2-omni-free/medium                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/mimo-v2-pro-free/high                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/mimo-v2-pro-free/low                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/mimo-v2-pro-free/medium                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| opencode/mimo-v2.6-flash-free                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/muse-spark-1.2-contributor-free                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/muse-spark-1.3-contributor-free                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | opencode/nemotron-3-super-free/high                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -965,6 +998,8 @@
 | openrouter/aion-labs/aion-2.0                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/aion-labs/aion-3.0                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/aion-labs/aion-3.0-mini                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/aion-labs/aion-3.5                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/aion-labs/aion-3.5-mini                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/aion-labs/aion-rp-llama-3.1-8b                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/allenai/olmo-3-32b-think                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/amazon/nova-2-lite-v1                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1025,6 +1060,7 @@
 | openrouter/anthropic/claude-opus-4/xhigh                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-opus-5                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-opus-5-fast                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/anthropic/claude-opus-5.5                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-sonnet-4                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-sonnet-4.5                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-sonnet-4.5/high                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1047,6 +1083,8 @@
 | openrouter/anthropic/claude-sonnet-4/none                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-sonnet-4/xhigh                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/anthropic/claude-sonnet-5                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/anthropic/claude-sonnet-5.5                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/apodex/apodex-1.1-mini:free                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/arcee-ai/trinity-large-preview:free                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/arcee-ai/trinity-large-thinking                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/arcee-ai/trinity-mini:free                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1067,6 +1105,7 @@
 | openrouter/cognitivecomputations/dolphin-mistral-24b-venice-edition           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/cognitivecomputations/dolphin-mistral-24b-venice-edition:free      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/cohere/command-a                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/cohere/command-a-plus                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/cohere/command-r-08-2024                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/cohere/command-r-plus-08-2024                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/cohere/command-r7b-12-2024                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1090,6 +1129,7 @@
 | openrouter/deepseek/deepseek-v4-pro-0813                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/deepseek/deepseek-v4.1-flash                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/dots-studio/dots-3-note-preview:free                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/fireworks/ember-1                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/google/gemini-2.0-flash-001                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/google/gemini-2.5-flash                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/google/gemini-2.5-flash-image                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1179,6 +1219,7 @@
 | openrouter/inclusionai/ling-3.0-flash-sante:free                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/inclusionai/ling-3.0-flash-vl                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/inclusionai/ling-3.0-flash-vl:free                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/inclusionai/ling-3.1-flash                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/inclusionai/ring-2.6-1t                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/inference-net/schematron-v2-small                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/inference-net/schematron-v2-turbo                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1255,7 +1296,9 @@
 | openrouter/morph/morph-v3-large                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/nex-agi/nex-n2-mini                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/nex-agi/nex-n2-pro                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/nex-agi/nex-n2.5-mini                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/nex-agi/nex-n2.5-mini:free                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/nex-agi/nex-n2.5-pro                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/nex-agi/nex-n2.5-pro:free                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/nousresearch/hermes-3-llama-3.1-405b                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/nousresearch/hermes-3-llama-3.1-405b:free                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1441,6 +1484,12 @@
 | openrouter/openai/gpt-5/xhigh                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/openai/gpt-6-astra                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/openai/gpt-6-astra-pro                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/openai/gpt-6-luna                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/openai/gpt-6-luna-pro                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/openai/gpt-6-sol                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/openai/gpt-6-sol-pro                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/openai/gpt-6.1-sol                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/openai/gpt-6.1-sol-pro                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/openai/gpt-audio                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/openai/gpt-audio-mini                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/openai/gpt-chat-latest                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1502,6 +1551,7 @@
 | openrouter/openrouter/fusion                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/openrouter/pareto-code                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/perceptron/perceptron-mk1                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/perceptron/perceptron-mk1.5                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/perplexity/sonar                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/perplexity/sonar-deep-research                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/perplexity/sonar-pro                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1514,6 +1564,7 @@
 | openrouter/poolside/laguna-xs-2.1                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/poolside/laguna-xs-2.1:free                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/prime-intellect/intellect-3                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/prism-ml/ternary-bonsai-2-27b                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen-2.5-72b-instruct                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen-2.5-7b-instruct                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen-2.5-coder-32b-instruct                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1570,9 +1621,12 @@
 | openrouter/qwen/qwen3.7-plus                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen3.8-2.4t-a95b                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen3.8-27b                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/qwen/qwen3.8-27b:free                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen3.8-flash                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen3.8-max                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/qwen/qwen3.8-max-0902                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/qwen/qwen3.8-max-prime                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/qwen/qwen3.8-omni-flash                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/rekaai/reka-edge                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/rekaai/reka-flash-3                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/relace/relace-apply-3                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1588,6 +1642,7 @@
 | openrouter/sourceful/riverflow-v2-max-preview                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/sourceful/riverflow-v2-standard-preview                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/stealth/ox-alpha                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/stealth/space-bunny-alpha                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/stepfun/step-3.5-flash                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/stepfun/step-3.5-flash:free                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/stepfun/step-3.7-flash                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1606,7 +1661,10 @@
 | openrouter/thinkingmachines/inkling-small                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/thinkingmachines/inkling-small:free                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/thinkingmachines/inkling:free                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/unbiased/pareto                                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/unbiased/pareto-26.10-preview                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/undi95/remm-slerp-l2-13b                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/upstage/solar-mini4                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/upstage/solar-pro-3                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/upstage/solar-pro4                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/writer/palmyra-x5                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1628,6 +1686,7 @@
 | openrouter/x-ai/grok-4.3                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/x-ai/grok-4.5                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/x-ai/grok-4.6                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/x-ai/grok-4.7                                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/x-ai/grok-build-0.1                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/x-ai/grok-code-fast-1                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/xiaomi/mimo-v2-flash                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1635,6 +1694,9 @@
 | openrouter/xiaomi/mimo-v2-pro                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/xiaomi/mimo-v2.5                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/xiaomi/mimo-v2.5-pro                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/xiaomi/mimo-v2.6-flash                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/xiaomi/mimo-v2.6-pro                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/xiaomi/mimo-v2.6-pro-ultraspeed                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/z-ai/glm-4.5                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/z-ai/glm-4.5-air                                                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/z-ai/glm-4.5-air:free                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1651,11 +1713,15 @@
 | openrouter/z-ai/glm-5.2:free                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/z-ai/glm-5.3                                                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/z-ai/glm-5.3-flash                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/z-ai/glm-5.3-flashx                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/z-ai/glm-5.3-prime                                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/z-ai/glm-5v-turbo                                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~anthropic/claude-fable-latest                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~anthropic/claude-haiku-latest                                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~anthropic/claude-opus-latest                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~anthropic/claude-sonnet-latest                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/~deepseek/deepseek-flash-latest                                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openrouter/~deepseek/deepseek-pro-latest                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~deepseek/deepseek-v4-flash-latest                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~google/gemini-flash-latest                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/~google/gemini-pro-latest                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -1817,21 +1883,30 @@
 | xiaomi-token-plan-ams/mimo-v2.5-tts                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-ams/mimo-v2.5-tts-voiceclone                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-ams/mimo-v2.5-tts-voicedesign                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi-token-plan-ams/mimo-v2.6-flash                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi-token-plan-ams/mimo-v2.6-pro                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-cn/mimo-v2-tts                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-cn/mimo-v2.5                                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-cn/mimo-v2.5-pro                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-cn/mimo-v2.5-tts                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-cn/mimo-v2.5-tts-voiceclone                                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-cn/mimo-v2.5-tts-voicedesign                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi-token-plan-cn/mimo-v2.6-flash                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi-token-plan-cn/mimo-v2.6-pro                                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-sgp/mimo-v2-tts                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-sgp/mimo-v2.5                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-sgp/mimo-v2.5-pro                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-sgp/mimo-v2.5-tts                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-sgp/mimo-v2.5-tts-voiceclone                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi-token-plan-sgp/mimo-v2.5-tts-voicedesign                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi-token-plan-sgp/mimo-v2.6-flash                                         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi-token-plan-sgp/mimo-v2.6-pro                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi/mimo-v2.5                                                              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi/mimo-v2.5-pro                                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi/mimo-v2.5-pro-ultraspeed                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi/mimo-v2.6-flash                                                        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi/mimo-v2.6-pro                                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xiaomi/mimo-v2.6-pro-ultraspeed                                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

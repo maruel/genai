@@ -26,9 +26,17 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+// testProcessOption prevents recordings from including ambient user context or tool output.
+func testProcessOption() *ProviderOption {
+	return &ProviderOption{ExtraArgs: []string{
+		"--no-context-files", "--no-extensions", "--no-tools",
+		"--system-prompt", "You are a helpful assistant.",
+	}}
+}
+
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
 	rec := internaltest.NewSubprocessRecorder(t, name, "pi", nil)
-	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
+	opts = append(opts, testProcessOption(), genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(t.Context(), opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
@@ -72,7 +80,7 @@ func TestClient(t *testing.T) {
 			t.Fatal(err)
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			var opts []genai.ProviderOption
+			opts := []genai.ProviderOption{testProcessOption()}
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}

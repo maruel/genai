@@ -277,6 +277,9 @@ func TestScenario(t *testing.T) {
 				Out:     map[Modality]ModalCapability{ModalityText: {}},
 				GenSync: &Functionality{},
 			},
+			{Models: []string{"new-model"}, GenSync: &Functionality{}},
+			{Models: []string{"new-model"}, GenStream: &Functionality{}},
+			{Models: []string{"new-model"}, GenSync: &Functionality{}, GenStream: &Functionality{}},
 		}
 
 		for _, s := range tests {
@@ -293,7 +296,9 @@ func TestScenario(t *testing.T) {
 			{Models: []string{"gpt-4"}, Out: map[Modality]ModalCapability{Modality("invalid"): {}}},
 			{Models: []string{"gpt-4"}, In: map[Modality]ModalCapability{ModalityText: {}}},
 			{Models: []string{"gpt-4"}, Out: map[Modality]ModalCapability{ModalityText: {}}},
-			{Models: []string{"gpt-4"}, GenSync: &Functionality{}},
+			{Models: []string{"gpt-4"}, GenSync: &Functionality{JSON: true}},
+			{Models: []string{"gpt-4"}, GenStream: &Functionality{JSON: true}},
+			{Models: []string{"gpt-4"}, GenSync: &Functionality{}, GenStream: &Functionality{JSON: true}},
 		}
 
 		for _, s := range tests {
@@ -359,12 +364,6 @@ func TestScore(t *testing.T) {
 			},
 			{
 				Scenarios: []Scenario{
-					{Models: []string{"gpt-4"}, GenSync: &Functionality{}},
-					{Models: []string{"gpt-3.5"}, GenSync: &Functionality{}},
-				},
-			},
-			{
-				Scenarios: []Scenario{
 					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
 					{Models: []string{"gpt-3.5"}, SOTA: true, GenSync: &Functionality{}},
 				},
@@ -372,20 +371,8 @@ func TestScore(t *testing.T) {
 			{
 				Scenarios: []Scenario{
 					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-					{Models: []string{"gpt-3.5"}, GenSync: &Functionality{}},
-					{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
-				},
-			},
-			{
-				Scenarios: []Scenario{
-					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
 					{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
 					{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
-				},
-			},
-			{
-				Scenarios: []Scenario{
-					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
 				},
 			},
 			{
@@ -412,7 +399,7 @@ func TestScore(t *testing.T) {
 		}
 	})
 
-	t.Run("Validate no Cheap Error", func(t *testing.T) {
+	t.Run("Validate qualification markers", func(t *testing.T) {
 		tests := []*Score{
 			{
 				Scenarios: []Scenario{
@@ -424,8 +411,8 @@ func TestScore(t *testing.T) {
 		}
 
 		for _, s := range tests {
-			if err := s.Validate(); err == nil {
-				t.Fatalf("got err=nil, want error")
+			if err := s.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
 			}
 		}
 	})

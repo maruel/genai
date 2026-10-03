@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 293
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"f078efd8-b718-431b-bf4c-0bf2dbec5056_09636339a7674bd09b3fe1283435e052","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Banana","role":"assistant","tool_calls":null,"reasoning_content":"用户现在需要回答这是什么水果，只用一个词。看图片是香蕉，所以回复Banana？不对，看问题，应该用英文还是中文？问题是英文的？不，问题是\"What fruit is it? Reply with only one word.\"，所以用英文的话是Banana，或者中文？不对，看图片是香蕉，不过问题要求one word，英文的话Banana，或者中文“香蕉”？不过问题是英文的，所以应该用英文？不对，看用户的问题，开头是英文，所以回复英文的话Banana，或者中文？不，再看，问题是“只回复一个词”，图片是香蕉，所以正确的应该是Banana或者香蕉？不过按英文问题的话，回复英文更合适？不对，再看，用户的问题是英文，所以回复Banana。对，就这个。"}}],"created":1790997025,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":178,"prompt_tokens":114,"total_tokens":292,"completion_tokens_details":{"reasoning_tokens":174},"prompt_tokens_details":{"cached_tokens":64,"image_tokens":90}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 6.498s

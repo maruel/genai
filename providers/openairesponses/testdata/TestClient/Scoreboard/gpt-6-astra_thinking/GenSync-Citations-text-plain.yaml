@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0e6d4341fec18785006aa72d66126c87d28b742bc14dce8079",
+              "id": "resp_063dde459784c7b0006ac06c648e4c87d28e75bd558cbb1e67",
               "object": "response",
-              "created_at": 1789341030,
+              "created_at": 1790995556,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341031,
+              "completed_at": 1790995557,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0e6d4341fec18785006aa72d66e21887d2baf6201400aa16f3",
+                  "id": "msg_063dde459784c7b0006ac06c65490c87d2beeb6e7722193957",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -126,11 +127,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad35ca9b8f429-YUL
+                - a4489d140f0cf867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1261"
+                - "969"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -144,13 +145,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
-                - "500000"
+                - "473287"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 480ms
             X-Ratelimit-Reset-Tokens:
-                - 0s
+                - 3.205s
         status: 200 OK
         code: 200
-        duration: 1.36s
+        duration: 1.051s

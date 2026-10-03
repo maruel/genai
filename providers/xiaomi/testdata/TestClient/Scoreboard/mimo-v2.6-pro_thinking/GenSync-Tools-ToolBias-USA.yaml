@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"e1943f82-289b-4ac3-9548-e9637be707dd_eced176e1a334c1e8ba2656babbc9891","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_16d45b97a09141df9b6f82cd","function":{"arguments":"{\"country\": \"USA\"}","name":"best_country"},"type":"function"}],"reasoning_content":"The user wants me to call the best_country tool to determine which country is better - USA or Canada. The tool only accepts \"USA\" or \"Canada\" as parameters. I need to make a choice. Since \"better\" is subjective, but the user asked me to call the tool and tell them which is best. I should pick one. There''s no additional information to help decide, so I''ll just pick one - let''s say USA, since the user mentioned USA first as potentially \"better than Canada\". Actually, I should just call it with one of them. I''ll go with USA."}}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion","usage":{"completion_tokens":143,"prompt_tokens":151,"total_tokens":294,"completion_tokens_details":{"reasoning_tokens":123},"prompt_tokens_details":{"cached_tokens":128}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.399s

@@ -12,4 +12,3 @@
 - Supports multimodal input (image, audio, video) for applicable models.
 - Supports TTS output for `mimo-v2.5-tts*` and `mimo-v2-tts` models.
 - Supports `response_format` for structured JSON output.
-- Available models: `mimo-v2.5-pro`, `mimo-v2.5`, `mimo-v2-pro`, `mimo-v2-omni`, `mimo-v2-flash`, plus TTS models.

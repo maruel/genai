@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 893
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning_content":"I need to calculate the square root of 132413 using the square_root tool.","tool_calls":[{"id":"call_f3431f01abe5413c8daed1f1","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_f3431f01abe5413c8daed1f1"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The result is 363."},"finish_reason":null,"index":0}],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"89."},"finish_reason":null,"index":0}],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[{"delta":{"content":"363.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[{"delta":{"content":"89","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"21215c27-4caa-48b5-8c5b-9bd1d59bbddb_54e5ddc9790e41cc9af5ab420bbf4364","choices":[],"created":1790996933,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":{"completion_tokens":20,"prompt_tokens":209,"total_tokens":229,"completion_tokens_details":{"reasoning_tokens":12},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 766ms

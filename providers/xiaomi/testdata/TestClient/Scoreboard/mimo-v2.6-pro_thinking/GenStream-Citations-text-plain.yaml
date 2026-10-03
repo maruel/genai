@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 223
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The answer"},"finish_reason":null,"index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is directly"},"finish_reason":null,"index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" stated."},"finish_reason":null,"index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":"The capital of Quackiland","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":" is **Quack**.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"c55552ee-b7d6-4d95-877e-5a493f457e63_3426077308e24001a04aa209540ee78f","choices":[],"created":1790997104,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":{"completion_tokens":21,"prompt_tokens":41,"total_tokens":62,"completion_tokens_details":{"reasoning_tokens":7},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.649s

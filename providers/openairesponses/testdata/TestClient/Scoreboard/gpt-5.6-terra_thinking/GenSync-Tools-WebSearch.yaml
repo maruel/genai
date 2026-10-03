@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0f38ad721dcd190e006aa72d1e4ac887d28be522735050c7da",
+              "id": "resp_05126dda6e813c33006ac06c3f1b0487d2b18d12077a38468a",
               "object": "response",
-              "created_at": 1789340958,
+              "created_at": 1790995519,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789340961,
+              "completed_at": 1790995522,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_0f38ad721dcd190e006aa72d1ef91887d2af0bbefc9d0ad7c4",
+                  "id": "ws_05126dda6e813c33006ac06c3f909487d2b2427a4fc0ed6827",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
@@ -52,14 +53,6 @@ interactions:
                     ],
                     "query": "current Prime Minister of Canada official",
                     "sources": [
-                      {
-                        "type": "url",
-                        "url": "https://apnews.com/article/700d1eaad7f1aa87f1d7875222691b35"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/"
-                      },
                       {
                         "type": "url",
                         "url": "https://www.pm.gc.ca/en/about"
@@ -78,11 +71,15 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en"
+                        "url": "https://www.canada.ca/en/government/ministers.html?lang=en"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.canada.ca/en/government/ministers.html"
+                        "url": "https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
                       },
                       {
                         "type": "url",
@@ -90,7 +87,15 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://www.ourcommons.ca/members/en/ministries"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://x.com/CanadianPM/with_replies?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/Members/en/ministries?ministryNumber=29"
                       },
                       {
                         "type": "url",
@@ -98,15 +103,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/members/en/ministries?view=tile"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.cia.gov/resources/world-leaders/foreign-governments/canada"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://markcarney.libparl.ca/2026/04/29/updates-from-the-government-of-canada/"
+                        "url": "https://211ontario.ca/service/68975844/canada-cabinet-du-premier-ministre-canada-cabinet-du-premier-ministre/%26alt%3D1/"
                       },
                       {
                         "type": "url",
@@ -118,7 +115,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
+                        "url": "https://en.wikipedia.org/wiki/Canada"
                       },
                       {
                         "type": "url",
@@ -126,7 +123,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Canada"
+                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
                       },
                       {
                         "type": "url",
@@ -138,11 +135,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/24_Sussex_Drive"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"
+                        "url": "https://en.wikipedia.org/wiki/Government_of_Canada"
                       },
                       {
                         "type": "url",
@@ -150,7 +143,15 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
                       },
                       {
                         "type": "url",
@@ -162,21 +163,21 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://apnews.com/article/cbf3bc6cbfde27cfae7d85602126785a"
                       },
                       {
                         "type": "url",
                         "url": "https://www.youtube.com/watch?v=l5YYWGUHV_I"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"
                       }
                     ]
                   }
                 },
                 {
-                  "id": "msg_0f38ad721dcd190e006aa72d213aa887d2b691da2908b3eed4",
+                  "id": "msg_05126dda6e813c33006ac06c420cc487d29bf9e7e0c50fda1b",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -252,16 +253,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8627,
+                "input_tokens": 8639,
                 "input_tokens_details": {
-                  "cache_write_tokens": 4402,
-                  "cached_tokens": 0
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4402
                 },
                 "output_tokens": 36,
                 "output_tokens_details": {
                   "reasoning_tokens": 29
                 },
-                "total_tokens": 8663
+                "total_tokens": 8675
               },
               "user": null,
               "metadata": {}
@@ -276,11 +277,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad19cac55f429-YUL
+                - a4489c29fdc6f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "3588"
+                - "4003"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -294,13 +295,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
-                - "496175"
+                - "496163"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 480ms
             X-Ratelimit-Reset-Tokens:
-                - 459ms
+                - 460ms
         status: 200 OK
         code: 200
-        duration: 3.711s
+        duration: 4.07s

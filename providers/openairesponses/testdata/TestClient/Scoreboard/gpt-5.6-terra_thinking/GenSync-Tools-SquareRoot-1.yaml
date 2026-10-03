@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_039413b2bf0ae109006aa72d19f48887d2b47e57eae8d2e119",
+              "id": "resp_0c45136264593e79006ac06c37c9e887d28f492e3adf76c49c",
               "object": "response",
-              "created_at": 1789340953,
+              "created_at": 1790995511,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789340954,
+              "completed_at": 1790995512,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,11 +43,11 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "fc_039413b2bf0ae109006aa72d1a55e087d284f8c743d77256a3",
+                  "id": "fc_0c45136264593e79006ac06c38d47887d2a2391e05f8869fff",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"number\":132413}",
-                  "call_id": "call_8jMAEmAriLpt1vPRuQcUSl0v",
+                  "call_id": "call_4IAD3ategfkfnzq7rm7gGf0d",
                   "name": "square_root"
                 }
               ],
@@ -140,11 +141,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad181ac94f429-YUL
+                - a4489bfc0d63f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "624"
+                - "1312"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -158,13 +159,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 719ms
+        duration: 1.404s

@@ -21,7 +21,9 @@ import (
 	"iter"
 	"net/http"
 	"os"
+	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/maruel/roundtrippers"
@@ -161,17 +163,35 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	// ModelGood and ModelSOTA both select mimo-v2.5-pro.
-	want := "mimo-v2.5-pro"
-	if preference == string(genai.ModelCheap) {
-		want = "mimo-v2.5"
+	variant := "pro"
+	if preference == string(genai.ModelCheap) || preference == string(genai.ModelGood) {
+		variant = "flash"
 	}
+	re := regexp.MustCompile(`^mimo-v([0-9]+)\.([0-9]+)-` + variant + `$`)
+	selected := ""
+	major, minor := -1, -1
 	for _, mdl := range mdls {
-		if mdl.(*Model).ID == want {
-			return want, nil
+		id := mdl.(*Model).ID
+		m := re.FindStringSubmatch(id)
+		if m == nil {
+			continue
+		}
+		ma, err := strconv.Atoi(m[1])
+		if err != nil {
+			continue
+		}
+		mi, err := strconv.Atoi(m[2])
+		if err != nil {
+			continue
+		}
+		if ma > major || ma == major && mi > minor {
+			selected, major, minor = id, ma, mi
 		}
 	}
-	return "", errors.New("failed to find a model automatically")
+	if selected == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selected, nil
 }
 
 // selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).

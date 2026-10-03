@@ -140,7 +140,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
 	want := "deepseek-v4-pro"
-	if preference == string(genai.ModelCheap) {
+	if preference == string(genai.ModelCheap) || preference == string(genai.ModelGood) {
 		want = "deepseek-flash"
 	}
 	for _, mdl := range mdls {

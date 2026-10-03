@@ -1,0 +1,155 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"用户"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"现在"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"需要回答图"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"中的"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"水果，"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"只用一个词。首先"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"看图片"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，是香蕉，所以"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"回复Ban"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"ana（"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"或者香蕉，"},"finish_reason":null,"index":0}],"created":1790996974,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"但用户"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"要求"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"英文"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"的话"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"？不"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"看"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"问题"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，问题"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"里的"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"图片"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"是香蕉，用户"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"需要"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"一个"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"词，所以直接"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"说Banana或者"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"香蕉？看"},"finish_reason":null,"index":0}],"created":1790996975,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"问题的"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"英文提问"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，所以"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"回复Ban"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"ana？"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"不对"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，看"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"问题是"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"英文"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"所以应该"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"用"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"英文？或者"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"中文？"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"不对"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，问题是"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"“What"},"finish_reason":null,"index":0}],"created":1790996976,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" fruit is it?"},"finish_reason":null,"index":0}],"created":1790996979,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Reply with only one word.”，所以"},"finish_reason":null,"index":0}],"created":1790996979,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"用英文"},"finish_reason":null,"index":0}],"created":1790996979,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，"},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"一个词"},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，Banana。对"},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"，"},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"所以"},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"回复Banana。"},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":"Banana","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"8a702411-559e-489a-9cb2-bdc703e77ea6_7ccad321741047aeb50b4595e8655d6e","choices":[],"created":1790996980,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":{"completion_tokens":120,"prompt_tokens":114,"total_tokens":234,"completion_tokens_details":{"reasoning_tokens":116},"prompt_tokens_details":{"cached_tokens":0,"image_tokens":90}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.242s

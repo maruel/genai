@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 155
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants a detailed"},"finish_reason":null,"index":0}],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" essay/d"},"finish_reason":null,"index":0}],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"escription about Canada starting"},"finish_reason":null,"index":0}],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" with \"Canada "},"finish_reason":null,"index":0}],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"7272b118-5d39-48d5-b0f1-ab52ad6434e4_c1bf251c17284b26b850650f35030b0b","choices":[],"created":1790996927,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":{"completion_tokens":17,"prompt_tokens":19,"total_tokens":36,"completion_tokens_details":{"reasoning_tokens":16},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 4.417s

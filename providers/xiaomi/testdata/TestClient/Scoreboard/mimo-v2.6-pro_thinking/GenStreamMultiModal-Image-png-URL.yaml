@@ -1,0 +1,83 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 289
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997128,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants to"},"finish_reason":null,"index":0}],"created":1790997128,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" identify the fruit shown"},"finish_reason":null,"index":0}],"created":1790997128,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" in the image.\nI"},"finish_reason":null,"index":0}],"created":1790997128,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" looked"},"finish_reason":null,"index":0}],"created":1790997128,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" at the image and observed"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" a long"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", curved fruit"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" with yellow skin.\n"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"This"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" fruit"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" has"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" distinct"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" shape and color"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" of a banana.\nTherefore"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", the fruit"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is a"},"finish_reason":null,"index":0}],"created":1790997129,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" banana."},"finish_reason":null,"index":0}],"created":1790997130,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":"Banana","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790997130,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790997130,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"16243876-bb82-421f-816b-44d284efb9a4_f25683dca9a3430b891b6049e61af9f4","choices":[],"created":1790997130,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":{"completion_tokens":53,"prompt_tokens":114,"total_tokens":167,"completion_tokens_details":{"reasoning_tokens":49},"prompt_tokens_details":{"cached_tokens":0,"image_tokens":90}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.427s

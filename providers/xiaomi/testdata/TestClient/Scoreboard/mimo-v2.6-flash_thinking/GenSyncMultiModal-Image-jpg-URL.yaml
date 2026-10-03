@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5fb308a2-cc80-40cf-94f2-a35860ae57b5_42e6b9b51e8545f0b697165c56a39b74","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Based on the image provided, the fruit is a banana.","role":"assistant","tool_calls":null,"reasoning_content":"The user wants to identify the fruit shown in the image.\n\n1.  **Analyze the image:** The image shows a yellow, curved fruit with a stem at one end and a slightly brown tip at the other. The texture is smooth with some small speckles. It has the classic appearance of a banana.\n2.  **Formulate the answer:** The question asks for the name of the fruit in a single word. The answer is \"banana\"."}}],"created":1790996966,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":108,"prompt_tokens":114,"total_tokens":222,"completion_tokens_details":{"reasoning_tokens":94},"prompt_tokens_details":{"cached_tokens":64,"image_tokens":90}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 4.835s

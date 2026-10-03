@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"0a697fea-5fce-418c-8983-48aefd2d9d4a_d2bc9443f20a48ab91b0f0e83e19392e","choices":[{"finish_reason":"stop","index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant","tool_calls":null,"reasoning_content":"Simple question."}}],"created":1790996935,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":14,"prompt_tokens":36,"total_tokens":50,"completion_tokens_details":{"reasoning_tokens":4},"prompt_tokens_details":{"cached_tokens":0}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.781s

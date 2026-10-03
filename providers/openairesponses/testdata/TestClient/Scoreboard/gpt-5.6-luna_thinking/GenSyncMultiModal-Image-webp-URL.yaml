@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_00ca7c5da11af118006aa72d5696ec87d2aebd8f92668a77d0",
+              "id": "resp_03fa8327bd8d4155006ac06cb0918087d2b0436abaa1422db0",
               "object": "response",
-              "created_at": 1789341014,
+              "created_at": 1790995632,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341015,
+              "completed_at": 1790995634,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_00ca7c5da11af118006aa72d56f6d087d2829bb64053bcd93c",
+                  "id": "msg_03fa8327bd8d4155006ac06cb1f5a487d281ca86535f14b1a4",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -126,11 +127,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad2fcca97f429-YUL
+                - a4489eef1966f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "603"
+                - "1597"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -153,4 +154,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 678ms
+        duration: 1.677s

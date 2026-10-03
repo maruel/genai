@@ -407,9 +407,10 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // ErrorResponseError is the nested error in an error response.
 type ErrorResponseError struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-	Status  string `json:"status"`
-	Type    string `json:"type"`
-	Param   string `json:"param"`
+	Code    string            `json:"code"`
+	Message string            `json:"message"`
+	Status  string            `json:"status"`
+	Type    string            `json:"type"`
+	Param   string            `json:"param"`
+	Headers map[string]string `json:"headers,omitzero"`
 }

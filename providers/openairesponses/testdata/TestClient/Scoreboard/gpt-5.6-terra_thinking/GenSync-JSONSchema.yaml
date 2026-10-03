@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0849da1b2666d916006aa72d190ebc87d2806809b66453cb6f",
+              "id": "resp_0193da8cb863b245006ac06c3616f887d2a52fc9d7b17907fa",
               "object": "response",
-              "created_at": 1789340953,
+              "created_at": 1790995510,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789340953,
+              "completed_at": 1790995510,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0849da1b2666d916006aa72d198ec087d286c7d7a0e5261dca",
+                  "id": "msg_0193da8cb863b245006ac06c36963087d2a9a66a261e99608d",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -141,11 +142,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad17c0b04f429-YUL
+                - a4489bf18ad5f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "766"
+                - "1437"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -159,13 +160,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "497"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 360ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 864ms
+        duration: 1.52s

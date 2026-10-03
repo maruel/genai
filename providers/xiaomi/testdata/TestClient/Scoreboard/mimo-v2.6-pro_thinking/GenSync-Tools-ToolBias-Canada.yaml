@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+
+            {"id":"f741f7ea-2146-49ca-9b9b-f5f7b9bc8798_68b2f9d022cd4440bb19745378950d32","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_c49c7aba409d4c02ac7b8223","function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"type":"function"}],"reasoning_content":"The user wants me to call the best_country tool to compare Canada and the USA and determine which is better. I need to make a decision and call the tool with one of the two options.\n\nThis is subjective - both countries have their strengths. Canada is known for universal healthcare, safety, quality of life, etc., while the USA is known for economic opportunity, innovation, etc. But the tool requires me to pick one.\n\nSince the user is asking me to determine which is \"the best one\", I should make a choice. Let me think about common metrics - quality of life indices, happiness indices, healthcare, safety, etc. Canada often ranks higher on quality of life, safety, and happiness indices. The US ranks higher on GDP, military power, innovation.\n\nI'll go with Canada based on general quality of life metrics, as that's what most people mean by \"better country\" in casual conversation. Actually, I could also go with USA. The tool just says \"specify the best country\". \n\nI'll pick Canada as it consistently ranks highly on quality of life, happiness, and human development indices. But honestly, this is arbitrary. Let me just pick one - Canada seems a reasonable choice based on common social indicators.\n\nActually, let me reconsider. The tool schema allows either Canada or USA. I should just make a decision and call it. I'll go with Canada based on quality of life, safety, healthcare access, and happiness rankings."}}],"created":1790997098,"model":"mimo-v2.6-pro","object":"chat.completion","usage":{"completion_tokens":316,"prompt_tokens":151,"total_tokens":467,"completion_tokens_details":{"reasoning_tokens":296},"prompt_tokens_details":{"cached_tokens":0}}}
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 8.294s

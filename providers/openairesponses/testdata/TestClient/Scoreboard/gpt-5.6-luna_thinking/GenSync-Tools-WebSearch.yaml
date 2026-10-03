@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_017f5d7456c058b0006aa72d46c6a087d281082e776dbd6389",
+              "id": "resp_000f8f00eb2e8f27006ac06c96593887d2a18cc1ac3562423a",
               "object": "response",
-              "created_at": 1789340998,
+              "created_at": 1790995606,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341003,
+              "completed_at": 1790995610,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "ws_017f5d7456c058b0006aa72d473bc887d28befd35b04799338",
+                  "id": "ws_000f8f00eb2e8f27006ac06c97554087d2ba798e0ec1474511",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
@@ -54,15 +55,7 @@ interactions:
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://apnews.com/article/700d1eaad7f1aa87f1d7875222691b35"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://apnews.com/article/a5fbb50d1c30327ae813482556a37ac3"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://apnews.com/article/1bbee874edea1e8dead484c0c1e118dc"
+                        "url": "https://apnews.com/article/68539133d6e0245fad3622263afd4aeb"
                       },
                       {
                         "type": "url",
@@ -70,15 +63,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en?lang=en"
                       },
                       {
                         "type": "url",
@@ -86,7 +71,7 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en"
+                        "url": "https://www.pm.gc.ca/en?lang=en"
                       },
                       {
                         "type": "url",
@@ -98,15 +83,31 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers.html?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
+                        "url": "https://www.ourcommons.ca/Procedure/procedure-and-practice-4/app06-e.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/members/en/ministries"
                       },
                       {
                         "type": "url",
                         "url": "https://www.pm.gc.ca/?pverbp="
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"
                       },
                       {
                         "type": "url",
@@ -118,10 +119,6 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.ourcommons.ca/members/en/ministries?view=tile"
-                      },
-                      {
-                        "type": "url",
                         "url": "https://en.wikipedia.org/wiki/Mark_Carney"
                       },
                       {
@@ -130,11 +127,11 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.noscommunes.ca/procedure/procedure-and-practice-4/app17-e.html/app06-e.html"
+                        "url": "https://markcarney.libparl.ca/"
                       },
                       {
                         "type": "url",
-                        "url": "https://x.com/CanadianPM/with_replies?lang=en"
+                        "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
                       },
                       {
                         "type": "url",
@@ -150,15 +147,15 @@ interactions:
                       },
                       {
                         "type": "url",
+                        "url": "https://cpcassets.conservative.ca/wp-content/uploads/2022/04/26164618/6655497556c4933.pdf"
+                      },
+                      {
+                        "type": "url",
                         "url": "https://apnews.com/article/261560d8bcff5e46074e84120848fd37"
                       },
                       {
                         "type": "url",
                         "url": "https://apnews.com/article/538688b715c16bb42ecaef93d25c3db2"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://cpcassets.conservative.ca/wp-content/uploads/2022/04/26164618/6655497556c4933.pdf"
                       },
                       {
                         "type": "url",
@@ -175,20 +172,12 @@ interactions:
                       {
                         "type": "url",
                         "url": "https://apnews.com/article/cd44b5930a2846c1d2c5f3ba5bdea3bd"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://mis.alagappauniversity.ac.in/siteAdmin/dde-admin/uploads/4/__UG_B.A._Public%20Administration%20%28English%29.pdf"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.reddit.com/r/onguardforthee/comments/1welh8q/prime_minister_carney_to_strengthen_canadas_ties/"
                       }
                     ]
                   }
                 },
                 {
-                  "id": "msg_017f5d7456c058b0006aa72d4b10b887d2829d493234aecd77",
+                  "id": "msg_000f8f00eb2e8f27006ac06c99d46487d293c69a4ff26579b5",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -264,16 +253,16 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8721,
+                "input_tokens": 8718,
                 "input_tokens_details": {
-                  "cache_write_tokens": 0,
-                  "cached_tokens": 4402
+                  "cache_write_tokens": 4402,
+                  "cached_tokens": 0
                 },
                 "output_tokens": 35,
                 "output_tokens_details": {
                   "reasoning_tokens": 28
                 },
-                "total_tokens": 8756
+                "total_tokens": 8753
               },
               "user": null,
               "metadata": {}
@@ -288,11 +277,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad298981cf429-YUL
+                - a4489e4b39a7f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "5387"
+                - "3876"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -306,13 +295,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "496"
             X-Ratelimit-Remaining-Tokens:
-                - "496082"
+                - "496085"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 405ms
             X-Ratelimit-Reset-Tokens:
-                - 470ms
+                - 469ms
         status: 200 OK
         code: 200
-        duration: 5.584s
+        duration: 4.003s

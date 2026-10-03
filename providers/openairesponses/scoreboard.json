@@ -90,6 +90,124 @@
     },
     {
       "models": [
+        "gpt-6.1-sol"
+      ],
+      "good": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "models": [
+        "gpt-6-luna"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true"
+        }
+      }
+    },
+    {
+      "models": [
         "gpt-image-1-mini"
       ],
       "cheap": true,
@@ -144,7 +262,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -215,7 +333,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -229,7 +347,8 @@
         "gpt-5.4-mini",
         "gpt-5.4-nano",
         "gpt-5.5",
-        "gpt-5.6-sol"
+        "gpt-5.6-sol",
+        "gpt-6-sol"
       ],
       "reason": true
     },

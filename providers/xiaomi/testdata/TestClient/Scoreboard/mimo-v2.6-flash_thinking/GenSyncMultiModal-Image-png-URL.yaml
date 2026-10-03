@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6f4eb4b0-a88b-4ae3-b01d-e1c195d9e7ff_baa9cbdbe2404405bc6f5789a319b17e","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Banana","role":"assistant","tool_calls":null,"reasoning_content":"用户现在需要回答这是什么水果，只用一个词。看图片是香蕉，所以直接回复Banana（或者中文香蕉？不过看问题，用户问题里的“What fruit is it? Reply with only one word.”，不过图片是香蕉，英文的话是Banana，中文是香蕉。不过按照问题，可能用英文？不对，用户的问题里的回复要求，看用户的问题，“What fruit is it? Reply with only one word.”，所以应该用英文Banana，或者中文香蕉？不过看图片，是香蕉，所以应该回复Banana（如果英文）或者香蕉。不过用户的问题是英文，所以应该用英文单词Banana？不对，再看，用户的问题里的问题，然后图片是香蕉，所以正确的是Banana，或者中文香蕉。不过按照要求，只一个词，所以选香蕉或者Banana。不过看用户的问题是英文，所以可能用Banana。不过再确认，图片是香蕉，所以回复Banana（英文）或者中文香蕉。不过通常这种问题，看用户的问题语言，用户问题是英文，所以用英文单词Banana。"}}],"created":1790996997,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":236,"prompt_tokens":114,"total_tokens":350,"completion_tokens_details":{"reasoning_tokens":232},"prompt_tokens_details":{"cached_tokens":64,"image_tokens":90}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.734s

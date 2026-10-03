@@ -1,0 +1,271 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 406
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-sol","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0eabea6edf13789d006ac06be6a84c87d2987f65abbf23a105",
+              "object": "response",
+              "created_at": 1790995430,
+              "status": "completed",
+              "access_programs": null,
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1790995434,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6.1-sol",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "ws_0eabea6edf13789d006ac06be7b73887d28f50301e29eb21cb",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "current Prime Minister of Canada site:pm.gc.ca"
+                    ],
+                    "query": "current Prime Minister of Canada site:pm.gc.ca",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/07/21/prime-minister-carney-concludes-first-ministers-meeting"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet-committee-mandate-and-membership"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/07/09/prime-minister-carney-meets-crown-prince-and-prime-minister-saudi-arabia"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/06/10/prime-minister-carney-concludes-first-ministers-meeting"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/07/22/prime-minister-carney-speaks-prime-minister-united-kingdom-andy-burnham"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/06/27/prime-minister-carney-speaks-president-south-africa-cyril-ramaphosa"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/news-releases/2026/05/05/prime-minister-carney-announces-kings-approval-canadas-next-governor"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/05/21/prime-minister-carney-speaks-chancellor-germany-friedrich-merz-and-prime"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/?emci=73322890-b318-f111-a69a-000d3a1f0a97&emdi=ea000000-0000-0000-0000-000000000001"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_October_26_2021_1.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_2021_0.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_October_11_2022_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about?utm_source=openai"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "msg_0eabea6edf13789d006ac06bea03a887d2aff287316f0f8fbd",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [
+                        {
+                          "type": "url_citation",
+                          "end_index": 74,
+                          "start_index": 13,
+                          "title": "About | Prime Minister of Canada",
+                          "url": "https://www.pm.gc.ca/en/about?utm_source=openai"
+                        }
+                      ],
+                      "logprobs": [],
+                      "text": "Mark Carney. ([pm.gc.ca](https://www.pm.gc.ca/en/about?utm_source=openai))"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 1
+                }
+              },
+              "tools": [
+                {
+                  "type": "web_search",
+                  "return_token_budget": "default",
+                  "search_content_types": [
+                    "text"
+                  ],
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8439,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4402
+                },
+                "output_tokens": 55,
+                "output_tokens_details": {
+                  "reasoning_tokens": 33
+                },
+                "total_tokens": 8494
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a4489a010df4a2a4-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "4279"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "491020"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 1.077s
+        status: 200 OK
+        code: 200
+        duration: 4.372s

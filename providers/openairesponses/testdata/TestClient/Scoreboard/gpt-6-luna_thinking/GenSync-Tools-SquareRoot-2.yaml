@@ -1,0 +1,185 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 633
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-luna","parallel_tool_calls":true,"previous_response_id":"resp_0d91adf8be498bd6006ac06a3e460c87d29d1732b7be14a1ac","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_ffVbXYXQw2c2mvHqllJIIpPA","output":"363.89"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0d91adf8be498bd6006ac06b992d6c87d280538d39155c3cef",
+              "object": "response",
+              "created_at": 1790995353,
+              "status": "completed",
+              "access_programs": null,
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1790995356,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6-luna",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_0d91adf8be498bd6006ac06b9a1cc487d28566506e3dcfc30d",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqwGucGq65ONIfn3brUY913A5rpkfQgai2LH5RUfajxX8_uwzukFtsyk3LEkSZvaEVNtuCRenulx1fqaH2qyw8yCTXDoo1A72FUL_Q0FnFk7g_0Lzv4BIVhgfloWkwk45F4r4cGv4xxArWdzqDMkdpLLbI2casjT4RfdbMLh0POtK9xh0xU6Cj40xoybH0NuIHnXqpFnFR-kR9SNDZlv496LS2pPdZr-JjNKP8ynfx3ivl6oVVhz_zYZ_5UEIAO0HemIHX1_GldZvt-Qf_jKIhiKWUpFejL0N8-tJkilTUV0SUqjIT8eTDChnxRJffxkmGCWuded_JS51B-pWWczr5Iq0JwdnY3qGJ98AIgxNx2xcs1QBowdeo-Lpi4y1X1iRhYszml1pzutNmk3FFD3BC-YUvtCPHN5xZ-yrPrI5WqfhMV7thsHAq_kNpPGw3OMWYv83tOpCgUb7vrw4rMjgoNRs48Dg-_x6dZ9VexcVuPO0IOwktlQCXsYXANJiCwO3bSjvU-xBm6olCfWCIFzp7DOBZpiziMBYPvdEz46g8HkYFhT3jM2j4_SZ0F0Xu2kbyjz-_eT3oOqjOSWiowddYWvk9ArUFFk5z0f1yi1ZTHLoOERh1uEReuJ5WcN3iQLmNdo0Ggg6_fv-bnF_9ArF0A0JMC1rLYKhDVLwh1ivq8hxYh855MeUuG10B7UEMgPyqZRN8U5IswBTPlOsL7QqJeih1tCZ1b-6Cm4F0zOPBMp-RTMJM3eGrzd1bUmasTlYWW-TTTTQl7ytpL_GqyyXSVLwIZfT6R3S2nJ6DwjUiCYXNa6ArEo58j21NMxPbJNJTEdtFughYc3XEJptcEtWpj8kFHBcngJssEHPESy4XdhgdXgYNbP1DYl9bt7LGVoNnGAKwKAsIehUlUEWa39REZFt7Yb_3Dldjm-jA2agBqo30ZVKXvy7DOcf0czDmZAzKDWtuRfdJ5se6uPJCEJWrExQ1UIGzqbXlwAOTIysTpqwFNQo1w0bvKMwYoJsv28XVtCqm5coSmHSawWmhT7teJGjh6POEwXW0EI-yLjCj-MYwygkdVMAVNcrclr5gUPc6Cqk7RE4RyTf2XDl9DV8vomCBH5AKdoeEiFwCRhC3fnXEXreCs5ZHsbSwolDjbWrhfvLGIU0CodoUtrN8a04ZAS9wkRy_iWu6_jG6mT6VeeJEvsdQ_qHguXwcmlG0CJt8aZUur3QZAQXU-YCekiZsa4ZlVRsgXo6YQEkhB4uQy9-pqj0BLTwcldM_9LFY157bgQ7rhq8RDsj8ayCPvUr1VbVrFoifk6LRVGJS2N9DOT8mXoLFRiX0sJ7N625RLLs6lMHDyQYF6RbJtKVllWAYI-YBL8MXqoZ1ogJEoGAVij2gYYMXpAycD3JTsNQoIIkhL9cfj6Du6xgcqs95ff6H1CLNXrT95FPNNAevY01PkDgTzFpO4iw0L0IEdBzLNcSg4khdJqFcClObZjYQiIq4zasP9w==",
+                  "summary": []
+                },
+                {
+                  "id": "msg_0d91adf8be498bd6006ac06b9c3df487d2aee473b0f088900c",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "363.89"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": "resp_0d91adf8be498bd6006ac06a3e460c87d29d1732b7be14a1ac",
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "none",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Calculates and return the square root of a number",
+                  "name": "square_root",
+                  "output_schema": null,
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "properties": {
+                      "number": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "number"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 106,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 58,
+                "output_tokens_details": {
+                  "reasoning_tokens": 49
+                },
+                "total_tokens": 164
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a448981c39ada2a4-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "3746"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "200000"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 5m31.937s

@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0b1e0f2612d1a159006aa72d1caa9087d2990b742bb301476c",
+              "id": "resp_012af769ae7e534a006ac06c3b13bc87d2a26245de4be35e4f",
               "object": "response",
-              "created_at": 1789340956,
+              "created_at": 1790995515,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789340958,
+              "completed_at": 1790995518,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,11 +43,23 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "fc_0b1e0f2612d1a159006aa72d1dab9887d291aa3a02e2cdce41",
+                  "id": "rs_012af769ae7e534a006ac06c3bf0dc87d2b6ebdebeebafab01",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABqwGw-YYkuXGG8WlvXDURVg9ALWDBFW2nv3YKhbtqI3qvqROl0SQLmQtHYpAvhuHSZBCosR6vy_BHao2AxUfZ9c-uPGb0RbPlFAknm2lj78NK0P_E-17x0UBbf00ldlZMuvXRFZCYtLz9XUSIobAfB4cOLRtNaUK34zh95dhQg4FzLEBsI3DoDtfZU6eK71w04Le-a7ungmn3_SSHAstdIN40FBaAde4S68zjYeaG2L7PWdIrARR2HKe7pnPxgG2kpa8Kp5WxIy4datPiPNn_sXDj3WejPTZY4asySeEQsWF6eI_rS2JQdoPtVaWOZNvhG9gITd6AxmXZ9VCOPWbnAQhAvYU_4EoS-MiTMvRWNAalIC1-Po51apKAn8XwicWVeqBhPBtJv97_7MgCNQ74XyARbw8D-QBPTL7AGr6an8TJE5-LGnau1bdiafy4pFBUP0Aa6I_wl8ll3kle2LRkESaqvXQW-Oa7dM_K00p-7R8Dcw2HO-Cq2dW9IpXUdrJAbcHQHIOHUP5MgVFKiSst0ZKRAfzB9giRYSaRKnDgDuRP7VwuA1dfpk48us6tHND1NW9CxDUpbH3qZnq2Ivgl-8s-YmIElSFwGg5o7hAyer0FrcM3f0f37m3UbF7MbhbygZOvCHuYhpit1OB2w1DGMJp82H-HbJCa94MxOAyd1Poh4r3LR7QmbU1AfZswOdFq51C_a3EyxcrcFuGpBvS-1uFLwf8ApUOg83hEaQ5u6pg9ii7-UW8OBXtf0HMasYSdLnYqcFs1kF00jgdE1QrWYx2Pz0sxdmu5k9GKfY56kRNv_FlS-RBAnQYApOKfF-gPgGnpcWNtyK7YFexlvNrAuZvQEu-xsT8hKXYicvWe8pdudGI_pSMW4KctBh0mNXfZ9Z0JEoAliyhFRlsSftZIbMgGzeUGhHSRb0mGrqDhkDE0C_vi790YsS_EmVd-9hEq0x1_8ScnVu_a5SY51l3RC4CyR7dl6JqIu3KBUfCSkW210rxzQzCvo4qkvj2KCexmKEHO38NGpoMk9iZd-6ICxxdXeOyJZgJlrEHLrkADqxvwCWxXcs9RDYzZfEOfIdV68x_sFzTk4lKPA4Ttr7gDg_5_D2Dx8bRWMhYv9dRV2adRKMvQ-m1wizvxZFN21sFbeA2g1plmWFa2E1eJaYzZ4pBdXlZMmPapcuwvlMdR2BZah21n23z3mQLIUe32xHZQOLkjc4sBILhvv0KtW-az5Tyx2ofdj4fvZ0X_3RjZejWi75lXoGiz5cmof6a0tlxQs5te6bD_HfsSZaPPJ_RK1UNl1507qq0bpvqJEOk0-5tQEK1-kE34S9k2YParRGf1iUjGj8L8KEj1bEsIfeWapmFDL1BbvTlcOXWV1ZHCgV1gtB_tJE5h2TJG7axaPH7saIp7kdPSe_UlVbazWD6RKmzuv1lme-3jGyecR8WzRKTQ2KZk=",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Deciding on a country**\n\nI\u2019m looking at what the user wants regarding a country to choose. The tool requires this choice, but it feels subjective, like I\u2019m determining the best option. Maybe I should lean towards Canada based on quality of life, since that's a common choice. It looks like the tool is designed to return data based on the selected country. So, I need to decide which country to invoke for the user!"
+                    }
+                  ]
+                },
+                {
+                  "id": "fc_012af769ae7e534a006ac06c3e25d487d2a893f702409b1091",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"country\":\"Canada\"}",
-                  "call_id": "call_sACwaYv7pTAFgpQBtCHjAOMh",
+                  "call_id": "call_vQQCi6NZ0EVvuZTv07AyoqZL",
                   "name": "best_country"
                 }
               ],
@@ -125,11 +138,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 18,
+                "output_tokens": 63,
                 "output_tokens_details": {
-                  "reasoning_tokens": 0
+                  "reasoning_tokens": 43
                 },
-                "total_tokens": 95
+                "total_tokens": 140
               },
               "user": null,
               "metadata": {}
@@ -144,11 +157,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad1923d76f429-YUL
+                - a4489c10cb60f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1542"
+                - "3905"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -162,13 +175,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 179ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.647s
+        duration: 3.999s

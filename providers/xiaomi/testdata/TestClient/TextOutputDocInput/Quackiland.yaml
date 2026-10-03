@@ -36,3 +36,42 @@ interactions:
         status: 200 OK
         code: 200
         duration: 2.914s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 226
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"bb13f73a-ffb7-48c4-8904-32237e83ff08_16c2f58d7ee5424d93e9bb037d0f06fa","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is **Quack**.","role":"assistant","tool_calls":null,"reasoning_content":"The answer is stated directly in the premise."}}],"created":1790997177,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":24,"prompt_tokens":41,"total_tokens":65,"completion_tokens_details":{"reasoning_tokens":10},"prompt_tokens_details":{"cached_tokens":0}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.612s

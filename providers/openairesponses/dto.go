@@ -177,6 +177,7 @@ type Response struct {
 	Usage             Usage             `json:"usage,omitzero"`
 	Billing           map[string]string `json:"billing,omitzero"` // e.g. {"payer": "openai"}
 	Moderation        string            `json:"moderation,omitzero"`
+	AccessPrograms    *AccessPrograms   `json:"access_programs,omitzero"`
 }
 
 // Init implements base.InitializableRequest.
@@ -402,6 +403,21 @@ func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
 	}
 	return errs
 }
+
+// AccessPrograms identifies the effective access programs used for a response.
+type AccessPrograms struct {
+	Cyber CyberAccessProgram `json:"cyber"`
+}
+
+// CyberAccessProgram identifies the effective Cyber access program.
+type CyberAccessProgram string
+
+// Cyber access programs.
+const (
+	CyberAccessProgramDaybreakBlue CyberAccessProgram = "daybreak_blue"
+	CyberAccessProgramDaybreakRed  CyberAccessProgram = "daybreak_red"
+	CyberAccessProgramStandard     CyberAccessProgram = "standard"
+)
 
 // ReasoningConfig represents reasoning configuration for o-series models.
 type ReasoningConfig struct {

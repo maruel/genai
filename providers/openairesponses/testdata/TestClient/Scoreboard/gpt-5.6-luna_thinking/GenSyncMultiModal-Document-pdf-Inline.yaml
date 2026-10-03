@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_06e3d8e87b56b5b3006aa72d4e344487d2a176350a897722d6",
+              "id": "resp_094eb6a3ae80299a006ac06c9e1fc887d29ba925d0ce7f7e42",
               "object": "response",
-              "created_at": 1789341006,
+              "created_at": 1790995614,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341007,
+              "completed_at": 1790995615,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,14 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "rs_06e3d8e87b56b5b3006aa72d4ed87087d2ae1a86384fad7579",
-                  "type": "reasoning",
-                  "content": [],
-                  "encrypted_content": "gAAAAABqpy1PiFoGsI1ZpPi9Eyk2IbJ0qkTTkNFC7OEDBXSLftF5yghDJX868XXVXRLcUlI7KRGmcW5uoSFQzGbRn7S-F3QUgUH8fHg6SGkJWDU8fS6Pm-RjEBZopw4XSCQ7k78aiazwDPrlOM9r8bBlCd_n3BVyKwHXpE9WgJUG_e95nauAGXmbadgjV5_LWjY_JavTTdssyYregbbNzqSJGHg_-BEkS_o8G9ZVdjzYbkK7Jf84oczMEabLrtj6dFq_kdpiOEXw-dCi0KcSmoFppDEOP3zKO5LzUZ6X6C4_OJj89j42VB81aN9N6lmC9KfyqyhU469yQGUUeI-H_0CIWr2yb9Ae_tZARAZlkc9Upi9F44i4WhPdCkdRigH8np1LUMgK9vj4b4eZTbQU1RVaOkRdtC4-0ETx36gqbNjNcdFdOsQ8WlBv5sgFNNTW3pWVzBblK3RGcEBR-UzdaIza7f7Yd8J1TmEl_uJohUtHo20e_OSiS7QX9kMvVKYVEPsCnGmk3JURaxH94O2KUbA_M-4B0JMqhaNWV1Q7iGpYxZbM8YuqK0Ei-vhqzXZWRb7rkyTwIgLFuVzS8ZkhtSZEc7eBxD0lsEzCRcUcuTU-_zjHWV8xD-PyT9rpglVG9uJYfObTIZcspPnYKcN5GMvCgRlvNmZwg52qaXciH_3djJXgqqh-jY1J37_WZsA2RzswygjtMzsdhteBZw9RWgd2NEudSJxR9k7OJLkjJtIK8hTftzUaHuWTw_3wUKP715jd3Q3-GK_xgVCLNFqcsRw9_GO68yFYITZ02Z3XuKxQZJA_4O6vXBvhKAcfwnW_-oWbE0f47kSTIXa9Vimq1FmUrffUmobdOtKgQCt8aVXuzoQcd3bfh-SiYdmVQp5dJjSTU2RB9Qh453QTMQ_-rBqRDwDhfXM81Hnj7G8Z3xYMyphsQqvJdVjf09Rq-2e1m_YIB_tM_Nwh7iJyLdLNmiOB12PnmUC6UBI774ljKtOM2DA1NStFk7femPZpVSkjBdIoczLoy-Q_G6-uWvs1bvKf827ya9cY9d_5k412ZzRClCdr26wnrg_nadAkceSI8sKX8jzVvYLINW9nijtFf9CvX-DxSjw9m3gg2QbYMU14GcubE1WBu2sC0iJ2vO8KwgQG3vzfx_763P8m7cIwC_MAJLqIbcZTkaYJIdWZYnxGUbpAMWk3TJoYzFxJPeL5nC8pUDBMKtMSY9BlpDcvH4wtQ4Z-WUbID8lvJY9XJfZikB0DH4hVURk=",
-                  "summary": []
-                },
-                {
-                  "id": "msg_06e3d8e87b56b5b3006aa72d4f1b7087d2beeb65ddaaa8bebe",
+                  "id": "msg_094eb6a3ae80299a006ac06c9ef10487d2b6e5eed7ef2b35b9",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -114,11 +108,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 25,
+                "output_tokens": 5,
                 "output_tokens_details": {
-                  "reasoning_tokens": 18
+                  "reasoning_tokens": 0
                 },
-                "total_tokens": 67
+                "total_tokens": 47
               },
               "user": null,
               "metadata": {}
@@ -133,11 +127,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad2c809f8f429-YUL
+                - a4489e7bcb08f867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1204"
+                - "1299"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -153,11 +147,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "500000"
+                - "496099"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 0s
+                - 468ms
         status: 200 OK
         code: 200
-        duration: 1.313s
+        duration: 1.384s

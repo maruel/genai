@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0418cbc0dbcdff94006aa72d575c1087d29ff158848ee6de10",
+              "id": "resp_06db0bc5092452c5006ac06c5399f087d2b23c07610acc4f1d",
               "object": "response",
-              "created_at": 1789341015,
+              "created_at": 1790995539,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341016,
+              "completed_at": 1790995540,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_0418cbc0dbcdff94006aa72d58060c87d286c4c8632dd4f53b",
+                  "id": "msg_06db0bc5092452c5006ac06c545d0887d2b03fb14fab864354",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -50,7 +51,7 @@ interactions:
                       "type": "output_text",
                       "annotations": [],
                       "logprobs": [],
-                      "text": "Hello"
+                      "text": "Hello."
                     }
                   ],
                   "phase": "final_answer",
@@ -107,11 +108,11 @@ interactions:
                   "cache_write_tokens": 0,
                   "cached_tokens": 0
                 },
-                "output_tokens": 5,
+                "output_tokens": 6,
                 "output_tokens_details": {
                   "reasoning_tokens": 0
                 },
-                "total_tokens": 19
+                "total_tokens": 20
               },
               "user": null,
               "metadata": {}
@@ -126,11 +127,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad3015b73f429-YUL
+                - a4489ca9f95ff867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "932"
+                - "950"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -144,13 +145,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
-                - "500000"
+                - "499961"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
-                - 0s
+                - 4ms
         status: 200 OK
         code: 200
-        duration: 1.038s
+        duration: 1.033s

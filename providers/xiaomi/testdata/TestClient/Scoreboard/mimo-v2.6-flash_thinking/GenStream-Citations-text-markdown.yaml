@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996942,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The capital of Quack"},"finish_reason":null,"index":0}],"created":1790996942,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"iland is Quack."},"finish_reason":null,"index":0}],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":"The capital","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":" of **","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":"Quackiland** is **Quack","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":"**.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk"}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"0c6301be-69a0-4f67-b56c-6f91fa451701_fe3136019db942c3bcdfc4a47e30e4d4","choices":[],"created":1790996943,"model":"mimo-v2.6-flash","object":"chat.completion.chunk","usage":{"completion_tokens":27,"prompt_tokens":46,"total_tokens":73,"completion_tokens_details":{"reasoning_tokens":11},"prompt_tokens_details":{"cached_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 595ms

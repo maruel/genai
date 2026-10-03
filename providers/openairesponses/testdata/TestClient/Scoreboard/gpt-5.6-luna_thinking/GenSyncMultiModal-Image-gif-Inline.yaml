@@ -23,15 +23,16 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_04b343b551f63208006aa72d517c1c87d28407dca072978580",
+              "id": "resp_04fe881b11534884006ac06ca1dc6087d297382324d0e28ebe",
               "object": "response",
-              "created_at": 1789341009,
+              "created_at": 1790995617,
               "status": "completed",
+              "access_programs": null,
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1789341010,
+              "completed_at": 1790995621,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -42,7 +43,7 @@ interactions:
               "moderation": null,
               "output": [
                 {
-                  "id": "msg_04b343b551f63208006aa72d524a9887d2bbc17e8f3fb006ee",
+                  "id": "msg_04fe881b11534884006ac06ca5500487d297de582b004e373a",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -126,11 +127,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a3aad2dcdc28f429-YUL
+                - a4489e931e1ef867-YUL
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1134"
+                - "4827"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -144,13 +145,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "500000"
             X-Ratelimit-Remaining-Requests:
-                - "499"
+                - "498"
             X-Ratelimit-Remaining-Tokens:
                 - "500000"
             X-Ratelimit-Reset-Requests:
-                - 120ms
+                - 240ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.224s
+        duration: 4.913s

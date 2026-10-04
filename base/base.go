@@ -141,6 +141,11 @@ func (e *ErrNotSupported) Error() string {
 // NotImplemented implements remote genai.Provider methods, all returning ErrNotSupported.
 type NotImplemented struct{}
 
+// SystemOne implements genai.Provider.
+func (*NotImplemented) SystemOne(context.Context, *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
+	return nil, &ErrNotSupported{}
+}
+
 // GenSync implements genai.Provider.
 func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.GenOption) (genai.Result, error) {
 	return genai.Result{}, &ErrNotSupported{}

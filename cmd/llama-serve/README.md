@@ -5,7 +5,7 @@ A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/lla
 ## Examples
 
 Kev 4B answers typed questions through `/v1/systemone`. Use
-`llamacpp.ProviderOption{SystemOne: true}` with the client. This endpoint requires
+the client's `SystemOne()` method. This endpoint requires
 nightly build b11361 or newer; the default stable v0.5.0 predates it.
 
 ```bash

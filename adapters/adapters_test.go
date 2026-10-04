@@ -9,6 +9,8 @@ package adapters_test
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"slices"
 	"strconv"
 	"testing"
@@ -17,6 +19,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/providers/llamacpp"
 )
 
 func TestGenSyncWithToolCallLoop(t *testing.T) {
@@ -142,6 +145,33 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 }
 
 func TestProviderUsage(t *testing.T) {
+	t.Run("SystemOne", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			if _, err := w.Write([]byte(`{"model":"kev","answers":{"yes":{"type":"noul","noul":0.8}},"usage":{"input_tokens":42,"output_tokens":3,"reasoning_tokens":2}}`)); err != nil {
+				t.Error(err)
+			}
+		}))
+		t.Cleanup(srv.Close)
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if err := c.Close(); err != nil {
+				t.Error(err)
+			}
+		})
+		p := adapters.ProviderUsage{Provider: c}
+		for range 2 {
+			if _, err := p.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("state"), Questions: genai.Questions{"yes": {Type: genai.QuestionNoul, Instructions: genai.Text("yes?")}}}); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if got := p.GetAccumulatedUsage(); got.InputTokens != 84 || got.OutputTokens != 6 || got.ReasoningTokens != 4 {
+			t.Fatalf("unexpected usage: %+v", got)
+		}
+	})
 	t.Run("GenSync", func(t *testing.T) {
 		provider := &mockProviderGenSync{
 			responses: []genai.Result{

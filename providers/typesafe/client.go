@@ -6,20 +6,19 @@
 //
 // It is described at https://docs.typesafe.ai/api
 //
-// TypeSafe is unlike the other providers: it does not generate text. Every request evaluates one state
-// with a set of typed questions about it, and returns one typed answer per question. The questions are
-// declared as fields of a struct of Noul, Choice and Score, passed with
-// genai.GenOptionText.DecodeAs, and the same struct receives the answers.
+// # Decision inference
 //
-// The state is the single message passed: its text, or a JSON document for structured data, like the
-// record the questions are about; several requests become an array state. The API evaluates a string as
-// text, so it never parses JSON passed as one.
+// TypeSafe does not generate text. Every request evaluates one state
+// with a set of typed questions about it, and returns one typed answer per question. Set the named
+// questions in genai.Questions and read the same names from SystemOneResponse.Answers.
 //
-// QuestionsFrom returns the questions a struct declares, to review them, to pass them back with
-// DecodeAs, or to call GenSyncRaw directly. With a Questions, the answers decode into Answers, keyed by
-// question name.
+// SystemOne accepts text or JSON state and typed questions. The API evaluates a string as text,
+// so it never parses JSON passed as one. GenSync and GenStream are not supported.
 //
-// There is no multi-turn conversation: pass the whole context as the state.
+// There is no multi-turn conversation: pass the whole context as the state. Images, audio and video
+// are not supported. [SystemOneRequest.From] converts shared decision input and rejects attachments.
+// [SystemOneRequest.Validate] owns provider constraints. [Client.SystemOneRaw] exposes native requests.
+// See [New] for authentication, model aliases and endpoint configuration.
 package typesafe
 
 import (
@@ -29,7 +28,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"iter"
 	"net/http"
 	"os"
 	"slices"
@@ -176,7 +174,7 @@ func (c *Client) ModelID() string {
 // OutputModalities implements genai.Provider.
 //
 // It returns the output modalities, i.e. what kind of output the model will generate. TypeSafe only
-// generates the typed answers, which are returned as JSON text.
+// returns typed decision answers.
 func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
@@ -191,65 +189,39 @@ func (c *Client) HTTPClient() *http.Client {
 	return &c.impl.Client
 }
 
-// GenSync implements genai.Provider.
-//
-// The message is the state: its text, or a JSON document. The questions to ask are declared with
-// genai.GenOptionText.DecodeAs, a pointer to a struct of Noul, Choice and Score fields, which then holds
-// the answers.
-//
-// The reply is the JSON object of the answers keyed by question name, as returned by the API. Decode it
-// with Result.Decode into the same struct, or into an Answers.
-//
-// The versioned model that answered, which can differ from the requested alias, is only reported by
-// GenSyncRaw.
-//
-// Recommended reading: https://docs.typesafe.ai/concepts/state
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	if err := base.CheckDuplicateGenOptions(opts); err != nil {
-		return genai.Result{}, err
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{SystemOne: true}
+}
+
+// SystemOne implements genai.Provider using TypeSafe's typed decision API.
+func (c *Client) SystemOne(ctx context.Context, in *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
+	req := SystemOneRequest{Model: c.impl.Model}
+	if err := req.From(in); err != nil {
+		return nil, err
 	}
-	res := genai.Result{}
-	if err := c.impl.Validate(); err != nil {
-		return res, err
+	if req.Model == "" {
+		return nil, errors.New("a model is required")
 	}
-	if len(msgs) != 1 {
-		return res, errors.New("must pass exactly one message")
+	out := SystemOneResponse{}
+	if err := c.SystemOneRaw(ctx, &req, &out); err != nil {
+		return nil, err
 	}
-	req := &SystemOneRequest{Model: c.impl.Model}
-	if err := req.From(&msgs[0]); err != nil {
-		return res, err
+	res := &genai.SystemOneResponse{}
+	if err := out.To(res); err != nil {
+		return nil, err
 	}
-	if err := req.FromOptions(opts...); err != nil {
-		return res, err
-	}
-	resp := &SystemOneResponse{}
-	if err := c.GenSyncRaw(ctx, req, resp); err != nil {
-		return res, err
-	}
-	res, err := resp.ToResult()
-	if err != nil {
-		return res, &internal.BadError{Err: err}
-	}
-	for name := range req.Questions {
-		if _, ok := resp.Answers[name]; !ok {
-			return res, &internal.BadError{Err: fmt.Errorf("no answer returned for question %q", name)}
-		}
-	}
-	if err := res.Validate(); err != nil {
-		return res, &internal.BadError{Err: err}
+	if err := res.ValidateQuestions(&req.Questions); err != nil {
+		return nil, &internal.BadError{Err: err}
 	}
 	return res, nil
 }
 
-// GenStream implements genai.Provider.
-//
-// TypeSafe has no streaming API, so the whole reply is simulated from GenSync and yielded at once.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return base.SimulateStream(ctx, c, msgs, opts...)
-}
-
-// GenSyncRaw runs a System One request with the raw API types.
-func (c *Client) GenSyncRaw(ctx context.Context, in *SystemOneRequest, out *SystemOneResponse) error {
+// SystemOneRaw runs a System One request with the raw API types.
+func (c *Client) SystemOneRaw(ctx context.Context, in *SystemOneRequest, out *SystemOneResponse) error {
+	if err := in.Validate(); err != nil {
+		return err
+	}
 	// https://docs.typesafe.ai/api
 	return c.impl.DoRequest(ctx, "POST", c.remote+"/v1/systemone", in, out)
 }

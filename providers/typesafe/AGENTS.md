@@ -19,25 +19,20 @@ of the provider interfaces directly:
 
 ## Mapping to genai
 
-- `GenSync` takes exactly one message, whose state is its request: text or a JSON document. A message with
-  several requests becomes an array state, which the API takes as a sequence of messages or records. The API
-  evaluates a string as text, so structured data must use the document, which must be `application/json`:
-  `genai.Doc` derives the media type from the filename, so it must be named `*.json`. Replies and tool call
-  results are rejected rather than silently dropped.
-- `genai.GenOptionText` with `DecodeAs` is the only option accepted. Any other option returns
-  `base.ErrNotSupported`, and duplicate options follow genai's convention: the last one wins.
-- `Content` is a closed interface, so a value the API does not accept is a compile error instead of a
-  runtime 400. Widening it to every JSON value, and typing `Object` and `Array` as
-  `map[string]Content`/`[]Content` instead of `any`, were considered and rejected: they would only turn a
+- `SystemOne` accepts a shared `genai.SystemOneRequest` and returns typed answers. `GenSync` and
+  `GenStream` return `base.ErrNotSupported`; TypeSafe does not generate text.
+- `genai.Questions` and `genai.Answers` use dynamic names and typed values. See `example_test.go`.
+- `genai.DecisionContent` is a closed interface, so a value the API does not accept is a compile error instead of a
+  runtime 400. Widening it to every JSON value, and typing `genai.Object` and `genai.Array` as
+  `map[string]genai.DecisionContent`/`[]genai.DecisionContent` instead of `any`, were considered and rejected: they would only turn a
   compile error into a runtime one, and break passing an existing `map[string]any` or a struct as the
   state.
-- Only `Noul`, `Choice` and `Score` fields are supported. Plain Go types would have to be derived from a
-  JSON schema, which loses the probabilities the API reports.
 
 ## Scoreboard
 
 `providers/typesafe/scoreboard.json` is authored by hand. `smoke/smoketest` drives chat providers
 through `genai.Provider.GenSync` with text prompts, which cannot exercise a provider that only answers
-questions, so `-update-scoreboard` is not wired up here. The declared functionality (`jsonSchema`,
-`reportTokenUsage`) is verified by the recorded tests in `client_test.go` instead. Re-check it by hand
+questions, so `-update-scoreboard` is not wired up here. The legacy scoreboard metadata (`jsonSchema`,
+`reportTokenUsage`) describes the decision protocol. The recorded tests in `client_test.go` verify it;
+it does not declare working chat generation. Re-check it by hand
 when the API changes.

@@ -1744,6 +1744,64 @@ func TestRateLimit(t *testing.T) {
 }
 
 func TestDoc(t *testing.T) {
+	t.Run("Read", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for name, src := range map[string]io.ReadSeeker{
+				"seekable exact limit":   strings.NewReader("{}   "),
+				"unseekable exact limit": &nonSeekableReader{reader: strings.NewReader("{}   ")},
+			} {
+				t.Run(name, func(t *testing.T) {
+					d := Doc{Filename: "state.json", Src: src}
+					_, data, err := d.Read(5)
+					if err != nil || string(data) != "{}   " {
+						t.Fatalf("data=%q err=%v", data, err)
+					}
+					_, data, err = d.Read(5)
+					if err != nil || string(data) != "{}   " {
+						t.Fatalf("repeat data=%q err=%v", data, err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for name, src := range map[string]io.ReadSeeker{
+				"seekable above limit":   strings.NewReader("{}    "),
+				"unseekable above limit": &nonSeekableReader{reader: strings.NewReader("{}    ")},
+				"grows after size check": &growingDocumentReader{Reader: strings.NewReader("{}    ")},
+			} {
+				t.Run(name, func(t *testing.T) {
+					d := Doc{Filename: "state.json", Src: src}
+					_, data, err := d.Read(5)
+					if err == nil || data != nil {
+						t.Fatalf("expected size error without truncated data: data=%q err=%v", data, err)
+					}
+					if d.Src != src {
+						t.Fatal("source replaced by a truncated buffer")
+					}
+				})
+			}
+			for name, content := range map[string]string{"before limit": "{}", "at limit": "{}   "} {
+				t.Run(name+" error", func(t *testing.T) {
+					want := errors.New("source failed")
+					src := &nonSeekableReader{reader: &documentReadError{Reader: strings.NewReader(content), err: want}}
+					d := Doc{Filename: "state.json", Src: src}
+					_, data, err := d.Read(5)
+					if !errors.Is(err, want) || data != nil || d.Src != src {
+						t.Fatalf("source error lost or source replaced: data=%q err=%v", data, err)
+					}
+				})
+			}
+			for _, limit := range []int64{0, -1} {
+				t.Run(strconv.FormatInt(limit, 10), func(t *testing.T) {
+					d := Doc{Filename: "state.json", Src: strings.NewReader("{}")}
+					if _, data, err := d.Read(limit); err == nil || data != nil {
+						t.Fatalf("invalid limit accepted: data=%q err=%v", data, err)
+					}
+				})
+			}
+		})
+	})
+
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
@@ -1914,4 +1972,28 @@ func TestDocUnseekable(t *testing.T) {
 			t.Errorf("data mismatch between reads: %q vs %q", string(data1), string(data2))
 		}
 	})
+}
+
+// growingDocumentReader simulates content growing after SeekEnd checks its size.
+type growingDocumentReader struct{ *strings.Reader }
+
+func (r *growingDocumentReader) Seek(offset int64, whence int) (int64, error) {
+	if whence == io.SeekEnd {
+		return 1, nil
+	}
+	return r.Reader.Seek(offset, whence)
+}
+
+// documentReadError reports a genuine source error after its content.
+type documentReadError struct {
+	*strings.Reader
+	err error
+}
+
+func (r *documentReadError) Read(b []byte) (int, error) {
+	n, err := r.Reader.Read(b)
+	if err == io.EOF {
+		return n, r.err
+	}
+	return n, err
 }

@@ -72,65 +72,49 @@ func mainImpl() (err error) {
 		return err
 	}
 	defer func() { err = errors.Join(err, srv.Close()) }()
-	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(srv.URL()), &llamacpp.ProviderOption{SystemOne: true})
+	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(srv.URL()))
 	if c != nil {
 		defer func() { err = errors.Join(err, c.Close()) }()
 	}
 	if err != nil {
 		return err
 	}
-	q := struct {
-		HasText llamacpp.Noul   `json:"has_text"`
-		Kind    llamacpp.Choice `json:"kind"`
-		Quality llamacpp.Score  `json:"quality"`
-	}{
-		HasText: llamacpp.Noul{Instructions: llamacpp.Text("Does the image contain readable text?")},
-		Kind: llamacpp.Choice{
-			Instructions: llamacpp.Text("What kind of image is this?"),
-			Criteria: map[string]llamacpp.DecisionContent{
-				"document":    llamacpp.Text("a scanned or photographed document"),
-				"illustration": llamacpp.Text("a drawing or rendered illustration"),
-				"photograph":  llamacpp.Text("a photograph of a real scene or object"),
-				"screenshot":  llamacpp.Text("a screenshot of an application or website"),
-			},
-		},
-		Quality: llamacpp.Score{
-			Instructions: llamacpp.Text("How useful is the image for the purpose described in the text context?"),
-			Criteria: []llamacpp.DecisionContent{
-				llamacpp.Text("unusable: the relevant content cannot be identified"),
-				llamacpp.Text("poor: important details are unclear or missing"),
-				llamacpp.Text("adequate: the relevant content can be understood"),
-				llamacpp.Text("clear: the relevant details are easy to identify"),
-			},
-		},
-	}
-	msgs := genai.Messages{
-		genai.Message{Requests: []genai.Request{
-			{Text: *text},
-			{Doc: doc},
+	q := genai.Questions{
+		"has_text": {Type: genai.QuestionNoul, Instructions: genai.Text("Does the image contain readable text?")},
+		"kind": {Type: genai.QuestionChoice, Instructions: genai.Text("What kind of image is this?"), Choice: map[string]genai.DecisionContent{
+			"document":     genai.Text("a scanned or photographed document"),
+			"illustration": genai.Text("a drawing or rendered illustration"),
+			"photograph":   genai.Text("a photograph of a real scene or object"),
+			"screenshot":   genai.Text("a screenshot of an application or website"),
+		}},
+		"quality": {Type: genai.QuestionScore, Instructions: genai.Text("How useful is the image for the purpose described in the text context?"), Score: []genai.DecisionContent{
+			genai.Text("unusable: the relevant content cannot be identified"),
+			genai.Text("poor: important details are unclear or missing"),
+			genai.Text("adequate: the relevant content can be understood"),
+			genai.Text("clear: the relevant details are easy to identify"),
 		}},
 	}
 	fmt.Printf("Image: %s\nState: %s\n", name, *text)
 	start := time.Now()
-	res, err := c.GenSync(ctx, msgs, &genai.GenOptionText{DecodeAs: &q})
+	req := genai.SystemOneRequest{State: genai.Text(*text), Docs: []genai.Doc{doc}, Questions: q}
+
+	res, err := c.SystemOne(ctx, &req)
 	if err != nil {
 		return err
 	}
 	elapsed := time.Since(start)
-	if err := res.Decode(&q); err != nil {
-		return err
-	}
+
 	fmt.Println("Answers:")
-	fmt.Printf("- has_text: %.2f likely to be a yes\n", q.HasText.Probability)
-	fmt.Printf("- kind:     %s with %.0f%% confidence\n", q.Kind.Label, 100*q.Kind.Confidence)
-	for _, name := range slices.Sorted(maps.Keys(q.Kind.Probabilities)) {
-		fmt.Printf("    %s: %.2f\n", name, q.Kind.Probabilities[name])
+	fmt.Printf("- has_text: %.2f likely to be a yes\n", res.Answers["has_text"].Noul)
+	fmt.Printf("- kind:     %s with %.0f%% confidence\n", res.Answers["kind"].Choice, 100*res.Answers["kind"].Confidence)
+	for _, name := range slices.Sorted(maps.Keys(res.Answers["kind"].Probabilities)) {
+		fmt.Printf("    %s: %.2f\n", name, res.Answers["kind"].Probabilities[name])
 	}
-	fmt.Printf("- quality:  %.2f over %d levels with %.0f%% confidence\n", q.Quality.Value, len(q.Quality.Legend), 100*q.Quality.Confidence)
-	for _, level := range slices.Sorted(maps.Keys(q.Quality.Probabilities)) {
-		fmt.Printf("    %s (%v): %.2f\n", level, q.Quality.Legend[level], q.Quality.Probabilities[level])
+	fmt.Printf("- quality:  %.2f over %d levels with %.0f%% confidence\n", res.Answers["quality"].Score, len(res.Answers["quality"].Legend), 100*res.Answers["quality"].Confidence)
+	for _, level := range slices.Sorted(maps.Keys(res.Answers["quality"].Probabilities)) {
+		fmt.Printf("    %s (%v): %.2f\n", level, res.Answers["quality"].Legend[level], res.Answers["quality"].Probabilities[level])
 	}
-	fmt.Printf("in: %d, out: %d, total: %d\n", res.Usage.InputTokens, res.Usage.OutputTokens, res.Usage.TotalTokens)
+	fmt.Printf("in: %d, out: %d, total: %d\n", res.Usage.InputTokens, res.Usage.OutputTokens, res.Usage.InputTokens+res.Usage.OutputTokens)
 	fmt.Printf("took %s\n", elapsed.Round(time.Millisecond))
 	return nil
 }

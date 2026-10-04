@@ -20,6 +20,31 @@ import (
 	"github.com/maruel/genai/providers/cloudflare"
 )
 
+func ExampleClient_SystemOne_cLEF() {
+	ctx := context.Background()
+	c, err := cloudflare.New(ctx, genai.ProviderOptionModel("@cf/cloudflare/clef-flash"))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Print(err)
+		}
+	}()
+	q := genai.Questions{
+		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this about billing?")},
+		"team":    {Type: genai.QuestionChoice, Instructions: genai.Text("Which team should handle this?"), Choice: map[string]genai.DecisionContent{"billing": nil, "support": nil}},
+	}
+	res, err := c.SystemOne(ctx, &genai.SystemOneRequest{State: genai.Text("I was charged twice"), Questions: q})
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	fmt.Printf("Billing probability: %.2f; team: %s\n", res.Answers["billing"].Noul, res.Answers["team"].Choice)
+}
+
 func ExampleNew_hTTP_record() {
 	// Example to do HTTP recording and playback for smoke testing.
 	// The example recording is in testdata/example.yaml.

@@ -19,7 +19,7 @@ import (
 	"errors"
 	"fmt"
 	"maps"
-	"reflect"
+	"path/filepath"
 	"slices"
 	"strings"
 
@@ -1091,848 +1091,89 @@ func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
-// DecisionContent is text, a JSON object, or a JSON array.
-//
-// It is implemented by Text, Object and Array. It marshals to the value itself, not to an object with
-// fields. Use nil when the field is optional and is left unset.
-//
-// It is used for state, instructions and criteria descriptions. It is meant to be sent; the API only
-// returns it in Answer.Legend, decoded back by ScoreLegend, since an interface cannot be decoded on its
-// own.
-type DecisionContent interface {
-	// Validate ensures the content is valid.
-	Validate() error
-	// content restricts DecisionContent to the types of this package.
-	content()
+// SystemOneResponse is the native /v1/systemone response.
+type SystemOneResponse struct {
+	// Model identifies the loaded decision model that answered.
+	Model string `json:"model"`
+	genai.SystemOneResponse
 }
 
-// Text is DecisionContent that is a JSON string.
-type Text string
-
-// content implements DecisionContent.
-func (Text) content() {}
-
-// Validate implements internal.Validatable.
-//
-// Any text is valid, including the empty string, the API is the one that decides whether a specific field
-// may be empty.
-func (Text) Validate() error {
+// To converts native decision output to shared decision output.
+func (r *SystemOneResponse) To(out *genai.SystemOneResponse) error {
+	*out = r.SystemOneResponse
 	return nil
-}
-
-// Object is DecisionContent that is a JSON object.
-//
-// The values are any, like genai.Reply.Opaque: they must be JSON encodable. Go has no recursive JSON
-// value type that does not require wrapping every scalar, so a nested map[string]any, []any or a struct
-// with JSON tags is passed as is. It is the equivalent of the SDKs' Mapping[str, JSONValue | None].
-type Object map[string]any
-
-// content implements DecisionContent.
-func (Object) content() {}
-
-// Validate implements internal.Validatable.
-//
-// Every value is validated so that the error names the offending key.
-func (o Object) Validate() error {
-	if o == nil {
-		return errors.New("Object is nil, use nil to leave the field unset")
-	}
-	// TODO: Validate the values recursively to report the full path, e.g. `key "ticket": index 3: ...`.
-	// This needs a depth limit because a map can contain itself, and anything that is not map[string]any,
-	// []any, Object or Array must stay delegated to encoding/json.
-	var errs []error
-	for _, k := range slices.Sorted(maps.Keys(o)) {
-		// The values are any, so encoding/json is the authority on what they may be.
-		if _, err := json.Marshal(o[k]); err != nil {
-			errs = append(errs, fmt.Errorf("key %q: %w", k, err))
-		}
-	}
-	return errors.Join(errs...)
-}
-
-// Array is DecisionContent that is a JSON array.
-//
-// The values are any, like Object: they must be JSON encodable. They are not restricted to DecisionContent items.
-type Array []any
-
-// content implements DecisionContent.
-func (Array) content() {}
-
-// Validate implements internal.Validatable.
-//
-// Every item is validated so that the error names the offending index.
-func (a Array) Validate() error {
-	if a == nil {
-		return errors.New("Array is nil, use nil to leave the field unset")
-	}
-	// TODO: Validate the items recursively, see Object.Validate for the constraints.
-	var errs []error
-	for i := range a {
-		// The values are any, so encoding/json is the authority on what they may be.
-		if _, err := json.Marshal(a[i]); err != nil {
-			errs = append(errs, fmt.Errorf("index %d: %w", i, err))
-		}
-	}
-	return errors.Join(errs...)
-}
-
-// QuestionType is the type of a Question.
-type QuestionType string
-
-// Question types.
-const (
-	// QuestionNoul is a yes/no question. The answer is the probability that the answer is yes.
-	QuestionNoul QuestionType = "noul"
-	// QuestionChoice picks one option from a set defined by the question.
-	QuestionChoice QuestionType = "choice"
-	// QuestionScore rates the state along an ordered rubric.
-	QuestionScore QuestionType = "score"
-)
-
-// Question is a typed question about a state.
-//
-// Exactly one of Noul, Choice or Score can be set, the one matching Type. Instructions is shared by the
-// three types.
-//
-// Type is explicit instead of inferred from the field that is set: a choice or score question whose
-// criteria are nil at runtime, which append and conditional map building produce, would otherwise be
-// silently asked as a noul question instead of being rejected.
-//
-// Recommended reading: https://docs.typesafe.ai/primitives/advanced
-type Question struct {
-	// Type is how the state is evaluated. It selects which of Noul, Choice or Score must be set.
-	Type QuestionType
-	// Instructions is what the model should decide or rate. It is required for every question.
-	Instructions DecisionContent
-	// Noul describes what the yes and the no outcomes mean. It can only be set for QuestionNoul, where it
-	// is optional.
-	//
-	// Recommended reading: https://docs.typesafe.ai/primitives/noul
-	Noul *NoulCriteria
-	// Choice maps the options of a choice question to their descriptions. It can only be set for
-	// QuestionChoice, where at least one option is required. Use nil for an option that needs no extra
-	// detail.
-	//
-	// Recommended reading: https://docs.typesafe.ai/primitives/choice
-	Choice map[string]DecisionContent
-	// Score lists the levels of a score question rubric, in order, starting at level 0. It can only be set
-	// for QuestionScore, where 2 to 10 levels are required. Use nil for an undescribed level.
-	//
-	// Recommended reading: https://docs.typesafe.ai/primitives/score
-	Score []DecisionContent
-}
-
-// Validate implements internal.Validatable.
-func (q Question) Validate() error {
-	var errs []error
-	if q.Instructions == nil {
-		errs = append(errs, errors.New("field Instructions: is required"))
-	} else {
-		if err := validateContent(q.Instructions); err != nil {
-			errs = append(errs, fmt.Errorf("field Instructions: %w", err))
-		}
-	}
-	switch q.Type {
-	case QuestionNoul:
-		if q.Choice != nil || q.Score != nil {
-			errs = append(errs, errors.New("fields Choice and Score: can't be set on a noul question"))
-		}
-		if q.Noul != nil {
-			if err := q.Noul.Validate(); err != nil {
-				errs = append(errs, err)
-			}
-		}
-	case QuestionChoice:
-		if q.Noul != nil || q.Score != nil {
-			errs = append(errs, errors.New("fields Noul and Score: can't be set on a choice question"))
-		}
-		if len(q.Choice) == 0 {
-			errs = append(errs, errors.New("field Choice: at least one option is required"))
-		}
-		for _, name := range slices.Sorted(maps.Keys(q.Choice)) {
-			if v := q.Choice[name]; v != nil {
-				if err := validateContent(v); err != nil {
-					errs = append(errs, fmt.Errorf("field Choice[%s]: %w", name, err))
-				}
-			}
-		}
-	case QuestionScore:
-		if q.Noul != nil || q.Choice != nil {
-			errs = append(errs, errors.New("fields Noul and Choice: can't be set on a score question"))
-		}
-		if len(q.Score) < 2 || len(q.Score) > 10 {
-			errs = append(errs, errors.New("field Score: 2 to 10 levels are required"))
-		}
-		for i, c := range q.Score {
-			if c != nil {
-				if err := validateContent(c); err != nil {
-					errs = append(errs, fmt.Errorf("field Score[%d]: %w", i, err))
-				}
-			}
-		}
-	default:
-		errs = append(errs, fmt.Errorf("field Type: must be %q, %q or %q, got %q", QuestionNoul, QuestionChoice, QuestionScore, q.Type))
-	}
-	return errors.Join(errs...)
-}
-
-// MarshalJSON implements json.Marshaler.
-func (q Question) MarshalJSON() ([]byte, error) {
-	// Criteria stays nil, and so is omitted, for a noul question without criteria.
-	var criteria json.RawMessage
-	var err error
-	switch q.Type {
-	case QuestionNoul:
-		if q.Noul != nil {
-			criteria, err = json.Marshal(q.Noul)
-		}
-	case QuestionChoice:
-		criteria, err = json.Marshal(q.Choice)
-	case QuestionScore:
-		criteria, err = json.Marshal(q.Score)
-	default:
-		return nil, fmt.Errorf("unknown question type %q", q.Type)
-	}
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(questionJSON{Type: q.Type, Instructions: q.Instructions, Criteria: criteria})
-}
-
-// Questions is a set of questions to ask about one state, keyed by the name to report each answer under.
-//
-// The names are chosen by the caller. They are not sent to the model, they are only used to key the
-// answers.
-//
-// It is passed as genai.GenOptionText.DecodeAs when the questions are not declared by a struct of Noul,
-// Choice and Score fields. The answers then decode into Answers.
-type Questions map[string]Question
-
-// QuestionsFrom returns the questions declared by the fields of v.
-//
-// v must be a pointer to a struct whose fields are Noul, Choice or Score; the field name, or its `json`
-// tag, is used as the question name, and a `json:"-"` field is skipped. It is what GenSync does with a
-// struct passed as genai.GenOptionText.DecodeAs, exposed so the questions can be printed, reviewed, or
-// tuned, and then passed as DecodeAs themselves.
-func QuestionsFrom(v any) (Questions, error) {
-	t := reflect.TypeOf(v)
-	if t == nil || t.Kind() != reflect.Pointer || t.Elem().Kind() != reflect.Struct || reflect.ValueOf(v).IsNil() {
-		return nil, fmt.Errorf("%T: must be a pointer to a struct of Noul, Choice or Score fields", v)
-	}
-	t = t.Elem()
-	val := reflect.ValueOf(v).Elem()
-	out := make(Questions, t.NumField())
-	for i := range t.NumField() {
-		f := t.Field(i)
-		if name, skip, err := questionName(&f); err != nil {
-			return nil, err
-		} else if skip {
-			continue
-		} else {
-			if _, ok := out[name]; ok {
-				return nil, fmt.Errorf("field %s: duplicate question name %q", f.Name, name)
-			}
-			switch f.Type {
-			case reflect.TypeFor[Noul]():
-				n := val.Field(i).Addr().Interface().(*Noul)
-				out[name] = Question{Type: QuestionNoul, Instructions: n.Instructions, Noul: n.Criteria}
-			case reflect.TypeFor[Choice]():
-				c := val.Field(i).Addr().Interface().(*Choice)
-				out[name] = Question{Type: QuestionChoice, Instructions: c.Instructions, Choice: c.Criteria}
-			case reflect.TypeFor[Score]():
-				s := val.Field(i).Addr().Interface().(*Score)
-				out[name] = Question{Type: QuestionScore, Instructions: s.Instructions, Score: s.Criteria}
-			default:
-				return nil, fmt.Errorf("field %s: must be a Noul, a Choice or a Score, got a %s", f.Name, f.Type)
-			}
-		}
-	}
-	if len(out) == 0 {
-		return nil, fmt.Errorf("%T: no Noul, Choice or Score field to ask", v)
-	}
-	if err := out.Validate(); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Validate ensures the questions are valid.
-func (q Questions) Validate() error {
-	if len(q) == 0 {
-		return errors.New("at least one question is required")
-	}
-	var errs []error
-	for _, name := range slices.Sorted(maps.Keys(q)) {
-		if err := q[name].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("question %q: %w", name, err))
-		}
-	}
-	return errors.Join(errs...)
-}
-
-// NoulCriteria describes what the yes and the no answers of a noul question mean.
-type NoulCriteria struct {
-	// True describes what a yes (value near 1) means.
-	True DecisionContent `json:"true,omitzero"`
-	// False describes what a no (value near 0) means.
-	False DecisionContent `json:"false,omitzero"`
-}
-
-// Validate ensures the criteria are valid.
-func (c *NoulCriteria) Validate() error {
-	if c == nil {
-		return errors.New("field Criteria: is nil")
-	}
-	var errs []error
-	if c.True != nil {
-		if err := validateContent(c.True); err != nil {
-			errs = append(errs, fmt.Errorf("field Criteria.True: %w", err))
-		}
-	}
-	if c.False != nil {
-		if err := validateContent(c.False); err != nil {
-			errs = append(errs, fmt.Errorf("field Criteria.False: %w", err))
-		}
-	}
-	return errors.Join(errs...)
-}
-
-// questionJSON is the wire representation of a Question.
-//
-// Criteria is the encoded form of whichever of the Noul, Choice and Score fields that Question.Type
-// selects. The three do not share a Go type, so Question.MarshalJSON encodes the one that applies. It is
-// left nil, and so omitted, for a noul question without criteria.
-type questionJSON struct {
-	Type         QuestionType    `json:"type"`
-	Instructions DecisionContent `json:"instructions,omitzero"`
-	Criteria     json.RawMessage `json:"criteria,omitzero"`
-}
-
-// Answers holds the answer to each question, keyed by the question name.
-type Answers map[string]Answer
-
-// Answer is the answer to a Question.
-//
-// It is a union discriminated by Type. Only the fields that match Type are set, and MarshalJSON writes
-// only those fields, with the shape the API uses, so a probability or a score of 0 is not dropped.
-//
-// An answer type the server adds later is kept as is instead of making the whole reply unusable.
-type Answer struct {
-	// Type is the type of the question this is the answer to.
-	Type QuestionType `json:"type"`
-	// Noul is the probability that the answer is yes, from 0 to 1. It is set for QuestionNoul.
-	Noul float64 `json:"noul,omitzero"`
-	// Choice is the highest probability option. It is set for QuestionChoice.
-	Choice string `json:"choice,omitzero"`
-	// Score is the probability weighted value across the levels. It can land between levels. It is set for
-	// QuestionScore.
-	Score float64 `json:"score,omitzero"`
-	// Confidence is how certain the model is, derived from Probabilities. It is set for QuestionChoice and
-	// QuestionScore.
-	Confidence float64 `json:"confidence,omitzero"`
-	// Probabilities maps each option, or each level as a string key, to its probability. It is set for
-	// QuestionChoice and QuestionScore.
-	Probabilities map[string]float64 `json:"probabilities,omitzero"`
-	// Legend maps each level as a string key to the description passed in Question.Score for that level.
-	// It is set for QuestionScore.
-	Legend ScoreLegend `json:"legend,omitzero"`
-
-	// raw is the answer as returned by the API. It is only set when Type is not one of the known types, so
-	// that a new answer type does not make the whole reply unusable.
-	raw json.RawMessage
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (a *Answer) UnmarshalJSON(b []byte) error {
-	t := answerTypeJSON{}
-	if err := json.Unmarshal(b, &t); err != nil {
-		return err
-	}
-	switch t.Type {
-	case QuestionNoul, QuestionChoice, QuestionScore:
-	default:
-		// Answer type added by the server after this client was written. Keep it as-is instead of
-		// making the whole reply unusable.
-		a.Type = t.Type
-		a.raw = append(json.RawMessage(nil), b...)
-		return nil
-	}
-	type alias Answer
-	v := alias{}
-	if err := internal.UnmarshalJSON(b, &v); err != nil {
-		return err
-	}
-	*a = Answer(v)
-	return nil
-}
-
-// answerTypeJSON is the wire representation of an answer read for its type only.
-type answerTypeJSON struct {
-	Type QuestionType `json:"type"`
-}
-
-// MarshalJSON implements json.Marshaler.
-//
-// The fields of the union that do not match Type are omitted, even when they are zero, so that a score
-// of 0 or a probability of 0 is preserved.
-//
-//nolint:gocritic // hugeParam: a value receiver is required to marshal the values of an Answers map.
-func (a Answer) MarshalJSON() ([]byte, error) {
-	switch a.Type {
-	case QuestionNoul:
-		return json.Marshal(noulAnswerJSON{Type: a.Type, Noul: a.Noul})
-	case QuestionChoice:
-		return json.Marshal(choiceAnswerJSON{
-			Type: a.Type, Choice: a.Choice, Confidence: a.Confidence, Probabilities: a.Probabilities,
-		})
-	case QuestionScore:
-		return json.Marshal(scoreAnswerJSON{
-			Type: a.Type, Score: a.Score, Confidence: a.Confidence, Legend: a.Legend, Probabilities: a.Probabilities,
-		})
-	default:
-		if len(a.raw) != 0 {
-			// Answer type added by the server after this client was written.
-			return a.raw, nil
-		}
-		return nil, fmt.Errorf("unknown answer type %q", a.Type)
-	}
-}
-
-// noulAnswerJSON is the wire representation of a Noul answer.
-type noulAnswerJSON struct {
-	Type QuestionType `json:"type"`
-	Noul float64      `json:"noul"`
-}
-
-// choiceAnswerJSON is the wire representation of a Choice answer.
-type choiceAnswerJSON struct {
-	Type          QuestionType       `json:"type"`
-	Choice        string             `json:"choice"`
-	Confidence    float64            `json:"confidence"`
-	Probabilities map[string]float64 `json:"probabilities"`
-}
-
-// scoreAnswerJSON is the wire representation of a Score answer.
-type scoreAnswerJSON struct {
-	Type          QuestionType               `json:"type"`
-	Score         float64                    `json:"score"`
-	Confidence    float64                    `json:"confidence"`
-	Legend        map[string]DecisionContent `json:"legend"`
-	Probabilities map[string]float64         `json:"probabilities"`
-}
-
-// ScoreLegend is the description of each level of a score answer, keyed by the level.
-//
-// It is the Question.Score criteria of the question, echoed back by the API. The values are decoded as
-// Text, Object or Array; a nil value is a level the caller left undescribed.
-type ScoreLegend map[string]DecisionContent
-
-// UnmarshalJSON implements json.Unmarshaler.
-//
-// DecisionContent is an interface, so encoding/json cannot decode it on its own; each level is decoded into the
-// variant matching its JSON token here.
-func (l *ScoreLegend) UnmarshalJSON(b []byte) error {
-	raw := map[string]json.RawMessage{}
-	if err := internal.UnmarshalJSON(b, &raw); err != nil {
-		return err
-	}
-	if raw == nil {
-		*l = nil
-		return nil
-	}
-	out := make(ScoreLegend, len(raw))
-	for k, v := range raw {
-		// A level the caller left undescribed is null.
-		if bytes.Equal(v, []byte("null")) {
-			out[k] = nil
-			continue
-		}
-		c, err := contentFromJSON(v)
-		if err != nil {
-			return fmt.Errorf("level %q: %w", k, err)
-		}
-		out[k] = c
-	}
-	*l = out
-	return nil
-}
-
-// contentFromJSON decodes one JSON value into its DecisionContent variant.
-//
-// The variant is picked from the JSON token, not from the Go value a decoder would produce for an any, so
-// what it accepts is unambiguous.
-func contentFromJSON(b []byte) (DecisionContent, error) {
-	b = bytes.TrimSpace(b)
-	if len(b) == 0 {
-		return nil, errors.New("is empty")
-	}
-	switch b[0] {
-	case '"':
-		t := Text("")
-		if err := internal.UnmarshalJSON(b, &t); err != nil {
-			return nil, err
-		}
-		return t, nil
-	case '{':
-		o := Object{}
-		if err := internal.UnmarshalJSON(b, &o); err != nil {
-			return nil, err
-		}
-		return o, nil
-	case '[':
-		a := Array{}
-		if err := internal.UnmarshalJSON(b, &a); err != nil {
-			return nil, err
-		}
-		return a, nil
-	default:
-		return nil, fmt.Errorf("expected a string, a JSON object or a JSON array, got %s", b)
-	}
 }
 
 // SystemOneRequest is a native /v1/systemone request.
-// Questions and responses use the System One API types. llama.cpp additionally accepts images,
-// requires instructions for every question, and restricts scores to 2 to 10 levels.
+// llama.cpp requires instructions and 2 to 10 score levels.
 type SystemOneRequest struct {
-	State DecisionContent `json:"state"`
-	// Model is optional for a server with one loaded model; router mode uses it to select a model.
-	Model     string    `json:"model,omitzero"`
-	Questions Questions `json:"questions"`
-	// Images contains inline data URLs. Remote image URLs are not supported.
+	State     genai.DecisionContent `json:"state"`
+	Model     string                `json:"model,omitzero"`
+	Questions genai.Questions       `json:"questions"`
+	// Images contains inline data URLs, as required by the native endpoint.
 	Images []string `json:"images,omitzero"`
 }
 
-// From sets the state and images from a single message.
-// Text and JSON documents supply the state. Image documents must be inline.
-// An image-only message supplies an empty text state.
-func (r *SystemOneRequest) From(msg *genai.Message) error {
-	if len(msg.Replies) != 0 || len(msg.ToolCallResults) != 0 {
-		return errors.New("system one requires the full state instead of assistant replies or tool call results")
+// From converts shared decision input, preserving Model.
+// One JSON document can supply the state. Images are encoded as data URLs.
+// Each document read is bounded to 10 MiB.
+func (r *SystemOneRequest) From(in *genai.SystemOneRequest) error {
+	state, docs, err := in.ReadState(10 * 1024 * 1024)
+	if err != nil {
+		return err
 	}
-	arr := make(Array, 0, len(msg.Requests))
 	var images []string
-	for i := range msg.Requests {
-		in := &msg.Requests[i]
-		if in.Doc.IsZero() {
-			if in.Text == "" {
-				return fmt.Errorf("request #%d: must contain text, JSON or an inline image", i)
-			}
-			arr = append(arr, Text(in.Text))
-			continue
+	if len(docs) != 0 {
+		images = make([]string, len(docs))
+	}
+	for j := range docs {
+		d := docs[j]
+		if err := d.Validate(); err != nil {
+			return fmt.Errorf("document #%d: %w", j, err)
 		}
-		if err := in.Doc.Validate(); err != nil {
-			return fmt.Errorf("request #%d: %w", i, err)
+		if d.URL != "" || d.Src == nil {
+			return fmt.Errorf("document #%d: must be an inline document", j)
 		}
-		if in.Doc.URL != "" {
-			return errors.New("system one documents must be inline")
+		mt := internal.MimeByExt(filepath.Ext(d.GetFilename()))
+		if !strings.HasPrefix(mt, "image/") {
+			return fmt.Errorf("document #%d: unsupported document type %q", j, mt)
 		}
-		mt, data, err := in.Doc.Read(10 * 1024 * 1024)
+	}
+	for j := range docs {
+		d := docs[j]
+		mt, data, err := d.Read(10 * 1024 * 1024)
 		if err != nil {
-			return fmt.Errorf("request #%d: %w", i, err)
+			return fmt.Errorf("image #%d: %w", j, err)
 		}
-		switch {
-		case mt == "application/json":
-			if in.Text != "" {
-				return fmt.Errorf("request #%d: text and a JSON document cannot be combined in one request", i)
-			}
-			state, err := contentFromJSON(data)
-			if err != nil {
-				return fmt.Errorf("request #%d: invalid JSON state: %w", i, err)
-			}
-			arr = append(arr, state)
-		case strings.HasPrefix(mt, "image/"):
-			images = append(images, "data:"+mt+";base64,"+base64.StdEncoding.EncodeToString(data))
-			if in.Text != "" {
-				arr = append(arr, Text(in.Text))
-			}
-		default:
-			return fmt.Errorf("request #%d: unsupported document type %q; use a .json document or an inline image", i, mt)
-		}
+		images[j] = "data:" + mt + ";base64," + base64.StdEncoding.EncodeToString(data)
 	}
-	switch len(arr) {
-	case 0:
-		if len(images) == 0 {
-			return errors.New("the message must have the state as text, a JSON document or an inline image")
-		}
-		r.State = Text("")
-	case 1:
-		r.State = arr[0].(DecisionContent)
-	default:
-		r.State = arr
-	}
-	r.Images = images
-	return nil
-}
-
-// FromOptions sets the questions to ask from the options.
-//
-// They come from genai.GenOptionText.DecodeAs, a pointer to a struct of Noul, Choice and Score fields
-// or a Questions.
-func (r *SystemOneRequest) FromOptions(opts ...genai.GenOption) error {
-	for _, opt := range opts {
-		switch v := opt.(type) {
-		case *genai.GenOptionText:
-			if err := v.Validate(); err != nil {
-				return err
-			}
-			if unsupported := unsupportedTextOptions(v); len(unsupported) != 0 {
-				return &base.ErrNotSupported{Options: unsupported}
-			}
-			switch d := v.DecodeAs.(type) {
-			case nil:
-				return errors.New("field DecodeAs: a pointer to a struct of Noul, Choice and Score fields, or a Questions, is required to declare the questions")
-			case Questions:
-				if err := d.Validate(); err != nil {
-					return fmt.Errorf("field DecodeAs: %w", err)
-				}
-				r.Questions = d
-			default:
-				q, err := QuestionsFrom(v.DecodeAs)
-				if err != nil {
-					return fmt.Errorf("field DecodeAs: %w", err)
-				}
-				r.Questions = q
-			}
-		default:
-			return &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opt)}}
-		}
-	}
-	if r.Questions == nil {
-		return errors.New("the questions to ask are required, pass *genai.GenOptionText with DecodeAs")
-	}
+	r.State, r.Questions, r.Images = state, in.Questions, images
 	return nil
 }
 
 // Validate checks the native endpoint's state, question and image requirements.
 func (r *SystemOneRequest) Validate() error {
-	if r.State == nil {
-		return errors.New("state is required")
+	var errs []error
+	in := genai.SystemOneRequest{State: r.State, Questions: r.Questions}
+	if err := in.Validate(); err != nil {
+		errs = append(errs, err)
 	}
-	if err := r.State.Validate(); err != nil {
-		return fmt.Errorf("state: %w", err)
-	}
-	if err := r.Questions.Validate(); err != nil {
-		return err
-	}
-	for i, img := range r.Images {
+	for j, img := range r.Images {
 		if !strings.HasPrefix(img, "data:image/") || !strings.Contains(img, ";base64,") {
-			return fmt.Errorf("image #%d: must be an inline image data URL", i)
+			errs = append(errs, fmt.Errorf("image #%d: must be an inline image data URL", j))
 		}
 	}
-	return nil
-}
-
-// SystemOneResponse is the response of a POST /v1/systemone request.
-type SystemOneResponse struct {
-	// Model identifies the loaded decision model that answered.
-	Model string `json:"model"`
-	// Answers holds one answer per question, keyed by the question name.
-	Answers Answers `json:"answers"`
-	// Usage is the token usage of the request.
-	Usage DecisionUsage `json:"usage"`
-}
-
-// ToResult converts the response to a genai.Result.
-//
-// The reply is the JSON object of the answers keyed by question name, which Result.Decode decodes into
-// the questionnaire struct or into Answers.
-func (r *SystemOneResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:  r.Usage.InputTokens,
-			OutputTokens: r.Usage.OutputTokens,
-			TotalTokens:  r.Usage.InputTokens + r.Usage.OutputTokens,
-			FinishReason: genai.FinishedStop,
-		},
-	}
-	if len(r.Answers) == 0 {
-		return out, errors.New("no answer returned")
-	}
-	raw, err := marshalAnswers(r.Answers)
-	if err != nil {
-		return out, err
-	}
-	out.Replies = []genai.Reply{{Text: string(raw)}}
-	return out, nil
-}
-
-// DecisionUsage reports the token usage of a request.
-type DecisionUsage struct {
-	// InputTokens counts the prompt tokens evaluated for all questions.
-	InputTokens int64 `json:"input_tokens"`
-	// OutputTokens is always zero: decision models evaluate probabilities without generating text.
-	OutputTokens int64 `json:"output_tokens"`
-}
-
-// marshalAnswers marshals the answers for genai.Result.
-//
-// It does not escape HTML so that descriptions are returned verbatim, like the API does.
-func marshalAnswers(a Answers) ([]byte, error) {
-	buf := &bytes.Buffer{}
-	enc := json.NewEncoder(buf)
-	enc.SetEscapeHTML(false)
-	if err := enc.Encode(a); err != nil {
-		return nil, err
-	}
-	// Encoder.Encode appends a newline.
-	return bytes.TrimSuffix(buf.Bytes(), []byte("\n")), nil
-}
-
-// unsupportedTextOptions lists the genai.GenOptionText fields that are set but can't be honored, the
-// questions being the only thing System One takes from it.
-func unsupportedTextOptions(o *genai.GenOptionText) []string {
-	var out []string
-	if o.Temperature != 0 {
-		out = append(out, "GenOptionText.Temperature")
-	}
-	if o.TopP != 0 {
-		out = append(out, "GenOptionText.TopP")
-	}
-	if o.MaxTokens != 0 {
-		out = append(out, "GenOptionText.MaxTokens")
-	}
-	if o.TopLogprobs != 0 {
-		out = append(out, "GenOptionText.TopLogprobs")
-	}
-	if o.TopK != 0 {
-		out = append(out, "GenOptionText.TopK")
-	}
-	if o.SystemPrompt != "" {
-		out = append(out, "GenOptionText.SystemPrompt")
-	}
-	if len(o.Stop) != 0 {
-		out = append(out, "GenOptionText.Stop")
-	}
-	if o.ReplyAsJSON {
-		out = append(out, "GenOptionText.ReplyAsJSON")
-	}
-	return out
-}
-
-func validateContent(c DecisionContent) error {
-	if c == nil {
-		return errors.New("must not be nil")
-	}
-	return c.Validate()
-}
-
-// Noul is a yes/no question about a state, and holds its answer once asked.
-//
-// Declare the questions to ask as fields of a struct passed to genai.GenOptionText.DecodeAs; GenSync asks
-// them and Decode fills the answers in. The field name, or its `json` tag, is the question name.
-type Noul struct {
-	// Instructions is the yes/no question to ask. Instructions is required.
-	Instructions DecisionContent
-	// Criteria optionally describes what the yes and the no outcomes mean.
-	Criteria *NoulCriteria
-
-	// Probability is the answer, the probability that the answer is yes, from 0 to 1. It is set by
-	// Decode.
-	Probability float64
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (n *Noul) UnmarshalJSON(b []byte) error {
-	a := Answer{}
-	if err := internal.UnmarshalJSON(b, &a); err != nil {
-		return err
-	}
-	if a.Type != QuestionNoul {
-		return fmt.Errorf("expected a noul answer, got %q", a.Type)
-	}
-	n.Probability = a.Noul
-	return nil
-}
-
-// Choice is a question that picks one option among a set, and holds its answer once asked.
-//
-// Declare the questions to ask as fields of a struct passed to genai.GenOptionText.DecodeAs; GenSync asks
-// them and Decode fills the answers in. The field name, or its `json` tag, is the question name.
-type Choice struct {
-	// Instructions describes what the model should decide.
-	Instructions DecisionContent
-	// Criteria maps the options to their descriptions. Use nil for an option that needs no extra detail.
-	// At least one option is required.
-	Criteria map[string]DecisionContent
-
-	// Label is the answer, the highest probability option. The other fields are derived from the
-	// probabilities the model reported. They are set by Decode.
-	Label         string
-	Confidence    float64
-	Probabilities map[string]float64
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (c *Choice) UnmarshalJSON(b []byte) error {
-	a := Answer{}
-	if err := internal.UnmarshalJSON(b, &a); err != nil {
-		return err
-	}
-	if a.Type != QuestionChoice {
-		return fmt.Errorf("expected a choice answer, got %q", a.Type)
-	}
-	c.Label = a.Choice
-	c.Confidence = a.Confidence
-	c.Probabilities = a.Probabilities
-	return nil
-}
-
-// Score is a question that rates the state along an ordered rubric, and holds its answer once asked.
-//
-// Declare the questions to ask as fields of a struct passed to genai.GenOptionText.DecodeAs; GenSync asks
-// them and Decode fills the answers in. The field name, or its `json` tag, is the question name.
-type Score struct {
-	// Instructions describes what the model should rate.
-	Instructions DecisionContent
-	// Criteria lists the levels in order, starting at level 0. Between 2 and 10 levels are required.
-	Criteria []DecisionContent
-
-	// Value is the answer, the probability weighted value across the levels, which can land between
-	// levels. The other fields are derived from the probabilities the model reported, and legend is the
-	// rubric echoed back. They are set by Decode.
-	Value         float64
-	Confidence    float64
-	Legend        ScoreLegend
-	Probabilities map[string]float64
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (s *Score) UnmarshalJSON(b []byte) error {
-	a := Answer{}
-	if err := internal.UnmarshalJSON(b, &a); err != nil {
-		return err
-	}
-	if a.Type != QuestionScore {
-		return fmt.Errorf("expected a score answer, got %q", a.Type)
-	}
-	s.Value = a.Score
-	s.Confidence = a.Confidence
-	s.Legend = a.Legend
-	s.Probabilities = a.Probabilities
-	return nil
-}
-
-// questionName returns the name to use for a question field.
-func questionName(f *reflect.StructField) (string, bool, error) {
-	name := f.Name
-	if tag, ok := f.Tag.Lookup("json"); ok {
-		n, _, _ := strings.Cut(tag, ",")
-		if n == "-" {
-			return "", true, nil
+	for _, id := range slices.Sorted(maps.Keys(r.Questions)) {
+		q := r.Questions[id]
+		if q == nil {
+			continue
 		}
-		if n != "" {
-			name = n
+		if q.Instructions == nil {
+			errs = append(errs, fmt.Errorf("question %q: field Instructions: is required", id))
+		}
+		if q.Type == genai.QuestionScore && (len(q.Score) < 2 || len(q.Score) > 10) {
+			errs = append(errs, fmt.Errorf("question %q: field Score: 2 to 10 levels are required", id))
 		}
 	}
-	if !f.IsExported() {
-		return "", false, fmt.Errorf("field %s: must be exported to receive its answer", f.Name)
-	}
-	return name, false, nil
+	return errors.Join(errs...)
 }
-
-var (
-	_ json.Unmarshaler     = (*Noul)(nil)
-	_ json.Unmarshaler     = (*Choice)(nil)
-	_ json.Unmarshaler     = (*Score)(nil)
-	_ internal.Validatable = (*NoulCriteria)(nil)
-)

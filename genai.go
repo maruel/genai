@@ -77,6 +77,10 @@ type Provider interface {
 	//
 	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
 	GenStream(ctx context.Context, msgs Messages, opts ...GenOption) (iter.Seq[Reply], func() (Result, error))
+	// SystemOne answers typed questions about a state without text generation or streaming.
+	// It uses the client's configured model. The request is not modified.
+	// Requires ProviderCapabilities.SystemOne. Returns base.ErrNotSupported otherwise.
+	SystemOne(ctx context.Context, req *SystemOneRequest) (*SystemOneResponse, error)
 	// ListModels returns the list of models the provider supports. Not all providers support it, some will
 	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
 	// model currently loaded.
@@ -120,6 +124,8 @@ type Provider interface {
 
 // ProviderCapabilities describes optional capabilities a provider supports.
 type ProviderCapabilities struct {
+	// SystemOne indicates the provider implements typed decision inference.
+	SystemOne bool
 	// GenAsync indicates the provider supports GenAsync and PokeResult for batch operations.
 	GenAsync bool
 	// Caching indicates the provider supports CacheAddRequest, CacheList, and CacheDelete.
@@ -481,7 +487,7 @@ func (m *Message) Reasoning() string {
 
 // Decode decodes the JSON message into the struct.
 //
-// Requires using either ReplyAsJSON or DecodeAs in the GenOptionText.
+// For generation replies, request JSON with ReplyAsJSON or DecodeAs in GenOptionText.
 //
 // Note: this doesn't verify the type is the same as specified in
 // GenOptionText.DecodeAs.
@@ -914,8 +920,13 @@ func (d *Doc) UnmarshalJSON(b []byte) error {
 
 // Read reads the document content into memory.
 //
+// maxSize must be positive. Oversized content is rejected, including unseekable
+// sources and content that grows after its size is checked.
 // It returns the mime type, the raw bytes and an error if any.
 func (d *Doc) Read(maxSize int64) (string, []byte, error) {
+	if maxSize <= 0 {
+		return "", nil, errors.New("document byte limit must be positive")
+	}
 	// genai cannot depend on base as it would cause a circular import.
 	mimeType := internal.MimeByExt(filepath.Ext(d.GetFilename()))
 	if d.URL != "" {
@@ -928,31 +939,28 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	if mimeType == "" {
 		return "", nil, errors.New("failed to determine mime-type, pass a filename with an extension")
 	}
-	var data []byte
-	// Try to seek to end to check size; if that fails (e.g., os.Stdin), buffer the whole input.
-	if size, err := d.Src.Seek(0, io.SeekEnd); err != nil {
-		// Unseekable input: buffer it all into a BytesBuffer.
-		buf := &bytes.Buffer{}
-		if _, err = io.Copy(buf, io.LimitReader(d.Src, maxSize)); err != nil {
-			return "", nil, fmt.Errorf("failed to copy data into temporary buffer: %w", err)
-		}
-		data = buf.Bytes()
-		// Update d.Src to the buffered version for potential future reads.
-		d.Src = &bb.BytesBuffer{D: data}
-	} else {
-		// Seekable: check size and read.
+	size, err := d.Src.Seek(0, io.SeekEnd)
+	seekable := err == nil
+	if seekable {
 		if size > maxSize {
-			return "", nil, fmt.Errorf("large files are not yet supported, max %dMiB", maxSize/1024/1024)
+			return "", nil, fmt.Errorf("document exceeds limit of %d bytes", maxSize)
 		}
-		if _, err = d.Src.Seek(0, io.SeekStart); err != nil {
+		if _, err := d.Src.Seek(0, io.SeekStart); err != nil {
 			return "", nil, fmt.Errorf("failed to seek data at beginning: %w", err)
 		}
-		if data, err = io.ReadAll(d.Src); err != nil {
-			return "", nil, fmt.Errorf("failed to read data: %w", err)
-		}
+	}
+	data, err := io.ReadAll(io.LimitReader(d.Src, maxSize+1))
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to read data: %w", err)
+	}
+	if int64(len(data)) > maxSize {
+		return "", nil, fmt.Errorf("document exceeds limit of %d bytes", maxSize)
 	}
 	if len(data) == 0 {
 		return "", nil, errors.New("empty data")
+	}
+	if !seekable {
+		d.Src = &bb.BytesBuffer{D: data}
 	}
 	return mimeType, data, nil
 }

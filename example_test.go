@@ -9,6 +9,7 @@ package genai_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -390,4 +391,34 @@ var locationClockTime = genai.ToolDef{
 
 type location struct {
 	Location string `json:"location" json_description:"Location to ask the current time in"`
+}
+
+// ExampleQuestions declares typed questions under caller-selected names.
+func ExampleQuestions() {
+	questions := genai.Questions{
+		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this request about billing?")},
+		"tone":    {Type: genai.QuestionChoice, Instructions: genai.Text("What is the tone of the customer?"), Choice: map[string]genai.DecisionContent{"calm": nil, "angry": nil}},
+	}
+
+	raw, err := json.MarshalIndent(questions, "", "  ")
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	fmt.Printf("%s\n", raw)
+	// Output:
+	// {
+	//   "billing": {
+	//     "type": "noul",
+	//     "instructions": "Is this request about billing?"
+	//   },
+	//   "tone": {
+	//     "type": "choice",
+	//     "instructions": "What is the tone of the customer?",
+	//     "criteria": {
+	//       "angry": null,
+	//       "calm": null
+	//     }
+	//   }
+	// }
 }

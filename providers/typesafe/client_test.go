@@ -12,6 +12,7 @@ import (
 	"math"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -31,24 +32,6 @@ func apiKey() string {
 	return "<insert_api_key_here>"
 }
 
-// questionnaire is the shape genai.GenOptionText.DecodeAs expects.
-type questionnaire struct {
-	Greeting typesafe.Noul   `json:"greeting"`
-	Tone     typesafe.Choice `json:"tone"`
-	Urgency  typesafe.Score  `json:"urgency"`
-}
-
-func text(s string) genai.Messages {
-	return genai.Messages{genai.NewTextMessage(s)}
-}
-
-// doc returns messages holding a document, to pass the state as JSON.
-func doc(filename, content string) genai.Messages {
-	return genai.Messages{genai.Message{Requests: []genai.Request{{
-		Doc: genai.Doc{Filename: filename, Src: strings.NewReader(content)},
-	}}}}
-}
-
 func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (*typesafe.Client, error) {
 	if !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {
 		opts = append(opts, genai.ProviderOptionAPIKey(apiKey()))
@@ -64,6 +47,7 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 }
 
 func TestClient(t *testing.T) {
+	t.Run("SystemOne invalid response", testClientSystemOneInvalidResponse)
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
 		if err := testRecorder.Close(); err != nil {
@@ -102,52 +86,38 @@ func TestClient(t *testing.T) {
 		internaltest.TestCapabilities(t, getClient(t, "jev-latest"))
 	})
 
-	t.Run("GenSync", func(t *testing.T) {
+	t.Run("SystemOne", func(t *testing.T) {
 		c := getClient(t, "jev-latest")
-		var q struct {
-			Billing typesafe.Noul   `json:"billing"`
-			Tone    typesafe.Choice `json:"tone"`
-			Urgency typesafe.Score  `json:"urgency"`
+		q := genai.Questions{
+			"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this request about billing?"), Noul: &genai.NoulCriteria{
+				True:  genai.Text("the customer is asking about a charge or an invoice"),
+				False: genai.Text("the customer is asking about anything else"),
+			}},
+			"tone": {Type: genai.QuestionChoice, Instructions: genai.Text("What is the tone of the customer?"), Choice: map[string]genai.DecisionContent{
+				"calm":       nil,
+				"frustrated": genai.Text("annoyed but polite"),
+				"angry":      nil,
+			}},
+			"urgency": {Type: genai.QuestionScore, Instructions: genai.Text("How soon does this need to be handled?"), Score: []genai.DecisionContent{
+				genai.Text("can wait"), genai.Text("this week"), genai.Text("today"), genai.Text("right now"),
+			}},
 		}
-		q.Billing.Instructions = typesafe.Text("Is this request about billing?")
-		q.Billing.Criteria = &typesafe.NoulCriteria{
-			True:  typesafe.Text("the customer is asking about a charge or an invoice"),
-			False: typesafe.Text("the customer is asking about anything else"),
-		}
-		q.Tone.Instructions = typesafe.Text("What is the tone of the customer?")
-		q.Tone.Criteria = map[string]typesafe.Content{
-			"calm":       nil,
-			"frustrated": typesafe.Text("annoyed but polite"),
-			"angry":      nil,
-		}
-		q.Urgency.Instructions = typesafe.Text("How soon does this need to be handled?")
-		q.Urgency.Criteria = []typesafe.Content{
-			typesafe.Text("can wait"), typesafe.Text("this week"), typesafe.Text("today"), typesafe.Text("right now"),
-		}
-		res, err := c.GenSync(t.Context(), text("I was charged twice for order A-104. Please refund the duplicate charge. This is unacceptable."), &genai.GenOptionText{DecodeAs: &q})
+
+		res, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("I was charged twice for order A-104. Please refund the duplicate charge. This is unacceptable."), Questions: q})
 		if err != nil {
 			t.Fatal(err)
 		}
 		if res.Usage.InputTokens == 0 {
 			t.Error("expected input tokens to be reported")
 		}
-		if res.Usage.TotalTokens != res.Usage.InputTokens+res.Usage.OutputTokens {
-			t.Errorf("inconsistent usage: %s", res.Usage.String())
+
+		if len(res.Answers) != 3 {
+			t.Fatalf("expected 3 answers, got %d: %+v", len(res.Answers), res)
 		}
-		if res.Usage.FinishReason != genai.FinishedStop {
-			t.Errorf("unexpected finish reason %q", res.Usage.FinishReason)
-		}
-		var answers typesafe.Answers
-		if err = res.Decode(&answers); err != nil {
-			t.Fatal(err)
-		}
-		if len(answers) != 3 {
-			t.Fatalf("expected 3 answers, got %d: %s", len(answers), res.String())
-		}
-		if b := answers["billing"]; b.Type != typesafe.QuestionNoul || b.Noul < 0.5 {
+		if b := res.Answers["billing"]; b.Type != genai.QuestionNoul || b.Noul < 0.5 {
 			t.Errorf("unexpected billing answer: %#v", b)
 		}
-		if tone := answers["tone"]; tone.Type != typesafe.QuestionChoice {
+		if tone := res.Answers["tone"]; tone.Type != genai.QuestionChoice {
 			t.Errorf("unexpected tone answer: %#v", tone)
 		} else if !slices.Contains([]string{"calm", "frustrated", "angry"}, tone.Choice) {
 			t.Errorf("unexpected choice %q", tone.Choice)
@@ -167,7 +137,7 @@ func TestClient(t *testing.T) {
 				t.Errorf("choice %q is not the most probable: %#v", tone.Choice, tone.Probabilities)
 			}
 		}
-		if u := answers["urgency"]; u.Type != typesafe.QuestionScore {
+		if u := res.Answers["urgency"]; u.Type != genai.QuestionScore {
 			t.Errorf("unexpected urgency answer: %#v", u)
 		} else if u.Score < 0 || u.Score > 3 {
 			t.Errorf("score out of range: %f", u.Score)
@@ -176,109 +146,82 @@ func TestClient(t *testing.T) {
 		}
 	})
 
-	t.Run("GenSync-StructuredState", func(t *testing.T) {
-		// The state can be arbitrary JSON, the primary way TypeSafe is meant to be used, passed as a
-		// document with a JSON media type.
+	t.Run("SystemOne-StructuredState", func(t *testing.T) {
+		// Structured state passes directly to the decision API.
 		c := getClient(t, "jev-latest")
-		var q struct {
-			Refund typesafe.Noul `json:"refund"`
+		q := genai.Questions{
+			"refund": {Type: genai.QuestionNoul, Instructions: genai.Text("Does the policy say duplicate charges are eligible for a refund?")},
 		}
-		q.Refund.Instructions = typesafe.Text("Does the policy say duplicate charges are eligible for a refund?")
-		res, err := c.GenSync(
-			t.Context(),
-			doc("state.json", `{"order":{"id":"A-104","amount_usd":49},"refund_policy":"Duplicate charges are eligible for a refund."}`),
-			&genai.GenOptionText{DecodeAs: &q},
-		)
+
+		res, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Object{"order": genai.Object{"id": "A-104", "amount_usd": 49}, "refund_policy": "Duplicate charges are eligible for a refund."}, Questions: q})
 		if err != nil {
 			t.Fatal(err)
 		}
-		if err = res.Decode(&q); err != nil {
-			t.Fatal(err)
-		}
-		if q.Refund.Probability < 0.5 {
-			t.Errorf("unexpected refund answer: %#v", q.Refund)
+
+		if res.Answers["refund"].Noul < 0.5 {
+			t.Errorf("unexpected refund answer: %#v", res.Answers["refund"])
 		}
 	})
 
-	t.Run("DecodeAs-Questions", func(t *testing.T) {
+	t.Run("Questions", func(t *testing.T) {
 		c := getClient(t, "jev-latest")
-		// The questions can also be built directly, as a Questions, instead of being declared by struct
-		// fields. The answers are then read from Answers.
-		questions := typesafe.Questions{
-			"greeting": {Type: typesafe.QuestionNoul, Instructions: typesafe.Text("Is this a greeting?")},
+		// A single question needs no criteria.
+		questions := genai.Questions{
+			"greeting": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this a greeting?")},
 		}
-		res, err := c.GenSync(t.Context(), text("Hello there!"), &genai.GenOptionText{DecodeAs: questions})
+		res, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("Hello there!"), Questions: questions})
 		if err != nil {
 			t.Fatal(err)
 		}
-		var answers typesafe.Answers
-		if err = res.Decode(&answers); err != nil {
-			t.Fatal(err)
-		}
-		if answers["greeting"].Noul < 0.5 {
-			t.Errorf("expected a greeting, got %#v", answers["greeting"])
+
+		if res.Answers["greeting"].Noul < 0.5 {
+			t.Errorf("expected a greeting, got %#v", res.Answers["greeting"])
 		}
 	})
 
-	t.Run("GenStream", func(t *testing.T) {
-		c := getClient(t, "jev-latest")
-		var q struct {
-			Greeting typesafe.Noul `json:"greeting"`
-		}
-		q.Greeting.Instructions = typesafe.Text("Is this a greeting?")
-		fragments, finish := c.GenStream(t.Context(), text("Hello there!"), &genai.GenOptionText{DecodeAs: &q})
-		n := 0
-		for f := range fragments {
-			if f.Text == "" {
-				t.Errorf("unexpected empty fragment")
+	t.Run("SystemOneRaw", func(t *testing.T) {
+		t.Run("limits at request boundary", func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { t.Error("unexpected HTTP request") }))
+			t.Cleanup(srv.Close)
+			c, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey("fake"), genai.ProviderOptionModel("jev-latest"), genai.ProviderOptionRemote(srv.URL))
+			if err != nil {
+				t.Fatal(err)
 			}
-			n++
-		}
-		if n != 1 {
-			t.Errorf("expected a single fragment, got %d", n)
-		}
-		res, err := finish()
-		if err != nil {
-			t.Fatal(err)
-		}
-		var answers typesafe.Answers
-		if err = res.Decode(&answers); err != nil {
-			t.Fatal(err)
-		}
-		if answers["greeting"].Noul < 0.5 {
-			t.Errorf("expected a greeting, got %#v", answers["greeting"])
-		}
-	})
-
-	t.Run("GenSyncRaw", func(t *testing.T) {
+			internaltest.CleanupCloser(t, c)
+			req := typesafe.SystemOneRequest{Model: "jev-latest", State: genai.Text("state")}
+			qs := genai.Questions{"q": {Type: genai.QuestionScore, Score: []genai.DecisionContent{nil}}}
+			req.Questions = qs
+			err = c.SystemOneRaw(t.Context(), &req, &typesafe.SystemOneResponse{})
+			if err == nil || !strings.Contains(err.Error(), "field Score[0]: must not be nil") {
+				t.Fatalf("missing TypeSafe boundary limit: %v", err)
+			}
+		})
 		c := getClient(t, "jev-latest")
 		// Structured criteria: a score rubric of objects and a choice with object and array descriptions.
 		// They are echoed back verbatim in the legend. A noul can also be described by its criteria alone.
 		resp := &typesafe.SystemOneResponse{}
-		err := c.GenSyncRaw(t.Context(), &typesafe.SystemOneRequest{
-			State: typesafe.Object{"msg": typesafe.Text("My card was charged twice for order A-104.")},
-			Model: "jev-latest",
-			Questions: typesafe.Questions{
+		err := c.SystemOneRaw(t.Context(), &typesafe.SystemOneRequest{Model: "jev-latest", State: genai.Object{"msg": genai.Text("My card was charged twice for order A-104.")},
+			Questions: genai.Questions{
 				"urgency": {
-					Type:         typesafe.QuestionScore,
-					Instructions: typesafe.Text("How soon does this need to be handled?"),
-					Score: []typesafe.Content{
-						typesafe.Object{"level": typesafe.Text("can wait"), "sla_days": 30},
-						typesafe.Object{"level": typesafe.Text("this week"), "sla_days": 7},
-						typesafe.Object{"level": typesafe.Text("right now"), "sla_days": 0},
+					Type:         genai.QuestionScore,
+					Instructions: genai.Text("How soon does this need to be handled?"),
+					Score: []genai.DecisionContent{
+						genai.Object{"level": genai.Text("can wait"), "sla_days": 30},
+						genai.Object{"level": genai.Text("this week"), "sla_days": 7},
+						genai.Object{"level": genai.Text("right now"), "sla_days": 0},
 					},
 				},
 				"tone": {
-					Type:         typesafe.QuestionChoice,
-					Instructions: typesafe.Object{"task": typesafe.Text("classify the tone")},
-					Choice: map[string]typesafe.Content{
-						"calm":  typesafe.Object{"note": typesafe.Text("relaxed")},
-						"angry": typesafe.Array{typesafe.Text("loud"), typesafe.Text("rude")},
+					Type:         genai.QuestionChoice,
+					Instructions: genai.Object{"task": genai.Text("classify the tone")},
+					Choice: map[string]genai.DecisionContent{
+						"calm":  genai.Object{"note": genai.Text("relaxed")},
+						"angry": genai.Array{genai.Text("loud"), genai.Text("rude")},
 					},
 				},
 				"greeting": {
-					Type: typesafe.QuestionNoul,
-					Noul: &typesafe.NoulCriteria{True: typesafe.Text("it is a greeting"), False: typesafe.Text("it is not")},
+					Type: genai.QuestionNoul,
+					Noul: &genai.NoulCriteria{True: genai.Text("it is a greeting"), False: genai.Text("it is not")},
 				},
 			},
 		}, resp)
@@ -294,7 +237,7 @@ func TestClient(t *testing.T) {
 		if len(resp.Answers) != 3 {
 			t.Fatalf("expected 3 answers, got %#v", resp.Answers)
 		}
-		if o, ok := resp.Answers["urgency"].Legend["2"].(typesafe.Object); !ok || o["level"] != "right now" {
+		if o, ok := resp.Answers["urgency"].Legend["2"].(genai.Object); !ok || o["level"] != "right now" {
 			t.Errorf("expected the object level to be echoed back, got %#v", resp.Answers["urgency"].Legend)
 		}
 		if c := resp.Answers["tone"].Choice; c != "calm" && c != "angry" {
@@ -305,49 +248,33 @@ func TestClient(t *testing.T) {
 		}
 	})
 
-	t.Run("DecodeAs", func(t *testing.T) {
+	t.Run("Questions-all-types", func(t *testing.T) {
 		c := getClient(t, "jev-latest")
-		// The questions are declared as struct fields, with the answer typesafe.Noul, typesafe.Choice and
-		// typesafe.Score hold, so the same struct is asked and filled in.
-		var q struct {
-			Billing typesafe.Noul   `json:"billing"`
-			Tone    typesafe.Choice `json:"tone"`
-			Urgency typesafe.Score  `json:"urgency"`
+		q := genai.Questions{
+			"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this request about billing?")},
+			"tone":    {Type: genai.QuestionChoice, Instructions: genai.Text("What is the tone of the customer?"), Choice: map[string]genai.DecisionContent{"calm": nil, "angry": nil}},
+			"urgency": {Type: genai.QuestionScore, Instructions: genai.Text("How soon does this need to be handled?"), Score: []genai.DecisionContent{genai.Text("can wait"), genai.Text("today")}},
 		}
-		q.Billing.Instructions = typesafe.Text("Is this request about billing?")
-		q.Tone.Instructions = typesafe.Text("What is the tone of the customer?")
-		q.Tone.Criteria = map[string]typesafe.Content{"calm": nil, "angry": nil}
-		q.Urgency.Instructions = typesafe.Text("How soon does this need to be handled?")
-		q.Urgency.Criteria = []typesafe.Content{typesafe.Text("can wait"), typesafe.Text("today")}
-		// The questions TypeSafe will be asked are derived from the struct.
-		questions, err := typesafe.QuestionsFrom(&q)
+
+		res, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("I was charged twice for order A-104."), Questions: q})
 		if err != nil {
 			t.Fatal(err)
 		}
-		if len(questions) != 3 {
-			t.Fatalf("expected 3 questions, got %#v", questions)
+
+		if res.Answers["billing"].Noul < 0.5 {
+			t.Errorf("unexpected billing answer: %#v", res.Answers["billing"])
 		}
-		res, err := c.GenSync(t.Context(), text("I was charged twice for order A-104."), &genai.GenOptionText{DecodeAs: &q})
-		if err != nil {
-			t.Fatal(err)
+		if res.Answers["tone"].Choice != "calm" && res.Answers["tone"].Choice != "angry" {
+			t.Errorf("unexpected tone answer: %#v", res.Answers["tone"])
 		}
-		if err = res.Decode(&q); err != nil {
-			t.Fatal(err)
+		if res.Answers["tone"].Probabilities[res.Answers["tone"].Choice] == 0 {
+			t.Errorf("unexpected tone probabilities: %#v", res.Answers["tone"].Probabilities)
 		}
-		if q.Billing.Probability < 0.5 {
-			t.Errorf("unexpected billing answer: %#v", q.Billing)
+		if res.Answers["urgency"].Score < 0 || res.Answers["urgency"].Score > 1 {
+			t.Errorf("unexpected urgency answer: %#v", res.Answers["urgency"])
 		}
-		if q.Tone.Label != "calm" && q.Tone.Label != "angry" {
-			t.Errorf("unexpected tone answer: %#v", q.Tone)
-		}
-		if q.Tone.Probabilities[q.Tone.Label] == 0 {
-			t.Errorf("unexpected tone probabilities: %#v", q.Tone.Probabilities)
-		}
-		if q.Urgency.Value < 0 || q.Urgency.Value > 1 {
-			t.Errorf("unexpected urgency answer: %#v", q.Urgency)
-		}
-		if len(q.Urgency.Legend) != 2 {
-			t.Errorf("unexpected urgency legend: %#v", q.Urgency.Legend)
+		if len(res.Answers["urgency"].Legend) != 2 {
+			t.Errorf("unexpected urgency legend: %#v", res.Answers["urgency"].Legend)
 		}
 	})
 
@@ -393,11 +320,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("errors", func(t *testing.T) {
-		var q struct {
-			A typesafe.Noul `json:"a"`
+		questions := genai.Questions{
+			"a": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this a test?")},
 		}
-		q.A.Instructions = typesafe.Text("Is this a test?")
-		questions := &genai.GenOptionText{DecodeAs: &q}
 		t.Run("bad apiKey", func(t *testing.T) {
 			c, err := getClientInner(t, []genai.ProviderOption{
 				genai.ProviderOptionAPIKey("bad apiKey"),
@@ -408,7 +333,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			_, err = c.GenSync(t.Context(), text("test"), questions)
+			_, err = c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("test"), Questions: questions})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -425,7 +350,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			_, err = c.GenSync(t.Context(), text("test"), questions)
+			_, err = c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("test"), Questions: questions})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -434,7 +359,7 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("invalid raw request", func(t *testing.T) {
-			// The API reports the offending fields as a list of validation errors.
+			// The request boundary rejects structurally invalid state before HTTP.
 			c, err := getClientInner(t, []genai.ProviderOption{
 				genai.ProviderOptionModel("jev-latest"),
 			}, func(h http.RoundTripper) http.RoundTripper {
@@ -443,11 +368,11 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			err = c.GenSyncRaw(t.Context(), &typesafe.SystemOneRequest{}, &typesafe.SystemOneResponse{})
+			err = c.SystemOneRaw(t.Context(), &typesafe.SystemOneRequest{}, &typesafe.SystemOneResponse{})
 			if err == nil {
 				t.Fatal("expected error")
 			}
-			if got := err.Error(); !strings.Contains(got, "http 422") || !strings.Contains(got, "body.questions:") {
+			if got := err.Error(); got != "state or one application/json document is required" {
 				t.Fatalf("unexpected error: %q", got)
 			}
 		})
@@ -477,11 +402,9 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			err = c.GenSyncRaw(t.Context(), &typesafe.SystemOneRequest{
-				State: typesafe.Text("test"),
-				Model: "jev-latest",
-				Questions: typesafe.Questions{
-					"a": {Type: typesafe.QuestionNoul, Instructions: typesafe.Text("")},
+			err = c.SystemOneRaw(t.Context(), &typesafe.SystemOneRequest{Model: "jev-latest", State: genai.Text("test"),
+				Questions: genai.Questions{
+					"a": {Type: genai.QuestionNoul, Instructions: genai.Text("")},
 				},
 			}, &typesafe.SystemOneResponse{})
 			if err == nil {
@@ -498,388 +421,222 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var q struct {
-			A typesafe.Noul `json:"a"`
+		q := genai.Questions{
+			"a": {Type: genai.QuestionNoul, Instructions: genai.Text("x")},
 		}
-		q.A.Instructions = typesafe.Text("x")
-		_, err = c.GenSync(t.Context(), text("test"), &genai.GenOptionText{DecodeAs: &q})
+
+		_, err = c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("test"), Questions: q})
 		if got := err.Error(); got != "a model is required" {
 			t.Fatalf("unexpected error: %q", got)
 		}
 	})
 }
 
-func TestQuestionsValidate(t *testing.T) {
-	data := []struct {
-		name      string
-		questions typesafe.Questions
-		wantErr   string
-	}{
-		{
-			// QuestionsFrom reports this itself, so this is only reachable by calling Validate directly.
-			name:    "no questions",
-			wantErr: "at least one question is required",
-		},
-		{
-			name: "noul",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionNoul, Instructions: typesafe.Text("Is this a test?")},
-			},
-		},
-		{
-			name: "noul criteria only",
-			questions: typesafe.Questions{
-				"a": {
-					Type: typesafe.QuestionNoul,
-					Noul: &typesafe.NoulCriteria{True: typesafe.Text("yes"), False: typesafe.Text("no")},
-				},
-			},
-		},
-		{
-			name: "choice",
-			questions: typesafe.Questions{
-				"a": {
-					Type:         typesafe.QuestionChoice,
-					Instructions: typesafe.Object{"task": "classify"},
-					Choice:       map[string]typesafe.Content{"a": nil, "b": typesafe.Text("the b option")},
-				},
-			},
-		},
-		{
-			name: "score",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionScore, Score: []typesafe.Content{typesafe.Text("low"), typesafe.Text("high")}},
-			},
-		},
-		{
-			name: "choice without instructions",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionChoice, Choice: map[string]typesafe.Content{"a": nil}},
-			},
-		},
-		{
-			name: "score with one level",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionScore, Score: []typesafe.Content{typesafe.Text("only")}},
-			},
-		},
-		{
-			name: "invalid noul",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionNoul},
-			},
-			wantErr: "question \"a\": field Instructions or Noul: one is required",
-		},
-		{
-			name: "noul with a choice field",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionNoul, Choice: map[string]typesafe.Content{"b": nil}},
-			},
-			wantErr: "fields Choice and Score: can't be set on a noul question",
-		},
-		{
-			name: "score with a noul field",
-			questions: typesafe.Questions{
-				"a": {
-					Type:  typesafe.QuestionScore,
-					Noul:  &typesafe.NoulCriteria{True: typesafe.Text("yes")},
-					Score: []typesafe.Content{typesafe.Text("x")},
-				},
-			},
-			wantErr: "fields Noul and Choice: can't be set on a score question",
-		},
-		{
-			name: "noul with invalid criteria",
-			questions: typesafe.Questions{
-				"a": {
-					Type: typesafe.QuestionNoul,
-					Noul: &typesafe.NoulCriteria{True: typesafe.Object(nil), False: typesafe.Array(nil)},
-				},
-			},
-			wantErr: "field Criteria.True: Object is nil, use nil to leave the field unset",
-		},
-		{
-			name: "choice with an invalid description",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionChoice, Choice: map[string]typesafe.Content{"b": typesafe.Object(nil)}},
-			},
-			wantErr: "field Choice[b]: Object is nil, use nil to leave the field unset",
-		},
-		{
-			name: "score with a nil level",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionScore, Score: []typesafe.Content{typesafe.Text("x"), nil}},
-			},
-			wantErr: "field Score[1]: must not be nil",
-		},
-		{
-			name: "score with an invalid level",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionScore, Score: []typesafe.Content{typesafe.Text("x"), typesafe.Array(nil)}},
-			},
-			wantErr: "field Score[1]: Array is nil, use nil to leave the field unset",
-		},
-		{
-			name: "no type",
-			questions: typesafe.Questions{
-				"a": {Instructions: typesafe.Text("x")},
-			},
-			wantErr: `field Type: must be "noul", "choice" or "score", got ""`,
-		},
-		{
-			name: "noul empty criteria",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionNoul, Noul: &typesafe.NoulCriteria{}},
-			},
-			wantErr: "at least one of True or False is required",
-		},
-		{
-			name: "type mismatch",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionChoice, Score: []typesafe.Content{typesafe.Text("x")}},
-			},
-			wantErr: "fields Noul and Score: can't be set on a choice question",
-		},
-		{
-			name: "choice without criteria",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionChoice, Instructions: typesafe.Text("x")},
-			},
-			wantErr: "field Choice: at least one option is required",
-		},
-		{
-			name: "score without criteria",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionScore, Instructions: typesafe.Text("x")},
-			},
-			wantErr: "field Score: at least one level is required",
-		},
-		{
-			name: "nil object",
-			questions: typesafe.Questions{
-				"a": {Type: typesafe.QuestionNoul, Instructions: typesafe.Object(nil)},
-			},
-			wantErr: "field Instructions: Object is nil, use nil to leave the field unset",
-		},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			err := line.questions.Validate()
-			if line.wantErr == "" {
-				if err != nil {
-					t.Fatal(err)
+func TestSystemOneRequest(t *testing.T) {
+	t.Run("From", func(t *testing.T) {
+		qs := genai.Questions{"q": {Type: genai.QuestionNoul, Instructions: genai.Text("yes?")}}
+		for _, state := range []genai.DecisionContent{genai.Text("state"), genai.Object{"ticket": 42}, genai.Array{"one", "two"}} {
+			r := typesafe.SystemOneRequest{Model: "jev-latest"}
+			in := genai.SystemOneRequest{State: state, Questions: qs}
+			if err := r.From(&in); err != nil {
+				t.Fatal(err)
+			}
+			if r.Model != "jev-latest" || !reflect.DeepEqual(r.State, state) || !reflect.DeepEqual(r.Questions, qs) {
+				t.Fatalf("conversion lost input or model: %+v", r)
+			}
+		}
+		t.Run("error", func(t *testing.T) {
+			for _, in := range []genai.SystemOneRequest{
+				{},
+				{State: genai.Text("state"), Questions: qs, Docs: []genai.Doc{{Filename: "image.png", Src: strings.NewReader("image")}}},
+			} {
+				r := typesafe.SystemOneRequest{Model: "jev-latest", State: genai.Text("unchanged")}
+				if err := r.From(&in); err == nil || r.State != genai.Text("unchanged") || r.Model != "jev-latest" {
+					t.Fatalf("failed conversion changed request: %+v, %v", r, err)
 				}
-				return
-			}
-			if err == nil {
-				t.Fatal("expected error")
-			}
-			if !strings.Contains(err.Error(), line.wantErr) {
-				t.Fatalf("want %q, got %q", line.wantErr, err)
 			}
 		})
-	}
-}
-
-func TestGenSyncErrors(t *testing.T) {
-	c, err := typesafe.New(t.Context(), genai.ProviderOptionAPIKey("x"), genai.ProviderOptionModel("jev-latest"))
-	if c != nil {
-		internaltest.CleanupCloser(t, c)
-	}
-	if err != nil {
-		t.Fatal(err)
-	}
-	// asked returns a questionnaire whose fields declare valid questions, ready to pass as DecodeAs.
-	asked := func() *questionnaire {
-		q := &questionnaire{}
-		q.Greeting.Instructions = typesafe.Text("Is this a greeting?")
-		q.Tone.Criteria = map[string]typesafe.Content{"a": nil}
-		q.Urgency.Criteria = []typesafe.Content{typesafe.Text("low"), typesafe.Text("high")}
-		return q
-	}
-	valid := &genai.GenOptionText{DecodeAs: asked()}
-	data := []struct {
-		name    string
-		msgs    genai.Messages
-		opts    []genai.GenOption
-		wantErr string
-	}{
-		{
-			name:    "missing DecodeAs",
-			msgs:    text("test"),
-			wantErr: "the questions to ask are required, pass *genai.GenOptionText with DecodeAs",
-		},
-		{
-			name:    "unsupported option",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{genai.GenOptionSeed(1)},
-			wantErr: "not supported: genai.GenOptionSeed",
-		},
-		{
-			name:    "no state",
-			msgs:    nil,
-			opts:    []genai.GenOption{valid},
-			wantErr: "must pass exactly one message",
-		},
-		{
-			name:    "text option without DecodeAs",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{&genai.GenOptionText{}},
-			wantErr: "field DecodeAs: a pointer to a struct of Noul, Choice and Score fields, or a Questions, is required",
-		},
-		{
-			name: "text option with unsupported fields",
-			msgs: text("test"),
-			opts: []genai.GenOption{&genai.GenOptionText{
-				Temperature:  1,
-				TopP:         1,
-				MaxTokens:    1,
-				TopLogprobs:  1,
-				TopK:         1,
-				SystemPrompt: "be nice",
-				Stop:         []string{"stop"},
-				ReplyAsJSON:  true,
-				DecodeAs:     &questionnaire{},
-			}},
-			wantErr: "not supported: GenOptionText.Temperature, GenOptionText.TopP, GenOptionText.MaxTokens, GenOptionText.TopLogprobs, GenOptionText.TopK, GenOptionText.SystemPrompt, GenOptionText.Stop, GenOptionText.ReplyAsJSON",
-		},
-		{
-			name:    "DecodeAs is not a questionnaire",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{&genai.GenOptionText{DecodeAs: &struct{ A bool }{}}},
-			wantErr: "field DecodeAs: field A: must be a Noul, a Choice or a Score, got a bool",
-		},
-		{
-			name:    "empty questions",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{&genai.GenOptionText{DecodeAs: typesafe.Questions{}}},
-			wantErr: "field DecodeAs: at least one question is required",
-		},
-		{
-			name: "invalid questions",
-			msgs: text("test"),
-			opts: []genai.GenOption{&genai.GenOptionText{DecodeAs: typesafe.Questions{
-				"a": {Type: typesafe.QuestionNoul},
-			}}},
-			wantErr: "field DecodeAs: question \"a\": field Instructions or Noul: one is required",
-		},
-		{
-			name: "questions with an unsupported field",
-			msgs: text("test"),
-			opts: []genai.GenOption{&genai.GenOptionText{
-				Temperature: 200,
-				DecodeAs: typesafe.Questions{
-					"a": {Type: typesafe.QuestionNoul, Instructions: typesafe.Text("x")},
+	})
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("deterministic joined errors", func(t *testing.T) {
+			r := typesafe.SystemOneRequest{State: genai.Text("state"), Questions: genai.Questions{
+				"z": {Type: genai.QuestionNoul, Noul: &genai.NoulCriteria{}},
+				"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{nil}},
+			}}
+			want := "question \"a\": field Score[0]: must not be nil\nquestion \"z\": field Criteria: at least one of True or False is required"
+			for range 20 {
+				if err := r.Validate(); err == nil || err.Error() != want {
+					t.Fatalf("got %v, want %s", err, want)
+				}
+			}
+		})
+		data := []struct {
+			name      string
+			questions genai.Questions
+			wantErr   string
+		}{
+			{
+				name:    "no questions",
+				wantErr: "at least one question is required",
+			},
+			{
+				name: "noul",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this a test?")},
 				},
-			}},
-			wantErr: "field Temperature: must be [0, 100]",
-		},
-		{
-			name:    "invalid text option",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{&genai.GenOptionText{DecodeAs: "bogus"}},
-			wantErr: "field DecodeAs: must be a JSON object or array, or a pointer to one, got string",
-		},
-		{
-			name:    "DecodeAs without questions",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{&genai.GenOptionText{DecodeAs: &questionnaire{}}},
-			wantErr: "field DecodeAs: question \"greeting\": field Instructions or Noul: one is required",
-		},
-		{
-			name:    "document not json",
-			msgs:    doc("state.txt", "hi"),
-			opts:    []genai.GenOption{valid},
-			wantErr: `the state document must be application/json, got "text/plain; charset=utf-8"; name it with a .json extension`,
-		},
-		{
-			name:    "document without name",
-			msgs:    doc("", "{}"),
-			opts:    []genai.GenOption{valid},
-			wantErr: "failed to determine mime-type, pass a filename with an extension",
-		},
-		{
-			name:    "document from url",
-			msgs:    genai.Messages{genai.Message{Requests: []genai.Request{{Doc: genai.Doc{URL: "https://example.com/state.json"}}}}},
-			opts:    []genai.GenOption{valid},
-			wantErr: "the state document must be inline",
-		},
-		{
-			name:    "document not json content",
-			msgs:    doc("state.json", "1"),
-			opts:    []genai.GenOption{valid},
-			wantErr: "the state document must contain a JSON object or array: expected a string, a JSON object or a JSON array, got 1",
-		},
-		{
-			name:    "document truncated",
-			msgs:    doc("state.json", "{"),
-			opts:    []genai.GenOption{valid},
-			wantErr: "the state document must contain a JSON object or array:",
-		},
-		{
-			name:    "document empty",
-			msgs:    doc("state.json", ""),
-			opts:    []genai.GenOption{valid},
-			wantErr: "empty data",
-		},
-		{
-			name:    "two empty requests",
-			msgs:    genai.Messages{genai.Message{Requests: []genai.Request{{}, {}}}},
-			opts:    []genai.GenOption{valid},
-			wantErr: "request #0: must have the state as text or as a JSON document",
-		},
-		{
-			name:    "two messages",
-			msgs:    genai.Messages{genai.NewTextMessage("test"), genai.NewTextMessage("test")},
-			opts:    []genai.GenOption{valid},
-			wantErr: "must pass exactly one message",
-		},
-		{
-			name:    "empty message",
-			msgs:    genai.Messages{genai.Message{}},
-			opts:    []genai.GenOption{valid},
-			wantErr: "the message must have the state as text or as a JSON document",
-		},
-		{
-			name:    "empty request",
-			msgs:    genai.Messages{genai.Message{Requests: []genai.Request{{}}}},
-			opts:    []genai.GenOption{valid},
-			wantErr: "must have the state as text or as a JSON document",
-		},
-		{
-			name:    "reply",
-			msgs:    genai.Messages{genai.Message{Replies: []genai.Reply{{Text: "hello"}}}},
-			opts:    []genai.GenOption{valid},
-			wantErr: "TypeSafe has no conversation support; pass the full state as text or as a JSON document",
-		},
-		{
-			name:    "tool call result",
-			msgs:    genai.Messages{genai.Message{ToolCallResults: []genai.ToolCallResult{{}}}},
-			opts:    []genai.GenOption{valid},
-			wantErr: "TypeSafe has no conversation support; pass the full state as text or as a JSON document",
-		},
-		{
-			name:    "no questions",
-			msgs:    text("test"),
-			opts:    []genai.GenOption{},
-			wantErr: "the questions to ask are required, pass *genai.GenOptionText with DecodeAs",
-		},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			_, err := c.GenSync(t.Context(), line.msgs, line.opts...)
-			if err == nil {
-				t.Fatal("expected error")
-			}
-			if !strings.Contains(err.Error(), line.wantErr) {
-				t.Fatalf("want %q, got %q", line.wantErr, err)
-			}
-		})
-	}
-	t.Run("not supported", func(t *testing.T) {
-		_, err := c.GenSync(t.Context(), text("test"), &genai.GenOptionTools{})
-		if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
-			t.Fatalf("expected ErrNotSupported, got %T: %v", err, err)
+			},
+			{
+				name: "noul criteria only",
+				questions: genai.Questions{
+					"a": {
+						Type: genai.QuestionNoul,
+						Noul: &genai.NoulCriteria{True: genai.Text("yes"), False: genai.Text("no")},
+					},
+				},
+			},
+			{
+				name: "choice",
+				questions: genai.Questions{
+					"a": {
+						Type:         genai.QuestionChoice,
+						Instructions: genai.Object{"task": "classify"},
+						Choice:       map[string]genai.DecisionContent{"a": nil, "b": genai.Text("the b option")},
+					},
+				},
+			},
+			{
+				name: "score",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("low"), genai.Text("high")}},
+				},
+			},
+			{
+				name: "choice without instructions",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionChoice, Choice: map[string]genai.DecisionContent{"a": nil}},
+				},
+			},
+			{
+				name: "score with one level",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("only")}},
+				},
+			},
+			{
+				name: "invalid noul",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionNoul},
+				},
+				wantErr: "question \"a\": field Instructions or Noul: one is required",
+			},
+			{
+				name: "noul with a choice field",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionNoul, Choice: map[string]genai.DecisionContent{"b": nil}},
+				},
+				wantErr: "fields Choice and Score: can't be set on a noul question",
+			},
+			{
+				name: "score with a noul field",
+				questions: genai.Questions{
+					"a": {
+						Type:  genai.QuestionScore,
+						Noul:  &genai.NoulCriteria{True: genai.Text("yes")},
+						Score: []genai.DecisionContent{genai.Text("x")},
+					},
+				},
+				wantErr: "fields Noul and Choice: can't be set on a score question",
+			},
+			{
+				name: "noul with invalid criteria",
+				questions: genai.Questions{
+					"a": {
+						Type: genai.QuestionNoul,
+						Noul: &genai.NoulCriteria{True: genai.Object(nil), False: genai.Array(nil)},
+					},
+				},
+				wantErr: "field Criteria.True: Object is nil, use nil to leave the field unset",
+			},
+			{
+				name: "choice with an invalid description",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionChoice, Choice: map[string]genai.DecisionContent{"b": genai.Object(nil)}},
+				},
+				wantErr: "field Choice[b]: Object is nil, use nil to leave the field unset",
+			},
+			{
+				name: "score with a nil level",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("x"), nil}},
+				},
+				wantErr: "field Score[1]: must not be nil",
+			},
+			{
+				name: "score with an invalid level",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("x"), genai.Array(nil)}},
+				},
+				wantErr: "field Score[1]: Array is nil, use nil to leave the field unset",
+			},
+			{
+				name: "no type",
+				questions: genai.Questions{
+					"a": {Instructions: genai.Text("x")},
+				},
+				wantErr: `field Type: must be "noul", "choice" or "score", got ""`,
+			},
+			{
+				name: "noul empty criteria",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionNoul, Noul: &genai.NoulCriteria{}},
+				},
+				wantErr: "at least one of True or False is required",
+			},
+			{
+				name: "type mismatch",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionChoice, Score: []genai.DecisionContent{genai.Text("x")}},
+				},
+				wantErr: "fields Noul and Score: can't be set on a choice question",
+			},
+			{
+				name: "choice without criteria",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionChoice, Instructions: genai.Text("x")},
+				},
+				wantErr: "field Choice: at least one option is required",
+			},
+			{
+				name: "score without criteria",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionScore, Instructions: genai.Text("x")},
+				},
+				wantErr: "field Score: at least one level is required",
+			},
+			{
+				name: "nil object",
+				questions: genai.Questions{
+					"a": {Type: genai.QuestionNoul, Instructions: genai.Object(nil)},
+				},
+				wantErr: "field Instructions: Object is nil, use nil to leave the field unset",
+			},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				err := (&typesafe.SystemOneRequest{State: genai.Text("state"), Questions: line.questions}).Validate()
+				if line.wantErr == "" {
+					if err != nil {
+						t.Fatal(err)
+					}
+					return
+				}
+				if err == nil {
+					t.Fatal("expected error")
+				}
+				if !strings.Contains(err.Error(), line.wantErr) {
+					t.Fatalf("want %q, got %q", line.wantErr, err)
+				}
+			})
 		}
 	})
 }
@@ -909,11 +666,11 @@ func TestAnswerMarshal(t *testing.T) {
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			var a typesafe.Answer
+			var a genai.Answer
 			if err := json.Unmarshal([]byte(line.in), &a); err != nil {
 				t.Fatal(err)
 			}
-			raw, err := json.Marshal(a)
+			raw, err := json.Marshal(&a)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -923,18 +680,18 @@ func TestAnswerMarshal(t *testing.T) {
 		})
 	}
 	t.Run("unknown", func(t *testing.T) {
-		if _, err := json.Marshal(typesafe.Answer{Type: "bogus"}); err == nil {
+		if _, err := json.Marshal(&genai.Answer{Type: "bogus"}); err == nil {
 			t.Fatal("expected error")
 		}
 	})
 	t.Run("not an answer", func(t *testing.T) {
-		var a typesafe.Answer
+		var a genai.Answer
 		if err := json.Unmarshal([]byte(`1`), &a); err == nil {
 			t.Fatal("expected error")
 		}
 	})
 	t.Run("unknown field", func(t *testing.T) {
-		var a typesafe.Answer
+		var a genai.Answer
 		if err := json.Unmarshal([]byte(`{"type":"noul","noul":0.5,"bogus":1}`), &a); err == nil {
 			t.Fatal("expected error")
 		} else if !strings.Contains(err.Error(), "unknown field") {
@@ -943,12 +700,12 @@ func TestAnswerMarshal(t *testing.T) {
 	})
 	t.Run("unknown from json", func(t *testing.T) {
 		// An answer type this client does not know is kept as-is instead of breaking the whole reply.
-		var a typesafe.Answer
+		var a genai.Answer
 		in := `{"type":"ranks","order":["a","b"]}`
 		if err := json.Unmarshal([]byte(in), &a); err != nil {
 			t.Fatal(err)
 		}
-		raw, err := json.Marshal(a)
+		raw, err := json.Marshal(&a)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -957,11 +714,11 @@ func TestAnswerMarshal(t *testing.T) {
 		}
 	})
 	t.Run("answers", func(t *testing.T) {
-		var a typesafe.Answers
+		var a genai.Answers
 		if err := json.Unmarshal([]byte(`{"a":{"type":"noul","noul":0.25}}`), &a); err != nil {
 			t.Fatal(err)
 		}
-		raw, err := json.Marshal(a)
+		raw, err := json.Marshal(&a)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -977,29 +734,29 @@ func TestContentValidate(t *testing.T) {
 	}
 	data := []struct {
 		name    string
-		in      typesafe.Content
+		in      genai.DecisionContent
 		wantErr string
 	}{
-		{"text", typesafe.Text("hi"), ""},
-		{"empty text", typesafe.Text(""), ""},
-		{"object", typesafe.Object{"a": 1, "b": []any{"c", nil, map[string]any{"d": true}}}, ""},
-		{"object with struct", typesafe.Object{"a": payload{A: 1}}, ""},
-		{"object with channel", typesafe.Object{"a": make(chan int)}, `key "a": json: unsupported type: chan int`},
-		{"object with nested channel", typesafe.Object{"a": []any{[]any{make(chan int)}}}, `key "a": json: unsupported type: chan int`},
+		{"text", genai.Text("hi"), ""},
+		{"empty text", genai.Text(""), ""},
+		{"object", genai.Object{"a": 1, "b": []any{"c", nil, map[string]any{"d": true}}}, ""},
+		{"object with struct", genai.Object{"a": payload{A: 1}}, ""},
+		{"object with channel", genai.Object{"a": make(chan int)}, `key "a": json: unsupported type: chan int`},
+		{"object with nested channel", genai.Object{"a": []any{[]any{make(chan int)}}}, `key "a": json: unsupported type: chan int`},
 		{
 			"several bad keys",
-			typesafe.Object{"b": make(chan int), "a": make(chan int)},
+			genai.Object{"b": make(chan int), "a": make(chan int)},
 			"key \"a\": json: unsupported type: chan int\nkey \"b\": json: unsupported type: chan int",
 		},
 		{
 			"several bad items",
-			typesafe.Array{"a", make(chan int), nil, make(chan int)},
+			genai.Array{"a", make(chan int), nil, make(chan int)},
 			"index 1: json: unsupported type: chan int\nindex 3: json: unsupported type: chan int",
 		},
-		{"nil object", typesafe.Object(nil), "Object is nil, use nil to leave the field unset"},
-		{"array", typesafe.Array{"a", 1, true, nil, typesafe.Text("b")}, ""},
-		{"array with NaN", typesafe.Array{math.NaN()}, "index 0: json: unsupported value: NaN"},
-		{"nil array", typesafe.Array(nil), "Array is nil, use nil to leave the field unset"},
+		{"nil object", genai.Object(nil), "Object is nil, use nil to leave the field unset"},
+		{"array", genai.Array{"a", 1, true, nil, genai.Text("b")}, ""},
+		{"array with NaN", genai.Array{math.NaN()}, "index 0: json: unsupported value: NaN"},
+		{"nil array", genai.Array(nil), "Array is nil, use nil to leave the field unset"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -1024,64 +781,19 @@ func TestSystemOneRequestMarshal(t *testing.T) {
 	// Content marshals to the value itself, whatever the variant.
 	data := []struct {
 		name  string
-		state typesafe.Content
+		state genai.DecisionContent
 		want  string
 	}{
-		{"text", typesafe.Text("hi"), `"state":"hi",`},
-		{"empty text", typesafe.Text(""), `"state":"",`},
-		{"object", typesafe.Object{"message": "hi", "order": 49}, `"state":{"message":"hi","order":49},`},
-		{"empty object", typesafe.Object{}, `"state":{},`},
-		{"array", typesafe.Array{typesafe.Text("hi"), typesafe.Text("there")}, `"state":["hi","there"],`},
+		{"text", genai.Text("hi"), `"state":"hi",`},
+		{"empty text", genai.Text(""), `"state":"",`},
+		{"object", genai.Object{"message": "hi", "order": 49}, `"state":{"message":"hi","order":49},`},
+		{"empty object", genai.Object{}, `"state":{},`},
+		{"array", genai.Array{genai.Text("hi"), genai.Text("there")}, `"state":["hi","there"],`},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			req := &typesafe.SystemOneRequest{
-				State:     line.state,
-				Model:     "jev-latest",
-				Questions: typesafe.Questions{"a": {Type: typesafe.QuestionNoul, Instructions: typesafe.Text("x")}},
-			}
-			raw, err := json.Marshal(req)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !strings.Contains(string(raw), line.want) {
-				t.Fatalf("want %s, got %s", line.want, raw)
-			}
-		})
-	}
-}
-
-func TestSystemOneRequestFrom(t *testing.T) {
-	// A message holds the state: its request, or the array of them when it has several, since the API
-	// takes an array as a sequence of messages or records.
-	data := []struct {
-		name string
-		msg  genai.Message
-		want string
-	}{
-		{"text", genai.Message{Requests: []genai.Request{{Text: "hi"}}}, `"state":"hi",`},
-		{"two texts", genai.Message{Requests: []genai.Request{{Text: "hi"}, {Text: "there"}}}, `"state":["hi","there"],`},
-		{
-			"object document",
-			genai.Message{Requests: []genai.Request{{Doc: genai.Doc{
-				Filename: "state.json", Src: strings.NewReader(`{"order":"A-104"}`),
-			}}}},
-			`"state":{"order":"A-104"},`,
-		},
-		{
-			"mixed requests",
-			genai.Message{Requests: []genai.Request{
-				{Text: "hi"},
-				{Doc: genai.Doc{Filename: "state.json", Src: strings.NewReader(`["a","b"]`)}},
-			}},
-			`"state":["hi",["a","b"]],`,
-		},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			req := &typesafe.SystemOneRequest{}
-			if err := req.From(&line.msg); err != nil {
-				t.Fatal(err)
+			req := &typesafe.SystemOneRequest{Model: "jev-latest", State: line.state,
+				Questions: genai.Questions{"a": {Type: genai.QuestionNoul, Instructions: genai.Text("x")}},
 			}
 			raw, err := json.Marshal(req)
 			if err != nil {
@@ -1097,14 +809,14 @@ func TestSystemOneRequestFrom(t *testing.T) {
 func TestScoreLegend(t *testing.T) {
 	// The legend is the Question.Score criteria echoed back, as Text, Object or Array.
 	in := `{"0":"low","1":{"desc":"high","nested":{"x":[1,2]}},"2":["a",{"b":true}],"3":null}`
-	var l typesafe.ScoreLegend
+	var l genai.ScoreLegend
 	if err := json.Unmarshal([]byte(in), &l); err != nil {
 		t.Fatal(err)
 	}
-	if v, ok := l["0"].(typesafe.Text); !ok || v != "low" {
+	if v, ok := l["0"].(genai.Text); !ok || v != "low" {
 		t.Errorf("unexpected level 0: %#v", l["0"])
 	}
-	o, ok := l["1"].(typesafe.Object)
+	o, ok := l["1"].(genai.Object)
 	if !ok || o["desc"] != "high" {
 		t.Fatalf("unexpected level 1: %#v", l["1"])
 	}
@@ -1112,7 +824,7 @@ func TestScoreLegend(t *testing.T) {
 	if nested, ok := o["nested"].(map[string]any); !ok || len(nested) != 1 {
 		t.Errorf("unexpected nested value: %#v", o["nested"])
 	}
-	a, ok := l["2"].(typesafe.Array)
+	a, ok := l["2"].(genai.Array)
 	if !ok || len(a) != 2 {
 		t.Fatalf("unexpected level 2: %#v", l["2"])
 	}
@@ -1132,7 +844,7 @@ func TestScoreLegend(t *testing.T) {
 	}
 	// Anything that is not text, object or array is rejected.
 	for _, in := range []string{`{"0":1}`, `{"0":true}`} {
-		var l typesafe.ScoreLegend
+		var l genai.ScoreLegend
 		err := json.Unmarshal([]byte(in), &l)
 		if err == nil {
 			t.Fatalf("expected error for %s", in)
@@ -1142,12 +854,12 @@ func TestScoreLegend(t *testing.T) {
 		}
 	}
 	// The legend must be an object.
-	var l3 typesafe.ScoreLegend
+	var l3 genai.ScoreLegend
 	if err := json.Unmarshal([]byte(`[]`), &l3); err == nil {
 		t.Fatal("expected error")
 	}
 	// A null legend is no legend.
-	var l2 typesafe.ScoreLegend
+	var l2 genai.ScoreLegend
 	if err := json.Unmarshal([]byte(`null`), &l2); err != nil {
 		t.Fatal(err)
 	}
@@ -1159,40 +871,40 @@ func TestScoreLegend(t *testing.T) {
 func TestQuestionMarshal(t *testing.T) {
 	data := []struct {
 		name string
-		in   typesafe.Question
+		in   genai.Question
 		want string
 	}{
 		{
 			name: "noul",
-			in:   typesafe.Question{Type: typesafe.QuestionNoul, Instructions: typesafe.Text("Is this a test?")},
+			in:   genai.Question{Type: genai.QuestionNoul, Instructions: genai.Text("Is this a test?")},
 			want: `{"type":"noul","instructions":"Is this a test?"}`,
 		},
 		{
 			name: "noul criteria",
-			in: typesafe.Question{
-				Type: typesafe.QuestionNoul,
-				Noul: &typesafe.NoulCriteria{True: typesafe.Text("yes"), False: typesafe.Text("no")},
+			in: genai.Question{
+				Type: genai.QuestionNoul,
+				Noul: &genai.NoulCriteria{True: genai.Text("yes"), False: genai.Text("no")},
 			},
 			want: `{"type":"noul","criteria":{"true":"yes","false":"no"}}`,
 		},
 		{
 			name: "choice",
-			in: typesafe.Question{
-				Type:         typesafe.QuestionChoice,
-				Instructions: typesafe.Object{"task": "classify"},
-				Choice:       map[string]typesafe.Content{"a": nil, "b": typesafe.Text("the b option")},
+			in: genai.Question{
+				Type:         genai.QuestionChoice,
+				Instructions: genai.Object{"task": "classify"},
+				Choice:       map[string]genai.DecisionContent{"a": nil, "b": genai.Text("the b option")},
 			},
 			want: `{"type":"choice","instructions":{"task":"classify"},"criteria":{"a":null,"b":"the b option"}}`,
 		},
 		{
 			name: "score",
-			in:   typesafe.Question{Type: typesafe.QuestionScore, Score: []typesafe.Content{typesafe.Text("low"), typesafe.Text("high")}},
+			in:   genai.Question{Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("low"), genai.Text("high")}},
 			want: `{"type":"score","criteria":["low","high"]}`,
 		},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			raw, err := json.Marshal(line.in)
+			raw, err := json.Marshal(&line.in)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1202,17 +914,17 @@ func TestQuestionMarshal(t *testing.T) {
 		})
 	}
 	t.Run("unknown type", func(t *testing.T) {
-		if _, err := json.Marshal(typesafe.Question{Type: "bogus"}); err == nil {
+		if _, err := json.Marshal(&genai.Question{Type: "bogus"}); err == nil {
 			t.Fatal("expected error")
 		}
 	})
 	t.Run("criteria that can't be encoded", func(t *testing.T) {
 		// MarshalJSON reports the error of the criteria it encodes.
-		q := typesafe.Question{
-			Type:   typesafe.QuestionChoice,
-			Choice: map[string]typesafe.Content{"a": typesafe.Object{"b": make(chan int)}},
+		q := genai.Question{
+			Type:   genai.QuestionChoice,
+			Choice: map[string]genai.DecisionContent{"a": genai.Object{"b": make(chan int)}},
 		}
-		if _, err := json.Marshal(q); err == nil {
+		if _, err := json.Marshal(&q); err == nil {
 			t.Fatal("expected error")
 		}
 	})
@@ -1356,7 +1068,7 @@ func TestNewErrors(t *testing.T) {
 	})
 }
 
-func TestGenSyncInvalidResponse(t *testing.T) {
+func testClientSystemOneInvalidResponse(t *testing.T) {
 	data := []struct {
 		name    string
 		body    string
@@ -1373,10 +1085,10 @@ func TestGenSyncInvalidResponse(t *testing.T) {
 			wantErr: `no answer returned for question "a"`,
 		},
 	}
-	var q struct {
-		A typesafe.Noul `json:"a"`
+	q := genai.Questions{
+		"a": {Type: genai.QuestionNoul, Instructions: genai.Text("x")},
 	}
-	q.A.Instructions = typesafe.Text("x")
+
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -1395,7 +1107,7 @@ func TestGenSyncInvalidResponse(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			_, err = c.GenSync(t.Context(), text("test"), &genai.GenOptionText{DecodeAs: &q})
+			_, err = c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("test"), Questions: q})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -1476,176 +1188,5 @@ func TestModel(t *testing.T) {
 	m = &typesafe.Model{Name: "jev-latest", ReleaseDate: "yesterday"}
 	if got := m.String(); got != "jev-latest" {
 		t.Errorf("unexpected string %q", got)
-	}
-}
-
-func TestNoulCriteriaValidate(t *testing.T) {
-	t.Parallel()
-	var c *typesafe.NoulCriteria
-	if err := c.Validate(); err == nil || !strings.Contains(err.Error(), "field Criteria: is nil") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if err := (&typesafe.NoulCriteria{}).Validate(); err == nil ||
-		!strings.Contains(err.Error(), "at least one of True or False is required") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
-func TestQuestionsFrom(t *testing.T) {
-	type tagged struct {
-		Billing typesafe.Noul   `json:"billing"`
-		Tone    typesafe.Choice `json:"tone"`
-		Urgency typesafe.Score  `json:"urgency"`
-		Skipped typesafe.Noul   `json:"-"`
-		Plain   string          `json:"plain"`
-	}
-	q := tagged{}
-	q.Billing.Instructions = typesafe.Text("Is this request about billing?")
-	q.Billing.Criteria = &typesafe.NoulCriteria{True: typesafe.Text("yes"), False: typesafe.Text("no")}
-	q.Tone.Instructions = typesafe.Text("What is the tone?")
-	q.Tone.Criteria = map[string]typesafe.Content{"calm": nil, "angry": typesafe.Text("hostile")}
-	q.Urgency.Criteria = []typesafe.Content{typesafe.Text("can wait"), typesafe.Text("right now")}
-	// The field with a json tag of - and the invalid one are skipped: hmm, the invalid one must error.
-	_, err := typesafe.QuestionsFrom(&q)
-	if err == nil || !strings.Contains(err.Error(), "field Plain: must be a Noul, a Choice or a Score, got a string") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	// Without the invalid field, the three questions are derived, in declaration order, skipping json:"-".
-	type valid struct {
-		Billing typesafe.Noul   `json:"billing"`
-		Tone    typesafe.Choice `json:"tone"`
-		Urgency typesafe.Score  `json:"urgency"`
-		Skipped typesafe.Noul   `json:"-"`
-	}
-	v := valid{Billing: q.Billing, Tone: q.Tone, Urgency: q.Urgency}
-	questions, err := typesafe.QuestionsFrom(&v)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := `{"billing":{"type":"noul","instructions":"Is this request about billing?","criteria":{"true":"yes","false":"no"}},` +
-		`"tone":{"type":"choice","instructions":"What is the tone?","criteria":{"angry":"hostile","calm":null}},` +
-		`"urgency":{"type":"score","criteria":["can wait","right now"]}}`
-	raw, err := json.Marshal(questions)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(raw) != want {
-		t.Fatalf("want %s, got %s", want, raw)
-	}
-	// The question name is the Go field name when there is no json tag.
-	type untagged struct {
-		Greeting typesafe.Noul
-	}
-	u := untagged{}
-	u.Greeting.Instructions = typesafe.Text("Is this a greeting?")
-	questions, err = typesafe.QuestionsFrom(&u)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, ok := questions["Greeting"]; !ok {
-		t.Fatalf("expected the field name, got %#v", questions)
-	}
-}
-
-func TestQuestionsFromErrors(t *testing.T) {
-	type nested struct {
-		Nested struct {
-			Billing typesafe.Noul `json:"billing"`
-		} `json:"nested"`
-	}
-	type unexported struct {
-		Billing typesafe.Noul `json:"billing"`
-		hidden  typesafe.Noul //nolint:unused // only there to be rejected by QuestionsFrom.
-	}
-	type empty struct {
-		Billing typesafe.Noul `json:"-"`
-	}
-	type invalid struct {
-		Billing typesafe.Noul `json:"billing"`
-	}
-	data := []struct {
-		name    string
-		in      any
-		wantErr string
-	}{
-		{"nil", nil, "must be a pointer to a struct"},
-		{"not a pointer", struct{}{}, "must be a pointer to a struct"},
-		{"not a struct", &[]string{}, "must be a pointer to a struct"},
-		{"unsupported field", &struct {
-			A bool `json:"a"`
-		}{}, "field A: must be a Noul, a Choice or a Score, got a bool"},
-		{"nested", &nested{}, "field Nested: must be a Noul, a Choice or a Score"},
-		{"unexported", &unexported{}, "field hidden: must be exported"},
-		{"nothing to ask", &empty{}, "no Noul, Choice or Score field to ask"},
-		{"invalid question", &invalid{}, "field Instructions or Noul: one is required"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			_, err := typesafe.QuestionsFrom(line.in)
-			if err == nil {
-				t.Fatal("expected error")
-			}
-			if !strings.Contains(err.Error(), line.wantErr) {
-				t.Fatalf("want %q, got %q", line.wantErr, err)
-			}
-		})
-	}
-}
-
-func TestQuestionnaireDecode(t *testing.T) {
-	// Decoding fills the answer fields of the same struct that declared the questions.
-	var q struct {
-		Billing typesafe.Noul   `json:"billing"`
-		Tone    typesafe.Choice `json:"tone"`
-		Urgency typesafe.Score  `json:"urgency"`
-	}
-	in := `{"billing":{"type":"noul","noul":0.98},` +
-		`"tone":{"type":"choice","choice":"calm","confidence":0.42,"probabilities":{"angry":0.29,"calm":0.71}},` +
-		`"urgency":{"type":"score","score":1.59,"confidence":0.38,"legend":{"0":"can wait","1":"today"},"probabilities":{"0":0.41,"1":0.59}}}`
-	if err := json.Unmarshal([]byte(in), &q); err != nil {
-		t.Fatal(err)
-	}
-	if q.Billing.Probability != 0.98 {
-		t.Errorf("unexpected billing: %#v", q.Billing)
-	}
-	if q.Tone.Label != "calm" || q.Tone.Confidence != 0.42 || q.Tone.Probabilities["calm"] != 0.71 {
-		t.Errorf("unexpected tone: %#v", q.Tone)
-	}
-	if q.Urgency.Value != 1.59 || q.Urgency.Confidence != 0.38 || q.Urgency.Legend["1"] != typesafe.Text("today") {
-		t.Errorf("unexpected urgency: %#v", q.Urgency)
-	}
-	// Malformed JSON and an answer of the wrong kind are reported instead of being silently ignored.
-	for _, line := range []struct {
-		name    string
-		in      string
-		out     any
-		wantErr string
-	}{
-		{"malformed", `{`, &q, "unexpected end of JSON input"},
-		{"malformed noul", `{"billing":1}`, &struct {
-			Billing typesafe.Noul `json:"billing"`
-		}{}, "cannot unmarshal number"},
-		{"malformed choice", `{"tone":1}`, &struct {
-			Tone typesafe.Choice `json:"tone"`
-		}{}, "cannot unmarshal number"},
-		{"malformed score", `{"urgency":1}`, &struct {
-			Urgency typesafe.Score `json:"urgency"`
-		}{}, "cannot unmarshal number"},
-		{"wrong kind for a noul", `{"billing":{"type":"choice","choice":"calm"}}`, &struct {
-			Billing typesafe.Noul `json:"billing"`
-		}{}, `expected a noul answer, got "choice"`},
-		{"wrong kind for a choice", `{"tone":{"type":"score","score":1}}`, &struct {
-			Tone typesafe.Choice `json:"tone"`
-		}{}, `expected a choice answer, got "score"`},
-		{"wrong kind for a score", `{"urgency":{"type":"noul","noul":1}}`, &struct {
-			Urgency typesafe.Score `json:"urgency"`
-		}{}, `expected a score answer, got "noul"`},
-	} {
-		t.Run(line.name, func(t *testing.T) {
-			err := json.Unmarshal([]byte(line.in), line.out)
-			if err == nil || !strings.Contains(err.Error(), line.wantErr) {
-				t.Fatalf("want %q, got %v", line.wantErr, err)
-			}
-		})
 	}
 }

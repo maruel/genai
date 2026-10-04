@@ -163,6 +163,19 @@ type ProviderUsage struct {
 	accumUsage genai.Usage
 }
 
+// SystemOne implements genai.Provider and accumulates decision token usage.
+func (c *ProviderUsage) SystemOne(ctx context.Context, req *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
+	res, err := c.Provider.SystemOne(ctx, req)
+	if res != nil {
+		c.mu.Lock()
+		c.accumUsage.InputTokens += res.Usage.InputTokens
+		c.accumUsage.OutputTokens += res.Usage.OutputTokens
+		c.accumUsage.ReasoningTokens += res.Usage.ReasoningTokens
+		c.mu.Unlock()
+	}
+	return res, err
+}
+
 // GenSync implements the Provider interface and accumulates usage statistics.
 func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	res, err := c.Provider.GenSync(ctx, msgs, opts...)

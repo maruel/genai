@@ -719,12 +719,15 @@ type ModelsResponse struct {
 	Messages []base.Unknown `json:"messages"` // Annoyingly, it's included all the time
 }
 
+// ErrorDetail is one error reported by Workers AI.
+type ErrorDetail struct {
+	Message string `json:"message"`
+	Code    int    `json:"code"`
+}
+
 // ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
-	Errors []struct {
-		Message string `json:"message"`
-		Code    int    `json:"code"`
-	} `json:"errors"`
+	Errors   []ErrorDetail  `json:"errors"`
 	Success  bool           `json:"success"`
 	Result   base.Unknown   `json:"result"`
 	Messages []base.Unknown `json:"messages"` // Annoyingly, it's included all the time

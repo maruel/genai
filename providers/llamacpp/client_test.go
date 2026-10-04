@@ -10,10 +10,12 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"io"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -408,4 +410,160 @@ func TestMessage(t *testing.T) {
 
 func init() {
 	internal.BeLenient = false
+}
+
+func TestClientSystemOne(t *testing.T) {
+	t.Run("disabled uses chat", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/chat/completions" {
+				t.Errorf("unexpected route %q", r.URL.Path)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			if _, err := io.WriteString(w, `{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"chat"}}],"usage":{"prompt_tokens":1,"completion_tokens":1,"total_tokens":2}}`); err != nil {
+				t.Error(err)
+			}
+		}))
+		t.Cleanup(srv.Close)
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("state")})
+		if err != nil || len(res.Replies) != 1 || res.Replies[0].Text != "chat" {
+			t.Fatalf("chat response = %+v, error = %v", res, err)
+		}
+	})
+	q := genai.Questions{
+		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this about billing?")},
+		"route":   {Type: genai.QuestionChoice, Instructions: genai.Text("Which team?"), Choice: map[string]genai.DecisionContent{"billing": nil, "support": nil}},
+		"urgency": {Type: genai.QuestionScore, Instructions: genai.Text("How urgent?"), Score: []genai.DecisionContent{genai.Text("low"), genai.Text("high")}},
+	}
+	const response = `{"model":"kev","answers":{"billing":{"type":"noul","noul":0.9},"route":{"type":"choice","choice":"billing","confidence":0.8,"probabilities":{"billing":0.9,"support":0.1}},"urgency":{"type":"score","score":0.75,"confidence":0.5,"legend":{"0":"low","1":"high"},"probabilities":{"0":0.25,"1":0.75}}},"usage":{"input_tokens":42,"output_tokens":0}}`
+	t.Run("SystemOneRaw", func(t *testing.T) {
+		t.Run("limits at request boundary", func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { t.Error("unexpected HTTP request") }))
+			t.Cleanup(srv.Close)
+			c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			req := llamacpp.SystemOneRequest{State: genai.Text("state")}
+			qs := genai.Questions{"q": {Type: genai.QuestionScore, Instructions: genai.Text("rate"), Score: []genai.DecisionContent{genai.Text("only")}}}
+			req.Questions = qs
+			err = c.SystemOneRaw(t.Context(), &req, &llamacpp.SystemOneResponse{})
+			if err == nil || !strings.Contains(err.Error(), "2 to 10 levels are required") {
+				t.Fatalf("missing native boundary limit: %v", err)
+			}
+		})
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			var req struct {
+				Model     string                     `json:"model"`
+				State     map[string]int             `json:"state"`
+				Images    []string                   `json:"images"`
+				Questions map[string]json.RawMessage `json:"questions"`
+			}
+			if r.URL.Path != "/v1/systemone" {
+				t.Errorf("unexpected path %s", r.URL.Path)
+			}
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				t.Error(err)
+			}
+			if req.Model != "kev" || req.State["ticket"] != 42 || len(req.Images) != 1 || len(req.Questions) != 3 {
+				t.Errorf("unexpected request: %+v", req)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			if _, err := w.Write([]byte(response)); err != nil {
+				t.Error(err)
+			}
+		}))
+		t.Cleanup(srv.Close)
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+		if err != nil {
+			t.Fatal(err)
+		}
+		out := &llamacpp.SystemOneResponse{}
+		if err := c.SystemOneRaw(t.Context(), &llamacpp.SystemOneRequest{Model: "kev", State: genai.Object{"ticket": 42}, Questions: q, Images: []string{"data:image/png;base64,aW1hZ2U="}}, out); err != nil {
+			t.Fatal(err)
+		}
+		if out.Model != "kev" || out.Answers["billing"].Noul != 0.9 {
+			t.Errorf("unexpected response: %+v", out)
+		}
+	})
+	t.Run("SystemOne", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != http.MethodPost || r.URL.Path != "/v1/systemone" {
+				t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+			}
+			var req struct {
+				State     string                     `json:"state"`
+				Model     string                     `json:"model"`
+				Questions map[string]json.RawMessage `json:"questions"`
+			}
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				t.Error(err)
+			}
+			if req.State != "Charged twice" || req.Model != "" || len(req.Questions) != 3 {
+				t.Errorf("unexpected request: %+v", req)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			if _, err := w.Write([]byte(response)); err != nil {
+				t.Error(err)
+			}
+		}))
+		t.Cleanup(srv.Close)
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+		if err != nil {
+			t.Fatal(err)
+		}
+		res, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("Charged twice"), Questions: q})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if res.Answers["billing"].Noul != 0.9 || res.Answers["route"].Choice != "billing" || res.Answers["urgency"].Score != 0.75 {
+			t.Errorf("unexpected answers: %+v", res.Answers)
+		}
+		if res.Usage.InputTokens != 42 || res.Usage.OutputTokens != 0 {
+			t.Errorf("unexpected usage: %+v", res.Usage)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, tc := range []struct {
+			name, body string
+			status     int
+		}{
+			{"unsupported model", `{"error":{"code":501,"message":"This model is not a decision model","type":"not_supported_error"}}`, 501},
+			{"missing answers", `{"model":"kev","answers":{},"usage":{"input_tokens":1,"output_tokens":0}}`, 200},
+			{"missing question", `{"model":"kev","answers":{"billing":{"type":"noul","noul":1}},"usage":{"input_tokens":1,"output_tokens":0}}`, 200},
+			{"wrong answer type", `{"model":"kev","answers":{"billing":{"type":"choice","choice":"billing"}},"usage":{"input_tokens":1,"output_tokens":0}}`, 200},
+			{"malformed response", `{`, 200},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(tc.status)
+					if _, err := w.Write([]byte(tc.body)); err != nil {
+						t.Error(err)
+					}
+				}))
+				t.Cleanup(srv.Close)
+				c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+				if err != nil {
+					t.Fatal(err)
+				}
+				_, err = c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("x"), Questions: q})
+				if err == nil {
+					t.Fatal("expected an error")
+				}
+				if tc.status == 501 {
+					var api *llamacpp.ErrorResponse
+					if !errors.As(err, &api) || api.ErrorVal.Code != 501 {
+						t.Errorf("unexpected error: %v", err)
+					}
+				}
+			})
+		}
+	})
 }

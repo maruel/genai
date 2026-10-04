@@ -125,11 +125,21 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 
 // TestCapabilities tests that declared provider capabilities match actual behavior.
 //
-// For each capability (GenAsync, Caching):
+// For each capability (SystemOne, GenAsync, Caching):
 // - If declared as true, calling the method should not return ErrNotSupported
 // - If declared as false, calling the method should return ErrNotSupported.
 func TestCapabilities(t *testing.T, c genai.Provider) {
 	caps := c.Capabilities()
+	t.Run("SystemOne", func(t *testing.T) {
+		out, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{})
+		if out != nil || err == nil {
+			t.Fatal("empty decision request must fail without a response")
+		}
+		_, unsupported := errors.AsType[*base.ErrNotSupported](err)
+		if unsupported == caps.SystemOne {
+			t.Errorf("SystemOne capability %t does not match error: %v", caps.SystemOne, err)
+		}
+	})
 	msgs := genai.Messages{genai.NewTextMessage("test")}
 	t.Run("GenAsync", func(t *testing.T) {
 		if _, err := c.GenAsync(t.Context(), msgs); caps.GenAsync {

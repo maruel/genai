@@ -18,6 +18,12 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - **Native JSON struct serialization**: Pass a struct to tell the LLM what to
   generate, decode the reply into your struct. No need to manually fiddle with
   JSON. Supports required fields, enums, descriptions, etc. You can still fiddle if you want to. :)
+- **Decision inference**: Ask typed questions about text or JSON state through `Provider.SystemOne()`.
+  TypeSafe's Jev, Cloudflare's CLEF and CLEF-Flash, and local llama.cpp decision models share
+  `genai.Questions` and `genai.Answers` maps with dynamic names and typed values.
+  Document support depends on the provider and model.
+  See the [TypeSafe](providers/typesafe/example_test.go), [Cloudflare](providers/cloudflare/example_test.go),
+  and [llama.cpp](providers/llamacpp/example_test.go) examples.
 - **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
   calling, via [go 1.23 iterators](https://go.dev/blog/range-functions).
 - **Multi-modal**: Process images, PDFs and videos (!) as input or output.
@@ -589,126 +595,32 @@ This will print:
 
 ### Text to Typed Decisions ❓
 
-[examples/txt\_to\_decisions/main.go](examples/txt_to_decisions/main.go): TypeSafe does not write
-prose, it answers typed questions about a state. Ask a yes/no, a choice and a score question about the same
-state in one request and read the answers back as Go values, each with the confidence and the probability
-distribution the model reported. The example prints the state it judges, the answers, and how long the request
-took.
-💡 Set [`TYPESAFE_API_KEY`](https://console.typesafe.ai/settings/keys).
-
-The questions are declared as struct fields of `typesafe.Noul`, `typesafe.Choice` and `typesafe.Score` and
-passed with `genai.GenOptionText.DecodeAs`; the state is a JSON document, and the same struct holds the
-answers afterwards.
-
+Ask yes/no, choice, or score questions about text or JSON state with `Provider.SystemOne()`.
+Set named questions in `genai.Questions`. Read typed answers under the same names from `genai.Answers`.
 
 ```go
-	// The state is the ticket with its subject, passed as a JSON document.
-	ticket := map[string]string{
-		"subject": "Charged twice this month",
-		"body":    "Hi, I see two charges of $49 on my card for August. …",
+	questions := genai.Questions{
+		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this about billing?")},
 	}
-	raw, _ := json.Marshal(ticket)
-	// Each field is a question, the name the answer comes back under is its json tag.
-	q := struct {
-		Billing typesafe.Noul   `json:"billing"`
-		Tone    typesafe.Choice `json:"tone"`
-		Urgency typesafe.Score  `json:"urgency"`
-	}{
-		Billing: typesafe.Noul{
-			Instructions: typesafe.Text("Is this request about billing?"),
-			Criteria:     &typesafe.NoulCriteria{True: typesafe.Text("…"), False: typesafe.Text("…")},
-		},
-		Tone: typesafe.Choice{
-			Instructions: typesafe.Text("What is the tone of the customer?"),
-			Criteria:     map[string]typesafe.Content{"calm": nil, "frustrated": nil, "angry": nil},
-		},
-		Urgency: typesafe.Score{
-			Instructions: typesafe.Text("How soon does this need to be handled?"),
-			Criteria:     []typesafe.Content{typesafe.Text("can wait"), typesafe.Text("today"), typesafe.Text("right now")},
-		},
+	res, err := c.SystemOne(ctx, &genai.SystemOneRequest{
+		State: genai.Text("I was charged twice."), Questions: questions,
+	})
+	if err != nil {
+		return err
 	}
-	res, _ := c.GenSync(ctx, genai.Messages{genai.Message{Requests: []genai.Request{{
-		Doc: genai.Doc{Filename: "ticket.json", Src: bytes.NewReader(raw)},
-	}}}}, &genai.GenOptionText{DecodeAs: &q})
-	res.Decode(&q)
-	fmt.Println(q.Billing.Probability, q.Tone.Label, q.Urgency.Value)
+	fmt.Println(res.Answers["billing"].Noul)
 ```
 
-Try it locally:
+A single inline JSON `Doc` supplies the state when `State` is unset.
+`ProviderCapabilities.SystemOne` reports client support, not model support.
+Unsupported providers return `base.ErrNotSupported`. Media support and limits vary by provider and model.
+See the [TypeSafe](https://pkg.go.dev/github.com/maruel/genai/providers/typesafe),
+[Cloudflare](https://pkg.go.dev/github.com/maruel/genai/providers/cloudflare), and
+[llama.cpp](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp) package docs for setup and constraints.
 
-```bash
-go run github.com/maruel/genai/examples/txt_to_decisions@latest
-```
-
-This may print:
-
-```
-State:
-{
-  "body": "Hi, I see two charges of $49 on my card for August. I only have one account. Please fix this ASAP, I'm pretty frustrated.",
-  "subject": "Charged twice this month"
-}
-Answers:
-- billing: 0.99 likely to be a yes
-- tone:    frustrated with 100% confidence
-    angry: 0.00
-    calm: 0.00
-    frustrated: 1.00
-- urgency: 2.33 over 4 levels with 61% confidence
-    0 (can wait): 0.00
-    1 (this week): 0.03
-    2 (today): 0.61
-    3 (right now): 0.36
-in: 469, out: 75, total: 544
-took 312ms
-```
-
-
-### Text to Typed Decisions Locally ❓
-
-[examples/txt\_to\_decisions\_local/main.go](examples/txt_to_decisions_local/main.go): Ask the same
-billing, tone and urgency questions using a local Kev-4B model. The example downloads and starts llama-server,
-connects to it, and stops it on exit. Downloads are cached, and no API key is required.
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_decisions_local@latest
-```
-
-Use `-subject` and `-text` to evaluate a different ticket:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_decisions_local@latest \
-  -subject "Lost package" -text "My order never arrived. Can you help?"
-```
-
-llama.cpp decision models use `llamacpp.Noul`, `llamacpp.Choice` and `llamacpp.Score` (and
-`llamacpp.Text` / `llamacpp.DecisionContent` for descriptions). Enable `llamacpp.ProviderOption{SystemOne: true}`
-when constructing the client.
-Pass one message containing the full state and call `GenSync` with `DecodeAs`. See the
-[llama.cpp System One example](providers/llamacpp/example_test.go) for a complete questionnaire. Every question
-must include instructions, and score rubrics must contain 2 to 10 levels. `GenStream` yields the complete
-answer at once. Models with image support can also receive inline image documents in the message.
-Use `GenSystemOneRaw` with `llamacpp.SystemOneRequest` and `llamacpp.SystemOneResponse` for direct API access.
-
-### Image and Text to Typed Decisions Locally ❓
-
-[examples/img\-txt\_to\_decisions\_local/main.go](examples/img-txt_to_decisions_local/main.go): Ask whether an image
-contains readable text, classify its kind, and rate its usefulness for a supplied text context. The example
-prints typed answers, probability distributions, token usage, and elapsed time.
-
-The example downloads and starts a local OpenJev server with its multimodal projector, then stops it on exit.
-The server and model downloads are cached for subsequent runs. With no arguments, it uses a bundled sample image:
-
-```bash
-go run github.com/maruel/genai/examples/img-txt_to_decisions_local@latest
-```
-
-To evaluate your own image and text context:
-
-```bash
-go run github.com/maruel/genai/examples/img-txt_to_decisions_local@latest \
-  -image screenshot.png -text "Review this screenshot of a billing error."
-```
+Complete examples: [hosted text decisions](examples/txt_to_decisions/main.go),
+[local text decisions](examples/txt_to_decisions_local/main.go), and
+[local image and text decisions](examples/img-txt_to_decisions_local/main.go).
 
 
 ### Text to Image 📸

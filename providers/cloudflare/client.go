@@ -5,6 +5,21 @@
 // Package cloudflare implements a client for the Cloudflare AI API.
 //
 // It is described at https://developers.cloudflare.com/api/resources/ai/
+//
+// # Decision inference
+//
+// CLEF and CLEF-Flash use [Client.SystemOne] instead of chat. Select an explicit Workers AI model,
+// such as "@cf/cloudflare/clef" or "@cf/cloudflare/clef-flash", through genai.ProviderOptionModel.
+// SystemOne uses the configured model's full route and its final path component as the body selector.
+//
+// Requests contain text or JSON state, typed questions and optional inline PNG, JPEG or WebP images.
+// Video and decision streaming are not supported. GenSync and GenStream remain chat operations.
+// [SystemOneRequest.From] bounds document reads; [SystemOneRequest.Validate] owns question and image
+// limits. These checks are best-effort; the service is authoritative and its limits may change.
+// The server enforces the encoded request size limit.
+//
+// [Client.SystemOneRaw] accepts a full Workers AI ID or a short selector under @cf/cloudflare,
+// independently of the configured model. Accepting future model IDs does not establish their schema or media support.
 package cloudflare
 
 // See official client at https://github.com/cloudflare/cloudflare-go
@@ -74,6 +89,8 @@ type Client struct {
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
+//
+// SystemOne requests use CLEF's current question and media limits.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var apiKey, accountID, model string
 	var modalities genai.Modalities
@@ -255,6 +272,85 @@ func (c *Client) HTTPClient() *http.Client {
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts...)
+}
+
+// SystemOneRaw runs a hosted decision request using the CLEF-compatible schema.
+// Model accepts a full Workers AI ID or a short @cf/cloudflare selector,
+// independently of the client's configured model.
+func (c *Client) SystemOneRaw(ctx context.Context, in *SystemOneRequest, out *SystemOneResponse) error {
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	// The hosted schema permits surrounding whitespace in the body selector.
+	req := *in
+	model := strings.TrimSpace(in.Model)
+	var u string
+	if strings.HasPrefix(model, "@") && strings.Contains(model, "/") {
+		u = systemOneURL(c.accountID, strings.Split(model, "/")...)
+		req.Model = model[strings.LastIndex(model, "/")+1:]
+	} else {
+		u = systemOneURL(c.accountID, "@cf", "cloudflare", model)
+		req.Model = model
+	}
+	// Decode the decision envelope ourselves: the chat error fallback cannot
+	// interpret a populated decision result when schema validation fails.
+	var raw json.RawMessage
+	if err := c.impl.DoRequest(ctx, "POST", u, &req, &raw); err != nil {
+		return err
+	}
+	resp := SystemOneResponse{}
+	if err := internal.UnmarshalJSON(raw, &resp); err != nil {
+		if api, ok := errors.AsType[*ErrorResponse](err); ok {
+			return api
+		}
+		return &internal.BadError{Err: err}
+	}
+	if err := resp.validateQuestions(&in.Questions); err != nil {
+		return &internal.BadError{Err: err}
+	}
+	*out = resp
+	return nil
+}
+
+// systemOneURL escapes route components without encoding a configured model's separators.
+func systemOneURL(accountID string, parts ...string) string {
+	for i, p := range parts {
+		parts[i] = url.PathEscape(p)
+		if p == "." || p == ".." {
+			parts[i] = strings.Repeat("%2E", len(p))
+		}
+	}
+	return "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + strings.Join(parts, "/")
+}
+
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{SystemOne: true}
+}
+
+// SystemOne implements genai.Provider using Workers AI's hosted decision API.
+// The configured model is a full Workers AI ID or a short @cf/cloudflare selector.
+// Docs accepts inline PNG, JPEG and WebP images. Other document types are rejected.
+// Each image read is bounded to 4 MiB; the hosted request validator checks formats,
+// dimensions and total size.
+func (c *Client) SystemOne(ctx context.Context, in *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
+	switch c.impl.Model {
+	case "", string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+		return nil, errors.New("SystemOne requires an explicit Workers AI model, not a chat tier alias")
+	}
+	req := SystemOneRequest{Model: c.impl.Model}
+	if err := req.From(in); err != nil {
+		return nil, err
+	}
+	out := SystemOneResponse{}
+	if err := c.SystemOneRaw(ctx, &req, &out); err != nil {
+		return nil, err
+	}
+	res := &genai.SystemOneResponse{}
+	if err := out.To(res); err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 // GenSyncRaw provides access to the raw API.

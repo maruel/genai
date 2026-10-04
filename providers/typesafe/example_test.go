@@ -8,7 +8,6 @@ package typesafe_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"maps"
@@ -68,50 +67,33 @@ func ExampleNew_hTTP_record() {
 		return
 	}
 
-	// Ask three different kinds of questions about the same state. Each field is a question, the name the
-	// answer comes back under is its json tag.
-	q := struct {
-		Billing typesafe.Noul   `json:"billing"`
-		Tone    typesafe.Choice `json:"tone"`
-		Urgency typesafe.Score  `json:"urgency"`
-	}{
-		Billing: typesafe.Noul{
-			Instructions: typesafe.Text("Is this request about billing?"),
-		},
-		Tone: typesafe.Choice{
-			Instructions: typesafe.Text("What is the tone of the customer?"),
-			Criteria: map[string]typesafe.Content{
-				"calm":       typesafe.Text("the customer is calm"),
-				"frustrated": typesafe.Text("annoyed but polite"),
-				"angry":      typesafe.Text("openly hostile"),
-			},
-		},
-		Urgency: typesafe.Score{
-			Instructions: typesafe.Text("How soon does this need to be handled?"),
-			Criteria: []typesafe.Content{
-				typesafe.Text("can wait"), typesafe.Text("this week"), typesafe.Text("today"), typesafe.Text("right now"),
-			},
-		},
+	// Ask three kinds of typed questions about the same state.
+	q := genai.Questions{
+		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this request about billing?")},
+		"tone": {Type: genai.QuestionChoice, Instructions: genai.Text("What is the tone of the customer?"), Choice: map[string]genai.DecisionContent{
+			"calm":       genai.Text("the customer is calm"),
+			"frustrated": genai.Text("annoyed but polite"),
+			"angry":      genai.Text("openly hostile"),
+		}},
+		"urgency": {Type: genai.QuestionScore, Instructions: genai.Text("How soon does this need to be handled?"), Score: []genai.DecisionContent{
+			genai.Text("can wait"), genai.Text("this week"), genai.Text("today"), genai.Text("right now"),
+		}},
 	}
-	res, err := c.GenSync(ctx, genai.Messages{genai.NewTextMessage("I was charged twice for order A-104, please refund the duplicate.")}, &genai.GenOptionText{DecodeAs: &q})
+	res, err := c.SystemOne(ctx, &genai.SystemOneRequest{State: genai.Text("I was charged twice for order A-104, please refund the duplicate."), Questions: q})
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	// The same struct holds the answers.
-	if err = res.Decode(&q); err != nil {
-		log.Print(err)
-		return
-	}
+
 	// Every answer keeps the confidence and the probability of each option or level.
-	fmt.Printf("billing: %.2f likely to be a yes\n", q.Billing.Probability)
-	fmt.Printf("tone: %s with %.0f%% confidence\n", q.Tone.Label, 100*q.Tone.Confidence)
-	for _, name := range slices.Sorted(maps.Keys(q.Tone.Probabilities)) {
-		fmt.Printf("  %s: %.2f\n", name, q.Tone.Probabilities[name])
+	fmt.Printf("billing: %.2f likely to be a yes\n", res.Answers["billing"].Noul)
+	fmt.Printf("tone: %s with %.0f%% confidence\n", res.Answers["tone"].Choice, 100*res.Answers["tone"].Confidence)
+	for _, name := range slices.Sorted(maps.Keys(res.Answers["tone"].Probabilities)) {
+		fmt.Printf("  %s: %.2f\n", name, res.Answers["tone"].Probabilities[name])
 	}
-	fmt.Printf("urgency: %.2f over %d levels with %.0f%% confidence\n", q.Urgency.Value, len(q.Urgency.Legend), 100*q.Urgency.Confidence)
-	for _, level := range slices.Sorted(maps.Keys(q.Urgency.Probabilities)) {
-		fmt.Printf("  %s (%v): %.2f\n", level, q.Urgency.Legend[level], q.Urgency.Probabilities[level])
+	fmt.Printf("urgency: %.2f over %d levels with %.0f%% confidence\n", res.Answers["urgency"].Score, len(res.Answers["urgency"].Legend), 100*res.Answers["urgency"].Confidence)
+	for _, level := range slices.Sorted(maps.Keys(res.Answers["urgency"].Probabilities)) {
+		fmt.Printf("  %s (%v): %.2f\n", level, res.Answers["urgency"].Legend[level], res.Answers["urgency"].Probabilities[level])
 	}
 	// Output:
 	// billing: 0.99 likely to be a yes
@@ -124,41 +106,4 @@ func ExampleNew_hTTP_record() {
 	//   1 (this week): 0.28
 	//   2 (today): 0.62
 	//   3 (right now): 0.09
-}
-
-// ExampleQuestionsFrom shows the questions a questionnaire struct declares, without sending a request.
-func ExampleQuestionsFrom() {
-	var q struct {
-		Billing typesafe.Noul   `json:"billing"`
-		Tone    typesafe.Choice `json:"tone"`
-	}
-	q.Billing.Instructions = typesafe.Text("Is this request about billing?")
-	q.Tone.Instructions = typesafe.Text("What is the tone of the customer?")
-	q.Tone.Criteria = map[string]typesafe.Content{"calm": nil, "angry": nil}
-	questions, err := typesafe.QuestionsFrom(&q)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	raw, err := json.MarshalIndent(questions, "", "  ")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	fmt.Printf("%s\n", raw)
-	// Output:
-	// {
-	//   "billing": {
-	//     "type": "noul",
-	//     "instructions": "Is this request about billing?"
-	//   },
-	//   "tone": {
-	//     "type": "choice",
-	//     "instructions": "What is the tone of the customer?",
-	//     "criteria": {
-	//       "angry": null,
-	//       "calm": null
-	//     }
-	//   }
-	// }
 }

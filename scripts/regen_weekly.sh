@@ -22,7 +22,7 @@ fi
 
 go install ./cmd/list-models ./cmd/scoreboard
 # Providers that can't run in CI: local servers, or CLI wrappers.
-EXCLUDE="bfl claudecode codex llamacpp ollama openaicompatible opencode openaibase openaichat openairesponses perplexity pi"
+EXCLUDE="antigravity bfl claudecode codex llamacpp ollama openaicompatible opencode openaibase openaichat openairesponses perplexity pi"
 PROVIDERS=()
 for d in providers/*/; do
   name=$(basename "$d")

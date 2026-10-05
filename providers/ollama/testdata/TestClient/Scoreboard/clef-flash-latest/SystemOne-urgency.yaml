@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        host: localhost
+        body: |
+            {"model":"clef-flash:latest","state":"I was charged twice for my order. Please refund the duplicate charge today.","questions":{"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 293
+        body: '{"model":"clef-flash:latest","answers":{"urgency":{"type":"score","score":0.9792910960304169,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.02070890396958306,"1":0.9792910960304169},"confidence":0.8545974523949569}},"usage":{"input_tokens":143,"output_tokens":0}}'
+        headers:
+            Content-Length:
+                - "293"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1.624s

@@ -53,36 +53,36 @@ genai is _intentional_. Curious why it was created? See the release announcement
 
 ## Scoreboard
 
-| Provider                                   | 🌐   | Mode          | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ------------------------------------------ | ---- | ------------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🕸️🪨 | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| [antigravity](docs/antigravity.md)         | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ❌     | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
-| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | 💨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
-| [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 💨🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream🧠 | 🎤💬📸     | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | ✅     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 🎤💬📸 | ✅🪨   | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ❌    | ✅     | ✅    | ✅     |
-| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
-| [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
-| [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [typesafe](docs/typesafe.md)               | 🇺🇸   | Sync          | 💬         | 💬     | ❌     | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠 | 🎤🎥💬📸   | 🎤💬   | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
-| openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| Provider                                   | 🌐   | Mode                     | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------------------------------ | ---- | ------------------------ | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠            | 💬📸       | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠            | 💬📄📸     | 💬     | ✅🕸️🪨 | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| [antigravity](docs/antigravity.md)         | 🇺🇸   | Sync, Stream🧠            | 💬         | 💬     | ❌     | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [bfl](docs/bfl.md)                         | 🇩🇪   | Sync                     | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
+| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream, SystemOne🧠 | 💬📸       | 🎯💬    | 💨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠            | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠            | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠            | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️ | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | 💨🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream, SystemOne🧠 | 🎤💬📸     | 🎯💬    | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream             | 🎤💬📄📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠, SystemOne | 💬📸       | 🎯💬    | ✅     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸 | ✅🪨   | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ❌    | ✅     | ✅    | ✅     |
+| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠            | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
+| [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | ✅🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
+| [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠            | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream             | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠            | 💬📸       | 💬📸   | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [typesafe](docs/typesafe.md)               | 🇺🇸   | SystemOne                | 💬         | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠            | 🎤🎥💬📸   | 🎤💬   | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| openaicompatible                           | N/A  | Sync, Stream             | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -97,6 +97,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
+- 🎯: Decision: typed answers returned by SystemOne
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

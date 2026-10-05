@@ -48,7 +48,7 @@ type Provider interface {
 	ModelID() string
 	// OutputModalities returns the output modalities supported by this specific client configuration.
 	//
-	// This states what kind of output the model will generate (text, audio, image, video). It varies per
+	// This states what kind of output the model will generate (text, audio, image, video, decision). It varies per
 	// provider and models. The vast majority of providers and models support only output modality like
 	// text-only, image-only, etc.
 	OutputModalities() Modalities

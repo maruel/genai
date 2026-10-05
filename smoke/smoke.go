@@ -48,6 +48,20 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 		return scoreboard.Scenario{}, usage, errors.New("provider must have a model")
 	}
 	mods := c.OutputModalities()
+	doSystemOne := c.Capabilities().SystemOne && (len(mods) == 0 || slices.Contains(mods, genai.ModalityDecision))
+	sb := c.Scoreboard()
+	for i := range sb.Scenarios {
+		sc := &sb.Scenarios[i]
+		if sc.SystemOne != nil && slices.Contains(sc.Models, m) {
+			doSystemOne = true
+			if sc.GenSync == nil && sc.GenStream == nil {
+				return RunSystemOne(ctx, pf)
+			}
+		}
+	}
+	if doSystemOne && !slices.Contains(mods, genai.ModalityText) {
+		return RunSystemOne(ctx, pf)
+	}
 
 	mu := sync.Mutex{}
 	result := scoreboard.Scenario{
@@ -199,6 +213,14 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 	}
 
 	err := eg.Wait()
+	if err == nil && doSystemOne {
+		d, u, e := RunSystemOne(ctx, pf)
+		usage.Add(&u)
+		result.SystemOne = d.SystemOne
+		result.In = mergeModalities(result.In, d.In)
+		result.Out = mergeModalities(result.Out, d.Out)
+		err = e
+	}
 	return result, usage, err
 }
 

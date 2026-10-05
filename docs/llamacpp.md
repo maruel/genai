@@ -1,15 +1,16 @@
 # Scoreboard
 
-| Model                                                      | Mode    | ➛In    | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ---------------------------------------------------------- | ------- | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠   | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠 | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠   | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠 | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync    | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream  | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync    | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream  | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Model                                                      | Mode      | ➛In    | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ---------------------------------------------------------- | --------- | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠     | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠   | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠     | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠   | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf                    | SystemOne | 💬     | 🎯      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync      | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream    | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync      | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream    | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -24,6 +25,7 @@
 - ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
+- 🎯: Decision: typed answers returned by SystemOne
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

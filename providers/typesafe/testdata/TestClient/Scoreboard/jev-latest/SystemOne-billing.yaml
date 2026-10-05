@@ -1,0 +1,40 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 204
+        host: api.typesafe.ai
+        body: |
+            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"jev-latest","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.typesafe.ai/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"jev-1.13.0","answers":{"billing":{"type":"noul","noul":0.98}},"usage":{"input_tokens":288,"output_tokens":20}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a458d4484842d7a3-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Typesafe-Request-Id:
+                - req_01a109c9e94e772f826594f6514aa198
+        status: 200 OK
+        code: 200
+        duration: 196ms

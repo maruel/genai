@@ -119,6 +119,37 @@
     },
     {
       "models": [
+        "@cf/cloudflare/clef-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "decision": {
+          "inline": true
+        }
+      },
+      "SystemOne": {
+        "noul": true,
+        "choice": true,
+        "score": true,
+        "object": true,
+        "array": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "models": [
         "@cf/meta/llama-3.2-3b-instruct"
       ],
       "in": {
@@ -208,7 +239,6 @@
         "@cf/black-forest-labs/flux-2-klein-9b",
         "@cf/bytedance/stable-diffusion-xl-lightning",
         "@cf/cloudflare/clef",
-        "@cf/cloudflare/clef-flash",
         "@cf/deepgram/aura-1",
         "@cf/deepgram/aura-2-en",
         "@cf/deepgram/aura-2-es",

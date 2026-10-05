@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 243
+        host: api.cloudflare.com
+        body: |
+            {"model":"clef-flash","state":"I was charged twice for my order. Please refund the duplicate charge today.","questions":{"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/cloudflare/clef-flash
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"model":"clef-flash","answers":{"urgency":{"type":"score","score":0.9793,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.0207,"1":0.9793},"confidence":0.9189}},"usage":{"input_tokens":143,"output_tokens":0}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-10-01.epoch
+            Cache-Control:
+                - no-store
+            Cf-Ai-Neurons:
+                - "1.17"
+            Cf-Ai-Req-Id:
+                - fa2f1146-2e7d-4a0e-9bdf-af30c1309aa6
+            Cf-Auditlog-Id:
+                - 01a109c9-ee34-73c4-a3d4-89b8e234c973
+            Cf-Ray:
+                - a458d4504e5befec-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 200 OK
+        code: 200
+        duration: 716ms

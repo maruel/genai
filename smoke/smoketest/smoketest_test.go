@@ -8,8 +8,11 @@ package smoketest
 
 import (
 	"context"
+	"encoding/json"
 	"iter"
 	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -109,4 +112,25 @@ func scoreboardResult() genai.Result {
 			FinishReason: genai.FinishedStop,
 		},
 	}
+}
+
+func TestGenerateUpdatedScoreboard(t *testing.T) {
+	t.Run("filtered preserves tiers", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "scoreboard.json")
+		old := []byte(`{"country":"US","dashboardURL":"","scenarios":[{"models":["chat"],"sota":true,"GenSync":{}},{"models":["decision"],"SystemOne":{}}]}`)
+		if err := os.WriteFile(path, old, 0o600); err != nil {
+			t.Fatal(err)
+		}
+		_, raw := generateUpdatedScoreboard(t, path, []scoreboard.Scenario{{Models: []string{"decision"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, SystemOne: &scoreboard.DecisionFunctionality{Noul: true}}}, nil, true)
+		var sb scoreboard.Score
+		if err := json.Unmarshal(raw, &sb); err != nil {
+			t.Fatal(err)
+		}
+		if len(sb.Scenarios) != 2 || sb.Scenarios[0].Models[0] != "chat" || !sb.Scenarios[0].SOTA || sb.Scenarios[0].GenSync == nil {
+			t.Fatalf("unfiltered model changed: %+v", sb.Scenarios)
+		}
+		if sb.Scenarios[1].SystemOne == nil || !sb.Scenarios[1].SystemOne.Noul {
+			t.Fatalf("decision result lost: %+v", sb.Scenarios[1])
+		}
+	})
 }

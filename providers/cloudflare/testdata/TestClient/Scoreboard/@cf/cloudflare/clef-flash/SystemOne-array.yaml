@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 483
+        host: api.cloudflare.com
+        body: |
+            {"model":"clef-flash","state":["I was charged twice for my order. Please refund the duplicate charge today."],"questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/cloudflare/clef-flash
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"model":"clef-flash","answers":{"billing":{"type":"noul","noul":0.9153},"route":{"type":"choice","choice":"billing","probabilities":{"billing":0.9851,"support":0.0149},"confidence":0.9413},"urgency":{"type":"score","score":0.9649,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.0351,"1":0.9649},"confidence":0.8645}},"usage":{"input_tokens":295,"output_tokens":0}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - 2026-10-01.epoch
+            Cache-Control:
+                - no-store
+            Cf-Ai-Neurons:
+                - "2.41"
+            Cf-Ai-Req-Id:
+                - 4cbdb0ab-c69d-443b-889a-05f4de6d0e2d
+            Cf-Auditlog-Id:
+                - 01a109c9-f244-7dfc-9cb9-b9b1d7336f91
+            Cf-Ray:
+                - a458d456ca77efec-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+        status: 200 OK
+        code: 200
+        duration: 324ms

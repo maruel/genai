@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 499
+        host: localhost
+        body: |
+            {"model":"clef-flash:latest","state":{"ticket":"I was charged twice for my order. Please refund the duplicate charge today."},"questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 500
+        body: '{"model":"clef-flash:latest","answers":{"billing":{"type":"noul","noul":0.9197770915436363},"route":{"type":"choice","choice":"billing","probabilities":{"billing":0.9865744581857759,"support":0.013425541814223998},"confidence":0.8972698644779854},"urgency":{"type":"score","score":0.9611627383364488,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.03883726166355118,"1":0.9611627383364488},"confidence":0.7630645586116043}},"usage":{"input_tokens":298,"output_tokens":0}}'
+        headers:
+            Content-Length:
+                - "500"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 4.351s

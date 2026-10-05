@@ -1,10 +1,10 @@
 # Scoreboard
 
-| Model       | Mode | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ----------- | ---- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| jev-latest🥇 | Sync | 💬    | 💬     | ❌   | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| jev-preview | ?    | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| jev-1.13.0  | ?    | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Model       | Mode      | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ----------- | --------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| jev-latest🥇 | SystemOne | 💬    | 🎯      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| jev-1.13.0  | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| jev-preview | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -19,6 +19,7 @@
 - ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
+- 🎯: Decision: typed answers returned by SystemOne
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -46,6 +47,5 @@
 
 ## Warnings
 
-- TypeSafe does not generate free form text. Every request sends a state and typed questions, and returns one typed answer per question. The questions are declared with genai.GenOptionText.DecodeAs and the reply is always the JSON object of the answers keyed by question name, which the same struct decodes.
-- There is no streaming API. GenStream is simulated from GenSync and returns the whole reply at once.
+- TypeSafe answers typed questions through SystemOne and does not support text generation or streaming.
 - The API does not report rate limits, but it enforces 1,200 requests per minute and 250,000 tokens per second for jev-1.13.0.

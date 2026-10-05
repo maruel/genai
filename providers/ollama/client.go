@@ -6,6 +6,8 @@
 //
 // It is described at https://github.com/ollama/ollama/blob/main/docs/api.md
 // and https://pkg.go.dev/github.com/ollama/ollama/api
+// Decision models, including Clef Flash, use [Client.SystemOne] through /v1/systemone
+// with Ollama v0.35.1 or later. See https://docs.ollama.com/api/systemone.
 package ollama
 
 import (
@@ -101,9 +103,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
 	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	if slices.ContainsFunc(modalities, func(m genai.Modality) bool { return m != genai.ModalityText && m != genai.ModalityDecision }) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text and decision are supported", modalities)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -123,30 +124,42 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	switch model {
 	case "":
 	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-		c.impl.Model = c.selectBestTextModel(ctx, model)
-		c.impl.OutputModalities = mod
+		c.impl.Model = c.selectBestModel(ctx, model, modalities)
 	default:
 		c.impl.Model = model
+	}
+	mod := genai.Modalities{modelOutputModality(c.impl.Model)}
+	if model != "" {
+		if len(modalities) != 0 && !slices.Equal(modalities, mod) {
+			return nil, fmt.Errorf("unexpected option Modalities %s, model supports %s", modalities, mod)
+		}
 		c.impl.OutputModalities = mod
+	} else if len(modalities) != 0 {
+		c.impl.OutputModalities = modalities
 	}
 	return c, nil
 }
 
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+// selectBestModel selects an installed model with the requested output modality or a popular default.
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) string {
+func (c *Client) selectBestModel(ctx context.Context, preference string, modalities genai.Modalities) string {
 	// There's no way to list what's the current best models and no way to list the models in the library:
 	// https://github.com/ollama/ollama/issues/8241
 
 	// Figure out the model loaded if any. Ignore the error.
 	m, _ := c.ListModels(ctx)
-	if len(m) > 0 {
-		return m[0].GetID()
+	for _, model := range m {
+		if len(modalities) == 0 || slices.Equal(modalities, genai.Modalities{modelOutputModality(model.GetID())}) {
+			return model.GetID()
+		}
 	}
 	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
 	// it will be pulled upon first use.
+	if slices.Equal(modalities, genai.Modalities{genai.ModalityDecision}) {
+		return "clef-flash:latest"
+	}
 	switch preference {
 	case string(genai.ModelCheap):
 		return "gemma4:e2b"
@@ -159,9 +172,57 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) str
 	}
 }
 
+func modelOutputModality(model string) genai.Modality {
+	if strings.HasPrefix(model[strings.LastIndexByte(model, '/')+1:], "clef") {
+		return genai.ModalityDecision
+	}
+	return genai.ModalityText
+}
+
 // Close implements io.Closer. It currently does nothing.
 func (c *Client) Close() error {
 	return nil
+}
+
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{SystemOne: true}
+}
+
+// SystemOne answers typed questions using a local decision model.
+// Inline images are encoded as base64; each document read is bounded to 10 MiB.
+func (c *Client) SystemOne(ctx context.Context, in *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
+	req := SystemOneRequest{Model: c.impl.Model}
+	if err := req.From(in); err != nil {
+		return nil, err
+	}
+	out := SystemOneResponse{}
+	if err := c.SystemOneRaw(ctx, &req, &out); err != nil {
+		return nil, err
+	}
+	res := &genai.SystemOneResponse{}
+	if err := out.To(res); err != nil {
+		return nil, err
+	}
+	if err := res.ValidateQuestions(&req.Questions); err != nil {
+		return nil, &internal.BadError{Err: err}
+	}
+	return res, nil
+}
+
+// SystemOneRaw provides access to Ollama's native /v1/systemone endpoint.
+func (c *Client) SystemOneRaw(ctx context.Context, in *SystemOneRequest, out *SystemOneResponse) error {
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	err := c.impl.DoRequest(ctx, "POST", c.baseURL+"/v1/systemone", in, out)
+	if e, ok := errors.AsType[*ErrorResponse](err); ok && strings.Contains(e.Error(), "not found") {
+		if err := c.PullModel(ctx, in.Model); err != nil {
+			return err
+		}
+		return c.impl.DoRequest(ctx, "POST", c.baseURL+"/v1/systemone", in, out)
+	}
+	return err
 }
 
 // Name implements genai.Provider.

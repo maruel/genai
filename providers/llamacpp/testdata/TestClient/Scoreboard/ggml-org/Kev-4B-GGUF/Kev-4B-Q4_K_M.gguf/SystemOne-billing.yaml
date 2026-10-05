@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 233
+        host: 127.0.0.1
+        body: |
+            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 142
+        body: '{"model":"ggml-org/Kev-4B-GGUF","answers":{"billing":{"type":"noul","noul":0.8183523903317084}},"usage":{"input_tokens":31,"output_tokens":0}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "142"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 218ms

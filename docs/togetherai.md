@@ -402,6 +402,7 @@
 - ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
+- 🎯: Decision: typed answers returned by SystemOne
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

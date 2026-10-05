@@ -94,9 +94,6 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			filtered = true
 		}
 	})
-	if filtered && *updateScoreboard {
-		t.Fatal("cannot use -update-scoreboard with -test.run")
-	}
 
 	seen := map[scoreboard.Model]struct{}{}
 	for _, m := range models {
@@ -118,7 +115,8 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 	modelsToTest := map[scoreboard.Model]struct{}{}
 	allScoreboardModels := map[scoreboard.Model]struct{}{}
-	for i, sc := range sb.Scenarios {
+	for i := range sb.Scenarios {
+		sc := &sb.Scenarios[i]
 		if len(sc.Models) == 0 {
 			t.Fatalf("scenario #%d has no models", i)
 		}
@@ -136,14 +134,15 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		if !t.Run(m.String(), func(t *testing.T) {
 			// First try to find exact match with the requested Reason value
 			var want scoreboard.Scenario
-			for _, sc := range sb.Scenarios {
+			for i := range sb.Scenarios {
+				sc := &sb.Scenarios[i]
 				if m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
 					if sc.Models[0] != m.Model {
 						// We only run the first model in the scenario for cost savings purposes. Create one scenario per
 						// model to smoke test.
 						t.Skip("Only run first model in scenario for cost savings")
 					}
-					want = sc
+					want = *sc
 					want.Models = []string{m.Model}
 					break
 				}
@@ -153,7 +152,8 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				// Look for an existing untested scenario with the same reason to preserve Comments
 				// TODO(maruel): I don't believe this can happen.
 				var foundComments string
-				for _, sc := range sb.Scenarios {
+				for i := range sb.Scenarios {
+					sc := &sb.Scenarios[i]
 					if sc.Untested() && sc.Reason == m.Reason && (foundComments == "" || foundComments == sc.Comments) {
 						foundComments = sc.Comments
 						break
@@ -212,7 +212,8 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			if _, ok := seen[sbModel]; !ok {
 				// Check if this model is in an untested scenario - if so, don't mark it as stale
 				isUntested := false
-				for _, sc := range sb.Scenarios {
+				for i := range sb.Scenarios {
+					sc := &sb.Scenarios[i]
 					for _, m := range sc.Models {
 						if m == sbModel.Model && sc.Reason == sbModel.Reason {
 							if sc.Untested() {
@@ -238,7 +239,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	// Check scoreboard and update if requested
 	if len(updatedScenarios) > 0 || len(staleModels) > 0 {
 		scoreboardPath := filepath.Join(".", scoreboardFile)
-		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, updatedScenarios, slices.Collect(maps.Keys(staleModels)))
+		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, updatedScenarios, slices.Collect(maps.Keys(staleModels)), filtered)
 		if !bytes.Equal(rawNew, rawOld) {
 			if !*updateScoreboard {
 				t.Fatalf("%s is out of date, run with -update-scoreboard to update it", scoreboardFile)
@@ -370,7 +371,7 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 // It merges tested scenarios with the existing scoreboard to preserve metadata,
 // removes stale models, and sorts scenarios so SOTA/Good/Cheap appear first.
 // Returns the old and new scoreboard JSON bytes.
-func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Model) (rawOld, rawNew []byte) {
+func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Model, filtered bool) (rawOld, rawNew []byte) {
 	rawOld, err := os.ReadFile(scoreboardPath)
 	if err != nil {
 		t.Fatalf("failed to read scoreboard.json: %v", err)
@@ -406,7 +407,8 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	usedOldScenarios := make(map[*scoreboard.Scenario]struct{})
 
 	// First pass: add tested scenarios, preserving metadata from old scenarios
-	for _, newSc := range scenarios {
+	for i := range scenarios {
+		newSc := &scenarios[i]
 		if len(newSc.Models) == 0 {
 			continue
 		}
@@ -429,7 +431,7 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		seenPairs[key] = struct{}{}
 
 		// Use old metadata if available, otherwise use new scenario
-		sc := newSc
+		sc := *newSc
 		if oldSc, found := oldScenarios[key]; found {
 			// Preserve metadata from old scenario
 			sc.Comments = oldSc.Comments
@@ -478,7 +480,8 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	}
 
 	// Second pass: add tested but non-preferred scenarios from old scoreboard
-	for _, oldSc := range oldScore.Scenarios {
+	for i := range oldScore.Scenarios {
+		oldSc := oldScore.Scenarios[i]
 		// Skip if this scenario was already processed as tested
 		if _, seen := seenPairs[scoreboard.Model{Model: oldSc.Models[0], Reason: oldSc.Reason}]; seen {
 			continue
@@ -504,9 +507,11 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		oldSc.Models = remainingModels
 
 		// Include tested scenarios but clear preference flags since they weren't re-tested
-		oldSc.SOTA = false
-		oldSc.Good = false
-		oldSc.Cheap = false
+		if !filtered {
+			oldSc.SOTA = false
+			oldSc.Good = false
+			oldSc.Cheap = false
+		}
 		result = append(result, oldSc)
 	}
 
@@ -529,7 +534,8 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 
 	// First, collect all untested scenarios from new results, removing stale
 	// models and models already present in tested scenarios.
-	for _, sc := range scenarios {
+	for i := range scenarios {
+		sc := scenarios[i]
 		if len(sc.Models) > 0 && sc.Untested() {
 			// Remove stale models
 			remainingModels := make([]string, 0, len(sc.Models))
@@ -612,9 +618,10 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	// Consolidate untested by comments/reason. Filter out empty scenarios
 	// (all models were deduplicated into another scenario).
 	nonEmpty := make([]scoreboard.Scenario, 0, len(allUntested))
-	for _, sc := range allUntested {
+	for i := range allUntested {
+		sc := &allUntested[i]
 		if len(sc.Models) > 0 {
-			nonEmpty = append(nonEmpty, sc)
+			nonEmpty = append(nonEmpty, *sc)
 		}
 	}
 	allUntested = nonEmpty

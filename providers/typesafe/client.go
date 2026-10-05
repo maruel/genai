@@ -91,8 +91,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		case genai.ProviderOptionModel:
 			model = string(v)
 		case genai.ProviderOptionModalities:
-			if mod := genai.Modalities(v); len(mod) != 0 && !slices.Equal(mod, genai.Modalities{genai.ModalityText}) {
-				return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+			if mod := genai.Modalities(v); len(mod) != 0 && !slices.Equal(mod, genai.Modalities{genai.ModalityDecision}) {
+				return nil, fmt.Errorf("unexpected option Modalities %s, only decision is supported", mod)
 			}
 		case genai.ProviderOptionPreloadedModels:
 			preloadedModels = []genai.Model(v)
@@ -130,7 +130,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		},
 	}
 	if err == nil {
-		c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
+		c.impl.OutputModalities = genai.Modalities{genai.ModalityDecision}
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):

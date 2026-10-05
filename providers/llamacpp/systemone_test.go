@@ -8,6 +8,7 @@ package llamacpp_test
 
 import (
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 
@@ -90,4 +91,26 @@ func TestSystemOneRequest(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestNew(t *testing.T) {
+	for _, model := range []string{"", string(genai.ModelGood), "custom/Decision-Model.gguf"} {
+		t.Run(model, func(t *testing.T) {
+			opts := []genai.ProviderOption{genai.ProviderOptionRemote("http://localhost:0"), genai.ProviderOptionModalities{genai.ModalityDecision}, genai.ProviderOptionPreloadedModels{&llamacpp.Model{OpenAI: llamacpp.ModelOpenAI{ID: "/models/Decision-Model.gguf"}}}}
+			if model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model))
+			}
+			c, err := llamacpp.New(t.Context(), opts...)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = c.Close() })
+			if !slices.Equal(c.OutputModalities(), genai.Modalities{genai.ModalityDecision}) {
+				t.Fatalf("unexpected output modalities: %v", c.OutputModalities())
+			}
+			if model == string(genai.ModelGood) && c.ModelID() != "Decision-Model.gguf" {
+				t.Fatalf("unexpected selected model: %s", c.ModelID())
+			}
+		})
+	}
 }

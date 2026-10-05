@@ -1,0 +1,40 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 492
+        host: api.typesafe.ai
+        body: |
+            {"state":{"ticket":"I was charged twice for my order. Please refund the duplicate charge today."},"model":"jev-latest","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.typesafe.ai/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"jev-1.13.0","answers":{"billing":{"type":"noul","noul":0.98},"route":{"type":"choice","choice":"billing","confidence":1.0,"probabilities":{"billing":1.0,"support":0.0}},"urgency":{"type":"score","score":1.0,"confidence":1.0,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.0,"1":1.0}}},"usage":{"input_tokens":380,"output_tokens":62}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a458d44b2b56d7a3-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Typesafe-Request-Id:
+                - req_01a109c9eb217beea74c56f29ed6968f
+        status: 200 OK
+        code: 200
+        duration: 116ms

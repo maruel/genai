@@ -46,7 +46,7 @@ func TestModel(t *testing.T) {
 
 func TestModality(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		tests := []Modality{ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo}
+		tests := []Modality{ModalityAudio, ModalityDecision, ModalityDocument, ModalityImage, ModalityText, ModalityVideo}
 		for _, m := range tests {
 			if err := m.Validate(); err != nil {
 				t.Fatalf("Modality %q: got err=%v", m, err)
@@ -259,6 +259,7 @@ func TestScenario(t *testing.T) {
 			{&Scenario{Models: []string{"gpt-4"}}, true},
 			{&Scenario{Models: []string{"gpt-4"}, GenSync: &Functionality{}}, false},
 			{&Scenario{Models: []string{"gpt-4"}, GenStream: &Functionality{}}, false},
+			{&Scenario{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{}}, false},
 			{&Scenario{Models: []string{"gpt-4"}, In: map[Modality]ModalCapability{ModalityText: {}}, Out: map[Modality]ModalCapability{ModalityText: {}}}, false},
 		}
 
@@ -279,6 +280,7 @@ func TestScenario(t *testing.T) {
 			},
 			{Models: []string{"new-model"}, GenSync: &Functionality{}},
 			{Models: []string{"new-model"}, GenStream: &Functionality{}},
+			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{}},
 			{Models: []string{"new-model"}, GenSync: &Functionality{}, GenStream: &Functionality{}},
 		}
 
@@ -298,6 +300,8 @@ func TestScenario(t *testing.T) {
 			{Models: []string{"gpt-4"}, Out: map[Modality]ModalCapability{ModalityText: {}}},
 			{Models: []string{"gpt-4"}, GenSync: &Functionality{JSON: true}},
 			{Models: []string{"gpt-4"}, GenStream: &Functionality{JSON: true}},
+			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{Noul: true}},
+			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{ReportTokenUsage: TriState(2)}},
 			{Models: []string{"gpt-4"}, GenSync: &Functionality{}, GenStream: &Functionality{JSON: true}},
 		}
 

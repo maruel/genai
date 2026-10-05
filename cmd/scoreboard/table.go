@@ -35,6 +35,7 @@ const legend = `<details>
 - ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
+- 🎯: Decision: typed answers returned by SystemOne
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -106,6 +107,9 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	}
 	for _, s := range scoreboards {
 		for i := range s.Scenarios {
+			if s.Scenarios[i].SystemOne != nil {
+				t.initFromSystemOne(&s.Scenarios[i])
+			}
 			// Assume GenSync has the best values.
 			f := s.Scenarios[i].GenSync
 			if f == nil {
@@ -149,6 +153,17 @@ type tableDataRow struct {
 	RateLimits string `title:"Limits"`
 	Usage      string `title:"Usage"`
 	Finish     string `title:"Finish"`
+}
+
+func (t *tableDataRow) initFromSystemOne(s *scoreboard.Scenario) {
+	f := s.SystemOne
+	t.initFromScenario(s, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
+	if !strings.Contains(t.Mode, "SystemOne") {
+		if t.Mode != "" {
+			t.Mode += ", "
+		}
+		t.Mode += "SystemOne"
+	}
 }
 
 func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Functionality) {
@@ -250,6 +265,7 @@ var countryMap = map[string]string{
 }
 
 var modalityMap = map[genai.Modality]string{
+	genai.ModalityDecision: "🎯",
 	genai.ModalityText:     "💬", // "📝",
 	genai.ModalityImage:    "📸", // "🖼️",
 	genai.ModalityAudio:    "🎤",
@@ -337,14 +353,21 @@ func printProviderVariantTables(p genai.Provider, w io.Writer, variants []genai.
 // printScoreboardTable prints a single scoreboard table.
 func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
 	rows := make([]tableModelRow, 0, len(sb.Scenarios))
-	for _, sc := range sb.Scenarios {
+	for i := range sb.Scenarios {
+		sc := &sb.Scenarios[i]
 		var tmpRows []tableModelRow
+		if sc.SystemOne != nil {
+			row := tableModelRow{}
+			row.initFromSystemOne(sc)
+			fillEmptyFields(&row, "❌")
+			tmpRows = append(tmpRows, row)
+		}
 		for _, f := range []*scoreboard.Functionality{sc.GenSync, sc.GenStream} {
 			if f == nil {
 				continue
 			}
 			row := tableModelRow{}
-			row.initFromScenario(&sc, f)
+			row.initFromScenario(sc, f)
 			if p.Capabilities().GenAsync {
 				row.Batch = "✅"
 			}

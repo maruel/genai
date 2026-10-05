@@ -125,6 +125,29 @@
     },
     {
       "models": [
+        "ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "decision": {
+          "inline": true
+        }
+      },
+      "SystemOne": {
+        "noul": true,
+        "choice": true,
+        "score": true,
+        "object": true,
+        "array": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "models": [
         "ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf"
       ],
       "in": {

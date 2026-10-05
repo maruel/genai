@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 )
 
 // SystemOneResponse is the native /v1/systemone response.
@@ -50,7 +51,7 @@ func (r *SystemOneRequest) From(in *genai.SystemOneRequest) error {
 		return err
 	}
 	if len(docs) != 0 {
-		return errors.New("TypeSafe does not support document attachments")
+		return &base.ErrNotSupported{Options: []string{"SystemOneRequest.Docs"}}
 	}
 	r.State, r.Questions = state, in.Questions
 	return nil

@@ -182,7 +182,8 @@ type Client struct {
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
 // to determine which model is already loaded.
 //
-// SystemOne uses /v1/systemone for typed decision inference.
+// SystemOne uses /v1/systemone for typed decision inference. Pass ProviderOptionModalities with
+// ModalityDecision for decision models; output otherwise defaults to text when a model is selected.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var baseURL, model string
 	var modalities genai.Modalities
@@ -213,9 +214,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://localhost:8080"
 	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	if slices.ContainsFunc(modalities, func(m genai.Modality) bool { return m != genai.ModalityText && m != genai.ModalityDecision }) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text and decision are supported", modalities)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -242,12 +242,14 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	switch model {
 	case "":
 	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
-			c.impl.OutputModalities = mod
-		}
+		c.impl.Model, err = c.selectBestTextModel(ctx)
 	default:
 		c.impl.Model = model
-		c.impl.OutputModalities = mod
+	}
+	if len(modalities) != 0 {
+		c.impl.OutputModalities = modalities
+	} else if model != "" && err == nil {
+		c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 	}
 	return c, err
 }

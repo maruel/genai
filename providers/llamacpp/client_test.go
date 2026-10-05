@@ -186,7 +186,6 @@ type lazyServer struct {
 	apiKey string
 
 	mu      sync.Mutex
-	exe     string            // cached llama-server path
 	servers map[string]string // base model path -> URL
 }
 
@@ -194,7 +193,9 @@ type lazyServer struct {
 // support since TextOutputDocInput needs it. Scenario ordering may change
 // after -update-scoreboard sorts by reasoning first.
 func (l *lazyServer) lazyStart(t testing.TB) string {
-	for _, sc := range llamacpp.Scoreboard().Scenarios {
+	sb := llamacpp.Scoreboard()
+	for i := range sb.Scenarios {
+		sc := &sb.Scenarios[i]
 		if _, ok := sc.In[scoreboard.ModalityImage]; ok {
 			return l.lazyStartModel(t, scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason})
 		}
@@ -203,11 +204,8 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	return l.lazyStartModel(t, scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason})
 }
 
-// ensureExe downloads the llama-server binary once. Must be called with l.mu held.
-func (l *lazyServer) ensureExe(ctx context.Context) (string, error) {
-	if l.exe != "" {
-		return l.exe, nil
-	}
+// ensureExe retrieves the cached llama-server binary for the selected version.
+func (l *lazyServer) ensureExe(ctx context.Context, version string) (string, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return "", err
@@ -215,12 +213,7 @@ func (l *lazyServer) ensureExe(ctx context.Context) (string, error) {
 	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return "", err
 	}
-	exe, err := llamacppsrv.DownloadVersion(ctx, cache, llamacppsrv.Version)
-	if err != nil {
-		return "", err
-	}
-	l.exe = exe
-	return exe, nil
+	return llamacppsrv.DownloadVersion(ctx, cache, version)
 }
 
 // lazyStartModel starts a server for the given model key, reusing an existing one if already running.
@@ -247,7 +240,12 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		return u
 	}
 	t.Logf("Starting server for %s", model.Model)
-	exe, err := l.ensureExe(t.Context())
+	version := llamacppsrv.Version
+	if strings.HasPrefix(model.Model, "ggml-org/Kev-4B-GGUF/") {
+		// Kev requires decision heads introduced after the v0.5.0 stable release.
+		version = "b11361"
+	}
+	exe, err := l.ensureExe(t.Context(), version)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -293,6 +291,9 @@ func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, model
 		"--no-slots",
 		"--parallel", "4",
 		"--kv-unified",
+	}
+	if repo == "Kev-4B-GGUF" {
+		extraArgs = append(extraArgs, "--no-warmup")
 	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).

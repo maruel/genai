@@ -38,6 +38,8 @@ type Modality = scoreboard.Modality
 const (
 	// ModalityAudio is support for audio formats like MP3, WAV, Opus, Flac, etc.
 	ModalityAudio = scoreboard.ModalityAudio
+	// ModalityDecision is typed answers returned by SystemOne.
+	ModalityDecision = scoreboard.ModalityDecision
 	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes
 	// code blocks.
 	ModalityDocument = scoreboard.ModalityDocument

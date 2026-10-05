@@ -529,6 +529,16 @@ func testClientDecisionErrors(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
+	t.Run("decision capability", func(t *testing.T) {
+		c, err := cloudflare.New(t.Context(), genai.ProviderOptionAPIKey("test"), cloudflare.AccountID("test"), genai.ProviderOptionModalities{genai.ModalityDecision})
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		if !slices.Equal(c.OutputModalities(), genai.Modalities{genai.ModalityDecision}) {
+			t.Fatalf("unexpected output modalities: %v", c.OutputModalities())
+		}
+	})
 	t.Run("valid", func(t *testing.T) {
 		for _, model := range []string{"@hf/future/decision-v2", "future-v2", "@cf/chat", "cheap"} {
 			t.Run(model, func(t *testing.T) {

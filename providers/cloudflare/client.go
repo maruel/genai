@@ -133,10 +133,15 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	mod := genai.Modalities{genai.ModalityText}
+	if strings.HasPrefix(model[strings.LastIndexByte(model, '/')+1:], "clef") {
+		mod = genai.Modalities{genai.ModalityDecision}
+	}
 	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		// TODO: Cloudflare supports non-text modalities but it is not currently implemented.
+		// TODO: Cloudflare supports other output modalities but they are not currently implemented.
 		// https://developers.cloudflare.com/workers-ai/models/?tasks=Text-to-Image
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
+		if model != "" || slices.ContainsFunc(modalities, func(m genai.Modality) bool { return m != genai.ModalityText && m != genai.ModalityDecision }) {
+			return nil, fmt.Errorf("unexpected option Modalities %s, model supports %s", modalities, mod)
+		}
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -165,6 +170,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
+			c.impl.OutputModalities = modalities
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err

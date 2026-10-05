@@ -34,12 +34,17 @@ func printList(ctx context.Context, w io.Writer) error {
 		if c.Capabilities().GenAsync {
 			async = "✅batch "
 		}
-		for _, scenario := range c.Scoreboard().Scenarios {
+		sb := c.Scoreboard()
+		for i := range sb.Scenarios {
+			scenario := &sb.Scenarios[i]
 			m := scenario.Models
 			if len(m) > 3 {
 				m = append(slices.Clone(m[:3]), "...")
 			}
 			_, _ = fmt.Fprintf(w, "  - %s\n", strings.Join(m, ", "))
+			if f := scenario.SystemOne; f != nil {
+				_, _ = fmt.Fprintf(w, "    SystemOne: noul=%t choice=%t score=%t object=%t array=%t usage=%s\n", f.Noul, f.Choice, f.Score, f.Object, f.Array, f.ReportTokenUsage)
+			}
 			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
 				_, _ = fmt.Fprintf(w, "    in/out:   text only\n")
 			} else {

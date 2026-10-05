@@ -1,15 +1,16 @@
 # Scoreboard
 
-| Model       | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ----------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| qwen3.5:2b🥇 | Sync🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| qwen3.5:2b🥇 | Stream🧠 | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| qwen3.5:2b🥈 | Sync    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| qwen3.5:2b🥈 | Stream  | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b🥉 | Sync    | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b🥉 | Stream  | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b  | Sync🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b  | Stream🧠 | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Model             | Mode      | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ----------------- | --------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| qwen3.5:2b🥇       | Sync🧠     | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3.5:2b🥇       | Stream🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3.5:2b🥈       | Sync      | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3.5:2b🥈       | Stream    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b🥉       | Sync      | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b🥉       | Stream    | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b        | Sync🧠     | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b        | Stream🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| clef-flash:latest | SystemOne | 💬📸  | 🎯      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -24,6 +25,7 @@
 - ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
   it!
 - 💬: Text
+- 🎯: Decision: typed answers returned by SystemOne
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

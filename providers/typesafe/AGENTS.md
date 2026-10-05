@@ -30,9 +30,6 @@ of the provider interfaces directly:
 
 ## Scoreboard
 
-`providers/typesafe/scoreboard.json` is authored by hand. `smoke/smoketest` drives chat providers
-through `genai.Provider.GenSync` with text prompts, which cannot exercise a provider that only answers
-questions, so `-update-scoreboard` is not wired up here. The legacy scoreboard metadata (`jsonSchema`,
-`reportTokenUsage`) describes the decision protocol. The recorded tests in `client_test.go` verify it;
-it does not declare working chat generation. Re-check it by hand
-when the API changes.
+Qualify decision models with an empty `SystemOne` marker and run
+`RECORD=failure_only go test ./providers/typesafe -update-scoreboard`.
+The shared qualifier checks question types, JSON states, image support and token reporting.

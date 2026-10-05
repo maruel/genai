@@ -41,7 +41,7 @@ type Modality string
 // Validate returns an error if the Modality is not a known value.
 func (m Modality) Validate() error {
 	switch m {
-	case ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
+	case ModalityAudio, ModalityDecision, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
 		return nil
 	default:
 		return fmt.Errorf("invalid Modality: %q", m)
@@ -51,6 +51,8 @@ func (m Modality) Validate() error {
 const (
 	// ModalityAudio is support for audio formats like MP3, WAV, Opus, Flac, etc.
 	ModalityAudio Modality = "audio"
+	// ModalityDecision is typed answers to questions about a state.
+	ModalityDecision Modality = "decision"
 	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes
 	// code blocks.
 	ModalityDocument Modality = "document"
@@ -313,6 +315,24 @@ const triStateName = "flakyfalsetrue"
 
 var triStateIndex = [...]uint8{0, 5, 10, 14}
 
+// DecisionFunctionality describes typed decision inference through Provider.SystemOne.
+type DecisionFunctionality struct {
+	// Noul, Choice and Score indicate supported question types.
+	Noul   bool `json:"noul,omitzero"`
+	Choice bool `json:"choice,omitzero"`
+	Score  bool `json:"score,omitzero"`
+	// Object and Array indicate supported JSON state shapes.
+	Object bool `json:"object,omitzero"`
+	Array  bool `json:"array,omitzero"`
+	// ReportTokenUsage describes input token reporting across successful requests.
+	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
+}
+
+// Validate checks decision reporting values.
+func (f *DecisionFunctionality) Validate() error {
+	return f.ReportTokenUsage.Validate()
+}
+
 // Scenario defines one way to use the provider.
 type Scenario struct {
 	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
@@ -346,13 +366,15 @@ type Scenario struct {
 	// GenStream declares features supported when using Provider.GenStream.
 	// An empty value requests smoke-test qualification before modalities are known.
 	GenStream *Functionality `json:"GenStream,omitzero,omitempty"`
+	// SystemOne declares typed decision features. An empty value requests qualification.
+	SystemOne *DecisionFunctionality `json:"SystemOne,omitzero,omitempty"`
 
 	_ struct{}
 }
 
 // Untested returns true if the scenario has no test results.
 func (s *Scenario) Untested() bool {
-	return s.GenSync == nil && s.GenStream == nil && len(s.In) == 0 && len(s.Out) == 0
+	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && len(s.In) == 0 && len(s.Out) == 0
 }
 
 // Validate returns an error if the Scenario is not correctly configured.
@@ -387,6 +409,14 @@ func (s *Scenario) Validate() error {
 	}
 	if s.GenStream != nil {
 		if err := s.GenStream.Validate(); err != nil {
+			return err
+		}
+	}
+	if s.SystemOne != nil {
+		if len(s.In) == 0 && *s.SystemOne != (DecisionFunctionality{}) {
+			return errors.New("scenario with decision functionality must define input and output modalities")
+		}
+		if err := s.SystemOne.Validate(); err != nil {
 			return err
 		}
 	}
@@ -487,7 +517,8 @@ type Score struct {
 func (s *Score) Validate() error {
 	// Check for duplicate model/reason pairs
 	seen := make(map[Model]struct{})
-	for _, sc := range s.Scenarios {
+	for i := range s.Scenarios {
+		sc := &s.Scenarios[i]
 		if err := sc.Validate(); err != nil {
 			return err
 		}
@@ -510,7 +541,8 @@ func (s *Score) Validate() error {
 	// Value is list of scenario indices in that modality group.
 	modalityGroups := make(map[Modality][]int)
 
-	for i, sc := range s.Scenarios {
+	for i := range s.Scenarios {
+		sc := &s.Scenarios[i]
 		if len(sc.Out) == 0 {
 			// Text-only scenario (no output modalities explicitly defined)
 			modalityGroups[""] = append(modalityGroups[""], i)
@@ -619,13 +651,14 @@ func (s *Score) SortScenarios() {
 func ConsolidateUntestedScenarios(scenarios []Scenario) []Scenario {
 	untestedByKey := map[string]int{} // Maps key to index in result
 	var result []Scenario
-	for _, sc := range scenarios {
+	for i := range scenarios {
+		sc := &scenarios[i]
 		if !sc.Untested() {
 			continue
 		}
 		// Untested scenarios with preference flags should not be merged
 		if sc.SOTA || sc.Good || sc.Cheap {
-			result = append(result, sc)
+			result = append(result, *sc)
 			continue
 		}
 		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
@@ -641,7 +674,7 @@ func ConsolidateUntestedScenarios(scenarios []Scenario) []Scenario {
 			}
 			existing.Models = slices.Sorted(maps.Keys(modelSet))
 		} else {
-			result = append(result, sc)
+			result = append(result, *sc)
 			untestedByKey[key] = len(result) - 1
 		}
 	}

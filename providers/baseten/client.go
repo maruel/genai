@@ -155,7 +155,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	// Find the reference model from the scoreboard.
 	s := Scoreboard()
 	var ref string
-	for _, sc := range s.Scenarios {
+	for i := range s.Scenarios {
+		sc := &s.Scenarios[i]
 		if len(sc.Models) == 0 {
 			continue
 		}

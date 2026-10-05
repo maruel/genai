@@ -23,6 +23,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/typesafe"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke/smoketest"
 )
 
 func apiKey() string {
@@ -84,6 +85,29 @@ func TestClient(t *testing.T) {
 
 	t.Run("Capabilities", func(t *testing.T) {
 		internaltest.TestCapabilities(t, getClient(t, "jev-latest"))
+	})
+	t.Run("Scoreboard", func(t *testing.T) {
+		models := make([]scoreboard.Model, 0, len(cachedModels))
+		for _, m := range cachedModels {
+			models = append(models, scoreboard.Model{Model: m.GetID()})
+		}
+		smoketest.Run(t, func(t testing.TB, m scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			opts := []genai.ProviderOption{genai.ProviderOptionAPIKey(apiKey()), genai.ProviderOptionPreloadedModels(cachedModels)}
+			if fn != nil {
+				opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
+			}
+			if m.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(m.Model))
+			}
+			c, err := typesafe.New(t.Context(), opts...)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			return c
+		}, models, testRecorder.Records, nil)
 	})
 
 	t.Run("SystemOne", func(t *testing.T) {
@@ -983,18 +1007,14 @@ func TestScoreboard(t *testing.T) {
 			continue
 		}
 		n++
-		if sc.GenSync == nil {
-			t.Error("expected GenSync functionality")
+		if sc.SystemOne == nil {
+			t.Error("expected SystemOne functionality")
 		}
 		if sc.GenStream != nil {
 			t.Error("TypeSafe has no streaming, GenStream should not be declared")
 		}
-		if sc.GenSync != nil && sc.GenSync.JSONSchema.Object != scoreboard.True {
-			t.Error("expected structured output with an object at the root to be declared")
-		}
-		if sc.GenSync != nil && sc.GenSync.JSONSchema.Array == scoreboard.True {
-			// The reply is always an object keyed by question name.
-			t.Error("expected no array at the root to be declared")
+		if sc.GenSync != nil {
+			t.Error("TypeSafe has no chat generation, GenSync should not be declared")
 		}
 	}
 	if n != 1 {
@@ -1030,10 +1050,10 @@ func TestNewErrors(t *testing.T) {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
-	t.Run("modalities text", func(t *testing.T) {
+	t.Run("modalities decision", func(t *testing.T) {
 		if cl, err := typesafe.New(t.Context(),
 			genai.ProviderOptionAPIKey("x"),
-			genai.ProviderOptionModalities{genai.ModalityText},
+			genai.ProviderOptionModalities{genai.ModalityDecision},
 		); err != nil {
 			t.Fatal(err)
 		} else {
@@ -1045,7 +1065,7 @@ func TestNewErrors(t *testing.T) {
 		if cl != nil {
 			internaltest.CleanupCloser(t, cl)
 		}
-		if err == nil || !strings.Contains(err.Error(), "only text is supported") {
+		if err == nil || !strings.Contains(err.Error(), "only decision is supported") {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})
@@ -1131,7 +1151,7 @@ func TestAccessors(t *testing.T) {
 	t.Parallel()
 	c, err := typesafe.New(t.Context(),
 		genai.ProviderOptionAPIKey("x"),
-		genai.ProviderOptionModalities{genai.ModalityText},
+		genai.ProviderOptionModalities{genai.ModalityDecision},
 		genai.ModelCheap,
 	)
 	if c != nil {
@@ -1146,7 +1166,7 @@ func TestAccessors(t *testing.T) {
 	if got := c.ModelID(); got != "jev-latest" {
 		t.Errorf("unexpected model %q", got)
 	}
-	if got := c.OutputModalities(); !slices.Equal(got, genai.Modalities{genai.ModalityText}) {
+	if got := c.OutputModalities(); !slices.Equal(got, genai.Modalities{genai.ModalityDecision}) {
 		t.Errorf("unexpected output modalities %s", got)
 	}
 	if c.HTTPClient() == nil {

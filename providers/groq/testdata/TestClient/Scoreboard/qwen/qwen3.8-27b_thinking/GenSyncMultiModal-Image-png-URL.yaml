@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 346
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-472b41b8-7308-4129-b5c9-8f10cb41cde6","object":"chat.completion","created":1791215508,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"Banana","reasoning":"The user wants a single word identifying the fruit. The image clearly shows a yellow, curved fruit with a brown stem and tip—unmistakably a banana. The instruction is strict: reply with only one word. So the response should be just \"Banana\" without extra text.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.172452991,"prompt_tokens":1303,"prompt_time":0.089589992,"completion_tokens":64,"completion_time":0.14220254,"total_tokens":1367,"total_time":0.231792532,"completion_tokens_details":{"reasoning_tokens":59}},"usage_breakdown":null,"system_fingerprint":"fp_ddcc9cf349","x_groq":{"id":"req_01m46c76jqedvbrdecjzbxkaw2","seed":235584679},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45d96fd38542df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "235865"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 3.392s
+        status: 200 OK
+        code: 200
+        duration: 543ms

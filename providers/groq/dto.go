@@ -25,6 +25,16 @@ import (
 // https://console.groq.com/docs/flex-processing
 type ServiceTier string
 
+// Validate implements genai.Validatable.
+func (s ServiceTier) Validate() error {
+	switch s {
+	case "", ServiceTierAuto, ServiceTierFlex, ServiceTierOnDemand, ServiceTierPerformance:
+		return nil
+	default:
+		return fmt.Errorf("invalid service tier %q", s)
+	}
+}
+
 const (
 	// ServiceTierOnDemand is the default tier and the one you are used to. We have kept rate limits low in
 	// order to ensure fairness and a consistent experience.
@@ -36,6 +46,8 @@ const (
 	// handle occasional request failures. It provides an optimal balance between performance and reliability
 	// for workloads that don't require guaranteed processing.
 	ServiceTierFlex ServiceTier = "flex"
+	// ServiceTierPerformance uses the performance tier for supported models.
+	ServiceTierPerformance ServiceTier = "performance"
 )
 
 // ReasoningFormat defines the post processing format of the reasoning done by groq for select models.
@@ -43,11 +55,45 @@ const (
 // See https://console.groq.com/docs/reasoning
 type ReasoningFormat string
 
+// Validate implements genai.Validatable.
+func (r ReasoningFormat) Validate() error {
+	switch r {
+	case "", ReasoningFormatHidden, ReasoningFormatParsed, ReasoningFormatRaw:
+		return nil
+	default:
+		return fmt.Errorf("invalid reasoning format %q", r)
+	}
+}
+
 // Reasoning format values.
 const (
 	ReasoningFormatParsed ReasoningFormat = "parsed"
 	ReasoningFormatRaw    ReasoningFormat = "raw"
 	ReasoningFormatHidden ReasoningFormat = "hidden"
+)
+
+// ReasoningEffort controls the reasoning effort of supported Groq models.
+//
+// See https://console.groq.com/docs/reasoning. Supported values depend on the model.
+type ReasoningEffort string
+
+// Validate implements genai.Validatable.
+func (r ReasoningEffort) Validate() error {
+	switch r {
+	case "", ReasoningEffortDefault, ReasoningEffortHigh, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortNone:
+		return nil
+	default:
+		return fmt.Errorf("invalid reasoning effort %q", r)
+	}
+}
+
+// Reasoning effort values.
+const (
+	ReasoningEffortDefault ReasoningEffort = "default"
+	ReasoningEffortHigh    ReasoningEffort = "high"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortNone    ReasoningEffort = "none"
 )
 
 // ChatRequest is documented at https://console.groq.com/docs/api-reference#chat-create
@@ -59,6 +105,7 @@ type ChatRequest struct {
 	ParallelToolCalls bool            `json:"parallel_tool_calls,omitzero"`
 	PresencePenalty   float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ReasoningFormat   ReasoningFormat `json:"reasoning_format,omitzero"`
+	ReasoningEffort   ReasoningEffort `json:"reasoning_effort,omitzero"`
 	ResponseFormat    struct {
 		Type       string           `json:"type,omitzero"` // "json_object", "json_schema"
 		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
@@ -114,6 +161,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case *GenOption:
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
+			c.ReasoningEffort = v.ReasoningEffort
 		case *genai.GenOptionText:
 			u, err := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)

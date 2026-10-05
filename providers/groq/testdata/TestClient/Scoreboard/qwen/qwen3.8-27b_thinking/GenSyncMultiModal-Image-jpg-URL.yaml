@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 346
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-264e5d92-ca7a-41aa-8ddb-84ee3209625f","object":"chat.completion","created":1791215505,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"Banana","reasoning":"The user wants a single-word answer identifying the fruit in the image. The image clearly shows a yellow, curved fruit with the characteristic shape and stem of a banana. The instruction is strict: reply with only one word. So I should output just \"Banana\" without any extra text or punctuation that would violate the constraint.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.193222003,"prompt_tokens":1303,"prompt_time":0.118913049,"completion_tokens":71,"completion_time":0.140093415,"total_tokens":1374,"total_time":0.259006464,"completion_tokens_details":{"reasoning_tokens":66}},"usage_breakdown":null,"system_fingerprint":"fp_c7e30c203c","x_groq":{"id":"req_01m46c73kwed8sa44em0w1z9nk","seed":574946604},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45d96ea497b2df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "245325"
+            X-Ratelimit-Reset-Requests:
+                - 691ms
+            X-Ratelimit-Reset-Tokens:
+                - 1.122s
+        status: 200 OK
+        code: 200
+        duration: 724ms

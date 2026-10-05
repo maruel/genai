@@ -16,7 +16,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/groq"
@@ -79,6 +78,46 @@ func TestNew(t *testing.T) {
 	})
 }
 
+func TestGenOption(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, v := range []groq.ReasoningFormat{"", "hidden", "parsed", "raw"} {
+				t.Run("ReasoningFormat/"+string(v), func(t *testing.T) {
+					o := groq.GenOption{ReasoningFormat: v}
+					if err := o.Validate(); err != nil {
+						t.Fatal(err)
+					}
+				})
+			}
+			for _, v := range []groq.ServiceTier{"", "auto", "flex", "on_demand", "performance"} {
+				t.Run("ServiceTier/"+string(v), func(t *testing.T) {
+					o := groq.GenOption{ServiceTier: v}
+					if err := o.Validate(); err != nil {
+						t.Fatal(err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []struct {
+				name string
+				opt  groq.GenOption
+				want string
+			}{
+				{name: "ReasoningEffort", opt: groq.GenOption{ReasoningEffort: "invalid"}, want: "invalid reasoning effort"},
+				{name: "ReasoningFormat", opt: groq.GenOption{ReasoningFormat: "invalid"}, want: "invalid reasoning format"},
+				{name: "ServiceTier", opt: groq.GenOption{ServiceTier: "invalid"}, want: "invalid service tier"},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.opt.Validate(); err == nil || !strings.Contains(err.Error(), tc.want) {
+						t.Fatalf("unexpected error: %v", err)
+					}
+				})
+			}
+		})
+	})
+}
+
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -125,14 +164,16 @@ func TestClient(t *testing.T) {
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
-			reason := false
+			found := false
 			for _, sc := range scenarios {
 				if slices.Contains(sc.Models, id) {
-					reason = sc.Reason
-					break
+					models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
+					found = true
 				}
 			}
-			models = append(models, scoreboard.Model{Model: id, Reason: reason})
+			if !found {
+				models = append(models, scoreboard.Model{Model: id})
+			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
@@ -154,17 +195,10 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var c genai.Provider = cl
-			if strings.HasPrefix(model.Model, "qwen/") && model.Reason {
-				c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
-			}
-			// Groq models with native reasoning support (openai/gpt-oss, etc.) already return reasoning in a
-			// separate field. Don't wrap with ProviderReasoning which expects reasoning embedded in text.
-			// Only apply ProviderReasoning to models that need text-based reasoning extraction.
 			if model.Reason && strings.HasPrefix(model.Model, "qwen/") {
-				return &handleGroqReasoning{Provider: c}
+				return &handleGroqReasoning{Provider: cl}
 			}
-			return c
+			return cl
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
@@ -226,33 +260,13 @@ type handleGroqReasoning struct {
 }
 
 func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	for _, opt := range opts {
-		if o, ok := opt.(*genai.GenOptionTools); ok && len(o.Tools) != 0 {
-			opts = append(opts, &groq.GenOption{ReasoningFormat: groq.ReasoningFormatParsed})
-			return h.Provider.GenSync(ctx, msgs, opts...)
-		}
-		if o, ok := opt.(*genai.GenOptionText); ok && (o.DecodeAs != nil || o.ReplyAsJSON) {
-			opts = append(opts, &groq.GenOption{ReasoningFormat: groq.ReasoningFormatParsed})
-			return h.Provider.GenSync(ctx, msgs, opts...)
-		}
-	}
-	c := adapters.ProviderReasoning{Provider: h.Provider, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "\n</think>\n"}
-	return c.GenSync(ctx, msgs, opts...)
+	opts = append(opts, &groq.GenOption{ReasoningEffort: groq.ReasoningEffortMedium, ReasoningFormat: groq.ReasoningFormatParsed})
+	return h.Provider.GenSync(ctx, msgs, opts...)
 }
 
 func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	for _, opt := range opts {
-		if o, ok := opt.(*genai.GenOptionTools); ok && len(o.Tools) != 0 {
-			opts = append(opts, &groq.GenOption{ReasoningFormat: groq.ReasoningFormatParsed})
-			return h.Provider.GenStream(ctx, msgs, opts...)
-		}
-		if o, ok := opt.(*genai.GenOptionText); ok && (o.DecodeAs != nil || o.ReplyAsJSON) {
-			opts = append(opts, &groq.GenOption{ReasoningFormat: groq.ReasoningFormatParsed})
-			return h.Provider.GenStream(ctx, msgs, opts...)
-		}
-	}
-	c := adapters.ProviderReasoning{Provider: h.Provider, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "\n</think>\n"}
-	return c.GenStream(ctx, msgs, opts...)
+	opts = append(opts, &groq.GenOption{ReasoningEffort: groq.ReasoningEffortMedium, ReasoningFormat: groq.ReasoningFormatParsed})
+	return h.Provider.GenStream(ctx, msgs, opts...)
 }
 
 func (h *handleGroqReasoning) Unwrap() genai.Provider {

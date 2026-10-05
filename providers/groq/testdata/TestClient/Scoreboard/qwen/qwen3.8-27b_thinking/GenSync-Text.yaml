@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-4a539cb2-4dad-4cf5-9bd9-b196acf024f5","object":"chat.completion","created":1791215495,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"Hello.","reasoning":"The user wants me to say hello using only one word. The simplest one-word greeting is \"Hello\" or \"Hi\". I'll go with \"Hello.\"\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.064058565,"prompt_tokens":18,"prompt_time":0.000967458,"completion_tokens":38,"completion_time":0.072630261,"total_tokens":56,"total_time":0.073597719,"completion_tokens_details":{"reasoning_tokens":33}},"usage_breakdown":null,"system_fingerprint":"fp_ddcc9cf349","x_groq":{"id":"req_01m46c6tj7e8d9x0a5kf1mknze","seed":1149718490},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45d96b059382df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249810"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 45ms
+        status: 200 OK
+        code: 200
+        duration: 215ms

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 309
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-cd4d937b-a345-4293-b997-7147c5f965cb","object":"chat.completion","created":1791215501,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning":"The user asks if a banana is a fruit, and wants only a JSON response with the schema {\"is_fruit\": bool}. A banana is indeed a fruit (botanically, it's a berry). The answer is true. They explicitly say no explanation, only the JSON.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.064173114,"prompt_tokens":39,"prompt_time":0.002442416,"completion_tokens":68,"completion_time":0.130549049,"total_tokens":107,"total_time":0.132991465,"completion_tokens_details":{"reasoning_tokens":58}},"usage_breakdown":null,"system_fingerprint":"fp_ddcc9cf349","x_groq":{"id":"req_01m46c702qe8tarwswn6ctj6zg","seed":1746690933},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45d96d3994b2df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "247564"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 584ms
+        status: 200 OK
+        code: 200
+        duration: 238ms

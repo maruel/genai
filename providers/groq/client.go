@@ -47,6 +47,8 @@ func Scoreboard() scoreboard.Score {
 
 // GenOption is the Groq-specific options.
 type GenOption struct {
+	// ReasoningEffort controls how much reasoning supported models perform.
+	ReasoningEffort ReasoningEffort
 	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on reasoning
 	// models. It is required for reasoning models to enable JSON structured output or tool calling.
 	ReasoningFormat ReasoningFormat
@@ -56,8 +58,13 @@ type GenOption struct {
 
 // Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
-	// TODO: validate ReasoningFormat and ServiceTier.
-	return nil
+	if err := o.ReasoningEffort.Validate(); err != nil {
+		return err
+	}
+	if err := o.ReasoningFormat.Validate(); err != nil {
+		return err
+	}
+	return o.ServiceTier.Validate()
 }
 
 //

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 305
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-bdbcff33-2054-4db1-ae79-0fefb336da42","object":"chat.completion","created":1791215504,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning":"The user is asking a simple question with the answer provided in the premise itself. The capital of Quackiland is stated to be Quack.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.166207866,"prompt_tokens":39,"prompt_time":0.003146088,"completion_tokens":44,"completion_time":0.08674997,"total_tokens":83,"total_time":0.089896058,"completion_tokens_details":{"reasoning_tokens":30}},"usage_breakdown":null,"system_fingerprint":"fp_5e14805ce3","x_groq":{"id":"req_01m46c72needa9zhvwbc7ng6wr","seed":811089313},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45d96e428772df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499995"
+            X-Ratelimit-Remaining-Tokens:
+                - "249324"
+            X-Ratelimit-Reset-Requests:
+                - 864ms
+            X-Ratelimit-Reset-Tokens:
+                - 162ms
+        status: 200 OK
+        code: 200
+        duration: 292ms

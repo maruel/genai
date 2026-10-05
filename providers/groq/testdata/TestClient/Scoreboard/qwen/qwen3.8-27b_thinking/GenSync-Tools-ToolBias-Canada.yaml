@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 611
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-2219b5d7-22dd-4a2e-b409-69385ea01b49","object":"chat.completion","created":1791215503,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user wants me to call the best_country tool to determine which country is better - Canada or the USA. The tool requires a single country parameter with enum values \"Canada\" or \"USA\". I need to call it once with one of these values. Let me call it with \"Canada\" since the user mentioned Canada first, or I could call it for both. Actually, looking at the tool, it takes a single country parameter. Let me call it for both to compare. Wait, the tool is called \"best_country\" - it seems like it returns the best country regardless of the input, or perhaps it evaluates the given country. Let me just call it once for each to see what it says.\n\nActually, re-reading the tool description: \"A tool to specify the best country\" with a parameter \"country\" that can be \"Canada\" or \"USA\". It seems like I should call it to get the answer. Let me call it for \"Canada\" first, or maybe I should call it for both in parallel since they're independent calls.\n\nLet me call both in parallel to be thorough.\n","tool_calls":[{"id":"ds2p95pdj","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"g8js66zzm","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.07123632,"prompt_tokens":333,"prompt_time":0.023453967,"completion_tokens":284,"completion_time":0.56296208,"total_tokens":617,"total_time":0.586416047,"completion_tokens_details":{"reasoning_tokens":228}},"usage_breakdown":null,"system_fingerprint":"fp_ddcc9cf349","x_groq":{"id":"req_01m46c718he4as092es7pp45fz","seed":1539234474},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45d96db291a2df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "249124"
+            X-Ratelimit-Reset-Requests:
+                - 691ms
+            X-Ratelimit-Reset-Tokens:
+                - 210ms
+        status: 200 OK
+        code: 200
+        duration: 699ms

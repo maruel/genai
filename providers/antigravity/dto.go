@@ -247,6 +247,32 @@ type JSONCommand struct {
 	Data json.RawMessage `json:"data,omitzero"`
 }
 
+// UsageData is the JSONCommand.Data of the `usage` command (upstream printmode.quotaJSON).
+// Quota pools share weekly and five-hour limits across their member models.
+type UsageData struct {
+	Description string       `json:"description,omitzero"`
+	Groups      []UsageGroup `json:"groups"`
+}
+
+// UsageGroup is a pool of models that share quota buckets.
+type UsageGroup struct {
+	Name        string        `json:"name"`
+	Description string        `json:"description,omitzero"`
+	Buckets     []UsageBucket `json:"buckets"`
+}
+
+// UsageBucket is a subscription quota window, not token accounting.
+type UsageBucket struct {
+	ID                string   `json:"id,omitzero"`
+	Name              string   `json:"name"`
+	Description       string   `json:"description,omitzero"`
+	Window            string   `json:"window,omitzero"`
+	Disabled          bool     `json:"disabled,omitzero"`
+	RemainingFraction *float64 `json:"remaining_fraction,omitzero"`
+	RemainingAmount   *int64   `json:"remaining_amount,omitzero"`
+	ResetTime         string   `json:"reset_time,omitzero"`
+}
+
 // ModelsData is the JSONCommand.Data of the `models` command.
 type ModelsData struct {
 	Models []Model `json:"models"`

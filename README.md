@@ -614,11 +614,9 @@ Set named questions in `genai.Questions`. Read typed answers under the same name
 ```
 
 A single inline JSON `Doc` supplies the state when `State` is unset.
-`ProviderCapabilities.SystemOne` reports client support, not model support.
-Unsupported providers return `base.ErrNotSupported`. Media support and limits vary by provider and model.
 See the [TypeSafe](https://pkg.go.dev/github.com/maruel/genai/providers/typesafe),
 [Cloudflare](https://pkg.go.dev/github.com/maruel/genai/providers/cloudflare), and
-[llama.cpp](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp) package docs for setup and constraints.
+[llama.cpp](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp) for setup and constraints.
 
 Complete examples: [hosted text decisions](examples/txt_to_decisions/main.go),
 [local text decisions](examples/txt_to_decisions_local/main.go), and

@@ -217,7 +217,7 @@ func (m *Message) From(in *genai.Message) error {
 		switch {
 		case in.Replies[i].Text != "":
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Replies[i].Text})
-		case !in.Requests[i].Doc.IsZero():
+		case !in.Replies[i].Doc.IsZero():
 			// Check if this is a text document
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {

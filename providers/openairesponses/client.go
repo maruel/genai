@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"iter"
+	"maps"
 	"net/http"
 	"os"
 	"strings"
@@ -366,6 +367,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
 // only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if err := msgs.Validate(); err != nil {
+		return genai.Result{}, err
+	}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return genai.Result{}, err
 	}
@@ -410,6 +414,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 // It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
 // only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := msgs.Validate(); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
 	}
@@ -884,12 +891,16 @@ func deltaMessages(msgs genai.Messages, sentMsgs int) genai.Messages {
 			for j := range m.Replies {
 				r := m.Replies[j]
 				if len(r.Opaque) > 0 {
-					if r.Text == "" && r.ToolCall.IsZero() && r.Reasoning == "" && r.Doc.IsZero() && r.Citation.IsZero() {
-						// Drop Opaque-only bookkeeping replies.
-						continue
+					// Only remove our session bookkeeping, never caller-owned replay metadata.
+					r.Opaque = maps.Clone(r.Opaque)
+					delete(r.Opaque, opaqueResponseID)
+					delete(r.Opaque, opaqueSentMsgs)
+					if len(r.Opaque) == 0 {
+						r.Opaque = nil
+						if r.Text == "" && r.ToolCall.IsZero() && r.Reasoning == "" && r.Doc.IsZero() && r.Citation.IsZero() {
+							continue
+						}
 					}
-					// Strip Opaque metadata so FromReply does not reject it.
-					r.Opaque = nil
 				}
 				filtered = append(filtered, r)
 			}

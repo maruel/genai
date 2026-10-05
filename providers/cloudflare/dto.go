@@ -230,6 +230,8 @@ func (m *Message) From(in *genai.Message) error {
 			if len(in.Replies[0].ToolCall.Opaque) != 0 {
 				return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 			}
+			// This wire mapping carries the call ID and arguments, but not the tool name.
+			// Serialization alone does not establish support for overlapping tool calls.
 			m.ToolCallID = in.Replies[0].ToolCall.ID
 			m.Content = in.Replies[0].ToolCall.Arguments
 		default:

@@ -9,8 +9,20 @@ package pollinations_test
 import (
 	"testing"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/pollinations"
 )
+
+func TestChatRequest(t *testing.T) {
+	t.Run("Init", func(t *testing.T) {
+		t.Run("error/options", func(t *testing.T) {
+			var req pollinations.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("user")}, "test", &genai.GenOptionText{Temperature: -1}); err == nil {
+				t.Fatal("accepted invalid option")
+			}
+		})
+	})
+}
 
 func TestTextModel(t *testing.T) {
 	t.Run("String omits empty metadata", func(t *testing.T) {

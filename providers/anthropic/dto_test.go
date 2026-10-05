@@ -11,8 +11,30 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/anthropic"
 )
+
+func TestContent(t *testing.T) {
+	t.Run("FromReply", func(t *testing.T) {
+		t.Run("thinking_signature", func(t *testing.T) {
+			in := genai.Reply{Reasoning: "thinking", Opaque: map[string]any{"signature": []byte("signed")}}
+			var got anthropic.Content
+			skip, err := got.FromReply(&in)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if skip {
+				t.Fatal("discarded signed thinking")
+			}
+			want := anthropic.Content{Type: anthropic.ContentThinking, Thinking: "thinking", Signature: []byte("signed")}
+			if diff := cmp.Diff(want, got); diff != "" {
+				t.Fatal(diff)
+			}
+		})
+	})
+}
 
 func TestChatResponse(t *testing.T) {
 	t.Run("Diagnostics", func(t *testing.T) {

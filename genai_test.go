@@ -92,6 +92,30 @@ func TestMessages(t *testing.T) {
 				t.Fatalf("unexpected error: %q", err)
 			}
 		})
+		t.Run("chronology", func(t *testing.T) {
+			call := func(id string) Message {
+				return Message{Replies: []Reply{{ToolCall: ToolCall{ID: id, Name: "task_status", Arguments: `{}`}}}}
+			}
+			result := func(id string) Message {
+				return Message{ToolCallResults: []ToolCallResult{{ID: id, Name: "task_status", Result: id}}}
+			}
+			for _, tc := range []struct {
+				name string
+				msgs Messages
+			}{
+				{"burst", Messages{NewTextMessage("Check task 3"), NewTextMessage("Actually task 7")}},
+				{"assistant burst", Messages{call("A"), call("B")}},
+				{"pending", Messages{call("A"), NewTextMessage("Actually task 7"), NewTextMessage("Only its status"), call("B")}},
+				{"partial", Messages{call("A"), call("B"), result("B")}},
+				{"out of order", Messages{call("A"), NewTextMessage("Actually task 7"), call("B"), result("B"), result("A")}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.msgs.Validate(); err != nil {
+						t.Fatal(err)
+					}
+				})
+			}
+		})
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
@@ -104,7 +128,7 @@ func TestMessages(t *testing.T) {
 						{Requests: []Request{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
 						{Requests: []Request{{}}},
 					},
-					errMsg: "message #0: request #0: field Doc can't be used along Text\nmessage #1: request #0: an empty Request is invalid\nmessage #1: role must alternate; got twice \"user\"",
+					errMsg: "message #0: request #0: field Doc can't be used along Text\nmessage #1: request #0: an empty Request is invalid",
 				},
 			}
 			for _, tt := range tests {

@@ -204,6 +204,9 @@ func (w *WebSocketConn) recvEvents(ctx context.Context) (iter.Seq[ResponseStream
 // only new messages (the delta) are sent. The server already has prior messages
 // via previous_response_id.
 func (w *WebSocketConn) buildRequest(msgs genai.Messages, opts ...genai.GenOption) (WSRequest, error) {
+	if err := msgs.Validate(); err != nil {
+		return WSRequest{}, err
+	}
 	model := w.client.ModelID()
 	sentMsgs, prevRespID := findPrevMeta(msgs)
 	cleaned := deltaMessages(msgs, sentMsgs)

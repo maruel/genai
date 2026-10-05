@@ -35,8 +35,9 @@ func ExtractOpaqueID(msgs genai.Messages, key string) string {
 
 // LastUserMsg returns the last user message in msgs.
 //
-// It is used by subprocess-based providers that send only the final user
-// message to a subprocess, relying on session resumption for context.
+// It is used by subprocess-based providers that send only the final user message to a subprocess.
+// Earlier supplied user events are not serialized. Some callers resume CLI-owned sessions for context;
+// others launch a fresh process. A successful call does not establish full-history or burst support.
 func LastUserMsg(msgs genai.Messages) (genai.Message, error) {
 	for i := len(msgs) - 1; i >= 0; i-- {
 		if msgs[i].Role() == "user" {

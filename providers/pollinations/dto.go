@@ -70,6 +70,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	var unsupported []string
 	sp := ""
 	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
 		switch v := opt.(type) {
 		case *genai.GenOptionText:
 			u, e := c.initOptionsText(v)

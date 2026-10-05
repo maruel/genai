@@ -7,6 +7,7 @@
 package gemini
 
 import (
+	"bytes"
 	"encoding/json"
 	"testing"
 
@@ -298,17 +299,16 @@ func TestContentThoughtSignature(t *testing.T) {
 	})
 }
 
-func TestChatRequestThinkingLevel(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		in := ChatRequest{}
-		msgs := genai.Messages{genai.NewTextMessage("hello")}
-		if err := in.Init(msgs, "gemini-3.8-flash", &GenOption{ThinkingLevel: ThinkingLevelHigh}); err != nil {
-			t.Fatal(err)
-		}
-		want := &ThinkingConfig{ThinkingLevel: ThinkingLevelHigh}
-		if diff := cmp.Diff(want, in.GenerationConfig.ThinkingConfig); diff != "" {
-			t.Errorf("thinking config mismatch (-want +got):\n%s", diff)
-		}
+func TestChatRequest(t *testing.T) {
+	t.Run("Init", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			t.Run("options", func(t *testing.T) {
+				var in ChatRequest
+				if err := in.Init(genai.Messages{genai.NewTextMessage("hello")}, "gemini-3.8-flash", &genai.GenOptionText{Temperature: -1}); err == nil {
+					t.Fatal("accepted invalid options")
+				}
+			})
+		})
 	})
 }
 
@@ -321,4 +321,109 @@ func TestImageParametersDurationS(t *testing.T) {
 	if string(got) != want {
 		t.Errorf("MarshalJSON() = %s, want %s", got, want)
 	}
+}
+
+func TestSignatureOnlyStreamReplay(t *testing.T) {
+	// A text chunk followed by an empty-text signature chunk is returned by
+	// Gemini's stream API. The signature must stay a separate ordered part.
+	raw := []string{
+		`{"candidates":[{"content":{"role":"model","parts":[{"text":"Task 7 is waiting."}]}}]}`,
+		`{"candidates":[{"content":{"role":"model","parts":[{"text":"","thoughtSignature":"c2lnbmF0dXJl"}]}}]}`,
+	}
+	chunks := make([]ChatStreamChunkResponse, len(raw))
+	for i, s := range raw {
+		if err := json.Unmarshal([]byte(s), &chunks[i]); err != nil {
+			t.Fatal(err)
+		}
+	}
+	fragments, finish := ProcessStream(func(yield func(ChatStreamChunkResponse) bool) {
+		for _, c := range chunks {
+			if !yield(c) {
+				return
+			}
+		}
+	})
+	m := genai.Message{}
+	for f := range fragments {
+		if err := m.Accumulate(&f); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, _, err := finish(); err != nil {
+		t.Fatal(err)
+	}
+	before, err := json.Marshal(m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(m.Replies) != 2 || m.Replies[0].Text != "Task 7 is waiting." || len(m.Replies[0].Opaque) != 0 || m.Replies[1].Text != "" {
+		t.Fatalf("assembled replies lost part boundaries: %#v", m)
+	}
+	req := ChatRequest{}
+	if err := req.Init(genai.Messages{genai.NewTextMessage("Check task 7."), m}, "gemini-flash-lite-latest"); err != nil {
+		t.Fatal(err)
+	}
+	want := []Part{{Text: "Task 7 is waiting."}, {ThoughtSignature: []byte("signature")}}
+	if diff := cmp.Diff(want, req.Contents[1].Parts); diff != "" {
+		t.Fatal(diff)
+	}
+	after, err := json.Marshal(m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(before, after) {
+		t.Fatal("request mutated returned message")
+	}
+	syncMsg := genai.Message{}
+	if err := chunks[1].Candidates[0].Content.To(&syncMsg); err != nil {
+		t.Fatal(err)
+	}
+	if diff := cmp.Diff(m.Replies[1:], syncMsg.Replies); diff != "" {
+		t.Fatal(diff)
+	}
+}
+
+func TestPart(t *testing.T) {
+	t.Run("FromReply", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			t.Run("thinking_signature", func(t *testing.T) {
+				var got Part
+				if err := got.FromReply(&genai.Reply{Reasoning: "thinking", Opaque: map[string]any{"signature": []byte("signed")}}); err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff(Part{Text: "thinking", Thought: true, ThoughtSignature: []byte("signed")}, got); diff != "" {
+					t.Fatal(diff)
+				}
+			})
+			t.Run("tool_signature", func(t *testing.T) {
+				var got Part
+				if err := got.FromReply(&genai.Reply{ToolCall: genai.ToolCall{ID: "call_A", Name: "status", Arguments: `{"task":3}`, Opaque: map[string]any{"signature": []byte("signed")}}}); err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff([]byte("signed"), got.ThoughtSignature); diff != "" {
+					t.Fatal(diff)
+				}
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []struct {
+				name   string
+				opaque map[string]any
+			}{
+				{"wrong_type", map[string]any{"signature": "signature"}},
+				{"empty", map[string]any{"signature": []byte{}}},
+				{"nil", map[string]any{"signature": []byte(nil)}},
+				{"unknown", map[string]any{"unknown": []byte("signature")}},
+				{"extra", map[string]any{"signature": []byte("signature"), "extra": true}},
+				{"absent", nil},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					var p Part
+					if err := p.FromReply(&genai.Reply{Opaque: tc.opaque}); err == nil {
+						t.Fatal("accepted invalid metadata-only reply")
+					}
+				})
+			}
+		})
+	})
 }

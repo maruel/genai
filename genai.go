@@ -340,10 +340,11 @@ const (
 
 // Messages
 
-// Messages is a list of valid messages in an exchange with a LLM.
+// Messages is a chronological list of messages in an exchange with a LLM.
 //
-// The messages should be alternating between user input, assistant replies, tool call requests and
-// computer tool call results. The exception in the case of multi-user discussion, with different Users.
+// Adjacent messages may have the same role. Tool calls may remain unresolved, and user messages and
+// other tool results may intervene before their results arrive. Providers may impose additional constraints.
+// Conversion must preserve event order without merging messages or inventing tool results.
 type Messages []Message
 
 // Validate ensures the messages are valid.
@@ -352,13 +353,6 @@ func (m Messages) Validate() error {
 	for i := range m {
 		if err := m[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-		}
-		if i > 0 {
-			r := m[i].Role()
-			lastR := m[i-1].Role() //nolint:gosec // G602: guarded by i > 0
-			if r == lastR {
-				errs = append(errs, fmt.Errorf("message #%d: role must alternate; got twice %q", i, r))
-			}
 		}
 	}
 	return errors.Join(errs...)

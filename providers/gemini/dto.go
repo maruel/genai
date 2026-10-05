@@ -499,12 +499,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	var unsupported []string
 
 	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			errs = append(errs, err)
+			continue
+		}
 		switch v := opt.(type) {
 		case *GenOption:
-			if err := v.Validate(); err != nil {
-				errs = append(errs, err)
-				continue
-			}
 			if v.ThinkingLevel != "" {
 				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{ThinkingLevel: v.ThinkingLevel}
 			}
@@ -728,6 +728,16 @@ func (c *Content) To(out *genai.Message) error {
 			})
 			continue
 		}
+		// Streaming can end with a separate signature-only part. Replay it as
+		// its own part, without attaching it to the preceding text.
+		if len(part.ThoughtSignature) != 0 {
+			v := *part
+			v.ThoughtSignature = nil
+			if reflect.ValueOf(v).IsZero() {
+				out.Replies = append(out.Replies, genai.Reply{Opaque: map[string]any{"signature": part.ThoughtSignature}})
+				continue
+			}
+		}
 		if reflect.ValueOf(part).IsZero() {
 			continue
 		}
@@ -808,7 +818,7 @@ func (p *Part) FromRequest(in *genai.Request) error {
 func (p *Part) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		b, ok := in.Opaque["signature"].([]byte)
-		if !ok || len(in.Opaque) != 1 {
+		if !ok || len(b) == 0 || len(in.Opaque) != 1 {
 			return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 		}
 		p.ThoughtSignature = b
@@ -862,6 +872,9 @@ func (p *Part) FromReply(in *genai.Reply) error {
 			p.FileData.MimeType = mimeType
 			p.FileData.FileURI = in.Doc.URL
 		}
+		return nil
+	}
+	if len(in.Opaque) != 0 && in.Citation.IsZero() {
 		return nil
 	}
 	return &internal.BadError{Err: errors.New("unknown Reply type")}

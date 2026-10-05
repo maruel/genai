@@ -7,7 +7,9 @@
 package adapters_test
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"iter"
 	"net/http"
@@ -22,8 +24,43 @@ import (
 )
 
 func TestProviderReasoning(t *testing.T) {
+	msgs := genai.Messages{
+		genai.NewTextMessage("check task 3"), genai.NewTextMessage("actually task 7"),
+		{Replies: []genai.Reply{{Reasoning: "prior thinking"}, {ToolCall: genai.ToolCall{ID: "A", Name: "status", Arguments: `{}`}}}},
+		genai.NewTextMessage("only its status"),
+		{Replies: []genai.Reply{{ToolCall: genai.ToolCall{ID: "B", Name: "status", Arguments: `{}`}}}},
+		{ToolCallResults: []genai.ToolCallResult{{ID: "B", Name: "status", Result: "waiting"}}},
+		{ToolCallResults: []genai.ToolCallResult{{ID: "A", Name: "status", Result: "running"}}},
+	}
+	before, err := json.Marshal(msgs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		after, err := json.Marshal(msgs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(before, after) {
+			t.Fatal("adapter mutated input")
+		}
+	})
 	t.Run("GenSync", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
+			t.Run("chronology", func(t *testing.T) {
+				p := &mockProviderGenSync{responses: []genai.Result{{Message: genai.Message{Replies: []genai.Reply{{Text: "<think>reason</think>waiting"}, {ToolCall: genai.ToolCall{ID: "C", Name: "status", Arguments: `{}`}}}}}}}
+				w := &adapters.ProviderReasoning{Provider: p, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "</think>"}
+				got, err := w.GenSync(t.Context(), msgs)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff(msgs, p.msgs); diff != "" {
+					t.Fatal(diff)
+				}
+				if got.Replies[0].Reasoning != "reason" || got.Replies[1].ToolCall.ID != "C" || got.Replies[1].Text != "waiting" {
+					t.Fatalf("lost output: %+v", got)
+				}
+			})
 			tests := []struct {
 				name       string
 				startToken string
@@ -115,71 +152,88 @@ func TestProviderReasoning(t *testing.T) {
 					}
 				})
 			}
-			t.Run("errors", func(t *testing.T) {
-				tests := []struct {
-					name       string
-					startToken string
-					endToken   string
-					in         []genai.Reply
-					err        error
-					want       string
-				}{
-					{
-						name:       "With non-empty content before tag",
-						startToken: "<thinking>",
-						endToken:   "</thinking>",
-						in:         []genai.Reply{{Text: "Text before <thinking>\nThis is thinking</thinking>\nThis is response"}},
-						want:       "unexpected prefix before reasoning tag: \"Text before \"",
-					},
-					{
-						name:       "Error from underlying GenSync",
-						startToken: "<thinking>",
-						endToken:   "</thinking>",
-						err:        errors.New("mock error"),
-						want:       "mock error",
-					},
-					{
-						name:       "Multiple content blocks",
-						startToken: "<thinking>",
-						endToken:   "</thinking>",
-						in:         []genai.Reply{{Text: "First part. "}, {Text: "<thinking>Thinking part</thinking>"}, {Text: " Second part."}},
-						want:       "unexpected prefix before reasoning tag: \"First part. \"",
-					},
-					{
-						name:       "Message with existing thinking content",
-						startToken: "<thinking>",
-						endToken:   "</thinking>",
-						in:         []genai.Reply{{Reasoning: "Existing thinking"}, {Text: "Some text"}},
-						want:       `got unexpected reasoning content: "Existing thinking"; do not use ProviderReasoning with an explicit reasoning CoT model`,
-					},
-				}
+		})
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name       string
+				startToken string
+				endToken   string
+				in         []genai.Reply
+				err        error
+				want       string
+			}{
+				{
+					name:       "With non-empty content before tag",
+					startToken: "<thinking>",
+					endToken:   "</thinking>",
+					in:         []genai.Reply{{Text: "Text before <thinking>\nThis is thinking</thinking>\nThis is response"}},
+					want:       "unexpected prefix before reasoning tag: \"Text before \"",
+				},
+				{
+					name:       "Error from underlying GenSync",
+					startToken: "<thinking>",
+					endToken:   "</thinking>",
+					err:        errors.New("mock error"),
+					want:       "mock error",
+				},
+				{
+					name:       "Multiple content blocks",
+					startToken: "<thinking>",
+					endToken:   "</thinking>",
+					in:         []genai.Reply{{Text: "First part. "}, {Text: "<thinking>Thinking part</thinking>"}, {Text: " Second part."}},
+					want:       "unexpected prefix before reasoning tag: \"First part. \"",
+				},
+				{
+					name:       "Message with existing thinking content",
+					startToken: "<thinking>",
+					endToken:   "</thinking>",
+					in:         []genai.Reply{{Reasoning: "Existing thinking"}, {Text: "Some text"}},
+					want:       `got unexpected reasoning content: "Existing thinking"; do not use ProviderReasoning with an explicit reasoning CoT model`,
+				},
+			}
 
-				for _, tc := range tests {
-					t.Run(tc.name, func(t *testing.T) {
-						mp := &mockProviderGenSync{
-							responses: []genai.Result{{Message: genai.Message{Replies: tc.in}}},
-							err:       tc.err,
-						}
-						tp := &adapters.ProviderReasoning{
-							Provider:            mp,
-							ReasoningTokenStart: tc.startToken,
-							ReasoningTokenEnd:   tc.endToken,
-						}
-						_, err := tp.GenSync(t.Context(), genai.Messages{})
-						if err == nil {
-							t.Fatal("expected error but got none")
-						}
-						if got := err.Error(); got != tc.want {
-							t.Fatalf("invalid error\nwant %q\ngot  %q", tc.want, got)
-						}
-					})
-				}
-			})
+			for _, tc := range tests {
+				t.Run(tc.name, func(t *testing.T) {
+					mp := &mockProviderGenSync{
+						responses: []genai.Result{{Message: genai.Message{Replies: tc.in}}},
+						err:       tc.err,
+					}
+					tp := &adapters.ProviderReasoning{
+						Provider:            mp,
+						ReasoningTokenStart: tc.startToken,
+						ReasoningTokenEnd:   tc.endToken,
+					}
+					_, err := tp.GenSync(t.Context(), genai.Messages{})
+					if err == nil {
+						t.Fatal("expected error but got none")
+					}
+					if got := err.Error(); got != tc.want {
+						t.Fatalf("invalid error\nwant %q\ngot  %q", tc.want, got)
+					}
+				})
+			}
 		})
 	})
 
 	t.Run("GenStream", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
+			t.Run("chronology", func(t *testing.T) {
+				p := &mockProviderGenStream{streamResponses: []streamResponse{{fragments: []genai.Reply{{Text: "<think>reason"}, {Text: "</think>waiting"}, {ToolCall: genai.ToolCall{ID: "C", Name: "status", Arguments: `{}`}}}}}}
+				w := &adapters.ProviderReasoning{Provider: p, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "</think>"}
+				fragments, finish := w.GenStream(t.Context(), msgs)
+				for range fragments {
+				}
+				got, err := finish()
+				if err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff(msgs, p.msgs); diff != "" {
+					t.Fatal(diff)
+				}
+				if got.Reasoning() != "reason" || got.String() != "waiting" || got.Replies[len(got.Replies)-1].ToolCall.ID != "C" {
+					t.Fatalf("lost output: %+v", got)
+				}
+			})
 			tests := []struct {
 				name       string
 				startToken string
@@ -347,7 +401,7 @@ func TestProviderReasoning(t *testing.T) {
 				})
 			}
 		})
-		t.Run("errors", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name       string
 				startToken string

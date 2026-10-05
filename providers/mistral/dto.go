@@ -220,12 +220,18 @@ func (m *Message) From(in *genai.Message) error {
 		for i := range in.Replies {
 			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				if err := m.ToolCalls[i].From(&in.Replies[i].ToolCall); err != nil {
+				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
 					return fmt.Errorf("reply #%d: %w", i, err)
 				}
 				continue
 			}
-			if err := m.Content[i].FromReply(&in.Replies[i]); err != nil {
+			// Mistral encodes content before tool_calls; the separate arrays cannot express interleaving.
+			// https://github.com/mistralai/mistral-common/blob/main/src/mistral_common/tokens/tokenizers/instruct.py
+			if len(m.ToolCalls) != 0 {
+				return fmt.Errorf("reply #%d: mistral cannot represent content after a tool call in the same assistant message", i)
+			}
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}

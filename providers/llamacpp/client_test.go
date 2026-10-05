@@ -7,6 +7,7 @@
 package llamacpp_test
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
@@ -567,4 +568,74 @@ func TestClientSystemOne(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestClientChronologicalTemplate(t *testing.T) {
+	msgs := genai.Messages{
+		genai.NewTextMessage("first"), genai.NewTextMessage("correction"),
+		{Replies: []genai.Reply{{ToolCall: genai.ToolCall{ID: "A", Name: "status", Arguments: `{}`}}}},
+		genai.NewTextMessage("intervening"),
+		{Replies: []genai.Reply{{ToolCall: genai.ToolCall{ID: "B", Name: "status", Arguments: `{}`}}}},
+		{ToolCallResults: []genai.ToolCallResult{{ID: "B", Name: "status", Result: "waiting"}}},
+		{ToolCallResults: []genai.ToolCallResult{{ID: "A", Name: "status", Result: "running"}}},
+	}
+	before, err := json.Marshal(msgs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var template []llamacpp.Message
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch r.URL.Path {
+		case "/apply-template":
+			var req struct {
+				Messages []llamacpp.Message `json:"messages"`
+			}
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				t.Error(err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			template = req.Messages
+			if _, err := io.WriteString(w, `{"prompt":"server-rendered chronological prompt"}`); err != nil {
+				t.Error(err)
+			}
+		case "/completions":
+			var req llamacpp.CompletionRequest
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				t.Error(err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			if req.Prompt != "server-rendered chronological prompt" {
+				t.Errorf("prompt=%q", req.Prompt)
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			if _, err := io.WriteString(w, `{"error":{"code":400,"message":"template chronology rejected","type":"invalid_request_error"}}`); err != nil {
+				t.Error(err)
+			}
+		default:
+			t.Errorf("unexpected request: %s", r.URL.Path)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}))
+	t.Cleanup(srv.Close)
+	c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL), genai.ProviderOptionModel("test"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	internaltest.CleanupCloser(t, c)
+	if _, err := c.Completion(t.Context(), msgs); err == nil || !strings.Contains(err.Error(), "template chronology rejected") {
+		t.Fatalf("provider error=%v", err)
+	}
+	if len(template) != 7 || template[0].Role != "user" || template[1].Role != "user" || template[2].ToolCalls[0].ID != "A" || template[3].Content[0].Text != "intervening" || template[4].ToolCalls[0].ID != "B" || template[5].ToolCallID != "B" || template[5].Content[0].Text != "waiting" || template[6].ToolCallID != "A" || template[6].Content[0].Text != "running" {
+		t.Fatalf("template history changed: %+v", template)
+	}
+	after, err := json.Marshal(msgs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(before, after) {
+		t.Fatal("template mutated input")
+	}
 }

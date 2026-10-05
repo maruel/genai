@@ -182,6 +182,9 @@ type Response struct {
 
 // Init implements base.InitializableRequest.
 func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	var unsupported []string
 	var errs []error
 	r.Model = model
@@ -243,32 +246,23 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 				}
 			}
 		case len(msgs[i].Replies) > 1:
-			// Goddam OpenAI. Handle messages with multiple tool calls by creating multiple messages.
-			var txt []genai.Reply
-			for j := range msgs[i].Replies {
-				if !msgs[i].Replies[j].ToolCall.IsZero() {
-					msgCopy := msgs[i]
-					msgCopy.Replies = []genai.Reply{msgs[i].Replies[j]}
-					var newMsg Message
-					if skip, err := newMsg.From(&msgCopy); err != nil {
-						errs = append(errs, fmt.Errorf("message #%d: tool call #%d: %w", i, j, err))
-					} else if !skip {
-						r.Input = append(r.Input, newMsg)
+			// Split tool calls into input items without moving them ahead of intervening content.
+			for j := 0; j < len(msgs[i].Replies); {
+				end := j + 1
+				if msgs[i].Replies[j].ToolCall.IsZero() {
+					for end < len(msgs[i].Replies) && msgs[i].Replies[end].ToolCall.IsZero() {
+						end++
 					}
-				} else {
-					txt = append(txt, msgs[i].Replies[j])
 				}
-			}
-			if len(txt) != 0 {
-				// Create a copy of the message with only the non-tool call messages.
 				msgCopy := msgs[i]
-				msgCopy.Replies = txt
+				msgCopy.Replies = msgs[i].Replies[j:end]
 				var newMsg Message
 				if skip, err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+					errs = append(errs, fmt.Errorf("message #%d: reply #%d: %w", i, j, err))
 				} else if !skip {
 					r.Input = append(r.Input, newMsg)
 				}
+				j = end
 			}
 		default:
 			// It's a Request, send it as-is.
@@ -649,6 +643,9 @@ func (m *Message) From(in *genai.Message) (bool, error) {
 		// Handle multiple tool calls by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
 		if !in.Replies[0].ToolCall.IsZero() {
+			if len(in.Replies[0].Opaque) != 0 {
+				return false, &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+			}
 			if len(in.Replies[0].ToolCall.Opaque) != 0 {
 				return false, &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 			}
@@ -661,8 +658,12 @@ func (m *Message) From(in *genai.Message) (bool, error) {
 		m.Type = MessageMessage
 		m.Role = "assistant"
 		for j := range in.Replies {
-			// TODO: should we send it back, at least the ID?
+			// Responses reasoning summaries are output-only; native reasoning-item replay is not implemented.
+			// Reject replay-required metadata rather than silently discarding it with the summary.
 			if in.Replies[j].Reasoning != "" {
+				if len(in.Replies[j].Opaque) != 0 {
+					return false, &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+				}
 				continue
 			}
 			m.Content = append(m.Content, Content{})

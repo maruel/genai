@@ -195,8 +195,13 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if model.Reason && strings.HasPrefix(model.Model, "qwen/") {
-				return &handleGroqReasoning{Provider: cl}
+			if strings.HasPrefix(model.Model, "qwen/") {
+				o := groq.GenOption{}
+				if model.Reason {
+					o.ReasoningEffort = groq.ReasoningEffortMedium
+					o.ReasoningFormat = groq.ReasoningFormatParsed
+				}
+				return &handleGroqReasoning{Provider: cl, opt: o}
 			}
 			return cl
 		}
@@ -257,15 +262,16 @@ func TestClient(t *testing.T) {
 
 type handleGroqReasoning struct {
 	genai.Provider
+	opt groq.GenOption
 }
 
 func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	opts = append(opts, &groq.GenOption{ReasoningEffort: groq.ReasoningEffortMedium, ReasoningFormat: groq.ReasoningFormatParsed})
+	opts = append(opts, &h.opt)
 	return h.Provider.GenSync(ctx, msgs, opts...)
 }
 
 func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	opts = append(opts, &groq.GenOption{ReasoningEffort: groq.ReasoningEffortMedium, ReasoningFormat: groq.ReasoningFormatParsed})
+	opts = append(opts, &h.opt)
 	return h.Provider.GenStream(ctx, msgs, opts...)
 }
 

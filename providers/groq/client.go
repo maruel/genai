@@ -262,6 +262,9 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if strings.HasPrefix(c.impl.Model, "qwen/") && !slices.ContainsFunc(opts, func(o genai.GenOption) bool { _, ok := o.(*GenOption); return ok }) {
+		opts = slices.Concat(opts, []genai.GenOption{&GenOption{ReasoningEffort: ReasoningEffortMedium, ReasoningFormat: ReasoningFormatParsed}})
+	}
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -272,6 +275,9 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if strings.HasPrefix(c.impl.Model, "qwen/") && !slices.ContainsFunc(opts, func(o genai.GenOption) bool { _, ok := o.(*GenOption); return ok }) {
+		opts = slices.Concat(opts, []genai.GenOption{&GenOption{ReasoningEffort: ReasoningEffortMedium, ReasoningFormat: ReasoningFormatParsed}})
+	}
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

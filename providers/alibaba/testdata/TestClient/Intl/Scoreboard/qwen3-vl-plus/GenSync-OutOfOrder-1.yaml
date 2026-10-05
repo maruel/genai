@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 753
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":"{\"task_id\": 3}","name":"task_status"},"id":"call_19468cf43210421db0d72abe","index":0,"type":"function"},{"function":{"arguments":"{\"task_id\": 7}","name":"task_status"},"id":"call_775fdf1a8d964fd2a315d91d","index":1,"type":"function"},{"function":{"arguments":"{\"task_id\": 11}","name":"task_status"},"id":"call_40e95698302a4abebe640e5e","index":2,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":342,"completion_tokens":73,"total_tokens":415,"prompt_tokens_details":{"text_tokens":342},"completion_tokens_details":{"text_tokens":73}},"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-320d4788-d35b-938a-b889-fa7b9d0c5222"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1791230758425"
+            Req-Cost-Time:
+                - "1241"
+            Resp-Start-Time:
+                - "1791230759666"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1240"
+        status: 200 OK
+        code: 200
+        duration: 1.483s

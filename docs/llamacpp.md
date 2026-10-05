@@ -1,16 +1,16 @@
 # Scoreboard
 
-| Model                                                      | Mode      | ➛In    | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ---------------------------------------------------------- | --------- | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠     | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠   | 💬📸   | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠     | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠   | 🎤💬📸 | 💬     | ✅🪨 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf                    | SystemOne | 💬     | 🎯      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync      | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream    | 🎤💬   | 💬     | ❌   | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync      | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream    | 💬📸   | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Model                                                      | Mode      | ➛In    | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ---------------------------------------------------------- | --------- | ------ | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠     | 💬📸   | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠   | 💬📸   | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠     | 🎤💬📸 | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠   | 🎤💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf                    | SystemOne | 💬     | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync      | 🎤💬   | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream    | 🎤💬   | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync      | 💬📸   | 💬     | ❌     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream    | 💬📸   | 💬     | ❌     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -32,9 +32,10 @@
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage or Finish reason is not always reported)
 - 🌐: Country where the company is located
-- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️🔀
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
 		- 🕸️: Web search
+		- 🔀: Supports messages and tool calls out of order
 - JSON: ability to output JSON in free form, or with a forced schema specified as a Go struct
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form

@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1466
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_88250fe5c1224632bbc6084d","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_6b9cb6f4ce03467883013dd4","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_959165c191704ddabef034fd","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":"Still","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230674,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-a240b1f7-032c-448d-8470-36d22deef176"}
+
+            data: {"choices":[{"delta":{"content":" waiting"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230674,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-a240b1f7-032c-448d-8470-36d22deef176"}
+
+            data: {"choices":[{"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230674,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-a240b1f7-032c-448d-8470-36d22deef176"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230674,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-a240b1f7-032c-448d-8470-36d22deef176"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":486,"completion_tokens":4,"total_tokens":490,"completion_tokens_details":{"text_tokens":4},"prompt_tokens_details":{"text_tokens":486,"cached_tokens":0}},"created":1791230674,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-a240b1f7-032c-448d-8470-36d22deef176"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230673820"
+            Req-Cost-Time:
+                - "527"
+            Resp-Start-Time:
+                - "1791230674348"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "527"
+        status: 200 OK
+        code: 200
+        duration: 549ms

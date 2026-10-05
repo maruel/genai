@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 845
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_57fb4f27327e464c9187a331","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_57fb4f27327e464c9187a331"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":"3","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[{"delta":{"content":"6"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[{"delta":{"content":"3"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[{"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[{"delta":{"content":"8"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[{"delta":{"content":"9"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":55,"completion_tokens":7,"total_tokens":62,"completion_tokens_details":{"text_tokens":7},"prompt_tokens_details":{"text_tokens":55}},"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-46082998-2673-9a4b-80d7-91085bd7ee9f"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230754728"
+            Req-Cost-Time:
+                - "325"
+            Resp-Start-Time:
+                - "1791230755054"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "325"
+        status: 200 OK
+        code: 200
+        duration: 567ms

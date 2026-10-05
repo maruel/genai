@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 735
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"model":"openai/gpt-oss-120b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-416d5ade-fa24-469a-9c32-a8a082af4187","object":"chat.completion","created":1791225990,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to get status and reference for tasks 3,7,11. Use tool function task_status for each. Probably can call multiple times. The request: \"Start the checks together if possible.\" We can call function sequentially or parallel? We'll just call three times. Need to output results after fetching. Use tool calls.","tool_calls":[{"id":"fc_874fd248-7888-4afe-abc9-fa14e9e75a3a","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.013446415,"prompt_tokens":192,"prompt_time":0.009124944,"completion_tokens":96,"completion_time":0.205240626,"total_tokens":288,"total_time":0.21436557,"completion_tokens_details":{"reasoning_tokens":68}},"usage_breakdown":null,"system_fingerprint":"fp_068241849b","x_groq":{"id":"req_01m46p7323e6f8hfxbf35vc1s2","seed":876744133},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96e6adbd2df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249561"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 105ms
+        status: 200 OK
+        code: 200
+        duration: 320ms

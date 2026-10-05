@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 806
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_0301a0a247d14921b3d500df","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_0301a0a247d14921b3d500df"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":55,"completion_tokens":7,"total_tokens":62,"prompt_tokens_details":{"text_tokens":55},"completion_tokens_details":{"text_tokens":7}},"created":1791230755,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-e4e1c802-7cda-9901-bd4d-86ac4972e07e"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1791230754455"
+            Req-Cost-Time:
+                - "693"
+            Resp-Start-Time:
+                - "1791230755149"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "693"
+        status: 200 OK
+        code: 200
+        duration: 935ms

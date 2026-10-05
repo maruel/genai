@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1448
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":false,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"index":0,"id":"call_01a10d63f7db7711abcc188b","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"index":0,"id":"call_01a10d63f7db7711abcc188c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"index":0,"id":"call_01a10d63f7db7711abcc188d","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 259
+        body: '{"error":{"type":"Bad Request","code":"invalid_tool_messages","message":"incomplete parallel tool-call group: tool call ''call_01a10d63f7db7711abcc188b'' has no tool response; all tool calls in a parallel group must be answered before continuing","param":null}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e97932c8aa26f-YUL
+            Content-Length:
+                - "259"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-de24e8cd75d67a7bb8923ffae93ee773-9e6ee64aa551b7c2-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-05T18:46:57.819Z"
+            X-Cluster:
+                - dep-agqou3vnqr4upglbu6glwwmxgq
+            X-Smg-Error-Code:
+                - invalid_tool_messages
+            X-Together-Routing:
+                - de2
+        status: 400 Bad Request
+        code: 400
+        duration: 55ms

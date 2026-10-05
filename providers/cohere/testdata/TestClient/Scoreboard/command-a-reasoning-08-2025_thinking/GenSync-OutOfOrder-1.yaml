@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 797
+        host: api.cohere.com
+        body: |
+            {"stream":false,"model":"command-a-reasoning-08-2025","messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"description":"Read a task's current status and reference; does not change anything."}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"1ea8e39f-1ed0-4d6a-be55-90bbda019dc4","message":{"role":"assistant","content":[{"type":"thinking","thinking":"Alright, the user wants to check the status and reference of tasks 3, 7, and 11. They also mentioned starting the checks together if possible. Let me look at the available tools.\n\nThe only tool available is task_status, which requires a task_id parameter. Since the user provided three task IDs (3, 7, 11), I need to call the task_status tool for each of these IDs. The tool description says it reads the task''s current status and reference without changing anything, which aligns with the user''s request.\n\nSince each tool call is for a different task_id, they are independent and can be executed in parallel. So I''ll make three separate tool calls with each task_id. I''ll assign unique tool_call_ids: 0, 1, 2 for tasks 3, 7, and 11 respectively. \n\nI need to ensure that each call uses the correct parameters. The parameters for each tool call will be task_id=3, task_id=7, and task_id=11. The tool requires task_id as a parameter, so that''s straightforward. No other parameters are needed. \n\nOnce the results come back, I''ll compile the information from each tool output to provide the user with the status and reference for each task. If any of the tasks don''t exist or return errors, I''ll handle that in the response by informing the user accordingly."}],"tool_calls":[{"id":"task_status_4rtwcqrbsq29","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"id":"task_status_ff91ppty2k6c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"id":"task_status_ttg1v6th8xvq","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":120,"output_tokens":338},"tokens":{"input_tokens":1568,"output_tokens":412,"reasoning_tokens":307},"cached_tokens":1008}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - application/json
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Num_chars:
+                - "7410"
+            Num_tokens:
+                - "458"
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin,Accept-Encoding
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 75917a95e322c8b657f0f2bc0baa86c7
+            X-Envoy-Upstream-Service-Time:
+                - "2719"
+        status: 200 OK
+        code: 200
+        duration: 2.805s

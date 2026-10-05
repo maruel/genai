@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 740
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-a706656e-e00d-4388-b317-3c56ad0a40a5","choices":[{"finish_reason":"tool_calls","index":0,"message":{"reasoning":"We need to get status and reference of tasks 3,7,11 using the function task_status. We need to call function for each. Possibly can batch? The function takes a task_id and returns status+reference. We''ll call three separate calls. Then respond with results.","tool_calls":[{"function":{"name":"task_status","arguments":"{\"task_id\":3}"},"type":"function","id":"cdeed1906"}],"role":"assistant"}}],"created":1791231153,"model":"gpt-oss-120b","system_fingerprint":"fp_752b9cb17e04d95d05c3","object":"chat.completion","usage":{"total_tokens":267,"completion_tokens":81,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":56},"prompt_tokens":186,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1791231153.9122112,"queue_time":0.003359935,"prompt_time":0.004074668,"completion_time":0.044832683,"total_time":0.053900718688964844}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45f14f78f402388-YYZ
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=26,cfOrigin;dur=112
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "2400"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "150"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "5"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "2398"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "149"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "4"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "967504"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "2983559"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "13559"
+        status: 200 OK
+        code: 200
+        duration: 1m0.361s

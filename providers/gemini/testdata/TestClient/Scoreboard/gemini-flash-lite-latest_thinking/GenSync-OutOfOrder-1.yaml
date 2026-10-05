@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 860
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 3
+                          },
+                          "id": "call_8029"
+                        },
+                        "thoughtSignature": "EukDCuYDAWkUfRP4Zrax6zFwD+PpxNpBlY8IxyhFPRa7ojV5rFtuMNri8FKjYcw6nuPf9gxL8TLVU6JzXa14DXrjF6fa3aTX4oS2FcYlXnPDHHZ1SHoccvUz0ljVluuhAJYIShIupLmVWi0eBVJiLtrbIf3MVkyHPzE1ydUt9zw2Fu7tEh0B3uLqgczfgTfP0/V21nV/P/nXy2F54QhXFCh0maGay2ZyiHoW7ngVmXLQAhTPc6pALEyRz+tcgFkYn/lAxvzGB4BXW7OVp2nHrkUO1pz/3fSC8gcun3WeKK8LGBKCeZgq5Aququq0feuFUFbK17DGcvE+ZNg0suYOVFDsZO/XfdNREpsEA0hJBzp+k74uqBxF9vtyLgyFFAP6NLpStIwA9EwCp5EyH0WHVr8kCeydBPZSRzZeplhSPyfrnSt5Z4M8dgWY5v984jSkMIWOcDc9QJvGJPzjArqgt6U4AdPHvvU1VPUa9rqOKwPF3iM30U0kxAtmsG6APXsccCZ/nBzYcpyuU31F/urENvpp23jcq4PyrIdI70iI3fpcY4GRnrn9A0Bi3hP9tiyQBUG1JR/9vJQ6yYK+rh0emIp7PB8vVLIOrNFdbc1wRiiHkAaNBMfgtVAqeS1Wk8H7in/HMeeLKXGMiY+S"
+                      },
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 7
+                          },
+                          "id": "call_8030"
+                        }
+                      },
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 11
+                          },
+                          "id": "call_8031"
+                        }
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 135,
+                "candidatesTokenCount": 49,
+                "totalTokenCount": 292,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 135
+                  }
+                ],
+                "thoughtsTokenCount": 108,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "eOfDavrwGum11MkP7tW1qQs"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1125
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.166s

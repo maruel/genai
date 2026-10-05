@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1262
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_flz27r88","function":{"name":"task_status","arguments":{"task_id":3}}},{"id":"call_zhslq93b","function":{"name":"task_status","arguments":{"task_id":7}}},{"id":"call_vg07p5co","function":{"name":"task_status","arguments":{"task_id":11}}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":false,"tools":[{"type":"function","function":{"description":"Read a task's current status and reference; does not change anything.","name":"task_status","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: '{"model":"gemma4:e2b","created_at":"2026-10-05T18:10:16.23823921Z","message":{"role":"assistant","content":"Waiting for task 7''s reference.","thinking":"The user is asking for the reference of task 7.\nThe previous turn initiated calls for task 3, 7, and 11.\nI need to check the results of those calls to determine the status of task 7.\nSince I have executed the calls, I should check the results now.\nI will wait for the tool output before responding.\nIf the tool output is available, I will extract the reference for task 7 and report it. If it''s not available, I will state that I am waiting.\nSince the model output is sequential, and I''ve just made the calls, the next turn should contain the results. I will assume the results are processed and I need to act on them, or wait if they haven''t arrived yet (which is the current state).\n\nGiven the prompt structure, I must act based on the *results* of the previous calls. Since I don''t have the results yet, I must wait or assume the system will provide them in the next step.\n\nIf I strictly follow the instruction \"Do you have task 7''s reference yet?\", I need the output of `task_status{task_id:7}`.\n\nSince I cannot see the tool output in this turn, I must state that I am waiting if the previous turn didn''t provide it, or if the system requires me to explicitly wait. However, in this turn structure, I assume the calls were made and I should now check the state or wait for the result processing.\n\nLet''s assume the environment will provide the results next, or I need to interpret the state based on the execution history. Since the user explicitly asked me to *only* give task 7''s reference, I''ll focus my answer on that specific piece of information once I have it.\n\n*Self-correction*: The current instruction flow implies I should *only* respond based on the state *after* the calls are executed and results are available. Since I don''t see the results, I have to assume I''m still waiting or that the system expects me to act based on the execution. Since the user is asking *me* directly, I need to check the state again if the previous calls haven''t yielded a result I can act upon.\n\nSince I am the assistant, and the previous action was to call the tools, I must now wait for the output to provide the reference. If I *must* respond now, I will state I am waiting for the result."},"done":true,"done_reason":"stop","total_duration":48875068852,"load_duration":1300431,"prompt_eval_count":243,"prompt_eval_cached_count":238,"prompt_eval_duration":134787000,"eval_count":533,"eval_duration":21701504000}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 48.876s

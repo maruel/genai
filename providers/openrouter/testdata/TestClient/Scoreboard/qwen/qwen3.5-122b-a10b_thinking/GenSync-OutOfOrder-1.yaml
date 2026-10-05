@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 738
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"model":"qwen/qwen3.5-122b-a10b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n{\"id\":\"gen-1791225995-P1w4848GinQs4djybKvx\",\"object\":\"chat.completion\",\"created\":1791225995,\"model\":\"qwen/qwen3.5-122b-a10b\",\"provider\":\"Alibaba\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"The user wants me to check the status and reference of tasks 3, 7, and 11. They want me to start the checks together if possible. I can use the task_status function for each task. Since they want them started together, I should make all three function calls at once.\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"call_af0e84b67abd4aeb850e51cf\",\"function\":{\"name\":\"task_status\",\"arguments\":\"{\\\"task_id\\\": 3}\"}},{\"type\":\"function\",\"index\":1,\"id\":\"call_e814e9511ab14b09be50632d\",\"function\":{\"name\":\"task_status\",\"arguments\":\"{\\\"task_id\\\": 7}\"}},{\"type\":\"function\",\"index\":2,\"id\":\"call_bbcca66809ac4b7b91d729bc\",\"function\":{\"name\":\"task_status\",\"arguments\":\"{\\\"task_id\\\": 11}\"}}],\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user wants me to check the status and reference of tasks 3, 7, and 11. They want me to start the checks together if possible. I can use the task_status function for each task. Since they want them started together, I should make all three function calls at once.\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":359,\"completion_tokens\":151,\"total_tokens\":510,\"cost\":0.00040742,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00040742,\"upstream_inference_prompt_cost\":0.00009334,\"upstream_inference_completions_cost\":0.00031408},\"completion_tokens_details\":{\"reasoning_tokens\":62,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,X-Provider-Name,request-id,cf-ray
+            Cf-Ray:
+                - a45e97061d2ee09b-YUL
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=652
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1791225995-P1w4848GinQs4djybKvx
+        status: 200 OK
+        code: 200
+        duration: 706ms

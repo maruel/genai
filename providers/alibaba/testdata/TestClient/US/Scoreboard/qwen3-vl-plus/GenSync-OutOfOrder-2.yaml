@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1427
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_9820d1a5c4cd46d397a0a6d2","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_5e628256cc884d64bdd3d044","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_06afb857aa47499c94716d7c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Still waiting.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":486,"completion_tokens":4,"total_tokens":490,"completion_tokens_details":{"text_tokens":4},"prompt_tokens_details":{"text_tokens":486,"cached_tokens":0}},"created":1791230675,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-d9254341-4ed4-4d12-9d72-d5e3e7737da7"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1791230674080"
+            Req-Cost-Time:
+                - "647"
+            Resp-Start-Time:
+                - "1791230674728"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "647"
+        status: 200 OK
+        code: 200
+        duration: 669ms

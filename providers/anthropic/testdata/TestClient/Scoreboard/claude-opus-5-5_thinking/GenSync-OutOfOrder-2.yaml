@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1484
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","content":[{"type":"tool_use","id":"toolu_019z2uMfFsgeBi66CfbUHwP3","input":{"task_id":3},"name":"task_status"},{"type":"tool_use","id":"toolu_01DzJBV1jHEyBnzSZrZ8VFnM","input":{"task_id":7},"name":"task_status"},{"type":"tool_use","id":"toolu_0154L1khG1rGTHmMBQuD4cXW","input":{"task_id":11},"name":"task_status"}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"system":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"Read a task's current status and reference; does not change anything.","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"name":"task_status"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"type":"error","error":{"type":"invalid_request_error","message":"messages.2: `tool_use` ids were found without `tool_result` blocks immediately after: toolu_0154L1khG1rGTHmMBQuD4cXW, toolu_019z2uMfFsgeBi66CfbUHwP3, toolu_01DzJBV1jHEyBnzSZrZ8VFnM. Each `tool_use` block must have a corresponding `tool_result` block in the next message."},"request_id":"req_011Cfjazw7LQTph9htcVMqaS"}'
+        headers:
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e967f197f5895-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-562f62cb706a0abb866e9babfbd4e705-b7ef48c9ea5455e1-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 400 Bad Request
+        code: 400
+        duration: 142ms

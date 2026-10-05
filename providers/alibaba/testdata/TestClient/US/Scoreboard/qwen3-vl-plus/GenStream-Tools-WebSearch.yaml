@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 304
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":"Justin","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230675,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-8cfdb18b-2a5d-41fb-878d-c0ac9144cd5d"}
+
+            data: {"choices":[{"delta":{"content":" Trudeau"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230675,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-8cfdb18b-2a5d-41fb-878d-c0ac9144cd5d"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230675,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-8cfdb18b-2a5d-41fb-878d-c0ac9144cd5d"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":36,"completion_tokens":3,"total_tokens":39,"completion_tokens_details":{"text_tokens":3},"prompt_tokens_details":{"text_tokens":36,"cached_tokens":0}},"created":1791230675,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-8cfdb18b-2a5d-41fb-878d-c0ac9144cd5d"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230675057"
+            Req-Cost-Time:
+                - "387"
+            Resp-Start-Time:
+                - "1791230675444"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "386"
+        status: 200 OK
+        code: 200
+        duration: 409ms

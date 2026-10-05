@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 217
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"stop":["is"],"stream_options":{"include_usage":true},"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":"Canada","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-3ba459a5-74b2-4f48-8921-19673fadb8aa"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":" "},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-3ba459a5-74b2-4f48-8921-19673fadb8aa"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":20,"completion_tokens":2,"total_tokens":22,"completion_tokens_details":{"text_tokens":2},"prompt_tokens_details":{"text_tokens":20,"cached_tokens":0}},"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-3ba459a5-74b2-4f48-8921-19673fadb8aa"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230667452"
+            Req-Cost-Time:
+                - "407"
+            Resp-Start-Time:
+                - "1791230667859"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "407"
+        status: 200 OK
+        code: 200
+        duration: 429ms

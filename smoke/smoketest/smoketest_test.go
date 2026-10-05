@@ -13,6 +13,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
+	"sync/atomic"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -24,12 +26,35 @@ func TestRunOneModel(t *testing.T) {
 	old := *updateScoreboard
 	t.Cleanup(func() { *updateScoreboard = old })
 	*updateScoreboard = true
-	_, got := runOneModel(t, func(testing.TB, string) genai.Provider {
+	var existingProbes, outOfOrder atomic.Int64
+	gc := func(_ testing.TB, name string) genai.Provider {
+		if strings.Contains(name, "/GenSync-OutOfOrder-") || strings.Contains(name, "/GenStream-OutOfOrder-") {
+			outOfOrder.Add(1)
+		} else if name != "" {
+			existingProbes.Add(1)
+		}
 		return &scoreboardProvider{}
-	}, &scoreboard.Scenario{Models: []string{"model"}}, false)
-	if got == nil || got.GenSync == nil || !got.GenSync.Seed {
-		t.Fatalf("generated scenario = %#v, want seeded GenSync scenario", got)
 	}
+	_, measured := runOneModel(t, gc, &scoreboard.Scenario{Models: []string{"model"}}, false)
+	if measured == nil || measured.GenSync == nil || !measured.GenSync.Seed {
+		t.Fatalf("generated scenario = %#v, want seeded GenSync scenario", measured)
+	}
+	if outOfOrder.Load() != 0 || measured.GenSync.OutOfOrder != nil || measured.GenStream.OutOfOrder != nil {
+		t.Fatal("update measured OutOfOrder without successful basic tool calls")
+	}
+	baseline := existingProbes.Load()
+	*updateScoreboard = false
+	t.Run("replay", func(t *testing.T) {
+		existingProbes.Store(0)
+		outOfOrder.Store(0)
+		_, got := runOneModel(t, gc, measured, false)
+		if existingProbes.Load() != baseline || outOfOrder.Load() != 0 {
+			t.Fatalf("existingProbes=%d want=%d OutOfOrder=%d want=0", existingProbes.Load(), baseline, outOfOrder.Load())
+		}
+		if got.GenSync.OutOfOrder != nil || got.GenStream.OutOfOrder != nil {
+			t.Fatal("replay measured OutOfOrder without successful basic tool calls")
+		}
+	})
 }
 
 func TestRunOptions(t *testing.T) {
@@ -59,6 +84,33 @@ func TestRunOptions(t *testing.T) {
 }
 
 func TestGenerateUpdatedScoreboard(t *testing.T) {
+	t.Run("OutOfOrder", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "scoreboard.json")
+		old := []byte(`{"country":"Local","dashboardURL":"","scenarios":[{"models":["first","sibling"],"good":true,"in":{"text":{"inline":true}},"out":{"text":{"inline":true}},"GenSync":{"tools":"true"}}]}`)
+		if err := os.WriteFile(path, old, 0o600); err != nil {
+			t.Fatal(err)
+		}
+		sc := scoreboard.Scenario{
+			Models:  []string{"first"},
+			In:      map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
+			Out:     map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.Functionality{Tools: scoreboard.True, OutOfOrder: new(scoreboard.True)},
+		}
+		_, raw := generateUpdatedScoreboard(t, path, []scoreboard.Scenario{sc}, nil, false)
+		var sb scoreboard.Score
+		if err := json.Unmarshal(raw, &sb); err != nil {
+			t.Fatal(err)
+		}
+		if len(sb.Scenarios) != 2 {
+			t.Fatalf("measured model consolidated with unknown: %s", raw)
+		}
+		if !sb.Scenarios[0].Good || sb.Scenarios[0].Models[0] != "first" || sb.Scenarios[0].GenSync.OutOfOrder == nil {
+			t.Fatal("lost measured model metadata")
+		}
+		if sb.Scenarios[1].Models[0] != "sibling" || sb.Scenarios[1].GenSync.OutOfOrder != nil || sb.Scenarios[1].GenSync.Tools != scoreboard.True {
+			t.Fatal("manufactured measurement for sibling or lost existing Tools score")
+		}
+	})
 	t.Run("filtered preserves tiers", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "scoreboard.json")
 		old := []byte(`{"country":"US","dashboardURL":"","scenarios":[{"models":["chat"],"sota":true,"GenSync":{}},{"models":["decision"],"SystemOne":{}}]}`)

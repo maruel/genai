@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 178
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":2,"total_tokens":22,"completion_tokens_details":{"text_tokens":2},"prompt_tokens_details":{"text_tokens":20,"cached_tokens":0}},"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-5ad67d7f-17d2-4e60-a15c-45a440996ca4"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1791230667126"
+            Req-Cost-Time:
+                - "463"
+            Resp-Start-Time:
+                - "1791230667589"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "463"
+        status: 200 OK
+        code: 200
+        duration: 485ms

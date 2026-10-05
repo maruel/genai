@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3180
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_2754f4928dd8470cae7d51e4","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_1acad46d4f364371bbe69a13","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_4174787e3ce0470cbe78bcfa","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"id":"call_e3b34cf2aa0440b38aba63cb","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_e3b34cf2aa0440b38aba63cb"},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_4174787e3ce0470cbe78bcfa"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_1acad46d4f364371bbe69a13"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_2754f4928dd8470cae7d51e4"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"id":"call_c27862d09e3d4c07aea932fe","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_c27862d09e3d4c07aea932fe"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"id":"call_ca5d97243567462dad4e74b8","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_ca5d97243567462dad4e74b8"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226024,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":"call_0d1f71ef8a54468288d27e6e","function":{"arguments":"","name":"task_status"},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226025,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"{\"task_id\": ","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226025,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"7","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226025,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"}","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226025,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"tool_calls","index":0}],"created":1791226025,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"c4f61a87-1631-4a64-b62d-90518e80d12c_6e8f72749a984da79907e76f51596128","choices":[],"created":1791226025,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":20,"prompt_tokens":599,"total_tokens":619,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens_details":{"cached_tokens":512}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 972ms

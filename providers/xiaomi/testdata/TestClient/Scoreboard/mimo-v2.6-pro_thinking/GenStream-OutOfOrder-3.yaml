@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 4190
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning_content":"The user wants to check status and reference of tasks 3, 7, and 11, and wants them started together if possible. I should call task_status for all three in the same block since they're independent.","tool_calls":[{"id":"call_5b567e43c09d4fa6a7ebcbde","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_fafb5ce6b651471da83b8db0","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_417394ea9119430e9db33a53","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"Still waiting on task 7's reference — the check hasn't come back yet.","reasoning_content":"The user wants task 7's reference only. The tool results were just provided in the human turn after my tool calls - they contain the results for tasks 3, 7, and 11. Let me look at what was returned.\n\nWait, the function results seem to have been injected in the conversation after my tool calls. Looking at the structure - the tool calls were made, then the next human message contains... actually no, the human message contains the text \"Actually, I only need task 7's reference...\" - but where are the tool results?\n\nLooking at the conversation flow: I made tool calls in the previous assistant turn. Then the human turn contains the message \"Actually, I only need task 7's reference...\". This suggests the tool results should have come back as tool result messages. But in this conversation, I don't see explicit tool results displayed.\n\nHmm, but the instructions say \"Never claim a task's state or reference without its tool result.\" So I need to know if I have the tool results. In the typical format, tool results come back in a Tool message after the tool calls. Here it seems the human interrupted instead of providing tool results.\n\nWait, looking again - the structure shows my assistant turn with tool calls, then the human turn with the new message. There's no tool result message visible. So I haven't received the tool results yet.\n\nActually, in these agentic conversations, sometimes tool results are appended to the conversation as separate messages. But in what's shown to me here, I only see: system, human, assistant (tool calls), human (new request). No tool results.\n\nSo I should say I'm still waiting for task 7's reference. The user asked: \"Do you have task 7's reference yet? If not, just let me know you're still waiting.\"\n\nSince I don't have any tool result for task 7, I should say I'm still waiting. I shouldn't make up data."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_417394ea9119430e9db33a53"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_fafb5ce6b651471da83b8db0"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_5b567e43c09d4fa6a7ebcbde"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The tool results came"},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" back."},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Task 7's"},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" reference is \"violet\","},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" status \"waiting\". The user wants"},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" only"},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" task 7's reference, not"},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the others."},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":"Yes — task 7's reference","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":" is **violet**.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"f2cfb7e3-bbe2-4d8c-8c01-2621b821650b_1eee299120274286823e58622894a8ee","choices":[],"created":1791226068,"model":"mimo-v2.6-pro","object":"chat.completion.chunk","usage":{"completion_tokens":50,"prompt_tokens":869,"total_tokens":919,"completion_tokens_details":{"reasoning_tokens":35},"prompt_tokens_details":{"cached_tokens":256}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 3.985s

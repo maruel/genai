@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2360
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","content":"\n\n","tool_calls":[{"type":"function","id":"chatcmpl-tool-a5ea4b3ff9b1471391b269c562a4cef9","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"type":"function","id":"chatcmpl-tool-52ad7d3dc5ee4e49a86d2be061799483","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"type":"function","id":"chatcmpl-tool-c34170058cd643ba95106065d740cc09","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"Still waiting on task 7's reference — the check hasn't returned yet. I'll let you know as soon as it comes in."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"chatcmpl-tool-c34170058cd643ba95106065d740cc09","name":"task_status"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"chatcmpl-tool-52ad7d3dc5ee4e49a86d2be061799483","name":"task_status"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"chatcmpl-tool-a5ea4b3ff9b1471391b269c562a4cef9","name":"task_status"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 605
+        body: '{"id":"chatcmpl-f5147707cbd34f2baabf33c48441a59e","choices":[{"index":0,"message":{"content":"Yes — task 7''s reference is violet.","role":"assistant","reasoning_content":"Task 7''s reference is \"violet\". Give only that."},"finish_reason":"stop"}],"created":1791225993,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion","usage":{"prompt_tokens":662,"completion_tokens":26,"total_tokens":688,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":18,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":6}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Content-Length:
+                - "605"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791225992987"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755214040991673382"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755214040991673382"
+            X-Baseten-Model-Id:
+                - qe258p1q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wpg1o9z
+            X-Baseten-Received-At:
+                - "1791225992987"
+            X-Baseten-Request-Id:
+                - 54ca701a10d63971b7c1c87204181f54a81c8
+            X-Baseten-Route-Trail:
+                - ChYKDnZ1bC1tc3AtcHJvZC0xKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791225993196"
+            X-Baseten-Session-Id:
+                - 54ca701a10d63971b7c1c87204181f54a81c8
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "60"
+            X-Ratelimit-Remaining-Tokens:
+                - "499447"
+        status: 200 OK
+        code: 200
+        duration: 244ms

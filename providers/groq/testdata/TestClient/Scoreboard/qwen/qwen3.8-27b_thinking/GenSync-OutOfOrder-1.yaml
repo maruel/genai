@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 788
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-28f0f654-4029-4f7a-909b-d9b035fe7ac7","object":"chat.completion","created":1791223673,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Checking status and references for tasks 3, 7, and 11 - independent calls, batch them all together in the same block.\n","tool_calls":[{"id":"kchbdbqaa","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"id":"79f9hheng","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"id":"0x2nnwzwx","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.064315658,"prompt_tokens":372,"prompt_time":0.02737059,"completion_tokens":117,"completion_time":0.231321258,"total_tokens":489,"total_time":0.258691848,"completion_tokens_details":{"reasoning_tokens":30}},"usage_breakdown":null,"system_fingerprint":"fp_ddcc9cf349","x_groq":{"id":"req_01m46m0ckeef8r50jat401j36t","seed":1296109986},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e5e56eb6aa2ab-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "248919"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 259ms
+        status: 200 OK
+        code: 200
+        duration: 367ms

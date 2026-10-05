@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 745
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6635e2c7-8700-463f-8393-c6b41a1293be_18aa845699cd42e2b2d1e22992c90ac5","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_3b2e1cca41554ee88a79a7eb","function":{"arguments":"{\"task_id\": 3}","name":"task_status"},"type":"function"},{"id":"call_12dd3d65b25d45e399c81d6a","function":{"arguments":"{\"task_id\": 7}","name":"task_status"},"type":"function"},{"id":"call_2691d91f18814309b82d7968","function":{"arguments":"{\"task_id\": 11}","name":"task_status"},"type":"function"}],"reasoning_content":"The user wants status and reference for tasks 3, 7, 11, all together. I can call task_status in parallel."}}],"created":1791226040,"model":"mimo-v2.6-flash","object":"chat.completion","usage":{"completion_tokens":90,"prompt_tokens":183,"total_tokens":273,"completion_tokens_details":{"reasoning_tokens":30},"prompt_tokens_details":{"cached_tokens":0}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 4.359s

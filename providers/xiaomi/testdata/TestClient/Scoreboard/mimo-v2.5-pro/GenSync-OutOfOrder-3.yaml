@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2293
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_d8760473a5b64140afbe9337","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_9ce75fbff0224c08a2b1a58c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_f935757a31d84f069a3fb152","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"id":"call_6ad53b8360774cf7a1faf11e","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_6ad53b8360774cf7a1faf11e"},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_f935757a31d84f069a3fb152"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_9ce75fbff0224c08a2b1a58c"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_d8760473a5b64140afbe9337"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":false,"thinking":{"type":"disabled"},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"d59dcb4c-f668-411b-909c-444a7331b697_9d2a006013614c18ba12ba33031f0441","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Yes, task 7''s reference is \"violet\".","role":"assistant","tool_calls":null}}],"created":1791226036,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":13,"prompt_tokens":620,"total_tokens":633,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens_details":{"cached_tokens":320}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.125s

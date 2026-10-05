@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 529
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_881d8feedaf74249a549d442","type":"function","function":{"name":"get_hostname","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230670,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-b26880b0-ee68-40ad-9b96-7fcbd8b823a3"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"{}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230670,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-b26880b0-ee68-40ad-9b96-7fcbd8b823a3"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230670,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-b26880b0-ee68-40ad-9b96-7fcbd8b823a3"}
+
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230670,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-b26880b0-ee68-40ad-9b96-7fcbd8b823a3"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":289,"completion_tokens":12,"total_tokens":301,"completion_tokens_details":{"text_tokens":12},"prompt_tokens_details":{"text_tokens":289,"cached_tokens":0}},"created":1791230670,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-b26880b0-ee68-40ad-9b96-7fcbd8b823a3"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230669851"
+            Req-Cost-Time:
+                - "521"
+            Resp-Start-Time:
+                - "1791230670373"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "521"
+        status: 200 OK
+        code: 200
+        duration: 543ms

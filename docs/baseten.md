@@ -1,31 +1,31 @@
 # Scoreboard
 
-| Model                                    | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ---------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| zai-org/GLM-5.3-Flash🥇                   | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| zai-org/GLM-5.3-Flash🥇                   | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b🥉                     | Sync🧠   | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b🥉                     | Stream🧠 | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4-Flash-0731       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepseek-ai/DeepSeek-V4-Pro              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepseek-ai/DeepSeek-V4-Pro-0813         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K2.5                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K2.6                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K2.7-Code                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K3                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| nvidia/Nemotron-120B-A12B                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| thinkingmachines/inkling                 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| thinkingmachines/inkling-small           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-4.7                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5                            | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.1                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.2                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.2-Fast                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.3                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.3-Fast                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Model                                    | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ---------------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| zai-org/GLM-5.3-Flash🥇                   | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| zai-org/GLM-5.3-Flash🥇                   | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b🥉                     | Sync🧠   | 💬    | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b🥉                     | Stream🧠 | 💬    | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4-Flash-0731       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4-Pro              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4-Pro-0813         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K2.5                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K2.6                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K2.7-Code                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K3                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/Nemotron-120B-A12B                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| thinkingmachines/inkling                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| thinkingmachines/inkling-small           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-4.7                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.1                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.2                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.2-Fast                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3-Fast                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -47,9 +47,10 @@
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage or Finish reason is not always reported)
 - 🌐: Country where the company is located
-- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️🔀
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
 		- 🕸️: Web search
+		- 🔀: Supports messages and tool calls out of order
 - JSON: ability to output JSON in free form, or with a forced schema specified as a Go struct
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form

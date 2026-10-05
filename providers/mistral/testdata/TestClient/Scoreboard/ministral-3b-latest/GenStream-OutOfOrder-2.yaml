@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1487
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"id":"d8y2q1aY7","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"F9juVgAKq","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"iUxZpucOK","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 170
+        body: '{"object":"error","message":"Not the same number of function calls and responses","type":"invalid_request_message_order","param":null,"code":"3230","raw_status_code":400}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e971a0e5f5b53-YUL
+            Content-Length:
+                - "170"
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a10d63-ac7b-70d6-bc26-9a3bf527628c
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=103,cfOrigin;dur=121
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "99"
+            X-Kong-Proxy-Latency:
+                - "16"
+            X-Kong-Request-Id:
+                - 01a10d63-ac7b-70d6-bc26-9a3bf527628c
+            X-Kong-Upstream-Latency:
+                - "101"
+        status: 400 Bad Request
+        code: 400
+        duration: 232ms

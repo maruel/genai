@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2278
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]},{"role":"model","parts":[{"thoughtSignature":"EvkECvYEAWkUfRORhZFxlPqj6PJz6suSPjHK3TziN0Hoox9ldCr8BnULMdf6jeG49XCZfhOt3OhKZYkPBHFv5kF/On20xKWaBSosQHL3TU/VH6Ykdxz1p/5tWSup2u4mkfRmYWF2gkIbRYlaFfix122XwG1wTI1SzrvS2V+trRr3cKR5QEeuMDcAFw+ov+PT2R1EbMPAA/CIhEKAsfuYp22cIWjUH20KQBSjk0cezf9QrqJy6ihAxQ5FtBT7aKHc1rgtC6/0Ysz+3tjW8JwWBzkm9Blc4L9Nhfkxew/nOn/y8w2nQxLdTx8P8zctRiBrLao6gaOvstTp/TZPfSHaDvFzuIxV6N9+z7477KGZ7TBKrkh7QzSX8HTD9dUJfMiIJcNkw6XdksGh0kkiuYbAlFHN83m+pIDqK36/jgLtmCHpxuKgmMGFjP2BBA6vqHdJ9PEKRMMlUtOpiGlsFo0+t7e2MNZXXZPAHMa2Ue5bGgzN4s14KTBRmKzQAiM1IR00B1apGEQOPZ+ts+UO9CJYXqtpteiV+FOFqE9WMRamnvK9j7k0RnsWl1HJ9ufNMqDL/6fWthj4yunOGf/5OKWyNk/c40Y8t0LTl0iWRkwPyQXJ3q7ofuWe5ju6M6o1C01k814TaUc7JOPckHgoCc+XA8BAJJ37oqUWEGpMgkCWbEGqco5lpSIlnOA5kLQoTCY1sBeXzq/6wwR3O35ICdFTweOa5l/y+a27x3AeSmGdVqb4083fQT21XMKXzkMgpJ17Ij2be7sOG2gTV6PAUkVWtPgAK/GMQjUjoZ64XhXqNTa00F9zwuix5UEgSTwGhqh6U56mngwtzxV5XkzL","functionCall":{"id":"call_803","name":"task_status","args":{"task_id":3}}},{"functionCall":{"id":"call_806","name":"task_status","args":{"task_id":7}}},{"functionCall":{"id":"call_809","name":"task_status","args":{"task_id":11}}}]},{"role":"user","parts":[{"text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"I'm still waiting for task 7's reference.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 237,\"candidatesTokenCount\": 13,\"totalTokenCount\": 981,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 237}],\"thoughtsTokenCount\": 731,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"eefDasvmI6G21MkPsLHpsQQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"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\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 366,\"candidatesTokenCount\": 13,\"totalTokenCount\": 1110,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 366}],\"thoughtsTokenCount\": 731,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"eefDasvmI6G21MkPsLHpsQQ\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=3309
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 3.315s

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1172
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_e2ee485b-0093-403c-9a49-9623d9f44913","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-oss-20b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-aa51f369-ecda-463e-b735-bbddbd0a755b","object":"chat.completion","created":1791225991,"model":"openai/gpt-oss-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to query the function for task 7. We have already called for task 3 earlier. That was a function call, but we didn't get the response? In this conversation, the assistant used the function to get task 3 status. That function call hasn't returned yet? We see no function result. The assistant hasn't received the function result. We must call the function for task 7. The instruction: \"Start the checks together if possible.\" But the user later says \"Actually, I only need task 7's reference. The other checks can finish in the background.\" So we need to check if we can request multiple tasks at once? The function takes one task_id at a time. So we can call for task 7 now. The user wants reference only for task 7. They don't want other references. So we should call for task 7, and perhaps also call for 3 and 11 in background, but not output them.\n\nThus we need to invoke the function for task 7. Also maybe background calls for 3 and 11 but we don't need to output them. However, the conversation: we already made a call for task 3 earlier. That call hasn't returned. We might need to wait for it. But we can proceed.\n\nWe should call the function for task 7. Then we will output the result once we receive it. Also we may keep background calls for 3 and 11. But the assistant is not asked to output them. So we should not output them. The instructions: \"Don't give me the other tasks' references.\" So we must not include references for 3 and 11. But we might still query them in background. The instruction: \"If not, just let me know you're still waiting.\" So if we don't have task 7's reference yet, say \"I'm still waiting.\" But we should wait for function result. So let's call function for task 7.","tool_calls":[{"id":"fc_1996b9fa-b0a3-44f0-9661-8c823ecfcc7e","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003283877,"prompt_tokens":267,"prompt_time":0.005558875,"completion_tokens":420,"completion_time":0.589441491,"total_tokens":687,"total_time":0.595000366,"prompt_tokens_details":{"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":396}},"usage_breakdown":null,"system_fingerprint":"fp_e2cb7a84ec","x_groq":{"id":"req_01m46p746pedqvbwks05ah25hg","seed":1448484668},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96edfdb42df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "248854"
+            X-Ratelimit-Reset-Requests:
+                - 691ms
+            X-Ratelimit-Reset-Tokens:
+                - 275ms
+        status: 200 OK
+        code: 200
+        duration: 649ms

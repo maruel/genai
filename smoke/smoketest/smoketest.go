@@ -94,7 +94,6 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			filtered = true
 		}
 	})
-
 	seen := map[scoreboard.Model]struct{}{}
 	for _, m := range models {
 		if _, ok := seen[m]; ok {
@@ -440,6 +439,21 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 			// Only reuse the Models list if we haven't already processed this old scenario
 			if _, used := usedOldScenarios[oldSc]; !used {
 				sc.Models = oldSc.Models
+				// New measurement is evidence only for this model, not grouped
+				// siblings that shared existing capability scores.
+				outOfOrderChanged := func(a, b *scoreboard.Functionality) bool {
+					if a == nil || b == nil {
+						return false
+					}
+					return !cmp.Equal(a.OutOfOrder, b.OutOfOrder)
+				}
+				if len(oldSc.Models) > 1 && (outOfOrderChanged(oldSc.GenSync, sc.GenSync) || outOfOrderChanged(oldSc.GenStream, sc.GenStream)) {
+					rest := *oldSc
+					rest.Models = oldSc.Models[1:]
+					rest.SOTA, rest.Good, rest.Cheap = false, false, false
+					result = append(result, rest)
+					sc.Models = []string{model}
+				}
 				usedOldScenarios[oldSc] = struct{}{}
 				// Mark all models in this old scenario as seen to avoid processing them again
 				for _, m := range oldSc.Models {

@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 743
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"95a8d25b-002d-4406-a185-39fc56273bb1_67d388251d8849b1b9b042ae78cf23b9","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_0cbe2eb4294949a1a2aaeb59","function":{"arguments":"{\"task_id\": 3}","name":"task_status"},"type":"function"},{"id":"call_c5199bef47d349e2b05b282c","function":{"arguments":"{\"task_id\": 7}","name":"task_status"},"type":"function"},{"id":"call_1708fe60c8384bda92e873b7","function":{"arguments":"{\"task_id\": 11}","name":"task_status"},"type":"function"}],"reasoning_content":"I''ll check the status of tasks 3, 7, and 11 using the task_status tool. Since these are independent checks, I can make all three calls in the same function_calls block."}}],"created":1791226026,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":112,"prompt_tokens":342,"total_tokens":454,"completion_tokens_details":{"reasoning_tokens":43},"prompt_tokens_details":{"cached_tokens":0}}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.862s

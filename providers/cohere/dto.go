@@ -884,6 +884,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // ErrorResponse represents an API error.
 type ErrorResponse struct {
+	ErrorType string `json:"error_type,omitzero"`
 	ID        string `json:"id"`
 	Message   string `json:"message"`
 	RequestID string `json:"request_id"`

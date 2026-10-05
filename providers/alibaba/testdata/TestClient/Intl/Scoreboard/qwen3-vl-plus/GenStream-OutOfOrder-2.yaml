@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1466
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_2b21f995bcdb4b89be5ab580","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_f3ce2f261e5b42e7bf81103a","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_b1ad1b081b42453f9d1ea91b","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_52df25c0d06a4178b9cb32b2","type":"function","function":{"name":"task_status","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"{\"task_id\": "}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"7"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":394,"completion_tokens":24,"total_tokens":418,"completion_tokens_details":{"text_tokens":24},"prompt_tokens_details":{"text_tokens":394}},"created":1791230760,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-96df5dcc-1600-9b74-82c2-df05540cefea"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230759859"
+            Req-Cost-Time:
+                - "305"
+            Resp-Start-Time:
+                - "1791230760165"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "305"
+        status: 200 OK
+        code: 200
+        duration: 547ms

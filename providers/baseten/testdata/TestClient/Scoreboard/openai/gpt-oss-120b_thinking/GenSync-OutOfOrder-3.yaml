@@ -1,0 +1,74 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1877
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"chatcmpl-tool-d6905181b7904c7791ad45c35e93dae3","function":{"name":"task_status","arguments":"{\n  \"task_id\": 3\n}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"type":"function","id":"chatcmpl-tool-244a0be2239d4da4882763800098c031","function":{"name":"task_status","arguments":"{\n  \"task_id\": 7\n}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"chatcmpl-tool-244a0be2239d4da4882763800098c031","name":"task_status"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"chatcmpl-tool-d6905181b7904c7791ad45c35e93dae3","name":"task_status"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 663
+        body: '{"id":"chatcmpl-16dbbeb398fb48518b36a7cf818dbad9","choices":[{"index":0,"message":{"content":"Task 7’s reference is **violet**.","role":"assistant","reasoning_content":" already got task 7 status: waiting, reference violet. So we have it. Provide reference. Should not mention other tasks."},"finish_reason":"stop"}],"created":1791225977,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":377,"completion_tokens":44,"total_tokens":421,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":64},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "663"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791225976995"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073480424368030062"
+            X-Baseten-Dyn-Worker-Id:
+                - "5073480424368030062"
+            X-Baseten-Model-Id:
+                - 32ppevvq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - q40l7ly
+            X-Baseten-Received-At:
+                - "1791225976995"
+            X-Baseten-Request-Id:
+                - 54ca701a10d6358a375c1833b1974b2ab1961
+            X-Baseten-Route-Trail:
+                - ChYKDmdjcC11ZTQtcHJvZC0yKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791225977598"
+            X-Baseten-Session-Id:
+                - 54ca701a10d6358a375c1833b1974b2ab1961
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "300000"
+            X-Ratelimit-Remaining-Requests:
+                - "58"
+            X-Ratelimit-Remaining-Tokens:
+                - "300000"
+        status: 200 OK
+        code: 200
+        duration: 640ms

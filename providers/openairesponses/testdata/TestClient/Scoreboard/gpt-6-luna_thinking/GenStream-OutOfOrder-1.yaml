@@ -1,0 +1,106 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 900
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-luna","instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"auto","tools":[{"type":"function","name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"type":"message","role":"user","content":[{"type":"input_text","text":"Start the checks together if possible."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_035cfa23ec4c3a52006ac3f0837bd087d29ca37f1aa6755555","object":"response","created_at":1791225987,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6-luna","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Read a task's current status and reference; does not change anything.","name":"task_status","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_035cfa23ec4c3a52006ac3f0837bd087d29ca37f1aa6755555","object":"response","created_at":1791225987,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6-luna","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Read a task's current status and reference; does not change anything.","name":"task_status","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_035cfa23ec4c3a52006ac3f0858d8487d296be11a516a1c2d7","type":"function_call","status":"in_progress","arguments":"","call_id":"call_4qPPau8Plqlw412K52c3FeQj","name":"task_status"},"output_index":0,"sequence_number":2}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"task_id\":3}","item_id":"fc_035cfa23ec4c3a52006ac3f0858d8487d296be11a516a1c2d7","obfuscation":"B4t","output_index":0,"sequence_number":3}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"task_id\":3}","item_id":"fc_035cfa23ec4c3a52006ac3f0858d8487d296be11a516a1c2d7","output_index":0,"sequence_number":4}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_035cfa23ec4c3a52006ac3f0858d8487d296be11a516a1c2d7","type":"function_call","status":"completed","arguments":"{\"task_id\":3}","call_id":"call_4qPPau8Plqlw412K52c3FeQj","name":"task_status"},"output_index":0,"sequence_number":5}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_035cfa23ec4c3a52006ac3f0858d9487d288a7b95eb2333d77","type":"function_call","status":"in_progress","arguments":"","call_id":"call_muygb5PYlLPbNLLnCSeavqEv","name":"task_status"},"output_index":1,"sequence_number":6}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"task_id\":7}","item_id":"fc_035cfa23ec4c3a52006ac3f0858d9487d288a7b95eb2333d77","obfuscation":"NLo","output_index":1,"sequence_number":7}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"task_id\":7}","item_id":"fc_035cfa23ec4c3a52006ac3f0858d9487d288a7b95eb2333d77","output_index":1,"sequence_number":8}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_035cfa23ec4c3a52006ac3f0858d9487d288a7b95eb2333d77","type":"function_call","status":"completed","arguments":"{\"task_id\":7}","call_id":"call_muygb5PYlLPbNLLnCSeavqEv","name":"task_status"},"output_index":1,"sequence_number":9}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_035cfa23ec4c3a52006ac3f0858d9c87d2b4cc60985b605e67","type":"function_call","status":"in_progress","arguments":"","call_id":"call_e3PvksG0rLo3NHUWBvKiXJ5t","name":"task_status"},"output_index":2,"sequence_number":10}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"task_id\":11}","item_id":"fc_035cfa23ec4c3a52006ac3f0858d9c87d2b4cc60985b605e67","obfuscation":"tI","output_index":2,"sequence_number":11}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"task_id\":11}","item_id":"fc_035cfa23ec4c3a52006ac3f0858d9c87d2b4cc60985b605e67","output_index":2,"sequence_number":12}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_035cfa23ec4c3a52006ac3f0858d9c87d2b4cc60985b605e67","type":"function_call","status":"completed","arguments":"{\"task_id\":11}","call_id":"call_e3PvksG0rLo3NHUWBvKiXJ5t","name":"task_status"},"output_index":2,"sequence_number":13}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_035cfa23ec4c3a52006ac3f0837bd087d29ca37f1aa6755555","object":"response","created_at":1791225987,"status":"completed","access_programs":null,"background":false,"completed_at":1791225989,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6-luna","moderation":null,"output":[{"id":"fc_035cfa23ec4c3a52006ac3f0858d8487d296be11a516a1c2d7","type":"function_call","status":"completed","arguments":"{\"task_id\":3}","call_id":"call_4qPPau8Plqlw412K52c3FeQj","name":"task_status"},{"id":"fc_035cfa23ec4c3a52006ac3f0858d9487d288a7b95eb2333d77","type":"function_call","status":"completed","arguments":"{\"task_id\":7}","call_id":"call_muygb5PYlLPbNLLnCSeavqEv","name":"task_status"},{"id":"fc_035cfa23ec4c3a52006ac3f0858d9c87d2b4cc60985b605e67","type":"function_call","status":"completed","arguments":"{\"task_id\":11}","call_id":"call_e3PvksG0rLo3NHUWBvKiXJ5t","name":"task_status"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Read a task's current status and reference; does not change anything.","name":"task_status","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":110,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":65,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":175},"user":null,"metadata":{}},"sequence_number":14}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96d51857df96-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "549"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "198910"
+            X-Ratelimit-Reset-Requests:
+                - 240ms
+            X-Ratelimit-Reset-Tokens:
+                - 327ms
+        status: 200 OK
+        code: 200
+        duration: 676ms

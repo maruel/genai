@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 822
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-3b-2512","stream":false,"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"c88e13de8360473c807b63da022fa71d","created":1791225997,"model":"ministral-3b-2512","usage":{"prompt_tokens":156,"total_tokens":191,"completion_tokens":35,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"tool_calls","message":{"role":"assistant","tool_calls":[{"id":"FoUTG8gpB","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"},"index":0},{"id":"59pDWBaYz","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"},"index":1},{"id":"S7SDyea8L","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"},"index":2}],"content":""}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e97124dc15b53-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a10d63-a7aa-7428-8ecd-4ad4b760112a
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=103,cfOrigin;dur=306
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "289"
+            X-Kong-Proxy-Latency:
+                - "12"
+            X-Kong-Request-Id:
+                - 01a10d63-a7aa-7428-8ecd-4ad4b760112a
+            X-Kong-Upstream-Latency:
+                - "290"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "3000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "2000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "2999"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "1999809"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "191"
+        status: 200 OK
+        code: 200
+        duration: 416ms

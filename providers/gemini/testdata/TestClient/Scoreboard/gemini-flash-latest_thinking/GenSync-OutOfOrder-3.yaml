@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3643
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]},{"role":"model","parts":[{"thoughtSignature":"EuICCt8CAWkUfROXnWWaU1kqx4C+Fr+jyA9yiI81+rlzwEgqSGGalY9HAy53VyG55VS+ggE9p0T9vyCGEPuzTr8h7Ovl6ZDjHGm6oF1SNdIUO/T/s97clbcvgosc4VFNB+GZs6Msyael0qUpOlR6o+6ZOXPgNWPoLxHoklc8PoayrTsYMtvYkZG30PsssSPbMxSK4SYlFjhWR7tDvE/v0Csr5Nz6m1TjR+Q73szWLZmAXL5ZizNciwZc7BvRSpkYbY/u6/fw91Q+OX//UQyLU4U2eBJdq5jm2wj9eq30PZF2zsG5vjOj9bnk6OttBYV5h17bzbzoBFNtI2wCuUQt4liX8be7QtoflFCuf06OzFBvPskPPJtQKTNQ3RljyZqH+xGXnxyCnFUhS70qQE9CQO9Ao84MI5EQpBWhGvmf3xVcYP+bpJdfowYyy0ifveay+2AEOFNlvTV4Qlk3hFLVJZ5X2Sfe","functionCall":{"id":"call_15468","name":"task_status","args":{"task_id":3}}},{"functionCall":{"id":"call_15469","name":"task_status","args":{"task_id":7}}},{"functionCall":{"id":"call_15470","name":"task_status","args":{"task_id":11}}}]},{"role":"user","parts":[{"text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"model","parts":[{"thoughtSignature":"EtUFCtIFAWkUfROLLpraqeTKWfhM+/qhwkTzokYEaKSWkChI5TM5kEA07LE3dPeZkrD/FbBaTzsTNF3a6xosonqwEBQWL7nJuTjQCGCSjmZiRKHrK5jJTLBXFCVTJUDcOHUvjtgiudPX504P7i1JXsZXybYRwsoaS69JdwmfkKYrdgYv82qjLznl4Knm2dnEGBvRpfyAli1sNsp8nWCPNdFE8vQy8BjTcRkPsUcVJOoq/NnqH4obl7E0gKWsW57EIYMuLyW02J7NppUDDkvMwrp2nqiQfCZBTXahbvUm8LFk755uiCGR5FRL/hNmSYM6leZdnfMxbWKgyyJ+C29RyOXzH5YY0pJWocaVchQ53lle46JjcsOYhTeDJrLrHmjpPCvqD1J0u/sBfoyzH/yqzCD7MTpjNF2Ge/NrIG4i8wSJh2XH4kO2S1/+rJNhkcykOomfUqxYmVQxAc2cg4MtdFnQYIK9IbwZvjcDjBR3xmbQR9mGyaECR34m0LiR1pJUMUZ9a2bCfpJugvNU8BwMK/aAO1lZIlHg1DLKo/hyTJ9BmtTVOkXZ3MJ1Oxk7AcZRH4eCI39JHYT/jb6bTDVFuJ/Qishij8kBoj8CirjzTv4HuaQSB7jT8NBugCw0HoRGT9WsO5kYtsmsFbJy0y7VCf5tNRV4YWitpAEVY849EtULFGQJ6BlXCykInTEddp8RkJm74PIhlaOU4x9JXHbFMaBq2Gd42NXNgHjYdhJiITNAPULa+Hp2FqsDrCGWQGQ7M0X2SBLl942S5gb+3cyHgAA+pA7XdQ8XfKhf0o16p1pcnhcxCymN3oppnhbIh/ZzV1cE5LZE18b+Tgromc5u/P9T34i3KdSffIUkNdiPC59om3ykIHq/TjrRNJeK/nqdwE6OEtoCe6vWCdWN2Ocrkh5wQy/UwQbDqPJqdrwWNS8nXtZL9aMkZu0rGXoZKyz+zGTJghnbvlo=","text":"I don't have task 7's reference yet; I'm still waiting on it."}]},{"role":"user","parts":[{"functionResponse":{"id":"call_15470","name":"task_status","response":{"response":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}"}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_15469","name":"task_status","response":{"response":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_15468","name":"task_status","response":{"response":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}"}}}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Yes, task 7's reference is violet.",
+                        "thoughtSignature": "Eq8DCqwDAWkUfROPetn5Gff1+JtC2eTWAj5W27sDANM+bxKBkyzZlQBSFCMPMd0Wth0jlgBwfn2OJEIOsVaNt4hqOIan5TzQrfgEKnzjB1dDOxgAQLqN2f4+WhOXSzdbGyjl5Qv/EPVwcouiRetHawoGDHi77wjSTBl67o5ymRxyDnZVMr3tyoIn3zpfFJrz3lZwBsmi8V/6KDmZLfJKgwgz4Ugqdo6XWG/IBMwUyMJnf/E6Yktd0DL+rFeF4Ml9r15WPb0zjo1DWw15bcxLStdevFr8SPH0NzLBVnjnk70kHWo8IV2AJyi0CuP+opKdPUKrgxlc/ofWvBVbOvZgjTFt76zXQbIhgG9lbH6pBpP/Ls3x4zlPEnlmGCmcfdIGppaXFaYzqCNN4LPuTh2jWO2Bxb/pTGgO+raNZ7nnOAdkhs/iWBgEw8iF8FQHvp8UqpX1d2kDR+Bp1hSb5wZasLqpFFBEEW6m5YVhYVEmrP71yRrACWdfqK5ixGgfqIBNuUKpsLxCtfLAQ5qCEpnAP0P5FUYhHC28hCSQtBtGGaS2AeCiocsgWN54rXrv14ksEKE="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 609,
+                "candidatesTokenCount": 11,
+                "totalTokenCount": 710,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 609
+                  }
+                ],
+                "thoughtsTokenCount": 90,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "dvDDap7AA8qF1MkPxITJ0A8"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1230
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.235s

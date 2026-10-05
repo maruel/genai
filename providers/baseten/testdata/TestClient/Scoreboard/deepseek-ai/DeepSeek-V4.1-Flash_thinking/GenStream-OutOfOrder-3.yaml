@@ -1,0 +1,96 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2408
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","content":"\n\n","tool_calls":[{"type":"function","id":"chatcmpl-tool-d030135dc3814420a199c50f66fc8386","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"type":"function","id":"chatcmpl-tool-9ffb7ad617a84a63a371aead0e78af05","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"type":"function","id":"chatcmpl-tool-8b6e0f284cab46f6916d5f47aea04041","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"Still waiting on task 7's reference — it hasn't come back yet. I'll give you just that one once it does."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"chatcmpl-tool-8b6e0f284cab46f6916d5f47aea04041","name":"task_status"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"chatcmpl-tool-9ffb7ad617a84a63a371aead0e78af05","name":"task_status"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"chatcmpl-tool-d030135dc3814420a199c50f66fc8386","name":"task_status"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"parallel_tool_calls":true,"chat_template_args":{"enable_thinking":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"Task"}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":1,"total_tokens":662,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 7's reference"}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":5,"total_tokens":666,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":5,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is \"violet"}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":9,"total_tokens":670,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\". Only"}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":11,"total_tokens":672,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":11,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"","reasoning_content":" give that."}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":14,"total_tokens":675,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"Yes — task 7's reference"}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":22,"total_tokens":683,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":" is violet"}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":24,"total_tokens":685,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{"content":"."}}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":26,"total_tokens":687,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":18,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":6}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":26,"total_tokens":687,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":18,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":6}}}
+
+            data: {"id":"chatcmpl-f161068ef1654fd78f7737dc3359a357","choices":[],"created":1791225992,"model":"deepseek-ai/DeepSeek-V4.1-Flash","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":26,"total_tokens":687,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":18,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":6}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1791225992500"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755214040991797997"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755214040991797997"
+            X-Baseten-Model-Id:
+                - qe258p1q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wpg1o9z
+            X-Baseten-Received-At:
+                - "1791225992500"
+            X-Baseten-Request-Id:
+                - 54ca701a10d63953476c6b61fb333951b3186
+            X-Baseten-Route-Trail:
+                - ChYKDnZ1bC1tc3AtcHJvZC0xKAEwAVAB
+            X-Baseten-Sent-At:
+                - "1791225992649"
+            X-Baseten-Session-Id:
+                - 54ca701a10d63953476c6b61fb333951b3186
+            X-Ratelimit-Limit-Requests:
+                - "120"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "59"
+            X-Ratelimit-Remaining-Tokens:
+                - "499435"
+        status: 200 OK
+        code: 200
+        duration: 187ms

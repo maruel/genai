@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 731
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"model":"qwen/qwen3.8-27b","stream":true,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f5f22054-2cb9-4b44-b6ef-100a200c2b1e","object":"chat.completion.chunk","created":1791223672,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_57c7e760a9","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m46m0bdee9evyrzwnfrqfn7t","seed":955129086}}
+
+            data: {"id":"chatcmpl-f5f22054-2cb9-4b44-b6ef-100a200c2b1e","object":"chat.completion.chunk","created":1791223672,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_57c7e760a9","choices":[{"index":0,"delta":{"tool_calls":[{"id":"9dbfw5t6c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-f5f22054-2cb9-4b44-b6ef-100a200c2b1e","object":"chat.completion.chunk","created":1791223672,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_57c7e760a9","choices":[{"index":0,"delta":{"tool_calls":[{"id":"h416mnxfa","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"index":1}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-f5f22054-2cb9-4b44-b6ef-100a200c2b1e","object":"chat.completion.chunk","created":1791223672,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_57c7e760a9","choices":[{"index":0,"delta":{"tool_calls":[{"id":"hwa6e85yn","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"},"index":2}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-f5f22054-2cb9-4b44-b6ef-100a200c2b1e","object":"chat.completion.chunk","created":1791223672,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_57c7e760a9","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01m46m0bdee9evyrzwnfrqfn7t","usage":{"queue_time":0.123030129,"prompt_tokens":374,"prompt_time":0.029860826,"completion_tokens":85,"completion_time":0.175125101,"total_tokens":459,"total_time":0.204985927}},"usage":{"queue_time":0.123030129,"prompt_tokens":374,"prompt_time":0.029860826,"completion_tokens":85,"completion_time":0.175125101,"total_tokens":459,"total_time":0.204985927}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e5e4f4a21a2ab-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "248635"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 327ms
+        status: 200 OK
+        code: 200
+        duration: 290ms

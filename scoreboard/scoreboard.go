@@ -84,6 +84,17 @@ type Functionality struct {
 
 	// Text related fields.
 
+	// OutOfOrder measures a spoken conversation with consecutive user messages
+	// and intentionally deferred tool results. It preserves actual assistant
+	// responses and call metadata, then delivers results in reverse call order.
+	// Repeated task checks are allowed; multiple calls are not required.
+	//
+	// The probe requires Tools == True. Nil means unmeasured, not unsupported,
+	// including when the basic tool check does not pass. Each mode's score applies
+	// only to the measured model and options. It does not establish cancellation,
+	// concurrent mutation, gateway scheduling, or statistical reliability.
+	OutOfOrder *TriState `json:"outOfOrder,omitzero"`
+
 	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
 	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
 	// quantized models, small models or MoE models.
@@ -150,6 +161,11 @@ func (f *Functionality) Less(rhs *Functionality) bool {
 	if f.Tools == False && rhs.Tools != False {
 		return true
 	}
+	if f.OutOfOrder != nil && rhs.OutOfOrder != nil {
+		if *f.OutOfOrder == False && *rhs.OutOfOrder != False || *f.OutOfOrder == Flaky && *rhs.OutOfOrder == True {
+			return true
+		}
+	}
 	// Ignore ToolsBiased and ToolsIndecisive.
 	if !f.ToolCallRequired && rhs.ToolCallRequired {
 		return true
@@ -180,6 +196,11 @@ func (f *Functionality) Validate() error {
 	}
 	if err := f.ReportFinishReason.Validate(); err != nil {
 		return fmt.Errorf("invalid ReportFinishReason: %w", err)
+	}
+	if f.OutOfOrder != nil {
+		if err := f.OutOfOrder.Validate(); err != nil {
+			return fmt.Errorf("invalid OutOfOrder: %w", err)
+		}
 	}
 	if err := f.Tools.Validate(); err != nil {
 		return fmt.Errorf("invalid Tools: %w", err)

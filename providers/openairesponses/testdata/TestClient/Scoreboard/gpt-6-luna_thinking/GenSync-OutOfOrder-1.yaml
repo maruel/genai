@@ -1,0 +1,187 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 886
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-luna","instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"auto","tools":[{"type":"function","name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"type":"message","role":"user","content":[{"type":"input_text","text":"Start the checks together if possible."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_01f03a7e6ffcc1a4006ac3f0837ab487d2b1379abd703a5114",
+              "object": "response",
+              "created_at": 1791225987,
+              "status": "completed",
+              "access_programs": null,
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1791225989,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": "You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.",
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6-luna",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "fc_01f03a7e6ffcc1a4006ac3f0854df887d29681cefa0be48731",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"task_id\":3}",
+                  "call_id": "call_vjlFesqnGRAUoXweOoKrUSgR",
+                  "name": "task_status"
+                },
+                {
+                  "id": "fc_01f03a7e6ffcc1a4006ac3f0854e0c87d2a152c65fd303ba35",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"task_id\":7}",
+                  "call_id": "call_pwmYBiABEtQ6HyMuZ4IGBqVR",
+                  "name": "task_status"
+                },
+                {
+                  "id": "fc_01f03a7e6ffcc1a4006ac3f0854e1487d2a88796485d3fecc1",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"task_id\":11}",
+                  "call_id": "call_oGOTtXJ8VKN7HekeZV0kfwkc",
+                  "name": "task_status"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Read a task's current status and reference; does not change anything.",
+                  "name": "task_status",
+                  "output_schema": null,
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "properties": {
+                      "task_id": {
+                        "type": "integer"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "task_id"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 110,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 65,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 175
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96d51851df96-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "2135"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199280"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 216ms
+        status: 200 OK
+        code: 200
+        duration: 2.254s

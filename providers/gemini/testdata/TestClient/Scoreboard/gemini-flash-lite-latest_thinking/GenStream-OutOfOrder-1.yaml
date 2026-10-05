@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 860
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"task_status\",\"args\": {\"task_id\": 3},\"id\": \"call_803\"},\"thoughtSignature\": \"EvkECvYEAWkUfRORhZFxlPqj6PJz6suSPjHK3TziN0Hoox9ldCr8BnULMdf6jeG49XCZfhOt3OhKZYkPBHFv5kF/On20xKWaBSosQHL3TU/VH6Ykdxz1p/5tWSup2u4mkfRmYWF2gkIbRYlaFfix122XwG1wTI1SzrvS2V+trRr3cKR5QEeuMDcAFw+ov+PT2R1EbMPAA/CIhEKAsfuYp22cIWjUH20KQBSjk0cezf9QrqJy6ihAxQ5FtBT7aKHc1rgtC6/0Ysz+3tjW8JwWBzkm9Blc4L9Nhfkxew/nOn/y8w2nQxLdTx8P8zctRiBrLao6gaOvstTp/TZPfSHaDvFzuIxV6N9+z7477KGZ7TBKrkh7QzSX8HTD9dUJfMiIJcNkw6XdksGh0kkiuYbAlFHN83m+pIDqK36/jgLtmCHpxuKgmMGFjP2BBA6vqHdJ9PEKRMMlUtOpiGlsFo0+t7e2MNZXXZPAHMa2Ue5bGgzN4s14KTBRmKzQAiM1IR00B1apGEQOPZ+ts+UO9CJYXqtpteiV+FOFqE9WMRamnvK9j7k0RnsWl1HJ9ufNMqDL/6fWthj4yunOGf/5OKWyNk/c40Y8t0LTl0iWRkwPyQXJ3q7ofuWe5ju6M6o1C01k814TaUc7JOPckHgoCc+XA8BAJJ37oqUWEGpMgkCWbEGqco5lpSIlnOA5kLQoTCY1sBeXzq/6wwR3O35ICdFTweOa5l/y+a27x3AeSmGdVqb4083fQT21XMKXzkMgpJ17Ij2be7sOG2gTV6PAUkVWtPgAK/GMQjUjoZ64XhXqNTa00F9zwuix5UEgSTwGhqh6U56mngwtzxV5XkzL\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 16,\"totalTokenCount\": 280,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 129,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"eOfDaomiE7On1MkPj4Ob6QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"task_status\",\"args\": {\"task_id\": 7},\"id\": \"call_806\"}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 32,\"totalTokenCount\": 296,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 129,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"eOfDaomiE7On1MkPj4Ob6QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"task_status\",\"args\": {\"task_id\": 11},\"id\": \"call_809\"}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 49,\"totalTokenCount\": 313,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 129,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"eOfDaomiE7On1MkPj4Ob6QE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 49,\"totalTokenCount\": 313,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 129,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.5-flash-lite\",\"responseId\": \"eOfDaomiE7On1MkPj4Ob6QE\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1075
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.118s

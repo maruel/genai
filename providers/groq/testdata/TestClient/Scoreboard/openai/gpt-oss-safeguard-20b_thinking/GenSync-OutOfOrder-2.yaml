@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1182
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_08bb25c0-2cb5-4615-8242-4f562dc91a9c","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-oss-safeguard-20b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-b71f208c-c7b1-4a65-a295-a937c5f7df50","object":"chat.completion","created":1791225993,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to call the tool for task 7 to get reference. We also might still have pending status for tasks 3 and 11 but we don't need them. We have already called task_status for 3. We haven't called for 7 or 11 yet. The user asked to check status and reference of 3,7,11 but now says only need 7's reference. So we should call task_status for 7. For 3 and 11, we can skip or say will continue. But we need not give references. The user specifically asks: \"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references.\" So we should call tool for 7. Provide answer: \"Got reference for task 7: [value]\" or \"Still waiting\" if not available.\n\nLet's call task_status for 7.","tool_calls":[{"id":"fc_ae5f72df-0f64-48a8-9afe-9ca7cf75a5fe","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003936517,"prompt_tokens":267,"prompt_time":0.046027586,"completion_tokens":213,"completion_time":0.231342799,"total_tokens":480,"total_time":0.277370385,"completion_tokens_details":{"reasoning_tokens":189}},"usage_breakdown":null,"system_fingerprint":"fp_e3febdc4be","x_groq":{"id":"req_01m46p75jzesvsbq9w6zqd7jj7","seed":1176558329},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96f6ddf92df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "150000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "149354"
+            X-Ratelimit-Reset-Requests:
+                - 345ms
+            X-Ratelimit-Reset-Tokens:
+                - 258ms
+        status: 200 OK
+        code: 200
+        duration: 338ms

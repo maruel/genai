@@ -1,0 +1,103 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2856
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning_content":"The user wants to check the status and reference of tasks 3, 7, and 11. Since these are independent checks, I can call the task_status tool for all three at once. Let me do that.","tool_calls":[{"id":"call_c2479b2b323447d297c7e512","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_190b9ca09e3b4b3b8f9442d6","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_dcf1db68035b48319d65a0a1","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","reasoning_content":"I need to check if the task_status results are available. I made the calls but haven't seen the results yet. Let me wait for the function results. The user is asking specifically for task 7's reference, but I need to see the results first. I should just let them know I'm still waiting for the results since the tool calls were made but no results have been returned yet.","tool_calls":[{"id":"call_261866e185204ead900dde69","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_261866e185204ead900dde69"},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_dcf1db68035b48319d65a0a1"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_190b9ca09e3b4b3b8f9442d6"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_c2479b2b323447d297c7e512"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user is"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" asking specifically for"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" task 7's reference."},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" I"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" already have"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" result"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" from the"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" first"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" batch"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" of"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" calls:"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" task 7 has"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" status \"waiting\" and"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" reference \"violet\". The"},"finish_reason":null,"index":0}],"created":1791226030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user says"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \"Don't give me the other tasks"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"' references\""},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" so"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" I should only mention task 7's"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" reference. I should just"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" provide"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" reference."},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Let me answer"},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"."},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":"Task","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":" 7's reference is \"","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":"violet\".","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"96fdf143-7b06-412b-b4bb-f46499e1aeb4_45ba7fb54de349f18a3ae7c205eda72a","choices":[],"created":1791226031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":87,"prompt_tokens":744,"total_tokens":831,"completion_tokens_details":{"reasoning_tokens":75},"prompt_tokens_details":{"cached_tokens":320}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.5s

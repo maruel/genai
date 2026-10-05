@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1104
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6-luna","instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","parallel_tool_calls":true,"previous_response_id":"resp_035cfa23ec4c3a52006ac3f0837bd087d29ca37f1aa6755555","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"auto","tools":[{"type":"function","name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"type":"message","role":"user","content":[{"type":"input_text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 184
+        body: |-
+            {
+              "error": {
+                "message": "No tool output found for function call call_4qPPau8Plqlw412K52c3FeQj.",
+                "type": "invalid_request_error",
+                "param": "input",
+                "code": null
+              }
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96ebabb0df96-YUL
+            Content-Length:
+                - "184"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "557"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 647ms

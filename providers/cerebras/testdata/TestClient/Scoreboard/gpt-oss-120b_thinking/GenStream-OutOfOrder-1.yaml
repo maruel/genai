@@ -1,0 +1,94 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 754
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"reasoning":"We"},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"reasoning":" need to check status and reference for tasks 3,7,11"},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"reasoning":". Use tool functions.task_status for each"},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"reasoning":". Possibly can batch? No,"},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"reasoning":" each call separate. We can"},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"reasoning":" call three times. Then respond."},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"tool_calls":[{"function":{"name":"task_status","arguments":""},"type":"function","id":"c4bdb1b19","index":0}]},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"tool_calls":[{"function":{"arguments":"{\""},"type":"function","index":0}]},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{"tool_calls":[{"function":{"arguments":"task_id\":3}"},"type":"function","index":0}]},"index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-76aee502-a5df-4ffb-b073-03d329fcaab1","choices":[{"delta":{},"finish_reason":"tool_calls","index":0}],"created":1791231093,"model":"gpt-oss-120b","system_fingerprint":"fp_b546658c8e93d2e57ef2","object":"chat.completion.chunk","usage":{"total_tokens":254,"completion_tokens":68,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":43},"prompt_tokens":186,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1791231093.7796884,"queue_time":0.003625975,"prompt_time":0.003088733,"completion_time":0.040930075,"total_time":0.04938864707946777}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45f137fcae82388-YYZ
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=51
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "2400"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "150"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "5"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "1000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "30000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "2399"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "149"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "4"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "983559"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "2983559"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "13559"
+        status: 200 OK
+        code: 200
+        duration: 173ms

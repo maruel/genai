@@ -52,7 +52,56 @@
     {
       "comments": "Vision models.",
       "models": [
-        "qwen3-vl-flash",
+        "qwen3-vl-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Vision models.",
+      "models": [
         "qwen3-vl-plus"
       ],
       "in": {
@@ -79,6 +128,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
+        "outOfOrder": "true",
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
@@ -89,6 +139,7 @@
       },
       "GenStream": {
         "seed": true,
+        "outOfOrder": "true",
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,

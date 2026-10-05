@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1499
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","content":"I'll check all three at once.","tool_calls":[{"id":"call_00_b2R41uDUGECJE5fwyHoN9136","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_01_DRLbQUO5yBgyLlUZpBhL2930","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_02_ll9e1vrVnryNcM4kmnxm8541","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 315
+        body: '{"error":{"message":"An assistant message with ''tool_calls'' must be followed by tool messages responding to each ''tool_call_id''. (insufficient tool messages following tool_calls message) (request_id: a8d4a181-3596-47eb-a1b8-7e7cc7638863)","type":"invalid_request_error","param":null,"code":"invalid_request_error"}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Length:
+                - "315"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 bfbe113f0ea2802b9e23121dc3bb9fe6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - yMiIPwNDE5mpK3KF--jWUDZijUz4F4y5tfeAcj8xt_oLBYWrSUGL4A==
+            X-Amz-Cf-Pop:
+                - YUL62-P3
+            X-Cache:
+                - Error from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 323ms

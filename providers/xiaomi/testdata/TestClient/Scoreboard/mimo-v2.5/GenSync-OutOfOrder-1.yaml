@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 770
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":false,"thinking":{"type":"disabled"},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"28943f22-c850-4cd1-a5f6-149f220f8b02_e3ce2e7844924bcc880b3ff43a098bfb","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_ba22d6a1a9d94d5f83d1069c","function":{"arguments":"{\"task_id\": 3}","name":"task_status"},"type":"function"},{"id":"call_e92693c52ea04d1f9520d391","function":{"arguments":"{\"task_id\": 7}","name":"task_status"},"type":"function"},{"id":"call_f803ec5166ad495ea3f9a98c","function":{"arguments":"{\"task_id\": 11}","name":"task_status"},"type":"function"}]}}],"created":1791226020,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":59,"prompt_tokens":185,"total_tokens":244,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens_details":null}}'
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.262s

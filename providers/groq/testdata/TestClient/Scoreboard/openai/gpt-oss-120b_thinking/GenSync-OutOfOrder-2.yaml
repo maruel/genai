@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1173
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"fc_874fd248-7888-4afe-abc9-fa14e9e75a3a","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-oss-120b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-d6b2edc1-55d9-4656-8ab0-2dba157aa5e0","object":"chat.completion","created":1791225990,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We need to check status/reference of tasks. The user wants only task 7's reference; they said other checks can finish in background. We need to query task_status for task 7. We should also have maybe already started tasks 3 and 11 earlier? We made a call for task 3 earlier. We haven't called for 7 or 11. We need to call for task 7 now. Also maybe we should have called for 11 earlier, but not required now. We can just call for task 7. Then respond based on result. If result not yet available? The tool returns immediate result. So we call.","tool_calls":[{"id":"fc_3c2a98da-3f25-42f0-8e43-644c4db55fe6","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.005315988,"prompt_tokens":267,"prompt_time":0.015241712,"completion_tokens":156,"completion_time":0.332745929,"total_tokens":423,"total_time":0.347987641,"completion_tokens_details":{"reasoning_tokens":132}},"usage_breakdown":null,"system_fingerprint":"fp_1d982b31b2","x_groq":{"id":"req_01m46p73b7epqb1ccr87n8pjed","seed":132814850},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96e87df22df2-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - msp
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "249486"
+            X-Ratelimit-Reset-Requests:
+                - 345ms
+            X-Ratelimit-Reset-Tokens:
+                - 123ms
+        status: 200 OK
+        code: 200
+        duration: 411ms

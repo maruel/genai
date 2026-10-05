@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1650
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 4127
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Waiting for task 7''s reference.","reasoning_content":"The user is asking specifically for the reference of task 7.\nI have already executed `task_status` for tasks 3, 7, and 11 in the previous turn.\nI need to check the results of those calls to determine the status and reference for task 7.\nSince I don''t have the output yet, I must assume the previous calls are in progress or I need to wait for the results.\nHowever, the instruction is to act as a terse voice assistant and follow the latest request. The user is asking \"Do you have task 7''s reference yet?\". This implies they want the result of the previous actions.\n\nSince I cannot know the result of the tool calls until they return, I must wait for the tool output. The current prompt is a request for information based on previous actions.\n\nIf I were to assume the previous calls have completed (which is a necessary step for the conversation to progress meaningfully), I would need the results. Since I cannot see them, I must respond based on the expected flow.\n\nIf the system requires me to explicitly state that I am waiting for the results, I should do that, or if the tool calls are synchronous and I am just waiting for the execution environment to provide the output, I should wait.\n\nGiven the instruction \"Do you have task 7''s reference yet?\", the most accurate terse response is to check the status/result if available, or state that I am waiting if it''s not.\n\nSince the previous turn *called* the tools, I should expect the results now. If I am acting purely on the sequence of commands, I don''t have the results yet.\n\nLet''s assume the environment expects me to proceed as if the tool calls are pending or I need to confirm the state. I will re-evaluate the instruction. The user explicitly said: \"Actually, I only need task 7''s reference. The other checks can finish in the background.\" This is a refinement of the initial request.\n\nSince I cannot see the results of the previous calls, I must either state that I don''t have it or wait for the tool output. Given the constraints of this interaction model, I should rely on the tool output I receive next.\n\n*Self-Correction/Refinement*: I should not execute new calls unless necessary. The previous calls are what I''m waiting on. The user''s request is a query about the state of those previous calls.\n\nIf I treat this as a turn-based system where I must generate the next valid action or response, and I have no data yet, I state my current state.\n\nHowever, looking at the flow, the system *is* designed to return tool results after a call. Since I don''t have those results, I can only state what I know.\n\nSince I cannot claim a task''s state without the tool result, I will wait for the results or acknowledge the request. The request is a query *about* the state.\n\nLet''s assume the system expects me to proceed with the knowledge I have. Since I have no knowledge *yet* from the tool result, I will state that. But the instruction set often implies that if I called a tool, the next turn *will* have the result.\n\nIf I *must* provide an answer now, I will state that I am checking or waiting for the result, or if the system forces a response without output, I default to a confirmation that I am waiting.\n\nGiven the terse persona, a direct answer is best.\n\nLet''s stick to the principle: \"Never claim a task''s state or reference without its tool result.\" Since I don''t have the result, I don''t have the reference."}}],"created":1791223992,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11146-7fe450e19","object":"chat.completion","usage":{"completion_tokens":789,"prompt_tokens":244,"total_tokens":1033,"prompt_tokens_details":{"cached_tokens":126}},"id":"chatcmpl-S06wcjU3NanPjHuASv451BxNCOavlZZ7","timings":{"cache_n":126,"prompt_n":118,"prompt_ms":956.618,"prompt_per_token_ms":8.106932203389832,"prompt_per_second":123.35122274512918,"predicted_n":789,"predicted_ms":72452.578,"predicted_per_token_ms":91.9448959390863,"predicted_per_second":10.876079523353884}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "4127"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1m13.502s

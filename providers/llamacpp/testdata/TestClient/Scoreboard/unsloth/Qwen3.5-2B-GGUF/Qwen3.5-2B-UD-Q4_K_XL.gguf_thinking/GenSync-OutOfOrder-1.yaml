@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 890
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1389
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to check the status and reference of three specific tasks (3, 7, and 11) and wants to start all these checks together if possible.\n\nLet me use the task_status function for each of these three tasks (3, 7, and 11) to get their current status and reference information.\n","tool_calls":[{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"},"id":"errKBcjOfNq8ycdJtv8QHztcbIByJtA9"},{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"id":"BGdK5zCO3CeKhC2S3eLd64FURbfSBWU2"},{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"},"id":"JzzaMV3HxjYnEAEZAvC31lCHJkIuL1un"}]}}],"created":1791223871,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b11146-7fe450e19","object":"chat.completion","usage":{"completion_tokens":159,"prompt_tokens":363,"total_tokens":522,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-8gOPu2uMeE7iAVVNkYTp2objZn1FBsMg","timings":{"cache_n":0,"prompt_n":363,"prompt_ms":3024.204,"prompt_per_token_ms":8.33114049586777,"prompt_per_second":120.03158517084164,"predicted_n":159,"predicted_ms":9051.366,"predicted_per_token_ms":57.28712658227848,"predicted_per_second":17.455928751527672,"draft_n":64,"draft_n_accepted":1}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1389"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 12.086s

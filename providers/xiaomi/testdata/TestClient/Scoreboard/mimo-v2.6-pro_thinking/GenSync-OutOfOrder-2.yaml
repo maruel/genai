@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1662
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.6-pro","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning_content":"The user wants to check status and reference of tasks 3, 7, 11, and to start checks together if possible. The tool only accepts one task_id at a time, but I can invoke multiple in the same block since they are independent.","tool_calls":[{"id":"call_e75c0617913b4ef3913f40c3","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_25cb8b59115d4e6ca429be4a","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_31f4a973eb0a4db5a8f70cf1","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+
+            {"id":"24c476df-8c2d-4688-ae58-1047d11ff91f_e244308539754e809cb7ba753f8f80ce","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Still waiting on task 7's result — I'll share its reference as soon as it comes back.","role":"assistant","tool_calls":null,"reasoning_content":"The user says they only need task 7's reference, and the other checks can finish in the background. But I already called all three tools and the results are in... wait, the tool results aren't shown in the history. Looking at the conversation: I invoked three task_status calls, then the user interrupted with \"Actually, I only need task 7's reference...\" and then \"Do you have task 7's reference yet? If not, just let me know you're still waiting.\"\n\nThe tool results for those calls haven't been provided to me in this conversation - the human turn came right after my tool calls without any tool result blocks. So I don't have the tool results yet. I should not claim a task's state or reference without its tool result.\n\nThe instruction says \"Never claim a task's state or reference without its tool result.\" Since I don't have the tool result for task 7, I should say I'm still waiting.\n\nI shouldn't re-invoke since the user said the checks are running/finishing in the background. Actually, my calls were already made - results haven't come back. The safest response: I'm still waiting for task 7's result."}}],"created":1791226062,"model":"mimo-v2.6-pro","object":"chat.completion","usage":{"completion_tokens":269,"prompt_tokens":360,"total_tokens":629,"completion_tokens_details":{"reasoning_tokens":246},"prompt_tokens_details":{"cached_tokens":0}}}
+        headers:
+            Cache-Control:
+                - no-cache, no-transform
+            Content-Type:
+                - application/json
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 8.27s

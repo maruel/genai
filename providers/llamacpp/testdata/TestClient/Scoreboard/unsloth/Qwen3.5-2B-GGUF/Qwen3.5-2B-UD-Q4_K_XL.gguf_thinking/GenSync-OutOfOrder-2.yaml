@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1650
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"errKBcjOfNq8ycdJtv8QHztcbIByJtA9","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"BGdK5zCO3CeKhC2S3eLd64FURbfSBWU2","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"JzzaMV3HxjYnEAEZAvC31lCHJkIuL1un","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1075
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to check task 7''s status and reference. They''re saying I only need task 7''s reference, not the other tasks. I should check task 7''s status and see what the reference is.\n\nLet me check task 7''s status.\n","tool_calls":[{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"id":"Z9R9nHq1pwkT5T4ma65O7xAZDw0sjXQd"}]}}],"created":1791223880,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b11146-7fe450e19","object":"chat.completion","usage":{"completion_tokens":88,"prompt_tokens":514,"total_tokens":602,"prompt_tokens_details":{"cached_tokens":359}},"id":"chatcmpl-qK1UlFOWaFzLLlCw77EWz37weBuuUt9P","timings":{"cache_n":359,"prompt_n":155,"prompt_ms":1225.984,"prompt_per_token_ms":7.909574193548386,"prompt_per_second":126.4290561703905,"predicted_n":88,"predicted_ms":7371.996,"predicted_per_token_ms":84.73558620689656,"predicted_per_second":11.801417146726612,"draft_n":64,"draft_n_accepted":5}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1075"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 8.953s

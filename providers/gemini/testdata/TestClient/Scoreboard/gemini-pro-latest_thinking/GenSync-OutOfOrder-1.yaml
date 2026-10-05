@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 860
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 3
+                          },
+                          "id": "call_63949"
+                        },
+                        "thoughtSignature": "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"
+                      },
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 7
+                          },
+                          "id": "call_63950"
+                        }
+                      },
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 11
+                          },
+                          "id": "call_63951"
+                        }
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 135,
+                "candidatesTokenCount": 49,
+                "totalTokenCount": 733,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 135
+                  }
+                ],
+                "thoughtsTokenCount": 549,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "d_DDarnjKaax1MkPldD9wAI"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=6039
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 6.046s

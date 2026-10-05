@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 790
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"model":"openai/gpt-5.4-nano","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"protected_material_code":{"detected":false,"filtered":false},"protected_material_text":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}},"finish_reason":"tool_calls","index":0,"logprobs":null,"message":{"annotations":[],"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"{\"task_id\": 3}","name":"task_status"},"id":"call_fzyNu6FWfDVEhC1wfxkUqk7q","type":"function"},{"function":{"arguments":"{\"task_id\": 7}","name":"task_status"},"id":"call_WONg3XdeMh3TpGWkXKtG0RPH","type":"function"},{"function":{"arguments":"{\"task_id\": 11}","name":"task_status"},"id":"call_u9fDewcXgsvmaTzWVTUIyCVy","type":"function"}]}}],"created":1791226010,"id":"chatcmpl-EVi02q7QK4GetReSfN1aCAATR0hCy","model":"gpt-5.4-nano-2026-03-17","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"routing":{"serving_pipereplica":"d20260928042108-d8bbb62f-default-r2-dp0-default"},"service_tier":"default","system_fingerprint":null,"usage":{"completion_tokens":64,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"latency_checkpoint":{"engine_tbt_ms":11,"engine_ttft_ms":22,"engine_ttlt_ms":757,"pre_inference_ms":150,"service_tbt_ms":11,"service_ttft_ms":733,"service_ttlt_ms":1464,"user_visible_ttft_ms":583},"prompt_tokens":191,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":255}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a45e97536ed2f337-YYZ
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - HIT
+            X-Cache-Date:
+                - "2026-10-05T18:46:52.687Z"
+            X-Cache-Key:
+                - a54ef0fffa9dc466
+            X-Model-Requested:
+                - openai/gpt-5.4-nano
+            X-Model-Used:
+                - openai/gpt-5.4-nano
+            X-Moderation-Completion-Hate-Severity:
+                - safe
+            X-Moderation-Completion-Self-Harm-Severity:
+                - safe
+            X-Moderation-Completion-Sexual-Severity:
+                - safe
+            X-Moderation-Completion-Violence-Severity:
+                - safe
+            X-Moderation-Prompt-Hate-Severity:
+                - safe
+            X-Moderation-Prompt-Self-Harm-Severity:
+                - safe
+            X-Moderation-Prompt-Sexual-Severity:
+                - safe
+            X-Moderation-Prompt-Violence-Severity:
+                - safe
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "64"
+            X-Usage-Prompt-Text-Tokens:
+                - "191"
+        status: 200 OK
+        code: 200
+        duration: 6.129s

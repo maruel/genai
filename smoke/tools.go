@@ -13,13 +13,16 @@ import (
 	"fmt"
 	"log/slog"
 	"math"
+	"net/http"
 	"slices"
 	"strings"
+	"unicode"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/httpjson"
 )
 
 func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
@@ -447,6 +450,186 @@ func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functio
 			}) {
 				return fmt.Errorf("missing URLs from WebSearch citation: %#v", res)
 			}
+		}
+	}
+	return nil
+}
+
+const conversationSystem = `You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.`
+
+const conversationQuery = `Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references.`
+
+type conversationTaskInput struct {
+	TaskID int `json:"task_id"`
+}
+
+type conversationTask struct {
+	ID        int    `json:"id"`
+	Status    string `json:"status"`
+	Reference string `json:"reference"`
+}
+
+type conversationResult struct {
+	Result genai.ToolCallResult
+	Task   conversationTask
+}
+
+// exerciseGenConversation preserves actual assistant responses and call metadata
+// across user bursts. Read-only callbacks supply fixed facts that appear only in
+// delivered tool results, never in prompts. The user's correction changes focus,
+// not tool lifetime. Results remain withheld across a generation, then arrive in
+// reverse call order as separate messages. A single call still exercises deferral.
+// Repeated task checks with new call IDs execute normally. Five generations bound
+// progress without sleeps, concurrent mutation, or fabricated assistant history.
+func exerciseGenConversation(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (scoreboard.TriState, error) {
+	tools := genai.GenOptionTools{Tools: []genai.ToolDef{{
+		Name: "task_status", Description: "Read a task's current status and reference; does not change anything.",
+		Callback: func(_ context.Context, in *conversationTaskInput) (string, error) {
+			task := conversationTask{ID: in.TaskID}
+			switch in.TaskID {
+			case 3:
+				task.Status, task.Reference = "running", "amber"
+			case 7:
+				task.Status, task.Reference = "waiting", "violet"
+			case 11:
+				task.Status, task.Reference = "paused", "cyan"
+			default:
+				return "", fmt.Errorf("unknown task %d", in.TaskID)
+			}
+			b, err := json.Marshal(task)
+			return string(b), err
+		},
+	}}}
+	opts := []genai.GenOption{&genai.GenOptionText{SystemPrompt: conversationSystem}, &tools}
+	msgs := genai.Messages{
+		genai.NewTextMessage("Check the status and reference of tasks 3, 7 and 11."),
+		genai.NewTextMessage("Start the checks together if possible."),
+	}
+	var seen []string
+	var pending []conversationResult
+	var received []conversationTask
+	for step := range 5 {
+		label := fmt.Sprintf("%s-%d", prefix, step+1)
+		res, err := cs.callGen(ctx, label, msgs, opts...)
+		if err != nil {
+			if step > 0 && conversationContinuationRejected(err) {
+				internal.Logger(ctx).InfoContext(ctx, "conversation continuation rejected", "label", label, "err", err)
+				return scoreboard.False, nil
+			}
+			return scoreboard.False, fmt.Errorf("%s: measurement aborted: %w", label, err)
+		}
+		if isZeroUsage(&res.Usage) && f.ReportTokenUsage != scoreboard.False {
+			f.ReportTokenUsage = scoreboard.Flaky
+		}
+		called := false
+		for i := range res.Replies {
+			call := &res.Replies[i].ToolCall
+			if call.IsZero() {
+				continue
+			}
+			called = true
+			if slices.Contains(seen, call.ID) {
+				internal.Logger(ctx).InfoContext(ctx, "duplicate conversation call ID", "label", label, "id", call.ID)
+				return scoreboard.False, nil
+			}
+			seen = append(seen, call.ID)
+			body, err := call.Call(ctx, tools.Tools)
+			if err != nil {
+				if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+					return scoreboard.False, err
+				}
+				internal.Logger(ctx).InfoContext(ctx, "invalid conversation tool call", "label", label, "err", err)
+				return scoreboard.False, nil
+			}
+			var task conversationTask
+			if err := json.Unmarshal([]byte(body), &task); err != nil {
+				return scoreboard.False, fmt.Errorf("%s: decode tool result: %w", label, err)
+			}
+			pending = append(pending, conversationResult{Result: genai.ToolCallResult{ID: call.ID, Name: call.Name, Result: body}, Task: task})
+		}
+		expected := genai.FinishedStop
+		if called {
+			expected = genai.FinishedToolCalls
+		}
+		if res.Usage.FinishReason != expected && f.ReportFinishReason != scoreboard.False {
+			f.ReportFinishReason = scoreboard.Flaky
+		}
+		msgs = append(msgs, res.Message)
+		if step == 0 {
+			if !called {
+				return scoreboard.False, nil
+			}
+			msgs = append(msgs, genai.NewTextMessage("Actually, I only need task 7's reference. The other checks can finish in the background."), genai.NewTextMessage(conversationQuery))
+			continue
+		}
+		if !called {
+			if err := conversationAnswer(&res.Message, received, pending); err != nil {
+				internal.Logger(ctx).InfoContext(ctx, "incorrect conversation answer", "label", label, "err", err)
+				return scoreboard.False, nil
+			}
+			if step > 1 {
+				if slices.ContainsFunc(received, func(task conversationTask) bool { return task.ID == 7 }) {
+					internal.Logger(ctx).InfoContext(ctx, "conversation passed", "label", label)
+					return scoreboard.True, nil
+				}
+				return scoreboard.False, nil
+			}
+		}
+		for i := len(pending) - 1; i >= 0; i-- {
+			msgs = append(msgs, genai.Message{ToolCallResults: []genai.ToolCallResult{pending[i].Result}})
+			received = append(received, pending[i].Task)
+		}
+		pending = nil
+		msgs = append(msgs, genai.NewTextMessage(conversationQuery))
+	}
+	return scoreboard.False, nil
+}
+
+// After a successful tool-call response, HTTP 400/422 means the provider rejects
+// the continuation. This does not identify the cause: recorded requests and
+// converter tests must distinguish provider limits from malformed wire history.
+// Local validation and decoding failures leave the measurement unmeasured.
+func conversationContinuationRejected(err error) bool {
+	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+		return false
+	}
+	if _, ok := errors.AsType[*internal.BadError](err); ok {
+		return false
+	}
+	if _, ok := errors.AsType[*httpjson.UnknownFieldError](err); ok {
+		return false
+	}
+	if e, ok := errors.AsType[*base.ErrNotSupported](err); ok {
+		return slices.Contains(e.Options, "GenOptionTools") || slices.Contains(e.Options, "GenOptionTools.Tools")
+	}
+	e, ok := errors.AsType[*httpjson.Error](err)
+	return ok && (e.StatusCode == http.StatusBadRequest || e.StatusCode == http.StatusUnprocessableEntity)
+}
+
+// Check observable reference delivery without prescribing spoken wording.
+// This is not a semantic judge: it cannot detect arbitrary invented facts or
+// prove that a free-form acknowledgment accurately describes every pending call.
+func conversationAnswer(m *genai.Message, received []conversationTask, pending []conversationResult) error {
+	s := strings.TrimSpace(m.String())
+	if s == "" {
+		return errors.New("missing spoken answer")
+	}
+	if json.Valid([]byte(s)) {
+		return errors.New("JSON instead of spoken answer")
+	}
+	words := strings.FieldsFunc(strings.ToLower(s), func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsDigit(r) })
+	for i := range pending {
+		if slices.Contains(words, pending[i].Task.Reference) {
+			return errors.New("reported an undelivered reference")
+		}
+	}
+	for _, task := range received {
+		if task.ID == 7 {
+			if !slices.Contains(words, task.Reference) {
+				return errors.New("missing latest-task reference")
+			}
+		} else if slices.Contains(words, task.Reference) {
+			return errors.New("reported an unwanted task reference")
 		}
 	}
 	return nil

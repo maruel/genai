@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2913
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"assistant","content":[{"type":"text","text":"Waiting for task 7's reference."}]},{"role":"tool","content":[{"type":"text","text":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}"}],"tool_call_id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv"},{"role":"tool","content":[{"type":"text","text":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}],"tool_call_id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN"},{"role":"tool","content":[{"type":"text","text":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}"}],"tool_call_id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf"},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"BrYzDzqT7xi6HtwPbIK1iyL6H1UyLVxO","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},{"role":"tool","content":[{"type":"text","text":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}],"tool_call_id":"BrYzDzqT7xi6HtwPbIK1iyL6H1UyLVxO"},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 708
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}}],"created":1791224028,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11146-7fe450e19","object":"chat.completion","usage":{"completion_tokens":14,"prompt_tokens":383,"total_tokens":397,"prompt_tokens_details":{"cached_tokens":293}},"id":"chatcmpl-rlFBMsvZWAtN5yWxb6apJPUOV1pvcmUs","timings":{"cache_n":293,"prompt_n":90,"prompt_ms":710.805,"prompt_per_token_ms":7.897833333333333,"prompt_per_second":126.61700466372635,"predicted_n":14,"predicted_ms":660.085,"predicted_per_token_ms":50.775769230769235,"predicted_per_second":19.694433292682003}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "708"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.393s

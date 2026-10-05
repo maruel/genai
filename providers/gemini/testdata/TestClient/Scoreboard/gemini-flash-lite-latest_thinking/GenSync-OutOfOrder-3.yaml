@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 7543
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]},{"role":"model","parts":[{"thoughtSignature":"EukDCuYDAWkUfRP4Zrax6zFwD+PpxNpBlY8IxyhFPRa7ojV5rFtuMNri8FKjYcw6nuPf9gxL8TLVU6JzXa14DXrjF6fa3aTX4oS2FcYlXnPDHHZ1SHoccvUz0ljVluuhAJYIShIupLmVWi0eBVJiLtrbIf3MVkyHPzE1ydUt9zw2Fu7tEh0B3uLqgczfgTfP0/V21nV/P/nXy2F54QhXFCh0maGay2ZyiHoW7ngVmXLQAhTPc6pALEyRz+tcgFkYn/lAxvzGB4BXW7OVp2nHrkUO1pz/3fSC8gcun3WeKK8LGBKCeZgq5Aququq0feuFUFbK17DGcvE+ZNg0suYOVFDsZO/XfdNREpsEA0hJBzp+k74uqBxF9vtyLgyFFAP6NLpStIwA9EwCp5EyH0WHVr8kCeydBPZSRzZeplhSPyfrnSt5Z4M8dgWY5v984jSkMIWOcDc9QJvGJPzjArqgt6U4AdPHvvU1VPUa9rqOKwPF3iM30U0kxAtmsG6APXsccCZ/nBzYcpyuU31F/urENvpp23jcq4PyrIdI70iI3fpcY4GRnrn9A0Bi3hP9tiyQBUG1JR/9vJQ6yYK+rh0emIp7PB8vVLIOrNFdbc1wRiiHkAaNBMfgtVAqeS1Wk8H7in/HMeeLKXGMiY+S","functionCall":{"id":"call_8029","name":"task_status","args":{"task_id":3}}},{"functionCall":{"id":"call_8030","name":"task_status","args":{"task_id":7}}},{"functionCall":{"id":"call_8031","name":"task_status","args":{"task_id":11}}}]},{"role":"user","parts":[{"text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"model","parts":[{"thoughtSignature":"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","text":"I'm still waiting for task 7's reference."}]},{"role":"user","parts":[{"functionResponse":{"id":"call_8031","name":"task_status","response":{"response":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}"}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_8030","name":"task_status","response":{"response":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_8029","name":"task_status","response":{"response":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}"}}}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"thinkingLevel":"high"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Task 7's reference is violet.",
+                        "thoughtSignature": "EtQFCtEFAWkUfRP6aPYzq7E1rn6OILNunB4bwoAUsNF/nqgNK1ryRVCQwmmyIIDlc1iO8smOdZDmdba/Q9jhJ3QtK+SMJ8a3HsOUFjmcXKkwDSJCIyCDxEmPFF7uPp9Tt12pUWmxCjwKokEBfp8GF46e47GIy9V7fkIvrn3CLCBFZW0tQjRldpfx4ZH8mQx5hCwnD8FDCd6Va+L1jVZy/0xItH6vTHsUrVUzwRuyEKryhorMrQ2pkJjJ1gdprMfrdvGx66DgwPnolQCY78kbTTYHlSESIdPstCJMJRAHA1KAHRT9L4UFPeqdqJ4baOh2vjkFC+lI3x9ylGfKjbuQt1ZjxuF8BvYqmeWirMZZBEb/ZdUlkz5UIm9VXFkXQ8VkheBJaWtEPWhFBD3fc3KYhZYIN6fQ80z3hSEEZsabL44JuybhGvLU97SQccOgmkkhCJoKqEOXnu8RfhfRuUdeGPgkd3iVfTZbf5DKQe+Xm6SdccUnV8X5lo6VMkN6MIaFue6/HflHlE033YgvzN8eYfKdSTuxU5U6YT6447J3ZlaDKzsNF++f7q+7/eI7QBjUtv1JShD0EZoWFotCXKxGTZviH5ZzJZ7IJqKM53K+jnk1x0TWG2QXowlUjDUMCxJExbm1BF2MicPPwg9z+8LyWB3HTYbjl45AbxTbtXEyE+UlpvZAhsl2/FQ7xYJRyb378ht4UbUCk8H6eXv1JhEeellgGGohJoc9odnHxGca3WMy/KkjU1XZccsn59rYTDFpnOJQwpU2lw/6MpDDmkwuaYrG+wAo8PjPhGCSezNeWFpG+ql0DDn25QvaE6I6zECGxnX7DzEU4HdBEM/kTzCOKn+e+FXuiuX481ngaPjgrJM8qBi4ncws9rHS3i/M2AAAJlLFloc1fmwNy6vtVMPXi5G/cSQpULDv2V4wglHmZw2/kH2/YyxYD3XKRRlsJQPGH6NqvzWdtw=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 1330,
+                "candidatesTokenCount": 9,
+                "totalTokenCount": 1517,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 1330
+                  }
+                ],
+                "thoughtsTokenCount": 178,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.5-flash-lite",
+              "responseId": "fefDavemCvq11MkPsazXoQ4"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1820
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.825s

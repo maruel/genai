@@ -187,37 +187,84 @@ func TestTriState(t *testing.T) {
 }
 
 func TestFunctionality(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		tests := []*Functionality{
-			{
-				ReportTokenUsage:   True,
-				ReportFinishReason: True,
-				Tools:              True,
-				ToolsBiased:        False,
-				ToolsIndecisive:    False,
-			},
-		}
-
-		for _, f := range tests {
-			if err := f.Validate(); err != nil {
-				t.Fatalf("got err=%v", err)
+	t.Run("JSON", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, tc := range []struct {
+				name, raw string
+				measured  bool
+				value     TriState
+			}{
+				{"unmeasured", `{}`, false, False},
+				{"false", `{"outOfOrder":"false"}`, true, False},
+				{"true", `{"outOfOrder":"true"}`, true, True},
+				{"flaky", `{"outOfOrder":"flaky"}`, true, Flaky},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					f := Functionality{}
+					if err := json.Unmarshal([]byte(tc.raw), &f); err != nil {
+						t.Fatal(err)
+					}
+					value := f.OutOfOrder
+					if (value != nil) != tc.measured {
+						t.Fatal("lost presence")
+					}
+					if tc.measured && *value != tc.value {
+						t.Fatal("wrong value")
+					}
+					if err := f.Validate(); err != nil {
+						t.Fatal(err)
+					}
+					raw, err := json.Marshal(f)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if string(raw) != tc.raw {
+						t.Fatalf("round trip=%s want=%s", raw, tc.raw)
+					}
+				})
 			}
-		}
+		})
+		t.Run("error", func(t *testing.T) {
+			f := Functionality{}
+			if err := json.Unmarshal([]byte(`{"outOfOrder":"unknown"}`), &f); err == nil {
+				t.Fatal("accepted invalid score")
+			}
+		})
 	})
-
-	t.Run("Validate Error", func(t *testing.T) {
-		tests := []*Functionality{
-			{ReportTokenUsage: TriState(99)},
-			{Tools: False, ToolsBiased: True},
-			{Tools: False, ToolsIndecisive: True},
-			{Tools: False, ToolCallRequired: true},
-		}
-
-		for _, f := range tests {
-			if err := f.Validate(); err == nil {
-				t.Fatalf("got err=nil, want error")
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []*Functionality{
+				{
+					ReportTokenUsage:   True,
+					ReportFinishReason: True,
+					Tools:              True,
+					ToolsBiased:        False,
+					ToolsIndecisive:    False,
+				},
 			}
-		}
+
+			for _, f := range tests {
+				if err := f.Validate(); err != nil {
+					t.Fatalf("got err=%v", err)
+				}
+			}
+		})
+
+		t.Run("error", func(t *testing.T) {
+			tests := []*Functionality{
+				{OutOfOrder: new(TriState(3))},
+				{ReportTokenUsage: TriState(99)},
+				{Tools: False, ToolsBiased: True},
+				{Tools: False, ToolsIndecisive: True},
+				{Tools: False, ToolCallRequired: true},
+			}
+
+			for _, f := range tests {
+				if err := f.Validate(); err == nil {
+					t.Fatalf("got err=nil, want error")
+				}
+			}
+		})
 	})
 
 	t.Run("Less", func(t *testing.T) {
@@ -225,6 +272,13 @@ func TestFunctionality(t *testing.T) {
 			f1, f2 *Functionality
 			want   bool
 		}{
+			{&Functionality{}, &Functionality{OutOfOrder: new(True)}, false},
+			{&Functionality{}, &Functionality{OutOfOrder: new(False)}, false},
+			{&Functionality{OutOfOrder: new(True)}, &Functionality{}, false},
+			{&Functionality{OutOfOrder: new(False)}, &Functionality{}, false},
+			{&Functionality{OutOfOrder: new(False)}, &Functionality{OutOfOrder: new(True)}, true},
+			{&Functionality{OutOfOrder: new(True)}, &Functionality{OutOfOrder: new(False)}, false},
+			{&Functionality{OutOfOrder: new(Flaky)}, &Functionality{OutOfOrder: new(True)}, true},
 			{&Functionality{ReportRateLimits: false}, &Functionality{ReportRateLimits: true}, true},
 			{&Functionality{ReportRateLimits: true}, &Functionality{ReportRateLimits: false}, false},
 			{&Functionality{ReportTokenUsage: False}, &Functionality{ReportTokenUsage: True}, true},

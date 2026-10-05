@@ -431,6 +431,13 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if err := exerciseGenTools(ctx, cs, f, prefix+"Tools-"); err != nil {
 		return f, err
 	}
+	if f.Tools == scoreboard.True {
+		score, err := exerciseGenConversation(ctx, cs, f, prefix+"OutOfOrder")
+		if err != nil {
+			return f, err
+		}
+		f.OutOfOrder = &score
+	}
 	if err := exerciseWebSearch(ctx, cs, f, prefix+"Tools-"); err != nil {
 		return f, err
 	}
@@ -1139,6 +1146,15 @@ func mergeFunctionality(dst, src *scoreboard.Functionality) {
 	dst.ReportTokenUsage = mergeTriState(dst.ReportTokenUsage, src.ReportTokenUsage)
 	dst.ReportFinishReason = mergeTriState(dst.ReportFinishReason, src.ReportFinishReason)
 	dst.Seed = dst.Seed || src.Seed
+	if src.OutOfOrder != nil {
+		if dst.OutOfOrder == nil {
+			v := *src.OutOfOrder
+			dst.OutOfOrder = &v
+		} else {
+			v := mergeTriState(*dst.OutOfOrder, *src.OutOfOrder)
+			dst.OutOfOrder = &v
+		}
+	}
 	dst.Tools = mergeTriState(dst.Tools, src.Tools)
 	dst.ToolsBiased = mergeTriState(dst.ToolsBiased, src.ToolsBiased)
 	dst.ToolsIndecisive = mergeTriState(dst.ToolsIndecisive, src.ToolsIndecisive)

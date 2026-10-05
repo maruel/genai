@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 745
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-pro","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"e737217a-4855-4bbe-9054-d9896de36034","object":"chat.completion","created":1791225997,"model":"deepseek-v4-pro","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants me to check the status and reference of tasks 3, 7, and 11. I should start the checks together if possible. The tool is task_status, one call per task. I can make multiple independent calls in the same block.","tool_calls":[{"index":0,"id":"call_00_9horycPtnMzmc7nyCWa08954","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"index":1,"id":"call_01_PHJCC26104BZlQMWzaHx5796","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"index":2,"id":"call_02_ea0hM4c3o1Mcpno5RlCN4062","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":439,"completion_tokens":160,"total_tokens":599,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":53},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":439},"system_fingerprint":"a307abda487cd1b463329ccb945ce396"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 bfbe113f0ea2802b9e23121dc3bb9fe6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - gUblHvRlDvG7eRgGS_nspGm8uFnILaeu5MoNEc__peE8VyW2xPiUfw==
+            X-Amz-Cf-Pop:
+                - YUL62-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 359ms

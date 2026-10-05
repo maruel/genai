@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 4529
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]},{"role":"model","parts":[{"thoughtSignature":"EvQCCvECAWkUfRNGdPsLfDvPESS/rOsxUu2ivOLAfOIP2aJVraBt3jhAULnbpNmkPczi59y2WdYmsy9p8YVTZM6a4Y9AcNVWTuYK5ePhh3cM1XSlmQQ+SLAeG50gg+50636bb+l2rvQjhq8ddqPbsPQM8/aVP9H7NgcnwLad+ZN0F2DlvsR+Dm8MHt6XavDx8J/0qdjJN0WlGQ24aGvzgxOBgKHkE2w3TAoYk5bjIakpYlhz110A4iNSYNs0KepWg8Lax5VCySXO9w75Pruj9ejV4e82bW6j2wneW7UMxsWZB1I9zFBMgMEzEjL70CLvsz2MuILw2NHLamZQsi6MNWlEM50CweUz+NmqAmpz4NoniU2QcdATuz/EEF0ezgTeYuSsXKBMTa1AsYWJiqMrYN+SJjwLhNmPhUYfaUX6edUVwFlcDCpc77fdfnyCg07H0fAIICueWaunyfekWbkzQKlOGl+kSvpQbvByfL3rHwSJGVqrbt2p","functionCall":{"id":"call_18322","name":"task_status","args":{"task_id":3}}},{"functionCall":{"id":"call_18327","name":"task_status","args":{"task_id":7}}},{"functionCall":{"id":"call_18328","name":"task_status","args":{"task_id":11}}}]},{"role":"user","parts":[{"text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"model","parts":[{"text":"I don't have it yet; I'm still waiting on task 7."},{"thoughtSignature":"EuQKCuEKAWkUfROWg1LHwmxBImxLznK8h4PnTcsqMVyLWT71rGUFj8PVDuZ/EccSxSZmO9fXsvtUvAc64fjzibmzldIDubL7BEvT/kGME2FeQ//CXKmMGnFVdVBOzIkM37bujyvQ72Dt+A6LlN8nSFSnOUYLc3I94BtofYEtVMAJ9vsqwcCxE64BnWSY7rZaY3z/g9buOcVS3mlaI7LSRFlno9DrCbUQLXLvLUiygFPyyaCuFwV0g2Noh6aqMFsmDQ1b9wGSnhkl8uhE5S4BSl9myUVgMPU4jeDqT+/1oPw6H9emn0GfLMqYTAFqcezUUUX0WPeVfed/V2M87kXqhd6Xbl6tJHumNZFGvvNqg3J9BbPsg0byk4JeMrXY7b9RBS9xOv7RuC5FbVDbHWcWDOTcBimrZEjvAu3pDfMyonhBmSEhuNB6jj/zCFkutD8N8WC6qRuUU3JiInzk6Qa/KpW8ZsLpXOi13hAoTROUwijO1gBpNqoYys3jX4kLHenOCcsHzmkGcaY32wh9ypAl1iuz7R+GIz3gmvx1lGrn4YyqlziiqDgjWkM0oQNfcbSuexg9KGU3NXCQWwElQlMbRfplzcXpGHG4IOF2h/3rbbKzjnyWKA/wT+7acMG9PNhHBeSIuzNP3oK0qgPCIwQ0tfIY2y0PAhJLzXIKX9svZlSlNTQ7nNST5M9APARDBGs7kmaZsO0muy34UpsAJtUDLhUV6OHtDyaQ4dkEtz8ztw9MK1K+HFYBNsfu0zHjuxB0hjYcXi3P+t7FTWXWNDPCZRFRk7QU3FajR8B+Dc6HamAQffSTPWK2g7wzwNRgql9RHxsbS5hpxB2TAVf/MtAJLTAwBEgqTb2L6wgK55Dc6gNa7TJxhtWMjYpU03CCwnTXc4vblO/mfBPHxebpTue0Yd6o8eRMdK8REXvlyrMGrGoECgLqqd3ZsY1tfPD95cBUvsR3Xy3GLj5CI+jzrF0b0MpNPlzC+rRfJba0DGiwnZkhXizdAl9QJF8LWuU6sNO9TWQxoaQVlQOdSVHnnJBchHX/V6twQ14iOqWYtvo2NF23CJUNqQlKyn3UwpREyK9Ln/TZk+0Lj8+FfComVPNquqfeYOU4KbipyNhJIB77OycgmpVG+/F4FveLIXNl4GFxML5VEl9OEW8ANL6yxubEUNg9bUbnwfpPNd6F42ShXuX9oCW5IXBLeCDNqxfG6dZeoiD6oLeuRD9VeNOBNPD35Be7suLKsIKPlKa58RgHmn05BUq140CwGO+dXFUfIB/IOe6efTGMwNhyetabd6D/eFBmlTTAbjf3Pjb3zJFR75AfzAw1eS/zoRgt39GUlZHoAKPZl5ncy+ZwKPpx4WMRQoKGb1MqNrFJeiYGtedmFAG9kiIcWo4w57w26PI/VPZG6y2vRSweBcZLmId1KUshhI3oPq3rDbZOIny+S7ZJqoSuOjm0rcLP9H8WXaLlzMDiqKJsevBj/G/C14L9te5wz9GW+GozZVsHmzTbX+86cyzDO1M6+Bi+BYjsR3HZ3oXrePZh5KfLel0qKHSapeZfZUPSnBjo2z6l2xIHa5R1e81OLMEROwm1AKcSgF8jU5SFUjMMiIJntDj1ClhBB41UAizIFGBDNw95JQq84ktiJtyHo2MXD615hhUWyOdmFnW+B7q2Jhtht59VcpnqxZwPhwbM4YMGt/aChSP46UVOvSqB8Yo0FTeb8w6I30O149pcvc9fWLXCHZJk17B963fTIGgIujMzHQGSdUktmxN2ZxZ0HE4buo7CaCaV8uE9MpX/jELO2PjjwYdspkPryNPvw7tRAb6TxpTSXKolHxnbGORW9dSXvIeV"}]},{"role":"user","parts":[{"functionResponse":{"id":"call_18328","name":"task_status","response":{"response":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}"}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_18327","name":"task_status","response":{"response":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}}}]},{"role":"user","parts":[{"functionResponse":{"id":"call_18322","name":"task_status","response":{"response":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}"}}}]},{"role":"user","parts":[{"text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Yes, task 7's reference is violet.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 374,\"candidatesTokenCount\": 11,\"totalTokenCount\": 491,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 374}],\"thoughtsTokenCount\": 106,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"dvDDarq2Jo2n1MkP-rLr4AI\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\",\"thoughtSignature\": \"Er8ECrwEAWkUfROZZGgvAUsIQSELYUVM7kLtSP6X3plnZTdykVLbyuIGsT6hDlRTjLgj+CVcITyeFh1c0AV3VUbQFGi+s5ohfjXSykqLY4mB/LrNH/iIP/ksk8E2fHkxYkH2XMqHevk7f05np2jMvMz9OUSZjuUOqOxs5JjjyQH1x6VZzEX3al4/syvHoIyZwNj+1RqGc0quOVJ2X8lhli3WKye1TzRPzLrrl2ODLEeAoM2rV4a1/hYe0YBL0HApCmDG5HeuwC/Vw0HoyGR9cLzF441rGPDzjhh1vTfBFyxj4qYS9u5kXqLuQGc2d6tKT8X9gvVM1pn5Sfov6JG7NR83ROgWzfjYyFiJuO2QK4bdKAkvekkRchjB4jFDCKBJwk3uOcqto52huVoxY3O6VQmywEtNZn9cOzpv0TjcGPEQOSYmNyNX7PUhQG12Fu2Z6RWz4GERmfVwVLp0y5ml0ffnH/yQfcqIpXU6yJM+eEhQX/P7DheZ0jgvB4aOsTc2uJzxTmSXilpIGRSr26aMMWEOMumjUkz0NAYqow18+T+OeV76rpzBBW1hDibrRS7IVICB54ekLrwW4sOjH2GZzSp+pcP7Qm00RU1J5/Pl9kxxYuRnDtfaqvjVyhI8IWVg/DopvlnrPFDP1z0oHxcA2Pa3Q2v5+/fcNTKpHFo+eJWPDlRJ9sh18tbP6q4yVusMuEobI1IJxyMU+SCaPiNr8Gh5HODut+CM7imRWSajfA2oq1rGC08LjOUUpF6+O5beu5A=\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 710,\"candidatesTokenCount\": 11,\"totalTokenCount\": 827,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 710}],\"thoughtsTokenCount\": 106,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"dvDDarq2Jo2n1MkP-rLr4AI\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1009
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.014s

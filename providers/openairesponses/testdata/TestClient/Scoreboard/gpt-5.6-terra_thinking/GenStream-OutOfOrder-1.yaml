@@ -1,0 +1,112 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 903
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.6-terra","instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"auto","tools":[{"type":"function","name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"type":"message","role":"user","content":[{"type":"input_text","text":"Start the checks together if possible."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0733d0f728b0e162006ac3f07d281487d2a28e5b2d431b9a5b","object":"response","created_at":1791225981,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Read a task's current status and reference; does not change anything.","name":"task_status","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0733d0f728b0e162006ac3f07d281487d2a28e5b2d431b9a5b","object":"response","created_at":1791225981,"status":"in_progress","access_programs":null,"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Read a task's current status and reference; does not change anything.","name":"task_status","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"rs_0733d0f728b0e162006ac3f07ddea087d2b669cefb04cddc4d","type":"reasoning","content":[],"encrypted_content":"gAAAAABqw_B91oK1771J6jACWPSpJmE_aJBsaZXz-1-XTOkSVvGxxY0g0GsyMCvHhqI0oDsbokzUIgjt2OJn_8gzuvU4tLqHb8a44Q6MkoHeDwE7yKsAaqxIr0t5UPuBYlUGDfFa8f9y1DZlBrqhFQux484KflXk6UkhsfSVVk-JEbdThTTrkVVupJgwrqAUkj7aN9dRLRnSFZSRFbLmjb9BMFDEJ-RJ7mWiFWhr9z0KBGANUKYPEKBiJISDaRZrgloma8R-2X2LvyiRp5FOiNDwAgRlx6z-W-hdT98kLv1D81HLtxIDodUJ2WLhNkvDKaGYQXdNz4Woq9peyp7dhT_MsxRJ5HiTcDRp6i7WqSxJ6eHa9sf9wuM4zVStO_ly2J2_vfqQq1MrEtxUILnYQxURnd-vHngooDXja558BuEyekEkJJBRD2lZtxezOCVewkB3oU7owqsg-xrEOR2MIWUHwkt8mTSBkq2hp0_mZrFCpAbsPN6kuCNzQQRWWRWd_dBF317QmPD0RdINuo0VBvLdKhIvGZkzxNkUepKbSZ7TywdU-AmnhTvM63vwW6IX5HieGuy6TstE8YhTg2ISzqT5EmqhZmNZQ6u8zdsEDds5oeiI-KWg499gun-ObryqDQxcTwp0zCzbNKL3Fa8FnDI2NJbDDtaAyLmNffa1xRQryNmzFvtkiRj7Pw7Ekal2FJGb6_ftZM2b-8T1Yh5yeZ6GGx7x3ngWlIDRsrcDP3EjwtMnYzQbcUl6PZU0v6YC7AQ5d9jeEB4Xv06pi-e13zOAZfYhADJnsuhjbGldy23hD_jkUfg1B4baQgThZZ1cIylDYgYxwz_z6O8tXFrxZRSUWrBPwUMgg7ANh4zNDImAVjPkaCxiAeeZIvPBnNOjQJ8nN7dgrB7ZTgtgy8XCEP8a0Gk6yuxrQ-LYQ9fXi275UlH5vvnILEvsZ0XV2yIODi-oFWwlb3FWAgJwViRfqMq-SdVirH24_O_CO82B0mCCiuFJNGdQlrgUTHEB0TEElzcGs0A59rCZ1Rw1KwS6bX7D8dJR0qOmQ9spngJgSi0ynt8Syrk58SsItJ24bR5NmQG9FvLsxG4-wmEAcKj9u5O1krP1LgWfCQ2CDtBr8v9LM4WHyOEyzFT550FgwYbeI3R0UvQqKGMYD2k29hlke5g4fDH4Ay9caQ==","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"rs_0733d0f728b0e162006ac3f07ddea087d2b669cefb04cddc4d","type":"reasoning","content":[],"encrypted_content":"gAAAAABqw_B-CxuvRCbaP7lkwi04gl9rpsXnoWHJC5NV7Bo7MFW71wNw_RA4wg_pHOnthgZUgAEgRgu7NnEli_BZPqZ0FukFZohSwjoDKXCQqNNyvdnnK7F4jg8lekr0B8njwTvEbVlFlSTOn4ws_sFWt5CPQtyiaSxVCzPs2xneTu4vWAkenOlTFWj0deq-SOxLk60vsSZquUAUWTIaY7PNuWcylEpQ9_CHMCBPbkLiahPgfxrND1ymHMKTx02x5xSUYjYBBfjmkDDlfzT8zvlvTOfwkJkaWP2XQfOgla0naoozeVZi0-9Xz03WM_HYL9YuJhq2zLZugNKGxhfUyBKGLIk8ABsNciZqnAcjSxONX7ivOo9ibJXvqW0yLOaHe0zAdxiAaHV2_N5lfgXtCxZ8vgpJOkTqQq4X6c_10f2m8WKy3CoLcwdJ1yRSE8JNf8y5izyzUbFSQap_HA2Tv77CTuzKZGhzoelQkd1fuK4XPED6JaPMb_Sv4VX-qGDBltbO1zSeP8sd_E6C882co8RrobR6mc9sby2WLHkLeV8NNRG9vFMJeHCKJvYuWxQYoXo9y0JKcjNNyts8oeTs0ffmnjDZtEzxWmCI5TO5vGcjpEoUU2pMW7Iqy--VDX_Ug9glK83KDTZ_vHrTJmCXtYPYFuDoeFtQqFOVHCtmKVGk1t9a8pSswxLNXapv_CzHsKzQ_ATk1V-ZW2yEbxdj0JCGVqbL6AVXzYVO0RzIWXtbenL_tawCP6vP6zwDot8t65kFk0lKjx2qmRoqUbn1uFw_kvoFHmBj1DqJcqERIm1sM59rtmc4LbUHGUWJzIub4__th8T6LXyx0DVJbh6uWaUcnteGMp1IA4CM62RCFtdKnWUGUrOhtDiyauQUTBLV1stjxBprQHkW6yFxbBmrOItrXrOCD2Opu6ehbkQ05CleIjg0sc4lSOWCZVaM5slNRS3cikJJxuKH1gypIXOe-W6MYdJRy78pb39BbCpruotiL3LExkfUELlb-pGMN2mAGwp37RtKbSMBhcyjEB1zArsjf9YE9O29SmrLvrWwHLU9oQEA4RT64sgwJTx93VgbpRvGPzv4wSccxJnj5S3KmRBTU94B1MuawGo4HIH6Oiz605lzET9YQeHnSJDF6ynnxA1VVf7W3PMbVqPlXkVveWlT3zg2y82OnVAwX52kksbvsHSZTYKhT2o-z7cs7CgepKm0Nccg1jAv","summary":[]},"output_index":0,"sequence_number":3}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_0733d0f728b0e162006ac3f07e2e0487d296a4852e0dea30cb","type":"function_call","status":"in_progress","arguments":"","call_id":"call_Ul81ETI7OakHb46XqAeIE8Um","name":"task_status"},"output_index":1,"sequence_number":4}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"task_id\":3}","item_id":"fc_0733d0f728b0e162006ac3f07e2e0487d296a4852e0dea30cb","obfuscation":"ayf","output_index":1,"sequence_number":5}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"task_id\":3}","item_id":"fc_0733d0f728b0e162006ac3f07e2e0487d296a4852e0dea30cb","output_index":1,"sequence_number":6}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_0733d0f728b0e162006ac3f07e2e0487d296a4852e0dea30cb","type":"function_call","status":"completed","arguments":"{\"task_id\":3}","call_id":"call_Ul81ETI7OakHb46XqAeIE8Um","name":"task_status"},"output_index":1,"sequence_number":7}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_0733d0f728b0e162006ac3f07e2e1487d285ba0a4bda002a68","type":"function_call","status":"in_progress","arguments":"","call_id":"call_zL1qGWJxn1Ceu0r8zFNYqi7E","name":"task_status"},"output_index":2,"sequence_number":8}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"task_id\":7}","item_id":"fc_0733d0f728b0e162006ac3f07e2e1487d285ba0a4bda002a68","obfuscation":"Oyd","output_index":2,"sequence_number":9}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"task_id\":7}","item_id":"fc_0733d0f728b0e162006ac3f07e2e1487d285ba0a4bda002a68","output_index":2,"sequence_number":10}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_0733d0f728b0e162006ac3f07e2e1487d285ba0a4bda002a68","type":"function_call","status":"completed","arguments":"{\"task_id\":7}","call_id":"call_zL1qGWJxn1Ceu0r8zFNYqi7E","name":"task_status"},"output_index":2,"sequence_number":11}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_0733d0f728b0e162006ac3f07e2e1c87d2aeaad40a543b5f2c","type":"function_call","status":"in_progress","arguments":"","call_id":"call_08TghLATAiCBMHIqRU3V90a2","name":"task_status"},"output_index":3,"sequence_number":12}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"task_id\":11}","item_id":"fc_0733d0f728b0e162006ac3f07e2e1c87d2aeaad40a543b5f2c","obfuscation":"kR","output_index":3,"sequence_number":13}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"task_id\":11}","item_id":"fc_0733d0f728b0e162006ac3f07e2e1c87d2aeaad40a543b5f2c","output_index":3,"sequence_number":14}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_0733d0f728b0e162006ac3f07e2e1c87d2aeaad40a543b5f2c","type":"function_call","status":"completed","arguments":"{\"task_id\":11}","call_id":"call_08TghLATAiCBMHIqRU3V90a2","name":"task_status"},"output_index":3,"sequence_number":15}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_0733d0f728b0e162006ac3f07d281487d2a28e5b2d431b9a5b","object":"response","created_at":1791225981,"status":"completed","access_programs":null,"background":false,"completed_at":1791225982,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result.","max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.6-terra","moderation":null,"output":[{"id":"rs_0733d0f728b0e162006ac3f07ddea087d2b669cefb04cddc4d","type":"reasoning","content":[],"encrypted_content":"gAAAAABqw_B-4sVDMY_86_Vq_ABnPaj6b5jEjx6g6VgzkCyRTLEIHoOrtc01yyIQduTX2rMQtfEnhh6oTyAF3gD2x1Q-5QcYBY-KYxfqI11J0oJy6YTxTB1hYHJBJhrb5FVhY4CGUcU5beH7ejCqPI0_mcQpWvaU7no56nMjw74sFR6cBhGEe4VIh-5pHRPnoWjsAFW5PK2mG6ivUIPub83mMr7VnzsSOvKJW41LfmpOFWz_xhgwIP3dEjZVFKahbtJagsA6s_GjzBkJZNDpPaErFmhSJP3u-sKUs65cq5GC0Ncm6VWl9bO3ELPlVIQ0UWJKYjVRiN3s3RdVf0fJ_eFpzAGQBVfKdcck5-ca0vJ7RK46PHdV0wCbvkmtz_lQ6_zgHussbh9ppm-pTo_h-ltOnnnpQEKWBCT5QQhAxdcQGBPi6INdbg7WQX2uO-dORpU4nENSapYktjWDlJrmxzkg9N01TwndSb1W9P0wG48kPXLmre3317Mihe5sIZ-re-tRK67_81YVkS5mQEk55-TwUme7KLsS0cjoAE3W5-zE2ANp3OjPOYIUXd0Ktt_muGnlS6HcpvyuajuCwg2e8bOlOArTcU5HHtw4GHe4ekxM9JJvvBe8SVbEYamMSRdRoyGxP9gVT6NwRCD7nb5K6YclQ1tJc4VMwKnZja15Ef7ZQzwUWAE_retyPDedDmxBRH3im3K-2zSA9rjD6zH8XFJj6aeU-CKIZy-T2BaR1CMOwgiMnWNZzt6cPrMYsr8Ydo-uOV_cwC15--HLcHc7xSOr8WiaBIkKKBQl3kvfQwimZF1osrlfKcWK8WenuZStZhNyHh-RmUCk6YUjyHJBbYYrLIEJ9hllyKYnmn2zN8vXtssRkDYjEB4dmnAdg7xMeqxf_ccj3g30ZZXgz7q8Oe7LXFyK1L2-GDzqtWfeT0HYhhaqTJPteKKSmlifsUdI5uMrG2jRMEM6Bo0ppAdUKvsV7kBwU7vfcA29xq_EfK1wt1GHfd2NZVF8Jl4bM0gdHAkOZYo8_OI3TRqgWkBWA_uDY_CNHkrw7vNYRh5H0Pfu2J8Uf_mmX3PN49aA5KyXH_r-AoJlFJl10z1070_Sg4miSyD-XewyQQfTRDg6ijQZlXGbDYl-uoBCPW4hlonP1nbzb9CSW30o2v514JLw8RehdATI0eABPeZDMmOdbt-FvmhpoNmQUxypAlgcTwMwKNJjuocinbZ3","summary":[]},{"id":"fc_0733d0f728b0e162006ac3f07e2e0487d296a4852e0dea30cb","type":"function_call","status":"completed","arguments":"{\"task_id\":3}","call_id":"call_Ul81ETI7OakHb46XqAeIE8Um","name":"task_status"},{"id":"fc_0733d0f728b0e162006ac3f07e2e1487d285ba0a4bda002a68","type":"function_call","status":"completed","arguments":"{\"task_id\":7}","call_id":"call_zL1qGWJxn1Ceu0r8zFNYqi7E","name":"task_status"},{"id":"fc_0733d0f728b0e162006ac3f07e2e1c87d2aeaad40a543b5f2c","type":"function_call","status":"completed","arguments":"{\"task_id\":11}","call_id":"call_08TghLATAiCBMHIqRU3V90a2","name":"task_status"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Read a task's current status and reference; does not change anything.","name":"task_status","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":110,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":75,"output_tokens_details":{"reasoning_tokens":8},"total_tokens":185},"user":null,"metadata":{}},"sequence_number":16}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e96ad8b53df96-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "551"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "498"
+            X-Ratelimit-Remaining-Tokens:
+                - "498910"
+            X-Ratelimit-Reset-Requests:
+                - 240ms
+            X-Ratelimit-Reset-Tokens:
+                - 130ms
+        status: 200 OK
+        code: 200
+        duration: 653ms

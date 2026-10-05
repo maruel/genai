@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 818
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"]}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"task_status\",\"args\": {\"task_id\": 3},\"id\": \"call_18322\"},\"thoughtSignature\": \"EvQCCvECAWkUfRNGdPsLfDvPESS/rOsxUu2ivOLAfOIP2aJVraBt3jhAULnbpNmkPczi59y2WdYmsy9p8YVTZM6a4Y9AcNVWTuYK5ePhh3cM1XSlmQQ+SLAeG50gg+50636bb+l2rvQjhq8ddqPbsPQM8/aVP9H7NgcnwLad+ZN0F2DlvsR+Dm8MHt6XavDx8J/0qdjJN0WlGQ24aGvzgxOBgKHkE2w3TAoYk5bjIakpYlhz110A4iNSYNs0KepWg8Lax5VCySXO9w75Pruj9ejV4e82bW6j2wneW7UMxsWZB1I9zFBMgMEzEjL70CLvsz2MuILw2NHLamZQsi6MNWlEM50CweUz+NmqAmpz4NoniU2QcdATuz/EEF0ezgTeYuSsXKBMTa1AsYWJiqMrYN+SJjwLhNmPhUYfaUX6edUVwFlcDCpc77fdfnyCg07H0fAIICueWaunyfekWbkzQKlOGl+kSvpQbvByfL3rHwSJGVqrbt2p\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 16,\"totalTokenCount\": 220,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 69,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"c_DDapPMF7mm1MkP-_SP8Qg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"task_status\",\"args\": {\"task_id\": 7},\"id\": \"call_18327\"}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 32,\"totalTokenCount\": 236,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 69,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"c_DDapPMF7mm1MkP-_SP8Qg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"task_status\",\"args\": {\"task_id\": 11},\"id\": \"call_18328\"}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 49,\"totalTokenCount\": 253,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 69,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"c_DDapPMF7mm1MkP-_SP8Qg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 135,\"candidatesTokenCount\": 49,\"totalTokenCount\": 253,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 135}],\"thoughtsTokenCount\": 69,\"serviceTier\": \"standard\"},\"modelVersion\": \"gemini-3.8-flash\",\"responseId\": \"c_DDapPMF7mm1MkP-_SP8Qg\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1247
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.288s

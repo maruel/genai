@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 313
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-plus","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"response_format":{"type":"json_object"},"stream_options":{"include_usage":true},"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":"{\"","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"delta":{"content":"is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"delta":{"content":"_f"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"delta":{"content":"ruit"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"delta":{"content":"\":"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"delta":{"content":" true"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"delta":{"content":"}"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":8,"total_tokens":48,"completion_tokens_details":{"text_tokens":8},"prompt_tokens_details":{"text_tokens":40,"cached_tokens":0}},"created":1791230668,"system_fingerprint":null,"model":"qwen3-vl-plus","id":"chatcmpl-4dfd418a-b31f-4a9e-90ed-5296dd46aedb"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1791230667922"
+            Req-Cost-Time:
+                - "436"
+            Resp-Start-Time:
+                - "1791230668359"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "436"
+        status: 200 OK
+        code: 200
+        duration: 458ms

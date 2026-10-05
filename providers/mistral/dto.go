@@ -653,7 +653,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 type ErrorResponse struct {
 	// When simple issue like auth failure.
 	// Message   string `json:"message"`
-	RequestID string `json:"request_id"`
+	RequestID     string `json:"request_id"`
+	RawStatusCode int    `json:"raw_status_code,omitzero"`
 
 	// First error type
 	Object string `json:"object"` // "error"
@@ -681,7 +682,7 @@ func (er *ErrorResponse) Error() string {
 	if s := er.Detail.String(); s != "" {
 		return out + s
 	}
-	return out + er.Message.Detail.String()
+	return out + string(er.Message)
 }
 
 // IsAPIError returns true.
@@ -749,16 +750,16 @@ func (ed *ErrorDetails) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// ErrorMessage represents an error message that can be a string or object.
-type ErrorMessage struct {
-	Detail ErrorDetails `json:"detail"`
-}
+// ErrorMessage decodes string and detail-object error messages into diagnostic text.
+// Its string representation also accepts both wire forms in httpjson's field scan;
+// UnmarshalJSON validates the object form before extracting its text.
+type ErrorMessage string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (er *ErrorMessage) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err == nil {
-		er.Detail = ErrorDetails{{Msg: s}}
+		*er = ErrorMessage(s)
 		return nil
 	}
 	var x struct {
@@ -771,6 +772,6 @@ func (er *ErrorMessage) UnmarshalJSON(b []byte) error {
 	if err := d.Decode(&x); err != nil {
 		return err
 	}
-	er.Detail = x.Detail
+	*er = ErrorMessage(x.Detail.String())
 	return nil
 }

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2402
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"assistant","content":[{"type":"text","text":"Waiting for task 7's reference."}]},{"role":"tool","content":[{"type":"text","text":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}"}],"tool_call_id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv"},{"role":"tool","content":[{"type":"text","text":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}],"tool_call_id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN"},{"role":"tool","content":[{"type":"text","text":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}"}],"tool_call_id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf"},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2197
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking for the reference of task 7.\nI have previously called `task_status` for tasks 3, 7, and 11.\nI need to check the results of those calls to determine if I have the reference for task 7.\nSince I do not have the results yet (the model output is sequential), I must rely on the state of the tool calls.\n\nThe previous turn showed:\n1.  User asked to check 3, 7, 11.\n2.  I called `task_status` for 3, 7, and 11.\n3.  User requested only task 7''s reference.\n4.  I responded: \"Waiting for task 7''s reference.\"\n\nNow, the user is repeating the request. I must check the actual (hypothetical) result of the previous tool calls. Since I am simulating the process, I need to assume the tool results are now available, or if they aren''t, state that. Given the constraints, I should assume the previous calls were executed and the next turn would provide the results. Since the user is asking again, I should re-evaluate if I have the info.\n\nIf I check the instructions: \"Never claim a task''s state or reference without its tool result.\"\n\nI don''t have the tool result in this turn yet. The previous turn ended with \"Waiting for task 7''s reference.\"\n\nI will call the tool again to get the current status, assuming the previous calls haven''t resolved or I need to re-query. I will only focus on task 7 now, as requested.","tool_calls":[{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"id":"BrYzDzqT7xi6HtwPbIK1iyL6H1UyLVxO"}]}}],"created":1791224027,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11146-7fe450e19","object":"chat.completion","usage":{"completion_tokens":368,"prompt_tokens":298,"total_tokens":666,"prompt_tokens_details":{"cached_tokens":238}},"id":"chatcmpl-144u3qSOrG78TplB3zJNay9e8mJAymwc","timings":{"cache_n":238,"prompt_n":60,"prompt_ms":484.508,"prompt_per_token_ms":8.075133333333333,"prompt_per_second":123.83696450832599,"predicted_n":368,"predicted_ms":34508.703,"predicted_per_token_ms":94.02916348773843,"predicted_per_second":10.634998365484787,"draft_n":64,"draft_n_accepted":6}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2197"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 35.024s

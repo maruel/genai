@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2086
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"9dbfw5t6c","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","id":"h416mnxfa","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","id":"hwa6e85yn","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"type":"function","id":"qcrzfkpy6","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"qcrzfkpy6"},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"hwa6e85yn"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"h416mnxfa"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"9dbfw5t6c"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"qwen/qwen3.8-27b","stream":true,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m46m0caneskbf3zhsfhvf153","seed":1227456326}}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":"Yep"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" —"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" task"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":"7"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":"'s"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" reference"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" is"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":" **"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":"v"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":"iolet"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{"content":"**."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a062980d-056a-40f3-a5f5-029abf891eb5","object":"chat.completion.chunk","created":1791223673,"model":"qwen/qwen3.8-27b","system_fingerprint":"fp_ddcc9cf349","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m46m0caneskbf3zhsfhvf153","usage":{"queue_time":0.140975691,"prompt_tokens":698,"prompt_time":0.053635343,"completion_tokens":13,"completion_time":0.02509649,"total_tokens":711,"total_time":0.078731833}},"usage":{"queue_time":0.140975691,"prompt_tokens":698,"prompt_time":0.053635343,"completion_tokens":13,"completion_time":0.02509649,"total_tokens":711,"total_time":0.078731833}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e5e55295aa2ab-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "248857"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 274ms
+        status: 200 OK
+        code: 200
+        duration: 244ms

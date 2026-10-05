@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 740
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-721ce638-47de-464f-97da-f494443acc08","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"\n\n","reasoning":"The user is asking to check the status and references of tasks 3, 7, and 11, and to execute the checks in parallel if possible. Since these are independent, I''ll invoke the three functions in a single block.\n","tool_calls":[{"function":{"name":"task_status","arguments":"{\"task_id\": 3}"},"type":"function","id":"a6d6b6c99"},{"function":{"name":"task_status","arguments":"{\"task_id\": 7}"},"type":"function","id":"b1c642d84"},{"function":{"name":"task_status","arguments":"{\"task_id\": 11}"},"type":"function","id":"73cb4be28"}],"role":"assistant"}}],"created":1791231154,"model":"qwen-3.8-27b","system_fingerprint":"fp_829e8c8e5020fd230ff0","object":"chat.completion","usage":{"total_tokens":538,"completion_tokens":137,"completion_tokens_details":{"reasoning_tokens":51},"prompt_tokens":401,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1791231154.261638,"queue_time":0.260925803,"prompt_time":0.01341471,"completion_time":0.098676672,"total_time":0.3758885860443115}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45f14f988682388-YYZ
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=513
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647999"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26999"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "449"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215983559"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44983559"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "133559"
+        status: 200 OK
+        code: 200
+        duration: 552ms

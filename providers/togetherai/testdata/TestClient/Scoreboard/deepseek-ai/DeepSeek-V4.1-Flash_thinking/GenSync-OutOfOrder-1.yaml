@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 747
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash","stream":false,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"58008e2c-aws_ue2","object":"chat.completion","created":1791226017,"model":"deepseek-ai/DeepSeek-V4.1-Flash","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"call_01a10d63f7db7711abcc188b","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"id":"call_01a10d63f7db7711abcc188c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"id":"call_01a10d63f7db7711abcc188d","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}],"reasoning_content":"The user wants to check status of tasks 3, 7, 11. Independent calls, so batch them."},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":376,"completion_tokens":122,"total_tokens":498,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":24}},"system_fingerprint":"default"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e979088d4a26f-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-2035eeb1fde556d81979a4bd10c55c80-6b4dc2ff689569ff-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-05T18:46:57.505Z"
+            X-Cluster:
+                - dep-agqou3vnqr4upglbu6glwwmxgq
+            X-Together-Routing:
+                - de2
+        status: 200 OK
+        code: 200
+        duration: 451ms

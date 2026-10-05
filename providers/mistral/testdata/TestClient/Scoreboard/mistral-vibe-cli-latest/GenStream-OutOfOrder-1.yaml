@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 827
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-vibe-cli-latest","stream":true,"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"8e6fd89083fe4ec9aea4aceaa68d1df7","object":"chat.completion.chunk","created":1791226003,"model":"mistral-vibe-cli-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"8e6fd89083fe4ec9aea4aceaa68d1df7","object":"chat.completion.chunk","created":1791226003,"model":"mistral-vibe-cli-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"8R6G6cRpe","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"},"index":0},{"id":"4SblvMEMI","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"},"index":1},{"id":"cbq6RvSFW","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"},"index":2}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":168,"total_tokens":203,"completion_tokens":35,"prompt_tokens_details":{"cached_tokens":0},"service_tier":"standard"},"p":"abcdefgh"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a45e973b0d2f5b53-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a10d63-c128-7ca8-9285-0b99fba73a67
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=108,cfOrigin;dur=331
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "311"
+            X-Kong-Proxy-Latency:
+                - "15"
+            X-Kong-Request-Id:
+                - 01a10d63-c128-7ca8-9285-0b99fba73a67
+            X-Kong-Upstream-Latency:
+                - "311"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+        status: 200 OK
+        code: 200
+        duration: 446ms

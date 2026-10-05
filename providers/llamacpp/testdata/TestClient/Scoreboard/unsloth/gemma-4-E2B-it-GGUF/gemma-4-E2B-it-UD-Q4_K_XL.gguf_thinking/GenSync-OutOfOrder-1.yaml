@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 890
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1574
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants to check the status and reference for tasks 3, 7, and 11.\nI have a tool `task_status` that can read a task''s current status and reference given a `task_id`.\nSince the user asked to \"Start the checks together if possible,\" I should call the tool for each requested task ID.\n\nI need to call `task_status` three times:\n1. `task_status(task_id=3)`\n2. `task_status(task_id=7)`\n3. `task_status(task_id=11)`\n\nI will generate the tool calls sequentially.","tool_calls":[{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"},"id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf"},{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN"},{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"},"id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv"}]}}],"created":1791223918,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11146-7fe450e19","object":"chat.completion","usage":{"completion_tokens":188,"prompt_tokens":131,"total_tokens":319,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-6bjftOu9dfbW29CFhndPbOLl2dSL9Kzc","timings":{"cache_n":0,"prompt_n":131,"prompt_ms":1330.193,"prompt_per_token_ms":10.15414503816794,"prompt_per_second":98.48194961182325,"predicted_n":188,"predicted_ms":12775.502,"predicted_per_token_ms":68.31819251336898,"predicted_per_second":14.637389591422707,"draft_n":64,"draft_n_accepted":21}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1574"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 14.118s

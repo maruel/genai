@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1412
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_af0e84b67abd4aeb850e51cf","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"type":"function","id":"call_e814e9511ab14b09be50632d","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"type":"function","id":"call_bbcca66809ac4b7b91d729bc","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"qwen/qwen3.5-122b-a10b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n{\"id\":\"gen-1791225997-fUcxfGKMAcYlrcwwtpn6\",\"object\":\"chat.completion\",\"created\":1791225997,\"model\":\"qwen/qwen3.5-122b-a10b\",\"provider\":\"Alibaba\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"I'm still waiting for the results from all three task checks. Once they come back, I'll give you task 7's reference right away and let the others complete in the background as requested.\",\"refusal\":null,\"reasoning\":\"The user is saying they only need task 7's reference specifically. The other tasks (3 and 11) can finish in the background, but they don't want me to share those references with them.\\n\\nI've already made the tool calls for all three tasks. Now I need to wait for the results to come back before I can tell them about task 7's reference status.\\n\\nLet me check if I have the results yet. Looking at my previous function calls, I made them but haven't received the responses yet. I should let the user know I'm still waiting for the results.\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user is saying they only need task 7's reference specifically. The other tasks (3 and 11) can finish in the background, but they don't want me to share those references with them.\\n\\nI've already made the tool calls for all three tasks. Now I need to wait for the results to come back before I can tell them about task 7's reference status.\\n\\nLet me check if I have the results yet. Looking at my previous function calls, I made them but haven't received the responses yet. I should let the user know I'm still waiting for the results.\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":506,\"completion_tokens\":168,\"total_tokens\":674,\"cost\":0.000481,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.000481,\"upstream_inference_prompt_cost\":0.00013156,\"upstream_inference_completions_cost\":0.00034944},\"completion_tokens_details\":{\"reasoning_tokens\":123,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,X-Provider-Name,request-id,cf-ray
+            Cf-Ray:
+                - a45e97114a0ce09b-YUL
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=519
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1791225997-fUcxfGKMAcYlrcwwtpn6
+        status: 200 OK
+        code: 200
+        duration: 530ms

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2326
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_4clad1cl","function":{"name":"task_status","arguments":{"task_id":3}}},{"id":"call_nco726b4","function":{"name":"task_status","arguments":{"task_id":7}}},{"id":"call_nne02zk6","function":{"name":"task_status","arguments":{"task_id":11}}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"Waiting for task 7's reference."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_nne02zk6","tool_name":"task_status"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_nco726b4","tool_name":"task_status"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_4clad1cl","tool_name":"task_status"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"id":"call_lrqzshr3","function":{"name":"task_status","arguments":{"task_id":7}}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_lrqzshr3","tool_name":"task_status"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"tools":[{"type":"function","function":{"description":"Read a task's current status and reference; does not change anything.","name":"task_status","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.845280288Z","message":{"role":"assistant","content":"{\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.917705493Z","message":{"role":"assistant","content":"id"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.917728604Z","message":{"role":"assistant","content":"\":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.91781607Z","message":{"role":"assistant","content":"7"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.917840619Z","message":{"role":"assistant","content":",\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.991788987Z","message":{"role":"assistant","content":"status"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.991803712Z","message":{"role":"assistant","content":"\":\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.991877325Z","message":{"role":"assistant","content":"waiting"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:46.991884124Z","message":{"role":"assistant","content":"\",\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:47.064723254Z","message":{"role":"assistant","content":"reference"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:47.064749927Z","message":{"role":"assistant","content":"\":\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:47.064875846Z","message":{"role":"assistant","content":"violet"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:47.06488664Z","message":{"role":"assistant","content":"\"}"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-10-05T18:10:47.148220067Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":13206526629,"load_duration":5018420,"prompt_eval_count":382,"prompt_eval_cached_count":292,"prompt_eval_duration":666218000,"eval_count":14,"eval_duration":302723000}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 12.904s

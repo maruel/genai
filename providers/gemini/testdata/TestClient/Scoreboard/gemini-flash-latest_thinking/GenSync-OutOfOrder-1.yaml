@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 818
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","parts":[{"text":"Start the checks together if possible."}]}],"tools":[{"functionDeclarations":[{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"properties":{"task_id":{"type":"INTEGER"}},"required":["task_id"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"VALIDATED"}},"systemInstruction":{"parts":[{"text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 3
+                          },
+                          "id": "call_15468"
+                        },
+                        "thoughtSignature": "EuICCt8CAWkUfROXnWWaU1kqx4C+Fr+jyA9yiI81+rlzwEgqSGGalY9HAy53VyG55VS+ggE9p0T9vyCGEPuzTr8h7Ovl6ZDjHGm6oF1SNdIUO/T/s97clbcvgosc4VFNB+GZs6Msyael0qUpOlR6o+6ZOXPgNWPoLxHoklc8PoayrTsYMtvYkZG30PsssSPbMxSK4SYlFjhWR7tDvE/v0Csr5Nz6m1TjR+Q73szWLZmAXL5ZizNciwZc7BvRSpkYbY/u6/fw91Q+OX//UQyLU4U2eBJdq5jm2wj9eq30PZF2zsG5vjOj9bnk6OttBYV5h17bzbzoBFNtI2wCuUQt4liX8be7QtoflFCuf06OzFBvPskPPJtQKTNQ3RljyZqH+xGXnxyCnFUhS70qQE9CQO9Ao84MI5EQpBWhGvmf3xVcYP+bpJdfowYyy0ifveay+2AEOFNlvTV4Qlk3hFLVJZ5X2Sfe"
+                      },
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 7
+                          },
+                          "id": "call_15469"
+                        }
+                      },
+                      {
+                        "functionCall": {
+                          "name": "task_status",
+                          "args": {
+                            "task_id": 11
+                          },
+                          "id": "call_15470"
+                        }
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "finishMessage": "Model generated function call(s)."
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 135,
+                "candidatesTokenCount": 49,
+                "totalTokenCount": 260,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 135
+                  }
+                ],
+                "thoughtsTokenCount": 76,
+                "serviceTier": "standard"
+              },
+              "modelVersion": "gemini-3.8-flash",
+              "responseId": "c_DDar7IHvKa9MoP8_nfsAI"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1119
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.162s

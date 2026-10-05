@@ -14,8 +14,6 @@
 //   - packages/agent/src/types.ts — AgentEvent types
 //   - packages/ai/src/types.ts — AssistantMessage, AssistantMessageEvent, Model
 //
-// These DTOs are defined against Pi Coding Agent v0.85.1.
-//
 // Source: https://github.com/earendil-works/pi
 
 package pi
@@ -206,6 +204,7 @@ type Role string
 
 // Role constants.
 const (
+	RoleSystem            Role = "system"
 	RoleUser              Role = "user"
 	RoleAssistant         Role = "assistant"
 	RoleToolResult        Role = "toolResult"
@@ -1021,9 +1020,10 @@ type SubagentToolChainStep struct {
 //
 // It contains an array of content blocks with the tool output.
 type ToolExecResult struct {
-	Content ContentBlocks   `json:"content"`
-	IsError bool            `json:"isError,omitzero"`
-	Details json.RawMessage `json:"details,omitzero"`
+	Content           ContentBlocks   `json:"content"`
+	IsError           bool            `json:"isError,omitzero"`
+	Details           json.RawMessage `json:"details,omitzero"`
+	StructuredContent json.RawMessage `json:"structuredContent,omitzero"`
 }
 
 // Text extracts and concatenates all text content from the result blocks.
@@ -1066,39 +1066,57 @@ type ExtensionUIRequest struct {
 // AgentMessage is the union of Pi AI messages and coding-agent custom messages.
 // We only care about assistant messages for building genai.Result.
 type AgentMessage struct {
-	Role                  Role            `json:"role"`
-	Content               ContentBlocks   `json:"content,omitzero"`
-	API                   string          `json:"api,omitzero"`
-	Provider              string          `json:"provider,omitzero"`
-	Model                 string          `json:"model,omitzero"`
-	ResponseModel         string          `json:"responseModel,omitzero"`
-	ResponseID            string          `json:"responseId,omitzero"`
-	ProviderThinkingLevel string          `json:"providerThinkingLevel,omitzero"`
-	Diagnostics           []base.Unknown  `json:"diagnostics,omitzero"`
-	Usage                 MessageUsage    `json:"usage,omitzero"`
-	StopReason            StopReason      `json:"stopReason,omitzero"`
-	Deferred              *DeferredHandle `json:"deferred,omitzero"`
-	ErrorMessage          string          `json:"errorMessage,omitzero"`
-	RawStopReason         string          `json:"rawStopReason,omitzero"`
-	EndTurn               bool            `json:"endTurn,omitzero"`
-	Timestamp             float64         `json:"timestamp,omitzero"`
-	ToolCallID            string          `json:"toolCallId,omitzero"`
-	ToolName              string          `json:"toolName,omitzero"`
-	Details               json.RawMessage `json:"details,omitzero"`
-	AddedToolNames        []string        `json:"addedToolNames,omitzero"`
-	IsError               bool            `json:"isError,omitzero"`
-	CustomType            string          `json:"customType,omitzero"`
-	Display               bool            `json:"display,omitzero"`
-	Command               string          `json:"command,omitzero"`
-	Output                string          `json:"output,omitzero"`
-	ExitCode              int             `json:"exitCode,omitzero"`
-	Cancelled             bool            `json:"cancelled,omitzero"`
-	Truncated             bool            `json:"truncated,omitzero"`
-	FullOutputPath        string          `json:"fullOutputPath,omitzero"`
-	ExcludeFromContext    bool            `json:"excludeFromContext,omitzero"`
-	Summary               string          `json:"summary,omitzero"`
-	FromID                string          `json:"fromId,omitzero"`
-	TokensBefore          int64           `json:"tokensBefore,omitzero"`
+	Role                  Role               `json:"role"`
+	Content               ContentBlocks      `json:"content,omitzero"`
+	API                   string             `json:"api,omitzero"`
+	Provider              string             `json:"provider,omitzero"`
+	Model                 string             `json:"model,omitzero"`
+	ResponseModel         string             `json:"responseModel,omitzero"`
+	ResponseID            string             `json:"responseId,omitzero"`
+	ProviderThinkingLevel string             `json:"providerThinkingLevel,omitzero"`
+	ThinkingLevel         ThinkingLevel      `json:"thinkingLevel,omitzero"`
+	Sections              map[string]*string `json:"sections,omitzero"`
+	ToolsAdded            []Tool             `json:"toolsAdded,omitzero"`
+	ToolsRemoved          []ToolReference    `json:"toolsRemoved,omitzero"`
+	Diagnostics           []base.Unknown     `json:"diagnostics,omitzero"`
+	Usage                 MessageUsage       `json:"usage,omitzero"`
+	StopReason            StopReason         `json:"stopReason,omitzero"`
+	Deferred              *DeferredHandle    `json:"deferred,omitzero"`
+	ErrorMessage          string             `json:"errorMessage,omitzero"`
+	RawStopReason         string             `json:"rawStopReason,omitzero"`
+	EndTurn               bool               `json:"endTurn,omitzero"`
+	Timestamp             float64            `json:"timestamp,omitzero"`
+	ToolCallID            string             `json:"toolCallId,omitzero"`
+	ToolName              string             `json:"toolName,omitzero"`
+	Details               json.RawMessage    `json:"details,omitzero"`
+	AddedToolNames        []string           `json:"addedToolNames,omitzero"`
+	IsError               bool               `json:"isError,omitzero"`
+	CustomType            string             `json:"customType,omitzero"`
+	Display               bool               `json:"display,omitzero"`
+	Command               string             `json:"command,omitzero"`
+	Output                string             `json:"output,omitzero"`
+	ExitCode              int                `json:"exitCode,omitzero"`
+	Cancelled             bool               `json:"cancelled,omitzero"`
+	Truncated             bool               `json:"truncated,omitzero"`
+	FullOutputPath        string             `json:"fullOutputPath,omitzero"`
+	ExcludeFromContext    bool               `json:"excludeFromContext,omitzero"`
+	Summary               string             `json:"summary,omitzero"`
+	FromID                string             `json:"fromId,omitzero"`
+	TokensBefore          int64              `json:"tokensBefore,omitzero"`
+}
+
+// Tool defines a tool added by a system message.
+type Tool struct {
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	Parameters  json.RawMessage `json:"parameters"`
+	// ConstrainedSampling is false or a provider-specific JSON schema or grammar configuration.
+	ConstrainedSampling json.RawMessage `json:"constrainedSampling,omitzero"`
+}
+
+// ToolReference identifies a tool removed by a system message.
+type ToolReference struct {
+	Name string `json:"name"`
 }
 
 // DeferredHandle identifies a provider-managed deferred response.
@@ -1152,10 +1170,17 @@ type SessionEntry struct {
 	CustomType           string          `json:"customType,omitzero"`
 	Data                 json.RawMessage `json:"data,omitzero"`
 	TargetID             string          `json:"targetId,omitzero"`
-	Label                *string         `json:"label"`
-	Name                 string          `json:"name,omitzero"`
-	Display              bool            `json:"display,omitzero"`
-	Usage                *MessageUsage   `json:"usage,omitzero"`
+	// Replacement replaces only content; null removes the target from model context.
+	Replacement *ContextReplacement `json:"replacement,omitzero"`
+	Label       *string             `json:"label"`
+	Name        string              `json:"name,omitzero"`
+	Display     bool                `json:"display,omitzero"`
+	Usage       *MessageUsage       `json:"usage,omitzero"`
+}
+
+// ContextReplacement replaces an earlier session entry's model-visible content.
+type ContextReplacement struct {
+	Content ContentBlocks `json:"content"`
 }
 
 // SessionTreeNode is one node in the session-entry tree.

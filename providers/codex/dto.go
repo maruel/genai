@@ -1907,6 +1907,26 @@ const (
 	AuthModeHeaders             AuthMode = "headers"
 )
 
+// RemoteControlConnectionStatus identifies the remote-control connection state.
+type RemoteControlConnectionStatus string
+
+// Remote-control connection states.
+const (
+	RemoteControlConnected  RemoteControlConnectionStatus = "connected"
+	RemoteControlConnecting RemoteControlConnectionStatus = "connecting"
+	RemoteControlDisabled   RemoteControlConnectionStatus = "disabled"
+	RemoteControlErrored    RemoteControlConnectionStatus = "errored"
+)
+
+// RemoteControlStatusChangedNotification holds params for remoteControl/status/changed.
+// Its shape follows the Codex 0.159.3 app-server protocol.
+type RemoteControlStatusChangedNotification struct {
+	Status         RemoteControlConnectionStatus `json:"status"`
+	ServerName     string                        `json:"serverName"`
+	InstallationID string                        `json:"installationId"`
+	EnvironmentID  *string                       `json:"environmentId"`
+}
+
 // AccountUpdatedNotification holds params for account/updated.
 type AccountUpdatedNotification struct {
 	AuthMode AuthMode `json:"authMode,omitzero"`

@@ -875,12 +875,16 @@ type OutputInitMsg struct {
 
 	AnalyticsDisabled       bool `json:"analytics_disabled,omitempty"`
 	ProductFeedbackDisabled bool `json:"product_feedback_disabled,omitempty"`
+	// Runtime CLI init metadata not declared by SDK 0.3.287.
+	PerTurnEffortActive bool   `json:"per_turn_effort_active,omitempty"`
+	ViewMode            string `json:"view_mode,omitempty"`
 }
 
 // InitMCPServer is an MCP server entry in the system/init message.
 type InitMCPServer struct {
 	Name   string `json:"name"`
 	Status string `json:"status"`
+	Source string `json:"source,omitempty"`
 }
 
 // InitPlugin is a plugin entry in the system/init message.
@@ -1145,6 +1149,15 @@ type OutputAssistantMsg struct {
 	Aborted                       bool                       `json:"aborted,omitempty"`
 	ContextUsage                  ContextUsage               `json:"context_usage,omitzero"`
 	ThinkingDurationMS            int64                      `json:"thinking_duration_ms,omitzero"`
+	// Runtime CLI metadata not declared by SDK 0.3.287.
+	NarrationBlockIndexes []int             `json:"narration_block_indexes,omitempty"`
+	ToolUseMeta           []ToolUseMetadata `json:"tool_use_meta,omitempty"`
+}
+
+// ToolUseMetadata supplies the runtime CLI's display name for a tool call.
+type ToolUseMetadata struct {
+	ID          string `json:"id"`
+	DisplayName string `json:"display_name"`
 }
 
 // AssistantMessageError classifies a synthetic assistant API error.
@@ -1837,12 +1850,14 @@ const (
 
 // OutputStreamEventMsg is the wire representation of a stream_event record.
 type OutputStreamEventMsg struct {
-	Type             OutputType      `json:"type"`
-	UUID             string          `json:"uuid"`
-	SessionID        string          `json:"session_id"`
-	Timestamp        string          `json:"timestamp,omitempty"`
-	ParentToolUseID  string          `json:"parent_tool_use_id"`
-	Event            StreamEventData `json:"event"`
+	Type            OutputType      `json:"type"`
+	UUID            string          `json:"uuid"`
+	SessionID       string          `json:"session_id"`
+	Timestamp       string          `json:"timestamp,omitempty"`
+	ParentToolUseID string          `json:"parent_tool_use_id"`
+	Event           StreamEventData `json:"event"`
+	// ThinkingDisplay is a runtime output mode, not the SDK control-request enum.
+	ThinkingDisplay  string          `json:"thinking_display,omitempty"`
 	Ttft             base.DurationMS `json:"ttft_ms,omitempty"`
 	UserMessageUUID  string          `json:"user_message_uuid,omitempty"`
 	UserMessageUUIDs []string        `json:"user_message_uuids,omitempty"`

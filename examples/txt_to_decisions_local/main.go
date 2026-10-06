@@ -34,14 +34,11 @@ func mainImpl() (err error) {
 	if err != nil {
 		return err
 	}
-	// TODO: Remove this override and use llamacppsrv.Version once a stable release newer than v0.5.0
-	// is available.
-	const version = "b11361"
-	cache = filepath.Join(cache, "llama-server", version)
+	cache = filepath.Join(cache, "llama-server", llamacppsrv.Version)
 	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return err
 	}
-	exe, err := llamacppsrv.DownloadVersion(ctx, cache, version)
+	exe, err := llamacppsrv.DownloadVersion(ctx, cache, llamacppsrv.Version)
 	if err != nil {
 		return err
 	}

@@ -205,8 +205,8 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	return l.lazyStartModel(t, scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason})
 }
 
-// ensureExe retrieves the cached llama-server binary for the selected version.
-func (l *lazyServer) ensureExe(ctx context.Context, version string) (string, error) {
+// ensureExe retrieves the cached llama-server binary for the default version.
+func (l *lazyServer) ensureExe(ctx context.Context) (string, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return "", err
@@ -214,7 +214,7 @@ func (l *lazyServer) ensureExe(ctx context.Context, version string) (string, err
 	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return "", err
 	}
-	return llamacppsrv.DownloadVersion(ctx, cache, version)
+	return llamacppsrv.DownloadVersion(ctx, cache, llamacppsrv.Version)
 }
 
 // lazyStartModel starts a server for the given model key, reusing an existing one if already running.
@@ -241,12 +241,7 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		return u
 	}
 	t.Logf("Starting server for %s", model.Model)
-	version := llamacppsrv.Version
-	if strings.HasPrefix(model.Model, "ggml-org/Kev-4B-GGUF/") {
-		// Kev requires decision heads introduced after the v0.5.0 stable release.
-		version = "b11361"
-	}
-	exe, err := l.ensureExe(t.Context(), version)
+	exe, err := l.ensureExe(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}

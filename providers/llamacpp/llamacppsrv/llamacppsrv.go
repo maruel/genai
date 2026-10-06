@@ -30,7 +30,7 @@ import (
 
 // Version is the stable llama.cpp release last tested.
 // Stable releases point to the nightly build containing their binaries.
-const Version = "v0.5.0"
+const Version = "v0.6.0"
 
 // Server is a llama-server instance.
 type Server struct {

@@ -85,7 +85,7 @@ func startServer(ctx context.Context, author, repo, modelfile string) (*llamacpp
 }
 
 // ExampleClient_SystemOne evaluates typed questions using a decision model.
-// Start the server first: go run ./cmd/llama-serve -version b11361 -model ggml-org/Kev-4B-GGUF.
+// Start the server first: go run ./cmd/llama-serve -model ggml-org/Kev-4B-GGUF.
 func ExampleClient_SystemOne() {
 	ctx := context.Background()
 	c, err := llamacpp.New(ctx)

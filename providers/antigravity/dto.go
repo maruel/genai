@@ -15,6 +15,7 @@
 package antigravity
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 )
@@ -53,6 +54,32 @@ type StreamInputMessage struct {
 // StreamInputContentBlock. There is no role field.
 type StreamInputUserMessage struct {
 	Content []StreamInputContentBlock `json:"content,omitzero"`
+}
+
+// UnmarshalJSON implements json.Unmarshaler to accept Content as either a
+// plain string or an array of StreamInputContentBlock.
+func (m *StreamInputUserMessage) UnmarshalJSON(b []byte) error {
+	var raw rawStreamInputUserMessage
+	if err := json.Unmarshal(b, &raw); err != nil {
+		return err
+	}
+	if len(raw.Content) == 0 || bytes.Equal(raw.Content, []byte("null")) {
+		m.Content = nil
+		return nil
+	}
+	if raw.Content[0] == '"' {
+		var s string
+		if err := json.Unmarshal(raw.Content, &s); err != nil {
+			return err
+		}
+		m.Content = []StreamInputContentBlock{{Type: "text", Text: s}}
+		return nil
+	}
+	return json.Unmarshal(raw.Content, &m.Content)
+}
+
+type rawStreamInputUserMessage struct {
+	Content json.RawMessage `json:"content"`
 }
 
 // StreamInputContentBlock is one content block. agy 1.2.14 rejects any type

@@ -289,6 +289,11 @@ type callOpts struct {
 	jsonSchema genai.JSONSchema
 }
 
+type unsupportedCheck struct {
+	name  string
+	isSet bool
+}
+
 // parseOpts validates and collects per-call options.
 //
 // It returns a *base.ErrNotSupported alongside valid callOpts when an option
@@ -312,10 +317,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 				}
 				co.jsonSchema = s
 			}
-			for _, f := range []struct {
-				name  string
-				isSet bool
-			}{
+			for _, f := range []unsupportedCheck{
 				{"GenOptionText.MaxTokens", v.MaxTokens != 0},
 				{"GenOptionText.ReplyAsJSON", v.ReplyAsJSON},
 				{"GenOptionText.Stop", len(v.Stop) != 0},

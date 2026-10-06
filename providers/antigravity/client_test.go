@@ -454,3 +454,33 @@ func TestScoreboard(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestStreamInputUserMessage(t *testing.T) {
+	t.Run("string content", func(t *testing.T) {
+		var m StreamInputUserMessage
+		if err := json.Unmarshal([]byte(`{"content":"hello"}`), &m); err != nil {
+			t.Fatal(err)
+		}
+		if len(m.Content) != 1 || m.Content[0].Type != "text" || m.Content[0].Text != "hello" {
+			t.Fatalf("unexpected content: %+v", m.Content)
+		}
+	})
+	t.Run("array content", func(t *testing.T) {
+		var m StreamInputUserMessage
+		if err := json.Unmarshal([]byte(`{"content":[{"type":"text","text":"hi"}]}`), &m); err != nil {
+			t.Fatal(err)
+		}
+		if len(m.Content) != 1 || m.Content[0].Type != "text" || m.Content[0].Text != "hi" {
+			t.Fatalf("unexpected content: %+v", m.Content)
+		}
+	})
+	t.Run("null content", func(t *testing.T) {
+		var m StreamInputUserMessage
+		if err := json.Unmarshal([]byte(`{"content":null}`), &m); err != nil {
+			t.Fatal(err)
+		}
+		if m.Content != nil {
+			t.Fatalf("unexpected content: %+v", m.Content)
+		}
+	})
+}

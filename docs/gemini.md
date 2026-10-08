@@ -8,6 +8,7 @@
 | gemini-flash-latest🥈                          | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
 | gemini-flash-lite-latest🥉                     | Sync🧠   | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
 | gemini-flash-lite-latest🥉                     | Stream🧠 | 🎤🎥💬📄📸 | 💬     | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | 💨     |
+| gemini-embedding-2                            | Embed   | 🎤💬📸     | 🧬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | gemini-3.5-flash-lite                         | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-transcribe                         | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-transcribe-live                    | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -66,9 +67,6 @@
 | gemini-3.1-pro-preview-customtools            | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-flash                              | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-live-translate-preview             | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-embedding-001                          | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-embedding-2                            | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-embedding-2-preview                    | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-embedding-exp                          | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-embedding-exp-03-07                    | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-exp-1206                               | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -107,6 +105,7 @@
   it!
 - 💬: Text
 - 🎯: Decision: typed answers returned by SystemOne
+- 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

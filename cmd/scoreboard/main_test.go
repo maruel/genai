@@ -69,6 +69,13 @@ func TestTableDataRow(t *testing.T) {
 			t.Fatalf("tools width=%d want=8", w)
 		}
 	})
+	t.Run("Embed", func(t *testing.T) {
+		var row tableDataRow
+		row.initFromEmbed(&scoreboard.Scenario{Models: []string{"embed"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityEmbedding: {Inline: true}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(true), ReportTokenUsage: scoreboard.True}})
+		if row.Mode != "Embed" || row.Inputs != "💬" || row.Outputs != "🧬" || row.Usage != "✅" {
+			t.Fatalf("row %+v", row)
+		}
+	})
 	t.Run("SystemOne", func(t *testing.T) {
 		var row tableDataRow
 		row.initFromSystemOne(&scoreboard.Scenario{Models: []string{"decision"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityDecision: {Inline: true}}, SystemOne: &scoreboard.DecisionFunctionality{Noul: true}})

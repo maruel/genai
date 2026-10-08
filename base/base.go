@@ -10,6 +10,7 @@ package base
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -22,6 +23,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unsafe"
 
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
@@ -58,6 +60,45 @@ func (u *Unknown) UnmarshalJSON(b []byte) error {
 		}
 	}
 	return (*json.RawMessage)(u).UnmarshalJSON(b)
+}
+
+// EmbeddingVector decodes numeric arrays or packed float32 JSON strings into vector values.
+type EmbeddingVector []float32
+
+// UnmarshalJSON decodes a vector without changing its numeric values.
+//
+//nolint:gosec // The view stays within checked, aligned storage and retains the backing allocation.
+func (v *EmbeddingVector) UnmarshalJSON(b []byte) error {
+	*v = nil
+	b = bytes.TrimSpace(b)
+	var out []float32
+	if len(b) != 0 && b[0] == '[' {
+		if err := json.Unmarshal(b, &out); err != nil {
+			return err
+		}
+	} else {
+		var data []byte
+		if err := json.Unmarshal(b, &data); err != nil {
+			return err
+		}
+		if len(data) == 0 || len(data)%4 != 0 {
+			return fmt.Errorf("embedding byte length must be a nonzero multiple of four, got %d", len(data))
+		}
+		p := unsafe.Pointer(unsafe.SliceData(data))
+		if binary.NativeEndian.Uint16([]byte{1, 0}) == 1 && uintptr(p)%unsafe.Alignof(float32(0)) == 0 {
+			out = unsafe.Slice((*float32)(p), len(data)/4)
+		} else {
+			out = make([]float32, len(data)/4)
+			for i := range out {
+				out[i] = math.Float32frombits(binary.LittleEndian.Uint32(data[i*4:]))
+			}
+		}
+	}
+	if len(out) == 0 {
+		return errors.New("embedding vector is empty")
+	}
+	*v = out
+	return nil
 }
 
 // DefaultTransport integrates HTTP retries.
@@ -140,6 +181,11 @@ func (e *ErrNotSupported) Error() string {
 
 // NotImplemented implements remote genai.Provider methods, all returning ErrNotSupported.
 type NotImplemented struct{}
+
+// Embed implements genai.Provider.
+func (*NotImplemented) Embed(context.Context, *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	return nil, &ErrNotSupported{}
+}
 
 // SystemOne implements genai.Provider.
 func (*NotImplemented) SystemOne(context.Context, *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
@@ -306,15 +352,10 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 		d.DisallowUnknownFields()
 		r2 = r
 	}
-	var errs []error
-	foundExtraKeys, errJSON := internal.DecodeJSON(d, out, r2)
-	if errJSON == nil {
-		// It may have succeeded but not decoded anything.
-		if v := reflect.ValueOf(out); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
-			return nil
-		}
-	} else if foundExtraKeys {
-		errs = append(errs, errJSON)
+	_, errJSON := internal.DecodeJSON(d, out, r2)
+	v := reflect.ValueOf(out)
+	if errJSON == nil && v.Kind() == reflect.Pointer && !v.IsNil() && !v.Elem().IsZero() {
+		return nil
 	}
 	if _, err = r.Seek(0, 0); err != nil {
 		return err
@@ -325,22 +366,14 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 		r2 = r
 	}
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
-	if foundExtraKeys, err := internal.DecodeJSON(d, er, r2); err == nil {
-		// It may have succeeded but not decoded anything.
-		if v := reflect.ValueOf(er); !reflect.DeepEqual(v, reflect.Zero(c.errorResponse).Interface()) {
-			errs = append(errs, er)
-		}
-	} else if foundExtraKeys {
-		// This is confusing, not sure it's a good idea. The problem is that we need to detect when error fields
-		// appear too!
-		if len(errs) == 0 {
-			errs = append(errs, errJSON)
-		}
-	} else {
-		// Return only the original error.
-		return err
+	_, errAPI := internal.DecodeJSON(d, er, r2)
+	if errAPI == nil && !reflect.ValueOf(er).Elem().IsZero() {
+		return er
 	}
-	return errors.Join(errs...)
+	if errJSON != nil {
+		return &internal.BadError{Err: errJSON}
+	}
+	return nil
 }
 
 // DecodeError handles HTTP error responses from API calls.

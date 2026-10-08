@@ -16,6 +16,7 @@
 | gpt-5.6-terra                           | Stream🧠 | 💬📄📸 | 💬     | ✅🪨 | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
 | gpt-audio                               | Sync    | 🎤💬📄 | 🎤💬   | ✅🪨 | ❌   | ✅    | ✅   | ❌   | 🌱📏  | ❌    | ✅     | ✅    | ✅     |
 | gpt-audio                               | Stream  | 🎤💬📄 | 🎤💬   | ✅🪨 | ❌   | ✅    | ✅   | ❌   | 🌱📏  | ❌    | ✅     | ✅    | 💨     |
+| text-embedding-3-small                  | Embed   | 💬     | 🧬      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | gpt-5.6-sol                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-6-sol                               | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | babbage-002                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -140,7 +141,6 @@
 | sora-2                                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | sora-2-pro                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | text-embedding-3-large                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| text-embedding-3-small                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | text-embedding-ada-002                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | tts-1                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | tts-1-1106                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -178,6 +178,7 @@
   it!
 - 💬: Text
 - 🎯: Decision: typed answers returned by SystemOne
+- 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

@@ -14,6 +14,7 @@ import (
 	"iter"
 	"log/slog"
 	"maps"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
@@ -436,4 +437,27 @@ func CleanupCloser(t testing.TB, c io.Closer) {
 			t.Errorf("Close: %v", err)
 		}
 	})
+}
+
+// AssertEmbeddingRetrieval checks that query is closer to relevant than unrelated
+// using cosine similarity. The vectors must have equal, nonzero dimensions.
+// Computation uses float64 and accounts for vector norms without modifying inputs.
+func AssertEmbeddingRetrieval(t testing.TB, query, relevant, unrelated []float32) {
+	if len(query) == 0 || len(relevant) != len(query) || len(unrelated) != len(query) {
+		t.Fatalf("retrieval vectors have incompatible dimensions: query %d, relevant %d, unrelated %d", len(query), len(relevant), len(unrelated))
+	}
+	var sim, dis, a, b, d float64
+	for i, v := range query {
+		x, y, z := float64(v), float64(relevant[i]), float64(unrelated[i])
+		sim += x * y
+		dis += x * z
+		a += x * x
+		b += y * y
+		d += z * z
+	}
+	sim /= math.Sqrt(a * b)
+	dis /= math.Sqrt(a * d)
+	if !(sim > dis) {
+		t.Fatalf("relevant cosine similarity %g must exceed unrelated similarity %g", sim, dis)
+	}
 }

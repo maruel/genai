@@ -8,6 +8,7 @@ package openairesponses_test
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"slices"
 	"strings"
@@ -47,6 +48,33 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 }
 
 func TestClient(t *testing.T) {
+	t.Run("New/embedding modality", func(t *testing.T) {
+		for _, id := range []string{"text-embedding-3-small", "gpt-5.6-luna", "unknown-model"} {
+			t.Run(id, func(t *testing.T) {
+				c, err := openairesponses.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel(id), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				want := genai.Modalities{genai.ModalityText}
+				if id == "text-embedding-3-small" {
+					want = genai.Modalities{genai.ModalityEmbedding}
+				}
+				sb := c.Scoreboard()
+				if !slices.Equal(c.OutputModalities(), want) || (sb.Embedding(id) != nil) != (id == "text-embedding-3-small") {
+					t.Fatalf("modalities %v, qualification %+v", c.OutputModalities(), sb.Embedding(id))
+				}
+			})
+		}
+	})
+
+	t.Run("New/embedding preference/error", func(t *testing.T) {
+		c, err := openairesponses.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
+		if err == nil || c != nil {
+			t.Fatalf("client %v, error %v", c, err)
+		}
+	})
+
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
 		if err := testRecorder.Close(); err != nil {
@@ -78,6 +106,23 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Embed", func(t *testing.T) {
+		c := getClient(t, "text-embedding-3-small").(*openairesponses.Client)
+		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "A kitten plays with yarn."}, {Text: "A cat plays with string."}, {Text: "Quantum field theory predicts particle interactions."}}, Dimensions: 32}
+		var embedder genai.Provider = c
+		out, err := embedder.Embed(t.Context(), &in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := out.Validate(); err != nil {
+			t.Fatal(err)
+		}
+		if out.Usage.InputTokens == 0 || out.Usage.TotalTokens != out.Usage.InputTokens {
+			t.Fatalf("unexpected metadata: %+v", out)
+		}
+		internaltest.AssertEmbeddingRetrieval(t, out.Embeddings[0], out.Embeddings[1], out.Embeddings[2])
+	})
+
 	t.Run("Capabilities", func(t *testing.T) {
 		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
@@ -92,6 +137,9 @@ func TestClient(t *testing.T) {
 			id := m.GetID()
 			reason := (strings.HasPrefix(id, "gpt-5") || strings.HasPrefix(id, "gpt-6") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
 			models = append(models, scoreboard.Model{Model: id, Reason: reason})
+		}
+		if !slices.Contains(models, scoreboard.Model{Model: "text-embedding-3-small"}) {
+			models = append(models, scoreboard.Model{Model: "text-embedding-3-small"})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
@@ -156,7 +204,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
 	})
 
 	t.Run("Batch", func(t *testing.T) {
@@ -443,4 +491,11 @@ func assertCitationSources(t *testing.T, got, want []genai.CitationSource) {
 
 func init() {
 	internal.BeLenient = false
+}
+
+type embeddingNoTransport struct{ t *testing.T }
+
+func (e embeddingNoTransport) RoundTrip(*http.Request) (*http.Response, error) {
+	e.t.Fatal("unexpected HTTP request")
+	return nil, errors.New("unexpected HTTP request")
 }

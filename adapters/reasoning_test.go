@@ -13,6 +13,7 @@ import (
 	"errors"
 	"iter"
 	"net/http"
+	"slices"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -24,6 +25,24 @@ import (
 )
 
 func TestProviderReasoning(t *testing.T) {
+	t.Run("Embed", func(t *testing.T) {
+		provider := &embeddingProviderSpy{}
+		p := adapters.ProviderReasoning{Provider: provider, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "</think>"}
+		if !p.Capabilities().Embed {
+			t.Fatal("wrapper hid embedding implementation")
+		}
+
+		out, err := p.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(out.Embeddings[0], []float32{2, -3}) || out.Usage.InputTokens != 7 {
+			t.Fatalf("response %+v", out)
+		}
+		if provider.request == nil || !slices.Equal(provider.request.Inputs, []genai.Request{{Text: "hello"}}) {
+			t.Fatalf("request %+v", provider.request)
+		}
+	})
 	msgs := genai.Messages{
 		genai.NewTextMessage("check task 3"), genai.NewTextMessage("actually task 7"),
 		{Replies: []genai.Reply{{Reasoning: "prior thinking"}, {ToolCall: genai.ToolCall{ID: "A", Name: "status", Arguments: `{}`}}}},

@@ -1,0 +1,32 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 288
+        host: localhost
+        body: |
+            {"model":"all-minilm","input":["task: search result | query: What causes the northern lights?","title: none | text: The northern lights are caused by charged particles from the sun.","title: none | text: Bananas are a popular tropical fruit."],"dimensions":32,"encoding_format":"base64"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/v1/embeddings
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 755
+        body: |
+            {"object":"list","data":[{"object":"embedding","embedding":"nEDNPXRMhj68gJU+6TzBPkZ6hz7EUuW8pgiSOxHp+b3mZ548vtKoPT3m4jwrxNu9Hs3+PX9VMr5runa++iAbPghdKL4ps+u+CyBWPKPMbL7xp709BXAnPQASQ71RDxu95p4wve3gsz3Q3Jm+l0zvvRMGJbxeZzu9f11IvcFuRD4=","index":0},{"object":"embedding","embedding":"uhsHvUxFsD5vlWA+/Y6gPnvKtD6mlY29ZkiZPXV4m756GQY+/VxjPRL6tz1l0Sy+dtstPO1FLr6kAVK+Y03jPdfhFT3cBcC+sXZBPr9B1DzXGTW+jlpBPW9khLwx20i9gxQ5PoAN7j29HES+TuGEva7pJL46g/C9f4vmPeBZ5D0=","index":1},{"object":"embedding","embedding":"uv23PZhAFj2pGBO+lWJdPZHpBj7le2o+VhTwPNYBTL2Lq0I+EAJ4PgamnT7zO5e+kMLZPMdXwb7N6ZY+xoxQPp1i/bt0elm+7T6dPbHYi70s03o9wUNqPit5B76WCRw+bX2rvRNyUT0b6v29KRouu6j3pL0GOQm+wd6VvvD9dT4=","index":2}],"model":"all-minilm","usage":{"prompt_tokens":50,"total_tokens":50}}
+        headers:
+            Content-Length:
+                - "755"
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 8ms

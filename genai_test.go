@@ -13,6 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -1789,6 +1790,7 @@ func TestDoc(t *testing.T) {
 		})
 		t.Run("error", func(t *testing.T) {
 			for name, src := range map[string]io.ReadSeeker{
+				"empty source":           strings.NewReader(""),
 				"seekable above limit":   strings.NewReader("{}    "),
 				"unseekable above limit": &nonSeekableReader{reader: strings.NewReader("{}    ")},
 				"grows after size check": &growingDocumentReader{Reader: strings.NewReader("{}    ")},
@@ -2020,4 +2022,73 @@ func (r *documentReadError) Read(b []byte) (int, error) {
 		return n, r.err
 	}
 	return n, err
+}
+
+func TestEmbeddingRequest(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, tc := range []embeddingRequestCase{
+				{"text", EmbeddingRequest{Inputs: []Request{{Text: "hello"}}}},
+				{"batch", EmbeddingRequest{Inputs: []Request{{Text: "hello"}, {Text: "world"}}, Dimensions: 32}},
+				{"document", EmbeddingRequest{Inputs: []Request{{Doc: Doc{URL: "https://example.com/image.png"}}}}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.in.Validate(); err != nil {
+						t.Fatal(err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []embeddingRequestCase{
+				{"missing", EmbeddingRequest{}},
+				{"empty input", EmbeddingRequest{Inputs: []Request{{Text: "hello"}, {Text: ""}}}},
+				{"negative dimensions", EmbeddingRequest{Inputs: []Request{{Text: "hello"}}, Dimensions: -1}},
+				{"conflicting input", EmbeddingRequest{Inputs: []Request{{Text: "hello", Doc: Doc{URL: "https://example.com/image.png"}}}}},
+				{"missing source", EmbeddingRequest{Inputs: []Request{{Doc: Doc{Filename: "image.png"}}}}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.in.Validate(); err == nil {
+						t.Fatalf("accepted %+v", tc.in)
+					}
+				})
+			}
+		})
+	})
+}
+
+type embeddingRequestCase struct {
+	name string
+	in   EmbeddingRequest
+}
+
+func TestEmbeddingResponse(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			out := EmbeddingResponse{Embeddings: [][]float32{{2, -3}, {0, 4}}}
+			if err := out.Validate(); err != nil {
+				t.Fatal(err)
+			}
+			if out.Embeddings[0][0] != 2 {
+				t.Fatal("validation changed vector")
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []embeddingResponseErrorCase{
+				{"missing", nil}, {"empty", [][]float32{{}}}, {"ragged", [][]float32{{1, 2}, {3}}}, {"zero", [][]float32{{0, 0}}}, {"NaN", [][]float32{{float32(math.NaN())}}}, {"positive infinity", [][]float32{{float32(math.Inf(1))}}}, {"negative infinity", [][]float32{{float32(math.Inf(-1))}}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					out := EmbeddingResponse{Embeddings: tc.v}
+					if err := out.Validate(); err == nil {
+						t.Fatal("accepted invalid vectors")
+					}
+				})
+			}
+		})
+	})
+}
+
+type embeddingResponseErrorCase struct {
+	name string
+	v    [][]float32
 }

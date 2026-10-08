@@ -28,6 +28,111 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
+// EmbeddingInput is one text, token sequence, or multimodal input to embed.
+// Set exactly one field. Content uses the same parts as chat completions and
+// requires a compatible model and projector loaded by llama-server.
+type EmbeddingInput struct {
+	Text    string
+	Tokens  []int
+	Content Contents
+}
+
+// Validate implements genai.Validatable.
+func (e *EmbeddingInput) Validate() error {
+	n := 0
+	if e.Text != "" {
+		n++
+	}
+	if len(e.Tokens) != 0 {
+		n++
+		for _, t := range e.Tokens {
+			if t < 0 {
+				return errors.New("embedding token IDs must be non-negative")
+			}
+		}
+	}
+	if len(e.Content) != 0 {
+		n++
+	}
+	if n != 1 {
+		return errors.New("embedding input must set exactly one of Text, Tokens or Content")
+	}
+	return nil
+}
+
+// MarshalJSON encodes the native input union as a string, token array or content object.
+func (e EmbeddingInput) MarshalJSON() ([]byte, error) {
+	if err := e.Validate(); err != nil {
+		return nil, err
+	}
+	if e.Text != "" {
+		return json.Marshal(e.Text)
+	}
+	if len(e.Tokens) != 0 {
+		return json.Marshal(e.Tokens)
+	}
+	return json.Marshal(embeddingInputContent{Content: e.Content})
+}
+
+// EmbeddingRequest supplies pooled inputs to /v1/embeddings.
+// Task prefixes are passed verbatim; llama-server does not apply chat templates.
+type EmbeddingRequest struct {
+	Input []EmbeddingInput `json:"input"`
+	Model string           `json:"model,omitzero"`
+	// Normalize overrides the server's normalization: -1 disables it, 0 uses
+	// the maximum absolute value scaled to int16 range, 1 uses L1, 2 uses L2,
+	// and larger values use p-norm.
+	// Nil uses the server's --embd-normalize setting (default 2, L2).
+
+	Normalize *int `json:"embd_normalize,omitzero"`
+}
+
+// Validate implements genai.Validatable.
+func (e *EmbeddingRequest) Validate() error {
+	if len(e.Input) == 0 {
+		return errors.New("embedding input must not be empty")
+	}
+	if e.Normalize != nil && *e.Normalize < -1 {
+		return errors.New("embedding normalization must be at least -1")
+	}
+	for i := range e.Input {
+		if err := e.Input[i].Validate(); err != nil {
+			return fmt.Errorf("embedding input #%d: %w", i, err)
+		}
+	}
+	return nil
+}
+
+// embeddingRequest fixes the response encoding without modifying caller inputs.
+type embeddingRequest struct {
+	Model          string           `json:"model,omitzero"`
+	Input          []EmbeddingInput `json:"input"`
+	EncodingFormat string           `json:"encoding_format"`
+	Normalize      *int             `json:"embd_normalize,omitzero"`
+}
+
+// EmbeddingResponse is the pooled /v1/embeddings response.
+type EmbeddingResponse struct {
+	Model  string         `json:"model"`
+	Object string         `json:"object"`
+	Usage  EmbeddingUsage `json:"usage"`
+	Data   []Embedding    `json:"data"`
+}
+
+// EmbeddingUsage reports input token consumption.
+type EmbeddingUsage struct {
+	PromptTokens int64 `json:"prompt_tokens"`
+	TotalTokens  int64 `json:"total_tokens"`
+}
+
+// Embedding is one indexed pooled vector.
+type Embedding struct {
+	Object         string               `json:"object"`
+	Index          int                  `json:"index"`
+	EncodingFormat string               `json:"encoding_format,omitzero"`
+	Embedding      base.EmbeddingVector `json:"embedding"`
+}
+
 // ChatRequest is not documented.
 //
 // Better take a look at oaicompat_chat_params_parse() in
@@ -1176,4 +1281,8 @@ func (r *SystemOneRequest) Validate() error {
 		}
 	}
 	return errors.Join(errs...)
+}
+
+type embeddingInputContent struct {
+	Content Contents `json:"content"`
 }

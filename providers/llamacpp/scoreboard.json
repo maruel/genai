@@ -198,6 +198,26 @@
     },
     {
       "models": [
+        "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "embedding": {
+          "inline": true
+        }
+      },
+      "Embed": {
+        "dimensions": 768,
+        "requestedDimensions": false,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "models": [
         "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf"
       ],
       "in": {

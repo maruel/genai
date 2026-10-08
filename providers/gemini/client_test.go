@@ -10,9 +10,13 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"io"
+	"math"
 	"net/http"
 	"os"
+	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -62,6 +66,113 @@ func getClientInner(t *testing.T, model string, modalities genai.Modalities, pre
 }
 
 func TestClient(t *testing.T) {
+	t.Run("EmbedRaw/error/response", func(t *testing.T) {
+		old := internal.BeLenient
+		t.Cleanup(func() { internal.BeLenient = old })
+		for _, lenient := range []bool{false, true} {
+			t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
+				internal.BeLenient = lenient
+				body := `{"embeddings":[{"values":[1,2]},{"values":[1,"bad"]}]}`
+				for _, tc := range []embeddingRawFailureCase{
+					{"decode", body, http.StatusOK},
+					{"API", `{"error":{"code":429,"status":"RESOURCE_EXHAUSTED","message":"quota"}}`, http.StatusTooManyRequests},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+							return embeddingResponseTransport{body: tc.body, status: tc.status}
+						}))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						in := gemini.EmbeddingRequest{Model: "models/gemini-embedding-2", Content: gemini.Content{Parts: []gemini.Part{{Text: "hello"}}}}
+						out := gemini.BatchEmbeddingResponse{Embeddings: []gemini.Embedding{{Values: []float32{9}}}}
+						err = c.EmbedRaw(t.Context(), &gemini.BatchEmbeddingRequest{Requests: []gemini.EmbeddingRequest{in, in}}, &out)
+						cleared := reflect.ValueOf(out).IsZero()
+						if err == nil || !cleared {
+							t.Fatalf("cleared %t, error %v", cleared, err)
+						}
+						if tc.status == http.StatusOK {
+							if _, ok := errors.AsType[*internal.BadError](err); !ok {
+								t.Fatalf("expected decoding error, got %v", err)
+							}
+						} else {
+							if _, ok := errors.AsType[*gemini.ErrorResponse](err); !ok {
+								t.Fatalf("expected API error, got %v", err)
+							}
+						}
+					})
+				}
+			})
+		}
+	})
+	t.Run("Embed/valid/document ownership", func(t *testing.T) {
+		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+			return embeddingResponseTransport{body: `{"embeddings":[{"values":[1,2]},{"values":[3,4]}]}`}
+		}))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		src := &embeddingDocumentReader{Reader: *strings.NewReader("image")}
+		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: src}}, {Text: "caption"}}}
+		out, err := c.Embed(t.Context(), &in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if in.Inputs[0].Doc.Src != src || len(out.Embeddings) != 2 {
+			t.Fatalf("source changed or response invalid: %+v", out)
+		}
+	})
+
+	t.Run("Embed/input error", func(t *testing.T) {
+		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		if out, err := c.Embed(t.Context(), nil); out != nil || err == nil || !strings.Contains(err.Error(), "required") {
+			t.Fatalf("response %+v, error %v", out, err)
+		}
+
+		in := &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("")}}}}
+		if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "embedding input #0") {
+			t.Fatalf("response %+v, error %v", out, err)
+		}
+		if strconv.IntSize == 64 {
+			in = &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}, Dimensions: int(int64(math.MaxInt32) + 1)}
+			if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "int32") {
+				t.Fatalf("response %+v, error %v", out, err)
+			}
+		}
+	})
+
+	t.Run("Embed/error", func(t *testing.T) {
+		for _, tc := range []embeddingResponseCase{{"invalid vector", `{"embeddings":[{"values":[0,0]},{"values":[1,2]}]}`},
+			{"result count", `{"embeddings":[{"values":[1,2]}]}`},
+			{"dimensions", `{"embeddings":[{"values":[1,2,3]},{"values":[4,5,6]}]}`},
+			{"decode", `{"embeddings":[{"values":"invalid"}]}`}} {
+			t.Run(tc.name, func(t *testing.T) {
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingResponseTransport{body: tc.body} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}, Dimensions: 2})
+				if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+			})
+		}
+	})
+
+	t.Run("New/embedding preference/error", func(t *testing.T) {
+		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+		if err == nil || c != nil {
+			t.Fatalf("client %v, error %v", c, err)
+		}
+	})
+
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
 		if err := testRecorder.Close(); err != nil {
@@ -89,6 +200,70 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Embed", func(t *testing.T) {
+		c := getClient(t, "gemini-embedding-2").(*gemini.Client)
+		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "A kitten plays with yarn."}, {Text: "A cat plays with string."}, {Text: "Quantum field theory predicts particle interactions."}}, Dimensions: 128}
+		out, err := c.Embed(t.Context(), &in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := out.Validate(); err != nil {
+			t.Fatal(err)
+		}
+		if out.Usage.InputTokens == 0 || out.Usage.TotalTokens != out.Usage.InputTokens {
+			t.Fatalf("unexpected usage: %+v", out.Usage)
+		}
+		internaltest.AssertEmbeddingRetrieval(t, out.Embeddings[0], out.Embeddings[1], out.Embeddings[2])
+	})
+
+	t.Run("EmbedRaw/error/input", func(t *testing.T) {
+		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionPreloadedModels(cachedModels), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var out gemini.BatchEmbeddingResponse
+		if err := c.EmbedRaw(t.Context(), nil, &out); err == nil {
+			t.Fatal("expected nil request error")
+		}
+		in := gemini.BatchEmbeddingRequest{Requests: []gemini.EmbeddingRequest{{Model: "models/gemini-embedding-2", Content: gemini.Content{Parts: []gemini.Part{{Text: "hello"}}}}}}
+		if err := c.EmbedRaw(t.Context(), &in, nil); err == nil {
+			t.Fatal("expected nil response error")
+		}
+		if err := c.EmbedRaw(t.Context(), &gemini.BatchEmbeddingRequest{}, &out); err == nil {
+			t.Fatal("expected invalid request error")
+		}
+	})
+
+	t.Run("EmbeddingMetadata", func(t *testing.T) {
+		t.Run("recorded qualified model", func(t *testing.T) {
+			c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionPreloadedModels(cachedModels), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			sb := c.Scoreboard()
+			if !slices.Equal(c.OutputModalities(), genai.Modalities{genai.ModalityEmbedding}) || sb.Embedding(c.ModelID()) == nil {
+				t.Fatal("recorded model did not expose qualified embedding support")
+			}
+		})
+		for _, tc := range []embeddingMetadataCase{
+			{"embedding", []string{"embedContent", "countTokens"}, genai.ModalityEmbedding},
+			{"generation", []string{"generateContent"}, genai.ModalityText},
+			{"both", []string{"embedContent", "generateContent"}, genai.ModalityText},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-unqualified-metadata"), genai.ProviderOptionPreloadedModels{&gemini.Model{Name: "models/gemini-unqualified-metadata", SupportedGenerationMethods: tc.methods}}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				sb := c.Scoreboard()
+				if !slices.Equal(c.OutputModalities(), genai.Modalities{tc.want}) || sb.Embedding(c.ModelID()) != nil {
+					t.Fatalf("metadata confused modality with qualification: %v", c.OutputModalities())
+				}
+			})
+		}
+	})
 	t.Run("Capabilities", func(t *testing.T) {
 		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
@@ -112,6 +287,12 @@ func TestClient(t *testing.T) {
 		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
+			if strings.Contains(id, "embedding") {
+				if id == "gemini-embedding-2" {
+					models = append(models, scoreboard.Model{Model: id})
+				}
+				continue
+			}
 			if strings.HasPrefix(id, "gemini-") {
 				// Image generation models do not support the thinking budget.
 				if strings.HasSuffix(id, "-image") {
@@ -125,6 +306,9 @@ func TestClient(t *testing.T) {
 			if !strings.Contains(id, "-pro") {
 				models = append(models, scoreboard.Model{Model: id})
 			}
+		}
+		if !slices.Contains(models, scoreboard.Model{Model: "gemini-embedding-2"}) {
+			models = append(models, scoreboard.Model{Model: "gemini-embedding-2"})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{
@@ -157,7 +341,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "gemini-embedding-2"}}})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {
@@ -763,3 +947,40 @@ The very language we use to describe the world is constantly adapting. New terms
 
 Ultimately, the human endeavor is a quest for understanding, not just of the external world, but of ourselves. It is a journey marked by triumphs and failures, by moments of profound insight and periods of confusion and doubt. It is a story that is still being written, by each of us, every day. The responsibility to write that story well, to learn from the past, to engage thoughtfully with the present, and to build a better future, rests on our collective shoulders. This requires courage – the courage to question, the courage to change, and the courage to hope. It requires humility – the humility to recognize the limits of our knowledge and the potential for error. And it requires a deep-seated curiosity – the insatiable desire to explore, to discover, and to understand that has driven human progress since the dawn of our species. The path ahead is uncertain, filled with both challenges and opportunities, but it is a path that we must walk together, guided by the light of reason, compassion, and an unwavering commitment to the pursuit of a more enlightened and humane world. The legacy we leave will be defined by how well we navigate this complex, ever-changing landscape, and by the wisdom we cultivate and pass on to future generations.
 `
+
+type embeddingMetadataTransport struct{ t *testing.T }
+
+func (e embeddingMetadataTransport) RoundTrip(*http.Request) (*http.Response, error) {
+	e.t.Fatal("preloaded metadata caused a network request")
+	return nil, errors.New("unexpected metadata request")
+}
+
+type embeddingMetadataCase struct {
+	name    string
+	methods []string
+	want    genai.Modality
+}
+
+type embeddingResponseTransport struct {
+	body   string
+	status int
+}
+
+func (e embeddingResponseTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	status := e.status
+	if status == 0 {
+		status = http.StatusOK
+	}
+	return &http.Response{StatusCode: status, Header: http.Header{"Content-Type": {"application/json"}}, Body: io.NopCloser(strings.NewReader(e.body)), Request: r}, nil
+}
+
+type embeddingResponseCase struct{ name, body string }
+
+type embeddingDocumentReader struct{ strings.Reader }
+
+func (*embeddingDocumentReader) Seek(int64, int) (int64, error) { return 0, errors.New("unseekable") }
+
+type embeddingRawFailureCase struct {
+	name, body string
+	status     int
+}

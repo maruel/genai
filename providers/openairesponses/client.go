@@ -5,6 +5,9 @@
 // Package openairesponses implements a client for the OpenAI Responses API.
 //
 // It is described at https://platform.openai.com/docs/api-reference/responses/create
+//
+// Embedding requests use [Client.Embed] or [Client.EmbedRaw]. Shared native
+// types and embedding controls are documented in [openaibase].
 package openairesponses
 
 // See official client at http://pkg.go.dev/github.com/openai/openai-go/responses
@@ -132,14 +135,14 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		// Auto-detect below.
 	case 1:
 		switch modalities[0] {
-		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityAudio, genai.ModalityEmbedding, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, embedding, image or text are supported", modalities)
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, embedding, image or text are supported", modalities)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, embedding, image or text are supported", modalities)
 	}
 	baseURL := "https://api.openai.com/v1"
 	if remote != "" {
@@ -216,7 +219,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			c.impl.Model = model
 			switch len(modalities) {
 			case 0:
-				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
+				if sb := c.Scoreboard(); sb.Embedding(model) != nil {
+					c.impl.OutputModalities = genai.Modalities{genai.ModalityEmbedding}
+				} else {
+					c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
+				}
 			case 1:
 				c.impl.OutputModalities = modalities
 			default:
@@ -262,7 +269,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 
 // Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{GenAsync: true}
+	return genai.ProviderCapabilities{Embed: true, GenAsync: true}
 }
 
 // GenAsync implements genai.Provider.
@@ -947,3 +954,14 @@ func streamWithRespID(src iter.Seq[ResponseStreamChunkResponse], respID *string)
 }
 
 var _ genai.Provider = &Client{}
+
+// Embed implements genai.Provider with the configured model.
+func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	return c.shared.Embed(ctx, in)
+}
+
+// EmbedRaw exposes the native OpenAI /v1/embeddings endpoint.
+// The request specifies its own model independently of generation configuration.
+func (c *Client) EmbedRaw(ctx context.Context, in *openaibase.EmbeddingRequest, out *openaibase.EmbeddingResponse) error {
+	return c.shared.EmbedRaw(ctx, in, out)
+}

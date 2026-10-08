@@ -427,3 +427,124 @@ func TestPart(t *testing.T) {
 		})
 	})
 }
+
+func TestEmbedContentConfig(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, tc := range []embeddingConfigCase{
+				{"default", EmbedContentConfig{}},
+				{"unspecified task", EmbedContentConfig{TaskType: EmbeddingTaskUnspecified}},
+				{"document", EmbedContentConfig{TaskType: EmbeddingTaskRetrievalDocument, Title: "Cats", OutputDimensionality: 128}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.in.Validate(); err != nil {
+						t.Fatal(err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []embeddingConfigCase{
+				{"negative dimensions", EmbedContentConfig{OutputDimensionality: -1}},
+				{"invalid task", EmbedContentConfig{TaskType: "bad"}},
+				{"title without retrieval document", EmbedContentConfig{Title: "Cats"}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.in.Validate(); err == nil {
+						t.Fatal("expected error")
+					}
+				})
+			}
+		})
+	})
+}
+
+func TestEmbeddingRequest(t *testing.T) {
+	t.Run("MarshalJSON", func(t *testing.T) {
+		t.Run("configured", func(t *testing.T) {
+			yes, no := true, false
+			r := EmbeddingRequest{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}, EmbedContentConfig: EmbedContentConfig{
+				TaskType: EmbeddingTaskRetrievalDocument, Title: "Cats", OutputDimensionality: 128,
+				AutoTruncate: &no, DocumentOCR: &yes, AudioTrackExtraction: &no,
+			}}
+			b, err := json.Marshal(&r)
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := `{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"hello"}]},"embedContentConfig":{"title":"Cats","taskType":"RETRIEVAL_DOCUMENT","autoTruncate":false,"outputDimensionality":128,"documentOcr":true,"audioTrackExtraction":false}}`
+			if string(b) != want {
+				t.Fatalf("got %s, want %s", b, want)
+			}
+		})
+		t.Run("default", func(t *testing.T) {
+			r := EmbeddingRequest{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}}
+			b, err := json.Marshal(&r)
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := `{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"hello"}]}}`
+			if string(b) != want {
+				t.Fatalf("got %s, want %s", b, want)
+			}
+		})
+	})
+
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			valid := EmbeddingRequest{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}}
+			for _, tc := range []embeddingRequestErrorCase{
+				{"missing model", func(r *EmbeddingRequest) { r.Model = "" }},
+				{"unqualified model", func(r *EmbeddingRequest) { r.Model = "gemini-embedding-2" }},
+				{"empty model", func(r *EmbeddingRequest) { r.Model = "models/" }},
+				{"nested model", func(r *EmbeddingRequest) { r.Model = "models/nested/model" }},
+				{"missing parts", func(r *EmbeddingRequest) { r.Content.Parts = nil }},
+				{"invalid config", func(r *EmbeddingRequest) { r.EmbedContentConfig.OutputDimensionality = -1 }},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					r := valid
+					tc.modify(&r)
+					if err := r.Validate(); err == nil {
+						t.Fatal("expected error")
+					}
+				})
+			}
+		})
+	})
+}
+
+func TestBatchEmbeddingRequest(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []embeddingBatchErrorCase{
+				{"empty", BatchEmbeddingRequest{}},
+				{"invalid request", BatchEmbeddingRequest{Requests: []EmbeddingRequest{{}}}},
+				{"mixed models", BatchEmbeddingRequest{Requests: []EmbeddingRequest{
+					{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}},
+					{Model: "models/other-model", Content: Content{Parts: []Part{{Text: "world"}}}},
+				}}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					if err := tc.in.Validate(); err == nil {
+						t.Fatal("expected error")
+					}
+				})
+			}
+		})
+	})
+}
+
+type embeddingRequestErrorCase struct {
+	name   string
+	modify func(*EmbeddingRequest)
+}
+
+type embeddingBatchErrorCase struct {
+	name string
+	in   BatchEmbeddingRequest
+}
+
+// embeddingConfigCase exercises native configuration validation.
+type embeddingConfigCase struct {
+	name string
+	in   EmbedContentConfig
+}

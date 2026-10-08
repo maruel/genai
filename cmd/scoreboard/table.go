@@ -36,6 +36,7 @@ const legend = `<details>
   it!
 - 💬: Text
 - 🎯: Decision: typed answers returned by SystemOne
+- 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -108,6 +109,9 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	}
 	for _, s := range scoreboards {
 		for i := range s.Scenarios {
+			if s.Scenarios[i].Embed != nil {
+				t.initFromEmbed(&s.Scenarios[i])
+			}
 			if s.Scenarios[i].SystemOne != nil {
 				t.initFromSystemOne(&s.Scenarios[i])
 			}
@@ -154,6 +158,17 @@ type tableDataRow struct {
 	RateLimits string `title:"Limits"`
 	Usage      string `title:"Usage"`
 	Finish     string `title:"Finish"`
+}
+
+func (t *tableDataRow) initFromEmbed(s *scoreboard.Scenario) {
+	f := s.Embed
+	t.initFromScenario(s, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
+	if !strings.Contains(t.Mode, "Embed") {
+		if t.Mode != "" {
+			t.Mode += ", "
+		}
+		t.Mode += "Embed"
+	}
 }
 
 func (t *tableDataRow) initFromSystemOne(s *scoreboard.Scenario) {
@@ -269,12 +284,13 @@ var countryMap = map[string]string{
 }
 
 var modalityMap = map[genai.Modality]string{
-	genai.ModalityDecision: "🎯",
-	genai.ModalityText:     "💬", // "📝",
-	genai.ModalityImage:    "📸", // "🖼️",
-	genai.ModalityAudio:    "🎤",
-	genai.ModalityVideo:    "🎥", // "🎞️",
-	genai.ModalityDocument: "📄", // "📚",
+	genai.ModalityDecision:  "🎯",
+	genai.ModalityEmbedding: "🧬",
+	genai.ModalityText:      "💬", // "📝",
+	genai.ModalityImage:     "📸", // "🖼️",
+	genai.ModalityAudio:     "🎤",
+	genai.ModalityVideo:     "🎥", // "🎞️",
+	genai.ModalityDocument:  "📄", // "📚",
 }
 
 func printTable(ctx context.Context, w io.Writer, provider string) error {
@@ -360,6 +376,12 @@ func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
 	for i := range sb.Scenarios {
 		sc := &sb.Scenarios[i]
 		var tmpRows []tableModelRow
+		if sc.Embed != nil {
+			row := tableModelRow{}
+			row.initFromEmbed(sc)
+			fillEmptyFields(&row, "❌")
+			tmpRows = append(tmpRows, row)
+		}
 		if sc.SystemOne != nil {
 			row := tableModelRow{}
 			row.initFromSystemOne(sc)

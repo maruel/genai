@@ -7,12 +7,23 @@
 //
 // These types map directly to the JSON objects exchanged with the OpenAI
 // platform API endpoints that are shared between the two APIs (models, files,
-// images, batches, errors).
+// images, batches, embeddings, errors).
 //
 // Source: https://platform.openai.com/docs/api-reference/
+//
+// # Embeddings
+//
+// The OpenAI Chat and Responses clients share the /v1/embeddings endpoint and
+// native types in this package. Configure an explicit embedding model for Embed;
+// automatic generation model selection does not select embedding models.
+// Dimensions defaults to the full vector size; compatible models accept a
+// requested size. Embed returns vectors in input order and token usage.
+// [EmbeddingRequest] exposes text or token inputs, dimensions and user metadata
+// for native EmbedRaw calls.
 package openaibase
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -413,4 +424,131 @@ type ErrorResponseError struct {
 	Type    string            `json:"type"`
 	Param   string            `json:"param"`
 	Headers map[string]string `json:"headers,omitzero"`
+}
+
+// EmbeddingInput is the input union accepted by the OpenAI embedding endpoint.
+// Exactly one field must be set. Tokens are tokenizer IDs, not text bytes.
+type EmbeddingInput struct {
+	Text           string
+	Texts          []string
+	Tokens         []int64
+	TokenSequences [][]int64
+}
+
+// Validate implements genai.Validatable.
+func (i *EmbeddingInput) Validate() error {
+	n := 0
+	if i.Text != "" {
+		n++
+	}
+	if i.Texts != nil {
+		n++
+		if len(i.Texts) == 0 {
+			return errors.New("embedding text batch is empty")
+		}
+		for j, s := range i.Texts {
+			if s == "" {
+				return fmt.Errorf("embedding text #%d is empty", j)
+			}
+		}
+	}
+	if i.Tokens != nil {
+		n++
+		if len(i.Tokens) == 0 {
+			return errors.New("embedding token input is empty")
+		}
+	}
+	if i.TokenSequences != nil {
+		n++
+		if len(i.TokenSequences) == 0 {
+			return errors.New("embedding token batch is empty")
+		}
+		for j, s := range i.TokenSequences {
+			if len(s) == 0 {
+				return fmt.Errorf("embedding token sequence #%d is empty", j)
+			}
+		}
+	}
+	if n != 1 {
+		return errors.New("embedding input must set exactly one of Text, Texts, Tokens or TokenSequences")
+	}
+	for _, t := range i.Tokens {
+		if t < 0 {
+			return errors.New("embedding tokens must be nonnegative")
+		}
+	}
+	for _, s := range i.TokenSequences {
+		for _, t := range s {
+			if t < 0 {
+				return errors.New("embedding tokens must be nonnegative")
+			}
+		}
+	}
+	return nil
+}
+
+// MarshalJSON implements json.Marshaler.
+func (i EmbeddingInput) MarshalJSON() ([]byte, error) { //nolint:gocritic // hugeParam: value receiver preserves JSON encoding of non-addressable inputs.
+	if err := i.Validate(); err != nil {
+		return nil, err
+	}
+	switch {
+	case i.Text != "":
+		return json.Marshal(i.Text)
+	case i.Texts != nil:
+		return json.Marshal(i.Texts)
+	case i.Tokens != nil:
+		return json.Marshal(i.Tokens)
+	default:
+		return json.Marshal(i.TokenSequences)
+	}
+}
+
+// EmbeddingRequest is the native /v1/embeddings request.
+// https://developers.openai.com/api/reference/resources/embeddings/methods/create
+// Model is explicit and independent of the client's generation model.
+type EmbeddingRequest struct {
+	Model      string         `json:"model"`
+	Input      EmbeddingInput `json:"input"`
+	Dimensions int64          `json:"dimensions,omitzero"`
+	User       string         `json:"user,omitzero"`
+}
+
+// Validate implements genai.Validatable.
+func (r *EmbeddingRequest) Validate() error {
+	if r.Model == "" {
+		return errors.New("embedding model is required")
+	}
+	if r.Dimensions < 0 {
+		return errors.New("embedding dimensions must be positive when specified")
+	}
+	return r.Input.Validate()
+}
+
+type embeddingRequest struct {
+	EmbeddingRequest
+	EncodingFormat string `json:"encoding_format"`
+}
+
+// Embedding is an indexed native OpenAI embedding result.
+type Embedding struct {
+	// EncodingFormat is reported by compatible servers such as llama.cpp.
+	EncodingFormat string               `json:"encoding_format,omitzero"`
+	Object         string               `json:"object"`
+	Index          int64                `json:"index"`
+	Embedding      base.EmbeddingVector `json:"embedding"`
+}
+
+// EmbeddingUsage reports input token consumption.
+type EmbeddingUsage struct {
+	PromptTokens int64 `json:"prompt_tokens"`
+	TotalTokens  int64 `json:"total_tokens"`
+}
+
+// EmbeddingResponse is the native /v1/embeddings response.
+type EmbeddingResponse struct {
+	Object string         `json:"object"`
+	Model  string         `json:"model"`
+	Data   []Embedding    `json:"data"`
+	Usage  EmbeddingUsage `json:"usage"`
 }

@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
@@ -90,6 +91,44 @@ func TestWSRequest(t *testing.T) {
 }
 
 func TestWebSocketConn(t *testing.T) {
+	t.Run("Embed", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != http.MethodPost || r.URL.Path != "/embeddings" {
+				t.Errorf("request %s %s", r.Method, r.URL.Path)
+			}
+			var in embeddingWireRequest
+			if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+				t.Error(err)
+			}
+			if in.Model != "text-embedding-3-small" || !slices.Equal(in.Input, []string{"hello"}) {
+				t.Errorf("request %+v", in)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			if _, err := w.Write([]byte(`{"model":"text-embedding-3-small","data":[{"index":0,"embedding":"AAAAQAAAQMA="}],"usage":{"prompt_tokens":7,"total_tokens":7}}`)); err != nil {
+				t.Error(err)
+			}
+		}))
+		t.Cleanup(srv.Close)
+		c, err := New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("text-embedding-3-small"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		c.shared.BaseURL = srv.URL
+		w := WebSocketConn{client: c}
+		var p genai.Provider = &w
+		if !p.Capabilities().Embed {
+			t.Fatal("wrapper hid embedding implementation")
+		}
+
+		out, err := p.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(out.Embeddings[0], []float32{2, -3}) || out.Usage.InputTokens != 7 {
+			t.Fatalf("response %+v", out)
+		}
+	})
 	newClient := func(t *testing.T, model string) *Client {
 		c := &Client{
 			impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
@@ -456,4 +495,9 @@ func startEchoServer() *httptest.Server {
 			}
 		}
 	}))
+}
+
+type embeddingWireRequest struct {
+	Model string
+	Input []string
 }

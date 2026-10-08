@@ -48,10 +48,16 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 		return scoreboard.Scenario{}, usage, errors.New("provider must have a model")
 	}
 	mods := c.OutputModalities()
+	if slices.Equal(mods, genai.Modalities{genai.ModalityEmbedding}) {
+		return RunEmbeddings(ctx, pf, EmbeddingProbeDimensions)
+	}
 	doSystemOne := c.Capabilities().SystemOne && (len(mods) == 0 || slices.Contains(mods, genai.ModalityDecision))
 	sb := c.Scoreboard()
 	for i := range sb.Scenarios {
 		sc := &sb.Scenarios[i]
+		if sc.Embed != nil && slices.Contains(sc.Models, m) && sc.GenSync == nil && sc.GenStream == nil && sc.SystemOne == nil {
+			return RunEmbeddings(ctx, pf, EmbeddingProbeDimensions)
+		}
 		if sc.SystemOne != nil && slices.Contains(sc.Models, m) {
 			doSystemOne = true
 			if sc.GenSync == nil && sc.GenStream == nil {

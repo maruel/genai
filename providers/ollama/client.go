@@ -6,8 +6,19 @@
 //
 // It is described at https://github.com/ollama/ollama/blob/main/docs/api.md
 // and https://pkg.go.dev/github.com/ollama/ollama/api
+//
 // Decision models, including Clef Flash, use [Client.SystemOne] through /v1/systemone
 // with Ollama v0.35.1 or later. See https://docs.ollama.com/api/systemone.
+//
+// # Embeddings
+//
+// [Client.Embed] embeds text batches with an explicitly configured embedding model.
+// Install the model first with [Client.PullModel]. Dimensions defaults to the
+// full vector size; compatible models support a requested size. Include any
+// model-required query or document prefixes in text. [Client.EmbedRaw] exposes
+// explicit model and dimension controls.
+// Preloaded model capabilities identify embedding output; use
+// genai.ProviderOptionModalities when model metadata is unavailable.
 package ollama
 
 import (
@@ -103,8 +114,13 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
 	}
-	if slices.ContainsFunc(modalities, func(m genai.Modality) bool { return m != genai.ModalityText && m != genai.ModalityDecision }) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text and decision are supported", modalities)
+	if slices.ContainsFunc(modalities, func(m genai.Modality) bool {
+		return m != genai.ModalityText && m != genai.ModalityDecision && m != genai.ModalityEmbedding
+	}) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text, decision and embedding are supported", modalities)
+	}
+	if slices.Contains(modalities, genai.ModalityEmbedding) && (model == string(genai.ModelCheap) || model == string(genai.ModelGood) || model == string(genai.ModelSOTA)) {
+		return nil, errors.New("embedding models must be selected explicitly")
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -121,14 +137,25 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		baseURL:         baseURL,
 		chatURL:         baseURL + "/api/chat",
 	}
+	mod := genai.Modalities{modelOutputModality(&Model{Name: model})}
 	switch model {
 	case "":
 	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-		c.impl.Model = c.selectBestModel(ctx, model, modalities)
+		var output genai.Modality
+		c.impl.Model, output = c.selectBestModel(ctx, model, modalities)
+		mod = genai.Modalities{output}
 	default:
 		c.impl.Model = model
+		for _, m := range preloadedModels {
+			if strings.TrimSuffix(m.GetID(), ":latest") == strings.TrimSuffix(model, ":latest") {
+				mod = genai.Modalities{modelOutputModality(m)}
+				break
+			}
+		}
 	}
-	mod := genai.Modalities{modelOutputModality(c.impl.Model)}
+	if slices.Equal(modalities, genai.Modalities{genai.ModalityEmbedding}) {
+		mod = modalities
+	}
 	if model != "" {
 		if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 			return nil, fmt.Errorf("unexpected option Modalities %s, model supports %s", modalities, mod)
@@ -144,35 +171,42 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
-func (c *Client) selectBestModel(ctx context.Context, preference string, modalities genai.Modalities) string {
+func (c *Client) selectBestModel(ctx context.Context, preference string, modalities genai.Modalities) (string, genai.Modality) {
 	// There's no way to list what's the current best models and no way to list the models in the library:
 	// https://github.com/ollama/ollama/issues/8241
 
 	// Figure out the model loaded if any. Ignore the error.
 	m, _ := c.ListModels(ctx)
 	for _, model := range m {
-		if len(modalities) == 0 || slices.Equal(modalities, genai.Modalities{modelOutputModality(model.GetID())}) {
-			return model.GetID()
+		mod := modelOutputModality(model)
+		if mod != genai.ModalityEmbedding && (len(modalities) == 0 || slices.Equal(modalities, genai.Modalities{mod})) {
+			return model.GetID(), mod
 		}
 	}
 	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
 	// it will be pulled upon first use.
 	if slices.Equal(modalities, genai.Modalities{genai.ModalityDecision}) {
-		return "clef-flash:latest"
+		return "clef-flash:latest", genai.ModalityDecision
 	}
 	switch preference {
 	case string(genai.ModelCheap):
-		return "gemma4:e2b"
+		return "gemma4:e2b", genai.ModalityText
 	case string(genai.ModelSOTA):
-		return "qwen3.5:2b"
+		return "qwen3.5:2b", genai.ModalityText
 	case string(genai.ModelGood), "":
-		return "qwen3.5:2b"
+		return "qwen3.5:2b", genai.ModalityText
 	default:
-		return "qwen3.5:2b"
+		return "qwen3.5:2b", genai.ModalityText
 	}
 }
 
-func modelOutputModality(model string) genai.Modality {
+func modelOutputModality(m genai.Model) genai.Modality {
+	if native, ok := m.(*Model); ok {
+		if slices.Contains(native.Capabilities, "embedding") && !slices.Contains(native.Capabilities, "completion") {
+			return genai.ModalityEmbedding
+		}
+	}
+	model := m.GetID()
 	if strings.HasPrefix(model[strings.LastIndexByte(model, '/')+1:], "clef") {
 		return genai.ModalityDecision
 	}
@@ -186,7 +220,7 @@ func (c *Client) Close() error {
 
 // Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{SystemOne: true}
+	return genai.ProviderCapabilities{Embed: true, SystemOne: true}
 }
 
 // SystemOne answers typed questions using a local decision model.
@@ -544,3 +578,62 @@ func yieldNothing[T any](yield func(T) bool) {
 }
 
 var _ genai.Provider = &Client{}
+
+// Embed implements genai.Provider with the configured model.
+// Document inputs return base.ErrNotSupported.
+func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	if in == nil {
+		return nil, errors.New("embedding request is required")
+	}
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+	texts := make([]string, len(in.Inputs))
+	for i := range in.Inputs {
+		if !in.Inputs[i].Doc.IsZero() {
+			return nil, fmt.Errorf("embedding input #%d: %w", i, &base.ErrNotSupported{Options: []string{"Request.Doc"}})
+		}
+		texts[i] = in.Inputs[i].Text
+	}
+	req := EmbeddingRequest{Model: c.ModelID(), Input: texts, Dimensions: in.Dimensions}
+	var raw EmbeddingResponse
+	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
+		return nil, err
+	}
+	if raw.Object != "list" || len(raw.Data) != len(in.Inputs) {
+		return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding response: object %q, %d results for %d inputs", raw.Object, len(raw.Data), len(in.Inputs))}
+	}
+	out := &genai.EmbeddingResponse{Embeddings: make([][]float32, len(raw.Data)), Usage: genai.Usage{InputTokens: raw.Usage.PromptTokens, TotalTokens: raw.Usage.TotalTokens}}
+	for i := range raw.Data {
+		e := &raw.Data[i]
+		if e.Object != "embedding" || e.Index < 0 || e.Index >= len(out.Embeddings) || out.Embeddings[e.Index] != nil {
+			return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding #%d: object %q, index %d", i, e.Object, e.Index)}
+		}
+		out.Embeddings[e.Index] = e.Embedding
+	}
+	if err := out.Validate(); err != nil {
+		return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding response: %w", err)}
+	}
+	if in.Dimensions != 0 && len(out.Embeddings[0]) != in.Dimensions {
+		return nil, &internal.BadError{Err: fmt.Errorf("got %d embedding dimensions, want %d", len(out.Embeddings[0]), in.Dimensions)}
+	}
+	return out, nil
+}
+
+// EmbedRaw exposes pooled text embeddings through /v1/embeddings.
+// The model must be installed; use PullModel to download it.
+// The request is not modified. HTTP or decoding errors clear the response.
+func (c *Client) EmbedRaw(ctx context.Context, in *EmbeddingRequest, out *EmbeddingResponse) error {
+	if in == nil || out == nil {
+		return errors.New("embedding request and response are required")
+	}
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	req := embeddingRequest{EmbeddingRequest: *in, EncodingFormat: "base64"}
+	if err := c.impl.DoRequest(ctx, http.MethodPost, c.baseURL+"/v1/embeddings", &req, out); err != nil {
+		*out = EmbeddingResponse{}
+		return err
+	}
+	return nil
+}

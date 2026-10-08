@@ -33,6 +33,40 @@ func TestTimingsDurationMS(t *testing.T) {
 	}
 }
 
+func TestEmbeddingInput(t *testing.T) {
+	t.Run("MarshalJSON", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			for _, in := range []llamacpp.EmbeddingInput{
+				{},
+				{Text: "text", Tokens: []int{1}},
+				{Text: "text", Content: llamacpp.Contents{{Type: "text", Text: "text"}}},
+				{Tokens: []int{-1}},
+			} {
+				if _, err := json.Marshal(in); err == nil {
+					t.Fatalf("expected validation error for %+v", in)
+				}
+			}
+		})
+	})
+}
+
+func TestEmbeddingRequest(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			n := -2
+			for _, in := range []llamacpp.EmbeddingRequest{
+				{Input: []llamacpp.EmbeddingInput{{Text: "text"}}, Normalize: &n},
+				{Input: []llamacpp.EmbeddingInput{{Tokens: []int{1, -1}}}},
+				{Input: []llamacpp.EmbeddingInput{{Content: llamacpp.Contents{}}}},
+			} {
+				if err := in.Validate(); err == nil {
+					t.Fatalf("expected validation error for %+v", in)
+				}
+			}
+		})
+	})
+}
+
 func TestGenerationSettings(t *testing.T) {
 	// Fields emitted by task_params::to_json in llama.cpp v0.5.0.
 	input := `{"adaptive_target":0.8,"adaptive_decay":0.9,"generation_prompt":"<assistant>","backend_sampling":true,"speculative.types":"draft-simple","grammar_triggers":[]}`

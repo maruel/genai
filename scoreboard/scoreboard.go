@@ -41,7 +41,7 @@ type Modality string
 // Validate returns an error if the Modality is not a known value.
 func (m Modality) Validate() error {
 	switch m {
-	case ModalityAudio, ModalityDecision, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
+	case ModalityAudio, ModalityDecision, ModalityDocument, ModalityEmbedding, ModalityImage, ModalityText, ModalityVideo:
 		return nil
 	default:
 		return fmt.Errorf("invalid Modality: %q", m)
@@ -56,6 +56,8 @@ const (
 	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes
 	// code blocks.
 	ModalityDocument Modality = "document"
+	// ModalityEmbedding is a vector representing input content.
+	ModalityEmbedding Modality = "embedding"
 	// ModalityImage is support for image formats like PNG, JPEG, often single frame GIF, and WEBP.
 	ModalityImage Modality = "image"
 	// ModalityText is for raw text.
@@ -354,6 +356,26 @@ func (f *DecisionFunctionality) Validate() error {
 	return f.ReportTokenUsage.Validate()
 }
 
+// EmbeddingFunctionality records measured text batch embedding behavior.
+// Successful qualification checks vectors, input order and semantic retrieval.
+type EmbeddingFunctionality struct {
+	// Dimensions is the default vector size measured with no requested size.
+	Dimensions int `json:"dimensions,omitzero"`
+	// RequestedDimensions is nil when unmeasured, otherwise whether the requested
+	// qualification size was honored. It doesn't imply arbitrary size support.
+	RequestedDimensions *bool `json:"requestedDimensions,omitzero"`
+	// ReportTokenUsage describes input token reporting across successful requests.
+	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
+}
+
+// Validate checks embedding dimensions and token reporting.
+func (f *EmbeddingFunctionality) Validate() error {
+	if f.Dimensions < 0 {
+		return errors.New("embedding dimensions must not be negative")
+	}
+	return f.ReportTokenUsage.Validate()
+}
+
 // Scenario defines one way to use the provider.
 type Scenario struct {
 	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
@@ -390,12 +412,15 @@ type Scenario struct {
 	// SystemOne declares typed decision features. An empty value requests qualification.
 	SystemOne *DecisionFunctionality `json:"SystemOne,omitzero,omitempty"`
 
+	// Embed declares text embedding support. An empty value requests qualification.
+	Embed *EmbeddingFunctionality `json:"Embed,omitzero,omitempty"`
+
 	_ struct{}
 }
 
 // Untested returns true if the scenario has no test results.
 func (s *Scenario) Untested() bool {
-	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && len(s.In) == 0 && len(s.Out) == 0
+	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && s.Embed == nil && len(s.In) == 0 && len(s.Out) == 0
 }
 
 // Validate returns an error if the Scenario is not correctly configured.
@@ -439,6 +464,18 @@ func (s *Scenario) Validate() error {
 		}
 		if err := s.SystemOne.Validate(); err != nil {
 			return err
+		}
+	}
+	if s.Embed != nil {
+		if err := s.Embed.Validate(); err != nil {
+			return err
+		}
+		if s.Embed.Dimensions == 0 {
+			if len(s.In) != 0 || len(s.Out) != 0 || s.Embed.RequestedDimensions != nil || s.Embed.ReportTokenUsage != False {
+				return errors.New("unqualified embedding functionality must be empty")
+			}
+		} else if !s.In[ModalityText].Inline || !s.Out[ModalityEmbedding].Inline {
+			return errors.New("embedding functionality requires inline text input and embedding output")
 		}
 	}
 	return nil
@@ -532,6 +569,19 @@ type Score struct {
 	Scenarios []Scenario `json:"scenarios"`
 
 	_ struct{}
+}
+
+// Embedding returns measured embedding functionality for model, or nil when
+// support is unknown. Missing scenarios and empty qualification markers are
+// unknown; they do not establish unsupported model behavior.
+func (s *Score) Embedding(model string) *EmbeddingFunctionality {
+	for i := range s.Scenarios {
+		sc := &s.Scenarios[i]
+		if sc.Embed != nil && sc.Embed.Dimensions > 0 && slices.Contains(sc.Models, model) {
+			return sc.Embed
+		}
+	}
+	return nil
 }
 
 // Validate returns an error if the Score is not correctly configured.

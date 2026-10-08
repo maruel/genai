@@ -23,6 +23,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 )
 
@@ -404,4 +405,62 @@ func ProcessHeaders(h http.Header) []genai.RateLimit {
 		})
 	}
 	return limits
+}
+
+// Embed embeds a text batch with the configured OpenAI model.
+// Document inputs return base.ErrNotSupported.
+func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	if in == nil {
+		return nil, errors.New("embedding request is required")
+	}
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+	texts := make([]string, len(in.Inputs))
+	for i := range in.Inputs {
+		if !in.Inputs[i].Doc.IsZero() {
+			return nil, fmt.Errorf("embedding input #%d: %w", i, &base.ErrNotSupported{Options: []string{"Request.Doc"}})
+		}
+		texts[i] = in.Inputs[i].Text
+	}
+	req := EmbeddingRequest{Model: c.Impl.Model, Input: EmbeddingInput{Texts: texts}, Dimensions: int64(in.Dimensions)}
+	var raw EmbeddingResponse
+	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
+		return nil, err
+	}
+	out := &genai.EmbeddingResponse{Embeddings: make([][]float32, len(in.Inputs)), Usage: genai.Usage{InputTokens: raw.Usage.PromptTokens, TotalTokens: raw.Usage.TotalTokens}}
+	for i := range raw.Data {
+		e := &raw.Data[i]
+		if e.Index < 0 || e.Index >= int64(len(out.Embeddings)) || out.Embeddings[e.Index] != nil {
+			return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding index %d", e.Index)}
+		}
+		out.Embeddings[e.Index] = e.Embedding
+	}
+	if len(raw.Data) != len(in.Inputs) {
+		return nil, &internal.BadError{Err: fmt.Errorf("got %d embedding results for %d inputs", len(raw.Data), len(in.Inputs))}
+	}
+	if err := out.Validate(); err != nil {
+		return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding response: %w", err)}
+	}
+	if in.Dimensions != 0 && len(out.Embeddings[0]) != in.Dimensions {
+		return nil, &internal.BadError{Err: fmt.Errorf("got %d embedding dimensions, want %d", len(out.Embeddings[0]), in.Dimensions)}
+	}
+	return out, nil
+}
+
+// EmbedRaw exposes the native OpenAI /v1/embeddings endpoint.
+// The request specifies its own model independently of generation configuration.
+func (c *Client) EmbedRaw(ctx context.Context, in *EmbeddingRequest, out *EmbeddingResponse) error {
+	if in == nil || out == nil {
+		return errors.New("embedding request and response are required")
+	}
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	req := embeddingRequest{EmbeddingRequest: *in, EncodingFormat: "base64"}
+	if err := c.Impl.DoRequest(ctx, http.MethodPost, c.BaseURL+"/embeddings", &req, out); err != nil {
+		*out = EmbeddingResponse{}
+		return err
+	}
+	return nil
 }

@@ -19,6 +19,7 @@ import (
 	"io"
 	"iter"
 	"maps"
+	"math"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -81,6 +82,15 @@ type Provider interface {
 	// It uses the client's configured model. The request is not modified.
 	// Requires ProviderCapabilities.SystemOne. Returns base.ErrNotSupported otherwise.
 	SystemOne(ctx context.Context, req *SystemOneRequest) (*SystemOneResponse, error)
+	// Embed returns one vector per input request in order using the configured model.
+	// Configure an explicit embedding model; automatic generation model selection
+	// does not choose one. Content blocks and options are not modified; document
+	// readers may be read and sought. Input size limits depend
+	// on the provider and model. Returns base.ErrNotSupported when unsupported.
+	// Provider-specific raw APIs expose additional embedding controls.
+	// Capabilities().Embed describes endpoint implementation; the scoreboard
+	// Embedding lookup describes tested support for the configured model.
+	Embed(ctx context.Context, in *EmbeddingRequest) (*EmbeddingResponse, error)
 	// ListModels returns the list of models the provider supports. Not all providers support it, some will
 	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
 	// model currently loaded.
@@ -122,8 +132,12 @@ type Provider interface {
 	CacheDelete(ctx context.Context, name string) error
 }
 
-// ProviderCapabilities describes optional capabilities a provider supports.
+// ProviderCapabilities describes optional capabilities implemented by a client.
 type ProviderCapabilities struct {
+	// Embed indicates that the client implements the embedding endpoint, independent
+	// of its configured model. scoreboard.Score.Embedding reports qualified support;
+	// a missing measurement means unknown, not unsupported.
+	Embed bool
 	// SystemOne indicates the provider implements typed decision inference.
 	SystemOne bool
 	// GenAsync indicates the provider supports GenAsync and PokeResult for batch operations.
@@ -642,8 +656,7 @@ func (m *Message) Accumulate(mf *Reply) error {
 	return nil
 }
 
-// Request is a block of content in the message meant to be visible in a
-// chat setting.
+// Request is an input content block for generation or embedding.
 //
 // It is effectively a union, only one of the 2 related field groups can be set.
 type Request struct {
@@ -1192,6 +1205,71 @@ type CacheEntry interface {
 	GetID() string
 	GetDisplayName() string
 	GetExpiry() time.Time
+}
+
+// Embeddings
+
+// EmbeddingRequest embeds a batch of content with the client's configured model.
+// Include any task prefixes required by that model in each request's Text.
+type EmbeddingRequest struct {
+	// Inputs contains one text or document block per output vector.
+	Inputs []Request `json:"inputs"`
+	// Dimensions is the requested vector size, or zero for the model default.
+	// Support depends on the provider and model.
+	Dimensions int `json:"dimensions,omitzero"`
+}
+
+// Validate implements Validatable.
+func (r *EmbeddingRequest) Validate() error {
+	if len(r.Inputs) == 0 {
+		return errors.New("embedding inputs must not be empty")
+	}
+	for i := range r.Inputs {
+		if err := r.Inputs[i].Validate(); err != nil {
+			return fmt.Errorf("embedding input #%d: %w", i, err)
+		}
+	}
+	if r.Dimensions < 0 {
+		return errors.New("embedding dimensions must not be negative")
+	}
+	return nil
+}
+
+// EmbeddingResponse contains one vector per input request, in input order.
+// Values are preserved as returned by the provider. Normalization depends on the
+// provider and model; callers comparing vectors must account for that contract.
+type EmbeddingResponse struct {
+	Embeddings [][]float32 `json:"embeddings"`
+	// Usage is zero when the provider doesn't report token counts.
+	Usage Usage `json:"usage,omitzero"`
+}
+
+// Validate implements Validatable. It checks uniform dimensions and finite,
+// nonzero vectors without normalizing their values.
+func (r *EmbeddingResponse) Validate() error {
+	if len(r.Embeddings) == 0 {
+		return errors.New("embedding vectors must not be empty")
+	}
+	n := len(r.Embeddings[0])
+	if n == 0 {
+		return errors.New("first embedding vector must not be empty")
+	}
+	for i, v := range r.Embeddings {
+		if len(v) != n {
+			return fmt.Errorf("embedding #%d has %d dimensions, want %d", i, len(v), n)
+		}
+		nonzero := false
+		for _, x := range v {
+			if math.IsNaN(float64(x)) || math.IsInf(float64(x), 0) {
+				return fmt.Errorf("embedding #%d contains a nonfinite value", i)
+			}
+			nonzero = nonzero || x != 0
+		}
+		if !nonzero {
+			return fmt.Errorf("embedding #%d is a zero vector", i)
+		}
+	}
+	return nil
 }
 
 // Models

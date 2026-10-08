@@ -163,6 +163,17 @@ type ProviderUsage struct {
 	accumUsage genai.Usage
 }
 
+// Embed implements genai.Provider and accumulates embedding token usage.
+func (c *ProviderUsage) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	res, err := c.Provider.Embed(ctx, in)
+	if res != nil {
+		c.mu.Lock()
+		c.accumUsage.Add(&res.Usage)
+		c.mu.Unlock()
+	}
+	return res, err
+}
+
 // SystemOne implements genai.Provider and accumulates decision token usage.
 func (c *ProviderUsage) SystemOne(ctx context.Context, req *genai.SystemOneRequest) (*genai.SystemOneResponse, error) {
 	res, err := c.Provider.SystemOne(ctx, req)

@@ -7,6 +7,17 @@
 // Not to be confused with Google's Vertex AI.
 //
 // It is described at https://ai.google.dev/api/?lang=rest but the doc is weirdly organized.
+//
+// # Embeddings
+//
+// [Client.Embed] embeds text batches with an explicitly configured embedding model.
+// Dimensions defaults to the full vector size; compatible models support a
+// requested size. Reduced-dimensional vectors can require normalization before
+// similarity comparisons. Token usage is included when the model reports it.
+// [Client.EmbedRaw] exposes task types, titles and
+// native content inputs. Include any model-required task prefixes in text.
+// Preloaded model metadata can identify embedding output without qualification;
+// [Client.Scoreboard] reports measured support for exact model IDs.
 package gemini
 
 // See official client at https://github.com/google/generative-ai-go
@@ -20,6 +31,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"math"
 	"mime"
 	"net/http"
 	"net/url"
@@ -174,11 +186,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		// Auto-detect below.
 	case 1:
 		switch modalities[0] {
-		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityAudio, genai.ModalityEmbedding, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, embedding, image, text, or video are supported", modalities)
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, embedding, image, text, or video are supported", modalities)
 		}
 	case 2:
 		// The only combination supported is image + text.
@@ -188,7 +200,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			return nil, fmt.Errorf("unexpected option Modalities %s, only image+text are supported when grouped together", mods)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", modalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, embedding, image, text, video, or image+text are supported", modalities)
 	}
 	// Google supports HTTP POST gzip compression!
 	var t http.RoundTripper = &roundtrippers.PostCompressed{
@@ -278,6 +290,16 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
 func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	id := strings.TrimPrefix(model, "models/")
+	if sb := c.Scoreboard(); sb.Embedding(id) != nil {
+		return genai.Modalities{genai.ModalityEmbedding}, nil
+	}
+	for _, mdl := range c.impl.PreloadedModels {
+		if m, ok := mdl.(*Model); ok && m.GetID() == id && m.embeddingOnly() {
+			return genai.Modalities{genai.ModalityEmbedding}, nil
+		}
+	}
+
 	// It's tricky because modalities are not directly returned by ListModels.
 	switch {
 	case strings.HasPrefix(model, "gemini-") && strings.HasSuffix(model, "-image"):
@@ -299,6 +321,8 @@ func (c *Client) detectModelModalities(ctx context.Context, model string) (genai
 	for _, mdl := range mdls {
 		if m := mdl.(*Model); m.GetID() == model {
 			switch {
+			case m.embeddingOnly():
+				return genai.Modalities{genai.ModalityEmbedding}, nil
 			case slices.Contains(m.SupportedGenerationMethods, "generateContent"):
 				return genai.Modalities{genai.ModalityText}, nil
 			case slices.Contains(m.SupportedGenerationMethods, "predict"):
@@ -1335,7 +1359,7 @@ func (c *Client) FileSearchStoreDocumentDelete(ctx context.Context, name string,
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	// GenAsync (predictLongRunning) is only supported for video generation models.
 	// Text models use generateContent, which doesn't support async operations.
-	return genai.ProviderCapabilities{
+	return genai.ProviderCapabilities{Embed: true,
 		GenAsync: slices.Contains(c.impl.OutputModalities, genai.ModalityVideo),
 		Caching:  true,
 	}
@@ -1540,3 +1564,62 @@ func yieldNothing[T any](yield func(T) bool) {
 }
 
 var _ genai.Provider = &Client{}
+
+// Embed implements genai.Provider without selecting a task type.
+// Document inputs use native content conversion and require a compatible model.
+func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	if in == nil {
+		return nil, errors.New("embedding request is required")
+	}
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+	if in.Dimensions > math.MaxInt32 {
+		return nil, errors.New("embedding dimensions exceed int32 range")
+	}
+	model := "models/" + strings.TrimPrefix(c.ModelID(), "models/")
+	req := BatchEmbeddingRequest{Requests: make([]EmbeddingRequest, len(in.Inputs))}
+	for i := range in.Inputs {
+		input := in.Inputs[i]
+		var part Part
+		if err := part.FromRequest(&input); err != nil {
+			return nil, fmt.Errorf("embedding input #%d: %w", i, err)
+		}
+		req.Requests[i] = EmbeddingRequest{Model: model, Content: Content{Parts: []Part{part}}, EmbedContentConfig: EmbedContentConfig{OutputDimensionality: int32(in.Dimensions)}}
+	}
+	var raw BatchEmbeddingResponse
+	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
+		return nil, err
+	}
+	out := &genai.EmbeddingResponse{Embeddings: make([][]float32, len(raw.Embeddings)), Usage: genai.Usage{InputTokens: raw.UsageMetadata.PromptTokenCount, TotalTokens: raw.UsageMetadata.PromptTokenCount}}
+	for i := range raw.Embeddings {
+		out.Embeddings[i] = raw.Embeddings[i].Values
+	}
+	if err := out.Validate(); err != nil {
+		return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding response: %w", err)}
+	}
+	if len(out.Embeddings) != len(in.Inputs) {
+		return nil, &internal.BadError{Err: fmt.Errorf("got %d embedding vectors for %d inputs", len(out.Embeddings), len(in.Inputs))}
+	}
+	if in.Dimensions != 0 && len(out.Embeddings[0]) != in.Dimensions {
+		return nil, &internal.BadError{Err: fmt.Errorf("got %d embedding dimensions, want %d", len(out.Embeddings[0]), in.Dimensions)}
+	}
+	return out, nil
+}
+
+// EmbedRaw exposes the native batchEmbedContents endpoint. Models and
+// per-content task controls come from the requests, not generation configuration.
+func (c *Client) EmbedRaw(ctx context.Context, in *BatchEmbeddingRequest, out *BatchEmbeddingResponse) error {
+	if in == nil || out == nil {
+		return errors.New("embedding request and response are required")
+	}
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(strings.TrimPrefix(in.Requests[0].Model, "models/")) + ":batchEmbedContents"
+	if err := c.impl.DoRequest(ctx, http.MethodPost, u, in, out); err != nil {
+		*out = BatchEmbeddingResponse{}
+		return err
+	}
+	return nil
+}

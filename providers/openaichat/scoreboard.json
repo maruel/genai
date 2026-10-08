@@ -388,6 +388,26 @@
     },
     {
       "models": [
+        "text-embedding-3-small"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "embedding": {
+          "inline": true
+        }
+      },
+      "Embed": {
+        "dimensions": 1536,
+        "requestedDimensions": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "models": [
         "gpt-5.6-sol",
         "gpt-6-sol"
       ],
@@ -517,7 +537,6 @@
         "sora-2",
         "sora-2-pro",
         "text-embedding-3-large",
-        "text-embedding-3-small",
         "text-embedding-ada-002",
         "tts-1",
         "tts-1-1106",

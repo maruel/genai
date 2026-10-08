@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 300
+        host: api.openai.com
+        body: |
+            {"model":"text-embedding-3-small","input":["task: search result | query: What causes the northern lights?","title: none | text: The northern lights are caused by charged particles from the sun.","title: none | text: Bananas are a popular tropical fruit."],"dimensions":32,"encoding_format":"base64"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/embeddings
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"object":"list","data":[{"object":"embedding","embedding":"AAAuvgAge70AwPy8AEBBvQCg4r0AACO9AICcvgDgO70AgBA+AGDrPQBAJD0A4Dc8AIAqvgDg9r0AAJu9AADAPgCgSb4AgIE+AGA9vgBguD4AYK08AGCTvgBgajsAYAk+AGBOvgDA470A4MQ8AGCPPgBgLj4AIGQ+AMAyPgCgGb4=","index":0},{"object":"embedding","embedding":"AMAzvgDAgj0AoB2+AOAhPAAggb0AoII9AACpvgCAI74AQCQ+AOAovgAgtDsAALo+AEDpvACAkLsAIDW9ACBuPgAAqr0AgCE+AAA5vgDgmD4AgIY+AGCuvQAgCj4AwPS6AGA2vgDg/z0AwJY+AIBjPgAgFj4AQGg+AOALPgCgPb4=","index":1},{"object":"embedding","embedding":"AKAhPAAgObwAIJA9AOADPgCgvr0AYNE8ACDVvQDAYz4AgHU9AIDWvQDgp7wAwA4+AGB8vQDgRD4AABc9AKBFPQBAHj4AgLQ9AKAfPQBA1D4A4AY/AGB4PQBghrsAwOU9AGC6PQCAWz4AIKw8AOCAPgBAmj4AYDa+AABXPgBAXL4=","index":2}],"model":"text-embedding-3-small","usage":{"prompt_tokens":45,"total_tokens":45}}'
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a471a3af1858a2af-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "108"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4991"
+            X-Ratelimit-Remaining-Tokens:
+                - "999600"
+            X-Ratelimit-Reset-Requests:
+                - 108ms
+            X-Ratelimit-Reset-Tokens:
+                - 24ms
+        status: 200 OK
+        code: 200
+        duration: 211ms

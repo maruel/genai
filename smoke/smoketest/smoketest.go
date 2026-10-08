@@ -57,8 +57,8 @@ var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.
 type RunOptions struct {
 	// ScoreboardFile overrides the default scoreboard filename ("scoreboard.json").
 	ScoreboardFile string
-	// Qualify lists untested models that update mode should smoke test. It has no
-	// effect unless -update-scoreboard is set.
+	// Qualify lists untested models that update mode should smoke test. Model output
+	// selects the probes. It has no effect unless -update-scoreboard is set.
 	Qualify []scoreboard.Model
 	// TolerateReasoning lists model name substrings for which reasoning
 	// content in non-thinking scenarios is tolerated instead of causing a test
@@ -136,7 +136,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			for i := range sb.Scenarios {
 				sc := &sb.Scenarios[i]
 				if m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
-					if sc.Models[0] != m.Model {
+					if sc.Models[0] != m.Model && (!sc.Untested() || !opts.qualifies(m)) {
 						// We only run the first model in the scenario for cost savings purposes. Create one scenario per
 						// model to smoke test.
 						t.Skip("Only run first model in scenario for cost savings")
@@ -147,18 +147,16 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				}
 			}
 			if len(want.Models) == 0 {
-				// Model not in scoreboard yet.
-				// Look for an existing untested scenario with the same reason to preserve Comments
-				// TODO(maruel): I don't believe this can happen.
-				var foundComments string
-				for i := range sb.Scenarios {
-					sc := &sb.Scenarios[i]
-					if sc.Untested() && sc.Reason == m.Reason && (foundComments == "" || foundComments == sc.Comments) {
-						foundComments = sc.Comments
-						break
+				want = scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason}
+				if !opts.qualifies(m) {
+					for i := range sb.Scenarios {
+						sc := &sb.Scenarios[i]
+						if sc.Reason == m.Reason && sc.Untested() {
+							want.Comments = sc.Comments
+							break
+						}
 					}
 				}
-				want = scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason, Comments: foundComments}
 			}
 			if want.Untested() && !opts.qualifies(m) {
 				// Collect the untested scenario for validation
@@ -297,8 +295,6 @@ func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, 
 	if diff := cmp.Diff(*want, got, optScenario); diff != "" && !*updateScoreboard {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
-	// Preserve Comments from the original scenario
-	got.Comments = want.Comments
 	// Preserve Reason from want when got is untested, so the scoreboard
 	// update can match the old scenario key correctly.
 	if got.Untested() && want.Reason {
@@ -433,11 +429,18 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		sc := *newSc
 		if oldSc, found := oldScenarios[key]; found {
 			// Preserve metadata from old scenario
-			sc.Comments = oldSc.Comments
+			if oldSc.Untested() && sc.Embed != nil {
+				sc.Comments = ""
+			} else {
+				sc.Comments = oldSc.Comments
+			}
 			sc.ReasoningTokenStart = oldSc.ReasoningTokenStart
 			sc.ReasoningTokenEnd = oldSc.ReasoningTokenEnd
-			// Only reuse the Models list if we haven't already processed this old scenario
-			if _, used := usedOldScenarios[oldSc]; !used {
+			// Qualification measures one model; the third pass retains untested siblings.
+			// Existing tested groups can still share their previous capability scores.
+			if oldSc.Untested() {
+				sc.Models = []string{model}
+			} else if _, used := usedOldScenarios[oldSc]; !used {
 				sc.Models = oldSc.Models
 				// New measurement is evidence only for this model, not grouped
 				// siblings that shared existing capability scores.
@@ -447,9 +450,9 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 					}
 					return !cmp.Equal(a.OutOfOrder, b.OutOfOrder)
 				}
-				if len(oldSc.Models) > 1 && (outOfOrderChanged(oldSc.GenSync, sc.GenSync) || outOfOrderChanged(oldSc.GenStream, sc.GenStream)) {
+				if len(oldSc.Models) > 1 && (sc.Embed != nil && (!cmp.Equal(oldSc.Embed, sc.Embed) || !cmp.Equal(oldSc.In, sc.In)) || outOfOrderChanged(oldSc.GenSync, sc.GenSync) || outOfOrderChanged(oldSc.GenStream, sc.GenStream)) {
 					rest := *oldSc
-					rest.Models = oldSc.Models[1:]
+					rest.Models = slices.DeleteFunc(slices.Clone(oldSc.Models), func(id string) bool { return id == model })
 					rest.SOTA, rest.Good, rest.Cheap = false, false, false
 					result = append(result, rest)
 					sc.Models = []string{model}
@@ -551,6 +554,9 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	for i := range scenarios {
 		sc := scenarios[i]
 		if len(sc.Models) > 0 && sc.Untested() {
+			if oldSc := oldScenarios[scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason}]; oldSc != nil {
+				sc.Comments = oldSc.Comments
+			}
 			// Remove stale models
 			remainingModels := make([]string, 0, len(sc.Models))
 			for _, m := range sc.Models {

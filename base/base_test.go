@@ -9,7 +9,14 @@ package base
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"runtime"
+	"slices"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -415,3 +422,88 @@ func TestUnknown(t *testing.T) {
 		}
 	})
 }
+
+func TestNotImplemented(t *testing.T) {
+	t.Run("Embed", func(t *testing.T) {
+		p := NotImplemented{}
+		if p.Capabilities().Embed {
+			t.Fatal("fallback advertises embedding implementation")
+		}
+		for _, in := range []*genai.EmbeddingRequest{nil, {Inputs: []genai.Request{{Text: "hello"}}}} {
+			out, err := p.Embed(t.Context(), in)
+			if _, ok := errors.AsType[*ErrNotSupported](err); !ok || out != nil {
+				t.Fatalf("got %+v, %v", out, err)
+			}
+		}
+	})
+}
+
+// TestDecodeResponse preserves successful HTTP error envelopes and custom decode failures.
+func TestDecodeResponse(t *testing.T) {
+	for _, lenient := range []bool{false, true} {
+		t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
+			c := ProviderBase[*decodeAPIError]{Lenient: lenient}
+			c.lateInit()
+			for _, tc := range []decodeResponseCase{{"custom vector error", `{"vector":"invalid"}`, false}, {"HTTP 200 API error", `{"error":"API failed"}`, true}} {
+				t.Run(tc.name, func(t *testing.T) {
+					var out decodeResponseOutput
+					resp := &http.Response{StatusCode: http.StatusOK, Header: http.Header{}, Body: io.NopCloser(strings.NewReader(tc.body))}
+					err := c.DecodeResponse(resp, "http://test", &out)
+					if tc.api {
+						er, ok := errors.AsType[*decodeAPIError](err)
+						if !ok || er.Error() != "API failed" {
+							t.Fatalf("API error: %v", err)
+						}
+					} else if err == nil || !strings.Contains(err.Error(), "invalid vector") {
+						t.Fatalf("decode error: %v", err)
+					}
+				})
+			}
+		})
+	}
+}
+
+type decodeResponseCase struct {
+	name, body string
+	api        bool
+}
+type decodeResponseOutput struct {
+	Vector decodeFailVector `json:"vector"`
+}
+type decodeFailVector []float32
+
+func (*decodeFailVector) UnmarshalJSON([]byte) error { return errors.New("invalid vector") }
+
+type decodeAPIError struct {
+	ErrorVal string `json:"error"`
+}
+
+func (e *decodeAPIError) Error() string  { return e.ErrorVal }
+func (*decodeAPIError) IsAPIError() bool { return true }
+
+func TestEmbeddingVector(t *testing.T) {
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []embeddingVectorDecodeCase{{"invalid base64", `"!"`}, {"empty", `""`}, {"partial float", `"AA=="`}, {"null", `null`}, {"object", `{}`}, {"boolean", `true`}, {"invalid array element", `["bad"]`}} {
+				t.Run(tc.name, func(t *testing.T) {
+					v := EmbeddingVector{7}
+					if err := json.Unmarshal([]byte(tc.body), &v); err == nil || v != nil {
+						t.Fatalf("vector %+v, error %v", v, err)
+					}
+				})
+			}
+		})
+		t.Run("valid", func(t *testing.T) {
+			var v EmbeddingVector
+			if err := json.Unmarshal([]byte(`"AACAPwAAQMA="`), &v); err != nil {
+				t.Fatal(err)
+			}
+			runtime.GC()
+			if !slices.Equal(v, EmbeddingVector{1, -3}) {
+				t.Fatalf("values %+v", v)
+			}
+		})
+	})
+}
+
+type embeddingVectorDecodeCase struct{ name, body string }

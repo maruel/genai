@@ -15,6 +15,7 @@
 package ollama
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -648,6 +649,31 @@ type Version struct {
 // ErrorResponse is an error returned by the Ollama API.
 type ErrorResponse struct {
 	ErrorVal string `json:"error"`
+	// Details contains structured errors from compatible endpoints.
+	Details *ErrorDetails `json:"-"`
+}
+
+// UnmarshalJSON accepts native string errors and structured compatible errors.
+func (er *ErrorResponse) UnmarshalJSON(b []byte) error {
+	*er = ErrorResponse{}
+	var raw errorResponseWire
+	if err := internal.UnmarshalJSON(b, &raw); err != nil {
+		return err
+	}
+	data := bytes.TrimSpace(raw.Error)
+	if len(data) == 0 {
+		return nil
+	}
+	if data[0] == '"' {
+		return json.Unmarshal(data, &er.ErrorVal)
+	}
+	var detail ErrorDetails
+	if err := internal.UnmarshalJSON(data, &detail); err != nil {
+		return err
+	}
+	er.ErrorVal = detail.Message
+	er.Details = &detail
+	return nil
 }
 
 func (er *ErrorResponse) Error() string {
@@ -657,4 +683,69 @@ func (er *ErrorResponse) Error() string {
 // IsAPIError implements base.APIError.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
+}
+
+// ErrorDetails is a structured API error returned by compatible endpoints.
+type ErrorDetails struct {
+	Message string          `json:"message"`
+	Type    string          `json:"type"`
+	Param   json.RawMessage `json:"param"`
+	Code    *string         `json:"code"`
+}
+
+type errorResponseWire struct {
+	Error json.RawMessage `json:"error"`
+}
+
+// EmbeddingRequest is the /v1/embeddings request.
+// Model is explicit; use Client.PullModel before calling EmbedRaw if needed.
+type EmbeddingRequest struct {
+	Model      string   `json:"model"`
+	Input      []string `json:"input"`
+	Dimensions int      `json:"dimensions,omitzero"`
+}
+
+// Validate implements genai.Validatable.
+func (r *EmbeddingRequest) Validate() error {
+	if r.Model == "" {
+		return errors.New("embedding model is required")
+	}
+	if len(r.Input) == 0 {
+		return errors.New("embedding input is required")
+	}
+	if r.Dimensions < 0 {
+		return errors.New("embedding dimensions must be positive when specified")
+	}
+	for i, s := range r.Input {
+		if s == "" {
+			return fmt.Errorf("embedding input #%d is empty", i)
+		}
+	}
+	return nil
+}
+
+type embeddingRequest struct {
+	EmbeddingRequest
+	EncodingFormat string `json:"encoding_format"`
+}
+
+// EmbeddingResponse is the pooled /v1/embeddings response.
+type EmbeddingResponse struct {
+	Object string         `json:"object"`
+	Model  string         `json:"model"`
+	Data   []Embedding    `json:"data"`
+	Usage  EmbeddingUsage `json:"usage"`
+}
+
+// Embedding is one indexed pooled vector.
+type Embedding struct {
+	Object    string               `json:"object"`
+	Index     int                  `json:"index"`
+	Embedding base.EmbeddingVector `json:"embedding"`
+}
+
+// EmbeddingUsage reports input token consumption.
+type EmbeddingUsage struct {
+	PromptTokens int64 `json:"prompt_tokens"`
+	TotalTokens  int64 `json:"total_tokens"`
 }

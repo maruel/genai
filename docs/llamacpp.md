@@ -9,6 +9,7 @@
 | ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf                    | SystemOne | 💬     | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync      | 🎤💬   | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream    | 🎤💬   | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf  | Embed     | 💬     | 🧬      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync      | 💬📸   | 💬     | ❌     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream    | 💬📸   | 💬     | ❌     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
@@ -26,6 +27,7 @@
   it!
 - 💬: Text
 - 🎯: Decision: typed answers returned by SystemOne
+- 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

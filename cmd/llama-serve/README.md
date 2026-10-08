@@ -4,6 +4,21 @@ A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/lla
 
 ## Examples
 
+EmbeddingGemma 2 generates text and multimodal embeddings. Released nightly
+[b11476](https://github.com/ggml-org/llama.cpp/releases/tag/b11476) supports it;
+the default stable release v0.6.0 cannot load it. Select the nightly explicitly:
+
+```bash
+llama-serve -build 11476 -model ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf -- \
+    --embeddings --pooling mean
+```
+
+Use the client's `Embed()` method for text or documents, or `EmbedRaw()` for token inputs,
+multimodal content and normalization control. See
+[the Go example](../../providers/llamacpp/example_test.go) for search and document prefixes.
+The wrapper uses llama-server's `-hf` and `-hff` flags to download the model
+and automatically fetch its multimodal projector when available.
+
 Kev 4B answers typed questions through `/v1/systemone`. Use
 the client's `SystemOne()` method. This endpoint requires
 llama.cpp v0.6.0 or newer, which is the default version.

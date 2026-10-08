@@ -263,6 +263,38 @@
     },
     {
       "models": [
+        "gemini-embedding-2"
+      ],
+      "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/wav"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "embedding": {
+          "inline": true
+        }
+      },
+      "Embed": {
+        "dimensions": 3072,
+        "requestedDimensions": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "models": [
         "gemini-3.5-flash-lite",
         "gemini-3.5-transcribe",
         "gemini-3.5-transcribe-live",
@@ -326,9 +358,6 @@
         "gemini-3.1-pro-preview-customtools",
         "gemini-3.5-flash",
         "gemini-3.5-live-translate-preview",
-        "gemini-embedding-001",
-        "gemini-embedding-2",
-        "gemini-embedding-2-preview",
         "gemini-embedding-exp",
         "gemini-embedding-exp-03-07",
         "gemini-exp-1206",

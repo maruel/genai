@@ -44,3 +44,22 @@ go run github.com/maruel/genai/examples/txt_to_txt_stream@latest
 
 The image example uses a bundled sample image when `-image` is omitted. All three examples print the answers,
 probability distributions, token usage, and elapsed time.
+
+## Embeddings
+
+`aud-img-txt_to_embed` embeds text, an image and audio using Gemini Embedding 2.
+Set `GEMINI_API_KEY`, then run with the bundled JPEG and WAV:
+
+```bash
+go run ./examples/aud-img-txt_to_embed
+```
+
+Use local media or another explicitly selected embedding model with:
+
+```bash
+go run ./examples/aud-img-txt_to_embed -model gemini-embedding-2 \
+  -image picture.jpg -audio recording.wav -text "A picture and a spoken word."
+```
+
+It prints vector dimensions, sample coordinates, cosine similarities and token usage.
+Image and audio inputs require a model that supports those modalities.

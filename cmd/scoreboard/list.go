@@ -42,6 +42,9 @@ func printList(ctx context.Context, w io.Writer) error {
 				m = append(slices.Clone(m[:3]), "...")
 			}
 			_, _ = fmt.Fprintf(w, "  - %s\n", strings.Join(m, ", "))
+			if f := scenario.Embed; f != nil {
+				_, _ = fmt.Fprintf(w, "    Embed: usage=%s\n", f.ReportTokenUsage)
+			}
 			if f := scenario.SystemOne; f != nil {
 				_, _ = fmt.Fprintf(w, "    SystemOne: noul=%t choice=%t score=%t object=%t array=%t usage=%s\n", f.Noul, f.Choice, f.Score, f.Object, f.Array, f.ReportTokenUsage)
 			}

@@ -422,3 +422,35 @@ func ExampleQuestions() {
 	//   }
 	// }
 }
+
+func ExampleProvider_embed() {
+	ctx := context.Background()
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-embedding-2"))
+	if c != nil {
+		defer func() {
+			if err := c.Close(); err != nil {
+				log.Printf("Close: %v", err)
+			}
+		}()
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	if !c.Capabilities().Embed {
+		log.Fatal("embedding endpoint is unavailable")
+	}
+	sb := c.Scoreboard()
+	if f := sb.Embedding(c.ModelID()); f != nil {
+		fmt.Printf("Qualified default size: %d\n", f.Dimensions)
+	} else {
+		fmt.Println("Embedding model support is unmeasured")
+	}
+	out, err := c.Embed(ctx, &genai.EmbeddingRequest{
+		Inputs:     []genai.Request{{Text: "A kitten plays with yarn."}, {Text: "A cat plays with string."}},
+		Dimensions: 768,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Returned %d vectors with %d dimensions\n", len(out.Embeddings), len(out.Embeddings[0]))
+}

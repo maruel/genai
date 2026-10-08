@@ -9,6 +9,7 @@ package scoreboard
 import (
 	"bytes"
 	"encoding/json"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -46,7 +47,7 @@ func TestModel(t *testing.T) {
 
 func TestModality(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		tests := []Modality{ModalityAudio, ModalityDecision, ModalityDocument, ModalityImage, ModalityText, ModalityVideo}
+		tests := []Modality{ModalityAudio, ModalityDecision, ModalityDocument, ModalityEmbedding, ModalityImage, ModalityText, ModalityVideo}
 		for _, m := range tests {
 			if err := m.Validate(); err != nil {
 				t.Fatalf("Modality %q: got err=%v", m, err)
@@ -314,6 +315,7 @@ func TestScenario(t *testing.T) {
 			{&Scenario{Models: []string{"gpt-4"}, GenSync: &Functionality{}}, false},
 			{&Scenario{Models: []string{"gpt-4"}, GenStream: &Functionality{}}, false},
 			{&Scenario{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{}}, false},
+			{&Scenario{Models: []string{"embed"}, Embed: &EmbeddingFunctionality{}}, false},
 			{&Scenario{Models: []string{"gpt-4"}, In: map[Modality]ModalCapability{ModalityText: {}}, Out: map[Modality]ModalCapability{ModalityText: {}}}, false},
 		}
 
@@ -335,6 +337,8 @@ func TestScenario(t *testing.T) {
 			{Models: []string{"new-model"}, GenSync: &Functionality{}},
 			{Models: []string{"new-model"}, GenStream: &Functionality{}},
 			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{}},
+			{Models: []string{"embed"}, Embed: &EmbeddingFunctionality{}},
+			{Models: []string{"embed"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityEmbedding: {Inline: true}}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
 			{Models: []string{"new-model"}, GenSync: &Functionality{}, GenStream: &Functionality{}},
 		}
 
@@ -355,6 +359,10 @@ func TestScenario(t *testing.T) {
 			{Models: []string{"gpt-4"}, GenSync: &Functionality{JSON: true}},
 			{Models: []string{"gpt-4"}, GenStream: &Functionality{JSON: true}},
 			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{Noul: true}},
+			{Models: []string{"embed"}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
+			{Models: []string{"embed"}, Embed: &EmbeddingFunctionality{RequestedDimensions: new(false)}},
+			{Models: []string{"embed"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityEmbedding: {Inline: true}}, Embed: &EmbeddingFunctionality{Dimensions: -1}},
+			{Models: []string{"embed"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
 			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{ReportTokenUsage: TriState(2)}},
 			{Models: []string{"gpt-4"}, GenSync: &Functionality{}, GenStream: &Functionality{JSON: true}},
 		}
@@ -368,6 +376,18 @@ func TestScenario(t *testing.T) {
 }
 
 func TestScore(t *testing.T) {
+	t.Run("Embedding", func(t *testing.T) {
+		measured := &EmbeddingFunctionality{Dimensions: 768}
+		s := Score{Scenarios: []Scenario{{Models: []string{"qualified"}, Embed: measured}, {Models: []string{"pending"}, Embed: &EmbeddingFunctionality{}}, {Models: []string{"untested"}}, {Models: []string{"generation"}, GenSync: &Functionality{}}}}
+		if s.Embedding("qualified") != measured {
+			t.Fatal("qualified embedding missing")
+		}
+		for _, model := range []string{"missing", "pending", "untested", "generation", ""} {
+			if s.Embedding(model) != nil {
+				t.Fatalf("claimed support for %s", model)
+			}
+		}
+	})
 	t.Run("Validate", func(t *testing.T) {
 		tests := []*Score{
 			{
@@ -1607,4 +1627,40 @@ func TestDuplicateUntestedScenariosWithPreferenceFlagsDoNotValidate(t *testing.T
 	if !strings.Contains(validationErr.Error(), "duplicate model") {
 		t.Fatalf("expected 'duplicate model' error, got: %v", validationErr)
 	}
+}
+
+func TestEmbeddingFunctionality(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		if err := (&EmbeddingFunctionality{Dimensions: 768, ReportTokenUsage: True}).Validate(); err != nil {
+			t.Fatal(err)
+		}
+		for _, f := range []EmbeddingFunctionality{{Dimensions: -1}, {ReportTokenUsage: TriState(2)}} {
+			if err := f.Validate(); err == nil {
+				t.Fatalf("accepted %+v", f)
+			}
+		}
+	})
+	t.Run("JSON", func(t *testing.T) {
+		// Historical scoreboards omit Embed; current markers and measurements round trip.
+		for _, raw := range []string{`{"models":["model"]}`, `{"models":["model"],"Embed":{}}`, `{"models":["model"],"in":{"text":{"inline":true}},"out":{"embedding":{"inline":true}},"Embed":{"dimensions":768,"requestedDimensions":false,"reportTokenUsage":"true"}}`} {
+			var sc Scenario
+			if err := json.Unmarshal([]byte(raw), &sc); err != nil {
+				t.Fatal(err)
+			}
+			if err := sc.Validate(); err != nil {
+				t.Fatal(err)
+			}
+			b, err := json.Marshal(&sc)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var got Scenario
+			if err := json.Unmarshal(b, &got); err != nil {
+				t.Fatal(err)
+			}
+			if !reflect.DeepEqual(sc, got) {
+				t.Fatalf("lost state: %s", b)
+			}
+		}
+	})
 }

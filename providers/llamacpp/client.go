@@ -2,13 +2,32 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package llamacpp implements a client for the llama-server native API, not
-// the OpenAI compatible one.
+// Package llamacpp implements a client for llama-server native APIs.
 //
 // It is described at
 // https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#api-endpoints
 //
 // The implementation is at https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
+//
+// # Embeddings
+//
+// [Client.Embed] returns pooled embeddings and reports token usage. It
+// rejects nonzero Dimensions. Declare embedding output with ProviderOptionModalities.
+// [Client.EmbedRaw] also supports token inputs, multimodal content and
+// normalization control. Start llama-server with --embeddings and an embedding
+// model. EmbeddingGemma 2 works with released nightly b11476:
+// https://github.com/ggml-org/llama.cpp/releases/tag/b11476
+// Stable v0.6.0 does not support it. With b11476, run:
+//
+//	llama-server -hf ggml-org/embeddinggemma-2-GGUF --embeddings --pooling mean
+//
+// Supply task prefixes explicitly, such as "task: search result | query: " for
+// search queries and "title: none | text: " for documents without titles.
+// See https://huggingface.co/google/embeddinggemma-2 for task instructions.
+// Multimodal content requires the corresponding projector. Results contain one
+// pooled vector per input, normalized using the server's --embd-normalize setting
+// (default L2).
+// Normalization can be overridden by raw requests.
 //
 // # Decision inference
 //
@@ -34,6 +53,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"iter"
@@ -183,7 +203,9 @@ type Client struct {
 // to determine which model is already loaded.
 //
 // SystemOne uses /v1/systemone for typed decision inference. Pass ProviderOptionModalities with
-// ModalityDecision for decision models; output otherwise defaults to text when a model is selected.
+// ModalityDecision for decision models or ModalityEmbedding for loaded embedding
+// models. Selected models default to text; the model list does not reliably report
+// embedding capability.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var baseURL, model string
 	var modalities genai.Modalities
@@ -214,8 +236,13 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if baseURL == "" {
 		baseURL = "http://localhost:8080"
 	}
-	if slices.ContainsFunc(modalities, func(m genai.Modality) bool { return m != genai.ModalityText && m != genai.ModalityDecision }) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text and decision are supported", modalities)
+	if slices.ContainsFunc(modalities, func(m genai.Modality) bool {
+		return m != genai.ModalityText && m != genai.ModalityDecision && m != genai.ModalityEmbedding
+	}) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text, decision and embedding are supported", modalities)
+	}
+	if slices.Contains(modalities, genai.ModalityEmbedding) && (model == string(genai.ModelCheap) || model == string(genai.ModelGood) || model == string(genai.ModelSOTA)) {
+		return nil, errors.New("embedding models must be selected explicitly")
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -251,6 +278,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	} else if model != "" && err == nil {
 		c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 	}
+
 	return c, err
 }
 
@@ -264,7 +292,7 @@ func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	if len(m) > 0 {
+	if len(m) != 0 {
 		return m[0].GetID(), nil
 	}
 	return "", nil
@@ -322,7 +350,7 @@ func (c *Client) SystemOneRaw(ctx context.Context, in *SystemOneRequest, out *Sy
 
 // Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{SystemOne: true}
+	return genai.ProviderCapabilities{Embed: true, SystemOne: true}
 }
 
 // SystemOne implements genai.Provider using /v1/systemone.
@@ -372,6 +400,74 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// Embed implements genai.Provider with pooled, compact vectors from the loaded model.
+// Document inputs require a compatible multimodal model and projector.
+// Use EmbedRaw for token inputs and explicit normalization controls.
+func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	if in == nil {
+		return nil, errors.New("embedding request is required")
+	}
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+	if in.Dimensions != 0 {
+		return nil, fmt.Errorf("llama.cpp embedding dimensions: %w", &base.ErrNotSupported{Options: []string{"EmbeddingRequest.Dimensions"}})
+	}
+	req := EmbeddingRequest{Model: c.impl.Model, Input: make([]EmbeddingInput, len(in.Inputs))}
+	for i := range in.Inputs {
+		if in.Inputs[i].Text != "" {
+			req.Input[i].Text = in.Inputs[i].Text
+		} else {
+			input := in.Inputs[i]
+			var content Content
+			if _, err := content.FromRequest(&input); err != nil {
+				return nil, fmt.Errorf("embedding input #%d: %w", i, err)
+			}
+			req.Input[i].Content = Contents{content}
+		}
+	}
+	var raw EmbeddingResponse
+	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
+		if e, ok := errors.AsType[*ErrorResponse](err); ok && e.ErrorVal.Code == http.StatusBadRequest && e.ErrorVal.Type == "invalid_request_error" && e.ErrorVal.Message == "Pooling type 'none' is not OAI compatible. Please use a different pooling type" {
+			return nil, fmt.Errorf("llama.cpp embeddings require pooling: %w", &base.ErrNotSupported{Options: []string{"llama-server --pooling none"}})
+		}
+		return nil, err
+	}
+	if raw.Object != "list" || len(raw.Data) != len(in.Inputs) {
+		return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding response: object %q, %d results for %d inputs", raw.Object, len(raw.Data), len(in.Inputs))}
+	}
+	out := &genai.EmbeddingResponse{Embeddings: make([][]float32, len(raw.Data)), Usage: genai.Usage{InputTokens: raw.Usage.PromptTokens, TotalTokens: raw.Usage.TotalTokens}}
+	for i := range raw.Data {
+		v := &raw.Data[i]
+		if v.Object != "embedding" || v.Index < 0 || v.Index >= len(out.Embeddings) || out.Embeddings[v.Index] != nil {
+			return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding #%d: object %q, index %d", i, v.Object, v.Index)}
+		}
+		out.Embeddings[v.Index] = v.Embedding
+	}
+	if err := out.Validate(); err != nil {
+		return nil, &internal.BadError{Err: fmt.Errorf("invalid embedding response: %w", err)}
+	}
+	return out, nil
+}
+
+// EmbedRaw exposes pooled text, token and media embeddings through /v1/embeddings.
+// Model and Normalize are passed verbatim; an empty Model uses the loaded model.
+// The request is not modified. HTTP or decoding errors clear the response.
+func (c *Client) EmbedRaw(ctx context.Context, in *EmbeddingRequest, out *EmbeddingResponse) error {
+	if in == nil || out == nil {
+		return errors.New("embedding request and response are required")
+	}
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	req := embeddingRequest{Model: in.Model, Input: in.Input, EncodingFormat: "base64", Normalize: in.Normalize}
+	if err := c.impl.DoRequest(ctx, http.MethodPost, c.baseURL+"/v1/embeddings", &req, out); err != nil {
+		*out = EmbeddingResponse{}
+		return err
+	}
+	return nil
 }
 
 // Completion sends a completion request and returns the result.

@@ -1,0 +1,167 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 581
+        host: generativelanguage.googleapis.com
+        body: |
+            {"requests":[{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"task: search result | query: What causes the northern lights?"}]},"embedContentConfig":{"outputDimensionality":32}},{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"title: none | text: The northern lights are caused by charged particles from the sun."}]},"embedContentConfig":{"outputDimensionality":32}},{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"title: none | text: Bananas are a popular tropical fruit."}]},"embedContentConfig":{"outputDimensionality":32}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2:batchEmbedContents
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "embeddings": [
+                {
+                  "values": [
+                    0.16475576,
+                    0.0698557,
+                    0.13079397,
+                    -0.10028345,
+                    -0.14288366,
+                    0.054911003,
+                    -0.071692325,
+                    -0.015169065,
+                    0.20695435,
+                    -0.31897426,
+                    -0.15867868,
+                    -0.13292181,
+                    -0.16795088,
+                    -0.0319351,
+                    -0.13215083,
+                    0.15179347,
+                    0.024385352,
+                    0.16698313,
+                    0.26381665,
+                    -0.074532315,
+                    0.02082876,
+                    -0.1372648,
+                    -0.0022688038,
+                    0.09280707,
+                    0.013924845,
+                    0.0065483483,
+                    -0.1109867,
+                    0.015033014,
+                    -0.09893807,
+                    0.69968563,
+                    -0.10265335,
+                    -0.025757084
+                  ]
+                },
+                {
+                  "values": [
+                    0.19572534,
+                    -0.08704741,
+                    0.17218366,
+                    0.056230623,
+                    -0.0011121675,
+                    0.05080434,
+                    0.051031943,
+                    -0.023561921,
+                    0.19965997,
+                    -0.3199248,
+                    -0.03206359,
+                    -0.11545963,
+                    -0.20798358,
+                    0.057984687,
+                    -0.23224016,
+                    0.075324945,
+                    -0.034145508,
+                    0.06255161,
+                    0.056432497,
+                    -0.02252221,
+                    0.11437981,
+                    -0.20841496,
+                    -0.07374784,
+                    -0.00021720973,
+                    -0.12346748,
+                    0.012899681,
+                    -0.064108275,
+                    -0.020605028,
+                    -0.023513805,
+                    0.7448439,
+                    -0.045882355,
+                    -0.06808266
+                  ]
+                },
+                {
+                  "values": [
+                    0.13860781,
+                    -0.084318146,
+                    0.09581594,
+                    -0.01533051,
+                    0.20427741,
+                    -0.16703543,
+                    0.07460301,
+                    -0.17820595,
+                    0.10201952,
+                    -0.27858406,
+                    0.018316805,
+                    -0.04986422,
+                    -0.14889811,
+                    0.11855501,
+                    0.14884044,
+                    0.08136984,
+                    0.030258927,
+                    0.011102799,
+                    -0.02115775,
+                    -0.020297032,
+                    0.13862021,
+                    0.02023262,
+                    0.090914756,
+                    0.18027936,
+                    0.040262822,
+                    0.09286932,
+                    0.09216903,
+                    -0.039176226,
+                    0.1562374,
+                    0.7636368,
+                    0.02075436,
+                    -0.104511745
+                  ]
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 44,
+                "promptTokenDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 44
+                  }
+                ]
+              }
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=242
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 287ms

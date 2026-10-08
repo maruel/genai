@@ -43,6 +43,8 @@ const (
 	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes
 	// code blocks.
 	ModalityDocument = scoreboard.ModalityDocument
+	// ModalityEmbedding is a vector returned by Embed.
+	ModalityEmbedding = scoreboard.ModalityEmbedding
 	// ModalityImage is support for image formats like PNG, JPEG, often single frame GIF, and WEBP.
 	ModalityImage = scoreboard.ModalityImage
 	// ModalityText is for raw text.

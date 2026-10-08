@@ -104,3 +104,21 @@ func ExampleClient_SystemOne() {
 
 	fmt.Println(res.Answers["billing"].Noul)
 }
+
+// ExampleClient_EmbedRaw obtains decoded pooled vectors and token usage.
+func ExampleClient_EmbedRaw() {
+	ctx := context.Background()
+	c, err := llamacpp.New(ctx)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() { _ = c.Close() }()
+	var out llamacpp.EmbeddingResponse
+	err = c.EmbedRaw(ctx, &llamacpp.EmbeddingRequest{Input: []llamacpp.EmbeddingInput{{Text: "task: search result | query: What causes the northern lights?"}}}, &out)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	fmt.Printf("Returned %d dimensions using %d input tokens\n", len(out.Data[0].Embedding), out.Usage.PromptTokens)
+}

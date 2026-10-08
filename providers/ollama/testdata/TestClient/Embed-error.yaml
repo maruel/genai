@@ -1,0 +1,32 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 90
+        host: localhost
+        body: |
+            {"model":"genai-nonexistent-embedding-test","input":["hello"],"encoding_format":"base64"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/v1/embeddings
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 149
+        body: |
+            {"error":{"message":"model \"genai-nonexistent-embedding-test\" not found, try pulling it first","type":"not_found_error","param":null,"code":null}}
+        headers:
+            Content-Length:
+                - "149"
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 0s

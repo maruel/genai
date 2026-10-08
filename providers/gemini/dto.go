@@ -1758,6 +1758,13 @@ func (m *Model) Context() int64 {
 	return m.InputTokenLimit
 }
 
+func (m *Model) embeddingOnly() bool {
+	if slices.Contains(m.SupportedGenerationMethods, "generateContent") || slices.Contains(m.SupportedGenerationMethods, "bidiGenerateContent") || slices.Contains(m.SupportedGenerationMethods, "predict") || slices.Contains(m.SupportedGenerationMethods, "predictLongRunning") {
+		return false
+	}
+	return slices.Contains(m.SupportedGenerationMethods, "embedContent") || slices.Contains(m.SupportedGenerationMethods, "batchEmbedContents") || slices.Contains(m.SupportedGenerationMethods, "embedText")
+}
+
 // ModelsResponse represents the response structure for Gemini models listing.
 type ModelsResponse struct {
 	Models        []Model `json:"models"`
@@ -1843,4 +1850,122 @@ type ErrorResponseError struct {
 		// Type == "type.googleapis.com/google.rpc.RetryInfo"
 		RetryDelay string `json:"retryDelay"` // "28s"
 	} `json:"details"`
+}
+
+// EmbeddingTaskType describes the use of a Gemini embedding.
+type EmbeddingTaskType string
+
+const (
+	// EmbeddingTaskClassification embeds text for classification.
+	EmbeddingTaskClassification EmbeddingTaskType = "CLASSIFICATION"
+	// EmbeddingTaskClustering embeds text for clustering.
+	EmbeddingTaskClustering EmbeddingTaskType = "CLUSTERING"
+	// EmbeddingTaskCodeRetrievalQuery embeds queries for code retrieval.
+	EmbeddingTaskCodeRetrievalQuery EmbeddingTaskType = "CODE_RETRIEVAL_QUERY"
+	// EmbeddingTaskFactVerification embeds text for fact verification.
+	EmbeddingTaskFactVerification EmbeddingTaskType = "FACT_VERIFICATION"
+	// EmbeddingTaskQuestionAnswering embeds questions for answering.
+	EmbeddingTaskQuestionAnswering EmbeddingTaskType = "QUESTION_ANSWERING"
+	// EmbeddingTaskRetrievalDocument embeds documents for retrieval.
+	EmbeddingTaskRetrievalDocument EmbeddingTaskType = "RETRIEVAL_DOCUMENT"
+	// EmbeddingTaskRetrievalQuery embeds queries for retrieval.
+	EmbeddingTaskRetrievalQuery EmbeddingTaskType = "RETRIEVAL_QUERY"
+	// EmbeddingTaskSemanticSimilarity embeds text for similarity comparison.
+	EmbeddingTaskSemanticSimilarity EmbeddingTaskType = "SEMANTIC_SIMILARITY"
+	// EmbeddingTaskUnspecified leaves task selection to the model.
+	EmbeddingTaskUnspecified EmbeddingTaskType = "TASK_TYPE_UNSPECIFIED"
+)
+
+// EmbedContentConfig configures a native embedding request.
+// Controls require a model that supports them.
+// https://ai.google.dev/api/embeddings#EmbedContentConfig
+type EmbedContentConfig struct {
+	// Title is applicable only with RETRIEVAL_DOCUMENT.
+	Title    string            `json:"title,omitzero"`
+	TaskType EmbeddingTaskType `json:"taskType,omitzero"`
+	// AutoTruncate controls truncation of inputs exceeding the model's limit.
+	// Nil leaves the model default unchanged.
+	AutoTruncate *bool `json:"autoTruncate,omitzero"`
+	// OutputDimensionality requests a reduced vector size; zero uses the default.
+	OutputDimensionality int32 `json:"outputDimensionality,omitzero"`
+	// DocumentOCR enables OCR for document content. Nil uses the model default.
+	DocumentOCR *bool `json:"documentOcr,omitzero"`
+	// AudioTrackExtraction extracts audio from video. Nil uses the model default.
+	AudioTrackExtraction *bool `json:"audioTrackExtraction,omitzero"`
+}
+
+// Validate implements genai.Validatable.
+func (c *EmbedContentConfig) Validate() error {
+	if c.OutputDimensionality < 0 {
+		return errors.New("embedding dimensionality must be positive when specified")
+	}
+	switch c.TaskType {
+	case "", EmbeddingTaskUnspecified, EmbeddingTaskClassification, EmbeddingTaskClustering, EmbeddingTaskCodeRetrievalQuery, EmbeddingTaskFactVerification, EmbeddingTaskQuestionAnswering, EmbeddingTaskRetrievalDocument, EmbeddingTaskRetrievalQuery, EmbeddingTaskSemanticSimilarity:
+	default:
+		return fmt.Errorf("invalid embedding task type %q", c.TaskType)
+	}
+	if c.Title != "" && c.TaskType != EmbeddingTaskRetrievalDocument {
+		return errors.New("embedding title requires RETRIEVAL_DOCUMENT task type")
+	}
+	return nil
+}
+
+// EmbeddingRequest is one content item in a native batchEmbedContents request.
+// Model must be a resource name such as "models/gemini-embedding-2". Content
+// may contain multiple modalities on models that support them.
+type EmbeddingRequest struct {
+	Model              string             `json:"model"`
+	Content            Content            `json:"content"`
+	EmbedContentConfig EmbedContentConfig `json:"embedContentConfig,omitzero"`
+}
+
+// Validate implements genai.Validatable.
+func (r *EmbeddingRequest) Validate() error {
+	if !strings.HasPrefix(r.Model, "models/") || len(r.Model) == len("models/") || strings.Contains(strings.TrimPrefix(r.Model, "models/"), "/") {
+		return errors.New("embedding model must be a models/<model> resource name")
+	}
+	if len(r.Content.Parts) == 0 {
+		return errors.New("embedding content requires at least one part")
+	}
+	return r.EmbedContentConfig.Validate()
+}
+
+// Embedding is the native Gemini embedding vector.
+type Embedding struct {
+	Values []float32 `json:"values"`
+	Shape  []int32   `json:"shape,omitzero"`
+}
+
+// BatchEmbeddingRequest is the native batchEmbedContents request.
+// Each request must name the same model; embeddings preserve request order.
+type BatchEmbeddingRequest struct {
+	Requests []EmbeddingRequest `json:"requests"`
+}
+
+// Validate implements genai.Validatable.
+func (r *BatchEmbeddingRequest) Validate() error {
+	if len(r.Requests) == 0 {
+		return errors.New("embedding batch is empty")
+	}
+	for i := range r.Requests {
+		if err := r.Requests[i].Validate(); err != nil {
+			return fmt.Errorf("embedding request #%d: %w", i, err)
+		}
+		if r.Requests[i].Model != r.Requests[0].Model {
+			return errors.New("embedding batch requests must use the same model")
+		}
+	}
+	return nil
+}
+
+// BatchEmbeddingResponse is the native batchEmbedContents response.
+type BatchEmbeddingResponse struct {
+	Embeddings    []Embedding            `json:"embeddings"`
+	UsageMetadata EmbeddingUsageMetadata `json:"usageMetadata,omitzero"`
+}
+
+// EmbeddingUsageMetadata reports input tokens used by embedding models.
+type EmbeddingUsageMetadata struct {
+	PromptTokenCount   int64                `json:"promptTokenCount"`
+	PromptTokenDetails []ModalityTokenCount `json:"promptTokenDetails,omitzero"`
 }

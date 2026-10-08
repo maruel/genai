@@ -6,7 +6,9 @@
 
 package internal
 
-import "testing"
+import (
+	"testing"
+)
 
 type testStruct struct{}
 

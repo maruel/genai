@@ -1,270 +1,60 @@
 # Gemini Provider: Improvement Plan
 
-## Phase 1: Quick Wins (fix existing gaps in current code)
+## Vertex AI
 
-### 1.1 Complete Code Execution Tool Support
+See [vertex_ai.md](vertex_ai.md) for the API investigation.
 
-**Status**: **Done.**
+### Provider Package
 
-- `GenOption.CodeExecution` bool enables via `Tool{CodeExecution: &struct{}{}}`.
-- `ExecutableCode` mapped to `Reply{Text, Opaque: {type, language}}`.
-- `CodeExecutionResult` mapped to `Reply{Text, Opaque: {type, outcome}}`.
-- Handled in both `Content.To()` and `ProcessStream`.
+- Add `providers/vertexai/` with project/location resource paths.
+- Share native DTOs through a base package.
+- Support OAuth2 bearer tokens, ADC and service account authentication.
+- Read `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION`.
 
-### 1.2 Add CountTokens
+### Batch Prediction
 
-**Status**: **Done.**
+- Implement `ProviderBatch` using `batchPredictionJobs`.
+- Support input/output through GCS URIs or BigQuery tables.
+- Poll asynchronous jobs.
 
-- `Client.CountTokens(ctx, msgs, opts...)` reuses `ChatRequest.Init()`.
-- Endpoint: `POST models/{model}:countTokens`.
-- Returns `CountTokensResponse{TotalTokens, CachedContentTokenCount}`.
+## Advanced Features
 
-### 1.3 Add Get Model
+### Live API
 
-**Status**: **Done.**
+- Add a WebSocket client with bidirectional audio/video streaming.
+- Handle voice activity detection, session resumption and ephemeral tokens.
+- Decide how sessions fit the library's request/response interfaces.
 
-- `Client.GetModel(ctx, id)` fetches a single model via `GET models/{model}`.
-- Returns existing `*Model` struct.
+### Interactions and Deep Research
 
-### 1.4 Handle FileData in Responses
+- Support stateful agent workflows and background execution with polling.
+- Define how agent results fit the generic provider interface.
 
-**Status**: **Done.**
+### Model Tuning
 
-- Fixed bug in `Content.To()` using `InlineData.MimeType` instead of `FileData.MimeType`.
-- `ProcessStream` now maps `FileData` to `Reply.Doc{Filename, URL}`.
+- Create and monitor tuning jobs, then use tuned models for generation.
 
-## Phase 2: Important New Features
+### Google Maps Grounding
 
-### 2.1 File Upload API
+- Add the Maps tool and map location-aware grounding metadata into responses.
 
-**Status**: Done. FileUpload, FileGetMetadata, FileList, FileListRaw, and
-FileDelete are implemented.
+## SDK Parity
 
-**Work**:
-- Add `Upload(ctx, reader, config) (FileRef, error)` method
-- Endpoint: `POST https://generativelanguage.googleapis.com/upload/v1beta/files`
-  (multipart upload with resumable support)
-- Add `ListFiles`, `GetFile`, `DeleteFile` methods
-- Endpoints:
-  - `GET files?pageSize=100`
-  - `GET files/{name}`
-  - `DELETE files/{name}`
-- File references use `fileData.fileUri` field (already in `Part.FileData`)
-- Files expire after 48 hours by default
+### Image Editing, Upscaling and Segmentation
 
-**Effort**: Medium (~150 lines)
+- Add native image editing requests for masks, reference images and editing modes.
+- Support upscaling and foreground/background segmentation.
 
-### 2.2 Embeddings
+### Computer Use
 
-**Status**: Not implemented. Different use case from generation.
+- Add the computer-use tool and its environment configuration.
+- Handle screenshot analysis and returned UI actions.
 
-**Work**:
-- Add `Embed(ctx, content, config) ([]float32, error)` method
-- Endpoint: `POST models/{model}:embedContent`
-- Request: `{ "content": Content, "taskType": string, "title": string }`
-- Response: `{ "embedding": { "values": []float32 } }`
-- Implement `ProviderEmbed` interface
-- Models: `text-embedding-004`, `text-embedding-005`
+### Generation Controls
 
-**Effort**: Medium (~80 lines)
+- Add audio timestamps, model selection and routing configuration.
+- Support incremental function-call arguments and declaration behavior.
 
-### 2.3 File Search Tool
+### Enterprise Web Search
 
-**Status**: Complete.
-
-**Implemented**:
-- `FileSearch` struct with `FileSearchStoreNames`, `TopK`, `MetadataFilter`
-- Wired into `GenOption.FileSearch` and `ChatRequest.Init()`
-- `GroundingChunkRetrievedContext` maps to `CitationDocument` citations
-- Full File Search Store CRUD: `FileSearchStoreCreate`, `Get`, `List`, `ListRaw`, `Delete`
-- Document management: `FileSearchStoreUploadDocument` (resumable), `ImportFile`, `DocumentGet`, `DocumentList`, `DocumentListRaw`, `DocumentDelete`
-
-### 2.4 URL Context Tool
-
-**Status**: Done.
-
-**Work**:
-- Add `URLContext` to `Tool` struct
-- Enable via: `{"tools": [{"urlContext": {}}]}`
-- Model fetches and processes web pages during generation
-- Responses include URL context metadata
-
-**Effort**: Low (~30 lines for the tool; response metadata TBD)
-
-## Phase 3: Vertex AI Provider
-
-See [vertex_ai.md](vertex_ai.md) for full investigation.
-
-### 3.1 Create providers/vertexai Package
-
-**Work**:
-- New package `providers/vertexai/`
-- Reuse all Gemini types via type aliases or shared internal package
-- Different URL construction (resource path with project/location)
-- OAuth2 bearer token auth via `golang.org/x/oauth2`
-- Support ADC and service account authentication
-- Environment variables: `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION`
-
-**Effort**: Medium (~470 lines including tests)
-
-### 3.2 Batch Prediction API (Vertex AI only)
-
-**Status**: TODO in code at line 2239.
-
-**Work**:
-- Implement `ProviderBatch` interface
-- Endpoint: `POST projects/{P}/locations/{L}/batchPredictionJobs`
-- Input/output via GCS URIs or BigQuery tables
-- Async job with polling
-
-**Effort**: Medium (~120 lines)
-
-## Phase 4: Advanced Features (Lower Priority)
-
-### 4.1 Live API (Real-Time Streaming)
-
-**Status**: Not implemented. Fundamentally different protocol (WebSocket).
-
-**Work**:
-- WebSocket client for `wss://generativelanguage.googleapis.com/ws/...`
-- Bidirectional audio/video streaming
-- Voice activity detection
-- Session management with resumption
-- Ephemeral token support for client-side auth
-- Model: `gemini-2.5-flash-native-audio-preview`
-
-**Effort**: Very High (~500+ lines, new paradigm)
-
-**Recommendation**: Defer unless there is user demand. This is a fundamentally
-different interaction pattern that may not fit the library's current
-request/response architecture.
-
-### 4.2 Interactions API / Deep Research
-
-**Status**: Not implemented. Beta API.
-
-**Work**:
-- New endpoint for stateful agentic workflows
-- Background execution mode with async polling
-- Deep Research agent: `deep-research-pro-preview`
-- Currently better documented for Python/JS SDKs
-
-**Effort**: High (API surface still evolving)
-
-**Recommendation**: Wait for GA. API is in beta and may change.
-
-### 4.3 Model Tuning
-
-**Status**: Not implemented.
-
-**Work**:
-- Create tuning job endpoint
-- Monitor tuning progress
-- Use tuned model for generation
-
-**Effort**: Medium (~100 lines)
-
-**Recommendation**: Niche use case. Implement only if requested.
-
-### 4.4 Google Maps Grounding
-
-**Status**: Not implemented. Available on Gemini 2.5 Flash.
-
-**Work**:
-- Add `GoogleMaps` tool type
-- Response includes location-aware grounding metadata
-
-**Effort**: Low (~20 lines)
-
-## Phase 5: Additional SDK Parity Items
-
-### 5.1 Image Editing / Upscaling / Segmentation
-
-**Status**: Only basic image generation implemented.
-
-**Work**:
-- `EditImage`: Inpaint (remove/insert), outpaint, style transfer, background
-  swap, product image editing. Requires reference images with masks.
-- `UpscaleImage`: Increase resolution.
-- `SegmentImage`: Foreground/background segmentation.
-- Endpoints: `models/{model}:predict` with different request schemas per mode.
-
-**Effort**: High (~200 lines, many editing modes)
-
-### 5.2 Computer Use Tool (Preview)
-
-**Status**: Not implemented. Preview feature.
-
-**Work**:
-- Add `ComputerUse` to `Tool` struct with `Environment` field
-  (`EnvironmentBrowser`)
-- Model returns screenshot analysis and UI actions (click, type, scroll)
-- Requires response handling for action types
-
-**Effort**: Medium (~80 lines)
-
-**Recommendation**: Wait for GA.
-
-### 5.3 GenerateContentConfig Additions
-
-**Status**: Several config fields not yet mapped.
-
-**Work**:
-- `ThinkingLevel` (LOW/MEDIUM/HIGH/MINIMAL) - alternative to numeric budget
-- `MediaResolution` (LOW/MEDIUM/HIGH) - input media processing quality
-- `AudioTimestamp` - include timestamps in audio responses
-- `ModelSelectionConfig` - dynamic model selection
-- `RoutingConfig` - multi-model routing
-- `StreamFunctionCallArguments` - stream tool call args incrementally
-- `FunctionDeclaration.Behavior` - BLOCKING vs NON_BLOCKING
-
-**Effort**: Low (~40 lines for all)
-
-### 5.4 Enterprise Web Search
-
-**Status**: Not implemented. Vertex AI feature.
-
-**Work**:
-- Add `EnterpriseWebSearch` tool type with `ExcludeDomains` and
-  `BlockingConfidence` fields
-- Enterprise-grade web search with VPC-SC support
-
-**Effort**: Trivial (~15 lines)
-
-## Implementation Order
-
-Recommended implementation sequence based on impact/effort ratio:
-
-```
-Phase 1 (Quick Wins)     Phase 2 (Features)      Phase 3 (Vertex AI)
-  1.1 Code Execution ✓     2.1 File Upload ✓       3.1 vertexai package
-  1.2 CountTokens ✓         2.4 URL Context ✓       3.2 Batch Prediction
-  1.3 Get Model ✓           2.2 Embeddings
-  1.4 FileData handling ✓   2.3 File Search ✓
-
-Phase 4 (Advanced)       Phase 5 (SDK Parity)
-  4.4 Maps Grounding       5.3 Config additions
-  4.1 Live API             5.1 Image editing
-  4.2 Interactions         5.4 Enterprise Web Search
-  4.3 Model Tuning         5.2 Computer Use
-```
-
-Phases 1 and 2 can proceed independently. Phase 3 depends on Phase 1 being
-complete (to ensure the shared types are stable). Phases 4 and 5 are independent
-and can be done in any order based on demand. Phase 5.3 (config additions) is
-low effort and can be done alongside any phase.
-
-## Current Model Support
-
-The provider currently supports these model families:
-
-| Model | Status | Notes |
-|-------|--------|-------|
-| Gemini 3 Pro/Flash | Preview | Latest generation |
-| Gemini 2.5 Pro | Stable | Best reasoning |
-| Gemini 2.5 Flash | Stable | Best price-performance |
-| Gemini 2.5 Flash-Lite | Stable | Fastest/cheapest |
-| Gemini 2.0 Flash | Deprecated | Shutdown March 31, 2026 |
-| Imagen 3 | Stable | Image generation |
-| Veo 2 | Stable | Video generation |
-| text-embedding-004/005 | Listed | Not usable (no embed API) |
+- Add the Vertex AI search tool with domain exclusions and blocking confidence.

@@ -7,22 +7,17 @@
 package antigravity
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"slices"
-	"strconv"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -488,126 +483,6 @@ func TestStreamInputUserMessage(t *testing.T) {
 			t.Fatalf("unexpected content: %+v", m.Content)
 		}
 	})
-}
-
-func TestCmdExecutor(t *testing.T) {
-	if mode := os.Getenv("GENAI_AGY_ERROR_HELPER"); mode != "" {
-		if mode == "hold-stderr" {
-			time.Sleep(time.Minute)
-			os.Exit(0)
-		}
-		if _, err := fmt.Fprintln(os.Stderr, "private unrelated stderr"); err != nil {
-			t.Fatal(err)
-		}
-		if strings.HasPrefix(mode, "cancel") || mode == "success-descendant" {
-			pid := 0
-			if strings.HasSuffix(mode, "-descendant") {
-				bin, err := os.Executable()
-				if err != nil {
-					t.Fatal(err)
-				}
-				cmd := exec.Command(bin, "-test.run=^TestCmdExecutor$")
-				cmd.Env = append(os.Environ(), "GENAI_AGY_ERROR_HELPER=hold-stderr")
-				// The descendant outlives wait. On Windows, its working directory
-				// would keep the executor from removing its temporary directory.
-				cmd.Dir = os.TempDir()
-				cmd.Stderr = os.Stderr
-				if err := cmd.Start(); err != nil {
-					t.Fatal(err)
-				}
-				pid = cmd.Process.Pid
-			}
-			if _, err := fmt.Fprintln(os.Stdout, "ready", pid); err != nil {
-				t.Fatal(err)
-			}
-			if mode == "success-descendant" {
-				os.Exit(0)
-			}
-			time.Sleep(time.Minute)
-			os.Exit(0)
-		}
-		if _, err := fmt.Fprint(os.Stderr, `AGY_ERROR: {"short_error":"quota exhausted","status":"RESOURCE_EXHAUSTED","error_code":429,"code_kind":"HTTP","retryable":true,"error_id":"error-123"}`); err != nil {
-			t.Fatal(err)
-		}
-		if mode == "success" {
-			os.Exit(0)
-		}
-		os.Exit(3)
-	}
-	bin, err := os.Executable()
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, mode := range []string{"error", "success", "success-descendant", "cancel", "cancel-descendant"} {
-		t.Run(mode, func(t *testing.T) {
-			t.Setenv("GENAI_AGY_ERROR_HELPER", mode)
-			ctx, cancel := context.WithCancel(t.Context())
-			t.Cleanup(cancel)
-			e := cmdExecutor{bin: bin}
-			in, out, wait, err := e.start(ctx, []string{"-test.run=^TestCmdExecutor$"})
-			if err != nil {
-				t.Fatal(err)
-			}
-			if err := in.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if strings.HasPrefix(mode, "cancel") || mode == "success-descendant" {
-				line, err := bufio.NewReader(out).ReadString('\n')
-				if err != nil || !strings.HasPrefix(line, "ready ") {
-					t.Fatalf("ready = %q, %v", line, err)
-				}
-				if strings.HasSuffix(mode, "-descendant") {
-					pid, err := strconv.Atoi(strings.TrimSpace(strings.TrimPrefix(line, "ready ")))
-					if err != nil {
-						t.Fatal(err)
-					}
-					p, err := os.FindProcess(pid)
-					if err != nil {
-						t.Fatal(err)
-					}
-					t.Cleanup(func() {
-						if err := p.Kill(); err != nil && !errors.Is(err, os.ErrProcessDone) {
-							t.Error(err)
-						}
-						if err := p.Release(); err != nil {
-							t.Error(err)
-						}
-					})
-				}
-				if strings.HasPrefix(mode, "cancel") {
-					cancel()
-				}
-			}
-			if _, err := io.Copy(io.Discard, out); err != nil {
-				t.Fatal(err)
-			}
-			done := make(chan error, 1)
-			go func() { done <- wait() }()
-			select {
-			case err = <-done:
-			case <-time.After(5 * time.Second):
-				t.Fatal("wait blocked while a descendant held stderr")
-			}
-			if strings.HasPrefix(mode, "success") {
-				if err != nil {
-					t.Fatalf("successful run with a prior diagnostic: %v", err)
-				}
-				return
-			}
-			if _, ok := errors.AsType[*exec.ExitError](err); !ok {
-				t.Fatalf("wait error = %v, want exit error", err)
-			}
-			if strings.Contains(err.Error(), "private unrelated") {
-				t.Fatalf("wait leaked unrelated stderr: %v", err)
-			}
-			if mode == "error" {
-				e, ok := errors.AsType[*AgentError](err)
-				if !ok || e.ShortError != "quota exhausted" || e.Status != "RESOURCE_EXHAUSTED" || e.ErrorCode != 429 || e.CodeKind != "HTTP" || !e.Retryable || e.ErrorID != "error-123" {
-					t.Fatalf("structured diagnostic = %+v, %v", e, err)
-				}
-			}
-		})
-	}
 }
 
 func TestAgentErrorWriter(t *testing.T) {

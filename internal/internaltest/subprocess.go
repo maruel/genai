@@ -7,6 +7,9 @@
 package internaltest
 
 import (
+	"context"
+	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -32,7 +35,7 @@ import (
 //	internaltest.CleanupCloser(t, c)
 type SubprocessRecorder struct {
 	rec     *subprocessrecord.Recorder
-	forceRR bool // true when a fresh trace should be recorded
+	missing string // fixture path when it is absent outside recording mode
 }
 
 // NewSubprocessRecorder returns a recorder whose fixture file lives at
@@ -40,28 +43,27 @@ type SubprocessRecorder struct {
 //
 // When RECORD is "all", a fresh trace is always recorded. When RECORD is
 // "failure_only", recording happens only when the fixture is missing or empty.
-// Otherwise the existing fixture is replayed. If sanitize is non-nil, it
-// transforms each stdout line before storage while preserving the original
+// Otherwise the existing fixture is replayed, and a missing or empty fixture
+// makes the starter fail without launching the binary. If sanitize is non-nil,
+// it transforms each stdout line before storage while preserving the original
 // stream for the client.
 func NewSubprocessRecorder(t testing.TB, name, binaryName string, sanitize subprocessrecord.LineSanitizer) *SubprocessRecorder {
 	fixture := filepath.Join("testdata", name)
-	rec := os.Getenv("RECORD")
-	forceRR := false
-	if rec == "all" || rec == "failure_only" {
+	st, err := os.Stat(fixture + ".ndjson")
+	exists := err == nil && st.Size() != 0
+	switch rec := os.Getenv("RECORD"); rec {
+	case "all", "failure_only":
 		if _, err := exec.LookPath(binaryName); err != nil {
 			t.Fatalf("RECORD=%s but %s not found: %v", rec, binaryName, err)
 		}
-		if rec == "all" {
-			forceRR = true
-		} else {
-			if st, err := os.Stat(fixture + ".ndjson"); err != nil || st.Size() == 0 {
-				forceRR = true
-			}
+		if rec == "all" || !exists {
+			// Remove the fixture so subprocessrecord.New records fresh.
+			_ = os.Remove(fixture + ".ndjson")
 		}
-	}
-	if forceRR {
-		// Remove the fixture so subprocessrecord.New records fresh.
-		_ = os.Remove(fixture + ".ndjson")
+	default:
+		if !exists {
+			return &SubprocessRecorder{missing: fixture + ".ndjson"}
+		}
 	}
 	r, err := subprocessrecord.New(fixture, sanitize)
 	if err != nil {
@@ -72,12 +74,17 @@ func NewSubprocessRecorder(t testing.TB, name, binaryName string, sanitize subpr
 			t.Error(err)
 		}
 	})
-	return &SubprocessRecorder{rec: r, forceRR: forceRR}
+	return &SubprocessRecorder{rec: r}
 }
 
 // Wrap returns a starter wrapper that either records or replays subprocess I/O.
 //
 // It implements the genai.ProviderOptionStarterWrapper signature.
 func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
+	if s.missing != "" {
+		return func(context.Context, []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+			return nil, nil, nil, fmt.Errorf("no recording at %s; record it with RECORD=failure_only", s.missing)
+		}
+	}
 	return s.rec.Wrap(inner)
 }

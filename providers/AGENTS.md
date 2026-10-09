@@ -64,6 +64,13 @@ Compare the production paths they cover. Identify the uncovered branch or regres
 test. Remove unit tests that duplicate recording coverage. Coverage is evidence of execution, not proof of
 correct assertions; check that the retained test verifies the behavior on that path.
 
+### No child processes
+
+Mandatory: tests must not start child processes unless `RECORD` is set. CLI provider tests replay
+`.ndjson` fixtures through `internaltest.NewSubprocessRecorder`; outside `RECORD` mode a missing fixture
+fails the call instead of launching the CLI. Do not test exec plumbing by re-executing the test binary or
+by placing fake executables on `PATH`.
+
 ### Test Data Management
 
 - Store test data in `testdata/` directories

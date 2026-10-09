@@ -13,13 +13,11 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
-	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -28,101 +26,8 @@ import (
 	"github.com/maruel/genai/internal/ghrelease"
 )
 
-func TestMain(m *testing.M) {
-	if os.Getenv("LLAMACPP_TEST_HELPER") == "1" {
-		os.Exit(runDownloadReleaseHelper())
-	}
-	os.Exit(m.Run())
-}
-
 func TestDownloadRelease(t *testing.T) {
 	t.Run("extraction", testDownloadReleaseExtraction)
-	t.Run("valid", func(t *testing.T) {
-		cache := t.TempDir()
-		exe := installHelperExecutable(t, cache)
-		want := 1234
-		t.Setenv("LLAMACPP_TEST_HELPER", "1")
-		t.Setenv("LLAMACPP_TEST_CACHE", cache)
-		t.Setenv("LLAMACPP_TEST_VERSION", strconv.Itoa(want))
-
-		oldTransport := http.DefaultTransport
-		http.DefaultTransport = forbidRoundTrip{t: t}
-		t.Cleanup(func() { http.DefaultTransport = oldTransport })
-
-		got, err := DownloadRelease(t.Context(), cache, want)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != exe {
-			t.Fatalf("expected %q, got %q", exe, got)
-		}
-	})
-	t.Run("validExactVersion", func(t *testing.T) {
-		cache := t.TempDir()
-		exe := installHelperExecutable(t, cache)
-		t.Setenv("LLAMACPP_TEST_HELPER", "1")
-		t.Setenv("LLAMACPP_TEST_CACHE", cache)
-		t.Setenv("LLAMACPP_TEST_VERSION", "1234")
-		t.Setenv("LLAMACPP_TEST_VERSION_OUTPUT", "version: 1234\n")
-
-		oldTransport := http.DefaultTransport
-		http.DefaultTransport = forbidRoundTrip{t: t}
-		t.Cleanup(func() { http.DefaultTransport = oldTransport })
-
-		got, err := DownloadRelease(t.Context(), cache, 1234)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != exe {
-			t.Fatalf("expected %q, got %q", exe, got)
-		}
-	})
-}
-
-func installHelperExecutable(t *testing.T, cache string) string {
-	src, err := os.Executable()
-	if err != nil {
-		t.Fatal(err)
-	}
-	suffix := ""
-	if runtime.GOOS == "windows" {
-		suffix = ".exe"
-	}
-	dst := filepath.Join(cache, "llama-server"+suffix)
-	b, err := os.ReadFile(src)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(dst, b, 0o755); err != nil {
-		t.Fatal(err)
-	}
-	return dst
-}
-
-func runDownloadReleaseHelper() int {
-	if !slices.Contains(os.Args[1:], "--version") {
-		return 2
-	}
-	cache := os.Getenv("LLAMACPP_TEST_CACHE")
-	switch runtime.GOOS {
-	case "darwin":
-		if !slices.Contains(filepath.SplitList(os.Getenv("DYLD_LIBRARY_PATH")), cache) {
-			return 2
-		}
-	case "windows":
-	default:
-		if !slices.Contains(filepath.SplitList(os.Getenv("LD_LIBRARY_PATH")), cache) {
-			return 2
-		}
-	}
-	out := os.Getenv("LLAMACPP_TEST_VERSION_OUTPUT")
-	if out == "" {
-		out = fmt.Sprintf("version: %s test\n", os.Getenv("LLAMACPP_TEST_VERSION"))
-	}
-	if _, err := fmt.Print(out); err != nil {
-		return 2
-	}
-	return 0
 }
 
 func TestReadReleaseAlias(t *testing.T) {
@@ -332,124 +237,29 @@ func TestReleaseAssets(t *testing.T) {
 }
 
 func TestDownloadVersion(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
+	t.Run("cachedBuildRepair", func(t *testing.T) {
 		cache := t.TempDir()
-		build := filepath.Join(cache, "b11146")
-		if err := os.Mkdir(build, 0o755); err != nil {
+		if err := os.Mkdir(filepath.Join(cache, "b1234"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		exe := installHelperExecutable(t, build)
-		t.Setenv("LLAMACPP_TEST_HELPER", "1")
-		t.Setenv("LLAMACPP_TEST_CACHE", build)
-		t.Setenv("LLAMACPP_TEST_VERSION_OUTPUT", "version: 0.5.0-dev (build 11146, commit 7fe450e19)\n")
+		if err := writeReleaseAlias(filepath.Join(cache, "v0.5.0"), "b1234"); err != nil {
+			t.Fatal(err)
+		}
 		old := http.DefaultTransport
 		n := 0
 		http.DefaultTransport = releaseRoundTrip{fn: func(r *http.Request) (*http.Response, error) {
 			n++
-			body := ""
-			switch r.URL.Path {
-			case "/repos/ggml-org/llama.cpp/releases/tags/v0.5.0":
-				body = `{"tag_name":"v0.5.0","assets":[{"name":"nightly-tag.txt","browser_download_url":"https://example.com/nightly-tag.txt"}]}`
-			case "/nightly-tag.txt":
-				body = "b11146\n"
-			default:
+			if r.URL.Path != "/repos/ggml-org/llama.cpp/releases/tags/b1234" {
 				t.Fatalf("unexpected request: %s", r.URL)
 			}
-			return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(strings.NewReader(body)), Header: make(http.Header)}, nil
+			return nil, errUnexpectedHTTPRequest
 		}}
 		t.Cleanup(func() { http.DefaultTransport = old })
-		got, err := DownloadVersion(t.Context(), cache, "v0.5.0")
-		if err != nil {
-			t.Fatal(err)
+		if _, err := DownloadVersion(t.Context(), cache, "v0.5.0"); !errors.Is(err, errUnexpectedHTTPRequest) {
+			t.Fatalf("repair error = %v", err)
 		}
-		if got != exe || n != 2 {
-			t.Fatalf("got %q after %d requests, want %q after 2", got, n, exe)
-		}
-		alias := filepath.Join(cache, "v0.5.0")
-		tag, err := readReleaseAlias(alias)
-		if err != nil || tag != "b11146" {
-			t.Fatalf("cached alias = %q, %v; want b11146", tag, err)
-		}
-		info, err := os.Lstat(alias)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if info.Mode()&os.ModeSymlink != 0 {
-			if info, err := os.Stat(alias); err != nil || !info.IsDir() {
-				t.Fatalf("stable link does not resolve to a directory: %v", err)
-			}
-		}
-		http.DefaultTransport = forbidRoundTrip{t: t}
-		got, err = DownloadVersion(t.Context(), cache, "v0.5.0")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != exe {
-			t.Fatalf("cached path = %q, want %q", got, exe)
-		}
-		if err := os.Remove(alias); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(alias, []byte("b11146\n"), 0o644); err != nil {
-			t.Fatal(err)
-		}
-		got, err = DownloadVersion(t.Context(), cache, "v0.5.0")
-		if err != nil || got != exe {
-			t.Fatalf("text alias path = %q, %v; want %q", got, err, exe)
-		}
-	})
-	t.Run("nightlyCached", func(t *testing.T) {
-		cache := t.TempDir()
-		build := filepath.Join(cache, "b1234")
-		if err := os.Mkdir(build, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		exe := installHelperExecutable(t, build)
-		t.Setenv("LLAMACPP_TEST_HELPER", "1")
-		t.Setenv("LLAMACPP_TEST_CACHE", build)
-		t.Setenv("LLAMACPP_TEST_VERSION", "1234")
-		old := http.DefaultTransport
-		http.DefaultTransport = forbidRoundTrip{t: t}
-		t.Cleanup(func() { http.DefaultTransport = old })
-		got, err := DownloadVersion(t.Context(), cache, "b1234")
-		if err != nil || got != exe {
-			t.Fatalf("got %q, %v; want %q", got, err, exe)
-		}
-	})
-	t.Run("cachedBuildRepair", func(t *testing.T) {
-		for _, stale := range []bool{false, true} {
-			t.Run(strconv.FormatBool(stale), func(t *testing.T) {
-				cache := t.TempDir()
-				build := filepath.Join(cache, "b1234")
-				if err := os.Mkdir(build, 0o755); err != nil {
-					t.Fatal(err)
-				}
-				if stale {
-					installHelperExecutable(t, build)
-					t.Setenv("LLAMACPP_TEST_HELPER", "1")
-					t.Setenv("LLAMACPP_TEST_CACHE", build)
-					t.Setenv("LLAMACPP_TEST_VERSION", "5678")
-				}
-				if err := writeReleaseAlias(filepath.Join(cache, "v0.5.0"), "b1234"); err != nil {
-					t.Fatal(err)
-				}
-				old := http.DefaultTransport
-				n := 0
-				http.DefaultTransport = releaseRoundTrip{fn: func(r *http.Request) (*http.Response, error) {
-					n++
-					if r.URL.Path != "/repos/ggml-org/llama.cpp/releases/tags/b1234" {
-						t.Fatalf("unexpected request: %s", r.URL)
-					}
-					return nil, errUnexpectedHTTPRequest
-				}}
-				t.Cleanup(func() { http.DefaultTransport = old })
-				if _, err := DownloadVersion(t.Context(), cache, "v0.5.0"); !errors.Is(err, errUnexpectedHTTPRequest) {
-					t.Fatalf("repair error = %v", err)
-				}
-				if n != 1 {
-					t.Fatalf("repair requests = %d, want 1", n)
-				}
-			})
+		if n != 1 {
+			t.Fatalf("repair requests = %d, want 1", n)
 		}
 	})
 	t.Run("cachedResolutionError", func(t *testing.T) {
@@ -541,8 +351,10 @@ func testDownloadReleaseExtraction(t *testing.T) {
 				exe += ".exe"
 			}
 			name := "unrelated"
+			// A cached llama-server would be run to check its version, so the
+			// sentinel is a library.
 			if !valid {
-				if err := os.WriteFile(filepath.Join(cache, exe), []byte("old binary"), 0o644); err != nil {
+				if err := os.WriteFile(filepath.Join(cache, "libllama.so"), []byte("old library"), 0o644); err != nil {
 					t.Fatal(err)
 				}
 			}
@@ -609,9 +421,9 @@ func testDownloadReleaseExtraction(t *testing.T) {
 				if err == nil || got != "" {
 					t.Fatalf("missing server: got %q, %v", got, err)
 				}
-				b, err := os.ReadFile(filepath.Join(cache, exe))
-				if err != nil || string(b) != "old binary" {
-					t.Fatalf("failed extraction changed cached executable: %q, %v", b, err)
+				b, err := os.ReadFile(filepath.Join(cache, "libllama.so"))
+				if err != nil || string(b) != "old library" {
+					t.Fatalf("failed extraction changed cached library: %q, %v", b, err)
 				}
 				return
 			}

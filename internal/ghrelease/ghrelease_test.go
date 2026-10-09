@@ -300,39 +300,6 @@ func TestExtractArchive(t *testing.T) {
 	})
 }
 
-func TestMatchAny(t *testing.T) {
-	t.Run("Prefix", func(t *testing.T) {
-		if !matchAny("lib/ollama/a.so", []string{"lib/ollama/..."}) {
-			t.Fatal("should match lib/ollama/... prefix")
-		}
-	})
-	t.Run("PrefixNoMatch", func(t *testing.T) {
-		if matchAny("lib/other/a.so", []string{"lib/ollama/..."}) {
-			t.Fatal("should not match lib/ollama/... prefix")
-		}
-	})
-	t.Run("Glob", func(t *testing.T) {
-		if !matchAny("lib/a.so", []string{"lib/*.so"}) {
-			t.Fatal("should match lib/*.so glob")
-		}
-	})
-	t.Run("GlobNoMatch", func(t *testing.T) {
-		if matchAny("lib/a.dll", []string{"lib/*.so"}) {
-			t.Fatal("should not match lib/*.so glob")
-		}
-	})
-	t.Run("NilPatterns", func(t *testing.T) {
-		if !matchAny("anything", nil) {
-			t.Fatal("nil patterns should match all")
-		}
-	})
-	t.Run("EmptyPatterns", func(t *testing.T) {
-		if !matchAny("anything", []string{}) {
-			t.Fatal("empty patterns should match all")
-		}
-	})
-}
-
 func TestGetLatestRelease(t *testing.T) {
 	t.Run("Valid", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

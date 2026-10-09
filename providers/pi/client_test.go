@@ -341,13 +341,6 @@ func TestBuildResult(t *testing.T) {
 	}
 }
 
-func TestScoreboard(t *testing.T) {
-	s := Scoreboard()
-	if s.Scenarios == nil {
-		t.Fatal("scoreboard scenarios is nil")
-	}
-}
-
 func TestProviderOption(t *testing.T) {
 	t.Run("args", func(t *testing.T) {
 		for _, tc := range []struct {

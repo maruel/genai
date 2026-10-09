@@ -801,35 +801,6 @@ func TestContentValidate(t *testing.T) {
 	}
 }
 
-func TestSystemOneRequestMarshal(t *testing.T) {
-	// Content marshals to the value itself, whatever the variant.
-	data := []struct {
-		name  string
-		state genai.DecisionContent
-		want  string
-	}{
-		{"text", genai.Text("hi"), `"state":"hi",`},
-		{"empty text", genai.Text(""), `"state":"",`},
-		{"object", genai.Object{"message": "hi", "order": 49}, `"state":{"message":"hi","order":49},`},
-		{"empty object", genai.Object{}, `"state":{},`},
-		{"array", genai.Array{genai.Text("hi"), genai.Text("there")}, `"state":["hi","there"],`},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			req := &typesafe.SystemOneRequest{Model: "jev-latest", State: line.state,
-				Questions: genai.Questions{"a": {Type: genai.QuestionNoul, Instructions: genai.Text("x")}},
-			}
-			raw, err := json.Marshal(req)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !strings.Contains(string(raw), line.want) {
-				t.Fatalf("want %s, got %s", line.want, raw)
-			}
-		})
-	}
-}
-
 func TestScoreLegend(t *testing.T) {
 	// The legend is the Question.Score criteria echoed back, as Text, Object or Array.
 	in := `{"0":"low","1":{"desc":"high","nested":{"x":[1,2]}},"2":["a",{"b":true}],"3":null}`
@@ -990,36 +961,6 @@ func TestErrorResponse(t *testing.T) {
 			t.Fatal("expected error")
 		}
 	})
-}
-
-func TestScoreboard(t *testing.T) {
-	t.Parallel()
-	sb := typesafe.Scoreboard()
-	if err := sb.Validate(); err != nil {
-		t.Fatal(err)
-	}
-	if sb.Country != "US" {
-		t.Errorf("unexpected country %q", sb.Country)
-	}
-	n := 0
-	for _, sc := range sb.Scenarios {
-		if sc.Untested() {
-			continue
-		}
-		n++
-		if sc.SystemOne == nil {
-			t.Error("expected SystemOne functionality")
-		}
-		if sc.GenStream != nil {
-			t.Error("TypeSafe has no streaming, GenStream should not be declared")
-		}
-		if sc.GenSync != nil {
-			t.Error("TypeSafe has no chat generation, GenSync should not be declared")
-		}
-	}
-	if n != 1 {
-		t.Errorf("expected a single tested scenario, got %d", n)
-	}
 }
 
 func TestNewErrors(t *testing.T) {

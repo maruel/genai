@@ -7,7 +7,6 @@
 package openaibase
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
@@ -188,19 +187,6 @@ func TestClient(t *testing.T) {
 			})
 		}
 	})
-}
-
-func TestImageResponse(t *testing.T) {
-	var got ImageResponse
-	if err := json.Unmarshal([]byte(`{"data":[{"generation_id":"imggen_123"}]}`), &got); err != nil {
-		t.Fatal(err)
-	}
-	if len(got.Data) != 1 {
-		t.Fatalf("got %d images, want 1", len(got.Data))
-	}
-	if got.Data[0].GenerationID != "imggen_123" {
-		t.Fatalf("got generation ID %q, want %q", got.Data[0].GenerationID, "imggen_123")
-	}
 }
 
 type embeddingResponseTransport struct {

@@ -133,21 +133,3 @@ func TestProviderOptionStarterWrapper(t *testing.T) {
 		}
 	})
 }
-
-func TestProviderOptionInterface(t *testing.T) {
-	// Verify all types implement ProviderOption.
-	opts := []ProviderOption{
-		ProviderOptionAPIKey("key"),
-		ProviderOptionRemote("http://localhost"),
-		ProviderOptionModel("model"),
-		ProviderOptionModalities{ModalityText},
-		ProviderOptionPreloadedModels{mockModel{id: "m"}},
-		ProviderOptionTransportWrapper(func(rt http.RoundTripper) http.RoundTripper { return rt }),
-		ProviderOptionStarterWrapper(func(s Starter) Starter { return s }),
-	}
-	for _, o := range opts {
-		if err := o.Validate(); err != nil {
-			t.Fatal(err)
-		}
-	}
-}

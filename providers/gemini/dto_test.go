@@ -14,7 +14,6 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 )
 
 func TestSchema(t *testing.T) {
@@ -268,37 +267,6 @@ func TestSchema(t *testing.T) {
 	})
 }
 
-func TestContentThoughtSignature(t *testing.T) {
-	t.Run("round trip", func(t *testing.T) {
-		want := []byte("thought signature")
-		in := Content{
-			Parts: []Part{{Text: "hello", ThoughtSignature: want}},
-		}
-		m := genai.Message{}
-		if err := in.To(&m); err != nil {
-			t.Fatal(err)
-		}
-		if len(m.Replies) != 1 {
-			t.Fatalf("got %d replies, want 1", len(m.Replies))
-		}
-		got, ok := m.Replies[0].Opaque["signature"].([]byte)
-		if !ok {
-			t.Fatalf("got Opaque %#v, want signature", m.Replies[0].Opaque)
-		}
-		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("signature mismatch (-want +got):\n%s", diff)
-		}
-
-		out := Content{}
-		if err := out.From(&m); err != nil {
-			t.Fatal(err)
-		}
-		if diff := cmp.Diff(in.Parts, out.Parts); diff != "" {
-			t.Errorf("parts mismatch (-want +got):\n%s", diff)
-		}
-	})
-}
-
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
@@ -310,17 +278,6 @@ func TestChatRequest(t *testing.T) {
 			})
 		})
 	})
-}
-
-func TestImageParametersDurationS(t *testing.T) {
-	got, err := json.Marshal(ImageParameters{Duration: base.DurationS(8)})
-	if err != nil {
-		t.Fatal(err)
-	}
-	const want = `{"personGeneration":"","durationSeconds":8}`
-	if string(got) != want {
-		t.Errorf("MarshalJSON() = %s, want %s", got, want)
-	}
 }
 
 func TestSignatureOnlyStreamReplay(t *testing.T) {

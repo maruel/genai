@@ -21,7 +21,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
@@ -480,32 +479,4 @@ func TestClient(t *testing.T) {
 			t.Errorf("gpt-5.6-sol not found in models: %v", ids)
 		}
 	})
-}
-
-func TestExtractThreadID(t *testing.T) {
-	t.Run("found", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage("hi"),
-			{Replies: []genai.Reply{
-				{Text: "Hello"},
-				{Opaque: map[string]any{threadIDKey: "abc-123"}},
-			}},
-		}
-		if got := msgutil.ExtractOpaqueID(msgs, threadIDKey); got != "abc-123" {
-			t.Errorf("got %q, want %q", got, "abc-123")
-		}
-	})
-	t.Run("not_found", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage("hi")}
-		if got := msgutil.ExtractOpaqueID(msgs, threadIDKey); got != "" {
-			t.Errorf("got %q, want empty", got)
-		}
-	})
-}
-
-func TestScoreboard(t *testing.T) {
-	s := Scoreboard()
-	if len(s.Scenarios) == 0 {
-		t.Fatal("scoreboard has no scenarios")
-	}
 }

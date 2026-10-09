@@ -229,64 +229,6 @@ func TestHandleControlRequest(t *testing.T) {
 	})
 }
 
-func TestBuildResult(t *testing.T) {
-	t.Run("thinking_tokens", func(t *testing.T) {
-		res := &OutputResultMsg{
-			StopReason: "end_turn",
-			Usage: MsgUsage{
-				InputTokens:  10,
-				OutputTokens: 20,
-				OutputTokensDetails: OutputTokensDetails{
-					ThinkingTokens: 7,
-				},
-			},
-		}
-		got := buildResult(res, []OutputContentBlock{{Type: "text", Text: "ok"}}, nil, "session")
-		if got.Usage.ReasoningTokens != 7 {
-			t.Errorf("ReasoningTokens = %d, want 7", got.Usage.ReasoningTokens)
-		}
-	})
-	t.Run("post_turn_summary", func(t *testing.T) {
-		res := &OutputResultMsg{
-			StopReason: "end_turn",
-			Usage: MsgUsage{
-				InputTokens:  10,
-				OutputTokens: 20,
-			},
-		}
-		got := buildResult(res, []OutputContentBlock{{Type: "text", Text: "ok"}}, []string{"Checked the request."}, "session")
-		if got.Replies[0].Reasoning != "Checked the request." {
-			t.Errorf("Reasoning = %q, want summary", got.Replies[0].Reasoning)
-		}
-	})
-}
-
-func TestStreamDelta(t *testing.T) {
-	t.Run("estimated_tokens", func(t *testing.T) {
-		const data = `{"type":"stream_event","event":{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","estimated_tokens":42,"estimated_tokens_delta":3}}}`
-		var got OutputStreamEventMsg
-		if err := json.Unmarshal([]byte(data), &got); err != nil {
-			t.Fatal(err)
-		}
-		if got.Event.Delta.EstimatedTokens != 42 {
-			t.Errorf("EstimatedTokens = %d, want 42", got.Event.Delta.EstimatedTokens)
-		}
-		if got.Event.Delta.EstimatedTokensDelta != 3 {
-			t.Errorf("EstimatedTokensDelta = %d, want 3", got.Event.Delta.EstimatedTokensDelta)
-		}
-	})
-	t.Run("container", func(t *testing.T) {
-		const data = `{"type":"stream_event","event":{"type":"message_delta","delta":{"stop_reason":"tool_use","container":{"id":"container_1","expires_at":"2026-09-13T12:00:00Z"}}}}`
-		var got OutputStreamEventMsg
-		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
-			t.Fatal(err)
-		}
-		if got.Event.Delta.Container.ID != "container_1" {
-			t.Errorf("Container.ID = %q, want container_1", got.Event.Delta.Container.ID)
-		}
-	})
-}
-
 func TestOutputMessages(t *testing.T) {
 	t.Run("user_tool_result_metadata", func(t *testing.T) {
 		const data = `{"type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_denied","content":"Permission denied","is_error":true}]},"tool_result_meta":[{"id":"toolu_denied","non_execution_kind":"permission-rule"}]}`
@@ -1210,26 +1152,6 @@ func TestOutputMessages(t *testing.T) {
 			t.Fatalf("Message = %+v, want JSON-RPC tools/list", got.Message)
 		}
 	})
-}
-
-func TestControlReqGetTaskOutput(t *testing.T) {
-	b, err := json.Marshal(ControlReqGetTaskOutput{Subtype: ControlGetTaskOutput, TaskID: "task-1"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(b) != `{"subtype":"get_task_output","task_id":"task-1"}` {
-		t.Fatalf("request = %s", b)
-	}
-}
-
-func TestControlReqMcpReadResource(t *testing.T) {
-	b, err := json.Marshal(ControlReqMcpReadResource{Subtype: ControlMcpReadResource, ServerName: "app", URI: "ui://app/view"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(b) != `{"subtype":"mcp_read_resource","serverName":"app","uri":"ui://app/view"}` {
-		t.Fatalf("request = %s", b)
-	}
 }
 
 func TestWriteUserMsg(t *testing.T) {

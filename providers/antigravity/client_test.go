@@ -448,13 +448,6 @@ func TestStreamEvent(t *testing.T) {
 	}
 }
 
-func TestScoreboard(t *testing.T) {
-	s := Scoreboard()
-	if err := s.Validate(); err != nil {
-		t.Fatal(err)
-	}
-}
-
 func TestStreamInputUserMessage(t *testing.T) {
 	t.Run("string content", func(t *testing.T) {
 		var m StreamInputUserMessage

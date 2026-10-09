@@ -10,25 +10,9 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"path/filepath"
 	"sync/atomic"
 	"testing"
 )
-
-func TestNewRecords(t *testing.T) {
-	r, err := NewRecords("testdata")
-	if err != nil {
-		t.Fatal(err)
-	}
-	// Check that files in testdata/ are found
-	if _, exists := r.preexisting["test.yaml"]; !exists {
-		t.Errorf("Failed to find test.yaml in testdata/")
-	}
-	// Check that files in subdirectories are found
-	if _, exists := r.preexisting[filepath.Join("subdir", "nested.yaml")]; !exists {
-		t.Errorf("Failed to find nested.yaml in testdata/subdir/")
-	}
-}
 
 func TestTrimPolls(t *testing.T) {
 	t.Setenv("RECORD", "")

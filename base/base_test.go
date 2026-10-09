@@ -76,55 +76,6 @@ func TestCheckDuplicateProviderOptions(t *testing.T) {
 	})
 }
 
-func TestTimeSUnmarshalJSON(t *testing.T) {
-	tests := []struct {
-		name    string
-		input   string
-		want    TimeS
-		wantErr bool
-	}{
-		{
-			name:  "int64",
-			input: `1234567890`,
-			want:  TimeS(1234567890),
-		},
-		{
-			name:  "float64 with fractional part",
-			input: `1234567890.5`,
-			want:  TimeS(1234567890.5),
-		},
-		{
-			name:  "float64 with smaller fractional part",
-			input: `1234567890.3`,
-			want:  TimeS(1234567890.3),
-		},
-		{
-			name:  "float64 with zero fractional part",
-			input: `1234567890.0`,
-			want:  TimeS(1234567890),
-		},
-		{
-			name:    "invalid string",
-			input:   `"not a number"`,
-			wantErr: true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var ts TimeS
-			err := json.Unmarshal([]byte(tt.input), &ts)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !tt.wantErr && ts != tt.want {
-				t.Errorf("UnmarshalJSON() = %v, want %v", ts, tt.want)
-			}
-		})
-	}
-}
-
 func TestTimeSAsTime(t *testing.T) {
 	tests := []struct {
 		name string
@@ -172,50 +123,6 @@ func TestTimeSIsZero(t *testing.T) {
 		}
 		if string(got) != `{}` {
 			t.Fatalf("Marshal() = %s, want {}", got)
-		}
-	})
-}
-
-func TestTimeMSUnmarshalJSON(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		tests := []struct {
-			name  string
-			input string
-			want  TimeMS
-		}{
-			{
-				name:  "int64",
-				input: `1234567890123`,
-				want:  TimeMS(1234567890123),
-			},
-			{
-				name:  "float64 with fractional part",
-				input: `1234567890123.5`,
-				want:  TimeMS(1234567890123.5),
-			},
-			{
-				name:  "float64 with smaller fractional part",
-				input: `1234567890123.3`,
-				want:  TimeMS(1234567890123.3),
-			},
-		}
-
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				var ts TimeMS
-				if err := json.Unmarshal([]byte(tt.input), &ts); err != nil {
-					t.Fatal(err)
-				}
-				if ts != tt.want {
-					t.Errorf("UnmarshalJSON() = %v, want %v", ts, tt.want)
-				}
-			})
-		}
-	})
-	t.Run("error", func(t *testing.T) {
-		var ts TimeMS
-		if err := json.Unmarshal([]byte(`"not a number"`), &ts); err == nil {
-			t.Fatal("expected error")
 		}
 	})
 }

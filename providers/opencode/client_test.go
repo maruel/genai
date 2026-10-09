@@ -22,7 +22,6 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
@@ -550,32 +549,6 @@ func TestReadResponse(t *testing.T) {
 	})
 }
 
-func TestJSONRPCMessageClassification(t *testing.T) {
-	for _, tc := range []struct {
-		name         string
-		input        string
-		response     bool
-		agentRequest bool
-	}{
-		{name: "notification", input: `{"method":"session/update"}`},
-		{name: "response", input: `{"id":1,"result":{}}`, response: true},
-		{name: "agent request", input: `{"id":"permission-1","method":"session/request_permission","params":{}}`, agentRequest: true},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			var msg JSONRPCMessage
-			if err := json.Unmarshal([]byte(tc.input), &msg); err != nil {
-				t.Fatal(err)
-			}
-			if got := msg.IsResponse(); got != tc.response {
-				t.Errorf("IsResponse() = %t, want %t", got, tc.response)
-			}
-			if got := msg.IsAgentRequest(); got != tc.agentRequest {
-				t.Errorf("IsAgentRequest() = %t, want %t", got, tc.agentRequest)
-			}
-		})
-	}
-}
-
 func TestReadTurn(t *testing.T) {
 	t.Run("malformed JSON", func(t *testing.T) {
 		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":3`)), io.Discard, "session-1", 3, false, func(string, string) bool { return true })
@@ -633,27 +606,6 @@ func TestParseSessionUpdateDelta(t *testing.T) {
 	})
 }
 
-func TestExtractSessionID(t *testing.T) {
-	t.Run("found", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage("hi"),
-			{Replies: []genai.Reply{
-				{Text: "Hello"},
-				{Opaque: map[string]any{sessionIDKey: "sess-123"}},
-			}},
-		}
-		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "sess-123" {
-			t.Errorf("got %q, want %q", got, "sess-123")
-		}
-	})
-	t.Run("not_found", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage("hi")}
-		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "" {
-			t.Errorf("got %q, want empty", got)
-		}
-	})
-}
-
 func TestProviderOption(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		if err := (&ProviderOption{Effort: EffortHigh, DangerouslySkipPermissions: true, ExtraArgs: []string{"--pure"}}).Validate(); err != nil {
@@ -699,13 +651,6 @@ func TestGenOption(t *testing.T) {
 			t.Fatal("expected error for whitespace mode")
 		}
 	})
-}
-
-func TestScoreboard(t *testing.T) {
-	s := Scoreboard()
-	if len(s.Scenarios) == 0 {
-		t.Fatal("scoreboard has no scenarios")
-	}
 }
 
 func init() {

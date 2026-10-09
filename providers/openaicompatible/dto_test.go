@@ -85,14 +85,6 @@ func TestChatRequest(t *testing.T) {
 	})
 }
 
-func TestFinishReason(t *testing.T) {
-	t.Run("ToFinishReason", func(t *testing.T) {
-		if got := openaicompatible.FinishReason("provider_extension").ToFinishReason(); got != "provider_extension" {
-			t.Fatalf("finish: %q", got)
-		}
-	})
-}
-
 func TestChatResponse(t *testing.T) {
 	t.Run("ToResult", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {

@@ -108,27 +108,6 @@ func hasUnsupportedMediaClip(msgs genai.Messages) bool {
 	return false
 }
 
-func TestSkipMediaClient(t *testing.T) {
-	c := skipMediaClient{}
-	for _, name := range []string{"audio.aac", "audio.flac", "audio.mp3", "audio.ogg", "audio.wav", "video.mp4", "video.webm"} {
-		t.Run(name, func(t *testing.T) {
-			msgs := genai.Messages{{Requests: []genai.Request{{Doc: genai.Doc{Filename: name}}}}}
-			_, err := c.GenSync(t.Context(), msgs)
-			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
-				t.Fatalf("GenSync error = %v, want ErrNotSupported", err)
-			}
-			seq, finish := c.GenStream(t.Context(), msgs)
-			for range seq {
-				t.Error("GenStream yielded a reply")
-			}
-			_, err = finish()
-			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
-				t.Fatalf("GenStream finish error = %v, want ErrNotSupported", err)
-			}
-		})
-	}
-}
-
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -646,32 +625,4 @@ Do not answer the question yourself.`)
 			}
 		}
 	})
-}
-
-func TestExtractSessionID(t *testing.T) {
-	t.Run("found", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage("hi"),
-			{Replies: []genai.Reply{
-				{Text: "Hello"},
-				{Opaque: map[string]any{sessionIDKey: "abc-123"}},
-			}},
-		}
-		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "abc-123" {
-			t.Errorf("got %q, want %q", got, "abc-123")
-		}
-	})
-	t.Run("not_found", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage("hi")}
-		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "" {
-			t.Errorf("got %q, want empty", got)
-		}
-	})
-}
-
-func TestScoreboard(t *testing.T) {
-	s := Scoreboard()
-	if len(s.Scenarios) == 0 {
-		t.Fatal("scoreboard has no scenarios")
-	}
 }

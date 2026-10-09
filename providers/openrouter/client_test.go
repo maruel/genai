@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"slices"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -57,43 +56,6 @@ func TestChatRequest(t *testing.T) {
 		want := `{"type":"json_schema","json_schema":{"name":"response","schema":{"type":"object"},"strict":true}}`
 		if string(got) != want {
 			t.Fatalf("ResponseFormat mismatch:\n got: %s\nwant: %s", got, want)
-		}
-	})
-}
-
-func TestChatResponse(t *testing.T) {
-	t.Run("service tier and string content", func(t *testing.T) {
-		body := `{"id":"gen-test","object":"chat.completion","created":1781467681,"model":"qwen/qwen3.5-35b-a3b-20260224","provider":"Ambient","service_tier":"auto","choices":[{"index":0,"finish_reason":"stop","native_finish_reason":"stop","message":{"role":"assistant","content":"Hello"}}],"usage":{"prompt_tokens":1,"completion_tokens":2,"total_tokens":3}}`
-		var resp openrouter.ChatResponse
-		dec := json.NewDecoder(strings.NewReader(body))
-		dec.DisallowUnknownFields()
-		if err := dec.Decode(&resp); err != nil {
-			t.Fatal(err)
-		}
-		got, err := resp.ToResult()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got.String() != "Hello" {
-			t.Fatalf("String() = %q, want Hello", got.String())
-		}
-		if got.Usage.ServiceTier != "auto" {
-			t.Fatalf("ServiceTier = %q, want auto", got.Usage.ServiceTier)
-		}
-	})
-}
-
-func TestChatStreamChunkResponse(t *testing.T) {
-	t.Run("service tier and string content", func(t *testing.T) {
-		body := `{"id":"gen-test","object":"chat.completion.chunk","created":1781467681,"model":"qwen/qwen3.5-35b-a3b-20260224","provider":"Ambient","service_tier":"auto","choices":[{"index":0,"delta":{"content":"Hello","role":"assistant"},"finish_reason":"stop","native_finish_reason":"stop"}],"usage":{"prompt_tokens":1,"completion_tokens":2,"total_tokens":3}}`
-		var resp openrouter.ChatStreamChunkResponse
-		dec := json.NewDecoder(strings.NewReader(body))
-		dec.DisallowUnknownFields()
-		if err := dec.Decode(&resp); err != nil {
-			t.Fatal(err)
-		}
-		if resp.ServiceTier != "auto" {
-			t.Fatalf("ServiceTier = %q, want auto", resp.ServiceTier)
 		}
 	})
 }

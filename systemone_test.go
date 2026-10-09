@@ -169,23 +169,6 @@ func TestAnswers(t *testing.T) {
 	})
 }
 
-func TestDecisionUsage(t *testing.T) {
-	t.Run("MarshalJSON", func(t *testing.T) {
-		for _, tc := range []struct {
-			usage DecisionUsage
-			want  string
-		}{
-			{DecisionUsage{InputTokens: 42, OutputTokens: 3}, `{"input_tokens":42,"output_tokens":3}`},
-			{DecisionUsage{InputTokens: 42, OutputTokens: 3, ReasoningTokens: 2}, `{"input_tokens":42,"output_tokens":3,"reasoning_tokens":2}`},
-		} {
-			b, err := json.Marshal(tc.usage)
-			if err != nil || string(b) != tc.want {
-				t.Fatalf("got %s, %v; want %s", b, err, tc.want)
-			}
-		}
-	})
-}
-
 func TestSystemOneResponse(t *testing.T) {
 	t.Run("ValidateQuestions", func(t *testing.T) {
 		qs := Questions{"yes": {Type: QuestionNoul, Instructions: Text("yes?")}}

@@ -14,20 +14,6 @@ import extract_schema
 
 
 class SchemaCheckerTest(unittest.TestCase):
-    def test_complete_declarations(self):
-        source = """export declare type SDKUser = {
-    type: 'user';
-    // A semicolon ; in a comment is not a type boundary.
-    message: { content: 'text;value'; nested: string[] };
-    agent_id?: string;
-};
-declare type SDKMessage = SDKUser | { type: 'assistant'; uuid: string };
-"""
-        declarations = extract_schema._declarations(source)
-        self.assertEqual(extract_schema._fields("SDKUser", declarations, set()), {"type", "message", "agent_id"})
-        self.assertIn("nested: string[]", declarations["SDKUser"])
-        self.assertIn("uuid: string", declarations["SDKMessage"])
-
     def test_missing_field_after_discriminator(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

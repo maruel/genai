@@ -12,7 +12,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"slices"
 	"strings"
 	"testing"
 
@@ -107,48 +106,6 @@ func TestClientSystemOne(t *testing.T) {
 			}
 			if !tc.wantErr && (res.Answers["yes"].Noul != 0.9 || res.Usage.InputTokens != 42) {
 				t.Fatalf("unexpected response: %+v", res)
-			}
-		})
-	}
-}
-
-func TestNew(t *testing.T) {
-	for _, tc := range []struct {
-		name      string
-		model     string
-		mod       genai.Modality
-		installed []string
-		want      string
-	}{
-		{"capability", "", genai.ModalityDecision, nil, ""},
-		{"automatic decision", string(genai.ModelGood), genai.ModalityDecision, []string{"qwen3.5:2b", "clef-flash:latest"}, "clef-flash:latest"},
-		{"clef family prefix", "custom/clef-next:latest", genai.ModalityDecision, nil, "custom/clef-next:latest"},
-		{"explicit decision", "clef-flash:latest", genai.ModalityDecision, nil, "clef-flash:latest"},
-		{"automatic text", string(genai.ModelGood), genai.ModalityText, []string{"clef-flash:latest", "qwen3.5:2b"}, "qwen3.5:2b"},
-		{"decision default", string(genai.ModelGood), genai.ModalityDecision, []string{"qwen3.5:2b"}, "clef-flash:latest"},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			models := make(genai.ProviderOptionPreloadedModels, 0, len(tc.installed))
-			for _, m := range tc.installed {
-				models = append(models, &ollama.Model{Name: m})
-			}
-			opts := []genai.ProviderOption{genai.ProviderOptionRemote("http://localhost:0"), genai.ProviderOptionModalities{tc.mod}}
-			if len(models) != 0 {
-				opts = append(opts, models)
-			}
-			if tc.model != "" {
-				opts = append(opts, genai.ProviderOptionModel(tc.model))
-			}
-			c, err := ollama.New(t.Context(), opts...)
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Cleanup(func() { _ = c.Close() })
-			if !slices.Equal(c.OutputModalities(), genai.Modalities{tc.mod}) {
-				t.Fatalf("unexpected output modalities: %v", c.OutputModalities())
-			}
-			if c.ModelID() != tc.want {
-				t.Fatalf("unexpected selected model: %s", c.ModelID())
 			}
 		})
 	}

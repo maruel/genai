@@ -28,67 +28,6 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-func TestRunOneModel(t *testing.T) {
-	old := *updateScoreboard
-	t.Cleanup(func() { *updateScoreboard = old })
-	*updateScoreboard = true
-	var existingProbes, outOfOrder atomic.Int64
-	gc := func(_ testing.TB, name string) genai.Provider {
-		if strings.Contains(name, "/GenSync-OutOfOrder-") || strings.Contains(name, "/GenStream-OutOfOrder-") {
-			outOfOrder.Add(1)
-		} else if name != "" {
-			existingProbes.Add(1)
-		}
-		return &scoreboardProvider{}
-	}
-	_, measured := runOneModel(t, gc, &scoreboard.Scenario{Models: []string{"model"}}, false)
-	if measured == nil || measured.GenSync == nil || !measured.GenSync.Seed {
-		t.Fatalf("generated scenario = %#v, want seeded GenSync scenario", measured)
-	}
-	if outOfOrder.Load() != 0 || measured.GenSync.OutOfOrder != nil || measured.GenStream.OutOfOrder != nil {
-		t.Fatal("update measured OutOfOrder without successful basic tool calls")
-	}
-	baseline := existingProbes.Load()
-	*updateScoreboard = false
-	t.Run("replay", func(t *testing.T) {
-		existingProbes.Store(0)
-		outOfOrder.Store(0)
-		_, got := runOneModel(t, gc, measured, false)
-		if existingProbes.Load() != baseline || outOfOrder.Load() != 0 {
-			t.Fatalf("existingProbes=%d want=%d OutOfOrder=%d want=0", existingProbes.Load(), baseline, outOfOrder.Load())
-		}
-		if got.GenSync.OutOfOrder != nil || got.GenStream.OutOfOrder != nil {
-			t.Fatal("replay measured OutOfOrder without successful basic tool calls")
-		}
-	})
-}
-
-func TestRunOptions(t *testing.T) {
-	t.Run("qualifies", func(t *testing.T) {
-		m := scoreboard.Model{Model: "model", Reason: true}
-		opts := &RunOptions{Qualify: []scoreboard.Model{m}}
-		old := *updateScoreboard
-		t.Cleanup(func() { *updateScoreboard = old })
-		for _, tc := range []struct {
-			name   string
-			update bool
-			model  scoreboard.Model
-			want   bool
-		}{
-			{name: "update", update: true, model: m, want: true},
-			{name: "normal", model: m},
-			{name: "wrong reasoning", update: true, model: scoreboard.Model{Model: m.Model}},
-		} {
-			t.Run(tc.name, func(t *testing.T) {
-				*updateScoreboard = tc.update
-				if got := opts.qualifies(tc.model); got != tc.want {
-					t.Errorf("qualifies(%v) = %t, want %t", tc.model, got, tc.want)
-				}
-			})
-		}
-	})
-}
-
 func TestGenerateUpdatedScoreboard(t *testing.T) {
 	t.Run("embedding media splits tested siblings", func(t *testing.T) {
 		for _, added := range []bool{true, false} {

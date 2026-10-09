@@ -288,6 +288,94 @@ func TestStreamDelta(t *testing.T) {
 }
 
 func TestOutputMessages(t *testing.T) {
+	t.Run("user_tool_result_metadata", func(t *testing.T) {
+		const data = `{"type":"user","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_denied","content":"Permission denied","is_error":true}]},"tool_result_meta":[{"id":"toolu_denied","non_execution_kind":"permission-rule"}]}`
+		var got OutputUserMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if len(got.ToolResultMeta) != 1 || got.ToolResultMeta[0].ID != "toolu_denied" || got.ToolResultMeta[0].NonExecutionKind != "permission-rule" {
+			t.Fatalf("tool result metadata = %+v", got.ToolResultMeta)
+		}
+	})
+	t.Run("user_tool_permission_metadata", func(t *testing.T) {
+		const data = `{"type":"user","tool_result_meta":[{"id":"toolu_user","permission_decision":{"decision":"accept","source":"user_temporary"}},{"id":"toolu_config","permission_decision":{"decision":"accept","source":"config","reason_type":"subcommandResults"}}]}`
+		var got OutputUserMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if len(got.ToolResultMeta) != 2 {
+			t.Fatalf("tool result metadata = %+v", got.ToolResultMeta)
+		}
+		u := got.ToolResultMeta[0].PermissionDecision
+		c := got.ToolResultMeta[1].PermissionDecision
+		if u == nil || u.Decision != "accept" || u.Source != "user_temporary" || u.ReasonType != "" {
+			t.Fatalf("user permission decision = %+v", u)
+		}
+		if c == nil || c.Decision != "accept" || c.Source != "config" || c.ReasonType != CanUseToolDecisionReasonSubcommandResults {
+			t.Fatalf("config permission decision = %+v", c)
+		}
+	})
+	t.Run("current_task_run_metadata", func(t *testing.T) {
+		for _, data := range []string{
+			`{"type":"system","subtype":"task_started","task_id":"child","run_id":"run-2","parent_task_id":"parent"}`,
+			`{"type":"system","subtype":"background_tasks_changed","tasks":[{"task_id":"child","run_id":"run-2","parent_task_id":"parent","subagent_type":"Explore","task_type":"local_agent","description":"Inspect"}]}`,
+			`{"type":"system","subtype":"informational","tag":"feature"}`,
+		} {
+			var got OutputSystemMsg
+			if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+				t.Fatal(err)
+			}
+			switch got.Subtype {
+			case SystemTaskStarted:
+				if got.RunID != "run-2" || got.ParentTaskID != "parent" {
+					t.Fatalf("task run metadata = %+v", got)
+				}
+			case SystemBackgroundTasksChanged:
+				if len(got.Tasks) != 1 || got.Tasks[0].RunID != "run-2" || got.Tasks[0].ParentTaskID != "parent" || got.Tasks[0].SubagentType != "Explore" {
+					t.Fatalf("background task metadata = %+v", got.Tasks)
+				}
+			case SystemInformational:
+				if got.Tag != "feature" {
+					t.Fatalf("informational tag = %q", got.Tag)
+				}
+			default:
+				t.Fatalf("unexpected subtype %q", got.Subtype)
+			}
+		}
+	})
+	t.Run("current_runtime_stream_metadata", func(t *testing.T) {
+		var got OutputStreamEventMsg
+		if err := internal.UnmarshalJSON([]byte(`{"type":"stream_event","api_message_id":"msg_1","event":{"type":"message_start"}}`), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.APIMessageID != "msg_1" {
+			t.Fatalf("APIMessageID = %q", got.APIMessageID)
+		}
+	})
+	t.Run("current_runtime_result_metadata", func(t *testing.T) {
+		var got OutputResultMsg
+		if err := internal.UnmarshalJSON([]byte(`{"type":"result","safety_stops":1,"startup_failure_reason":"org_config_refused","first_stream_post_queue_wait_ms":2.5,"first_stream_post_queued_behind":"retry_backoff","first_text_post_ms":3,"first_text_post_queue_wait_ms":1,"first_text_post_queued_behind":"durable_post","first_text_post_wall_ms":100}`), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.SafetyStops != 1 || got.StartupFailureReason != StartupFailureOrgConfigRefused || got.FirstStreamPostQueueWait != 2.5 || got.FirstStreamPostQueuedBehind != PostQueueRetryBackoff || got.FirstTextPost != 3 || got.FirstTextPostQueueWait != 1 || got.FirstTextPostQueuedBehind != PostQueueDurablePost || got.FirstTextPostWall != 100 {
+			t.Fatalf("result metadata = %+v", got)
+		}
+	})
+	t.Run("current_usage_report", func(t *testing.T) {
+		const data = `{"type":"assistant","agent_id":"child","usage_report":{"session":{"total_cost_usd":1,"total_api_duration_ms":2,"total_duration_ms":3,"total_lines_added":4,"total_lines_removed":5,"model_usage":{}},"rate_limits":{"limits":[{"kind":"weekly_scoped","group":"weekly","percent":95,"resets_at":null,"scope":{"model":{"display_name":"Opus"},"surface":null},"severity":"critical","is_active":true}],"extra_usage":{"is_enabled":false,"monthly_limit":null,"used_credits":0,"utilization":null,"currency":"USD"}}}}`
+		var got OutputAssistantMsg
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.AgentID != "child" || got.UsageReport == nil || got.UsageReport.RateLimits == nil {
+			t.Fatalf("usage report = %+v", got)
+		}
+		r := got.UsageReport.RateLimits
+		if len(r.Limits) != 1 || r.Limits[0].Percent != 95 || r.Limits[0].Scope == nil || r.Limits[0].Scope.Model == nil || r.Limits[0].Scope.Model.DisplayName != "Opus" || r.ExtraUsage == nil || r.ExtraUsage.UsedCredits == nil || *r.ExtraUsage.UsedCredits != 0 || r.ExtraUsage.MonthlyLimit != nil {
+			t.Fatalf("rate limits = %+v", r)
+		}
+	})
 	t.Run("assistant_input_transformations", func(t *testing.T) {
 		const data = `{"type":"assistant","thinking_duration_ms":308,"message":{"input_transformations":[{"type":"thinking_dropped","path":"messages.1.content.0","reason":"model_binding_mismatch"}]}}`
 		var got OutputAssistantMsg
@@ -1289,4 +1377,30 @@ func TestProviderOption(t *testing.T) {
 
 func init() {
 	internal.BeLenient = false
+}
+
+func TestUserMessageContent(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, data := range []string{`""`, `"pasted text"`, `[]`, `[{"type":"text","text":"pasted block"}]`} {
+			var got UserMessageContent
+			if err := json.Unmarshal([]byte(data), &got); err != nil {
+				t.Fatal(err)
+			}
+			out, err := json.Marshal(got)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(out) != data {
+				t.Errorf("round trip = %s, want %s", out, data)
+			}
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		for _, data := range []string{`null`, `{}`, `1`} {
+			var got UserMessageContent
+			if err := json.Unmarshal([]byte(data), &got); err == nil {
+				t.Errorf("accepted invalid user content %s", data)
+			}
+		}
+	})
 }

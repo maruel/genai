@@ -7,7 +7,9 @@
 package pi
 
 import (
+	"bytes"
 	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/maruel/genai/internal"
@@ -202,6 +204,51 @@ func TestV0851DTOs(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestV110DTOs(t *testing.T) {
+	data := []struct {
+		name string
+		in   string
+		out  any
+	}{
+		{"settled", `{"type":"agent_settled","aborted":true}`, &AgentSettledEvent{}},
+		{"assistant duration", `{"role":"assistant","durationMs":12.5}`, &AgentMessage{}},
+		{"tool result duration", `{"role":"toolResult","durationMs":0}`, &AgentMessage{}},
+		{"nested calls", `{"role":"toolResult","nestedCalls":{"calls":[{"id":"call-1","name":"read","arguments":{"path":"README.md"},"status":"ok","durationMs":0},{"id":"call-2","name":"bash","argumentsBytes":2048,"status":"error","error":"failed"},{"id":"call-3","name":"write","status":"unfinished"}],"complete":false}}`, &AgentMessage{}},
+		{"nested tool start", `{"type":"tool_execution_start","toolCallId":"child","toolName":"read","parentToolCallId":"parent","args":{}}`, &ToolExecStartEvent{}},
+		{"nested tool update", `{"type":"tool_execution_update","toolCallId":"child","toolName":"read","parentToolCallId":"parent","args":{},"partialResult":{"content":[],"usage":{"input":1,"output":2,"cacheRead":0,"cacheWrite":0,"totalTokens":3},"terminate":true}}`, &ToolExecUpdateEvent{}},
+		{"nested tool end", `{"type":"tool_execution_end","toolCallId":"child","toolName":"read","parentToolCallId":"parent","result":{"content":[]},"isError":false,"durationMs":0}`, &ToolExecEndEvent{}},
+		{"sampling", `{"samplingParamsByThinkingLevel":{"off":{"temperature":0.7,"enable_thinking":false},"high":{"temperature":1}}}`, &Model{}},
+		{"model input limits", `{"type":"chat","inputLimits":{"maxRequestBytes":1024,"images":{"maxPerMessage":2,"maxPerRequest":4,"resize":{"maxWidth":100,"maxHeight":200,"maxBytes":512,"jpegQuality":80}}},"promptCache":{"short":300,"long":3600}}`, &Model{}},
+		{"usage entry", `{"type":"usage","id":"usage-1","parentId":null,"timestamp":"2026-10-08T00:00:00Z","kind":"cache_warm","provider":"anthropic","model":"claude-haiku-5-5","note":"warmed","usage":{"input":1,"output":0,"cacheRead":0,"cacheWrite":0,"totalTokens":1}}`, &SessionEntry{}},
+		{"compaction system message", `{"type":"compaction","id":"compact-1","parentId":null,"timestamp":"2026-10-08T00:00:00Z","systemMessage":{"role":"system","content":[{"type":"text","text":"instructions"}]}}`, &SessionEntry{}},
+	}
+	for _, tc := range data {
+		t.Run(tc.name, func(t *testing.T) {
+			d := json.NewDecoder(bytes.NewReader([]byte(tc.in)))
+			d.DisallowUnknownFields()
+			if err := d.Decode(tc.out); err != nil {
+				t.Fatal(err)
+			}
+			b, err := json.Marshal(tc.out)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var want, got map[string]any
+			if err := json.Unmarshal([]byte(tc.in), &want); err != nil {
+				t.Fatal(err)
+			}
+			if err := json.Unmarshal(b, &got); err != nil {
+				t.Fatal(err)
+			}
+			for key, value := range want {
+				if !reflect.DeepEqual(got[key], value) {
+					t.Errorf("field %q = %#v, want %#v", key, got[key], value)
+				}
+			}
+		})
+	}
 }
 
 func TestToolExecResult(t *testing.T) {

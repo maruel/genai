@@ -7,6 +7,9 @@
 // Type names follow the upstream ACP SDK definitions:
 //
 //	packages/opencode/src/acp/agent.ts — session update types and request/response handling
+//	@agentclientprotocol/sdk 0.21.0 src/schema/types.gen.ts — wire schema
+//
+// Checked against OpenCode 1.18.35 (388406238bd5ca15564a762840a2362c3a45bd9c).
 //
 // Source: https://github.com/anomalyco/opencode
 // Spec:   https://agentclientprotocol.com
@@ -296,14 +299,16 @@ type MCPServer struct {
 
 // EnvVariable is a name-value pair for MCP server environment variables.
 type EnvVariable struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+	Name  string          `json:"name"`
+	Value string          `json:"value"`
+	Meta  json.RawMessage `json:"_meta,omitzero"`
 }
 
 // HTTPHeader is a name-value pair for MCP server HTTP headers.
 type HTTPHeader struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+	Name  string          `json:"name"`
+	Value string          `json:"value"`
+	Meta  json.RawMessage `json:"_meta,omitzero"`
 }
 
 // ---------- Prompt request params ----------
@@ -314,18 +319,21 @@ type HTTPHeader struct {
 //   - ContentText:         Text
 //   - ContentImage:        Data (base64), MimeType
 //   - ContentResource:     Resource (embedded resource)
-//   - ContentResourceLink: URI, Name, MimeType
+//   - ContentResourceLink: URI, Name, MimeType, Title, Description, Size
 //
 // OpenCode converts these blocks in packages/opencode/src/acp/content.ts.
 type PromptContent struct {
-	Type     ContentType     `json:"type"`
-	Text     string          `json:"text,omitzero"`
-	Data     string          `json:"data,omitzero"`     // Base64 image data.
-	MimeType string          `json:"mimeType,omitzero"` // e.g. "image/png".
-	URI      string          `json:"uri,omitzero"`
-	Name     string          `json:"name,omitzero"`
-	Resource base.Unknown    `json:"resource,omitzero"` // Embedded resource object.
-	Meta     json.RawMessage `json:"_meta,omitzero"`
+	Type        ContentType     `json:"type"`
+	Text        string          `json:"text,omitzero"`
+	Data        string          `json:"data,omitzero"`     // Base64 image data.
+	MimeType    string          `json:"mimeType,omitzero"` // e.g. "image/png".
+	URI         string          `json:"uri,omitzero"`
+	Name        string          `json:"name,omitzero"`
+	Title       string          `json:"title,omitzero"`
+	Description string          `json:"description,omitzero"`
+	Size        *int64          `json:"size,omitzero"`     // Resource-link size in bytes.
+	Resource    base.Unknown    `json:"resource,omitzero"` // Embedded resource object.
+	Meta        json.RawMessage `json:"_meta,omitzero"`
 }
 
 // SessionPromptParams holds the params for session/prompt.
@@ -457,7 +465,7 @@ type SessionUpdateParams struct {
 //   - ContentText:         Text, Annotations
 //   - ContentImage:        Data, MimeType, URI
 //   - ContentResource:     Resource
-//   - ContentResourceLink: URI, Name, MimeType
+//   - ContentResourceLink: URI, Name, MimeType, Title, Description, Size
 type ContentBlock struct {
 	Type        ContentType     `json:"type"`
 	Text        string          `json:"text,omitzero"`
@@ -465,6 +473,9 @@ type ContentBlock struct {
 	MimeType    string          `json:"mimeType,omitzero"`
 	URI         string          `json:"uri,omitzero"`
 	Name        string          `json:"name,omitzero"`
+	Title       string          `json:"title,omitzero"`
+	Description string          `json:"description,omitzero"`
+	Size        *int64          `json:"size,omitzero"` // Resource-link size in bytes.
 	Resource    base.Unknown    `json:"resource,omitzero"`
 	Annotations base.Unknown    `json:"annotations,omitzero"`
 	Meta        json.RawMessage `json:"_meta,omitzero"`
@@ -889,6 +900,7 @@ type JSONRPCResponse struct {
 // PermissionResponseResult is the result sent back for a permission request.
 type PermissionResponseResult struct {
 	Outcome PermissionOutcome `json:"outcome"`
+	Meta    json.RawMessage   `json:"_meta,omitzero"`
 }
 
 // PermissionOutcomeType identifies whether a permission was selected or cancelled.

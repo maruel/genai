@@ -2,12 +2,13 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Wire types for the Antigravity CLI stream-json NDJSON protocol.
+// Wire types for the Antigravity CLI stream-json protocol and error diagnostics.
 //
 // Type and field names mirror the Go types in the agy binary, recovered from
 // its runtime type descriptors with internal/extracttypes: package `steps` for
 // stdout events and package `printmode` for stdin messages. The JSON tags are
-// copied verbatim. These DTOs match agy 1.2.14.
+// copied verbatim. These DTOs match agy 1.3.2, including the AGY_ERROR
+// diagnostics emitted on stderr by printmode.
 //
 // Enum values are untyped strings upstream; the constants below hold the
 // values observed in output.
@@ -19,6 +20,20 @@ import (
 	"encoding/json"
 	"fmt"
 )
+
+// AgentError is the structured AGY_ERROR diagnostic emitted on stderr when
+// a print-mode turn fails. CodeKind distinguishes HTTP and gRPC error codes.
+type AgentError struct {
+	ShortError string `json:"short_error"`
+	Status     string `json:"status,omitzero"`
+	ErrorCode  uint32 `json:"error_code,omitzero"`
+	CodeKind   string `json:"code_kind,omitzero"`
+	Retryable  bool   `json:"retryable"`
+	ErrorID    string `json:"error_id,omitzero"`
+}
+
+// Error implements error.
+func (e *AgentError) Error() string { return "agy error: " + e.ShortError }
 
 // EventType is the `event` discriminator of every stream-json line, on both
 // stdin and stdout.

@@ -31,6 +31,8 @@
 // disable it. The conversation ID is returned in Reply.Opaque["conversation_id"].
 // When the message history contains one, the provider passes --conversation
 // <id> and sends only the last user message.
+// Failed subprocesses also return an AgentError when agy emits a structured
+// AGY_ERROR diagnostic; errors.As can retrieve its status and retryability.
 package antigravity
 
 import (
@@ -48,6 +50,7 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -619,6 +622,12 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 	}
 	cmd := exec.CommandContext(ctx, e.bin, args...)
 	cmd.Dir = dir
+	var diagnostics agentErrorWriter
+	cmd.Stderr = &diagnostics
+	// A background descendant can retain the stderr pipe after agy exits or
+	// is cancelled. Allow one second to drain diagnostics, then close the pipe
+	// so Wait cannot hang on the stderr copy goroutine.
+	cmd.WaitDelay = time.Second
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
@@ -631,8 +640,74 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 		return nil, nil, nil, errors.Join(fmt.Errorf("start agy: %w", err), os.RemoveAll(dir))
 	}
 	return stdin, stdout, func() error {
-		return errors.Join(cmd.Wait(), os.RemoveAll(dir))
+		err := cmd.Wait()
+		// ErrWaitDelay means agy exited successfully but a descendant retained
+		// stderr. Closing that pipe must not turn a successful turn into a failure.
+		if errors.Is(err, exec.ErrWaitDelay) {
+			err = nil
+		}
+		if err != nil {
+			err = errors.Join(err, diagnostics.finish())
+		}
+		return errors.Join(err, os.RemoveAll(dir))
 	}, nil
+}
+
+// agentErrorWriter retains the first structured diagnostic, dropping unrelated
+// stderr and bounding each line to 64 KiB. exec.Cmd.Wait waits for its writer
+// goroutine before finish reads the diagnostic.
+type agentErrorWriter struct {
+	line      []byte
+	truncated bool
+	err       error
+}
+
+// Write implements io.Writer.
+func (w *agentErrorWriter) Write(p []byte) (int, error) {
+	n := len(p)
+	for len(p) != 0 {
+		i := bytes.IndexByte(p, '\n')
+		line := p
+		if i >= 0 {
+			line = p[:i]
+		}
+		const maxLine = 64 << 10
+		if room := maxLine - len(w.line); len(line) > room {
+			w.line = append(w.line, line[:room]...)
+			w.truncated = true
+		} else {
+			w.line = append(w.line, line...)
+		}
+		if i < 0 {
+			break
+		}
+		w.consume()
+		p = p[i+1:]
+	}
+	return n, nil
+}
+
+func (w *agentErrorWriter) finish() error {
+	w.consume()
+	return w.err
+}
+
+func (w *agentErrorWriter) consume() {
+	const prefix = "AGY_ERROR: "
+	if w.err == nil && bytes.HasPrefix(w.line, []byte(prefix)) {
+		if w.truncated {
+			w.err = errors.New("agy error diagnostic exceeds 64 KiB")
+		} else {
+			var e AgentError
+			if err := json.Unmarshal(w.line[len(prefix):], &e); err != nil {
+				w.err = fmt.Errorf("parse agy error diagnostic: %w", err)
+			} else {
+				w.err = &e
+			}
+		}
+	}
+	w.line = w.line[:0]
+	w.truncated = false
 }
 
 // newScanner returns a scanner sized for large NDJSON lines (up to 32 MB).

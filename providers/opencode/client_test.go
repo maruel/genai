@@ -238,6 +238,9 @@ func TestClient(t *testing.T) {
 			if res.Usage.OutputTokens == 0 {
 				t.Error("OutputTokens: got 0, want > 0")
 			}
+			if res.Usage.TotalTokens != 11654 {
+				t.Errorf("TotalTokens: got %d, want recorded ACP total 11654", res.Usage.TotalTokens)
+			}
 			if res.Usage.FinishReason != genai.FinishedStop {
 				t.Errorf("FinishReason: got %q, want %q", res.Usage.FinishReason, genai.FinishedStop)
 			}
@@ -609,11 +612,25 @@ func TestReadTurn(t *testing.T) {
 }
 
 func TestParseSessionUpdateDelta(t *testing.T) {
-	params := json.RawMessage(`{"sessionId":"session-1","update":{"sessionUpdate":"tool_call","toolCallId":7,"title":"read"}}`)
-	_, _, err := parseSessionUpdateDelta(params)
-	if err == nil || !strings.Contains(err.Error(), "unmarshal tool_call") {
-		t.Fatalf("expected known update decode error, got %v", err)
-	}
+	t.Run("valid", func(t *testing.T) {
+		t.Run("resource_link", func(t *testing.T) {
+			params := json.RawMessage(`{"sessionId":"session-1","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"resource_link","uri":"file:///tmp/report.json","name":"report.json","title":"Report","description":"Analysis result","size":42}}}`)
+			text, reasoning, err := parseSessionUpdateDelta(params)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if text != "" || reasoning != "" {
+				t.Fatalf("non-text content produced deltas: text %q, reasoning %q", text, reasoning)
+			}
+		})
+	})
+	t.Run("error", func(t *testing.T) {
+		params := json.RawMessage(`{"sessionId":"session-1","update":{"sessionUpdate":"tool_call","toolCallId":7,"title":"read"}}`)
+		_, _, err := parseSessionUpdateDelta(params)
+		if err == nil || !strings.Contains(err.Error(), "unmarshal tool_call") {
+			t.Fatalf("expected known update decode error, got %v", err)
+		}
+	})
 }
 
 func TestExtractSessionID(t *testing.T) {

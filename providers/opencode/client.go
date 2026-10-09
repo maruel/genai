@@ -978,7 +978,8 @@ func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Res
 		r.Usage.OutputTokens = int64(pr.Usage.OutputTokens)
 		r.Usage.ReasoningTokens = int64(pr.Usage.ThoughtTokens)
 		r.Usage.InputCachedTokens = int64(pr.Usage.CachedReadTokens)
-		r.Usage.TotalTokens = int64(pr.Usage.InputTokens + pr.Usage.OutputTokens)
+		// ACP totals include reasoning and both cache token categories.
+		r.Usage.TotalTokens = int64(pr.Usage.TotalTokens)
 	}
 
 	if thinking != "" {

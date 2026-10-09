@@ -374,6 +374,12 @@ func TestParseCompletedItem(t *testing.T) {
 }
 
 func TestReadTurnSync(t *testing.T) {
+	t.Run("root_turn", func(t *testing.T) {
+		const input = `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","rootTurnId":"root","status":"completed","items":[]}}}`
+		if _, err := readTurnSync(bufio.NewScanner(strings.NewReader(input)), "thread"); err != nil {
+			t.Fatal(err)
+		}
+	})
 	t.Run("server_request", func(t *testing.T) {
 		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(`{"id":7,"method":"item/tool/requestUserInput","params":{}}`)), "thread")
 		if err == nil || !strings.Contains(err.Error(), "unsupported server request") {
@@ -407,7 +413,7 @@ func TestReadTurnSync(t *testing.T) {
 		}
 	})
 	t.Run("misalignment", func(t *testing.T) {
-		line := `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","items":[],"itemsView":"full","status":"failed","error":{"message":"blocked","codexErrorInfo":null,"additionalDetails":null,"misalignment":{"errorType":"policy","detailedExplanation":"details","steer":{"message":"continue"}}},"startedAt":null,"completedAt":null,"durationMs":null}}}`
+		line := `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","items":[],"itemsView":"full","status":"failed","error":{"message":"blocked","codexErrorInfo":null,"additionalDetails":null,"misalignment":{"errorType":"policy","detailedExplanation":"details","steer":{"message":"continue"},"reviewTarget":"opaque-block"}},"startedAt":null,"completedAt":null,"durationMs":null}}}`
 		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(line)), "thread")
 		if err == nil || err.Error() != "blocked" {
 			t.Fatalf("error = %v", err)
@@ -636,7 +642,7 @@ func TestThreadItemExtensions(t *testing.T) {
 		}
 	})
 	t.Run("mcp_tool_call_app_context", func(t *testing.T) {
-		const input = `{"id":"mcp_1","type":"mcpToolCall","appContext":{"connectorId":"canva","linkId":"link_1","resourceUri":"canva://design/1","appName":"Canva","actionName":"Create design"},"readOnlyHint":true,"durationMs":12.25}`
+		const input = `{"id":"mcp_1","type":"mcpToolCall","appContext":{"connectorId":"canva","linkId":"link_1","resourceUri":"canva://design/1","appName":"Canva","actionName":"Create design"},"mcpAppUi":{"resourceUri":"ui://design","preferredModelDisplayMode":"inline"},"readOnlyHint":true,"durationMs":12.25}`
 		var got McpToolCallItem
 		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
 			t.Fatal(err)
@@ -644,14 +650,17 @@ func TestThreadItemExtensions(t *testing.T) {
 		if got.AppContext.ConnectorID != "canva" || got.AppContext.ActionName != "Create design" || !got.ReadOnlyHint || got.Duration != base.DurationMS(12.25) {
 			t.Errorf("McpToolCallItem = %+v, want populated app context and read-only hint", got)
 		}
+		if got.McpAppUI == nil || got.McpAppUI.ResourceURI != "ui://design" || got.McpAppUI.PreferredModelDisplayMode != McpAppDisplayModeInline {
+			t.Fatalf("MCP app UI = %+v", got.McpAppUI)
+		}
 	})
 	t.Run("sub_agent_activity", func(t *testing.T) {
-		const input = `{"id":"activity_1","type":"subAgentActivity","kind":"interacted","agentThreadId":"thread_1","agentPath":"/agents/research"}`
+		const input = `{"id":"activity_1","type":"subAgentActivity","kind":"interacted","agentThreadId":"thread_1","agentPath":"/agents/research","model":"gpt-6","reasoningEffort":"high"}`
 		var got SubAgentActivityItem
 		if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
 			t.Fatal(err)
 		}
-		if got.Kind != SubAgentActivityKindInteracted || got.AgentThreadID != "thread_1" || got.AgentPath != "/agents/research" {
+		if got.Kind != SubAgentActivityKindInteracted || got.AgentThreadID != "thread_1" || got.AgentPath != "/agents/research" || got.Model != "gpt-6" || got.ReasoningEffort != ReasoningEffortHigh {
 			t.Errorf("SubAgentActivityItem = %+v, want populated activity", got)
 		}
 	})
@@ -675,6 +684,68 @@ func TestThreadItemExtensions(t *testing.T) {
 			t.Errorf("Results = %s, want one result", got.Results)
 		}
 	})
+}
+
+func TestThreadAttachmentUpdatedNotification(t *testing.T) {
+	var got ThreadAttachmentUpdatedNotification
+	const input = `{"threadId":"thread","attachmentType":"context","identityKey":"identity","attachmentId":"attachment","operation":"deleted"}`
+	if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.ThreadID != "thread" || got.AttachmentType != "context" || got.IdentityKey != "identity" || got.AttachmentID != "attachment" || got.Operation != ThreadAttachmentOperationDeleted {
+		t.Fatalf("attachment update = %+v", got)
+	}
+}
+
+func TestThreadPredictionUpdatedNotification(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		result string
+		want   ThreadPredictionResultType
+	}{
+		{"completed", `{"type":"completed","text":"continue"}`, ThreadPredictionResultTypeCompleted},
+		{"empty", `{"type":"completed","text":null}`, ThreadPredictionResultTypeCompleted},
+		{"failed", `{"type":"failed"}`, ThreadPredictionResultTypeFailed},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var got ThreadPredictionUpdatedNotification
+			if err := internal.UnmarshalJSON([]byte(`{"threadId":"thread","sourceTurnId":"turn","result":`+tc.result+`}`), &got); err != nil {
+				t.Fatal(err)
+			}
+			if got.ThreadID != "thread" || got.SourceTurnID != "turn" || got.Result.Type != tc.want {
+				t.Fatalf("prediction update = %+v", got)
+			}
+			if tc.name == "completed" {
+				if got.Result.Text == nil || *got.Result.Text != "continue" {
+					t.Fatalf("prediction text = %v", got.Result.Text)
+				}
+			} else if got.Result.Text != nil {
+				t.Fatalf("prediction text = %v, want nil", got.Result.Text)
+			}
+		})
+	}
+}
+
+func TestGatewayOAuthChangedNotification(t *testing.T) {
+	var got GatewayOAuthChangedNotification
+	const input = `{"authUrl":null,"providerId":"gateway","status":"failed","error":"login cancelled"}`
+	if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.AuthURL != "" || got.ProviderID != "gateway" || got.Status != GatewayOAuthStatusFailed || got.Error != "login cancelled" {
+		t.Fatalf("gateway OAuth = %+v", got)
+	}
+}
+
+func TestMcpServerOauthLoginCompletedNotification(t *testing.T) {
+	var got McpServerOauthLoginCompletedNotification
+	const input = `{"loginId":"login","name":"server","success":true,"error":null}`
+	if err := internal.UnmarshalJSON([]byte(input), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.LoginID != "login" || got.Name != "server" || !got.Success {
+		t.Fatalf("MCP OAuth completion = %+v", got)
+	}
 }
 
 func TestDurationS(t *testing.T) {

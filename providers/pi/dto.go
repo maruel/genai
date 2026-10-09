@@ -738,6 +738,7 @@ type CompactData struct {
 //
 // It implements genai.Model.
 type Model struct {
+	Type      string `json:"type,omitzero"` // "chat" when present
 	ID        string `json:"id"`
 	Name      string `json:"name"`
 	API       string `json:"api"`
@@ -745,14 +746,17 @@ type Model struct {
 	BaseURL   string `json:"baseUrl"`
 	Reasoning bool   `json:"reasoning"`
 	// ThinkingLevelMap maps Pi thinking levels to provider-specific values. JSON null values decode as empty strings.
-	ThinkingLevelMap map[ThinkingLevel]string   `json:"thinkingLevelMap,omitzero"`
-	Input            []string                   `json:"input"`
-	ContextWindow    int64                      `json:"contextWindow"`
-	MaxTokens        int64                      `json:"maxTokens"`
-	Cost             ModelCost                  `json:"cost"`
-	SamplingParams   map[string]json.RawMessage `json:"samplingParams,omitzero"`
-	Headers          map[string]string          `json:"headers,omitzero"`
-	Compat           json.RawMessage            `json:"compat,omitzero"`
+	ThinkingLevelMap              map[ThinkingLevel]string                     `json:"thinkingLevelMap,omitzero"`
+	Input                         []string                                     `json:"input"`
+	ContextWindow                 int64                                        `json:"contextWindow"`
+	MaxTokens                     int64                                        `json:"maxTokens"`
+	Cost                          ModelCost                                    `json:"cost"`
+	SamplingParams                map[string]json.RawMessage                   `json:"samplingParams,omitzero"`
+	SamplingParamsByThinkingLevel map[ThinkingLevel]map[string]json.RawMessage `json:"samplingParamsByThinkingLevel,omitzero"`
+	InputLimits                   *ModelInputLimits                            `json:"inputLimits,omitzero"`
+	PromptCache                   map[string]float64                           `json:"promptCache,omitzero"` // "short" and "long" retention lifetimes in seconds
+	Headers                       map[string]string                            `json:"headers,omitzero"`
+	Compat                        json.RawMessage                              `json:"compat,omitzero"`
 }
 
 // GetID returns the provider-qualified model ID (e.g. "cerebras/gpt-oss-120b").
@@ -763,6 +767,27 @@ func (m *Model) String() string { return m.Name }
 
 // Context returns the context window size in tokens.
 func (m *Model) Context() int64 { return m.ContextWindow }
+
+// ModelInputLimits describes request and image limits for a model.
+type ModelInputLimits struct {
+	MaxRequestBytes int64                  `json:"maxRequestBytes,omitzero"`
+	Images          *ModelImageInputLimits `json:"images,omitzero"`
+}
+
+// ModelImageInputLimits describes image counts and preprocessing limits.
+type ModelImageInputLimits struct {
+	Resize        *ModelImageResizeOptions `json:"resize,omitzero"`
+	MaxPerMessage int64                    `json:"maxPerMessage,omitzero"`
+	MaxPerRequest int64                    `json:"maxPerRequest,omitzero"`
+}
+
+// ModelImageResizeOptions defines the cache-safe image resize profile.
+type ModelImageResizeOptions struct {
+	MaxWidth    int64   `json:"maxWidth,omitzero"`
+	MaxHeight   int64   `json:"maxHeight,omitzero"`
+	MaxBytes    int64   `json:"maxBytes,omitzero"`
+	JPEGQuality float64 `json:"jpegQuality,omitzero"`
+}
 
 // ModelCost holds per-million-token costs.
 type ModelCost struct {
@@ -800,7 +825,8 @@ type AgentEndEvent struct {
 // AgentSettledEvent is emitted when Pi has no automatic retry, compaction
 // retry, or queued continuation remaining.
 type AgentSettledEvent struct {
-	Type EventType `json:"type"`
+	Type    EventType `json:"type"`
+	Aborted bool      `json:"aborted"`
 }
 
 // AutoRetryStartEvent reports the start of an automatic retry after a transient error.
@@ -953,28 +979,33 @@ type MessageEndEvent struct {
 
 // ToolExecStartEvent is emitted when a tool begins execution.
 type ToolExecStartEvent struct {
-	Type       EventType       `json:"type"`
-	ToolCallID string          `json:"toolCallId"`
-	ToolName   string          `json:"toolName"`
-	Args       json.RawMessage `json:"args"`
+	Type             EventType       `json:"type"`
+	ToolCallID       string          `json:"toolCallId"`
+	ToolName         string          `json:"toolName"`
+	ParentToolCallID string          `json:"parentToolCallId,omitzero"`
+	Args             json.RawMessage `json:"args"`
 }
 
 // ToolExecUpdateEvent is emitted during tool execution with progress.
 type ToolExecUpdateEvent struct {
-	Type          EventType       `json:"type"`
-	ToolCallID    string          `json:"toolCallId"`
-	ToolName      string          `json:"toolName"`
-	Args          json.RawMessage `json:"args"`
-	PartialResult ToolExecResult  `json:"partialResult"`
+	Type             EventType       `json:"type"`
+	ToolCallID       string          `json:"toolCallId"`
+	ToolName         string          `json:"toolName"`
+	ParentToolCallID string          `json:"parentToolCallId,omitzero"`
+	Args             json.RawMessage `json:"args"`
+	PartialResult    ToolExecResult  `json:"partialResult"`
 }
 
 // ToolExecEndEvent is emitted when a tool finishes execution.
 type ToolExecEndEvent struct {
-	Type       EventType      `json:"type"`
-	ToolCallID string         `json:"toolCallId"`
-	ToolName   string         `json:"toolName"`
-	Result     ToolExecResult `json:"result"`
-	IsError    bool           `json:"isError"`
+	Type             EventType      `json:"type"`
+	ToolCallID       string         `json:"toolCallId"`
+	ToolName         string         `json:"toolName"`
+	ParentToolCallID string         `json:"parentToolCallId,omitzero"`
+	Result           ToolExecResult `json:"result"`
+	IsError          bool           `json:"isError"`
+	// DurationMS is absent when the tool did not execute; zero is a measured duration.
+	DurationMS *float64 `json:"durationMs,omitzero"`
 }
 
 // EditToolArgs is the args shape for Pi's edit tool.
@@ -1024,6 +1055,8 @@ type ToolExecResult struct {
 	IsError           bool            `json:"isError,omitzero"`
 	Details           json.RawMessage `json:"details,omitzero"`
 	StructuredContent json.RawMessage `json:"structuredContent,omitzero"`
+	Usage             *MessageUsage   `json:"usage,omitzero"`
+	Terminate         bool            `json:"terminate,omitzero"`
 }
 
 // Text extracts and concatenates all text content from the result blocks.
@@ -1086,23 +1119,53 @@ type AgentMessage struct {
 	RawStopReason         string             `json:"rawStopReason,omitzero"`
 	EndTurn               bool               `json:"endTurn,omitzero"`
 	Timestamp             float64            `json:"timestamp,omitzero"`
-	ToolCallID            string             `json:"toolCallId,omitzero"`
-	ToolName              string             `json:"toolName,omitzero"`
-	Details               json.RawMessage    `json:"details,omitzero"`
-	AddedToolNames        []string           `json:"addedToolNames,omitzero"`
-	IsError               bool               `json:"isError,omitzero"`
-	CustomType            string             `json:"customType,omitzero"`
-	Display               bool               `json:"display,omitzero"`
-	Command               string             `json:"command,omitzero"`
-	Output                string             `json:"output,omitzero"`
-	ExitCode              int                `json:"exitCode,omitzero"`
-	Cancelled             bool               `json:"cancelled,omitzero"`
-	Truncated             bool               `json:"truncated,omitzero"`
-	FullOutputPath        string             `json:"fullOutputPath,omitzero"`
-	ExcludeFromContext    bool               `json:"excludeFromContext,omitzero"`
-	Summary               string             `json:"summary,omitzero"`
-	FromID                string             `json:"fromId,omitzero"`
-	TokensBefore          int64              `json:"tokensBefore,omitzero"`
+	// DurationMS is measured with a monotonic clock and absent for legacy messages.
+	DurationMS         *float64         `json:"durationMs,omitzero"`
+	ToolCallID         string           `json:"toolCallId,omitzero"`
+	ToolName           string           `json:"toolName,omitzero"`
+	Details            json.RawMessage  `json:"details,omitzero"`
+	NestedCalls        *NestedToolCalls `json:"nestedCalls,omitzero"`
+	AddedToolNames     []string         `json:"addedToolNames,omitzero"`
+	IsError            bool             `json:"isError,omitzero"`
+	CustomType         string           `json:"customType,omitzero"`
+	Display            bool             `json:"display,omitzero"`
+	Command            string           `json:"command,omitzero"`
+	Output             string           `json:"output,omitzero"`
+	ExitCode           int              `json:"exitCode,omitzero"`
+	Cancelled          bool             `json:"cancelled,omitzero"`
+	Truncated          bool             `json:"truncated,omitzero"`
+	FullOutputPath     string           `json:"fullOutputPath,omitzero"`
+	ExcludeFromContext bool             `json:"excludeFromContext,omitzero"`
+	Summary            string           `json:"summary,omitzero"`
+	FromID             string           `json:"fromId,omitzero"`
+	TokensBefore       int64            `json:"tokensBefore,omitzero"`
+}
+
+// NestedToolCalls records calls made by a tool, without retaining their results.
+type NestedToolCalls struct {
+	Calls    []NestedToolCallRecord `json:"calls"`
+	Complete bool                   `json:"complete"`
+}
+
+// NestedToolCallStatus is the state of a recorded nested tool invocation.
+type NestedToolCallStatus string
+
+// Nested tool call status constants.
+const (
+	NestedToolCallError      NestedToolCallStatus = "error"
+	NestedToolCallOK         NestedToolCallStatus = "ok"
+	NestedToolCallUnfinished NestedToolCallStatus = "unfinished"
+)
+
+// NestedToolCallRecord describes one invocation made while another tool ran.
+type NestedToolCallRecord struct {
+	ID             string                     `json:"id"`
+	Name           string                     `json:"name"`
+	Arguments      map[string]json.RawMessage `json:"arguments,omitzero"`
+	ArgumentsBytes int64                      `json:"argumentsBytes,omitzero"`
+	Status         NestedToolCallStatus       `json:"status"`
+	DurationMS     *float64                   `json:"durationMs,omitzero"`
+	Error          string                     `json:"error,omitzero"`
 }
 
 // Tool defines a tool added by a system message.
@@ -1156,10 +1219,14 @@ type SessionEntry struct {
 	ParentID             *string         `json:"parentId"`
 	Timestamp            string          `json:"timestamp"`
 	Message              *AgentMessage   `json:"message,omitzero"`
+	SystemMessage        *AgentMessage   `json:"systemMessage,omitzero"`
 	Content              ContentBlocks   `json:"content,omitzero"`
 	ThinkingLevel        ThinkingLevel   `json:"thinkingLevel,omitzero"`
 	Provider             string          `json:"provider,omitzero"`
 	ModelID              string          `json:"modelId,omitzero"`
+	Model                string          `json:"model,omitzero"`
+	Kind                 string          `json:"kind,omitzero"`
+	Note                 string          `json:"note,omitzero"`
 	Summary              string          `json:"summary,omitzero"`
 	FirstKeptEntryID     string          `json:"firstKeptEntryId,omitzero"`
 	TokensBefore         int64           `json:"tokensBefore,omitzero"`

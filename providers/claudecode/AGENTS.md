@@ -8,8 +8,8 @@ Source code:
 - https://github.com/anthropics/claude-code
 
 Current wire baseline:
-- Claude Code CLI 2.1.287
-- `@anthropic-ai/claude-agent-sdk` 0.3.287
+- Claude Code CLI 2.1.295
+- `@anthropic-ai/claude-agent-sdk` 0.3.295
 
 Claude Code headless:
 - https://code.claude.com/docs/en/headless: headless mode overview
@@ -25,7 +25,7 @@ Fetch the exact SDK version paired with the Claude Code release, then verify tha
 and hook discriminator is declared in `dto.go`:
 
 ```sh
-npm pack @anthropic-ai/claude-agent-sdk@0.3.287
-tar -xzf anthropic-ai-claude-agent-sdk-0.3.287.tgz
-./extract_schema.py package/sdk.d.ts dto.go --version 0.3.287
+npm pack @anthropic-ai/claude-agent-sdk@0.3.295
+tar -xzf anthropic-ai-claude-agent-sdk-0.3.295.tgz
+./extract_schema.py package/sdk.d.ts dto.go --version 0.3.295
 ```

@@ -10,9 +10,9 @@ binary-string extractor depended on. The npm package's sdk.d.ts is the released
 wire contract and can be checked reproducibly instead.
 
 Usage:
-  npm pack @anthropic-ai/claude-agent-sdk@0.3.270
-  tar -xzf anthropic-ai-claude-agent-sdk-0.3.270.tgz
-  ./extract_schema.py package/sdk.d.ts dto.go --version 0.3.270
+  npm pack @anthropic-ai/claude-agent-sdk@0.3.295
+  tar -xzf anthropic-ai-claude-agent-sdk-0.3.295.tgz
+  ./extract_schema.py package/sdk.d.ts dto.go --version 0.3.295
 """
 
 import argparse
@@ -21,22 +21,39 @@ import re
 import sys
 from pathlib import Path
 
-TYPE_DECLARATION = re.compile(
-    r"(?:export\s+)?declare\s+type\s+(?P<name>[A-Za-z0-9_]+)\s*=\s*(?P<body>.*?);",
+TYPE_DECLARATION = re.compile(r"(?:export\s+)?declare\s+type\s+(?P<name>[A-Za-z0-9_]+)\s*=")
+TYPE_TOKEN = re.compile(
+    r"'[^'\\]*(?:\\.[^'\\]*)*'|\"[^\"\\]*(?:\\.[^\"\\]*)*\"|`[^`]*`|/\*.*?\*/|//[^\n]*|[{}()[\];]",
     re.DOTALL,
 )
 LITERAL_FIELD = re.compile(r"\b(?:type|subtype):\s*'([^']+)'")
 QUOTED_LITERAL = re.compile(r"'([^']+)'")
-GO_LITERAL = re.compile(r'"([^"\\]*(?:\\.[^"\\]*)*)"')
+GO_LITERAL = re.compile(r'^\s*(?:const\s+)?\w+(?:\s+\w+)?\s*=\s*"([^"\\]*(?:\\.[^"\\]*)*)"', re.MULTILINE)
 TS_FIELD = re.compile(r"^    ([A-Za-z_][A-Za-z0-9_]*)(?:\?)?:", re.MULTILINE)
 GO_JSON_TAG = re.compile(r"json:\"([^,\"]+)")
 
 
 def _declarations(source: str) -> dict[str, str]:
-    return {match.group("name"): match.group("body") for match in TYPE_DECLARATION.finditer(source)}
+    declarations = {}
+    for match in TYPE_DECLARATION.finditer(source):
+        depth = 0
+        for token in TYPE_TOKEN.finditer(source, match.end()):
+            value = token.group()
+            if value in {"{", "(", "["}:
+                depth += 1
+            elif value in {"}", ")", "]"}:
+                depth -= 1
+            elif value == ";" and depth == 0:
+                declarations[match.group("name")] = source[match.end() : token.start()].strip()
+                break
+        else:
+            raise ValueError(f"unterminated type declaration: {match.group('name')}")
+    return declarations
 
 
 def _union_members(body: str) -> list[str]:
+    if body.startswith("{"):
+        return []
     return re.findall(r"\bSDK[A-Za-z0-9_]+\b", body)
 
 

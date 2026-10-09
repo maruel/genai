@@ -10,6 +10,9 @@
 //	codex-rs/app-server-protocol/src/protocol/common.rs — method string ↔ struct mapping
 //
 // Source: https://github.com/openai/codex
+// Turn lineage, MCP app UI, sub-agent settings, attachment and prediction events,
+// and gateway OAuth notifications follow upstream commit
+// 0ada5d8806cdad498230d5b1b2924091e04c8feb.
 
 package codex
 
@@ -98,6 +101,10 @@ const (
 	MethodThreadSettingsUpdated Method = "thread/settings/updated"
 	// MethodThreadNameUpdated reports an updated thread name.
 	MethodThreadNameUpdated Method = "thread/name/updated"
+	// MethodThreadAttachmentUpdated reports creation or deletion of a thread attachment.
+	MethodThreadAttachmentUpdated Method = "thread/attachment/updated"
+	// MethodThreadPredictionUpdated reports the result of a thread prediction.
+	MethodThreadPredictionUpdated Method = "thread/prediction/updated"
 	// MethodThreadGoalUpdated reports an updated thread goal.
 	MethodThreadGoalUpdated Method = "thread/goal/updated"
 	// MethodThreadGoalCleared reports that the thread goal was cleared.
@@ -168,6 +175,8 @@ const (
 	// Account and configuration notifications.
 	// MethodAccountUpdated reports updated account data.
 	MethodAccountUpdated Method = "account/updated"
+	// MethodGatewayOAuthChanged reports provider gateway authentication status.
+	MethodGatewayOAuthChanged Method = "account/gatewayOAuth/changed"
 	// MethodAccountRateLimitsUpdated reports updated account rate limits.
 	MethodAccountRateLimitsUpdated Method = "account/rateLimits/updated"
 	// MethodAccountLoginCompleted reports completion of account login.
@@ -909,7 +918,13 @@ const (
 
 // TurnStartParams holds the params for turn/start.
 type TurnStartParams struct {
-	ThreadID            string            `json:"threadId"`
+	ThreadID string `json:"threadId"`
+	// ParentTurnID identifies the completed turn whose work this turn continues.
+	ParentTurnID string `json:"parentTurnId,omitzero"`
+	// RootTurnID attributes descendant work to the first turn in the chain.
+	RootTurnID string `json:"rootTurnId,omitzero"`
+	// DisabledPluginIDs overrides the thread's saved disabled plugin selection.
+	DisabledPluginIDs   []string          `json:"disabledPluginIds,omitzero"`
 	ClientUserMessageID string            `json:"clientUserMessageId,omitzero"`
 	Input               []TurnInput       `json:"input"`
 	TurnTrigger         string            `json:"turnTrigger,omitzero"`
@@ -1128,6 +1143,46 @@ type ThreadNameUpdatedNotification struct {
 	ThreadName *string `json:"threadName,omitzero"`
 }
 
+// ThreadAttachmentOperation describes a persisted attachment change.
+type ThreadAttachmentOperation string
+
+// Thread attachment operations.
+const (
+	ThreadAttachmentOperationCreated ThreadAttachmentOperation = "created"
+	ThreadAttachmentOperationDeleted ThreadAttachmentOperation = "deleted"
+)
+
+// ThreadAttachmentUpdatedNotification holds params for thread/attachment/updated.
+type ThreadAttachmentUpdatedNotification struct {
+	ThreadID       string                    `json:"threadId"`
+	AttachmentType string                    `json:"attachmentType"`
+	IdentityKey    string                    `json:"identityKey"`
+	AttachmentID   string                    `json:"attachmentId"`
+	Operation      ThreadAttachmentOperation `json:"operation"`
+}
+
+// ThreadPredictionResultType identifies the outcome of a thread prediction.
+type ThreadPredictionResultType string
+
+// Thread prediction outcomes.
+const (
+	ThreadPredictionResultTypeCompleted ThreadPredictionResultType = "completed"
+	ThreadPredictionResultTypeFailed    ThreadPredictionResultType = "failed"
+)
+
+// ThreadPredictionResult is the tagged result of a thread prediction.
+type ThreadPredictionResult struct {
+	Type ThreadPredictionResultType `json:"type"`
+	Text *string                    `json:"text,omitzero"`
+}
+
+// ThreadPredictionUpdatedNotification holds params for thread/prediction/updated.
+type ThreadPredictionUpdatedNotification struct {
+	ThreadID     string                 `json:"threadId"`
+	SourceTurnID string                 `json:"sourceTurnId"`
+	Result       ThreadPredictionResult `json:"result"`
+}
+
 // Turn lifecycle.
 
 // TurnStartedNotification holds the params for turn/started notifications.
@@ -1169,6 +1224,7 @@ type ItemCompletedNotification struct {
 // Turn describes a turn in turn/started and turn/completed params.
 type Turn struct {
 	ID          string            `json:"id"`
+	RootTurnID  string            `json:"rootTurnId,omitzero"`
 	Items       []json.RawMessage `json:"items,omitzero"`
 	ItemsView   TurnItemsView     `json:"itemsView,omitzero"`
 	Status      TurnStatus        `json:"status"`
@@ -1191,6 +1247,8 @@ type MisalignmentErrorDetails struct {
 	ErrorType           string            `json:"errorType,omitzero"`
 	DetailedExplanation string            `json:"detailedExplanation,omitzero"`
 	Steer               MisalignmentSteer `json:"steer,omitzero"`
+	// ReviewTarget is an opaque block target echoed only on explicit continuation.
+	ReviewTarget string `json:"reviewTarget,omitzero"`
 }
 
 // MisalignmentSteer is the suggested follow-up instruction for an alignment block.
@@ -1313,12 +1371,28 @@ type McpToolCallItem struct {
 	Arguments         json.RawMessage       `json:"arguments,omitzero"`
 	AppContext        McpToolCallAppContext `json:"appContext,omitzero"`
 	McpAppResourceURI string                `json:"mcpAppResourceUri,omitzero"`
+	McpAppUI          *McpAppUi             `json:"mcpAppUi,omitzero"`
 	PluginID          string                `json:"pluginId,omitzero"`
 	ReadOnlyHint      bool                  `json:"readOnlyHint,omitzero"`
 	Result            *McpToolCallResult    `json:"result,omitzero"`
 	Error             *McpToolCallError     `json:"error,omitzero"`
 	Duration          base.DurationMS       `json:"durationMs,omitzero"`
 }
+
+// McpAppUi captures the tool descriptor's UI resource and preferred presentation.
+type McpAppUi struct {
+	ResourceURI               string            `json:"resourceUri"`
+	PreferredModelDisplayMode McpAppDisplayMode `json:"preferredModelDisplayMode"`
+}
+
+// McpAppDisplayMode is the model-selected presentation for an MCP app UI resource.
+type McpAppDisplayMode string
+
+// MCP app display modes.
+const (
+	McpAppDisplayModeFullscreen McpAppDisplayMode = "fullscreen"
+	McpAppDisplayModeInline     McpAppDisplayMode = "inline"
+)
 
 // McpToolCallAppContext identifies the installed app context for an MCP tool call.
 type McpToolCallAppContext struct {
@@ -1378,6 +1452,9 @@ type SubAgentActivityItem struct {
 	Kind          SubAgentActivityKind `json:"kind,omitzero"`
 	AgentThreadID string               `json:"agentThreadId,omitzero"`
 	AgentPath     string               `json:"agentPath,omitzero"`
+	// Model and ReasoningEffort report resolved settings at sub-agent creation.
+	Model           string          `json:"model,omitzero"`
+	ReasoningEffort ReasoningEffort `json:"reasoningEffort,omitzero"`
 }
 
 // CollabAgentState describes the state of a collaborative agent.
@@ -1933,6 +2010,26 @@ type AccountUpdatedNotification struct {
 	PlanType PlanType `json:"planType,omitzero"`
 }
 
+// GatewayOAuthStatus describes provider gateway authentication readiness.
+type GatewayOAuthStatus string
+
+// Gateway OAuth states.
+const (
+	GatewayOAuthStatusFailed    GatewayOAuthStatus = "failed"
+	GatewayOAuthStatusNotReady  GatewayOAuthStatus = "notReady"
+	GatewayOAuthStatusStarted   GatewayOAuthStatus = "started"
+	GatewayOAuthStatusSucceeded GatewayOAuthStatus = "succeeded"
+)
+
+// GatewayOAuthChangedNotification holds params for account/gatewayOAuth/changed.
+type GatewayOAuthChangedNotification struct {
+	// AuthURL is an authorization handoff and must not be logged.
+	AuthURL    string             `json:"authUrl,omitzero"`
+	ProviderID string             `json:"providerId"`
+	Status     GatewayOAuthStatus `json:"status"`
+	Error      string             `json:"error,omitzero"`
+}
+
 // AccountLoginCompletedNotification holds params for account/login/completed.
 type AccountLoginCompletedNotification struct {
 	LoginID              string                      `json:"loginId,omitzero"`
@@ -2230,6 +2327,7 @@ type ServerRequestResolvedNotification struct {
 
 // McpServerOauthLoginCompletedNotification holds params for mcpServer/oauthLogin/completed.
 type McpServerOauthLoginCompletedNotification struct {
+	LoginID  string `json:"loginId,omitzero"`
 	ThreadID string `json:"threadId,omitzero"`
 	Name     string `json:"name"`
 	Success  bool   `json:"success"`

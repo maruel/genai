@@ -16,13 +16,13 @@ background.
 ## References
 
 - `agy changelog`: release notes, including print-mode and stream-json changes.
-- https://github.com/google-antigravity/antigravity-sdk-python at v0.1.20, commit
-  `12f9a4c3becf487302dc799b0f59054f01f3ddb9`: `google/antigravity/proto/localharness.proto` declares the
+- https://github.com/google-antigravity/antigravity-sdk-python at v0.1.21, commit
+  `f61cb2fa54a0a3c46dac690f32e4346995662297`: `google/antigravity/proto/localharness.proto` declares the
   messages that agy's stdout events project.
 
 ## Keeping DTOs in sync
 
-`dto.go` matches agy 1.2.14. To check a new release:
+`dto.go` matches agy 1.3.2. To check a new release:
 
 1. Read `agy changelog` for print-mode and stream-json entries.
 2. Dump the upstream structs and compare them with `dto.go`:

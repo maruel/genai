@@ -55,6 +55,12 @@ type InputUserMsg struct {
 	ToolUseResult   json.RawMessage  `json:"tool_use_result,omitempty"`
 	Priority        string           `json:"priority,omitempty"` // "now", "next", "later"
 	Timestamp       string           `json:"timestamp,omitempty"`
+	Origin          MessageOrigin    `json:"origin,omitzero"`
+	ShouldQuery     *bool            `json:"shouldQuery,omitempty"`
+	// ClientComposed sends text without file-mention or slash-command expansion.
+	ClientComposed bool                 `json:"client_composed,omitempty"`
+	PastedContent  []UserMessageContent `json:"pasted_content,omitempty"`
+	InlinePastes   []string             `json:"inline_pastes,omitempty"`
 }
 
 // InputUserContent is the message body within an InputUserMsg.
@@ -130,27 +136,28 @@ const (
 
 // ControlReqInitialize initializes the SDK session.
 type ControlReqInitialize struct {
-	Subtype                ControlSubtype             `json:"subtype"` // ControlInitialize
-	Hooks                  HooksConfig                `json:"hooks,omitempty"`
-	SDKMcpServers          []string                   `json:"sdkMcpServers,omitempty"`
-	SDKMcpServerConfigs    map[string]json.RawMessage `json:"sdkMcpServerConfigs,omitempty"`
-	SDKMcpServerManifests  map[string]json.RawMessage `json:"sdkMcpServerManifests,omitempty"`
-	JSONSchema             JSONSchema                 `json:"jsonSchema,omitempty"`
-	SystemPrompt           []string                   `json:"systemPrompt,omitempty"`
-	AppendSystemPrompt     string                     `json:"appendSystemPrompt,omitempty"`
-	Agents                 json.RawMessage            `json:"agents,omitempty"`
-	PromptSuggestions      bool                       `json:"promptSuggestions,omitempty"`
-	AgentProgressSummaries bool                       `json:"agentProgressSummaries,omitempty"`
-	SystemPromptSnapshot   bool                       `json:"systemPromptSnapshot,omitempty"`
-	PlanModeInstructions   string                     `json:"planModeInstructions,omitempty"`
-	ToolAliases            map[string]string          `json:"toolAliases,omitempty"`
-	ExcludeDynamicSections bool                       `json:"excludeDynamicSections,omitempty"`
-	Title                  string                     `json:"title,omitempty"`
-	Skills                 []string                   `json:"skills,omitempty"`
-	ForwardSubagentText    bool                       `json:"forwardSubagentText,omitempty"`
-	SupportedDialogKinds   []string                   `json:"supportedDialogKinds,omitempty"`
-	PerTaskStopAffordance  bool                       `json:"perTaskStopAffordance,omitempty"`
-	Plugins                []json.RawMessage          `json:"plugins,omitempty"`
+	Subtype                     ControlSubtype             `json:"subtype"` // ControlInitialize
+	Hooks                       HooksConfig                `json:"hooks,omitempty"`
+	SDKMcpServers               []string                   `json:"sdkMcpServers,omitempty"`
+	SDKMcpServerConfigs         map[string]json.RawMessage `json:"sdkMcpServerConfigs,omitempty"`
+	SDKMcpServerManifests       map[string]json.RawMessage `json:"sdkMcpServerManifests,omitempty"`
+	SDKMcpServerManifestsOrigin string                     `json:"sdkMcpServerManifestsOrigin,omitempty"`
+	JSONSchema                  JSONSchema                 `json:"jsonSchema,omitempty"`
+	SystemPrompt                []string                   `json:"systemPrompt,omitempty"`
+	AppendSystemPrompt          string                     `json:"appendSystemPrompt,omitempty"`
+	Agents                      json.RawMessage            `json:"agents,omitempty"`
+	PromptSuggestions           bool                       `json:"promptSuggestions,omitempty"`
+	AgentProgressSummaries      bool                       `json:"agentProgressSummaries,omitempty"`
+	SystemPromptSnapshot        bool                       `json:"systemPromptSnapshot,omitempty"`
+	PlanModeInstructions        string                     `json:"planModeInstructions,omitempty"`
+	ToolAliases                 map[string]string          `json:"toolAliases,omitempty"`
+	ExcludeDynamicSections      bool                       `json:"excludeDynamicSections,omitempty"`
+	Title                       string                     `json:"title,omitempty"`
+	Skills                      []string                   `json:"skills,omitempty"`
+	ForwardSubagentText         bool                       `json:"forwardSubagentText,omitempty"`
+	SupportedDialogKinds        []string                   `json:"supportedDialogKinds,omitempty"`
+	PerTaskStopAffordance       bool                       `json:"perTaskStopAffordance,omitempty"`
+	Plugins                     []json.RawMessage          `json:"plugins,omitempty"`
 }
 
 // ControlReqInterrupt interrupts the currently running conversation turn.
@@ -161,9 +168,10 @@ type ControlReqInterrupt struct {
 
 // ControlReqCanUseTool requests permission to use a tool.
 type ControlReqCanUseTool struct {
-	Subtype  ControlSubtype             `json:"subtype"` // ControlCanUseTool
-	ToolName string                     `json:"tool_name"`
-	Input    map[string]json.RawMessage `json:"input"`
+	Subtype   ControlSubtype             `json:"subtype"` // ControlCanUseTool
+	ToolName  string                     `json:"tool_name"`
+	MCPServer *MCPServerProvenance       `json:"mcp_server,omitempty"`
+	Input     map[string]json.RawMessage `json:"input"`
 	// RequiresUserInteraction is true when the tool needs an interactive user
 	// response (e.g. AskUserQuestion).
 	RequiresUserInteraction bool                         `json:"requires_user_interaction,omitempty"`
@@ -180,6 +188,13 @@ type ControlReqCanUseTool struct {
 	SuppressAlwaysAllowRule bool                         `json:"suppress_always_allow_rule,omitempty"`
 	DefaultToNo             bool                         `json:"default_to_no,omitempty"`
 	MatchedAskRule          base.Unknown                 `json:"matched_ask_rule,omitempty"`
+}
+
+// MCPServerProvenance names the configured MCP server behind a permission request.
+// Source is an open set: unknown sources must never be treated as SDK servers.
+type MCPServerProvenance struct {
+	Name   string `json:"name"`
+	Source string `json:"source"`
 }
 
 // CanUseToolDecisionReasonType identifies why Claude Code requested tool approval.
@@ -927,9 +942,12 @@ type OutputSystemMsg struct {
 	Timestamp string        `json:"timestamp,omitempty"`
 
 	// task_started / task_progress / task_notification fields.
-	Description    string            `json:"description,omitempty"`
-	SubagentType   string            `json:"subagent_type,omitempty"`
-	TaskID         string            `json:"task_id,omitempty"`
+	Description  string `json:"description,omitempty"`
+	SubagentType string `json:"subagent_type,omitempty"`
+	TaskID       string `json:"task_id,omitempty"`
+	// RunID distinguishes resumed runs; IDs for one task sort in run order.
+	RunID          string            `json:"run_id,omitempty"`
+	ParentTaskID   string            `json:"parent_task_id,omitempty"`
 	TaskType       string            `json:"task_type,omitempty"`
 	ToolUseID      string            `json:"tool_use_id,omitempty"`
 	ToolName       string            `json:"tool_name,omitempty"`
@@ -989,6 +1007,7 @@ type OutputSystemMsg struct {
 	DecisionReason      string              `json:"decision_reason,omitempty"`
 	Level               string              `json:"level,omitempty"`
 	PreventContinuation bool                `json:"prevent_continuation,omitempty"`
+	Tag                 string              `json:"tag,omitempty"`
 	Name                string              `json:"name,omitempty"`
 	Mode                string              `json:"mode,omitempty"`
 	Memories            []MemoryRecallEntry `json:"memories,omitempty"`
@@ -1092,10 +1111,13 @@ type TaskUsageWire struct {
 
 // TaskWire is one entry in a background_tasks_changed system message.
 type TaskWire struct {
-	TaskID      string `json:"task_id"`
-	TaskType    string `json:"task_type"`
-	Description string `json:"description"`
-	Ambient     bool   `json:"ambient,omitempty"`
+	TaskID       string `json:"task_id"`
+	RunID        string `json:"run_id,omitempty"`
+	ParentTaskID string `json:"parent_task_id,omitempty"`
+	SubagentType string `json:"subagent_type,omitempty"`
+	TaskType     string `json:"task_type"`
+	Description  string `json:"description"`
+	Ambient      bool   `json:"ambient,omitempty"`
 }
 
 // MCPResourceLink is a file-like resource returned by an MCP task.
@@ -1136,6 +1158,7 @@ type OutputAssistantMsg struct {
 	ParentToolUseID               string                     `json:"parent_tool_use_id"`
 	Error                         AssistantMessageError      `json:"error,omitempty"`
 	RequestID                     string                     `json:"request_id,omitempty"`
+	AgentID                       string                     `json:"agent_id,omitempty"`
 	SubagentType                  string                     `json:"subagent_type,omitempty"`
 	TaskDescription               string                     `json:"task_description,omitempty"`
 	WireToolInputs                map[string]json.RawMessage `json:"wire_tool_inputs,omitempty"`
@@ -1149,9 +1172,63 @@ type OutputAssistantMsg struct {
 	Aborted                       bool                       `json:"aborted,omitempty"`
 	ContextUsage                  ContextUsage               `json:"context_usage,omitzero"`
 	ThinkingDurationMS            int64                      `json:"thinking_duration_ms,omitzero"`
-	// Runtime CLI metadata not declared by SDK 0.3.287.
+	UsageReport                   *UsageReport               `json:"usage_report,omitempty"`
+	// Runtime CLI metadata not declared by SDK 0.3.295.
 	NarrationBlockIndexes []int             `json:"narration_block_indexes,omitempty"`
 	ToolUseMeta           []ToolUseMetadata `json:"tool_use_meta,omitempty"`
+}
+
+// UsageReport reports session usage and the server's current plan meters.
+type UsageReport struct {
+	Session    SessionUsageReport `json:"session"`
+	RateLimits *UsageRateLimits   `json:"rate_limits"`
+}
+
+// SessionUsageReport reports accumulated costs and edits in the current session.
+type SessionUsageReport struct {
+	TotalCostUSD      float64                    `json:"total_cost_usd"`
+	TotalAPIDuration  base.DurationMS            `json:"total_api_duration_ms"`
+	TotalDuration     base.DurationMS            `json:"total_duration_ms"`
+	TotalLinesAdded   int64                      `json:"total_lines_added"`
+	TotalLinesRemoved int64                      `json:"total_lines_removed"`
+	ModelUsage        map[string]ModelUsageEntry `json:"model_usage"`
+}
+
+// UsageRateLimits preserves the server's meter order and extra-usage spend.
+type UsageRateLimits struct {
+	Limits     []UsageLimit      `json:"limits"`
+	ExtraUsage *ExtraUsageReport `json:"extra_usage,omitempty"`
+}
+
+// UsageLimit is a server-supplied plan meter. Kind, group and severity are open sets.
+type UsageLimit struct {
+	Kind     string           `json:"kind"`
+	Group    string           `json:"group"`
+	Percent  float64          `json:"percent"`
+	ResetsAt *string          `json:"resets_at"`
+	Scope    *UsageLimitScope `json:"scope,omitempty"`
+	Severity string           `json:"severity"`
+	IsActive bool             `json:"is_active"`
+}
+
+// UsageLimitScope identifies the model or surface to which a meter applies.
+type UsageLimitScope struct {
+	Model   *UsageLimitLabel `json:"model,omitempty"`
+	Surface *UsageLimitLabel `json:"surface,omitempty"`
+}
+
+// UsageLimitLabel is the server's display label for a meter scope.
+type UsageLimitLabel struct {
+	DisplayName string `json:"display_name"`
+}
+
+// ExtraUsageReport reports overage spend in minor units of Currency.
+type ExtraUsageReport struct {
+	IsEnabled    bool     `json:"is_enabled"`
+	MonthlyLimit *float64 `json:"monthly_limit"`
+	UsedCredits  *float64 `json:"used_credits"`
+	Utilization  *float64 `json:"utilization"`
+	Currency     *string  `json:"currency,omitempty"`
 }
 
 // ToolUseMetadata supplies the runtime CLI's display name for a tool call.
@@ -1497,21 +1574,28 @@ const (
 
 // OutputUserMsg is the wire representation of a user record.
 type OutputUserMsg struct {
-	Type            OutputType      `json:"type"`
-	UUID            string          `json:"uuid"`
-	SessionID       string          `json:"session_id,omitempty"`
-	Timestamp       string          `json:"timestamp,omitempty"`
-	Message         json.RawMessage `json:"message"`
-	ParentToolUseID string          `json:"parent_tool_use_id"`
-	ToolUseResult   json.RawMessage `json:"tool_use_result,omitempty"`
-	SubagentType    string          `json:"subagent_type,omitempty"`
-	TaskDescription string          `json:"task_description,omitempty"`
-	IsSynthetic     bool            `json:"isSynthetic,omitempty"`
-	IsReplay        bool            `json:"isReplay,omitempty"`
-	Priority        string          `json:"priority,omitempty"`
-	Origin          MessageOrigin   `json:"origin,omitzero"`
-	ShouldQuery     bool            `json:"shouldQuery,omitempty"`
-	FileAttachments []base.Unknown  `json:"file_attachments,omitempty"`
+	Type            OutputType           `json:"type"`
+	UUID            string               `json:"uuid"`
+	SessionID       string               `json:"session_id,omitempty"`
+	Timestamp       string               `json:"timestamp,omitempty"`
+	Message         json.RawMessage      `json:"message"`
+	ParentToolUseID string               `json:"parent_tool_use_id"`
+	ToolUseResult   json.RawMessage      `json:"tool_use_result,omitempty"`
+	AgentID         string               `json:"agent_id,omitempty"`
+	SubagentType    string               `json:"subagent_type,omitempty"`
+	TaskDescription string               `json:"task_description,omitempty"`
+	IsSynthetic     bool                 `json:"isSynthetic,omitempty"`
+	IsReplay        bool                 `json:"isReplay,omitempty"`
+	Priority        string               `json:"priority,omitempty"`
+	Origin          MessageOrigin        `json:"origin,omitzero"`
+	ShouldQuery     bool                 `json:"shouldQuery,omitempty"`
+	FileAttachments []base.Unknown       `json:"file_attachments,omitempty"`
+	ClientComposed  bool                 `json:"client_composed,omitempty"`
+	PastedContent   []UserMessageContent `json:"pasted_content,omitempty"`
+	InlinePastes    []string             `json:"inline_pastes,omitempty"`
+
+	// Runtime CLI metadata not declared by SDK 0.3.295.
+	ToolResultMeta []ToolResultMetadata `json:"tool_result_meta,omitempty"`
 }
 
 // DecodeMessage decodes the raw user message body into its concrete wire shape.
@@ -1538,6 +1622,49 @@ func (m *OutputUserMsg) DecodeToolUseResult() (OutputToolUseResult, error) {
 	return out, nil
 }
 
+// ToolResultMetadata reports execution and permission decisions for a tool call.
+// The runtime CLI supplies non_execution_kind; observed values include "permission-rule".
+type ToolResultMetadata struct {
+	ID                 string                  `json:"id"`
+	NonExecutionKind   string                  `json:"non_execution_kind,omitempty"`
+	PermissionDecision *ToolPermissionDecision `json:"permission_decision,omitempty"`
+}
+
+// ToolPermissionDecision reports the runtime CLI's decision and its origin.
+// Decision and Source are open sets; observed sources include "config" and "user_temporary".
+type ToolPermissionDecision struct {
+	Decision   string                       `json:"decision"`
+	Source     string                       `json:"source"`
+	ReasonType CanUseToolDecisionReasonType `json:"reason_type,omitempty"`
+}
+
+// UserMessageContent is user text or user content blocks, including pasted content.
+type UserMessageContent struct {
+	Text   string
+	Blocks []OutputUserContentBlock
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (m *UserMessageContent) UnmarshalJSON(data []byte) error {
+	*m = UserMessageContent{}
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 || string(data) == "null" {
+		return errors.New("user content must be a string or array")
+	}
+	if data[0] == '"' {
+		return json.Unmarshal(data, &m.Text)
+	}
+	return json.Unmarshal(data, &m.Blocks)
+}
+
+// MarshalJSON implements json.Marshaler.
+func (m UserMessageContent) MarshalJSON() ([]byte, error) {
+	if m.Blocks == nil {
+		return json.Marshal(m.Text)
+	}
+	return json.Marshal(m.Blocks)
+}
+
 // ---------- result ----------
 
 // ResultSubtype is the terminal result discriminator.
@@ -1554,35 +1681,41 @@ const (
 
 // OutputResultMsg is the wire representation of a result record.
 type OutputResultMsg struct {
-	Type                   OutputType      `json:"type"`
-	Subtype                ResultSubtype   `json:"subtype"`
-	IsError                bool            `json:"is_error"`
-	Duration               base.DurationMS `json:"duration_ms"`
-	DurationAPI            base.DurationMS `json:"duration_api_ms"`
-	Ttft                   base.DurationMS `json:"ttft_ms,omitempty"`
-	TtftStream             base.DurationMS `json:"ttft_stream_ms,omitempty"`
-	FirstContentFrame      base.DurationMS `json:"first_content_frame_ms,omitempty"`
-	FirstStreamPost        base.DurationMS `json:"first_stream_post_ms,omitempty"`
-	FirstStreamPostAck     base.DurationMS `json:"first_stream_post_ack_ms,omitempty"`
-	FirstStreamPostWall    base.TimeMS     `json:"first_stream_post_wall_ms,omitempty"`
-	TimeToRequest          base.DurationMS `json:"time_to_request_ms,omitempty"`
-	RequestSentWall        base.TimeMS     `json:"request_sent_wall_ms,omitempty"`
-	TimeToRequestFromSpawn base.DurationMS `json:"time_to_request_from_spawn_ms,omitempty"`
-	WarmSpareClaimed       bool            `json:"warm_spare_claimed,omitempty"`
-	TimeOrigin             base.TimeMS     `json:"time_origin_ms,omitempty"`
-	NumTurns               int             `json:"num_turns"`
-	Result                 string          `json:"result"`
-	Errors                 []string        `json:"errors,omitempty"`
-	SessionID              string          `json:"session_id"`
-	TotalCostUSD           float64         `json:"total_cost_usd"`
-	Usage                  MsgUsage        `json:"usage"`
-	UUID                   string          `json:"uuid"`
-	StructuredOutput       json.RawMessage `json:"structured_output,omitempty"`
-	Timestamp              string          `json:"timestamp,omitempty"`
-	UserMessageUUID        string          `json:"user_message_uuid,omitempty"`
-	UserMessageUUIDs       []string        `json:"user_message_uuids,omitempty"`
-	ResumeReason           string          `json:"resume_reason,omitempty"`
-	LocalCommand           string          `json:"local_command,omitempty"`
+	Type                        OutputType      `json:"type"`
+	Subtype                     ResultSubtype   `json:"subtype"`
+	IsError                     bool            `json:"is_error"`
+	Duration                    base.DurationMS `json:"duration_ms"`
+	DurationAPI                 base.DurationMS `json:"duration_api_ms"`
+	Ttft                        base.DurationMS `json:"ttft_ms,omitempty"`
+	TtftStream                  base.DurationMS `json:"ttft_stream_ms,omitempty"`
+	FirstContentFrame           base.DurationMS `json:"first_content_frame_ms,omitempty"`
+	FirstStreamPost             base.DurationMS `json:"first_stream_post_ms,omitempty"`
+	FirstStreamPostAck          base.DurationMS `json:"first_stream_post_ack_ms,omitempty"`
+	FirstStreamPostQueueWait    base.DurationMS `json:"first_stream_post_queue_wait_ms,omitempty"`
+	FirstStreamPostQueuedBehind PostQueueReason `json:"first_stream_post_queued_behind,omitempty"`
+	FirstTextPost               base.DurationMS `json:"first_text_post_ms,omitempty"`
+	FirstTextPostQueueWait      base.DurationMS `json:"first_text_post_queue_wait_ms,omitempty"`
+	FirstTextPostQueuedBehind   PostQueueReason `json:"first_text_post_queued_behind,omitempty"`
+	FirstTextPostWall           base.TimeMS     `json:"first_text_post_wall_ms,omitempty"`
+	FirstStreamPostWall         base.TimeMS     `json:"first_stream_post_wall_ms,omitempty"`
+	TimeToRequest               base.DurationMS `json:"time_to_request_ms,omitempty"`
+	RequestSentWall             base.TimeMS     `json:"request_sent_wall_ms,omitempty"`
+	TimeToRequestFromSpawn      base.DurationMS `json:"time_to_request_from_spawn_ms,omitempty"`
+	WarmSpareClaimed            bool            `json:"warm_spare_claimed,omitempty"`
+	TimeOrigin                  base.TimeMS     `json:"time_origin_ms,omitempty"`
+	NumTurns                    int             `json:"num_turns"`
+	Result                      string          `json:"result"`
+	Errors                      []string        `json:"errors,omitempty"`
+	SessionID                   string          `json:"session_id"`
+	TotalCostUSD                float64         `json:"total_cost_usd"`
+	Usage                       MsgUsage        `json:"usage"`
+	UUID                        string          `json:"uuid"`
+	StructuredOutput            json.RawMessage `json:"structured_output,omitempty"`
+	Timestamp                   string          `json:"timestamp,omitempty"`
+	UserMessageUUID             string          `json:"user_message_uuid,omitempty"`
+	UserMessageUUIDs            []string        `json:"user_message_uuids,omitempty"`
+	ResumeReason                string          `json:"resume_reason,omitempty"`
+	LocalCommand                string          `json:"local_command,omitempty"`
 
 	FastModeState          string                     `json:"fast_mode_state,omitempty"`
 	FastModeDisabledReason FastModeDisabledReason     `json:"fast_mode_disabled_reason,omitempty"`
@@ -1591,11 +1724,14 @@ type OutputResultMsg struct {
 	StopReason             string                     `json:"stop_reason,omitempty"`
 	TerminalReason         string                     `json:"terminal_reason,omitempty"`
 	APIErrorStatus         int                        `json:"api_error_status,omitzero"`
-	DeferredToolUse        DeferredToolUse            `json:"deferred_tool_use,omitzero"`
-	Origin                 MessageOrigin              `json:"origin,omitzero"`
-	SubagentStats          SubagentStats              `json:"subagent_stats,omitzero"`
-	QueuedTurnCount        int                        `json:"queued_turn_count,omitempty"`
-	ResultIndex            int                        `json:"result_index,omitempty"`
+	StartupFailureReason   StartupFailureReason       `json:"startup_failure_reason,omitempty"`
+	// SafetyStops counts safety-policy stops in the runtime CLI.
+	SafetyStops     int             `json:"safety_stops,omitempty"`
+	DeferredToolUse DeferredToolUse `json:"deferred_tool_use,omitzero"`
+	Origin          MessageOrigin   `json:"origin,omitzero"`
+	SubagentStats   SubagentStats   `json:"subagent_stats,omitzero"`
+	QueuedTurnCount int             `json:"queued_turn_count,omitempty"`
+	ResultIndex     int             `json:"result_index,omitempty"`
 }
 
 // AsError returns the Claude Code error represented by m, if any.
@@ -1609,6 +1745,44 @@ func (m *OutputResultMsg) AsError() error {
 	}
 	return errors.New("claude error (" + string(m.Subtype) + "): " + errMsg)
 }
+
+// PostQueueReason identifies what delayed a hosted stream or text post.
+type PostQueueReason string
+
+// Post queue reasons.
+const (
+	PostQueueDurablePost   PostQueueReason = "durable_post"
+	PostQueueEphemeralPost PostQueueReason = "ephemeral_post"
+	PostQueueHold          PostQueueReason = "hold"
+	PostQueueNone          PostQueueReason = "none"
+	PostQueueRetryBackoff  PostQueueReason = "retry_backoff"
+)
+
+// StartupFailureReason identifies the policy or environment preventing startup.
+type StartupFailureReason string
+
+// Startup failure reasons.
+const (
+	StartupFailureBypassRoot                        StartupFailureReason = "bypass_root"
+	StartupFailureCLIVersionTooOld                  StartupFailureReason = "cli_version_too_old"
+	StartupFailureCwdUnavailable                    StartupFailureReason = "cwd_unavailable"
+	StartupFailureGatewayAccessDenied               StartupFailureReason = "gateway_access_denied"
+	StartupFailureGatewaySigninRequired             StartupFailureReason = "gateway_signin_required"
+	StartupFailureManagedSettingsInvalid            StartupFailureReason = "managed_settings_invalid"
+	StartupFailureOrgConfigRefused                  StartupFailureReason = "org_config_refused"
+	StartupFailureOrgConfigRequiredUnavailable      StartupFailureReason = "org_config_required_unavailable"
+	StartupFailureOrgPinAPIKeyConflict              StartupFailureReason = "org_pin_api_key_conflict"
+	StartupFailureOrgPinMismatch                    StartupFailureReason = "org_pin_mismatch"
+	StartupFailureOrgVerifyFailed                   StartupFailureReason = "org_verify_failed"
+	StartupFailureProviderNotAllowed                StartupFailureReason = "provider_not_allowed"
+	StartupFailureProxyInvalid                      StartupFailureReason = "proxy_invalid"
+	StartupFailureRemoteSettingsRequiredUnavailable StartupFailureReason = "remote_settings_required_unavailable"
+	StartupFailureSessionHeldByBackground           StartupFailureReason = "session_held_by_background"
+	StartupFailureShellToolMissing                  StartupFailureReason = "shell_tool_missing"
+	StartupFailureTempDirUnusable                   StartupFailureReason = "temp_dir_unusable"
+	StartupFailureWorktreeResumeRefused             StartupFailureReason = "worktree_resume_refused"
+	StartupFailureWorktreeUnverified                StartupFailureReason = "worktree_unverified"
+)
 
 // PermissionDenial is an authoritative denied tool call in a result.
 type PermissionDenial struct {
@@ -1645,6 +1819,8 @@ type MessageOrigin struct {
 	Body            string            `json:"body,omitempty"`
 	VerifiedPeerPID int               `json:"verifiedPeerPid,omitempty"`
 	Subkind         string            `json:"subkind,omitempty"`
+	FireReason      string            `json:"fireReason,omitempty"`
+	RunID           string            `json:"runId,omitempty"`
 }
 
 // IsZero reports whether o carries no origin metadata.
@@ -1858,6 +2034,7 @@ type OutputStreamEventMsg struct {
 	Event           StreamEventData `json:"event"`
 	// ThinkingDisplay is a runtime output mode, not the SDK control-request enum.
 	ThinkingDisplay  string          `json:"thinking_display,omitempty"`
+	APIMessageID     string          `json:"api_message_id,omitempty"`
 	Ttft             base.DurationMS `json:"ttft_ms,omitempty"`
 	UserMessageUUID  string          `json:"user_message_uuid,omitempty"`
 	UserMessageUUIDs []string        `json:"user_message_uuids,omitempty"`
@@ -2327,7 +2504,7 @@ type OutputUserContentBlock struct {
 	Source    anthropic.Source `json:"source,omitzero"`
 	ToolUseID string           `json:"tool_use_id,omitempty"`
 	// Nested content and error flag for inline tool_result blocks (MCP tools).
-	Content ToolResultPayload `json:"content,omitempty"`
+	Content ToolResultPayload `json:"content,omitzero"`
 	IsError bool              `json:"is_error,omitempty"`
 }
 

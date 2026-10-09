@@ -46,6 +46,7 @@ verify: tools custom-gcl
 	@go tool addlicense -ignore 'examples/**' -ignore '**/testdata/**' -check .
 	@python3 scripts/lint_binaries.py
 	@python3 scripts/update_agents_file_index.py --check
+	@python3 -m unittest discover -s providers/claudecode -p 'test_*.py'
 
 # Apply every autofix, then refresh the generated file index. Does not
 # re-check; run verify for that.

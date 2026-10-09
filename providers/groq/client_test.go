@@ -81,22 +81,26 @@ func TestNew(t *testing.T) {
 func TestGenOption(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			for _, v := range []groq.ReasoningFormat{"", "hidden", "parsed", "raw"} {
-				t.Run("ReasoningFormat/"+string(v), func(t *testing.T) {
-					o := groq.GenOption{ReasoningFormat: v}
-					if err := o.Validate(); err != nil {
-						t.Fatal(err)
-					}
-				})
-			}
-			for _, v := range []groq.ServiceTier{"", "auto", "flex", "on_demand", "performance"} {
-				t.Run("ServiceTier/"+string(v), func(t *testing.T) {
-					o := groq.GenOption{ServiceTier: v}
-					if err := o.Validate(); err != nil {
-						t.Fatal(err)
-					}
-				})
-			}
+			t.Run("ReasoningFormat", func(t *testing.T) {
+				for _, v := range []groq.ReasoningFormat{"", "hidden", "parsed", "raw"} {
+					t.Run(string(v), func(t *testing.T) {
+						o := groq.GenOption{ReasoningFormat: v}
+						if err := o.Validate(); err != nil {
+							t.Fatal(err)
+						}
+					})
+				}
+			})
+			t.Run("ServiceTier", func(t *testing.T) {
+				for _, v := range []groq.ServiceTier{"", "auto", "flex", "on_demand", "performance"} {
+					t.Run(string(v), func(t *testing.T) {
+						o := groq.GenOption{ServiceTier: v}
+						if err := o.Validate(); err != nil {
+							t.Fatal(err)
+						}
+					})
+				}
+			})
 		})
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []struct {

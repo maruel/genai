@@ -15,11 +15,13 @@ import (
 
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
-		t.Run("error/options", func(t *testing.T) {
-			var req pollinations.ChatRequest
-			if err := req.Init(genai.Messages{genai.NewTextMessage("user")}, "test", &genai.GenOptionText{Temperature: -1}); err == nil {
-				t.Fatal("accepted invalid option")
-			}
+		t.Run("error", func(t *testing.T) {
+			t.Run("options", func(t *testing.T) {
+				var req pollinations.ChatRequest
+				if err := req.Init(genai.Messages{genai.NewTextMessage("user")}, "test", &genai.GenOptionText{Temperature: -1}); err == nil {
+					t.Fatal("accepted invalid option")
+				}
+			})
 		})
 	})
 }

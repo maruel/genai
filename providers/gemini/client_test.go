@@ -26,6 +26,7 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/gemini"
@@ -66,111 +67,15 @@ func getClientInner(t *testing.T, model string, modalities genai.Modalities, pre
 }
 
 func TestClient(t *testing.T) {
-	t.Run("EmbedRaw/error/response", func(t *testing.T) {
-		old := internal.BeLenient
-		t.Cleanup(func() { internal.BeLenient = old })
-		for _, lenient := range []bool{false, true} {
-			t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
-				internal.BeLenient = lenient
-				body := `{"embeddings":[{"values":[1,2]},{"values":[1,"bad"]}]}`
-				for _, tc := range []embeddingRawFailureCase{
-					{"decode", body, http.StatusOK},
-					{"API", `{"error":{"code":429,"status":"RESOURCE_EXHAUSTED","message":"quota"}}`, http.StatusTooManyRequests},
-				} {
-					t.Run(tc.name, func(t *testing.T) {
-						c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
-							return embeddingResponseTransport{body: tc.body, status: tc.status}
-						}))
-						if err != nil {
-							t.Fatal(err)
-						}
-						internaltest.CleanupCloser(t, c)
-						in := gemini.EmbeddingRequest{Model: "models/gemini-embedding-2", Content: gemini.Content{Parts: []gemini.Part{{Text: "hello"}}}}
-						out := gemini.BatchEmbeddingResponse{Embeddings: []gemini.Embedding{{Values: []float32{9}}}}
-						err = c.EmbedRaw(t.Context(), &gemini.BatchEmbeddingRequest{Requests: []gemini.EmbeddingRequest{in, in}}, &out)
-						cleared := reflect.ValueOf(out).IsZero()
-						if err == nil || !cleared {
-							t.Fatalf("cleared %t, error %v", cleared, err)
-						}
-						if tc.status == http.StatusOK {
-							if _, ok := errors.AsType[*internal.BadError](err); !ok {
-								t.Fatalf("expected decoding error, got %v", err)
-							}
-						} else {
-							if _, ok := errors.AsType[*gemini.ErrorResponse](err); !ok {
-								t.Fatalf("expected API error, got %v", err)
-							}
-						}
-					})
+	t.Run("New", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			t.Run("embedding preference", func(t *testing.T) {
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+				if err == nil || c != nil {
+					t.Fatalf("client %v, error %v", c, err)
 				}
 			})
-		}
-	})
-	t.Run("Embed/valid/document ownership", func(t *testing.T) {
-		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
-			return embeddingResponseTransport{body: `{"embeddings":[{"values":[1,2]},{"values":[3,4]}]}`}
-		}))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		src := &embeddingDocumentReader{Reader: *strings.NewReader("image")}
-		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: src}}, {Text: "caption"}}}
-		out, err := c.Embed(t.Context(), &in)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if in.Inputs[0].Doc.Src != src || len(out.Embeddings) != 2 {
-			t.Fatalf("source changed or response invalid: %+v", out)
-		}
-	})
-
-	t.Run("Embed/input error", func(t *testing.T) {
-		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		if out, err := c.Embed(t.Context(), nil); out != nil || err == nil || !strings.Contains(err.Error(), "required") {
-			t.Fatalf("response %+v, error %v", out, err)
-		}
-
-		in := &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("")}}}}
-		if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "embedding input #0") {
-			t.Fatalf("response %+v, error %v", out, err)
-		}
-		if strconv.IntSize == 64 {
-			in = &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}, Dimensions: int(int64(math.MaxInt32) + 1)}
-			if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "int32") {
-				t.Fatalf("response %+v, error %v", out, err)
-			}
-		}
-	})
-
-	t.Run("Embed/error", func(t *testing.T) {
-		for _, tc := range []embeddingResponseCase{{"invalid vector", `{"embeddings":[{"values":[0,0]},{"values":[1,2]}]}`},
-			{"result count", `{"embeddings":[{"values":[1,2]}]}`},
-			{"dimensions", `{"embeddings":[{"values":[1,2,3]},{"values":[4,5,6]}]}`},
-			{"decode", `{"embeddings":[{"values":"invalid"}]}`}} {
-			t.Run(tc.name, func(t *testing.T) {
-				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingResponseTransport{body: tc.body} }))
-				if err != nil {
-					t.Fatal(err)
-				}
-				internaltest.CleanupCloser(t, c)
-				out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}, Dimensions: 2})
-				if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
-					t.Fatalf("response %+v, error %v", out, err)
-				}
-			})
-		}
-	})
-
-	t.Run("New/embedding preference/error", func(t *testing.T) {
-		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
-		if err == nil || c != nil {
-			t.Fatalf("client %v, error %v", c, err)
-		}
+		})
 	})
 
 	testRecorder := internaltest.NewRecords()
@@ -201,37 +106,158 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Embed", func(t *testing.T) {
-		c := getClient(t, "gemini-embedding-2").(*gemini.Client)
-		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "A kitten plays with yarn."}, {Text: "A cat plays with string."}, {Text: "Quantum field theory predicts particle interactions."}}, Dimensions: 128}
-		out, err := c.Embed(t.Context(), &in)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := out.Validate(); err != nil {
-			t.Fatal(err)
-		}
-		if out.Usage.InputTokens == 0 || out.Usage.TotalTokens != out.Usage.InputTokens {
-			t.Fatalf("unexpected usage: %+v", out.Usage)
-		}
-		internaltest.AssertEmbeddingRetrieval(t, out.Embeddings[0], out.Embeddings[1], out.Embeddings[2])
+		t.Run("valid", func(t *testing.T) {
+			t.Run("document ownership", func(t *testing.T) {
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+					return embeddingResponseTransport{body: `{"embeddings":[{"values":[1,2]},{"values":[3,4]}]}`}
+				}))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				src := &embeddingDocumentReader{Reader: *strings.NewReader("image")}
+				in := genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: src}}, {Text: "caption"}}}
+				out, err := c.Embed(t.Context(), &in)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if in.Inputs[0].Doc.Src != src || len(out.Embeddings) != 2 {
+					t.Fatalf("source changed or response invalid: %+v", out)
+				}
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			t.Run("input", func(t *testing.T) {
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				if out, err := c.Embed(t.Context(), nil); out != nil || err == nil || !strings.Contains(err.Error(), "required") {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+
+				in := &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("")}}}}
+				if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "embedding input #0") {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+				if strconv.IntSize == 64 {
+					in = &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}, Dimensions: int(int64(math.MaxInt32) + 1)}
+					if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "int32") {
+						t.Fatalf("response %+v, error %v", out, err)
+					}
+				}
+			})
+			t.Run("response", func(t *testing.T) {
+				for _, tc := range []embeddingResponseCase{{"invalid vector", `{"embeddings":[{"values":[0,0]},{"values":[1,2]}]}`},
+					{"result count", `{"embeddings":[{"values":[1,2]}]}`},
+					{"dimensions", `{"embeddings":[{"values":[1,2,3]},{"values":[4,5,6]}]}`},
+					{"decode", `{"embeddings":[{"values":"invalid"}]}`}} {
+					t.Run(tc.name, func(t *testing.T) {
+						c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingResponseTransport{body: tc.body} }))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}, Dimensions: 2})
+						if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
+							t.Fatalf("response %+v, error %v", out, err)
+						}
+					})
+				}
+			})
+			t.Run("API", func(t *testing.T) {
+				const empty = `{"error":{"code":400,"message":"The text content is empty.","status":"INVALID_ARGUMENT"}}`
+				for _, tc := range []embeddingAPIErrorCase{
+					{"media rejected as empty text", http.StatusBadRequest, empty, true, true},
+					{"empty text without media", http.StatusBadRequest, empty, false, false},
+					{"other status", http.StatusBadRequest, `{"error":{"code":400,"message":"The text content is empty.","status":"INTERNAL"}}`, true, false},
+					{"other message", http.StatusBadRequest, `{"error":{"code":400,"message":"empty text","status":"INVALID_ARGUMENT"}}`, true, false},
+					{"other code", http.StatusUnauthorized, `{"error":{"code":401,"message":"The text content is empty.","status":"INVALID_ARGUMENT"}}`, true, false},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+							return embeddingResponseTransport{body: tc.body, status: tc.status}
+						}))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						in := genai.Request{Text: "text"}
+						if tc.doc {
+							in = genai.Request{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("image")}}
+						}
+						out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{in}})
+						e, unsupported := errors.AsType[*base.ErrNotSupported](err)
+						if out != nil || err == nil || unsupported != tc.unsupported || unsupported && !slices.Contains(e.Options, "Request.Doc") {
+							t.Fatalf("response %+v, error %v", out, err)
+						}
+					})
+				}
+			})
+		})
 	})
 
-	t.Run("EmbedRaw/error/input", func(t *testing.T) {
-		c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionPreloadedModels(cachedModels), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		var out gemini.BatchEmbeddingResponse
-		if err := c.EmbedRaw(t.Context(), nil, &out); err == nil {
-			t.Fatal("expected nil request error")
-		}
-		in := gemini.BatchEmbeddingRequest{Requests: []gemini.EmbeddingRequest{{Model: "models/gemini-embedding-2", Content: gemini.Content{Parts: []gemini.Part{{Text: "hello"}}}}}}
-		if err := c.EmbedRaw(t.Context(), &in, nil); err == nil {
-			t.Fatal("expected nil response error")
-		}
-		if err := c.EmbedRaw(t.Context(), &gemini.BatchEmbeddingRequest{}, &out); err == nil {
-			t.Fatal("expected invalid request error")
-		}
+	t.Run("EmbedRaw", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			t.Run("response", func(t *testing.T) {
+				old := internal.BeLenient
+				t.Cleanup(func() { internal.BeLenient = old })
+				for _, lenient := range []bool{false, true} {
+					t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
+						internal.BeLenient = lenient
+						body := `{"embeddings":[{"values":[1,2]},{"values":[1,"bad"]}]}`
+						for _, tc := range []embeddingRawFailureCase{
+							{"decode", body, http.StatusOK},
+							{"API", `{"error":{"code":429,"status":"RESOURCE_EXHAUSTED","message":"quota"}}`, http.StatusTooManyRequests},
+						} {
+							t.Run(tc.name, func(t *testing.T) {
+								c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+									return embeddingResponseTransport{body: tc.body, status: tc.status}
+								}))
+								if err != nil {
+									t.Fatal(err)
+								}
+								internaltest.CleanupCloser(t, c)
+								in := gemini.EmbeddingRequest{Model: "models/gemini-embedding-2", Content: gemini.Content{Parts: []gemini.Part{{Text: "hello"}}}}
+								out := gemini.BatchEmbeddingResponse{Embeddings: []gemini.Embedding{{Values: []float32{9}}}}
+								err = c.EmbedRaw(t.Context(), &gemini.BatchEmbeddingRequest{Requests: []gemini.EmbeddingRequest{in, in}}, &out)
+								cleared := reflect.ValueOf(out).IsZero()
+								if err == nil || !cleared {
+									t.Fatalf("cleared %t, error %v", cleared, err)
+								}
+								if tc.status == http.StatusOK {
+									if _, ok := errors.AsType[*internal.BadError](err); !ok {
+										t.Fatalf("expected decoding error, got %v", err)
+									}
+								} else {
+									if _, ok := errors.AsType[*gemini.ErrorResponse](err); !ok {
+										t.Fatalf("expected API error, got %v", err)
+									}
+								}
+							})
+						}
+					})
+				}
+			})
+			t.Run("input", func(t *testing.T) {
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionPreloadedModels(cachedModels), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingMetadataTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				var out gemini.BatchEmbeddingResponse
+				if err := c.EmbedRaw(t.Context(), nil, &out); err == nil {
+					t.Fatal("expected nil request error")
+				}
+				in := gemini.BatchEmbeddingRequest{Requests: []gemini.EmbeddingRequest{{Model: "models/gemini-embedding-2", Content: gemini.Content{Parts: []gemini.Part{{Text: "hello"}}}}}}
+				if err := c.EmbedRaw(t.Context(), &in, nil); err == nil {
+					t.Fatal("expected nil response error")
+				}
+				if err := c.EmbedRaw(t.Context(), &gemini.BatchEmbeddingRequest{}, &out); err == nil {
+					t.Fatal("expected invalid request error")
+				}
+			})
+		})
 	})
 
 	t.Run("EmbeddingMetadata", func(t *testing.T) {
@@ -975,6 +1001,13 @@ func (e embeddingResponseTransport) RoundTrip(r *http.Request) (*http.Response, 
 }
 
 type embeddingResponseCase struct{ name, body string }
+
+type embeddingAPIErrorCase struct {
+	name             string
+	status           int
+	body             string
+	doc, unsupported bool
+}
 
 type embeddingDocumentReader struct{ strings.Reader }
 

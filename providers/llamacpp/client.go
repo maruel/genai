@@ -403,7 +403,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 }
 
 // Embed implements genai.Provider with pooled, compact vectors from the loaded model.
-// Document inputs require a compatible multimodal model and projector.
+// Document inputs require a compatible multimodal model and projector;
+// a missing projector returns base.ErrNotSupported.
 // Use EmbedRaw for token inputs and explicit normalization controls.
 func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
 	if in == nil {
@@ -416,10 +417,12 @@ func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.
 		return nil, fmt.Errorf("llama.cpp embedding dimensions: %w", &base.ErrNotSupported{Options: []string{"EmbeddingRequest.Dimensions"}})
 	}
 	req := EmbeddingRequest{Model: c.impl.Model, Input: make([]EmbeddingInput, len(in.Inputs))}
+	hasDoc := false
 	for i := range in.Inputs {
 		if in.Inputs[i].Text != "" {
 			req.Input[i].Text = in.Inputs[i].Text
 		} else {
+			hasDoc = true
 			input := in.Inputs[i]
 			var content Content
 			if _, err := content.FromRequest(&input); err != nil {
@@ -432,6 +435,9 @@ func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.
 	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
 		if e, ok := errors.AsType[*ErrorResponse](err); ok && e.ErrorVal.Code == http.StatusBadRequest && e.ErrorVal.Type == "invalid_request_error" && e.ErrorVal.Message == "Pooling type 'none' is not OAI compatible. Please use a different pooling type" {
 			return nil, fmt.Errorf("llama.cpp embeddings require pooling: %w", &base.ErrNotSupported{Options: []string{"llama-server --pooling none"}})
+		}
+		if e, ok := errors.AsType[*ErrorResponse](err); ok && hasDoc && e.ErrorVal.Code == http.StatusInternalServerError && e.ErrorVal.Type == "server_error" && strings.HasSuffix(e.ErrorVal.Message, " input is not supported - hint: if this is unexpected, you may need to provide the mmproj") {
+			return nil, fmt.Errorf("llama.cpp embeddings require a multimodal projector: %w", &base.ErrNotSupported{Options: []string{"Request.Doc"}})
 		}
 		return nil, err
 	}

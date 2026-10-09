@@ -9,15 +9,10 @@ package smoke
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math"
-	"net/http"
 	"slices"
-	"strings"
-
-	"github.com/maruel/httpjson"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -112,7 +107,7 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 		resized, err := call("Dimensions", &genai.EmbeddingRequest{Inputs: texts, Dimensions: dimensions})
 		supported := true
 		if err != nil {
-			if !unsupportedEmbeddingDimensions(err) {
+			if !unsupportedEmbeddingOption(err, "EmbeddingRequest.Dimensions") {
 				return scoreboard.Scenario{}, u, fmt.Errorf("embedding dimensions: %w", err)
 			}
 			supported = false
@@ -129,7 +124,7 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 		}
 		media, err := call(probe.name, &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: probe.filename, Src: bytes.NewReader(data)}}}})
 		if err != nil {
-			if unsupportedEmbeddingMedia(err, probe.modality) {
+			if unsupportedEmbeddingOption(err, "Request.Doc") {
 				continue
 			}
 			return scoreboard.Scenario{}, u, fmt.Errorf("embedding %s: %w", probe.modality, err)
@@ -153,21 +148,11 @@ func embeddingCosine(a, b []float32) float64 {
 	return dot / math.Sqrt(x*y)
 }
 
-func unsupportedEmbeddingDimensions(err error) bool {
-	if e, ok := errors.AsType[*base.ErrNotSupported](err); ok {
-		return slices.Contains(e.Options, "EmbeddingRequest.Dimensions")
-	}
-	e, ok := errors.AsType[*httpjson.Error](err)
-	if !ok || e.StatusCode != http.StatusBadRequest {
-		return false
-	}
-	// A generic 400 could represent a broken request or upstream failure. Only
-	// the explicit unsupported_parameter discriminator identifies this option.
-	var body embeddingOptionErrorResponse
-	if json.Unmarshal(e.ResponseBody, &body) != nil {
-		return false
-	}
-	return body.Error.Code == "unsupported_parameter" && strings.EqualFold(body.Error.Param, "dimensions")
+// unsupportedEmbeddingOption reports whether err explicitly rejects option.
+// Providers translate their own unsupported-option responses to base.ErrNotSupported.
+func unsupportedEmbeddingOption(err error, option string) bool {
+	e, ok := errors.AsType[*base.ErrNotSupported](err)
+	return ok && slices.Contains(e.Options, option)
 }
 
 type embeddingOrderProbe struct {
@@ -175,45 +160,7 @@ type embeddingOrderProbe struct {
 	order []int
 }
 
-type embeddingOptionErrorResponse struct {
-	Error embeddingOptionError `json:"error"`
-}
-
-type embeddingOptionError struct {
-	Code  string `json:"code"`
-	Param string `json:"param"`
-}
-
-// unsupportedEmbeddingMedia recognizes negative evidence only for nonempty media-only probes.
-func unsupportedEmbeddingMedia(err error, modality genai.Modality) bool {
-	if e, ok := errors.AsType[*base.ErrNotSupported](err); ok {
-		return slices.Contains(e.Options, "Request.Doc")
-	}
-	e, ok := errors.AsType[*httpjson.Error](err)
-	if !ok {
-		return false
-	}
-	var body embeddingMediaErrorResponse
-	if json.Unmarshal(e.ResponseBody, &body) != nil {
-		return false
-	}
-	if e.StatusCode == http.StatusBadRequest && body.Error.Code == http.StatusBadRequest && body.Error.Status == "INVALID_ARGUMENT" && body.Error.Message == "The text content is empty." {
-		// A valid media-only input requiring text identifies an endpoint that cannot embed this modality.
-		return true
-	}
-	return e.StatusCode == http.StatusInternalServerError && body.Error.Code == http.StatusInternalServerError && body.Error.Type == "server_error" && body.Error.Message == fmt.Sprintf("%s input is not supported - hint: if this is unexpected, you may need to provide the mmproj", modality)
-}
-
 type embeddingMediaProbe struct {
 	name, filename, mime string
 	modality             genai.Modality
-}
-type embeddingMediaErrorResponse struct {
-	Error embeddingMediaError `json:"error"`
-}
-type embeddingMediaError struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Status  string `json:"status"`
-	Type    string `json:"type"`
 }

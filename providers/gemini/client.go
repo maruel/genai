@@ -1566,7 +1566,8 @@ func yieldNothing[T any](yield func(T) bool) {
 var _ genai.Provider = &Client{}
 
 // Embed implements genai.Provider without selecting a task type.
-// Document inputs use native content conversion and require a compatible model.
+// Document inputs use native content conversion and require a compatible model;
+// a text-only model returns base.ErrNotSupported.
 func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
 	if in == nil {
 		return nil, errors.New("embedding request is required")
@@ -1579,8 +1580,10 @@ func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.
 	}
 	model := "models/" + strings.TrimPrefix(c.ModelID(), "models/")
 	req := BatchEmbeddingRequest{Requests: make([]EmbeddingRequest, len(in.Inputs))}
+	hasDoc := false
 	for i := range in.Inputs {
 		input := in.Inputs[i]
+		hasDoc = hasDoc || !input.Doc.IsZero()
 		var part Part
 		if err := part.FromRequest(&input); err != nil {
 			return nil, fmt.Errorf("embedding input #%d: %w", i, err)
@@ -1589,6 +1592,10 @@ func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.
 	}
 	var raw BatchEmbeddingResponse
 	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
+		// Text-only models reject a valid media-only input as empty text.
+		if e, ok := errors.AsType[*ErrorResponse](err); ok && hasDoc && e.ErrorVal.Code == http.StatusBadRequest && e.ErrorVal.Status == "INVALID_ARGUMENT" && e.ErrorVal.Message == "The text content is empty." {
+			return nil, fmt.Errorf("gemini embedding model rejects media: %w", &base.ErrNotSupported{Options: []string{"Request.Doc"}})
+		}
 		return nil, err
 	}
 	out := &genai.EmbeddingResponse{Embeddings: make([][]float32, len(raw.Embeddings)), Usage: genai.Usage{InputTokens: raw.UsageMetadata.PromptTokenCount, TotalTokens: raw.UsageMetadata.PromptTokenCount}}

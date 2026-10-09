@@ -41,11 +41,15 @@ import (
 )
 
 func TestClient(t *testing.T) {
-	t.Run("New/embedding preference/error", func(t *testing.T) {
-		c, err := llamacpp.New(t.Context(), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
-		if err == nil || c != nil {
-			t.Fatalf("client %v, error %v", c, err)
-		}
+	t.Run("New", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			t.Run("embedding preference", func(t *testing.T) {
+				c, err := llamacpp.New(t.Context(), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
+				if err == nil || c != nil {
+					t.Fatalf("client %v, error %v", c, err)
+				}
+			})
+		})
 	})
 
 	testRecorder := internaltest.NewRecords()
@@ -63,30 +67,206 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t, apiKey: apiKey}
 
 	t.Run("Embed", func(t *testing.T) {
-		url := os.Getenv("LLAMA_EMBEDDING_SERVER")
-		if url == "" {
-			url = "http://127.0.0.1:0"
-		}
-		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(url), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: &embeddingTransport{RoundTripper: h}})
-		}))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "task: search result | query: What causes the northern lights?"}, {Text: "title: none | text: The northern lights are caused by charged particles from the sun."}, {Text: "title: none | text: Bananas are a popular tropical fruit."}}, Dimensions: 0}
-		var embedder genai.Provider = c
-		out, err := embedder.Embed(t.Context(), &in)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := out.Validate(); err != nil {
-			t.Fatal(err)
-		}
-		if out.Usage.InputTokens == 0 || out.Usage.TotalTokens != out.Usage.InputTokens {
-			t.Fatalf("unexpected usage: %+v", out.Usage)
-		}
-		internaltest.AssertEmbeddingRetrieval(t, out.Embeddings[0], out.Embeddings[1], out.Embeddings[2])
+		t.Run("valid", func(t *testing.T) {
+			t.Run("document ownership", func(t *testing.T) {
+				c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote("http://localhost:8080"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+					return embeddingDocumentTransport{body: `{"object":"list","data":[{"object":"embedding","index":1,"embedding":"AABAQAAAgEA="},{"object":"embedding","index":0,"embedding":"AACAPwAAAEA="}]}`}
+				}))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				src := &embeddingDocumentReader{Reader: *strings.NewReader("image")}
+				in := genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: src}}, {Text: "caption"}}}
+				out, err := c.Embed(t.Context(), &in)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if in.Inputs[0].Doc.Src != src || !reflect.DeepEqual(out.Embeddings, [][]float32{{1, 2}, {3, 4}}) {
+					t.Fatalf("source changed or response invalid: %+v", out)
+				}
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			t.Run("indices", func(t *testing.T) {
+				for _, tc := range []embeddingIndexErrorCase{
+					{"duplicate", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":0,"embedding":"AACAPw=="}]}`},
+					{"negative", `{"object":"list","data":[{"object":"embedding","index":-1,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AACAPw=="}]}`},
+					{"out of bounds", `{"object":"list","data":[{"object":"embedding","index":2,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AACAPw=="}]}`},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingDocumentTransport{body: tc.body} }))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}})
+						if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
+							t.Fatalf("response %+v, error %v", out, err)
+						}
+					})
+				}
+			})
+			t.Run("input", func(t *testing.T) {
+				c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				if out, err := c.Embed(t.Context(), nil); out != nil || err == nil {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+				in := &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("")}}}}
+				if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "embedding input #0") {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+			})
+		})
+	})
+
+	t.Run("EmbedRaw", func(t *testing.T) {
+		t.Run("valid native controls", func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.Method != http.MethodPost || r.URL.Path != "/v1/embeddings" {
+					t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
+				}
+				var req embeddingCompactWireRequest
+				if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+					t.Error(err)
+				}
+				if req.Model != "alias" || req.EncodingFormat != "base64" || req.Normalize != -1 || len(req.Input) != 2 || string(req.Input[0]) != `[1,2]` || string(req.Input[1]) != `{"content":[{"type":"text","text":"caption"},{"type":"image_url","image_url":{"url":"data:image/png;base64,aW1hZ2U="}}]}` {
+					t.Errorf("changed native controls: %+v", req)
+				}
+				w.Header().Set("Content-Type", "application/json")
+				if _, err := io.WriteString(w, `{"model":"server-alias","object":"list","usage":{"prompt_tokens":9,"total_tokens":9},"data":[{"object":"embedding","index":1,"embedding":"AAAAQAAAwEA=","encoding_format":"base64"},{"object":"embedding","index":0,"embedding":"AABAQAAAgEA="}]}`); err != nil {
+					t.Error(err)
+				}
+			}))
+			t.Cleanup(srv.Close)
+			c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			n := -1
+			img := llamacpp.Content{Type: "image_url"}
+			img.ImageURL.URL = "data:image/png;base64,aW1hZ2U="
+			in := llamacpp.EmbeddingRequest{Model: "alias", Normalize: &n, Input: []llamacpp.EmbeddingInput{{Tokens: []int{1, 2}}, {Content: llamacpp.Contents{{Type: "text", Text: "caption"}, img}}}}
+			var out llamacpp.EmbeddingResponse
+			err = c.EmbedRaw(t.Context(), &in, &out)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(out.Data) != 2 || out.Data[0].Index != 1 || !slices.Equal(out.Data[0].Embedding, []float32{2, 6}) || out.Data[1].Index != 0 || !slices.Equal(out.Data[1].Embedding, []float32{3, 4}) || out.Usage.PromptTokens != 9 || out.Usage.TotalTokens != 9 {
+				t.Fatalf("changed values/order/usage: %+v", out)
+			}
+			if err := c.EmbedRaw(t.Context(), &in, nil); err == nil {
+				t.Fatal("accepted nil response")
+			}
+			if len(in.Input[0].Tokens) != 2 || *in.Normalize != -1 {
+				t.Fatal("modified request")
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			t.Run("input validation", func(t *testing.T) {
+				c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				n := -2
+				for _, in := range []*llamacpp.EmbeddingRequest{nil, {}, {Input: []llamacpp.EmbeddingInput{{Tokens: []int{-1}}}}, {Input: []llamacpp.EmbeddingInput{{Text: "text"}}, Normalize: &n}} {
+					var out llamacpp.EmbeddingResponse
+					if err := c.EmbedRaw(t.Context(), in, &out); err == nil {
+						t.Fatalf("accepted invalid request: %+v", in)
+					}
+				}
+			})
+			for _, tc := range []embeddingVectorErrorCase{
+				{"bad base64", `"!"`}, {"empty", `""`}, {"partial float32", `"AA=="`}, {"NaN", `"AADAfw=="`}, {"infinity", `"AACAfw=="`}, {"null", `null`}, {"object", `{"base64":"AACAPw==","unexpected":true}`},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+						w.Header().Set("Content-Type", "application/json")
+						if _, err := fmt.Fprintf(w, `{"object":"list","data":[{"object":"embedding","index":0,"embedding":%s}]}`, tc.vector); err != nil {
+							t.Error(err)
+						}
+					}))
+					t.Cleanup(srv.Close)
+					c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+					if err != nil {
+						t.Fatal(err)
+					}
+					internaltest.CleanupCloser(t, c)
+					out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "text"}}})
+					if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
+						t.Fatalf("got %+v, %v", out, err)
+					}
+				})
+			}
+			for _, tc := range []embeddingCompactErrorCase{
+				{"envelope object", 200, `{"object":"embeddings","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="}]}`, false, true, false},
+				{"result count", 200, `{"object":"list","data":[]}`, false, true, false},
+				{"item object", 200, `{"object":"list","data":[{"object":"vector","index":0,"embedding":"AACAPw=="}]}`, false, true, false},
+				{"unknown field", 200, `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw==","unexpected":true}]}`, false, false, false},
+				{"pooling none", 400, `{"error":{"code":400,"message":"Pooling type 'none' is not OAI compatible. Please use a different pooling type","type":"invalid_request_error"}}`, true, false, false},
+				{"unrelated bad request", 400, `{"error":{"code":400,"message":"bad input","type":"invalid_request_error"}}`, false, false, false},
+				{"projector required", 500, `{"error":{"code":500,"message":"image input is not supported - hint: if this is unexpected, you may need to provide the mmproj","type":"server_error"}}`, true, false, true},
+				{"projector error for text", 500, `{"error":{"code":500,"message":"image input is not supported - hint: if this is unexpected, you may need to provide the mmproj","type":"server_error"}}`, false, false, false},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+						w.Header().Set("Content-Type", "application/json")
+						w.WriteHeader(tc.code)
+						if _, err := io.WriteString(w, tc.body); err != nil {
+							t.Error(err)
+						}
+					}))
+					t.Cleanup(srv.Close)
+					c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
+					if err != nil {
+						t.Fatal(err)
+					}
+					internaltest.CleanupCloser(t, c)
+					in := genai.Request{Text: "text"}
+					if tc.doc {
+						in = genai.Request{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("image")}}
+					}
+					out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{in}})
+					if err == nil || out != nil {
+						t.Fatalf("accepted failed upstream response: %+v", out)
+					}
+					if _, ok := errors.AsType[*internal.BadError](err); tc.bad && !ok {
+						t.Fatalf("expected BadError, got %v", err)
+					}
+					_, unsupported := errors.AsType[*base.ErrNotSupported](err)
+					if err == nil || out != nil || unsupported != tc.unsupported {
+						t.Fatalf("misclassified generic error: %+v, %v", out, err)
+					}
+				})
+			}
+			t.Run("partial response", func(t *testing.T) {
+				old := internal.BeLenient
+				t.Cleanup(func() { internal.BeLenient = old })
+				for _, lenient := range []bool{false, true} {
+					t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
+						internal.BeLenient = lenient
+						c, err := llamacpp.New(t.Context(), genai.ProviderOptionModel("model"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+							return embeddingDocumentTransport{body: `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AA=="}]}`}
+						}))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						var out llamacpp.EmbeddingResponse
+						err = c.EmbedRaw(t.Context(), &llamacpp.EmbeddingRequest{Model: "model", Input: []llamacpp.EmbeddingInput{{Text: "a"}, {Text: "b"}}}, &out)
+						if _, ok := errors.AsType[*internal.BadError](err); !ok || !reflect.ValueOf(out).IsZero() {
+							t.Fatalf("response %+v, error %v", out, err)
+						}
+					})
+				}
+			})
+		})
 	})
 
 	t.Run("Capabilities", func(t *testing.T) {
@@ -424,41 +604,43 @@ func TestGenOption(t *testing.T) {
 }
 
 func TestMessage(t *testing.T) {
-	t.Run("To/with_reasoning", func(t *testing.T) {
-		m := llamacpp.Message{
-			Role:             "assistant",
-			Content:          llamacpp.Contents{{Type: "text", Text: "hello"}},
-			ReasoningContent: "thinking...",
-		}
-		var out genai.Message
-		if err := m.To(&out); err != nil {
-			t.Fatal(err)
-		}
-		if len(out.Replies) != 2 {
-			t.Fatalf("len(Replies) = %d, want 2", len(out.Replies))
-		}
-		if out.Replies[0].Reasoning != "thinking..." {
-			t.Errorf("Replies[0].Reasoning = %q, want %q", out.Replies[0].Reasoning, "thinking...")
-		}
-		if out.Replies[1].Text != "hello" {
-			t.Errorf("Replies[1].Text = %q, want %q", out.Replies[1].Text, "hello")
-		}
-	})
-	t.Run("To/without_reasoning", func(t *testing.T) {
-		m := llamacpp.Message{
-			Role:    "assistant",
-			Content: llamacpp.Contents{{Type: "text", Text: "hello"}},
-		}
-		var out genai.Message
-		if err := m.To(&out); err != nil {
-			t.Fatal(err)
-		}
-		if len(out.Replies) != 1 {
-			t.Fatalf("len(Replies) = %d, want 1", len(out.Replies))
-		}
-		if out.Replies[0].Text != "hello" {
-			t.Errorf("Replies[0].Text = %q, want %q", out.Replies[0].Text, "hello")
-		}
+	t.Run("To", func(t *testing.T) {
+		t.Run("with_reasoning", func(t *testing.T) {
+			m := llamacpp.Message{
+				Role:             "assistant",
+				Content:          llamacpp.Contents{{Type: "text", Text: "hello"}},
+				ReasoningContent: "thinking...",
+			}
+			var out genai.Message
+			if err := m.To(&out); err != nil {
+				t.Fatal(err)
+			}
+			if len(out.Replies) != 2 {
+				t.Fatalf("len(Replies) = %d, want 2", len(out.Replies))
+			}
+			if out.Replies[0].Reasoning != "thinking..." {
+				t.Errorf("Replies[0].Reasoning = %q, want %q", out.Replies[0].Reasoning, "thinking...")
+			}
+			if out.Replies[1].Text != "hello" {
+				t.Errorf("Replies[1].Text = %q, want %q", out.Replies[1].Text, "hello")
+			}
+		})
+		t.Run("without_reasoning", func(t *testing.T) {
+			m := llamacpp.Message{
+				Role:    "assistant",
+				Content: llamacpp.Contents{{Type: "text", Text: "hello"}},
+			}
+			var out genai.Message
+			if err := m.To(&out); err != nil {
+				t.Fatal(err)
+			}
+			if len(out.Replies) != 1 {
+				t.Fatalf("len(Replies) = %d, want 1", len(out.Replies))
+			}
+			if out.Replies[0].Text != "hello" {
+				t.Errorf("Replies[0].Text = %q, want %q", out.Replies[0].Text, "hello")
+			}
+		})
 	})
 }
 
@@ -477,202 +659,6 @@ func (e *embeddingTransport) RoundTrip(r *http.Request) (*http.Response, error) 
 		return nil, errors.New("recording EmbeddingGemma 2 requires LLAMA_EMBEDDING_SERVER pointing to a server with --embeddings and embeddinggemma-2-Q8_0.gguf")
 	}
 	return e.RoundTripper.RoundTrip(r)
-}
-
-func TestClientEmbeddings(t *testing.T) {
-	t.Run("Embed/error/indices", func(t *testing.T) {
-		for _, tc := range []embeddingIndexErrorCase{
-			{"duplicate", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":0,"embedding":"AACAPw=="}]}`},
-			{"negative", `{"object":"list","data":[{"object":"embedding","index":-1,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AACAPw=="}]}`},
-			{"out of bounds", `{"object":"list","data":[{"object":"embedding","index":2,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AACAPw=="}]}`},
-		} {
-			t.Run(tc.name, func(t *testing.T) {
-				c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingDocumentTransport{body: tc.body} }))
-				if err != nil {
-					t.Fatal(err)
-				}
-				internaltest.CleanupCloser(t, c)
-				out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}})
-				if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
-					t.Fatalf("response %+v, error %v", out, err)
-				}
-			})
-		}
-	})
-
-	t.Run("EmbedRaw/error/partial response", func(t *testing.T) {
-		old := internal.BeLenient
-		t.Cleanup(func() { internal.BeLenient = old })
-		for _, lenient := range []bool{false, true} {
-			t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
-				internal.BeLenient = lenient
-				c, err := llamacpp.New(t.Context(), genai.ProviderOptionModel("model"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
-					return embeddingDocumentTransport{body: `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AA=="}]}`}
-				}))
-				if err != nil {
-					t.Fatal(err)
-				}
-				internaltest.CleanupCloser(t, c)
-				var out llamacpp.EmbeddingResponse
-				err = c.EmbedRaw(t.Context(), &llamacpp.EmbeddingRequest{Model: "model", Input: []llamacpp.EmbeddingInput{{Text: "a"}, {Text: "b"}}}, &out)
-				if _, ok := errors.AsType[*internal.BadError](err); !ok || !reflect.ValueOf(out).IsZero() {
-					t.Fatalf("response %+v, error %v", out, err)
-				}
-			})
-		}
-	})
-
-	t.Run("Embed/valid/document ownership", func(t *testing.T) {
-		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote("http://localhost:8080"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
-			return embeddingDocumentTransport{body: `{"object":"list","data":[{"object":"embedding","index":1,"embedding":"AABAQAAAgEA="},{"object":"embedding","index":0,"embedding":"AACAPwAAAEA="}]}`}
-		}))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		src := &embeddingDocumentReader{Reader: *strings.NewReader("image")}
-		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: src}}, {Text: "caption"}}}
-		out, err := c.Embed(t.Context(), &in)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if in.Inputs[0].Doc.Src != src || !reflect.DeepEqual(out.Embeddings, [][]float32{{1, 2}, {3, 4}}) {
-			t.Fatalf("source changed or response invalid: %+v", out)
-		}
-	})
-
-	t.Run("Embed/input error", func(t *testing.T) {
-		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		if out, err := c.Embed(t.Context(), nil); out != nil || err == nil {
-			t.Fatalf("response %+v, error %v", out, err)
-		}
-		in := &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: "image.png", Src: strings.NewReader("")}}}}
-		if out, err := c.Embed(t.Context(), in); out != nil || err == nil || !strings.Contains(err.Error(), "embedding input #0") {
-			t.Fatalf("response %+v, error %v", out, err)
-		}
-	})
-
-	t.Run("EmbedRaw", func(t *testing.T) {
-		t.Run("valid native controls", func(t *testing.T) {
-			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.Method != http.MethodPost || r.URL.Path != "/v1/embeddings" {
-					t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
-				}
-				var req embeddingCompactWireRequest
-				if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-					t.Error(err)
-				}
-				if req.Model != "alias" || req.EncodingFormat != "base64" || req.Normalize != -1 || len(req.Input) != 2 || string(req.Input[0]) != `[1,2]` || string(req.Input[1]) != `{"content":[{"type":"text","text":"caption"},{"type":"image_url","image_url":{"url":"data:image/png;base64,aW1hZ2U="}}]}` {
-					t.Errorf("changed native controls: %+v", req)
-				}
-				w.Header().Set("Content-Type", "application/json")
-				if _, err := io.WriteString(w, `{"model":"server-alias","object":"list","usage":{"prompt_tokens":9,"total_tokens":9},"data":[{"object":"embedding","index":1,"embedding":"AAAAQAAAwEA=","encoding_format":"base64"},{"object":"embedding","index":0,"embedding":"AABAQAAAgEA="}]}`); err != nil {
-					t.Error(err)
-				}
-			}))
-			t.Cleanup(srv.Close)
-			c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
-			if err != nil {
-				t.Fatal(err)
-			}
-			internaltest.CleanupCloser(t, c)
-			n := -1
-			img := llamacpp.Content{Type: "image_url"}
-			img.ImageURL.URL = "data:image/png;base64,aW1hZ2U="
-			in := llamacpp.EmbeddingRequest{Model: "alias", Normalize: &n, Input: []llamacpp.EmbeddingInput{{Tokens: []int{1, 2}}, {Content: llamacpp.Contents{{Type: "text", Text: "caption"}, img}}}}
-			var out llamacpp.EmbeddingResponse
-			err = c.EmbedRaw(t.Context(), &in, &out)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if len(out.Data) != 2 || out.Data[0].Index != 1 || !slices.Equal(out.Data[0].Embedding, []float32{2, 6}) || out.Data[1].Index != 0 || !slices.Equal(out.Data[1].Embedding, []float32{3, 4}) || out.Usage.PromptTokens != 9 || out.Usage.TotalTokens != 9 {
-				t.Fatalf("changed values/order/usage: %+v", out)
-			}
-			if err := c.EmbedRaw(t.Context(), &in, nil); err == nil {
-				t.Fatal("accepted nil response")
-			}
-			if len(in.Input[0].Tokens) != 2 || *in.Normalize != -1 {
-				t.Fatal("modified request")
-			}
-		})
-		t.Run("error", func(t *testing.T) {
-			t.Run("input validation", func(t *testing.T) {
-				c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
-				if err != nil {
-					t.Fatal(err)
-				}
-				internaltest.CleanupCloser(t, c)
-				n := -2
-				for _, in := range []*llamacpp.EmbeddingRequest{nil, {}, {Input: []llamacpp.EmbeddingInput{{Tokens: []int{-1}}}}, {Input: []llamacpp.EmbeddingInput{{Text: "text"}}, Normalize: &n}} {
-					var out llamacpp.EmbeddingResponse
-					if err := c.EmbedRaw(t.Context(), in, &out); err == nil {
-						t.Fatalf("accepted invalid request: %+v", in)
-					}
-				}
-			})
-			for _, tc := range []embeddingVectorErrorCase{
-				{"bad base64", `"!"`}, {"empty", `""`}, {"partial float32", `"AA=="`}, {"NaN", `"AADAfw=="`}, {"infinity", `"AACAfw=="`}, {"null", `null`}, {"object", `{"base64":"AACAPw==","unexpected":true}`},
-			} {
-				t.Run(tc.name, func(t *testing.T) {
-					srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-						w.Header().Set("Content-Type", "application/json")
-						if _, err := fmt.Fprintf(w, `{"object":"list","data":[{"object":"embedding","index":0,"embedding":%s}]}`, tc.vector); err != nil {
-							t.Error(err)
-						}
-					}))
-					t.Cleanup(srv.Close)
-					c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
-					if err != nil {
-						t.Fatal(err)
-					}
-					internaltest.CleanupCloser(t, c)
-					out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "text"}}})
-					if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
-						t.Fatalf("got %+v, %v", out, err)
-					}
-				})
-			}
-			for _, tc := range []embeddingCompactErrorCase{
-				{"envelope object", 200, `{"object":"embeddings","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="}]}`, false, true},
-				{"result count", 200, `{"object":"list","data":[]}`, false, true},
-				{"item object", 200, `{"object":"list","data":[{"object":"vector","index":0,"embedding":"AACAPw=="}]}`, false, true},
-				{"unknown field", 200, `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw==","unexpected":true}]}`, false, false},
-				{"pooling none", 400, `{"error":{"code":400,"message":"Pooling type 'none' is not OAI compatible. Please use a different pooling type","type":"invalid_request_error"}}`, true, false},
-				{"unrelated bad request", 400, `{"error":{"code":400,"message":"bad input","type":"invalid_request_error"}}`, false, false},
-			} {
-				t.Run(tc.name, func(t *testing.T) {
-					srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-						w.Header().Set("Content-Type", "application/json")
-						w.WriteHeader(tc.code)
-						if _, err := io.WriteString(w, tc.body); err != nil {
-							t.Error(err)
-						}
-					}))
-					t.Cleanup(srv.Close)
-					c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
-					if err != nil {
-						t.Fatal(err)
-					}
-					internaltest.CleanupCloser(t, c)
-					out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "text"}}})
-					if err == nil || out != nil {
-						t.Fatalf("accepted failed upstream response: %+v", out)
-					}
-					if _, ok := errors.AsType[*internal.BadError](err); tc.bad && !ok {
-						t.Fatalf("expected BadError, got %v", err)
-					}
-					_, unsupported := errors.AsType[*base.ErrNotSupported](err)
-					if err == nil || out != nil || unsupported != tc.unsupported {
-						t.Fatalf("misclassified generic error: %+v, %v", out, err)
-					}
-				})
-			}
-		})
-	})
 }
 
 func TestClientSystemOne(t *testing.T) {
@@ -959,6 +945,7 @@ type embeddingCompactErrorCase struct {
 	body        string
 	unsupported bool
 	bad         bool
+	doc         bool
 }
 
 type embeddingDocumentReader struct{ strings.Reader }

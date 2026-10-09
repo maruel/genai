@@ -564,7 +564,7 @@ func TestScore(t *testing.T) {
 		}
 	})
 
-	t.Run("Validate per-modality SOTA/Good/Cheap", func(t *testing.T) {
+	t.Run("Validate per-modality tiers", func(t *testing.T) {
 		tests := []*Score{
 			{
 				Country: "US",

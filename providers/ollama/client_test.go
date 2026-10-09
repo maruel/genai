@@ -23,7 +23,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 
 	"github.com/maruel/genai"
@@ -37,80 +36,30 @@ import (
 // Not implementing TestClient_AllModels since we need to preload Ollama models. Can be done later.
 
 func TestClient(t *testing.T) {
-	t.Run("EmbedRaw/error/partial response", func(t *testing.T) {
-		old := internal.BeLenient
-		t.Cleanup(func() { internal.BeLenient = old })
-		for _, lenient := range []bool{false, true} {
-			t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
-				internal.BeLenient = lenient
-				c, err := ollama.New(t.Context(), genai.ProviderOptionModel("model"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
-					return embeddingResponseTransport{body: `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AA=="}]}`}
-				}))
-				if err != nil {
-					t.Fatal(err)
-				}
-				internaltest.CleanupCloser(t, c)
-				var out ollama.EmbeddingResponse
-				err = c.EmbedRaw(t.Context(), &ollama.EmbeddingRequest{Model: "model", Input: []string{"a", "b"}}, &out)
-				if _, ok := errors.AsType[*internal.BadError](err); !ok || !reflect.ValueOf(out).IsZero() {
-					t.Fatalf("response %+v, error %v", out, err)
-				}
-			})
-		}
-	})
-
-	t.Run("Embed/valid/reordered results", func(t *testing.T) {
-		body := `{"object":"list","data":[{"object":"embedding","index":1,"embedding":"AAAAAAAAgEA="},{"object":"embedding","index":0,"embedding":"AAAAQAAAQMA="}],"usage":{"prompt_tokens":7,"total_tokens":7}}`
-		c, err := ollama.New(t.Context(), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingResponseTransport{body: body} }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !reflect.DeepEqual(out.Embeddings, [][]float32{{2, -3}, {0, 4}}) || out.Usage.InputTokens != 7 || out.Usage.TotalTokens != 7 {
-			t.Fatalf("response %+v", out)
-		}
-	})
-
-	t.Run("Embed/input error", func(t *testing.T) {
-		c, err := ollama.New(t.Context(), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		if out, err := c.Embed(t.Context(), nil); out != nil || err == nil || !strings.Contains(err.Error(), "required") {
-			t.Fatalf("response %+v, error %v", out, err)
-		}
-	})
-
-	t.Run("Embed/error", func(t *testing.T) {
-		for _, tc := range []embeddingResponseCase{{"result count", `{"object":"list","data":[]}`},
-			{"duplicate index", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPwAAAEA="},{"object":"embedding","index":0,"embedding":"AACAPwAAAEA="}]}`},
-			{"invalid vector", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AAAAAAAAAAA="},{"object":"embedding","index":1,"embedding":"AACAPwAAAEA="}]}`},
-			{"dimensions", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPwAAAEAAAEBA"},{"object":"embedding","index":1,"embedding":"AACAPwAAAEAAAEBA"}]}`},
-			{"decode", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AA=="}]}`}} {
+	t.Run("PullModel", func(t *testing.T) {
+		for _, tc := range []pullModelCase{{"valid", `{"status":"success"}`, false}, {"error", `{"status":"pulling manifest"}`, true}} {
 			t.Run(tc.name, func(t *testing.T) {
-				c, err := ollama.New(t.Context(), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingResponseTransport{body: tc.body} }))
+				c, err := ollama.New(t.Context(), genai.ProviderOptionModel("model"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return responseTransport{body: tc.body} }))
 				if err != nil {
 					t.Fatal(err)
 				}
 				internaltest.CleanupCloser(t, c)
-				out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}, Dimensions: 2})
-				if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
-					t.Fatalf("response %+v, error %v", out, err)
+				if err := c.PullModel(t.Context(), "model"); (err != nil) != tc.wantErr {
+					t.Fatal(err)
 				}
 			})
 		}
 	})
 
-	t.Run("New/embedding preference/error", func(t *testing.T) {
-		c, err := ollama.New(t.Context(), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
-		if err == nil || c != nil {
-			t.Fatalf("client %v, error %v", c, err)
-		}
+	t.Run("New", func(t *testing.T) {
+		t.Run("error", func(t *testing.T) {
+			t.Run("embedding preference", func(t *testing.T) {
+				c, err := ollama.New(t.Context(), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
+				if err == nil || c != nil {
+					t.Fatalf("client %v, error %v", c, err)
+				}
+			})
+		})
 	})
 
 	testRecorder := internaltest.NewRecords()
@@ -123,51 +72,54 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Embed", func(t *testing.T) {
-		transport := testRecorder.Record(t, http.DefaultTransport)
-		serverURL := "http://localhost:0"
-		if transport.IsNewCassette() || os.Getenv("RECORD") != "" {
-			serverURL = s.lazyStart(t)
-		}
-		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(serverURL), genai.ProviderOptionModel("all-minilm"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return transport }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		if err := c.PullModel(t.Context(), "all-minilm"); err != nil {
-			t.Fatal(err)
-		}
-		in := genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "A kitten plays with yarn."}, {Text: "A cat plays with string."}, {Text: "Quantum field theory predicts particle interactions."}}, Dimensions: 32}
-		var embedder genai.Provider = c
-		out, err := embedder.Embed(t.Context(), &in)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := out.Validate(); err != nil {
-			t.Fatal(err)
-		}
-		if out.Usage.InputTokens == 0 || out.Usage.TotalTokens != out.Usage.InputTokens {
-			t.Fatalf("unexpected metadata: %+v", out)
-		}
-		internaltest.AssertEmbeddingRetrieval(t, out.Embeddings[0], out.Embeddings[1], out.Embeddings[2])
-	})
-
-	t.Run("Embed-error", func(t *testing.T) {
-		transport := testRecorder.Record(t, http.DefaultTransport)
-		serverURL := "http://localhost:0"
-		if transport.IsNewCassette() || os.Getenv("RECORD") != "" {
-			serverURL = s.lazyStart(t)
-		}
-		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(serverURL), genai.ProviderOptionModel("genai-nonexistent-embedding-test"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return transport }))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}})
-		er, ok := errors.AsType[*ollama.ErrorResponse](err)
-		he, httpOK := errors.AsType[*httpjson.Error](err)
-		if out != nil || !ok || !httpOK || he.StatusCode != http.StatusNotFound || er.Details == nil || er.Details.Type != "not_found_error" || !strings.Contains(er.Error(), "genai-nonexistent-embedding-test") {
-			t.Fatalf("response %+v, API error %+v, HTTP error %+v: %v", out, er, he, err)
-		}
+		t.Run("valid", func(t *testing.T) {
+			t.Run("reordered results", func(t *testing.T) {
+				body := `{"object":"list","data":[{"object":"embedding","index":1,"embedding":"AAAAAAAAgEA="},{"object":"embedding","index":0,"embedding":"AAAAQAAAQMA="}],"usage":{"prompt_tokens":7,"total_tokens":7}}`
+				c, err := ollama.New(t.Context(), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return responseTransport{body: body} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !reflect.DeepEqual(out.Embeddings, [][]float32{{2, -3}, {0, 4}}) || out.Usage.InputTokens != 7 || out.Usage.TotalTokens != 7 {
+					t.Fatalf("response %+v", out)
+				}
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			t.Run("input", func(t *testing.T) {
+				c, err := ollama.New(t.Context(), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				if out, err := c.Embed(t.Context(), nil); out != nil || err == nil || !strings.Contains(err.Error(), "required") {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+			})
+			t.Run("response", func(t *testing.T) {
+				for _, tc := range []embeddingResponseCase{{"result count", `{"object":"list","data":[]}`},
+					{"duplicate index", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPwAAAEA="},{"object":"embedding","index":0,"embedding":"AACAPwAAAEA="}]}`},
+					{"invalid vector", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AAAAAAAAAAA="},{"object":"embedding","index":1,"embedding":"AACAPwAAAEA="}]}`},
+					{"dimensions", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPwAAAEAAAEBA"},{"object":"embedding","index":1,"embedding":"AACAPwAAAEAAAEBA"}]}`},
+					{"decode", `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AA=="}]}`}} {
+					t.Run(tc.name, func(t *testing.T) {
+						c, err := ollama.New(t.Context(), genai.ProviderOptionModel("embedding-test"), genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return responseTransport{body: tc.body} }))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "a"}, {Text: "b"}}, Dimensions: 2})
+						if _, ok := errors.AsType[*internal.BadError](err); !ok || out != nil {
+							t.Fatalf("response %+v, error %v", out, err)
+						}
+					})
+				}
+			})
+		})
 	})
 
 	t.Run("EmbedRaw", func(t *testing.T) {
@@ -207,21 +159,44 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("error", func(t *testing.T) {
-			c, err := ollama.New(t.Context(), genai.ProviderOptionModel("unused"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
-			if err != nil {
-				t.Fatal(err)
-			}
-			internaltest.CleanupCloser(t, c)
-			var out ollama.EmbeddingResponse
-			if err := c.EmbedRaw(t.Context(), nil, &out); err == nil {
-				t.Fatal("accepted nil input")
-			}
-			if err := c.EmbedRaw(t.Context(), &ollama.EmbeddingRequest{Model: "model", Input: []string{"text"}}, nil); err == nil {
-				t.Fatal("accepted nil output")
-			}
-			if err := c.EmbedRaw(t.Context(), &ollama.EmbeddingRequest{}, &out); err == nil {
-				t.Fatal("accepted empty input")
-			}
+			t.Run("input", func(t *testing.T) {
+				c, err := ollama.New(t.Context(), genai.ProviderOptionModel("unused"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				var out ollama.EmbeddingResponse
+				if err := c.EmbedRaw(t.Context(), nil, &out); err == nil {
+					t.Fatal("accepted nil input")
+				}
+				if err := c.EmbedRaw(t.Context(), &ollama.EmbeddingRequest{Model: "model", Input: []string{"text"}}, nil); err == nil {
+					t.Fatal("accepted nil output")
+				}
+				if err := c.EmbedRaw(t.Context(), &ollama.EmbeddingRequest{}, &out); err == nil {
+					t.Fatal("accepted empty input")
+				}
+			})
+			t.Run("partial response", func(t *testing.T) {
+				old := internal.BeLenient
+				t.Cleanup(func() { internal.BeLenient = old })
+				for _, lenient := range []bool{false, true} {
+					t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
+						internal.BeLenient = lenient
+						c, err := ollama.New(t.Context(), genai.ProviderOptionModel("model"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+							return responseTransport{body: `{"object":"list","data":[{"object":"embedding","index":0,"embedding":"AACAPw=="},{"object":"embedding","index":1,"embedding":"AA=="}]}`}
+						}))
+						if err != nil {
+							t.Fatal(err)
+						}
+						internaltest.CleanupCloser(t, c)
+						var out ollama.EmbeddingResponse
+						err = c.EmbedRaw(t.Context(), &ollama.EmbeddingRequest{Model: "model", Input: []string{"a", "b"}}, &out)
+						if _, ok := errors.AsType[*internal.BadError](err); !ok || !reflect.ValueOf(out).IsZero() {
+							t.Fatalf("response %+v, error %v", out, err)
+						}
+					})
+				}
+			})
 		})
 	})
 
@@ -494,13 +469,18 @@ type embeddingSelectionCase struct {
 	embedding bool
 }
 
-type embeddingResponseTransport struct{ body string }
+type responseTransport struct{ body string }
 
-func (e embeddingResponseTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+func (e responseTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": {"application/json"}}, Body: io.NopCloser(strings.NewReader(e.body)), Request: r}, nil
 }
 
 type embeddingResponseCase struct{ name, body string }
+
+type pullModelCase struct {
+	name, body string
+	wantErr    bool
+}
 
 type embeddingNoTransport struct{ t *testing.T }
 

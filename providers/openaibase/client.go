@@ -408,7 +408,8 @@ func ProcessHeaders(h http.Header) []genai.RateLimit {
 }
 
 // Embed embeds a text batch with the configured OpenAI model.
-// Document inputs return base.ErrNotSupported.
+// Document inputs and Dimensions rejected as an unsupported parameter return
+// base.ErrNotSupported.
 func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
 	if in == nil {
 		return nil, errors.New("embedding request is required")
@@ -426,6 +427,9 @@ func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.
 	req := EmbeddingRequest{Model: c.Impl.Model, Input: EmbeddingInput{Texts: texts}, Dimensions: int64(in.Dimensions)}
 	var raw EmbeddingResponse
 	if err := c.EmbedRaw(ctx, &req, &raw); err != nil {
+		if e, ok := errors.AsType[*ErrorResponse](err); ok && in.Dimensions != 0 && e.ErrorVal.Code == "unsupported_parameter" && strings.EqualFold(e.ErrorVal.Param, "dimensions") {
+			return nil, fmt.Errorf("embedding dimensions: %w", &base.ErrNotSupported{Options: []string{"EmbeddingRequest.Dimensions"}})
+		}
 		return nil, err
 	}
 	out := &genai.EmbeddingResponse{Embeddings: make([][]float32, len(in.Inputs)), Usage: genai.Usage{InputTokens: raw.Usage.PromptTokens, TotalTokens: raw.Usage.TotalTokens}}

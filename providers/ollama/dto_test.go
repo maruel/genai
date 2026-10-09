@@ -41,18 +41,21 @@ func TestEmbeddingRequest(t *testing.T) {
 
 // TestErrorResponse preserves decoder strictness for native and compatible errors.
 func TestErrorResponse(t *testing.T) {
-	t.Run("UnmarshalJSON/valid/empty envelope", func(t *testing.T) {
-		var out ollama.ErrorResponse
-		if err := json.Unmarshal([]byte(`{}`), &out); err != nil || out.Error() != "" {
-			t.Fatalf("response %+v, error %v", out, err)
-		}
-	})
-
-	t.Run("UnmarshalJSON/error", func(t *testing.T) {
-		var out ollama.ErrorResponse
-		if err := json.Unmarshal([]byte(`[]`), &out); err == nil {
-			t.Fatal("accepted an array error envelope")
-		}
+	t.Run("UnmarshalJSON", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			t.Run("empty envelope", func(t *testing.T) {
+				var out ollama.ErrorResponse
+				if err := json.Unmarshal([]byte(`{}`), &out); err != nil || out.Error() != "" {
+					t.Fatalf("response %+v, error %v", out, err)
+				}
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			var out ollama.ErrorResponse
+			if err := json.Unmarshal([]byte(`[]`), &out); err == nil {
+				t.Fatal("accepted an array error envelope")
+			}
+		})
 	})
 
 	old := internal.BeLenient

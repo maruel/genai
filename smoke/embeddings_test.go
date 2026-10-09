@@ -8,40 +8,35 @@ package smoke_test
 
 import (
 	"bytes"
-	"encoding/base64"
-	"encoding/binary"
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
 	"io"
-	"math"
 	"net/http"
-	"net/http/httptest"
-	"net/url"
 	"slices"
 	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/gemini"
-	"github.com/maruel/genai/providers/ollama"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
 )
 
 func TestRunEmbeddings(t *testing.T) {
+	unsupportedDims := fmt.Errorf("wrapped: %w", &base.ErrNotSupported{Options: []string{"EmbeddingRequest.Dimensions"}})
+	unsupportedOther := &base.ErrNotSupported{Options: []string{"GenOptionText.Seed"}}
+	failed := errors.New("failed")
 	for _, tc := range []embeddingProbeCase{
-		{name: "routing", probe: 32, supported: new(true), reporting: scoreboard.True},
+		{name: "routing modalities", probe: 32, supported: new(true), reporting: scoreboard.True},
+		{name: "routing scoreboard", probe: 32, supported: new(true), reporting: scoreboard.True},
 		{name: "valid", probe: 32, supported: new(true), reporting: scoreboard.True},
 		{name: "no size probe", reporting: scoreboard.True},
 		{name: "unreported usage", defect: "usage", probe: 32, supported: new(true)},
 		{name: "flaky usage", defect: "flaky usage", reporting: scoreboard.Flaky},
-		{name: "unsupported dimensions", probe: 32, status: 400, body: `{"error":{"code":"unsupported_parameter","param":"dimensions"}}`, supported: new(false), reporting: scoreboard.True},
-		{name: "unauthorized", probe: 32, status: 401, wantErr: true},
-		{name: "quota", probe: 32, status: 429, wantErr: true},
-		{name: "server failure", probe: 32, status: 500, wantErr: true},
-		{name: "generic bad request", probe: 32, status: 400, body: `{"error":{"message":"invalid input","type":"invalid_request_error","param":null,"code":null}}`, wantErr: true},
-		{name: "wrong unsupported option", probe: 32, status: 400, body: `{"error":{"code":"unsupported_parameter","param":"model"}}`, wantErr: true},
+		{name: "unsupported dimensions", probe: 32, dimErr: unsupportedDims, supported: new(false), reporting: scoreboard.True},
+		{name: "dimensions failure", probe: 32, dimErr: failed, wantErr: true},
+		{name: "wrong unsupported option", probe: 32, dimErr: unsupportedOther, wantErr: true},
 		{name: "wrong dimensions", probe: 32, defect: "dimensions", wantErr: true},
 		{name: "wrong order", defect: "order", wantErr: true},
 		{name: "bad retrieval", defect: "retrieval", wantErr: true},
@@ -51,104 +46,20 @@ func TestRunEmbeddings(t *testing.T) {
 		{name: "bad default batch", defect: "initial", wantErr: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			calls := 0
-			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				calls++
-				if r.URL.Path != "/v1/embeddings" {
-					t.Errorf("generation was invoked: %s", r.URL.Path)
-				}
-				var req embeddingProbeRequest
-				if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-					t.Error(err)
-				}
-				if req.EncodingFormat != "base64" {
-					t.Errorf("encoding format %q", req.EncodingFormat)
-				}
-				w.Header().Set("Content-Type", "application/json")
-				if tc.defect == "initial" || req.Dimensions != 0 && tc.status != 0 {
-					status := tc.status
-					if status == 0 {
-						status = 500
-					}
-					w.WriteHeader(status)
-					body := tc.body
-					if body == "" {
-						body = `{"error":{"message":"failed","type":"api_error","param":null,"code":null}}`
-					}
-					if _, err := w.Write([]byte(body)); err != nil {
-						t.Error(err)
-					}
-					return
-				}
-				n := req.Dimensions
-				if n == 0 || tc.defect == "dimensions" {
-					n = 2
-				}
-				out := genai.EmbeddingResponse{Usage: genai.Usage{InputTokens: 7}}
-				for _, s := range req.Input {
-					v := make([]float32, n)
-					switch {
-					case strings.Contains(s, "query:"):
-						v[0] = 2
-					case strings.Contains(s, "charged particles"):
-						v[0] = 3
-						v[1] = 1
-					default:
-						v[0] = -1
-						v[1] = 2
-					}
-					if tc.defect == "retrieval" && strings.Contains(s, "charged particles") {
-						v[0] = -3
-					}
-					if tc.defect == "zero" {
-						clear(v)
-					}
-					out.Embeddings = append(out.Embeddings, v)
-				}
-				if tc.defect == "order" {
-					slices.Reverse(out.Embeddings)
-				}
-				if tc.defect == "missing" {
-					out.Embeddings = out.Embeddings[:2]
-				}
-				if tc.defect == "usage" || tc.defect == "flaky usage" && calls == 2 {
-					out.Usage.InputTokens = 0
-				}
-				if tc.defect == "negative usage" {
-					out.Usage.InputTokens = -1
-				}
-				wire := embeddingProbeResponse{Object: "list", Model: "model", Usage: embeddingProbeUsage{PromptTokens: out.Usage.InputTokens, TotalTokens: out.Usage.InputTokens}}
-				for i, v := range out.Embeddings {
-					b := make([]byte, len(v)*4)
-					for j, x := range v {
-						binary.LittleEndian.PutUint32(b[j*4:], math.Float32bits(x))
-					}
-					wire.Data = append(wire.Data, embeddingProbeVector{Object: "embedding", Index: i, Embedding: base64.StdEncoding.EncodeToString(b)})
-				}
-				if err := json.NewEncoder(w).Encode(&wire); err != nil {
-					t.Error(err)
-				}
-			}))
-			t.Cleanup(srv.Close)
-			model := "model"
-			if tc.name == "routing" {
-				model = "all-minilm"
+			p := &embeddingProvider{t: t, defect: tc.defect, dimErr: tc.dimErr}
+			switch tc.name {
+			case "routing modalities":
+				p.mods = genai.Modalities{genai.ModalityEmbedding}
+			case "routing scoreboard":
+				p.score = scoreboard.Score{Scenarios: []scoreboard.Scenario{{Models: []string{"model"}, Embed: &scoreboard.EmbeddingFunctionality{}}}}
 			}
-			c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(srv.URL), genai.ProviderOptionModel(model), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return http.DefaultTransport }))
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Cleanup(func() {
-				if err := c.Close(); err != nil {
-					t.Error(err)
-				}
-			})
 			var sc scoreboard.Scenario
 			var u genai.Usage
-			if tc.name == "routing" {
-				sc, u, err = smoke.Run(t.Context(), func(string) genai.Provider { return c })
+			var err error
+			if strings.HasPrefix(tc.name, "routing") {
+				sc, u, err = smoke.Run(t.Context(), func(string) genai.Provider { return p })
 			} else {
-				sc, u, err = smoke.RunEmbeddings(t.Context(), func(string) genai.Provider { return c }, tc.probe)
+				sc, u, err = smoke.RunEmbeddings(t.Context(), func(string) genai.Provider { return p }, tc.probe)
 			}
 			if (err != nil) != tc.wantErr {
 				t.Fatalf("scenario %+v usage %+v err %v", sc, u, err)
@@ -168,32 +79,28 @@ func TestRunEmbeddings(t *testing.T) {
 			if (sc.Embed.RequestedDimensions == nil) != (tc.supported == nil) || tc.supported != nil && *sc.Embed.RequestedDimensions != *tc.supported {
 				t.Fatalf("requested size support %+v", sc.Embed)
 			}
-			if tc.probe == 0 && calls != 3 || tc.probe > 0 && calls != 4 {
-				t.Fatalf("requests %d", calls)
+			if tc.probe == 0 && p.calls != 5 || tc.probe > 0 && p.calls != 6 {
+				t.Fatalf("requests %d", p.calls)
 			}
 			if tc.reporting == scoreboard.True && (u.InputTokens < 14 || u.TotalTokens != u.InputTokens) {
 				t.Fatalf("usage %+v", u)
 			}
 		})
 	}
+
 	t.Run("Media", func(t *testing.T) {
+		unsupportedDoc := fmt.Errorf("wrapped: %w", &base.ErrNotSupported{Options: []string{"Request.Doc"}})
 		cases := []embeddingMediaCase{
 			{name: "supported"},
-			{name: "text required", status: 400, body: `{"error":{"code":400,"message":"The text content is empty.","status":"INVALID_ARGUMENT"}}`, unsupported: true},
-			{name: "projector required", status: 500, projector: true, unsupported: true},
-			{name: "unauthorized", status: 401, body: `{"error":{"code":401,"message":"The text content is empty.","status":"INVALID_ARGUMENT"}}`, wantErr: true},
-			{name: "quota", status: 429, body: `{"error":{"code":429,"message":"quota exhausted","status":"RESOURCE_EXHAUSTED"}}`, wantErr: true},
-			{name: "unrelated empty text", status: 400, body: `{"error":{"code":400,"message":"empty text","status":"INVALID_ARGUMENT"}}`, wantErr: true},
-			{name: "wrong discriminator", status: 400, body: `{"error":{"code":400,"message":"The text content is empty.","status":"INTERNAL"}}`, wantErr: true},
-			{name: "server failure", status: 500, body: `{"error":{"code":500,"message":"server failed","status":"INTERNAL"}}`, wantErr: true},
-			{name: "transport", transport: true, wantErr: true},
-			{name: "missing", defect: "missing", wantErr: true},
-			{name: "extra", defect: "extra", wantErr: true},
-			{name: "zero", defect: "zero", wantErr: true},
-			{name: "malformed vector", defect: "malformed", wantErr: true},
-			{name: "width", defect: "width", wantErr: true},
-			{name: "usage", defect: "usage", wantErr: true},
-			{name: "audio failure", status: 500, body: `{"error":{"code":500,"message":"server failed","status":"INTERNAL"}}`, audioOnly: true, wantErr: true},
+			{name: "unsupported", err: unsupportedDoc, unsupported: true},
+			{name: "wrong unsupported option", err: unsupportedOther, wantErr: true},
+			{name: "failure", err: failed, wantErr: true},
+			{name: "audio failure", err: failed, audioOnly: true, wantErr: true},
+			{name: "missing", defect: "media missing", wantErr: true},
+			{name: "extra", defect: "media extra", wantErr: true},
+			{name: "zero", defect: "media zero", wantErr: true},
+			{name: "width", defect: "media width", wantErr: true},
+			{name: "usage", defect: "media usage", wantErr: true},
 		}
 		for _, group := range []string{"Valid", "Error"} {
 			t.Run(group, func(t *testing.T) {
@@ -202,94 +109,8 @@ func TestRunEmbeddings(t *testing.T) {
 						continue
 					}
 					t.Run(tc.name, func(t *testing.T) {
-						mediaCalls := 0
-						srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-							var in gemini.BatchEmbeddingRequest
-							if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-								t.Error(err)
-							}
-							out := gemini.BatchEmbeddingResponse{UsageMetadata: gemini.EmbeddingUsageMetadata{PromptTokenCount: 7}}
-							for _, req := range in.Requests {
-								part := req.Content.Parts[0]
-								v := []float32{-1, 2}
-								switch {
-								case part.InlineData.MimeType != "":
-									mediaCalls++
-									v = []float32{1, 2}
-									filename := "image.jpg"
-									modality := "image"
-									if part.InlineData.MimeType == "audio/wav" {
-										filename = "audio.wav"
-										modality = "audio"
-									}
-									data, err := scoreboard.TestdataFiles.ReadFile("testdata/" + filename)
-									if err != nil {
-										t.Error(err)
-										return
-									}
-									if len(in.Requests) != 1 || len(req.Content.Parts) != 1 || part.Text != "" || !bytes.Equal(part.InlineData.Data, data) {
-										t.Error("probe must contain the complete standalone media input")
-									}
-									if !tc.audioOnly || modality == "audio" {
-										if tc.status != 0 {
-											body := tc.body
-											if tc.projector {
-												body = fmt.Sprintf(`{"error":{"code":500,"message":"%s input is not supported - hint: if this is unexpected, you may need to provide the mmproj","type":"server_error"}}`, modality)
-											}
-											w.Header().Set("Content-Type", "application/json")
-											w.WriteHeader(tc.status)
-											if _, err := w.Write([]byte(body)); err != nil {
-												t.Error(err)
-											}
-											return
-										}
-										if tc.defect == "malformed" {
-											w.Header().Set("Content-Type", "application/json")
-											if _, err := w.Write([]byte(`{"embeddings":[{"values":[1e100,1]}]}`)); err != nil {
-												t.Error(err)
-											}
-											return
-										}
-										switch tc.defect {
-										case "missing":
-											out.Embeddings = nil
-										case "extra":
-											out.Embeddings = []gemini.Embedding{{Values: []float32{1, 2}}}
-										case "zero":
-											v = []float32{0, 0}
-										case "width":
-											v = []float32{1, 2, 3}
-										case "usage":
-											out.UsageMetadata.PromptTokenCount = -1
-										}
-									}
-									if tc.defect == "missing" {
-										continue
-									}
-								case strings.Contains(part.Text, "query:"):
-									v = []float32{2, 0}
-								case strings.Contains(part.Text, "charged particles"):
-									v = []float32{3, 1}
-								}
-								out.Embeddings = append(out.Embeddings, gemini.Embedding{Values: v})
-							}
-							w.Header().Set("Content-Type", "application/json")
-							if err := json.NewEncoder(w).Encode(&out); err != nil {
-								t.Error(err)
-							}
-						}))
-						t.Cleanup(srv.Close)
-						tr := &embeddingMediaTransport{url: srv.URL, fail: tc.transport}
-						c, err := gemini.New(t.Context(), genai.ProviderOptionModel("gemini-embedding-2"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return tr }))
-						if err != nil {
-							t.Fatal(err)
-						}
-						t.Cleanup(func() {
-							if err := c.Close(); err != nil {
-								t.Error(err)
-							}
-						})
-						sc, u, err := smoke.RunEmbeddings(t.Context(), func(string) genai.Provider { return c }, 0)
+						p := &embeddingProvider{t: t, defect: tc.defect, mediaErr: tc.err, audioOnly: tc.audioOnly}
+						sc, u, err := smoke.RunEmbeddings(t.Context(), func(string) genai.Provider { return p }, 0)
 						if (err != nil) != tc.wantErr {
 							t.Fatalf("scenario %+v usage %+v error %v", sc, u, err)
 						}
@@ -302,8 +123,8 @@ func TestRunEmbeddings(t *testing.T) {
 							}
 							return
 						}
-						if mediaCalls != 2 {
-							t.Fatalf("media calls %d", mediaCalls)
+						if p.mediaCalls != 2 {
+							t.Fatalf("media calls %d", p.mediaCalls)
 						}
 						for _, m := range []genai.Modality{genai.ModalityImage, genai.ModalityAudio} {
 							mc, ok := sc.In[m]
@@ -331,63 +152,121 @@ func TestRunEmbeddings(t *testing.T) {
 type embeddingProbeCase struct {
 	name      string
 	probe     int
-	status    int
-	body      string
+	dimErr    error
 	defect    string
 	wantErr   bool
 	supported *bool
 	reporting scoreboard.TriState
 }
 
-type embeddingProbeRequest struct {
-	Input          []string `json:"input"`
-	Dimensions     int      `json:"dimensions"`
-	EncodingFormat string   `json:"encoding_format"`
-}
-
-type embeddingProbeResponse struct {
-	Object string                 `json:"object"`
-	Model  string                 `json:"model"`
-	Data   []embeddingProbeVector `json:"data"`
-	Usage  embeddingProbeUsage    `json:"usage"`
-}
-
-type embeddingProbeVector struct {
-	Object    string `json:"object"`
-	Index     int    `json:"index"`
-	Embedding string `json:"embedding"`
-}
-
-type embeddingProbeUsage struct {
-	PromptTokens int64 `json:"prompt_tokens"`
-	TotalTokens  int64 `json:"total_tokens"`
-}
-
 type embeddingMediaCase struct {
-	name, body, defect                                    string
-	status                                                int
-	unsupported, wantErr, projector, transport, audioOnly bool
+	name, defect                    string
+	err                             error
+	unsupported, wantErr, audioOnly bool
 }
 
-type embeddingMediaTransport struct {
-	url  string
-	fail bool
+// embeddingProvider is a fake embedding model with 2-dimension default vectors
+// and 7 input tokens per call. defect selects one malformed response.
+type embeddingProvider struct {
+	base.NotImplemented
+	t                *testing.T
+	mods             genai.Modalities
+	score            scoreboard.Score
+	defect           string
+	dimErr, mediaErr error
+	audioOnly        bool
+	calls            int
+	mediaCalls       int
 }
 
-func (tr *embeddingMediaTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	b, err := io.ReadAll(r.Body)
+func (p *embeddingProvider) Close() error                       { return nil }
+func (p *embeddingProvider) Name() string                       { return "embedding" }
+func (p *embeddingProvider) ModelID() string                    { return "model" }
+func (p *embeddingProvider) OutputModalities() genai.Modalities { return p.mods }
+func (p *embeddingProvider) HTTPClient() *http.Client           { return nil }
+func (p *embeddingProvider) Scoreboard() scoreboard.Score       { return p.score }
+
+func (p *embeddingProvider) Embed(_ context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	p.calls++
+	if p.defect == "initial" {
+		return nil, errors.New("failed")
+	}
+	if doc := in.Inputs[0].Doc; !doc.IsZero() {
+		return p.embedMedia(in)
+	}
+	if in.Dimensions != 0 && p.dimErr != nil {
+		return nil, p.dimErr
+	}
+	n := in.Dimensions
+	if n == 0 || p.defect == "dimensions" {
+		n = 2
+	}
+	out := &genai.EmbeddingResponse{Usage: genai.Usage{InputTokens: 7, TotalTokens: 7}}
+	for _, r := range in.Inputs {
+		v := make([]float32, n)
+		switch {
+		case strings.Contains(r.Text, "query:"):
+			v[0] = 2
+		case strings.Contains(r.Text, "charged particles"):
+			v[0] = 3
+			v[1] = 1
+			if p.defect == "retrieval" {
+				v[0] = -3
+			}
+		default:
+			v[0] = -1
+			v[1] = 2
+		}
+		if p.defect == "zero" {
+			clear(v)
+		}
+		out.Embeddings = append(out.Embeddings, v)
+	}
+	switch p.defect {
+	case "order":
+		slices.Reverse(out.Embeddings)
+	case "missing":
+		out.Embeddings = out.Embeddings[:2]
+	case "negative usage":
+		out.Usage = genai.Usage{InputTokens: -1}
+	}
+	if p.defect == "usage" || p.defect == "flaky usage" && p.calls == 2 {
+		out.Usage = genai.Usage{}
+	}
+	return out, nil
+}
+
+func (p *embeddingProvider) embedMedia(in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	p.mediaCalls++
+	doc := in.Inputs[0].Doc
+	want, err := scoreboard.TestdataFiles.ReadFile("testdata/" + doc.Filename)
 	if err != nil {
 		return nil, err
 	}
-	if tr.fail && bytes.Contains(b, []byte("inlineData")) {
-		return nil, errors.New("media transport failed")
-	}
-	r.Body = io.NopCloser(bytes.NewReader(b))
-	u, err := url.Parse(tr.url)
+	got, err := io.ReadAll(doc.Src)
 	if err != nil {
 		return nil, err
 	}
-	r.URL.Scheme = u.Scheme
-	r.URL.Host = u.Host
-	return http.DefaultTransport.RoundTrip(r)
+	if len(in.Inputs) != 1 || in.Inputs[0].Text != "" || in.Dimensions != 0 || !bytes.Equal(got, want) {
+		p.t.Error("probe must contain the complete standalone media input")
+	}
+	if p.mediaErr != nil && (!p.audioOnly || doc.Filename == "audio.wav") {
+		return nil, p.mediaErr
+	}
+	out := &genai.EmbeddingResponse{Embeddings: [][]float32{{1, 2}}, Usage: genai.Usage{InputTokens: 7, TotalTokens: 7}}
+	switch p.defect {
+	case "media missing":
+		out.Embeddings = nil
+	case "media extra":
+		out.Embeddings = append(out.Embeddings, []float32{1, 2})
+	case "media zero":
+		out.Embeddings[0] = []float32{0, 0}
+	case "media width":
+		out.Embeddings[0] = []float32{1, 2, 3}
+	case "media usage":
+		out.Usage.InputTokens = -1
+	case "usage":
+		out.Usage = genai.Usage{}
+	}
+	return out, nil
 }

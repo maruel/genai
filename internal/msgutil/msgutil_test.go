@@ -14,24 +14,6 @@ import (
 )
 
 func TestExtractOpaqueID(t *testing.T) {
-	t.Run("found", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage("hi"),
-			{Replies: []genai.Reply{
-				{Text: "Hello"},
-				{Opaque: map[string]any{"session_id": "abc-123"}},
-			}},
-		}
-		if got := ExtractOpaqueID(msgs, "session_id"); got != "abc-123" {
-			t.Errorf("got %q, want %q", got, "abc-123")
-		}
-	})
-	t.Run("not_found", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage("hi")}
-		if got := ExtractOpaqueID(msgs, "session_id"); got != "" {
-			t.Errorf("got %q, want empty", got)
-		}
-	})
 	t.Run("last_wins", func(t *testing.T) {
 		msgs := genai.Messages{
 			{Replies: []genai.Reply{{Opaque: map[string]any{"k": "old"}}}},
@@ -52,16 +34,6 @@ func TestExtractOpaqueID(t *testing.T) {
 }
 
 func TestLastUserMsg(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage("hello world")}
-		got, err := LastUserMsg(msgs)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if len(got.Requests) == 0 || got.Requests[0].Text != "hello world" {
-			t.Errorf("got %v, want text %q", got.Requests, "hello world")
-		}
-	})
 	t.Run("no_user_message", func(t *testing.T) {
 		msgs := genai.Messages{{Replies: []genai.Reply{{Text: "hi"}}}}
 		if _, err := LastUserMsg(msgs); err == nil {

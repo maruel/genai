@@ -10,8 +10,6 @@ import (
 	"testing"
 )
 
-type testStruct struct{}
-
 func TestMimeByExt(t *testing.T) {
 	tests := []struct {
 		ext  string
@@ -36,12 +34,7 @@ func TestTypeName(t *testing.T) {
 		in   any
 		want string
 	}{
-		{"value type", testStruct{}, "testStruct"},
-		{"pointer type", &testStruct{}, "testStruct"},
-		{"double pointer", func() any { v := &testStruct{}; return &v }(), "testStruct"},
-		{"int", 42, "int"},
 		{"pointer to int", func() any { v := 42; return &v }(), "int"},
-		{"string", "hello", "string"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

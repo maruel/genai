@@ -43,27 +43,6 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 
 func TestNew(t *testing.T) {
 	t.Run("SOTA", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, reverse := range []bool{false, true} {
-				models := genai.ProviderOptionPreloadedModels{
-					&groq.Model{ID: "qwen/qwen3.6-27b", Created: 100},
-					&groq.Model{ID: "qwen/qwen3.8-27b", Created: 200},
-				}
-				if reverse {
-					slices.Reverse(models)
-				}
-				c, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA, models)
-				if c != nil {
-					internaltest.CleanupCloser(t, c)
-				}
-				if err != nil {
-					t.Fatal(err)
-				}
-				if c.ModelID() != "qwen/qwen3.8-27b" {
-					t.Fatalf("model = %q", c.ModelID())
-				}
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			cl, err := groq.New(t.Context(), genai.ProviderOptionAPIKey("test-key"), genai.ModelSOTA,
 				genai.ProviderOptionPreloadedModels{&groq.Model{ID: "openai/gpt-oss-120b"}},

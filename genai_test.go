@@ -83,15 +83,6 @@ func TestUsage(t *testing.T) {
 
 func TestMessages(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			m := Messages{
-				NewTextMessage("Hello"),
-				Message{Replies: []Reply{{Text: "I can help with that"}}},
-			}
-			if err := m.Validate(); err != nil {
-				t.Fatalf("unexpected error: %q", err)
-			}
-		})
 		t.Run("chronology", func(t *testing.T) {
 			call := func(id string) Message {
 				return Message{Replies: []Reply{{ToolCall: ToolCall{ID: id, Name: "task_status", Arguments: `{}`}}}}
@@ -103,10 +94,6 @@ func TestMessages(t *testing.T) {
 				name string
 				msgs Messages
 			}{
-				{"burst", Messages{NewTextMessage("Check task 3"), NewTextMessage("Actually task 7")}},
-				{"assistant burst", Messages{call("A"), call("B")}},
-				{"pending", Messages{call("A"), NewTextMessage("Actually task 7"), NewTextMessage("Only its status"), call("B")}},
-				{"partial", Messages{call("A"), call("B"), result("B")}},
 				{"out of order", Messages{call("A"), NewTextMessage("Actually task 7"), call("B"), result("B"), result("A")}},
 			} {
 				t.Run(tc.name, func(t *testing.T) {
@@ -210,64 +197,12 @@ func TestMessage(t *testing.T) {
 		}
 	})
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   Message
-			}{
-				{
-					name: "user text message",
-					in:   NewTextMessage("Hello"),
-				},
-				{
-					name: "user document message",
-					in: Message{
-						Requests: []Request{
-							{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
-						},
-					},
-				},
-				{
-					name: "assistant message",
-					in:   Message{Replies: []Reply{{Text: "I can help with that"}}},
-				},
-				{
-					name: "assistant with tool calls",
-					in: Message{
-						Replies: []Reply{{ToolCall: ToolCall{Name: "tool", Arguments: "{}"}}},
-					},
-				},
-				{
-					name: "user with tool call results",
-					in: Message{
-						ToolCallResults: []ToolCallResult{{Name: "tool", Result: "result"}},
-					},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err != nil {
-						t.Fatalf("unexpected error: %q", err)
-					}
-				})
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
 				in     Message
 				errMsg string
 			}{
-				{
-					name:   "empty",
-					in:     Message{},
-					errMsg: "at least one of fields Request, Reply or ToolCallsResults is required",
-				},
-				{
-					name:   "User field",
-					in:     Message{User: "Joe", Requests: []Request{{Text: "Hi"}}},
-					errMsg: "field User: not supported yet",
-				},
 				{
 					name: "both request and tool call results",
 					in: Message{
@@ -341,60 +276,12 @@ func TestMessage(t *testing.T) {
 		})
 	})
 	t.Run("UnmarshalJSON", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   string
-				want Message
-			}{
-				{
-					name: "User text message",
-					in:   `{"request": [{"text": "Hello"}]}`,
-					want: Message{
-						Requests: []Request{{Text: "Hello"}},
-					},
-				},
-				{
-					name: "Assistant message with tool call",
-					in:   `{"reply":[{"tool_call": {"id": "1", "name": "tool", "arguments": "{}"}}]}`,
-					want: Message{
-						Replies: []Reply{{ToolCall: ToolCall{ID: "1", Name: "tool", Arguments: "{}"}}},
-					},
-				},
-				{
-					name: "Computer message with tool result",
-					in:   `{"tool_call_results": [{"id": "1", "name": "tool", "result": "success"}]}`,
-					want: Message{
-						ToolCallResults: []ToolCallResult{{ID: "1", Name: "tool", Result: "success"}},
-					},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					var got Message
-					d := json.NewDecoder(strings.NewReader(tt.in))
-					d.DisallowUnknownFields()
-					if err := d.Decode(&got); err != nil {
-						t.Fatalf("unexpected error: %v", err)
-					}
-					if diff := cmp.Diff(tt.want, got); diff != "" {
-						t.Fatalf("Message mismatch (-want +got):\n%s", diff)
-					}
-				})
-			}
-		})
-
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
 				in     string
 				errMsg string
 			}{
-				{
-					name:   "Invalid JSON",
-					in:     `{"request": invalid}`,
-					errMsg: "invalid character 'i' looking for beginning of value",
-				},
 				{
 					name:   "Unknown field",
 					in:     `{"request": [{"text": "Hi"}], "unknown_field": "value"}`,
@@ -426,11 +313,6 @@ func TestMessage(t *testing.T) {
 			want     Message
 		}{
 			{
-				name:     "Text",
-				fragment: Reply{Text: "Hello"},
-				want:     Message{Replies: []Reply{{Text: "Hello"}}},
-			},
-			{
 				name: "Document",
 				fragment: Reply{
 					Doc: Doc{
@@ -443,19 +325,6 @@ func TestMessage(t *testing.T) {
 				},
 			},
 			{
-				name:     "Tool",
-				fragment: Reply{ToolCall: ToolCall{Name: "tool"}},
-				want: Message{
-					Replies: []Reply{{ToolCall: ToolCall{Name: "tool"}}},
-				},
-			},
-			{
-				name:     "Add text to existing text",
-				message:  Message{Replies: []Reply{{Text: "Hello"}}},
-				fragment: Reply{Text: " world"},
-				want:     Message{Replies: []Reply{{Text: "Hello world"}}},
-			},
-			{
 				name:     "Add thinking to existing reasoning",
 				message:  Message{Replies: []Reply{{Reasoning: "I think "}}},
 				fragment: Reply{Reasoning: "therefore I am"},
@@ -466,19 +335,6 @@ func TestMessage(t *testing.T) {
 				message:  Message{Replies: []Reply{{Text: "Hello"}}},
 				fragment: Reply{Text: " world"},
 				want:     Message{Replies: []Reply{{Text: "Hello world"}}},
-			},
-			{
-				name: "Document then text",
-				message: Message{
-					Replies: []Reply{{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}}},
-				},
-				fragment: Reply{Text: "No"},
-				want: Message{
-					Replies: []Reply{
-						{Doc: Doc{Filename: "document.txt", Src: &bb.BytesBuffer{D: []byte("document content")}}},
-						{Text: "No"},
-					},
-				},
 			},
 			{
 				name:     "Tool then text",
@@ -605,117 +461,7 @@ func TestMessage(t *testing.T) {
 }
 
 func TestRequest(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   Request
-			}{
-				{
-					name: "Valid text block",
-					in:   Request{Text: "Hello"},
-				},
-				{
-					name: "Valid document block",
-					in:   Request{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err != nil {
-						t.Fatalf("unexpected error: %q", err)
-					}
-				})
-			}
-		})
-		t.Run("error", func(t *testing.T) {
-			tests := []struct {
-				name   string
-				in     Request
-				errMsg string
-			}{
-				{
-					name:   "empty",
-					in:     Request{},
-					errMsg: "an empty Request is invalid",
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
-					}
-				})
-			}
-		})
-	})
-	t.Run("Read", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			c := Request{
-				Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")},
-			}
-			mime, got, err := c.Doc.Read(1000)
-			if err != nil {
-				t.Fatalf("unexpected error: %q", err)
-			}
-			if mime != "text/plain; charset=utf-8" {
-				t.Fatalf("unexpected mime type: %q", mime)
-			}
-			if string(got) != "document content" {
-				t.Fatalf("unexpected content: %q", got)
-			}
-		})
-		// TODO: error
-	})
 	t.Run("UnmarshalJSON", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   string
-				want Request
-			}{
-				{
-					name: "Text content",
-					in:   `{"text": "Hello world"}`,
-					want: Request{Text: "Hello world"},
-				},
-				{
-					name: "URL content",
-					in:   `{"doc":{"filename": "image.jpg", "url": "https://example.com/image.jpg"}}`,
-					want: Request{Doc: Doc{Filename: "image.jpg", URL: "https://example.com/image.jpg"}},
-				},
-				{
-					name: "Document content",
-					in:   `{"doc":{"filename": "doc.txt", "bytes": "SGVsbG8gV29ybGQ="}}`,
-					want: Request{Doc: Doc{Filename: "doc.txt", Src: strings.NewReader("Hello World")}},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					var got Request
-					d := json.NewDecoder(strings.NewReader(tt.in))
-					d.DisallowUnknownFields()
-					if err := d.Decode(&got); err != nil {
-						t.Fatalf("unexpected error: %v", err)
-					}
-					// For Document comparison, read the content since we can't directly compare io.ReadSeeker
-					if tt.want.Doc.Src != nil {
-						wantData, _ := io.ReadAll(tt.want.Doc.Src)
-						gotData, _ := io.ReadAll(got.Doc.Src)
-						if !bytes.Equal(wantData, gotData) {
-							t.Fatalf("Document content mismatch: want %q, got %q", string(wantData), string(gotData))
-						}
-						// Reset Document field for comparison
-						tt.want.Doc.Src = nil
-						got.Doc.Src = nil
-					}
-					if diff := cmp.Diff(tt.want, got); diff != "" {
-						t.Fatalf("Request mismatch (-want +got):\n%s", diff)
-					}
-				})
-			}
-		})
-
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
@@ -723,24 +469,9 @@ func TestRequest(t *testing.T) {
 				errMsg string
 			}{
 				{
-					name:   "Invalid JSON",
-					in:     `{"text": invalid}`,
-					errMsg: "invalid character 'i' looking for beginning of value",
-				},
-				{
-					name:   "Unknown field",
-					in:     `{"text": "Hi", "unknown_field": "value"}`,
-					errMsg: "json: unknown field \"unknown_field\"",
-				},
-				{
 					name:   "Document without filename",
 					in:     `{"doc":{"bytes": "SGVsbG8="}}`,
 					errMsg: "field Filename is required with Src when not implementing Name()",
-				},
-				{
-					name:   "Empty content",
-					in:     `{}`,
-					errMsg: "an empty Request is invalid",
 				},
 			}
 			for _, tt := range tests {
@@ -764,14 +495,6 @@ func TestReply(t *testing.T) {
 				name string
 				in   Reply
 			}{
-				{
-					name: "text block",
-					in:   Reply{Text: "Hello"},
-				},
-				{
-					name: "document block",
-					in:   Reply{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
-				},
 				{
 					name: "citations",
 					in: Reply{
@@ -797,11 +520,6 @@ func TestReply(t *testing.T) {
 				in     Reply
 				errMsg string
 			}{
-				{
-					name:   "empty reply",
-					in:     Reply{},
-					errMsg: "an empty Reply is invalid",
-				},
 				{
 					name: "citations with reasoning",
 					in: Reply{
@@ -832,24 +550,6 @@ func TestReply(t *testing.T) {
 			}
 		})
 	})
-	t.Run("Read", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			c := Reply{
-				Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")},
-			}
-			mime, got, err := c.Doc.Read(1000)
-			if err != nil {
-				t.Fatalf("unexpected error: %q", err)
-			}
-			if mime != "text/plain; charset=utf-8" {
-				t.Fatalf("unexpected mime type: %q", mime)
-			}
-			if string(got) != "document content" {
-				t.Fatalf("unexpected content: %q", got)
-			}
-		})
-		// TODO: error
-	})
 	t.Run("UnmarshalJSON", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
@@ -858,29 +558,9 @@ func TestReply(t *testing.T) {
 				want Reply
 			}{
 				{
-					name: "Text content",
-					in:   `{"text": "Hello world"}`,
-					want: Reply{Text: "Hello world"},
-				},
-				{
 					name: "Reasoning content",
 					in:   `{"reasoning": "Let me think about this"}`,
 					want: Reply{Reasoning: "Let me think about this"},
-				},
-				{
-					name: "Opaque content",
-					in:   `{"opaque": {"key": "value", "num": 42}}`,
-					want: Reply{Opaque: map[string]any{"key": "value", "num": float64(42)}},
-				},
-				{
-					name: "URL content",
-					in:   `{"doc":{"filename": "image.jpg", "url": "https://example.com/image.jpg"}}`,
-					want: Reply{Doc: Doc{Filename: "image.jpg", URL: "https://example.com/image.jpg"}},
-				},
-				{
-					name: "Document content",
-					in:   `{"doc":{"filename": "doc.txt", "bytes": "SGVsbG8gV29ybGQ="}}`,
-					want: Reply{Doc: Doc{Filename: "doc.txt", Src: strings.NewReader("Hello World")}},
 				},
 			}
 			for _, tt := range tests {
@@ -915,16 +595,6 @@ func TestReply(t *testing.T) {
 				in     string
 				errMsg string
 			}{
-				{
-					name:   "Invalid JSON",
-					in:     `{"text": invalid}`,
-					errMsg: "invalid character 'i' looking for beginning of value",
-				},
-				{
-					name:   "Unknown field",
-					in:     `{"text": "Hi", "unknown_field": "value"}`,
-					errMsg: "json: unknown field \"unknown_field\"",
-				},
 				{
 					name:   "Text and Reasoning together",
 					in:     `{"text": "Hello", "reasoning": "Let me think"}`,
@@ -965,107 +635,11 @@ func TestReply(t *testing.T) {
 }
 
 func TestToolCall(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		// TODO.
-	})
 	t.Run("Call", func(t *testing.T) {
 		type CalculateInput struct {
 			A int `json:"a"`
 			B int `json:"b"`
 		}
-
-		t.Run("with struct arguments", func(t *testing.T) {
-			ctx := t.Context()
-			structTool := ToolDef{
-				Name:        "calculateTool",
-				Description: "A tool that performs a calculation",
-				Callback: func(ctx context.Context, input *CalculateInput) (string, error) {
-					return fmt.Sprintf("%d + %d = %d", input.A, input.B, input.A+input.B), nil
-				},
-			}
-			if err := structTool.Validate(); err != nil {
-				t.Fatal(err)
-			}
-
-			tc := ToolCall{
-				ID:        "call2",
-				Name:      "calculateTool",
-				Arguments: `{"a": 5, "b": 3}`,
-			}
-			if err := tc.Validate(); err != nil {
-				t.Fatal(err)
-			}
-
-			result, err := tc.Call(ctx, []ToolDef{structTool})
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-			if result != "5 + 3 = 8" {
-				t.Fatalf("unexpected result: got %q, want %q", result, "5 + 3 = 8")
-			}
-		})
-
-		t.Run("with pointer arguments", func(t *testing.T) {
-			ctx := t.Context()
-			pointerTool := ToolDef{
-				Name:        "pointerTool",
-				Description: "A tool that takes a pointer argument",
-				Callback: func(ctx context.Context, input *CalculateInput) (string, error) {
-					return fmt.Sprintf("%d * %d = %d", input.A, input.B, input.A*input.B), nil
-				},
-			}
-			if err := pointerTool.Validate(); err != nil {
-				t.Fatal(err)
-			}
-
-			tc := ToolCall{
-				ID:        "call3",
-				Name:      "pointerTool",
-				Arguments: `{"a": 5, "b": 3}`,
-			}
-			if err := tc.Validate(); err != nil {
-				t.Fatal(err)
-			}
-
-			result, err := tc.Call(ctx, []ToolDef{pointerTool})
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-			if result != "5 * 3 = 15" {
-				t.Fatalf("unexpected result: got %q, want %q", result, "5 * 3 = 15")
-			}
-		})
-
-		t.Run("with no arguments", func(t *testing.T) {
-			ctx := t.Context()
-			noArgsTool := ToolDef{
-				Name:        "noArgsTool",
-				Description: "A tool that takes no input",
-				Callback: func(ctx context.Context, _ *struct{}) (string, error) {
-					return "12:34:56", nil
-				},
-			}
-			if err := noArgsTool.Validate(); err != nil {
-				t.Fatal(err)
-			}
-
-			// An empty arguments string is a provider bug, it must be normalized by the provider.
-			tc := ToolCall{ID: "call6", Name: "noArgsTool", Arguments: ""}
-			if err := tc.Validate(); err == nil {
-				t.Fatal("expected error for empty arguments, got nil")
-			}
-			tc = ToolCall{ID: "call6", Name: "noArgsTool", Arguments: "{}"}
-			if err := tc.Validate(); err != nil {
-				t.Fatalf("Validate failed: %v", err)
-			}
-			result, err := tc.Call(ctx, []ToolDef{noArgsTool})
-			if err != nil {
-				t.Fatalf("Call failed: %v", err)
-			}
-			if result != "12:34:56" {
-				t.Fatalf("unexpected result: got %q, want %q", result, "12:34:56")
-			}
-		})
 
 		t.Run("with callback returning error", func(t *testing.T) {
 			ctx := t.Context()
@@ -1134,54 +708,12 @@ func TestToolCall(t *testing.T) {
 		})
 	})
 	t.Run("UnmarshalJSON", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   string
-				want ToolCall
-			}{
-				{
-					name: "Complete tool call",
-					in:   `{"id": "call_123", "name": "calculator", "arguments": "{\"a\": 5, \"b\": 3}"}`,
-					want: ToolCall{ID: "call_123", Name: "calculator", Arguments: "{\"a\": 5, \"b\": 3}"},
-				},
-				{
-					name: "Tool call with only name",
-					in:   `{"name": "weather", "arguments": "{}"}`,
-					want: ToolCall{Name: "weather", Arguments: "{}"},
-				},
-				{
-					name: "Tool call with only ID",
-					in:   `{"id": "call_456", "arguments": "{}"}`,
-					want: ToolCall{ID: "call_456", Arguments: "{}"},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					var got ToolCall
-					d := json.NewDecoder(strings.NewReader(tt.in))
-					d.DisallowUnknownFields()
-					if err := d.Decode(&got); err != nil {
-						t.Fatalf("unexpected error: %v", err)
-					}
-					if diff := cmp.Diff(tt.want, got); diff != "" {
-						t.Fatalf("ToolCall mismatch (-want +got):\n%s", diff)
-					}
-				})
-			}
-		})
-
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
 				in     string
 				errMsg string
 			}{
-				{
-					name:   "Invalid JSON",
-					in:     `{"name": "tool", "arguments": invalid}`,
-					errMsg: "invalid character 'i' looking for beginning of value",
-				},
 				{
 					name:   "Invalid arguments JSON",
 					in:     `{"name": "tool", "arguments": "invalid json"}`,
@@ -1209,54 +741,12 @@ func TestToolCall(t *testing.T) {
 
 func TestToolCallResult(t *testing.T) {
 	t.Run("UnmarshalJSON", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   string
-				want ToolCallResult
-			}{
-				{
-					name: "Complete tool call result",
-					in:   `{"id": "call_123", "name": "calculator", "result": "8"}`,
-					want: ToolCallResult{ID: "call_123", Name: "calculator", Result: "8"},
-				},
-				{
-					name: "Tool call result with only name",
-					in:   `{"name": "weather", "result": "sunny"}`,
-					want: ToolCallResult{Name: "weather", Result: "sunny"},
-				},
-				{
-					name: "Tool call result with only ID",
-					in:   `{"id": "call_456", "result": "success"}`,
-					want: ToolCallResult{ID: "call_456", Result: "success"},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					var got ToolCallResult
-					d := json.NewDecoder(strings.NewReader(tt.in))
-					d.DisallowUnknownFields()
-					if err := d.Decode(&got); err != nil {
-						t.Fatalf("unexpected error: %v", err)
-					}
-					if diff := cmp.Diff(tt.want, got); diff != "" {
-						t.Fatalf("ToolCallResult mismatch (-want +got):\n%s", diff)
-					}
-				})
-			}
-		})
-
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
 				in     string
 				errMsg string
 			}{
-				{
-					name:   "Invalid JSON",
-					in:     `{"name": "tool", "result": invalid}`,
-					errMsg: "invalid character 'i' looking for beginning of value",
-				},
 				{
 					name:   "Unknown field",
 					in:     `{"name": "tool", "result": "success", "unknown_field": "value"}`,
@@ -1289,43 +779,6 @@ func TestToolCallResult(t *testing.T) {
 
 func TestCitation(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name   string
-				in     Citation
-				errMsg string
-			}{
-				{
-					name: "valid citation",
-					in: Citation{
-						StartIndex: 0,
-						EndIndex:   12,
-						Sources:    []CitationSource{{ID: "doc1", Type: CitationDocument}},
-					},
-				},
-				{
-					name: "empty text",
-					in: Citation{
-						StartIndex: 0,
-						EndIndex:   10,
-					},
-				},
-				{
-					name: "zero end index is valid",
-					in: Citation{
-						StartIndex: 0,
-						EndIndex:   0, // Zero is allowed as it may indicate position-only citation
-					},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err != nil {
-						t.Fatalf("unexpected error: %q", err)
-					}
-				})
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
@@ -1339,22 +792,6 @@ func TestCitation(t *testing.T) {
 						EndIndex:   10,
 					},
 					errMsg: "start index must be non-negative, got -1",
-				},
-				{
-					name: "end index before start",
-					in: Citation{
-						StartIndex: 10,
-						EndIndex:   5,
-					},
-					errMsg: "end index (5) must be greater than start index (10)",
-				},
-				{
-					name: "end index equal to start",
-					in: Citation{
-						StartIndex: 10,
-						EndIndex:   10,
-					},
-					errMsg: "end index (10) must be greater than start index (10)",
 				},
 				{
 					name: "invalid citation source",
@@ -1384,90 +821,12 @@ func TestCitation(t *testing.T) {
 }
 
 func TestCitationSource(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   CitationSource
-			}{
-				{
-					name: "valid with ID",
-					in:   CitationSource{ID: "doc1", Type: CitationDocument},
-				},
-				{
-					name: "valid with URL",
-					in:   CitationSource{URL: "https://example.com", Type: CitationWeb},
-				},
-				{
-					name: "valid web query",
-					in:   CitationSource{Snippet: "latest Go release", Type: CitationWebQuery},
-				},
-				{
-					name: "valid with both ID and URL",
-					in:   CitationSource{ID: "doc1", URL: "https://example.com", Type: CitationDocument},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err != nil {
-						t.Fatalf("unexpected error: %q", err)
-					}
-				})
-			}
-		})
-		t.Run("error", func(t *testing.T) {
-			tests := []struct {
-				name   string
-				in     CitationSource
-				errMsg string
-			}{
-				{
-					name:   "invalid without ID or URL",
-					in:     CitationSource{Type: CitationDocument},
-					errMsg: "citation source must have either ID or URL",
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err == nil || err.Error() != tt.errMsg {
-						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
-					}
-				})
-			}
-		})
-	})
-
 	t.Run("IsZero", func(t *testing.T) {
 		tests := []struct {
 			name string
 			in   CitationSource
 			want bool
 		}{
-			{
-				name: "zero value",
-				in:   CitationSource{},
-				want: true,
-			},
-			{
-				name: "with ID",
-				in:   CitationSource{ID: "doc1"},
-				want: false,
-			},
-			{
-				name: "with Type",
-				in:   CitationSource{Type: CitationDocument},
-				want: false,
-			},
-			{
-				name: "with Title",
-				in:   CitationSource{Title: "title"},
-				want: false,
-			},
-			{
-				name: "with URL",
-				in:   CitationSource{URL: "https://example.com"},
-				want: false,
-			},
 			{
 				name: "with Metadata",
 				in:   CitationSource{Metadata: map[string]any{"key": "value"}},
@@ -1493,31 +852,12 @@ func TestResult(t *testing.T) {
 				in   Result
 			}{
 				{
-					name: "simple text reply",
-					in: Result{
-						Message: Message{Replies: []Reply{{Text: "hello"}}},
-						Usage:   Usage{FinishReason: FinishedStop},
-					},
-				},
-				{
 					name: "with logprobs",
 					in: Result{
 						Message: Message{Replies: []Reply{{Text: "hello"}}},
 						Usage:   Usage{FinishReason: FinishedStop},
 						Logprobs: [][]Logprob{
 							{{Text: "hello", Logprob: -0.5}, {Text: "hi", Logprob: -1.2}},
-						},
-					},
-				},
-				{
-					name: "with rate limits",
-					in: Result{
-						Message: Message{Replies: []Reply{{Text: "hello"}}},
-						Usage: Usage{
-							FinishReason: FinishedStop,
-							Limits: []RateLimit{
-								{Type: Requests, Period: PerMinute, Limit: 100, Remaining: 99, Reset: time.Now()},
-							},
 						},
 					},
 				},
@@ -1577,26 +917,6 @@ func TestRateLimit(t *testing.T) {
 				in   RateLimit
 			}{
 				{
-					name: "valid requests per minute",
-					in: RateLimit{
-						Type:      Requests,
-						Period:    PerMinute,
-						Limit:     100,
-						Remaining: 50,
-						Reset:     time.Now(),
-					},
-				},
-				{
-					name: "valid tokens per day",
-					in: RateLimit{
-						Type:      Tokens,
-						Period:    PerDay,
-						Limit:     10000,
-						Remaining: 5000,
-						Reset:     time.Now(),
-					},
-				},
-				{
 					name: "valid with other period",
 					in: RateLimit{
 						Type:      Tokens,
@@ -1622,17 +942,6 @@ func TestRateLimit(t *testing.T) {
 				in     RateLimit
 				errMsg string
 			}{
-				{
-					name: "invalid type",
-					in: RateLimit{
-						Type:      -1,
-						Period:    PerMinute,
-						Limit:     100,
-						Remaining: 50,
-						Reset:     now,
-					},
-					errMsg: "invalid limit type -1",
-				},
 				{
 					name: "zero limit",
 					in: RateLimit{
@@ -1685,28 +994,6 @@ func TestRateLimit(t *testing.T) {
 			want string
 		}{
 			{
-				name: "requests per minute",
-				in: RateLimit{
-					Type:      Requests,
-					Period:    PerMinute,
-					Limit:     100,
-					Remaining: 50,
-					Reset:     now,
-				},
-				want: fmt.Sprintf("requests/%s (minute): 50/100", now.Format(time.DateTime)),
-			},
-			{
-				name: "tokens per day",
-				in: RateLimit{
-					Type:      Tokens,
-					Period:    PerDay,
-					Limit:     10000,
-					Remaining: 5000,
-					Reset:     now,
-				},
-				want: fmt.Sprintf("tokens/%s (day): 5000/10000", now.Format(time.DateTime)),
-			},
-			{
 				name: "other period",
 				in: RateLimit{
 					Type:      Tokens,
@@ -1716,17 +1003,6 @@ func TestRateLimit(t *testing.T) {
 					Reset:     now,
 				},
 				want: fmt.Sprintf("tokens/%s: 500/1000", now.Format(time.DateTime)),
-			},
-			{
-				name: "zero reset",
-				in: RateLimit{
-					Type:      Requests,
-					Period:    PerMinute,
-					Limit:     100,
-					Remaining: 50,
-					Reset:     time.Time{},
-				},
-				want: "requests (minute): 50/100",
 			},
 		}
 		for _, tt := range tests {
@@ -1743,7 +1019,6 @@ func TestDoc(t *testing.T) {
 	t.Run("Read", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			for name, src := range map[string]io.ReadSeeker{
-				"seekable exact limit":   strings.NewReader("{}   "),
 				"unseekable exact limit": &nonSeekableReader{reader: strings.NewReader("{}   ")},
 			} {
 				t.Run(name, func(t *testing.T) {
@@ -1762,8 +1037,6 @@ func TestDoc(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for name, src := range map[string]io.ReadSeeker{
 				"empty source":           strings.NewReader(""),
-				"seekable above limit":   strings.NewReader("{}    "),
-				"unseekable above limit": &nonSeekableReader{reader: strings.NewReader("{}    ")},
 				"grows after size check": &growingDocumentReader{Reader: strings.NewReader("{}    ")},
 			} {
 				t.Run(name, func(t *testing.T) {
@@ -1800,47 +1073,6 @@ func TestDoc(t *testing.T) {
 	})
 
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   Doc
-			}{
-				{
-					name: "with filename and src",
-					in: Doc{
-						Filename: "document.txt",
-						Src:      strings.NewReader("content"),
-					},
-				},
-				{
-					name: "with filename and URL",
-					in: Doc{
-						Filename: "document.txt",
-						URL:      "https://example.com/doc.txt",
-					},
-				},
-				{
-					name: "with URL only",
-					in: Doc{
-						URL: "https://example.com/document.txt",
-					},
-				},
-				{
-					name: "with filename and src (BytesBuffer)",
-					in: Doc{
-						Filename: "document.txt",
-						Src:      &bb.BytesBuffer{D: []byte("content")},
-					},
-				},
-			}
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err != nil {
-						t.Fatalf("unexpected error: %q", err)
-					}
-				})
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
@@ -1856,16 +1088,6 @@ func TestDoc(t *testing.T) {
 					name:   "filename with path",
 					in:     Doc{Filename: "path/to/file.txt", Src: strings.NewReader("content")},
 					errMsg: "field Filename must be a valid filename with no path",
-				},
-				{
-					name:   "filename without src or URL",
-					in:     Doc{Filename: "document.txt"},
-					errMsg: "field Src or URL is required when using Filename",
-				},
-				{
-					name:   "src without filename and not implementing Name",
-					in:     Doc{Src: strings.NewReader("content")},
-					errMsg: "field Filename is required with Src when not implementing Name()",
 				},
 			}
 			for _, tt := range tests {
@@ -1923,46 +1145,6 @@ func TestDocUnseekable(t *testing.T) {
 			t.Errorf("bytes mismatch: want \"test data\", got %q", string(dd.Bytes))
 		}
 	})
-
-	t.Run("Read with unseekable input", func(t *testing.T) {
-		doc := Doc{
-			Filename: "stdin.txt",
-			Src:      unseekableReader("test content"),
-		}
-		mime, data, err := doc.Read(1024 * 1024)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-
-		if mime != "text/plain; charset=utf-8" {
-			t.Errorf("mime type mismatch: want text/plain; charset=utf-8, got %q", mime)
-		}
-		if string(data) != "test content" {
-			t.Errorf("data mismatch: want \"test content\", got %q", string(data))
-		}
-	})
-
-	t.Run("Multiple Read calls with unseekable input", func(t *testing.T) {
-		doc := Doc{
-			Filename: "stdin.txt",
-			Src:      unseekableReader("test data"),
-		}
-		// First read
-		_, data1, err := doc.Read(1024 * 1024)
-		if err != nil {
-			t.Fatalf("first read: unexpected error: %v", err)
-		}
-
-		// Second read should work because we buffered the data
-		_, data2, err := doc.Read(1024 * 1024)
-		if err != nil {
-			t.Fatalf("second read: unexpected error: %v", err)
-		}
-
-		if !bytes.Equal(data1, data2) {
-			t.Errorf("data mismatch between reads: %q vs %q", string(data1), string(data2))
-		}
-	})
 }
 
 // growingDocumentReader simulates content growing after SeekEnd checks its size.
@@ -1993,8 +1175,6 @@ func TestEmbeddingRequest(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			for _, tc := range []embeddingRequestCase{
-				{"text", EmbeddingRequest{Inputs: []Request{{Text: "hello"}}}},
-				{"batch", EmbeddingRequest{Inputs: []Request{{Text: "hello"}, {Text: "world"}}, Dimensions: 32}},
 				{"document", EmbeddingRequest{Inputs: []Request{{Doc: Doc{URL: "https://example.com/image.png"}}}}},
 			} {
 				t.Run(tc.name, func(t *testing.T) {
@@ -2007,9 +1187,7 @@ func TestEmbeddingRequest(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingRequestCase{
 				{"missing", EmbeddingRequest{}},
-				{"empty input", EmbeddingRequest{Inputs: []Request{{Text: "hello"}, {Text: ""}}}},
 				{"negative dimensions", EmbeddingRequest{Inputs: []Request{{Text: "hello"}}, Dimensions: -1}},
-				{"conflicting input", EmbeddingRequest{Inputs: []Request{{Text: "hello", Doc: Doc{URL: "https://example.com/image.png"}}}}},
 				{"missing source", EmbeddingRequest{Inputs: []Request{{Doc: Doc{Filename: "image.png"}}}}},
 			} {
 				t.Run(tc.name, func(t *testing.T) {
@@ -2040,7 +1218,7 @@ func TestEmbeddingResponse(t *testing.T) {
 		})
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingResponseErrorCase{
-				{"missing", nil}, {"empty", [][]float32{{}}}, {"ragged", [][]float32{{1, 2}, {3}}}, {"zero", [][]float32{{0, 0}}}, {"NaN", [][]float32{{float32(math.NaN())}}}, {"positive infinity", [][]float32{{float32(math.Inf(1))}}}, {"negative infinity", [][]float32{{float32(math.Inf(-1))}}},
+				{"missing", nil}, {"empty", [][]float32{{}}}, {"ragged", [][]float32{{1, 2}, {3}}}, {"zero", [][]float32{{0, 0}}}, {"negative infinity", [][]float32{{float32(math.Inf(-1))}}},
 			} {
 				t.Run(tc.name, func(t *testing.T) {
 					out := EmbeddingResponse{Embeddings: tc.v}

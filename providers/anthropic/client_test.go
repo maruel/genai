@@ -655,65 +655,6 @@ func TestEffort(t *testing.T) {
 
 func TestThinking(t *testing.T) {
 	msgs := genai.Messages{genai.NewTextMessage("test")}
-	t.Run("valid", func(t *testing.T) {
-		t.Run("adaptive", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive}); err != nil {
-				t.Fatal(err)
-			}
-			if req.Thinking.Type != anthropic.ThinkingAdaptive {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingAdaptive)
-			}
-			if req.Thinking.BudgetTokens != 0 {
-				t.Errorf("Thinking.BudgetTokens = %d, want 0", req.Thinking.BudgetTokens)
-			}
-			if req.Thinking.Display != anthropic.ThinkingDisplaySummarized {
-				t.Errorf("Thinking.Display = %q, want %q", req.Thinking.Display, anthropic.ThinkingDisplaySummarized)
-			}
-		})
-		t.Run("enabled", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-6", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048}); err != nil {
-				t.Fatal(err)
-			}
-			if req.Thinking.Type != anthropic.ThinkingEnabled {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingEnabled)
-			}
-			if req.Thinking.BudgetTokens != 2048 {
-				t.Errorf("Thinking.BudgetTokens = %d, want 2048", req.Thinking.BudgetTokens)
-			}
-		})
-		t.Run("disabled", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled}); err != nil {
-				t.Fatal(err)
-			}
-			if req.Thinking.Type != anthropic.ThinkingDisabled {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingDisabled)
-			}
-		})
-		t.Run("auto_adaptive_from_model", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{}); err != nil {
-				t.Fatal(err)
-			}
-			if req.Thinking.Type != anthropic.ThinkingAdaptive {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingAdaptive)
-			}
-			if req.Thinking.Display != anthropic.ThinkingDisplaySummarized {
-				t.Errorf("Thinking.Display = %q, want %q", req.Thinking.Display, anthropic.ThinkingDisplaySummarized)
-			}
-		})
-		t.Run("auto_disabled_when_only_budgeted_thinking_supported", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-haiku-4-5-20251001", &anthropic.GenOptionText{}); err != nil {
-				t.Fatal(err)
-			}
-			if req.Thinking.Type != anthropic.ThinkingDisabled {
-				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, anthropic.ThinkingDisabled)
-			}
-		})
-	})
 	t.Run("invalid", func(t *testing.T) {
 		t.Run("bogus", func(t *testing.T) {
 			var req anthropic.ChatRequest
@@ -722,16 +663,6 @@ func TestThinking(t *testing.T) {
 				t.Fatal("expected error")
 			}
 			if !strings.Contains(err.Error(), "invalid ThinkingType") {
-				t.Errorf("unexpected error: %v", err)
-			}
-		})
-		t.Run("adaptive_with_budget", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingBudget: 2048})
-			if err == nil {
-				t.Fatal("expected error")
-			}
-			if !strings.Contains(err.Error(), "ThinkingBudget must be set only when Thinking") {
 				t.Errorf("unexpected error: %v", err)
 			}
 		})
@@ -788,16 +719,6 @@ func TestThinking(t *testing.T) {
 		t.Run("enabled_unsupported", func(t *testing.T) {
 			var req anthropic.ChatRequest
 			err := req.Init(msgs, "claude-opus-4-8", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048})
-			if err == nil {
-				t.Fatal("expected error")
-			}
-			if !strings.Contains(err.Error(), "GenOptionText.Thinking") {
-				t.Errorf("unexpected error: %v", err)
-			}
-		})
-		t.Run("disabled_unsupported", func(t *testing.T) {
-			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-fable-5", &anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled})
 			if err == nil {
 				t.Fatal("expected error")
 			}

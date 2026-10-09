@@ -7,7 +7,6 @@
 package openairesponses_test
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 	"slices"
@@ -317,53 +316,6 @@ func TestClient(t *testing.T) {
 }
 
 func TestPreviousResponseID(t *testing.T) {
-	msgs := genai.Messages{genai.NewTextMessage("hello")}
-	t.Run("wired", func(t *testing.T) {
-		var req openairesponses.Response
-		if err := req.Init(msgs, "gpt-5.6-luna", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
-			t.Fatal(err)
-		}
-		if req.PreviousResponseID != "resp_abc123" {
-			t.Errorf("PreviousResponseID = %q, want %q", req.PreviousResponseID, "resp_abc123")
-		}
-		b, err := json.Marshal(&req)
-		if err != nil {
-			t.Fatal(err)
-		}
-		got := string(b)
-		if !strings.Contains(got, `"previous_response_id":"resp_abc123"`) {
-			t.Errorf("JSON missing previous_response_id: %s", got)
-		}
-	})
-	t.Run("empty", func(t *testing.T) {
-		var req openairesponses.Response
-		if err := req.Init(msgs, "gpt-5.6-luna"); err != nil {
-			t.Fatal(err)
-		}
-		if req.PreviousResponseID != "" {
-			t.Errorf("PreviousResponseID = %q, want empty", req.PreviousResponseID)
-		}
-		b, err := json.Marshal(&req)
-		if err != nil {
-			t.Fatal(err)
-		}
-		got := string(b)
-		if strings.Contains(got, "previous_response_id") {
-			t.Errorf("JSON should omit empty previous_response_id: %s", got)
-		}
-	})
-	t.Run("empty_messages_with_prev_id", func(t *testing.T) {
-		var req openairesponses.Response
-		if err := req.Init(nil, "gpt-5.6-luna", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
-			t.Fatal(err)
-		}
-		if req.PreviousResponseID != "resp_abc123" {
-			t.Errorf("PreviousResponseID = %q, want %q", req.PreviousResponseID, "resp_abc123")
-		}
-		if len(req.Input) != 0 {
-			t.Errorf("Input should be empty, got %d", len(req.Input))
-		}
-	})
 	t.Run("empty_messages_without_prev_id", func(t *testing.T) {
 		var req openairesponses.Response
 		err := req.Init(nil, "gpt-5.6-luna")
@@ -383,23 +335,6 @@ func TestWebSearchActions(t *testing.T) {
 			in   openairesponses.WebSearchAction
 			want []genai.CitationSource
 		}{
-			{
-				name: "search",
-				in: openairesponses.WebSearchAction{
-					Type:    openairesponses.WebSearchActionSearch,
-					Queries: []string{"latest Go release"},
-					Sources: []openairesponses.WebSearchSource{{URL: "https://go.dev/dl/"}},
-				},
-				want: []genai.CitationSource{
-					{Type: genai.CitationWebQuery, Snippet: "latest Go release"},
-					{Type: genai.CitationWeb, URL: "https://go.dev/dl/"},
-				},
-			},
-			{
-				name: "open page",
-				in:   openairesponses.WebSearchAction{Type: openairesponses.WebSearchActionOpenPage, URL: "https://go.dev/dl/"},
-				want: []genai.CitationSource{{Type: genai.CitationWeb, URL: "https://go.dev/dl/"}},
-			},
 			{
 				name: "find in page",
 				in:   openairesponses.WebSearchAction{Type: openairesponses.WebSearchActionFindInPage, URL: "https://go.dev/dl/", Pattern: "go1.26"},

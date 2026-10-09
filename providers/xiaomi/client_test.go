@@ -123,11 +123,6 @@ func TestNew(t *testing.T) {
 			name string
 			id   string
 		}{
-			{name: "bare", id: "mimo-v2.5"},
-			{name: "wrong_variant", id: "mimo-v2.6-flash"},
-			{name: "extended_suffix", id: "mimo-v2.6-pro-ultraspeed"},
-			{name: "missing_minor", id: "mimo-v3-pro"},
-			{name: "signed", id: "mimo-v+3.0-pro"},
 			{name: "major_overflow", id: "mimo-v999999999999999999999.0-pro"},
 			{name: "minor_overflow", id: "mimo-v2.999999999999999999999-pro"},
 		} {

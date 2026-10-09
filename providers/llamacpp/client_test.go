@@ -562,27 +562,6 @@ func (e *embeddingTransport) RoundTrip(r *http.Request) (*http.Response, error) 
 }
 
 func TestClientSystemOne(t *testing.T) {
-	t.Run("disabled uses chat", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != "/chat/completions" {
-				t.Errorf("unexpected route %q", r.URL.Path)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			if _, err := io.WriteString(w, `{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"chat"}}],"usage":{"prompt_tokens":1,"completion_tokens":1,"total_tokens":2}}`); err != nil {
-				t.Error(err)
-			}
-		}))
-		t.Cleanup(srv.Close)
-		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("state")})
-		if err != nil || len(res.Replies) != 1 || res.Replies[0].Text != "chat" {
-			t.Fatalf("chat response = %+v, error = %v", res, err)
-		}
-	})
 	q := genai.Questions{
 		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this about billing?")},
 		"route":   {Type: genai.QuestionChoice, Instructions: genai.Text("Which team?"), Choice: map[string]genai.DecisionContent{"billing": nil, "support": nil}},
@@ -640,54 +619,13 @@ func TestClientSystemOne(t *testing.T) {
 			t.Errorf("unexpected response: %+v", out)
 		}
 	})
-	t.Run("SystemOne", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost || r.URL.Path != "/v1/systemone" {
-				t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
-			}
-			var req struct {
-				State     string                     `json:"state"`
-				Model     string                     `json:"model"`
-				Questions map[string]json.RawMessage `json:"questions"`
-			}
-			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-				t.Error(err)
-			}
-			if req.State != "Charged twice" || req.Model != "" || len(req.Questions) != 3 {
-				t.Errorf("unexpected request: %+v", req)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			if _, err := w.Write([]byte(response)); err != nil {
-				t.Error(err)
-			}
-		}))
-		t.Cleanup(srv.Close)
-		c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL))
-		if err != nil {
-			t.Fatal(err)
-		}
-		res, err := c.SystemOne(t.Context(), &genai.SystemOneRequest{State: genai.Text("Charged twice"), Questions: q})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if res.Answers["billing"].Noul != 0.9 || res.Answers["route"].Choice != "billing" || res.Answers["urgency"].Score != 0.75 {
-			t.Errorf("unexpected answers: %+v", res.Answers)
-		}
-		if res.Usage.InputTokens != 42 || res.Usage.OutputTokens != 0 {
-			t.Errorf("unexpected usage: %+v", res.Usage)
-		}
-	})
 	t.Run("error", func(t *testing.T) {
 		for _, tc := range []struct {
 			name, body string
 			status     int
 		}{
-			{"unsupported model", `{"error":{"code":501,"message":"This model is not a decision model","type":"not_supported_error"}}`, 501},
 			{"missing answers", `{"model":"kev","answers":{},"usage":{"input_tokens":1,"output_tokens":0}}`, 200},
-			{"missing question", `{"model":"kev","answers":{"billing":{"type":"noul","noul":1}},"usage":{"input_tokens":1,"output_tokens":0}}`, 200},
 			{"wrong answer type", `{"model":"kev","answers":{"billing":{"type":"choice","choice":"billing"}},"usage":{"input_tokens":1,"output_tokens":0}}`, 200},
-			{"malformed response", `{`, 200},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {

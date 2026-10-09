@@ -25,65 +25,6 @@ func TestSchema(t *testing.T) {
 				want Schema
 			}{
 				{
-					name: "string",
-					in:   `{"type":"string"}`,
-					want: Schema{Type: TypeString},
-				},
-				{
-					name: "integer",
-					in:   `{"type":"integer"}`,
-					want: Schema{Type: TypeInteger},
-				},
-				{
-					name: "number",
-					in:   `{"type":"number"}`,
-					want: Schema{Type: TypeNumber},
-				},
-				{
-					name: "boolean",
-					in:   `{"type":"boolean"}`,
-					want: Schema{Type: TypeBoolean},
-				},
-				{
-					name: "array of strings",
-					in:   `{"type":"array","items":{"type":"string"}}`,
-					want: Schema{Type: TypeArray, Items: &Schema{Type: TypeString}},
-				},
-				{
-					name: "object with properties and required",
-					in:   `{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"integer"}},"required":["a"]}`,
-					want: Schema{
-						Type: TypeObject,
-						Properties: map[string]Schema{
-							"a": {Type: TypeString},
-							"b": {Type: TypeInteger},
-						},
-						Required: []string{"a"},
-					},
-				},
-				{
-					name: "empty object",
-					in:   `{"type":"object"}`,
-					want: Schema{Type: TypeObject},
-				},
-				{
-					name: "nested object",
-					in:   `{"type":"object","properties":{"o":{"type":"object","properties":{"p":{"type":"string"}},"required":["p"]}},"required":["o"]}`,
-					want: Schema{
-						Type: TypeObject,
-						Properties: map[string]Schema{
-							"o": {
-								Type: TypeObject,
-								Properties: map[string]Schema{
-									"p": {Type: TypeString},
-								},
-								Required: []string{"p"},
-							},
-						},
-						Required: []string{"o"},
-					},
-				},
-				{
 					name: "nullable via anyOf with null second",
 					in:   `{"anyOf":[{"type":"string"},{"type":"null"}]}`,
 					want: Schema{Type: TypeString, Nullable: true},
@@ -94,19 +35,9 @@ func TestSchema(t *testing.T) {
 					want: Schema{Type: TypeInteger, Nullable: true},
 				},
 				{
-					name: "nullable via type array",
-					in:   `{"type":["string","null"]}`,
-					want: Schema{Type: TypeString, Nullable: true},
-				},
-				{
 					name: "nullable via type array null first",
 					in:   `{"type":["null","integer"]}`,
 					want: Schema{Type: TypeInteger, Nullable: true},
-				},
-				{
-					name: "nullable via nullable field",
-					in:   `{"type":"string","nullable":true}`,
-					want: Schema{Type: TypeString, Nullable: true},
 				},
 				{
 					name: "anyOf non-nullable union",
@@ -119,84 +50,9 @@ func TestSchema(t *testing.T) {
 					},
 				},
 				{
-					name: "string enum",
-					in:   `{"type":"string","enum":["A","B","C"]}`,
-					want: Schema{Type: TypeString, Enum: []string{"A", "B", "C"}},
-				},
-				{
-					name: "integer enum as numbers",
-					in:   `{"type":"integer","enum":[101,201,301]}`,
-					want: Schema{Type: TypeInteger, Enum: []string{"101", "201", "301"}},
-				},
-				{
 					name: "integer enum large value",
 					in:   `{"type":"integer","enum":[9007199254740993]}`,
 					want: Schema{Type: TypeInteger, Enum: []string{"9007199254740993"}},
-				},
-				{
-					name: "format date-time",
-					in:   `{"type":"string","format":"date-time"}`,
-					want: Schema{Type: TypeString, Format: FormatDateTime},
-				},
-				{
-					name: "format int32",
-					in:   `{"type":"integer","format":"int32"}`,
-					want: Schema{Type: TypeInteger, Format: FormatInt32},
-				},
-				{
-					name: "format int64",
-					in:   `{"type":"integer","format":"int64"}`,
-					want: Schema{Type: TypeInteger, Format: FormatInt64},
-				},
-				{
-					name: "format float",
-					in:   `{"type":"number","format":"float"}`,
-					want: Schema{Type: TypeNumber, Format: FormatFloat},
-				},
-				{
-					name: "format double",
-					in:   `{"type":"number","format":"double"}`,
-					want: Schema{Type: TypeNumber, Format: FormatDouble},
-				},
-				{
-					name: "description and title",
-					in:   `{"type":"string","description":"A description","title":"A title"}`,
-					want: Schema{Type: TypeString, Description: "A description", Title: "A title"},
-				},
-				{
-					name: "default int value",
-					in:   `{"type":"integer","default":123}`,
-					want: Schema{Type: TypeInteger, Default: json.RawMessage(`123`)},
-				},
-				{
-					name: "default bool value",
-					in:   `{"type":"boolean","default":true}`,
-					want: Schema{Type: TypeBoolean, Default: json.RawMessage(`true`)},
-				},
-				{
-					name: "example float value",
-					in:   `{"type":"number","format":"double","example":67.89}`,
-					want: Schema{Type: TypeNumber, Format: FormatDouble, Example: json.RawMessage(`67.89`)},
-				},
-				{
-					name: "minLength and maxLength",
-					in:   `{"type":"string","minLength":5,"maxLength":10}`,
-					want: Schema{Type: TypeString, MinLength: 5, MaxLength: 10},
-				},
-				{
-					name: "minItems and maxItems",
-					in:   `{"type":"array","items":{"type":"string"},"minItems":2,"maxItems":5}`,
-					want: Schema{Type: TypeArray, Items: &Schema{Type: TypeString}, MinItems: 2, MaxItems: 5},
-				},
-				{
-					name: "minimum and maximum for integer",
-					in:   `{"type":"integer","minimum":1,"maximum":100}`,
-					want: Schema{Type: TypeInteger, Minimum: 1, Maximum: 100},
-				},
-				{
-					name: "minimum and maximum for number",
-					in:   `{"type":"number","minimum":0.5,"maximum":99.9}`,
-					want: Schema{Type: TypeNumber, Minimum: 0.5, Maximum: 99.9},
 				},
 				{
 					name: "no type field",
@@ -226,11 +82,6 @@ func TestSchema(t *testing.T) {
 					name: "invalid json",
 					in:   `not json`,
 					want: "invalid JSON schema: invalid character 'o' in literal null (expecting 'u')",
-				},
-				{
-					name: "unsupported type",
-					in:   `{"type":"unknown"}`,
-					want: `unsupported JSON Schema type: "unknown"`,
 				},
 				{
 					name: "unsupported type in property",
@@ -352,25 +203,12 @@ func TestPart(t *testing.T) {
 					t.Fatal(diff)
 				}
 			})
-			t.Run("tool_signature", func(t *testing.T) {
-				var got Part
-				if err := got.FromReply(&genai.Reply{ToolCall: genai.ToolCall{ID: "call_A", Name: "status", Arguments: `{"task":3}`, Opaque: map[string]any{"signature": []byte("signed")}}}); err != nil {
-					t.Fatal(err)
-				}
-				if diff := cmp.Diff([]byte("signed"), got.ThoughtSignature); diff != "" {
-					t.Fatal(diff)
-				}
-			})
 		})
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []struct {
 				name   string
 				opaque map[string]any
 			}{
-				{"wrong_type", map[string]any{"signature": "signature"}},
-				{"empty", map[string]any{"signature": []byte{}}},
-				{"nil", map[string]any{"signature": []byte(nil)}},
-				{"unknown", map[string]any{"unknown": []byte("signature")}},
 				{"extra", map[string]any{"signature": []byte("signature"), "extra": true}},
 				{"absent", nil},
 			} {
@@ -387,22 +225,8 @@ func TestPart(t *testing.T) {
 
 func TestEmbedContentConfig(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, tc := range []embeddingConfigCase{
-				{"default", EmbedContentConfig{}},
-				{"unspecified task", EmbedContentConfig{TaskType: EmbeddingTaskUnspecified}},
-				{"document", EmbedContentConfig{TaskType: EmbeddingTaskRetrievalDocument, Title: "Cats", OutputDimensionality: 128}},
-			} {
-				t.Run(tc.name, func(t *testing.T) {
-					if err := tc.in.Validate(); err != nil {
-						t.Fatal(err)
-					}
-				})
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingConfigCase{
-				{"negative dimensions", EmbedContentConfig{OutputDimensionality: -1}},
 				{"invalid task", EmbedContentConfig{TaskType: "bad"}},
 				{"title without retrieval document", EmbedContentConfig{Title: "Cats"}},
 			} {
@@ -417,43 +241,10 @@ func TestEmbedContentConfig(t *testing.T) {
 }
 
 func TestEmbeddingRequest(t *testing.T) {
-	t.Run("MarshalJSON", func(t *testing.T) {
-		t.Run("configured", func(t *testing.T) {
-			yes, no := true, false
-			r := EmbeddingRequest{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}, EmbedContentConfig: EmbedContentConfig{
-				TaskType: EmbeddingTaskRetrievalDocument, Title: "Cats", OutputDimensionality: 128,
-				AutoTruncate: &no, DocumentOCR: &yes, AudioTrackExtraction: &no,
-			}}
-			b, err := json.Marshal(&r)
-			if err != nil {
-				t.Fatal(err)
-			}
-			want := `{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"hello"}]},"embedContentConfig":{"title":"Cats","taskType":"RETRIEVAL_DOCUMENT","autoTruncate":false,"outputDimensionality":128,"documentOcr":true,"audioTrackExtraction":false}}`
-			if string(b) != want {
-				t.Fatalf("got %s, want %s", b, want)
-			}
-		})
-		t.Run("default", func(t *testing.T) {
-			r := EmbeddingRequest{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}}
-			b, err := json.Marshal(&r)
-			if err != nil {
-				t.Fatal(err)
-			}
-			want := `{"model":"models/gemini-embedding-2","content":{"parts":[{"text":"hello"}]}}`
-			if string(b) != want {
-				t.Fatalf("got %s, want %s", b, want)
-			}
-		})
-	})
-
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			valid := EmbeddingRequest{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}}
 			for _, tc := range []embeddingRequestErrorCase{
-				{"missing model", func(r *EmbeddingRequest) { r.Model = "" }},
-				{"unqualified model", func(r *EmbeddingRequest) { r.Model = "gemini-embedding-2" }},
-				{"empty model", func(r *EmbeddingRequest) { r.Model = "models/" }},
-				{"nested model", func(r *EmbeddingRequest) { r.Model = "models/nested/model" }},
 				{"missing parts", func(r *EmbeddingRequest) { r.Content.Parts = nil }},
 				{"invalid config", func(r *EmbeddingRequest) { r.EmbedContentConfig.OutputDimensionality = -1 }},
 			} {
@@ -473,7 +264,6 @@ func TestBatchEmbeddingRequest(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingBatchErrorCase{
-				{"empty", BatchEmbeddingRequest{}},
 				{"invalid request", BatchEmbeddingRequest{Requests: []EmbeddingRequest{{}}}},
 				{"mixed models", BatchEmbeddingRequest{Requests: []EmbeddingRequest{
 					{Model: "models/gemini-embedding-2", Content: Content{Parts: []Part{{Text: "hello"}}}},

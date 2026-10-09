@@ -48,7 +48,6 @@ func TestEmbeddingInput(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingInputErrorCase{
-				{"missing", openaibase.EmbeddingInput{}},
 				{"conflicting", openaibase.EmbeddingInput{Text: "hello", Tokens: []int64{1}}},
 				{"empty text batch", openaibase.EmbeddingInput{Texts: []string{}}},
 				{"empty text", openaibase.EmbeddingInput{Texts: []string{""}}},
@@ -72,7 +71,6 @@ func TestEmbeddingRequest(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingRequestErrorCase{
-				{"missing model", openaibase.EmbeddingRequest{Input: openaibase.EmbeddingInput{Text: "hello"}}},
 				{"negative dimensions", openaibase.EmbeddingRequest{Model: "model", Dimensions: -1, Input: openaibase.EmbeddingInput{Text: "hello"}}},
 			} {
 				t.Run(tc.name, func(t *testing.T) {

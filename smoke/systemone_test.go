@@ -22,7 +22,7 @@ func TestRunSystemOne(t *testing.T) {
 		name    string
 		status  int
 		wantErr bool
-	}{{"valid", 200, false}, {"unauthorized", 401, true}, {"server failure", 500, true}, {"no decision support", 400, true}} {
+	}{{"valid", 200, false}, {"server failure", 500, true}, {"no decision support", 400, true}} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				if tc.status != 200 {

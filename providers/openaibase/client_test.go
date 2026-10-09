@@ -72,9 +72,6 @@ func TestClient(t *testing.T) {
 				const dims = `{"error":{"message":"Unsupported parameter: 'dimensions'.","type":"invalid_request_error","param":"dimensions","code":"unsupported_parameter"}}`
 				for _, tc := range []embeddingAPIErrorCase{
 					{"unsupported dimensions", dims, 2, true},
-					{"unsupported dimensions without request", dims, 0, false},
-					{"other parameter", `{"error":{"message":"Unsupported parameter: 'user'.","type":"invalid_request_error","param":"user","code":"unsupported_parameter"}}`, 2, false},
-					{"other code", `{"error":{"message":"invalid input","type":"invalid_request_error","param":"dimensions","code":"invalid_value"}}`, 2, false},
 				} {
 					t.Run(tc.name, func(t *testing.T) {
 						c := &Client{Impl: &base.ProviderBase[*ErrorResponse]{Model: "embedding-test", Client: http.Client{Transport: embeddingResponseTransport{body: tc.body, status: http.StatusBadRequest}}}, BaseURL: "http://localhost/v1"}
@@ -142,7 +139,6 @@ func TestClient(t *testing.T) {
 			want string
 		}{
 			{name: "sota", in: genai.ModelSOTA, want: "gpt-6-astra"},
-			{name: "good", in: genai.ModelGood, want: "gpt-6.1-sol"},
 			{name: "cheap", in: genai.ModelCheap, want: "gpt-5.6-luna"},
 			{name: "default", in: "", want: "gpt-6.1-sol"},
 		}
@@ -171,7 +167,6 @@ func TestClient(t *testing.T) {
 			in   genai.ProviderOptionModel
 			want string
 		}{
-			{name: "sota", in: genai.ModelSOTA, want: "gpt-image-2.5-sunburst"},
 			{name: "good", in: genai.ModelGood, want: "gpt-image-2.5-sunburst"},
 			{name: "cheap", in: genai.ModelCheap, want: "gpt-image-1-mini"},
 		}

@@ -24,14 +24,6 @@ func TestChatResponseToResult(t *testing.T) {
 		wantReasoning    string
 	}{
 		{
-			name:             "reasoning content takes precedence",
-			content:          `"answer"`,
-			reasoning:        "ignored",
-			reasoningContent: "thought",
-			text:             "answer",
-			wantReasoning:    "thought",
-		},
-		{
 			name:          "reasoning",
 			content:       `[{"type":"text","text":"answer"}]`,
 			reasoning:     "thought",

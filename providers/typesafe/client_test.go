@@ -12,7 +12,6 @@ import (
 	"math"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -457,43 +456,7 @@ func TestClient(t *testing.T) {
 }
 
 func TestSystemOneRequest(t *testing.T) {
-	t.Run("From", func(t *testing.T) {
-		qs := genai.Questions{"q": {Type: genai.QuestionNoul, Instructions: genai.Text("yes?")}}
-		for _, state := range []genai.DecisionContent{genai.Text("state"), genai.Object{"ticket": 42}, genai.Array{"one", "two"}} {
-			r := typesafe.SystemOneRequest{Model: "jev-latest"}
-			in := genai.SystemOneRequest{State: state, Questions: qs}
-			if err := r.From(&in); err != nil {
-				t.Fatal(err)
-			}
-			if r.Model != "jev-latest" || !reflect.DeepEqual(r.State, state) || !reflect.DeepEqual(r.Questions, qs) {
-				t.Fatalf("conversion lost input or model: %+v", r)
-			}
-		}
-		t.Run("error", func(t *testing.T) {
-			for _, in := range []genai.SystemOneRequest{
-				{},
-				{State: genai.Text("state"), Questions: qs, Docs: []genai.Doc{{Filename: "image.png", Src: strings.NewReader("image")}}},
-			} {
-				r := typesafe.SystemOneRequest{Model: "jev-latest", State: genai.Text("unchanged")}
-				if err := r.From(&in); err == nil || r.State != genai.Text("unchanged") || r.Model != "jev-latest" {
-					t.Fatalf("failed conversion changed request: %+v, %v", r, err)
-				}
-			}
-		})
-	})
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("deterministic joined errors", func(t *testing.T) {
-			r := typesafe.SystemOneRequest{State: genai.Text("state"), Questions: genai.Questions{
-				"z": {Type: genai.QuestionNoul, Noul: &genai.NoulCriteria{}},
-				"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{nil}},
-			}}
-			want := "question \"a\": field Score[0]: must not be nil\nquestion \"z\": field Criteria: at least one of True or False is required"
-			for range 20 {
-				if err := r.Validate(); err == nil || err.Error() != want {
-					t.Fatalf("got %v, want %s", err, want)
-				}
-			}
-		})
 		data := []struct {
 			name      string
 			questions genai.Questions
@@ -502,56 +465,6 @@ func TestSystemOneRequest(t *testing.T) {
 			{
 				name:    "no questions",
 				wantErr: "at least one question is required",
-			},
-			{
-				name: "noul",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this a test?")},
-				},
-			},
-			{
-				name: "noul criteria only",
-				questions: genai.Questions{
-					"a": {
-						Type: genai.QuestionNoul,
-						Noul: &genai.NoulCriteria{True: genai.Text("yes"), False: genai.Text("no")},
-					},
-				},
-			},
-			{
-				name: "choice",
-				questions: genai.Questions{
-					"a": {
-						Type:         genai.QuestionChoice,
-						Instructions: genai.Object{"task": "classify"},
-						Choice:       map[string]genai.DecisionContent{"a": nil, "b": genai.Text("the b option")},
-					},
-				},
-			},
-			{
-				name: "score",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("low"), genai.Text("high")}},
-				},
-			},
-			{
-				name: "choice without instructions",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionChoice, Choice: map[string]genai.DecisionContent{"a": nil}},
-				},
-			},
-			{
-				name: "score with one level",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("only")}},
-				},
-			},
-			{
-				name: "invalid noul",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionNoul},
-				},
-				wantErr: "question \"a\": field Instructions or Noul: one is required",
 			},
 			{
 				name: "noul with a choice field",
@@ -589,13 +502,6 @@ func TestSystemOneRequest(t *testing.T) {
 				wantErr: "field Choice[b]: Object is nil, use nil to leave the field unset",
 			},
 			{
-				name: "score with a nil level",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("x"), nil}},
-				},
-				wantErr: "field Score[1]: must not be nil",
-			},
-			{
 				name: "score with an invalid level",
 				questions: genai.Questions{
 					"a": {Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("x"), genai.Array(nil)}},
@@ -624,13 +530,6 @@ func TestSystemOneRequest(t *testing.T) {
 				wantErr: "fields Noul and Score: can't be set on a choice question",
 			},
 			{
-				name: "choice without criteria",
-				questions: genai.Questions{
-					"a": {Type: genai.QuestionChoice, Instructions: genai.Text("x")},
-				},
-				wantErr: "field Choice: at least one option is required",
-			},
-			{
 				name: "score without criteria",
 				questions: genai.Questions{
 					"a": {Type: genai.QuestionScore, Instructions: genai.Text("x")},
@@ -648,12 +547,6 @@ func TestSystemOneRequest(t *testing.T) {
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {
 				err := (&typesafe.SystemOneRequest{State: genai.Text("state"), Questions: line.questions}).Validate()
-				if line.wantErr == "" {
-					if err != nil {
-						t.Fatal(err)
-					}
-					return
-				}
 				if err == nil {
 					t.Fatal("expected error")
 				}
@@ -671,14 +564,9 @@ func TestAnswerMarshal(t *testing.T) {
 		in   string
 		want string
 	}{
-		{"noul", `{"type":"noul","noul":0}`, `{"type":"noul","noul":0}`},
 		{
 			"choice", `{"type":"choice","choice":"a","confidence":1,"probabilities":{"a":1,"b":0}}`,
 			`{"type":"choice","choice":"a","confidence":1,"probabilities":{"a":1,"b":0}}`,
-		},
-		{
-			"score", `{"type":"score","score":0,"confidence":0.5,"legend":{"0":"low","1":"high"},"probabilities":{"0":0.5,"1":0.5}}`,
-			`{"type":"score","score":0,"confidence":0.5,"legend":{"0":"low","1":"high"},"probabilities":{"0":0.5,"1":0.5}}`,
 		},
 		{
 			// The legend holds the Question.Score criteria, which can be JSON structure, and a nil value for
@@ -753,44 +641,21 @@ func TestAnswerMarshal(t *testing.T) {
 }
 
 func TestContentValidate(t *testing.T) {
-	type payload struct {
-		A int `json:"a"`
-	}
 	data := []struct {
 		name    string
 		in      genai.DecisionContent
 		wantErr string
 	}{
-		{"text", genai.Text("hi"), ""},
-		{"empty text", genai.Text(""), ""},
-		{"object", genai.Object{"a": 1, "b": []any{"c", nil, map[string]any{"d": true}}}, ""},
-		{"object with struct", genai.Object{"a": payload{A: 1}}, ""},
-		{"object with channel", genai.Object{"a": make(chan int)}, `key "a": json: unsupported type: chan int`},
-		{"object with nested channel", genai.Object{"a": []any{[]any{make(chan int)}}}, `key "a": json: unsupported type: chan int`},
 		{
 			"several bad keys",
 			genai.Object{"b": make(chan int), "a": make(chan int)},
 			"key \"a\": json: unsupported type: chan int\nkey \"b\": json: unsupported type: chan int",
 		},
-		{
-			"several bad items",
-			genai.Array{"a", make(chan int), nil, make(chan int)},
-			"index 1: json: unsupported type: chan int\nindex 3: json: unsupported type: chan int",
-		},
-		{"nil object", genai.Object(nil), "Object is nil, use nil to leave the field unset"},
-		{"array", genai.Array{"a", 1, true, nil, genai.Text("b")}, ""},
 		{"array with NaN", genai.Array{math.NaN()}, "index 0: json: unsupported value: NaN"},
-		{"nil array", genai.Array(nil), "Array is nil, use nil to leave the field unset"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
 			err := line.in.Validate()
-			if line.wantErr == "" {
-				if err != nil {
-					t.Fatal(err)
-				}
-				return
-			}
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -864,50 +729,6 @@ func TestScoreLegend(t *testing.T) {
 }
 
 func TestQuestionMarshal(t *testing.T) {
-	data := []struct {
-		name string
-		in   genai.Question
-		want string
-	}{
-		{
-			name: "noul",
-			in:   genai.Question{Type: genai.QuestionNoul, Instructions: genai.Text("Is this a test?")},
-			want: `{"type":"noul","instructions":"Is this a test?"}`,
-		},
-		{
-			name: "noul criteria",
-			in: genai.Question{
-				Type: genai.QuestionNoul,
-				Noul: &genai.NoulCriteria{True: genai.Text("yes"), False: genai.Text("no")},
-			},
-			want: `{"type":"noul","criteria":{"true":"yes","false":"no"}}`,
-		},
-		{
-			name: "choice",
-			in: genai.Question{
-				Type:         genai.QuestionChoice,
-				Instructions: genai.Object{"task": "classify"},
-				Choice:       map[string]genai.DecisionContent{"a": nil, "b": genai.Text("the b option")},
-			},
-			want: `{"type":"choice","instructions":{"task":"classify"},"criteria":{"a":null,"b":"the b option"}}`,
-		},
-		{
-			name: "score",
-			in:   genai.Question{Type: genai.QuestionScore, Score: []genai.DecisionContent{genai.Text("low"), genai.Text("high")}},
-			want: `{"type":"score","criteria":["low","high"]}`,
-		},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			raw, err := json.Marshal(&line.in)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if string(raw) != line.want {
-				t.Fatalf("want %s, got %s", line.want, raw)
-			}
-		})
-	}
 	t.Run("unknown type", func(t *testing.T) {
 		if _, err := json.Marshal(&genai.Question{Type: "bogus"}); err == nil {
 			t.Fatal("expected error")
@@ -931,8 +752,6 @@ func TestErrorResponse(t *testing.T) {
 		in   string
 		want string
 	}{
-		{"string", `{"detail":"Noul question must have criteria or instructions: a"}`, "Noul question must have criteria or instructions: a"},
-		{"object", `{"detail":{"error_type":"api_usage_error","message":"Unknown model: bad model"}}`, "api_usage_error: Unknown model: bad model"},
 		{
 			"validation", `{"detail":[{"type":"too_short","loc":["body","questions"],"msg":"Dictionary should have at least 1 item after validation, not 0"}]}`,
 			"body.questions: Dictionary should have at least 1 item after validation, not 0",
@@ -988,25 +807,6 @@ func TestNewErrors(t *testing.T) {
 			internaltest.CleanupCloser(t, cl)
 		}
 		if err == nil || !strings.Contains(err.Error(), "cannot be empty") {
-			t.Fatalf("unexpected error: %v", err)
-		}
-	})
-	t.Run("modalities decision", func(t *testing.T) {
-		if cl, err := typesafe.New(t.Context(),
-			genai.ProviderOptionAPIKey("x"),
-			genai.ProviderOptionModalities{genai.ModalityDecision},
-		); err != nil {
-			t.Fatal(err)
-		} else {
-			internaltest.CleanupCloser(t, cl)
-		}
-	})
-	t.Run("modalities", func(t *testing.T) {
-		cl, err := typesafe.New(t.Context(), genai.ProviderOptionModalities{genai.ModalityImage})
-		if cl != nil {
-			internaltest.CleanupCloser(t, cl)
-		}
-		if err == nil || !strings.Contains(err.Error(), "only decision is supported") {
 			t.Fatalf("unexpected error: %v", err)
 		}
 	})

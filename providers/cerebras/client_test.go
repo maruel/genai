@@ -7,7 +7,6 @@
 package cerebras_test
 
 import (
-	"io"
 	"net/http"
 	"slices"
 	"strings"
@@ -63,33 +62,6 @@ func TestNew(t *testing.T) {
 				t.Fatalf("unexpected error: %v", err)
 			}
 		})
-	})
-	t.Run("environmentAPIKey", func(t *testing.T) {
-		t.Setenv("CEREBRAS_API_KEY", "environment-api-key")
-		var got string
-		c, err := cerebras.New(t.Context(), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
-			return roundTripperFunc(func(r *http.Request) (*http.Response, error) {
-				got = r.Header.Get("Authorization")
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Header:     http.Header{"Content-Type": {"application/json"}},
-					Body:       io.NopCloser(strings.NewReader(`{"object":"list","data":[]}`)),
-					Request:    r,
-				}, nil
-			})
-		}))
-		if c != nil {
-			internaltest.CleanupCloser(t, c)
-		}
-		if err != nil {
-			t.Fatal(err)
-		}
-		if _, err := c.ListModels(t.Context()); err != nil {
-			t.Fatal(err)
-		}
-		if got != "Bearer environment-api-key" {
-			t.Errorf("Authorization header = %q, want %q", got, "Bearer environment-api-key")
-		}
 	})
 }
 

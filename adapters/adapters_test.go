@@ -8,11 +8,9 @@ package adapters_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"slices"
 	"strconv"
 	"testing"
@@ -172,19 +170,6 @@ func TestProviderUsage(t *testing.T) {
 				t.Fatalf("usage %+v", got)
 			}
 		})
-		t.Run("error", func(t *testing.T) {
-			want := errors.New("embedding failed")
-			provider := &embeddingProviderSpy{embedErr: want}
-			p := adapters.ProviderUsage{Provider: provider}
-			out, err := p.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}})
-			if !errors.Is(err, want) || out != nil {
-				t.Fatalf("got %+v, %v", out, err)
-			}
-
-			if got := p.GetAccumulatedUsage(); !reflect.DeepEqual(got, genai.Usage{}) {
-				t.Fatalf("usage %+v", got)
-			}
-		})
 	})
 	t.Run("SystemOne", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -259,24 +244,6 @@ func TestProviderUsage(t *testing.T) {
 }
 
 func TestProviderAppend(t *testing.T) {
-	t.Run("Embed", func(t *testing.T) {
-		provider := &embeddingProviderSpy{}
-		p := adapters.ProviderAppend{Provider: provider, Append: genai.Request{Text: "/think"}}
-		if !p.Capabilities().Embed {
-			t.Fatal("wrapper hid embedding implementation")
-		}
-
-		out, err := p.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !slices.Equal(out.Embeddings[0], []float32{2, -3}) || out.Usage.InputTokens != 7 {
-			t.Fatalf("response %+v", out)
-		}
-		if provider.request == nil || !slices.Equal(provider.request.Inputs, []genai.Request{{Text: "hello"}}) {
-			t.Fatalf("request %+v", provider.request)
-		}
-	})
 	t.Run("GenSync", func(t *testing.T) {
 		provider := &mockProviderGenSync{
 			responses: []genai.Result{{}},

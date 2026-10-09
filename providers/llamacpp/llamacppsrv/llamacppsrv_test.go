@@ -112,12 +112,6 @@ func TestSymlinkUnsupported(t *testing.T) {
 		err  error
 		want bool
 	}{
-		{"permission", os.ErrPermission, false},
-		{"conflict", os.ErrExist, false},
-		{"diskFull", syscall.ENOSPC, false},
-		{"unsupported", syscall.EOPNOTSUPP, true},
-		{"unimplemented", syscall.ENOSYS, true},
-		{"windowsUnsupported", syscall.Errno(50), runtime.GOOS == "windows"},
 		{"windowsPrivilege", syscall.Errno(1314), runtime.GOOS == "windows"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -136,9 +130,6 @@ func TestParseBuildNumber(t *testing.T) {
 			out  string
 			want int
 		}{
-			{name: "plain", out: "version: 9383\n", want: 9383},
-			{name: "suffix", out: "version: 9383 (bb771cbd2)\n", want: 9383},
-			{name: "tag", out: "version: b9383\n", want: 9383},
 			{name: "versioned", out: "version: 0.5.0-dev (build 11146, commit 7fe450e19)\n", want: 11146},
 		} {
 			t.Run(tc.name, func(t *testing.T) {

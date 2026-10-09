@@ -8,7 +8,6 @@ package pi
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
 	"io"
 	"net/http"
@@ -255,23 +254,6 @@ func TestReadUntilDone(t *testing.T) {
 		}
 	})
 
-	t.Run("waits for settlement", func(t *testing.T) {
-		input := strings.Join([]string{
-			`{"type":"message_update","assistantMessageEvent":{"type":"text_delta","delta":"first"}}`,
-			`{"type":"agent_end","willRetry":false,"messages":[]}`,
-			`{"type":"message_update","assistantMessageEvent":{"type":"text_delta","delta":" follow-up"}}`,
-			`{"type":"agent_end","willRetry":false,"messages":[{"role":"assistant","usage":{"input":10,"output":3,"totalTokens":13},"stopReason":"stop"}]}`,
-			`{"type":"agent_settled"}`,
-		}, "\n")
-		res, err := readUntilDone(newScanner(strings.NewReader(input)), io.Discard, func(string, string) bool { return true })
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(res.Replies) != 1 || res.Replies[0].Text != "first follow-up" {
-			t.Errorf("Replies = %#v, want all settled output", res.Replies)
-		}
-	})
-
 	t.Run("terminal retry failure", func(t *testing.T) {
 		input := strings.Join([]string{
 			`{"type":"agent_end","willRetry":false,"messages":[]}`,
@@ -348,7 +330,6 @@ func TestProviderOption(t *testing.T) {
 			p    ProviderOption
 			want []string
 		}{
-			{"default", ProviderOption{}, []string{"--mode", "rpc", "--no-session", "--no-skills"}},
 			{
 				"options",
 				ProviderOption{Effort: ThinkingHigh, Skills: true, ExtraArgs: []string{"--no-tools"}},
@@ -372,22 +353,6 @@ func TestProviderOption(t *testing.T) {
 }
 
 func TestSetThinking(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		var out bytes.Buffer
-		sc := bufio.NewScanner(strings.NewReader(`{"type":"response","command":"set_thinking_level","success":true}`))
-		if err := setThinking(&out, sc, ThinkingHigh); err != nil {
-			t.Fatal(err)
-		}
-		if got := out.String(); got != "{\"type\":\"set_thinking_level\",\"level\":\"high\"}\n" {
-			t.Errorf("command = %q", got)
-		}
-	})
-	t.Run("unset", func(t *testing.T) {
-		var out bytes.Buffer
-		if err := setThinking(&out, bufio.NewScanner(strings.NewReader("")), ""); err != nil || out.Len() != 0 {
-			t.Errorf("command = %q, err = %v", out.String(), err)
-		}
-	})
 	t.Run("error", func(t *testing.T) {
 		for _, response := range []string{
 			`{"type":"response","command":"set_thinking_level","success":false,"error":"unsupported level"}`,

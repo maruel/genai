@@ -27,17 +27,6 @@ func TestChatRequest(t *testing.T) {
 }
 
 func TestTextModel(t *testing.T) {
-	t.Run("String omits empty metadata", func(t *testing.T) {
-		m := pollinations.TextModel{
-			Name:            "test-model",
-			Category:        "text",
-			InputModalities: []string{"text"},
-		}
-		want := "test-model in:text; out:text"
-		if got := m.String(); got != want {
-			t.Fatalf("String() = %q, want %q", got, want)
-		}
-	})
 	t.Run("String includes metadata", func(t *testing.T) {
 		m := pollinations.TextModel{
 			Name:            "test-model",

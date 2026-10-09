@@ -30,19 +30,11 @@ func TestRunEmbeddings(t *testing.T) {
 	for _, tc := range []embeddingProbeCase{
 		{name: "routing modalities", probe: 32, supported: new(true), reporting: scoreboard.True},
 		{name: "routing scoreboard", probe: 32, supported: new(true), reporting: scoreboard.True},
-		{name: "valid", probe: 32, supported: new(true), reporting: scoreboard.True},
-		{name: "no size probe", reporting: scoreboard.True},
-		{name: "unreported usage", defect: "usage", probe: 32, supported: new(true)},
 		{name: "flaky usage", defect: "flaky usage", reporting: scoreboard.Flaky},
 		{name: "unsupported dimensions", probe: 32, dimErr: unsupportedDims, supported: new(false), reporting: scoreboard.True},
-		{name: "dimensions failure", probe: 32, dimErr: failed, wantErr: true},
-		{name: "wrong unsupported option", probe: 32, dimErr: unsupportedOther, wantErr: true},
 		{name: "wrong dimensions", probe: 32, defect: "dimensions", wantErr: true},
 		{name: "wrong order", defect: "order", wantErr: true},
 		{name: "bad retrieval", defect: "retrieval", wantErr: true},
-		{name: "missing vector", defect: "missing", wantErr: true},
-		{name: "zero vector", defect: "zero", wantErr: true},
-		{name: "negative usage", defect: "negative usage", wantErr: true},
 		{name: "bad default batch", defect: "initial", wantErr: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

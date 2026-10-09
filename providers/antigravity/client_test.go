@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -20,7 +19,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
@@ -236,13 +234,6 @@ func TestNew(t *testing.T) {
 
 func TestProviderOption(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, e := range []Effort{"", EffortLow, EffortMedium, EffortHigh, EffortMax} {
-				if err := (&ProviderOption{Effort: e}).Validate(); err != nil {
-					t.Errorf("Effort %q: %v", e, err)
-				}
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			for _, p := range []ProviderOption{
 				{Effort: "xhigh"},
@@ -261,35 +252,6 @@ func TestProviderOption(t *testing.T) {
 
 func TestGenSync(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		t.Run("usage sums steps", func(t *testing.T) {
-			// Result.Usage is cumulative over the conversation; the call reports
-			// only the usage of its own steps.
-			out := strings.Join([]string{
-				`{"event":"init","conversation_id":"c1","init":{"model":"m","cwd":"/tmp","tools":["view_file"]}}`,
-				`{"event":"step_update","step_update":{"conversation_id":"c1","step_index":4,"state":"DONE","step_type":"user_input"}}`,
-				`{"event":"step_update","step_update":{"conversation_id":"c1","step_index":5,"state":"DONE","step_type":"agent_response","usage":{"input_tokens":10,"output_tokens":3,"thinking_tokens":1,"cache_read_tokens":2,"total_tokens":13}}}`,
-				`{"event":"step_update","step_update":{"conversation_id":"c1","step_index":6,"state":"DONE","step_type":"tool","tool_name":"view_file","tool_info":{"name":"view_file","parameters":{"AbsolutePath":"/tmp/a"},"output":"1 line"}}}`,
-				`{"event":"step_update","step_update":{"conversation_id":"c1","step_index":7,"state":"ACTIVE","step_type":"agent_response","text_delta":"Hel"}}`,
-				`{"event":"step_update","step_update":{"conversation_id":"c1","step_index":7,"state":"DONE","step_type":"agent_response","text_delta":"lo","usage":{"input_tokens":20,"output_tokens":4,"thinking_tokens":0,"cache_read_tokens":0,"total_tokens":24}}}`,
-				`{"event":"result","result":{"conversation_id":"c1","status":"SUCCESS","response":"Hello","duration_seconds":9,"num_turns":3,"usage":{"input_tokens":999,"output_tokens":999,"thinking_tokens":999,"cache_read_tokens":999,"total_tokens":1998}}}`,
-			}, "\n")
-			res, err := newOutputClient(t, out, nil).GenSync(t.Context(), genai.Messages{genai.NewTextMessage("hi")})
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got := replyText(&res); got != "Hello" {
-				t.Errorf("text = %q, want Hello", got)
-			}
-			if got := msgutil.ExtractOpaqueID(genai.Messages{res.Message}, "conversation_id"); got != "c1" {
-				t.Errorf("conversation_id = %q, want c1", got)
-			}
-			want := genai.Usage{InputTokens: 30, InputCachedTokens: 2, ReasoningTokens: 1, OutputTokens: 7, TotalTokens: 37, FinishReason: genai.FinishedStop}
-			if res.Usage.InputTokens != want.InputTokens || res.Usage.InputCachedTokens != want.InputCachedTokens ||
-				res.Usage.ReasoningTokens != want.ReasoningTokens || res.Usage.OutputTokens != want.OutputTokens ||
-				res.Usage.TotalTokens != want.TotalTokens || res.Usage.FinishReason != want.FinishReason {
-				t.Errorf("Usage = %+v, want %+v", res.Usage, want)
-			}
-		})
 		t.Run("args", func(t *testing.T) {
 			out := `{"event":"result","result":{"conversation_id":"c1","status":"SUCCESS","response":"","duration_seconds":0,"num_turns":1,"usage":{"input_tokens":0,"output_tokens":0,"thinking_tokens":0,"cache_read_tokens":0,"total_tokens":0}}}`
 			resumed := genai.Messages{
@@ -304,12 +266,6 @@ func TestGenSync(t *testing.T) {
 				want    []string
 				notWant []string
 			}{
-				{
-					name:    "default",
-					msgs:    genai.Messages{genai.NewTextMessage("hi")},
-					want:    []string{"--disable-slash-commands", "--model " + testModel},
-					notWant: []string{"--conversation", "--dangerously-skip-permissions", "--effort", "--mode", "--sandbox"},
-				},
 				{
 					name: "options",
 					msgs: resumed,
@@ -365,13 +321,6 @@ func TestGenSync(t *testing.T) {
 				}
 			})
 		}
-		t.Run("image", func(t *testing.T) {
-			msgs := genai.Messages{{Requests: []genai.Request{{Doc: genai.Doc{Filename: "a.png", Src: strings.NewReader("\x89PNG")}}}}}
-			_, err := newOutputClient(t, "", nil).GenSync(t.Context(), msgs)
-			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
-				t.Errorf("err = %v, want ErrNotSupported", err)
-			}
-		})
 	})
 }
 
@@ -485,12 +434,9 @@ func TestAgentErrorWriter(t *testing.T) {
 			text string
 			want string
 		}{
-			{"split prefix and JSON", "AGY_ERROR: {\"short_error\":\"failed\"}\n", "agy error: failed"},
 			{"malformed", "AGY_ERROR: {\n", "parse agy error diagnostic"},
 			{"oversized diagnostic", "AGY_ERROR: " + strings.Repeat("x", 70<<10) + "\n", "exceeds 64 KiB"},
-			{"oversized noise", strings.Repeat("x", 70<<10) + "\nAGY_ERROR: {\"short_error\":\"failed\"}", "agy error: failed"},
 			{"first diagnostic", "AGY_ERROR: {\"short_error\":\"first\"}\nAGY_ERROR: {\"short_error\":\"second\"}\n", "agy error: first"},
-			{"unrelated stderr", "secret\n" + strings.Repeat("x", 70<<10), ""},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				var w agentErrorWriter

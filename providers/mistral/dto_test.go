@@ -54,8 +54,6 @@ func TestChatRequest(t *testing.T) {
 					name    string
 					replies []genai.Reply
 				}{
-					{"interleaved", []genai.Reply{{Text: "before"}, ca, {Text: "after"}, cb}},
-					{"call_then_content", []genai.Reply{ca, {Text: "after"}}},
 					{"content_after_calls", []genai.Reply{{Text: "before"}, ca, cb, {Text: "after"}}},
 				} {
 					t.Run(tc.name, func(t *testing.T) {

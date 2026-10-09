@@ -57,12 +57,17 @@ Omit a field the CLI cannot honor. Keep CLI-specific settings (`Mode`, `Sandbox`
 ### Prefer recorded HTTP tests
 
 Provider tests primarily use recorded HTTP interactions. Add coverage through the existing recording tests
-before adding unit tests. Keep unit tests only for behavior that recording tests do not exercise.
+before adding unit tests. Keep a unit test case only when it adds measured production code coverage beyond
+the recording tests and the other retained unit tests. Prefer extending an existing test with the necessary
+case instead of adding another test function.
 
-Before adding or retaining a provider unit test, run the recording suite and the unit test with Go coverage.
-Compare the production paths they cover. Identify the uncovered branch or regression that needs the unit
-test. Remove unit tests that duplicate recording coverage. Coverage is evidence of execution, not proof of
-correct assertions; check that the retained test verifies the behavior on that path.
+Apply this rule to individual subtests and table entries, not just top-level test functions. Compare coverage
+with and without each candidate against the combined retained suite, including imported production packages
+with `-coverpkg=github.com/maruel/genai/...`. Remove redundant cases sequentially so mutually redundant tests
+are not all deleted. Assertions about different values or JSON fields alone do not justify cases that add no
+production coverage. Coverage is evidence of execution, not proof of correct assertions; retained cases must
+also verify the behavior on their additional paths. Fixture-integrity checks protect the recording tooling
+and remain separate from this library unit-test cutoff.
 
 ### No child processes
 

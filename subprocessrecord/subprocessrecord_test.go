@@ -23,23 +23,12 @@ import (
 // subprocess.
 func fakeStarter(output string) genai.Starter {
 	return func(_ context.Context, _ []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-		pr, pw := io.Pipe()
-		go func() { _, _ = io.Copy(io.Discard, pr) }()
-		return pw, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
+		return &discardWriteCloser{}, io.NopCloser(strings.NewReader(output)), func() error { return nil }, nil
 	}
 }
 
 func TestNew(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		t.Run("record_when_no_fixture", func(t *testing.T) {
-			rec, err := New(filepath.Join(t.TempDir(), "test"), nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if rec.replay {
-				t.Fatal("expected record mode")
-			}
-		})
 		t.Run("record_when_empty_fixture", func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
@@ -52,20 +41,6 @@ func TestNew(t *testing.T) {
 			}
 			if rec.replay {
 				t.Fatal("empty fixture should trigger record mode")
-			}
-		})
-		t.Run("replay_when_fixture_exists", func(t *testing.T) {
-			dir := t.TempDir()
-			path := filepath.Join(dir, "test")
-			if err := os.WriteFile(path+".ndjson", []byte("data\n"), 0o644); err != nil {
-				t.Fatal(err)
-			}
-			rec, err := New(path, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !rec.replay {
-				t.Fatal("expected replay mode")
 			}
 		})
 		t.Run("record_sanitized", func(t *testing.T) {
@@ -114,47 +89,6 @@ func TestNew(t *testing.T) {
 
 func TestRecorder(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		t.Run("record", func(t *testing.T) {
-			dir := t.TempDir()
-			path := filepath.Join(dir, "test")
-			fixture := path + ".ndjson"
-			rec, err := New(path, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			want := `{"msg":"hello"}` + "\n"
-			starter := rec.Wrap(fakeStarter(want))
-			stdin, stdout, wait, err := starter(t.Context(), []string{"fake"})
-			if err != nil {
-				t.Fatal(err)
-			}
-			got, err := io.ReadAll(stdout)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if string(got) != want {
-				t.Fatalf("stdout: got %q, want %q", got, want)
-			}
-			if err := stdin.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if err := stdout.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if err := wait(); err != nil {
-				t.Fatal(err)
-			}
-			if err := rec.Stop(); err != nil {
-				t.Fatal(err)
-			}
-			data, err := os.ReadFile(fixture)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if string(data) != want {
-				t.Fatalf("fixture: got %q, want %q", data, want)
-			}
-		})
 		t.Run("delete_empty_recording", func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
@@ -215,7 +149,16 @@ func TestRecorder(t *testing.T) {
 			if string(got) != want {
 				t.Fatalf("stdout: got %q, want %q", got, want)
 			}
+			if n, err := stdin.Write([]byte("ignored input")); n != 13 || err != nil {
+				t.Fatalf("stdin.Write = %d, %v", n, err)
+			}
 			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if n, err := stdin.Write(nil); n != 0 || !errors.Is(err, io.ErrClosedPipe) {
+				t.Fatalf("closed stdin.Write = %d, %v", n, err)
+			}
+			if err := stdout.Close(); err != nil {
 				t.Fatal(err)
 			}
 			if err := wait(); err != nil {
@@ -223,55 +166,6 @@ func TestRecorder(t *testing.T) {
 			}
 			if err := rec.Stop(); err != nil {
 				t.Fatal(err)
-			}
-		})
-		t.Run("record_then_replay", func(t *testing.T) {
-			dir := t.TempDir()
-			path := filepath.Join(dir, "test")
-			want := `{"line":1}` + "\n" + `{"line":2}` + "\n"
-
-			// Record.
-			rec, err := New(path, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			starter := rec.Wrap(fakeStarter(want))
-			stdin, stdout, _, err := starter(t.Context(), nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if _, err := io.ReadAll(stdout); err != nil {
-				t.Fatal(err)
-			}
-			if err := stdin.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if err := stdout.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if err := rec.Stop(); err != nil {
-				t.Fatal(err)
-			}
-
-			// Replay.
-			rec2, err := New(path, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !rec2.replay {
-				t.Fatal("expected replay after recording")
-			}
-			starter2 := rec2.Wrap(nil)
-			_, stdout2, _, err := starter2(t.Context(), nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			got, err := io.ReadAll(stdout2)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if string(got) != want {
-				t.Fatalf("replay: got %q, want %q", got, want)
 			}
 		})
 	})

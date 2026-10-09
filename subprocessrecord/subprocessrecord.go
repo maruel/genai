@@ -21,7 +21,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
+	"sync/atomic"
 
 	"github.com/maruel/genai"
 )
@@ -137,14 +137,29 @@ func (r *Recorder) Wrap(inner genai.Starter) genai.Starter {
 type LineSanitizer func([]byte) ([]byte, error)
 
 func replayFixture(fixture string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	data, err := os.ReadFile(fixture)
+	f, err := os.Open(fixture)
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	// Provide a stdin that discards writes, matching the subprocess interface.
-	pr, pw := io.Pipe()
-	go func() { _, _ = io.Copy(io.Discard, pr) }()
-	return pw, io.NopCloser(strings.NewReader(string(data))), func() error { return nil }, nil
+	// Wait owns stdout cleanup, as it does for a real subprocess.
+	return &discardWriteCloser{}, io.NopCloser(f), f.Close, nil
+}
+
+// discardWriteCloser accepts replay input until the client closes stdin.
+type discardWriteCloser struct {
+	closed atomic.Bool
+}
+
+func (d *discardWriteCloser) Write(p []byte) (int, error) {
+	if d.closed.Load() {
+		return 0, io.ErrClosedPipe
+	}
+	return len(p), nil
+}
+
+func (d *discardWriteCloser) Close() error {
+	d.closed.Store(true)
+	return nil
 }
 
 // recordingReadCloser returns raw subprocess output while recording sanitized lines.

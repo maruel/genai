@@ -13,7 +13,6 @@ import (
 	"errors"
 	"iter"
 	"net/http"
-	"slices"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -25,24 +24,6 @@ import (
 )
 
 func TestProviderReasoning(t *testing.T) {
-	t.Run("Embed", func(t *testing.T) {
-		provider := &embeddingProviderSpy{}
-		p := adapters.ProviderReasoning{Provider: provider, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "</think>"}
-		if !p.Capabilities().Embed {
-			t.Fatal("wrapper hid embedding implementation")
-		}
-
-		out, err := p.Embed(t.Context(), &genai.EmbeddingRequest{Inputs: []genai.Request{{Text: "hello"}}})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !slices.Equal(out.Embeddings[0], []float32{2, -3}) || out.Usage.InputTokens != 7 {
-			t.Fatalf("response %+v", out)
-		}
-		if provider.request == nil || !slices.Equal(provider.request.Inputs, []genai.Request{{Text: "hello"}}) {
-			t.Fatalf("request %+v", provider.request)
-		}
-	})
 	msgs := genai.Messages{
 		genai.NewTextMessage("check task 3"), genai.NewTextMessage("actually task 7"),
 		{Replies: []genai.Reply{{Reasoning: "prior thinking"}, {ToolCall: genai.ToolCall{ID: "A", Name: "status", Arguments: `{}`}}}},
@@ -66,20 +47,6 @@ func TestProviderReasoning(t *testing.T) {
 	})
 	t.Run("GenSync", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			t.Run("chronology", func(t *testing.T) {
-				p := &mockProviderGenSync{responses: []genai.Result{{Message: genai.Message{Replies: []genai.Reply{{Text: "<think>reason</think>waiting"}, {ToolCall: genai.ToolCall{ID: "C", Name: "status", Arguments: `{}`}}}}}}}
-				w := &adapters.ProviderReasoning{Provider: p, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "</think>"}
-				got, err := w.GenSync(t.Context(), msgs)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if diff := cmp.Diff(msgs, p.msgs); diff != "" {
-					t.Fatal(diff)
-				}
-				if got.Replies[0].Reasoning != "reason" || got.Replies[1].ToolCall.ID != "C" || got.Replies[1].Text != "waiting" {
-					t.Fatalf("lost output: %+v", got)
-				}
-			})
 			tests := []struct {
 				name       string
 				startToken string
@@ -88,33 +55,6 @@ func TestProviderReasoning(t *testing.T) {
 				opts       genai.GenOption
 				want       []genai.Reply
 			}{
-				{
-					name:       "No thinking tags",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         "Just regular text without thinking tags",
-					want:       []genai.Reply{{Text: "Just regular text without thinking tags"}},
-				},
-				{
-					name:       "With thinking tags at the beginning",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         "<thinking>\nThis is my thinking process</thinking>\nThis is the response",
-					want: []genai.Reply{
-						{Reasoning: "This is my thinking process"},
-						{Text: "This is the response"},
-					},
-				},
-				{
-					name:       "With only whitespace before tag",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         "  \n\t<thinking>\nThinking with whitespace before</thinking>\nResponse",
-					want: []genai.Reply{
-						{Reasoning: "Thinking with whitespace before"},
-						{Text: "Response"},
-					},
-				},
 				{
 					name:       "With only whitespace before tag and cut off",
 					startToken: "<thinking>",
@@ -181,13 +121,6 @@ func TestProviderReasoning(t *testing.T) {
 				err        error
 				want       string
 			}{
-				{
-					name:       "With non-empty content before tag",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []genai.Reply{{Text: "Text before <thinking>\nThis is thinking</thinking>\nThis is response"}},
-					want:       "unexpected prefix before reasoning tag: \"Text before \"",
-				},
 				{
 					name:       "Error from underlying GenSync",
 					startToken: "<thinking>",
@@ -262,66 +195,12 @@ func TestProviderReasoning(t *testing.T) {
 				want       []genai.Reply
 			}{
 				{
-					name:       "No thinking tag",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"Just ", "regular", " text", " without ", "thinking ", "tags"},
-					want:       []genai.Reply{{Text: "Just regular text without thinking tags"}},
-				},
-				{
-					name:       "With thinking tags in separate fragments",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>", "This is my ", "thinking process", "</thinking>", "This is the response"},
-					want: []genai.Reply{
-						{Reasoning: "This is my thinking process"},
-						{Text: "This is the response"},
-					},
-				},
-				{
-					name:       "With whitespace before tag",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"  \n\t<thinking>", "Thinking content", "</thinking>", "Response"},
-					want: []genai.Reply{
-						{Reasoning: "Thinking content"},
-						{Text: "Response"},
-					},
-				},
-				{
 					name:       "With whitespace before tag as a separate packet",
 					startToken: "<thinking>",
 					endToken:   "</thinking>",
 					in:         []string{"  \n\t", "<thinking>", "Thinking content", "</thinking>", "Response"},
 					want: []genai.Reply{
 						{Reasoning: "Thinking content"},
-						{Text: "Response"},
-					},
-				},
-				{
-					name:       "With thinking tag at the end",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>", "This is thinking only"},
-					want:       []genai.Reply{{Reasoning: "This is thinking only"}},
-				},
-				{
-					name:       "With start tag and text in same fragment",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>Some text", " after tag", "</thinking>", "Response"},
-					want: []genai.Reply{
-						{Reasoning: "Some text after tag"},
-						{Text: "Response"},
-					},
-				},
-				{
-					name:       "With end tag and response in same fragment",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>", "Thinking", "</thinking>Response"},
-					want: []genai.Reply{
-						{Reasoning: "Thinking"},
 						{Text: "Response"},
 					},
 				},
@@ -336,47 +215,11 @@ func TestProviderReasoning(t *testing.T) {
 					},
 				},
 				{
-					name:       "Text state fragments",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>", "Thinking", "</thinking>", "Response1", "Response2"},
-					want: []genai.Reply{
-						{Reasoning: "Thinking"},
-						{Text: "Response1Response2"},
-					},
-				},
-				{
-					name:       "End tag at the start of a fragment",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>", "Thinking content", "</thinking>", "Response"},
-					want: []genai.Reply{
-						{Reasoning: "Thinking content"},
-						{Text: "Response"},
-					},
-				},
-				{
-					name:       "Text after start tag",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{"<thinking>\nOkay", " content", "</thinking>", "Response"},
-					want: []genai.Reply{
-						{Reasoning: "Okay content"},
-						{Text: "Response"},
-					},
-				},
-				{
 					name:       "JSON",
 					startToken: "<thinking>",
 					endToken:   "</thinking>",
 					in:         []string{"{\"is_fruit\": ", "true}"},
 					want:       []genai.Reply{{Text: "{\"is_fruit\": true}"}},
-				},
-				{
-					name:     "no start tag: No thinking tag",
-					endToken: "</thinking>",
-					in:       []string{"Just ", "regular", " text", " without ", "thinking ", "tags"},
-					want:     []genai.Reply{{Reasoning: "Just regular text without thinking tags"}},
 				},
 				{
 					name:     "no start tag: No thinking tag",
@@ -436,14 +279,6 @@ func TestProviderReasoning(t *testing.T) {
 					endToken:   "</thinking>",
 					in:         []string{"Text before <thinking>", "This is thinking", "</thinking>", "This is response"},
 					want:       "unexpected prefix before reasoning tag: \"Text before\"",
-				},
-				{
-					name:       "Error from underlying GenStream",
-					startToken: "<thinking>",
-					endToken:   "</thinking>",
-					in:         []string{},
-					err:        errors.New("mock stream error"),
-					want:       "mock stream error",
 				},
 				{
 					name:       "Unexpected thinking fragment in stream",

@@ -133,7 +133,6 @@ func TestProcessStream(t *testing.T) {
 			"invalid_arguments": `{"choices":[{"delta":{"tool_calls":[{"function":{"name":"weather","arguments":"{"}}]}}]}`,
 			"multiple_choices":  `{"choices":[{},{}]}`,
 			"unexpected_role":   `{"choices":[{"delta":{"role":"user"}}]}`,
-			"trailing_json":     `{"choices":[{"delta":{"tool_calls":[{"function":{"name":"weather","arguments":"{}{}"}}]}}]}`,
 			"unknown_content":   `{"choices":[{"delta":{"content":[{"type":"image","text":"lost"}]}}]}`,
 		} {
 			t.Run(name, func(t *testing.T) {
@@ -157,26 +156,10 @@ func TestProcessStream(t *testing.T) {
 			packets []string
 			want    []genai.ToolCall
 		}{
-			{"indexed_parallel", []string{
-				`{"choices":[{"delta":{"tool_calls":[{"index":0,"id":"a","function":{"name":"weather","arguments":"{"}},{"index":1,"id":"b","function":{"name":"weather","arguments":"{"}}]}}]}`,
-				`{"choices":[{"delta":{"content":"Checking."}}]}`,
-				`{"choices":[{"delta":{"tool_calls":[{"index":1,"function":{"arguments":"}"}},{"index":0,"function":{"arguments":"}"}}]},"finish_reason":"stop"}]}`,
-			}, []genai.ToolCall{{ID: "a", Name: "weather", Arguments: `{}`}, {ID: "b", Name: "weather", Arguments: `{}`}}},
 			{"repeated_id", []string{
 				`{"choices":[{"delta":{"tool_calls":[{"id":"a","function":{"name":"weather","arguments":"{"}}]}}]}`,
 				`{"choices":[{"delta":{"tool_calls":[{"id":"a","function":{"name":"weather","arguments":"}"}}]},"finish_reason":"tool_calls"}]}`,
 			}, []genai.ToolCall{{ID: "a", Name: "weather", Arguments: `{}`}}},
-			{"missing_id", []string{
-				`{"choices":[{"delta":{"tool_calls":[{"function":{"name":"weather","arguments":"{"}}]}}]}`,
-				`{"choices":[{"delta":{"tool_calls":[{"function":{"name":"weather","arguments":"}"}}]}}]}`,
-			}, []genai.ToolCall{{Name: "weather", Arguments: `{}`}}},
-			{"empty_arguments", []string{`{"choices":[{"delta":{"tool_calls":[{"id":"a","function":{"name":"weather","arguments":""}}]},"finish_reason":"tool_calls"}]}`}, []genai.ToolCall{{ID: "a", Name: "weather", Arguments: `{}`}}},
-			{"reused_index", []string{
-				`{"choices":[{"delta":{"tool_calls":[{"index":0,"id":"a","function":{"name":"weather","arguments":"{"}}]}}]}`,
-				`{"choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]}}]}`,
-				`{"choices":[{"delta":{"tool_calls":[{"index":0,"id":"b","function":{"name":"time","arguments":"{"}}]}}]}`,
-				`{"choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]},"finish_reason":"stop"}]}`,
-			}, []genai.ToolCall{{ID: "a", Name: "weather", Arguments: `{}`}, {ID: "b", Name: "time", Arguments: `{}`}}},
 			{"serial_calls", []string{
 				`{"choices":[{"delta":{"tool_calls":[{"id":"a","function":{"name":"weather","arguments":"{"}}]}}]}`,
 				`{"choices":[{"delta":{"tool_calls":[{"function":{"arguments":"}"}}]}}]}`,

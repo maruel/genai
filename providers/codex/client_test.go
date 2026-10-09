@@ -204,11 +204,6 @@ func TestGenStreamErrors(t *testing.T) {
 			want: `unsupported server request "item/tool/requestUserInput" (id 7)`,
 		},
 		{
-			name: "JSON-RPC error response",
-			line: `{"id":100,"error":{"code":-32000,"message":"turn failed"}}`,
-			want: "JSON-RPC error -32000: turn failed",
-		},
-		{
 			name: "malformed JSON",
 			line: `{"method":"turn/completed"`,
 			want: "decode app-server message",

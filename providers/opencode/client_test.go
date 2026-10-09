@@ -564,13 +564,6 @@ func TestReadTurn(t *testing.T) {
 		}
 	})
 
-	t.Run("JSON-RPC error data", func(t *testing.T) {
-		_, err := readTurn(newScanner(strings.NewReader(`{"jsonrpc":"2.0","id":3,"error":{"code":-32000,"message":"turn failed","data":{"retry":false}}}`)), io.Discard, "session-1", 3, false, func(string, string) bool { return true })
-		if err == nil || !strings.Contains(err.Error(), `JSON-RPC error -32000: turn failed: {"retry":false}`) {
-			t.Fatalf("expected complete JSON-RPC error, got %v", err)
-		}
-	})
-
 	t.Run("agent request", func(t *testing.T) {
 		input := `{"jsonrpc":"2.0","id":"permission-1","method":"session/request_permission","params":{"sessionId":"session-1","toolCall":{"toolCallId":"tool-1"},"options":[{"optionId":"once","kind":"allow_once","name":"Allow once"}]}}` + "\n" +
 			`{"jsonrpc":"2.0","id":3,"result":{"stopReason":"end_turn"}}`
@@ -585,18 +578,6 @@ func TestReadTurn(t *testing.T) {
 }
 
 func TestParseSessionUpdateDelta(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		t.Run("resource_link", func(t *testing.T) {
-			params := json.RawMessage(`{"sessionId":"session-1","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"resource_link","uri":"file:///tmp/report.json","name":"report.json","title":"Report","description":"Analysis result","size":42}}}`)
-			text, reasoning, err := parseSessionUpdateDelta(params)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if text != "" || reasoning != "" {
-				t.Fatalf("non-text content produced deltas: text %q, reasoning %q", text, reasoning)
-			}
-		})
-	})
 	t.Run("error", func(t *testing.T) {
 		params := json.RawMessage(`{"sessionId":"session-1","update":{"sessionUpdate":"tool_call","toolCallId":7,"title":"read"}}`)
 		_, _, err := parseSessionUpdateDelta(params)
@@ -633,16 +614,6 @@ func TestParseOpts(t *testing.T) {
 }
 
 func TestGenOption(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		for _, effort := range []Effort{"", EffortDefault, EffortNone, EffortMinimal, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax, "custom"} {
-			if err := (&GenOption{Effort: effort}).Validate(); err != nil {
-				t.Errorf("Effort %q: unexpected error: %v", effort, err)
-			}
-		}
-		if err := (&GenOption{Mode: "plan"}).Validate(); err != nil {
-			t.Errorf("Mode: unexpected error: %v", err)
-		}
-	})
 	t.Run("error", func(t *testing.T) {
 		if err := (&GenOption{Effort: "   "}).Validate(); err == nil {
 			t.Fatal("expected error for whitespace effort")

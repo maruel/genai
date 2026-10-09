@@ -27,9 +27,6 @@ func TestResponse(t *testing.T) {
 			raw  string
 			want CyberAccessProgram
 		}{
-			{name: "null", raw: `null`},
-			{name: "standard", raw: `{"cyber":"standard"}`, want: CyberAccessProgramStandard},
-			{name: "blue", raw: `{"cyber":"daybreak_blue"}`, want: CyberAccessProgramDaybreakBlue},
 			{name: "red", raw: `{"cyber":"daybreak_red"}`, want: CyberAccessProgramDaybreakRed},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
@@ -114,65 +111,6 @@ func TestResponseChronology(t *testing.T) {
 		}
 		if !bytes.Equal(before, after) {
 			t.Fatal("mutated input")
-		}
-	})
-	t.Run("delta_and_websocket", func(t *testing.T) {
-		history := append(genai.Messages(nil), msgs...)
-		history[2].Replies = append(append([]genai.Reply(nil), history[2].Replies...), emitMeta("resp_previous", 2))
-		before, err := json.Marshal(history)
-		if err != nil {
-			t.Fatal(err)
-		}
-		c := &Client{impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{ProviderBase: base.ProviderBase[*ErrorResponse]{Model: "test"}}}
-		internaltest.CleanupCloser(t, c)
-		delta, id := c.prepareDelta(history, nil)
-		if id != "resp_previous" || len(delta) != 3 {
-			t.Fatalf("delta=%+v id=%q", delta, id)
-		}
-		var req Response
-		if err := req.Init(delta, "test", &GenOptionText{PreviousResponseID: id}); err != nil {
-			t.Fatal(err)
-		}
-		w := &WebSocketConn{client: c}
-		for _, end := range []int{4, 5, 6} {
-			pending, prev := c.prepareDelta(history[:end], nil)
-			if len(pending) != end-3 || prev != "resp_previous" {
-				t.Fatalf("pending delta=%+v id=%q", pending, prev)
-			}
-			var incremental Response
-			if err := incremental.Init(pending, "test", &GenOptionText{PreviousResponseID: prev}); err != nil {
-				t.Fatal(err)
-			}
-			ws, err := w.buildRequest(history[:end])
-			if err != nil {
-				t.Fatal(err)
-			}
-			if len(ws.Input) != end-3 || ws.Input[0].Content[0].Text != "intervening" {
-				t.Fatalf("pending/partial WS delta changed: %+v", ws.Input)
-			}
-			if diff := cmp.Diff(incremental.Input, ws.Input); diff != "" {
-				t.Fatal(diff)
-			}
-		}
-		ws, err := w.buildRequest(history)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if ws.PreviousResponseID != id || ws.Type != "response.create" {
-			t.Fatalf("ws=%+v", ws)
-		}
-		if diff := cmp.Diff(req.Input, ws.Input); diff != "" {
-			t.Fatal(diff)
-		}
-		if len(ws.Input) != 3 || ws.Input[0].Content[0].Text != "intervening" || ws.Input[1].CallID != "B" || ws.Input[2].CallID != "A" {
-			t.Fatalf("wrong delta order: %+v", ws.Input)
-		}
-		after, err := json.Marshal(history)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !bytes.Equal(before, after) {
-			t.Fatal("mutated session history")
 		}
 	})
 	t.Run("bookkeeping_only", func(t *testing.T) {

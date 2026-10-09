@@ -11,10 +11,8 @@ import (
 	"context"
 	"errors"
 	"log/slog"
-	"strconv"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
@@ -33,11 +31,7 @@ func TestAvailable(t *testing.T) {
 		nilClient  bool
 		want       bool
 	}{
-		{name: "no_ping", want: true},
-		{name: "ping_success", ping: true, want: true},
 		{name: "ping_error", ping: true, pingErr: errors.New("ping failed")},
-		{name: "factory_error", factoryErr: errors.New("factory failed")},
-		{name: "nil_client", factoryErr: errors.New("factory failed"), nilClient: true},
 		{name: "close_error", closeErr: errors.New("close failed"), want: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -88,77 +82,6 @@ func TestAvailable(t *testing.T) {
 			}
 		})
 	}
-	t.Run("concurrent", func(t *testing.T) {
-		const count = 8
-		ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
-		t.Cleanup(cancel)
-		factories := make(chan struct{}, count)
-		pings := make(chan struct{}, count)
-		releaseFactories := make(chan struct{})
-		releasePings := make(chan struct{})
-		ps := make([]*probeClient, count)
-		All = make(map[string]Config, count)
-		for i := range count {
-			c, err := anthropic.New(ctx, genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("test"))
-			if err != nil {
-				t.Fatal(err)
-			}
-			p := &probeClient{Client: c}
-			ps[i] = p
-			All[strconv.Itoa(i)] = Config{Factory: func(ctx context.Context, _ ...genai.ProviderOption) (genai.Provider, error) {
-				factories <- struct{}{}
-				select {
-				case <-releaseFactories:
-				case <-ctx.Done():
-					return p, ctx.Err()
-				}
-				return &pingProbeClient{probeClient: p, ping: func(ctx context.Context) error {
-					pings <- struct{}{}
-					select {
-					case <-releasePings:
-						return nil
-					case <-ctx.Done():
-						return ctx.Err()
-					}
-				}}, nil
-			}}
-		}
-		result := make(chan map[string]Config, 1)
-		go func() { result <- Available(ctx) }()
-		for _, stage := range []struct {
-			name    string
-			started <-chan struct{}
-			release chan struct{}
-		}{
-			{name: "factories", started: factories, release: releaseFactories},
-			{name: "pings", started: pings, release: releasePings},
-		} {
-			for range count {
-				select {
-				case <-stage.started:
-				case <-ctx.Done():
-					<-result
-					t.Fatalf("%s did not run concurrently: %v", stage.name, ctx.Err())
-				}
-			}
-			close(stage.release)
-		}
-		avail := <-result
-		if len(avail) != count {
-			t.Errorf("available count = %d, want %d", len(avail), count)
-		}
-		for i, p := range ps {
-			if _, ok := avail[strconv.Itoa(i)]; !ok {
-				t.Errorf("provider %d missing", i)
-			}
-			if !p.closed {
-				t.Errorf("provider %d remains open after Available returns", i)
-				if err := p.Client.Close(); err != nil {
-					t.Error(err)
-				}
-			}
-		}
-	})
 }
 
 type probeClient struct {

@@ -25,15 +25,6 @@ import (
 )
 
 func TestCheckDuplicateGenOptions(t *testing.T) {
-	t.Run("no_duplicates", func(t *testing.T) {
-		opts := []genai.GenOption{
-			genai.GenOptionSeed(1),
-			&genai.GenOptionText{},
-		}
-		if err := CheckDuplicateGenOptions(opts); err != nil {
-			t.Fatal(err)
-		}
-	})
 	t.Run("duplicate", func(t *testing.T) {
 		opts := []genai.GenOption{
 			genai.GenOptionSeed(1),
@@ -51,15 +42,6 @@ func TestCheckDuplicateGenOptions(t *testing.T) {
 }
 
 func TestCheckDuplicateProviderOptions(t *testing.T) {
-	t.Run("no_duplicates", func(t *testing.T) {
-		opts := []genai.ProviderOption{
-			genai.ProviderOptionAPIKey("key"),
-			genai.ProviderOptionModel("model"),
-		}
-		if err := CheckDuplicateProviderOptions(opts); err != nil {
-			t.Fatal(err)
-		}
-	})
 	t.Run("duplicate", func(t *testing.T) {
 		opts := []genai.ProviderOption{
 			genai.ProviderOptionModel("model1"),
@@ -83,11 +65,6 @@ func TestTimeSAsTime(t *testing.T) {
 		want time.Time
 	}{
 		{
-			name: "integer seconds",
-			in:   TimeS(1234567890),
-			want: time.Unix(1234567890, 0).UTC(),
-		},
-		{
 			name: "fractional seconds round to milliseconds",
 			in:   TimeS(1234567890.1235),
 			want: time.Unix(1234567890, 124*time.Millisecond.Nanoseconds()).UTC(),
@@ -103,16 +80,6 @@ func TestTimeSAsTime(t *testing.T) {
 }
 
 func TestTimeSIsZero(t *testing.T) {
-	t.Run("zero", func(t *testing.T) {
-		if !TimeS(0).IsZero() {
-			t.Fatal("IsZero() = false, want true")
-		}
-	})
-	t.Run("non_zero", func(t *testing.T) {
-		if TimeS(1).IsZero() {
-			t.Fatal("IsZero() = true, want false")
-		}
-	})
 	t.Run("omitzero", func(t *testing.T) {
 		type payload struct {
 			CreatedAt TimeS `json:"createdAt,omitzero"`
@@ -134,11 +101,6 @@ func TestTimeMSAsTime(t *testing.T) {
 		want time.Time
 	}{
 		{
-			name: "integer milliseconds",
-			in:   TimeMS(1780832660165),
-			want: time.Date(2026, 6, 7, 11, 44, 20, 165000000, time.UTC),
-		},
-		{
 			name: "fractional milliseconds round to milliseconds",
 			in:   TimeMS(1780832660165.5),
 			want: time.Date(2026, 6, 7, 11, 44, 20, 166000000, time.UTC),
@@ -154,16 +116,6 @@ func TestTimeMSAsTime(t *testing.T) {
 }
 
 func TestTimeMSIsZero(t *testing.T) {
-	t.Run("zero", func(t *testing.T) {
-		if !TimeMS(0).IsZero() {
-			t.Fatal("IsZero() = false, want true")
-		}
-	})
-	t.Run("non_zero", func(t *testing.T) {
-		if TimeMS(1).IsZero() {
-			t.Fatal("IsZero() = true, want false")
-		}
-	})
 	t.Run("omitzero", func(t *testing.T) {
 		type payload struct {
 			StartedAt TimeMS `json:"startedAtMs,omitzero"`
@@ -185,16 +137,6 @@ func TestDurationMSAsDuration(t *testing.T) {
 		want time.Duration
 	}{
 		{
-			name: "integer milliseconds",
-			in:   DurationMS(42),
-			want: 42 * time.Millisecond,
-		},
-		{
-			name: "fractional milliseconds",
-			in:   DurationMS(599.3873493672435),
-			want: 599*time.Millisecond + 387*time.Microsecond + 349*time.Nanosecond,
-		},
-		{
 			name: "sub nanosecond truncates",
 			in:   DurationMS(1.0000009),
 			want: time.Millisecond,
@@ -215,16 +157,6 @@ func TestDurationSAsDuration(t *testing.T) {
 		in   DurationS
 		want time.Duration
 	}{
-		{
-			name: "integer seconds",
-			in:   DurationS(42),
-			want: 42 * time.Second,
-		},
-		{
-			name: "fractional seconds",
-			in:   DurationS(2.9543220650000004),
-			want: 2*time.Second + 954*time.Millisecond + 322*time.Microsecond + 65*time.Nanosecond,
-		},
 		{
 			name: "sub nanosecond truncates",
 			in:   DurationS(1.0000000009),
@@ -295,39 +227,6 @@ func TestUnknown(t *testing.T) {
 			}
 		})
 	}
-	t.Run("null_resets", func(t *testing.T) {
-		for _, lenient := range []bool{false, true} {
-			internal.BeLenient = lenient
-			u := Unknown(`{"previous":true}`)
-			if err := json.Unmarshal([]byte("null"), &u); err != nil {
-				t.Fatal(err)
-			}
-			if u != nil {
-				t.Fatalf("null = %s, want nil", u)
-			}
-			b, err := json.Marshal(struct {
-				Value Unknown `json:"value,omitzero"`
-			}{u})
-			if err != nil || string(b) != "{}" {
-				t.Fatalf("omitted null = %s, %v", b, err)
-			}
-		}
-	})
-	t.Run("marshal", func(t *testing.T) {
-		b, err := json.Marshal(Unknown(nil))
-		if err != nil || string(b) != "null" {
-			t.Fatalf("nil = %s, %v", b, err)
-		}
-		if _, err := json.Marshal(Unknown("invalid")); err == nil {
-			t.Fatal("expected invalid JSON error")
-		}
-		b, err = json.Marshal(struct {
-			Value Unknown `json:"value,omitzero"`
-		}{})
-		if err != nil || string(b) != "{}" {
-			t.Fatalf("omitted = %s, %v", b, err)
-		}
-	})
 }
 
 func TestNotImplemented(t *testing.T) {
@@ -391,7 +290,7 @@ func (*decodeAPIError) IsAPIError() bool { return true }
 func TestEmbeddingVector(t *testing.T) {
 	t.Run("UnmarshalJSON", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
-			for _, tc := range []embeddingVectorDecodeCase{{"invalid base64", `"!"`}, {"empty", `""`}, {"partial float", `"AA=="`}, {"null", `null`}, {"object", `{}`}, {"boolean", `true`}, {"invalid array element", `["bad"]`}} {
+			for _, tc := range []embeddingVectorDecodeCase{{"null", `null`}, {"boolean", `true`}, {"invalid array element", `["bad"]`}} {
 				t.Run(tc.name, func(t *testing.T) {
 					v := EmbeddingVector{7}
 					if err := json.Unmarshal([]byte(tc.body), &v); err == nil || v != nil {

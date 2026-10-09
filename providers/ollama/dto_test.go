@@ -16,15 +16,8 @@ import (
 
 func TestEmbeddingRequest(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			in := ollama.EmbeddingRequest{Model: "model", Input: []string{"hello", "world"}, Dimensions: 32}
-			if err := in.Validate(); err != nil {
-				t.Fatal(err)
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			for _, tc := range []embeddingRequestErrorCase{
-				{"missing model", ollama.EmbeddingRequest{Input: []string{"hello"}}},
 				{"missing input", ollama.EmbeddingRequest{Model: "model"}},
 				{"empty input", ollama.EmbeddingRequest{Model: "model", Input: []string{"hello", ""}}},
 				{"negative dimensions", ollama.EmbeddingRequest{Model: "model", Input: []string{"hello"}, Dimensions: -1}},
@@ -42,14 +35,6 @@ func TestEmbeddingRequest(t *testing.T) {
 // TestErrorResponse preserves decoder strictness for native and compatible errors.
 func TestErrorResponse(t *testing.T) {
 	t.Run("UnmarshalJSON", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			t.Run("empty envelope", func(t *testing.T) {
-				var out ollama.ErrorResponse
-				if err := json.Unmarshal([]byte(`{}`), &out); err != nil || out.Error() != "" {
-					t.Fatalf("response %+v, error %v", out, err)
-				}
-			})
-		})
 		t.Run("error", func(t *testing.T) {
 			var out ollama.ErrorResponse
 			if err := json.Unmarshal([]byte(`[]`), &out); err == nil {

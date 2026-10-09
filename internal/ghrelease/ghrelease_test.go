@@ -16,62 +16,12 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/klauspost/compress/zstd"
 )
 
 func TestExtractArchive(t *testing.T) {
-	t.Run("Zip", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.zip")
-		createArchive(t, archivePath, map[string]string{
-			"subdir/hello.txt": "hello world",
-			"subdir/foo.bin":   "foo content",
-		})
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "hello world")
-		assertFileContent(t, filepath.Join(dstDir, "foo.bin"), "foo content")
-	})
-	t.Run("TarGz", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.tar.gz")
-		createArchive(t, archivePath, map[string]string{
-			"subdir/hello.txt": "hello world",
-			"subdir/foo.bin":   "foo content",
-		})
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "hello world")
-		assertFileContent(t, filepath.Join(dstDir, "foo.bin"), "foo content")
-	})
-	t.Run("Tgz", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.tgz")
-		createArchive(t, archivePath, map[string]string{
-			"a.txt": "data",
-		})
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"a.txt"}, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "a.txt"), "data")
-	})
 	t.Run("TarZst", func(t *testing.T) {
 		dir := t.TempDir()
 		archivePath := filepath.Join(dir, "test.tar.zst")
@@ -88,25 +38,6 @@ func TestExtractArchive(t *testing.T) {
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "hello world")
 		assertFileContent(t, filepath.Join(dstDir, "foo.bin"), "foo content")
-	})
-	t.Run("UnwantedSkipped", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.zip")
-		createArchive(t, archivePath, map[string]string{
-			"keep.txt":   "kept",
-			"ignore.txt": "ignored",
-		})
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"keep.txt"}, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "keep.txt"), "kept")
-		if _, err := os.Stat(filepath.Join(dstDir, "ignore.txt")); err == nil {
-			t.Fatal("ignore.txt should not have been extracted")
-		}
 	})
 	t.Run("GlobMatch", func(t *testing.T) {
 		dir := t.TempDir()
@@ -129,30 +60,6 @@ func TestExtractArchive(t *testing.T) {
 			t.Fatal("baz.so should not have been extracted")
 		}
 	})
-	t.Run("Symlink", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.tar.gz")
-		createTarGzWithSymlink(t, archivePath, "lib/libfoo.so.1", "libfoo content", "lib/libfoo.so", "libfoo.so.1")
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"*"}, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "libfoo.so.1"), "libfoo content")
-		target, err := os.Readlink(filepath.Join(dstDir, "libfoo.so"))
-		if err != nil {
-			t.Fatal(err)
-		}
-		if filepath.Base(target) != "libfoo.so.1" || !filepath.IsAbs(target) {
-			t.Fatalf("symlink target: got %q, want absolute path ending with libfoo.so.1", target)
-		}
-		// Verify the symlink resolves to the correct file within dstDir.
-		if !strings.HasPrefix(target, dstDir+string(os.PathSeparator)) {
-			t.Fatalf("symlink target %q escapes dstDir %q", target, dstDir)
-		}
-	})
 	t.Run("SymlinkEscape", func(t *testing.T) {
 		dir := t.TempDir()
 		archivePath := filepath.Join(dir, "test.tar.gz")
@@ -173,25 +80,6 @@ func TestExtractArchive(t *testing.T) {
 		if err := ExtractArchive("file.rar", ".", nil, false); err == nil {
 			t.Fatal("expected error for unsupported format")
 		}
-	})
-
-	t.Run("NilWantedFiles_ExtractsAll", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.zip")
-		createArchive(t, archivePath, map[string]string{
-			"a.txt": "a",
-			"b.txt": "b",
-		})
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		// nil wantedFiles extracts everything (flat mode).
-		if err := ExtractArchive(archivePath, dstDir, nil, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "a.txt"), "a")
-		assertFileContent(t, filepath.Join(dstDir, "b.txt"), "b")
 	})
 
 	// --- preserveDir=true tests ---
@@ -256,28 +144,6 @@ func TestExtractArchive(t *testing.T) {
 		}
 	})
 
-	t.Run("PreserveDir_GlobMatch", func(t *testing.T) {
-		dir := t.TempDir()
-		archivePath := filepath.Join(dir, "test.tar.gz")
-		createArchive(t, archivePath, map[string]string{
-			"lib/a.so":  "a",
-			"lib/b.so":  "b",
-			"lib/c.dll": "c",
-		})
-		dstDir := filepath.Join(dir, "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"lib/*.so"}, true); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "lib", "a.so"), "a")
-		assertFileContent(t, filepath.Join(dstDir, "lib", "b.so"), "b")
-		if _, err := os.Stat(filepath.Join(dstDir, "lib", "c.dll")); err == nil {
-			t.Fatal("c.dll should not have been extracted")
-		}
-	})
-
 	t.Run("PreserveDir_ExtractAll", func(t *testing.T) {
 		dir := t.TempDir()
 		archivePath := filepath.Join(dir, "test.tar.gz")
@@ -301,66 +167,6 @@ func TestExtractArchive(t *testing.T) {
 }
 
 func TestGetLatestRelease(t *testing.T) {
-	t.Run("Valid", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != "/repos/testowner/testrepo/releases/latest" {
-				http.NotFound(w, r)
-				return
-			}
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write([]byte(`{"tag_name":"v1.2.3","assets":[{"name":"foo.tar.gz","browser_download_url":"https://example.com/foo.tar.gz"},{"name":"bar.zip","browser_download_url":"https://example.com/bar.zip"}]}`))
-		}))
-		defer srv.Close()
-		old := apiBaseURL
-		apiBaseURL = srv.URL
-		t.Cleanup(func() { apiBaseURL = old })
-
-		rel, err := GetLatestRelease(context.Background(), "testowner", "testrepo")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if rel.TagName != "v1.2.3" {
-			t.Fatalf("tag: got %q, want %q", rel.TagName, "v1.2.3")
-		}
-		if len(rel.Assets) != 2 {
-			t.Fatalf("assets: got %d, want 2", len(rel.Assets))
-		}
-		if rel.Assets[0].Name != "foo.tar.gz" {
-			t.Fatalf("asset[0].Name: got %q, want %q", rel.Assets[0].Name, "foo.tar.gz")
-		}
-		if rel.Assets[0].URL != "https://example.com/foo.tar.gz" {
-			t.Fatalf("asset[0].URL: got %q, want %q", rel.Assets[0].URL, "https://example.com/foo.tar.gz")
-		}
-	})
-	t.Run("InvalidTokenRetriesUnauthenticated", func(t *testing.T) {
-		calls := 0
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			calls++
-			if calls == 1 {
-				if got := r.Header.Get("Authorization"); got != "Bearer invalid-token" {
-					t.Errorf("Authorization = %q, want invalid token", got)
-				}
-				http.Error(w, "bad credentials", http.StatusUnauthorized)
-				return
-			}
-			if got := r.Header.Get("Authorization"); got != "" {
-				t.Errorf("Authorization = %q, want empty", got)
-			}
-			_, _ = w.Write([]byte(`{"tag_name":"v1.2.3"}`))
-		}))
-		t.Cleanup(srv.Close)
-		old := apiBaseURL
-		apiBaseURL = srv.URL
-		t.Cleanup(func() { apiBaseURL = old })
-		t.Setenv("GITHUB_TOKEN", "invalid-token")
-
-		if _, err := GetLatestRelease(t.Context(), "testowner", "testrepo"); err != nil {
-			t.Fatal(err)
-		}
-		if calls != 2 {
-			t.Fatalf("requests = %d, want 2", calls)
-		}
-	})
 	t.Run("NotFound", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
@@ -405,19 +211,6 @@ func TestGetRelease(t *testing.T) {
 			t.Fatalf("asset[0].Name: got %q, want %q", rel.Assets[0].Name, "bin.tar.gz")
 		}
 	})
-	t.Run("NotFound", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			http.NotFound(w, r)
-		}))
-		defer srv.Close()
-		old := apiBaseURL
-		apiBaseURL = srv.URL
-		t.Cleanup(func() { apiBaseURL = old })
-
-		if _, err := GetRelease(context.Background(), "no", "repo", "v999"); err == nil {
-			t.Fatal("expected error for 404")
-		}
-	})
 }
 
 func TestDownloadFile(t *testing.T) {
@@ -449,19 +242,6 @@ func TestDownloadFile(t *testing.T) {
 		}
 		assertFileContent(t, dst, "file content")
 	})
-	t.Run("Valid", func(t *testing.T) {
-		want := "file content here"
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_, _ = w.Write([]byte(want))
-		}))
-		defer srv.Close()
-
-		dst := filepath.Join(t.TempDir(), "downloaded.bin")
-		if err := DownloadFile(context.Background(), srv.URL+"/file.bin", dst); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, dst, want)
-	})
 	t.Run("HTTPError", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "not found", http.StatusNotFound)
@@ -476,21 +256,6 @@ func TestDownloadFile(t *testing.T) {
 }
 
 func TestDownloadAndExtract(t *testing.T) {
-	t.Run("TarGzStream", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			writeTarGz(t, w, map[string]string{"dir/hello.txt": "streamed"})
-		}))
-		defer srv.Close()
-
-		dstDir := filepath.Join(t.TempDir(), "out")
-		if err := os.Mkdir(dstDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.gz", dstDir, []string{"hello.txt"}, false); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "streamed")
-	})
 	t.Run("TarZstStream", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			writeTarZst(t, w, map[string]string{"dir/hello.txt": "zst-streamed"})

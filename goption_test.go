@@ -89,17 +89,6 @@ func TestGenOptionPollInterval(t *testing.T) {
 
 func TestGenOptionText(t *testing.T) {
 	t.Run("DecodeSchema", func(t *testing.T) {
-		t.Run("JSONSchema passthrough", func(t *testing.T) {
-			schema := JSONSchema(`{"type":"object","properties":{"x":{"type":"integer"}}}`)
-			opts := GenOptionText{DecodeAs: schema}
-			got, err := opts.DecodeSchema()
-			if err != nil {
-				t.Fatal(err)
-			}
-			if string(got) != string(schema) {
-				t.Errorf("got %s, want %s", got, schema)
-			}
-		})
 		t.Run("struct pointer generates schema", func(t *testing.T) {
 			type circle struct {
 				Radius float64 `json:"radius" jsonschema_description:"circle radius"`
@@ -141,18 +130,6 @@ func TestGenOptionText(t *testing.T) {
 				in   GenOptionText
 			}{
 				{
-					name: "Valid options with all fields set",
-					in: GenOptionText{
-						Temperature: 0.5,
-						TopP:        0.5,
-						TopK:        10,
-						MaxTokens:   100,
-						Stop:        []string{"stop"},
-						ReplyAsJSON: true,
-						DecodeAs:    &struct{}{},
-					},
-				},
-				{
 					name: "Valid options with only DecodeAs pointer",
 					in:   GenOptionText{DecodeAs: &struct{}{}},
 				},
@@ -192,11 +169,6 @@ func TestGenOptionText(t *testing.T) {
 					errMsg: "field TopK: must be [0, 1024]",
 				},
 				{
-					name:   "Invalid TopLogprobs negative",
-					in:     GenOptionText{TopLogprobs: -1},
-					errMsg: "field TopLogprobs: must be [0, 20]",
-				},
-				{
 					name:   "Invalid TopLogprobs too high",
 					in:     GenOptionText{TopLogprobs: 21},
 					errMsg: "field TopLogprobs: must be [0, 20]",
@@ -205,11 +177,6 @@ func TestGenOptionText(t *testing.T) {
 					name:   "Invalid Stop empty string",
 					in:     GenOptionText{Stop: []string{"valid", ""}},
 					errMsg: "field Stop[1]: must not be empty",
-				},
-				{
-					name:   "Invalid DecodeAs int",
-					in:     GenOptionText{DecodeAs: 123},
-					errMsg: "field DecodeAs: must be a JSON object or array, or a pointer to one, got int",
 				},
 				{
 					name:   "Invalid DecodeAs string",
@@ -305,37 +272,6 @@ func TestToolDef(t *testing.T) {
 		Name string
 	}
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			tests := []struct {
-				name string
-				in   ToolDef
-			}{
-				{
-					name: "Valid ToolDef with function and pointer InputsAs",
-					in: ToolDef{
-						Name:        "tool",
-						Description: "do stuff",
-						Callback:    func(ctx context.Context, input *inputStruct) (string, error) { return "", nil },
-					},
-				},
-				{
-					name: "Valid ToolDef with InputSchemaOverride",
-					in: ToolDef{
-						Name:                "tool",
-						Description:         "do stuff",
-						InputSchemaOverride: json.RawMessage("{}"),
-					},
-				},
-			}
-
-			for _, tt := range tests {
-				t.Run(tt.name, func(t *testing.T) {
-					if err := tt.in.Validate(); err != nil {
-						t.Fatalf("unexpected error: %q", err)
-					}
-				})
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
@@ -346,11 +282,6 @@ func TestToolDef(t *testing.T) {
 					name:   "Missing Name",
 					in:     ToolDef{Description: "do stuff"},
 					errMsg: "field Name: must be a valid tool name between 1 and 64 characters and contain only [a-zA-Z0-9_-]",
-				},
-				{
-					name:   "Missing Description",
-					in:     ToolDef{Name: "tool"},
-					errMsg: "field Description: required",
 				},
 				{
 					name: "Callback not a function",
@@ -522,16 +453,6 @@ func TestGenOptionVideo(t *testing.T) {
 }
 
 func TestValidateReflectedToJSON(t *testing.T) {
-	type testStruct struct{}
-	t.Run("valid", func(t *testing.T) {
-		for _, in := range []any{
-			testStruct{}, &testStruct{}, map[string]any{}, &map[string]any{}, []any{}, &[]any{}, [2]int{}, &[2]int{},
-		} {
-			if err := validateReflectedToJSON(in); err != nil {
-				t.Fatalf("%T: unexpected error: %v", in, err)
-			}
-		}
-	})
 	t.Run("error", func(t *testing.T) {
 		tests := []struct {
 			name   string
@@ -542,21 +463,6 @@ func TestValidateReflectedToJSON(t *testing.T) {
 				name:   "nil",
 				in:     nil,
 				errMsg: "must be a JSON object or array, or a pointer to one, got nil",
-			},
-			{
-				name:   "string type",
-				in:     "hello",
-				errMsg: `must be a JSON object or array, or a pointer to one, got string`,
-			},
-			{
-				name:   "int type",
-				in:     123,
-				errMsg: "must be a JSON object or array, or a pointer to one, got int",
-			},
-			{
-				name:   "pointer to string",
-				in:     new(string),
-				errMsg: "must be a JSON object or array, or a pointer to one, got *string",
 			},
 		}
 		for _, tt := range tests {

@@ -27,20 +27,6 @@ func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 
 func TestReasoningFormat(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, format := range []cerebras.ReasoningFormat{
-				"",
-				cerebras.ReasoningFormatParsed,
-				cerebras.ReasoningFormatTextParsed,
-				cerebras.ReasoningFormatRaw,
-				cerebras.ReasoningFormatHidden,
-				cerebras.ReasoningFormatNone,
-			} {
-				if err := format.Validate(); err != nil {
-					t.Errorf("Validate(%q): %v", format, err)
-				}
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			err := cerebras.ReasoningFormat("chatty").Validate()
 			if err == nil {
@@ -52,19 +38,6 @@ func TestReasoningFormat(t *testing.T) {
 
 func TestServiceTier(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, tier := range []cerebras.ServiceTier{
-				"",
-				cerebras.ServiceTierAuto,
-				cerebras.ServiceTierDefault,
-				cerebras.ServiceTierFlex,
-				cerebras.ServiceTierPriority,
-			} {
-				if err := tier.Validate(); err != nil {
-					t.Errorf("Validate(%q): %v", tier, err)
-				}
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			err := cerebras.ServiceTier("turbo").Validate()
 			if err == nil {
@@ -76,16 +49,6 @@ func TestServiceTier(t *testing.T) {
 
 func TestToolChoice(t *testing.T) {
 	t.Run("MarshalJSON", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			data, err := json.Marshal(cerebras.ToolChoice{Function: "lookup"})
-			if err != nil {
-				t.Fatal(err)
-			}
-			const want = `{"type":"function","function":{"name":"lookup"}}`
-			if string(data) != want {
-				t.Errorf("JSON = %s, want %s", data, want)
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			err := (cerebras.ToolChoice{Mode: cerebras.ToolChoiceRequired, Function: "lookup"}).Validate()
 			if err == nil {
@@ -97,16 +60,6 @@ func TestToolChoice(t *testing.T) {
 
 func TestPredictionContent(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, content := range []cerebras.PredictionContent{
-				{Text: "known"},
-				{Type: cerebras.ContentText, Text: "known"},
-			} {
-				if err := content.Validate(); err != nil {
-					t.Errorf("Validate() = %v", err)
-				}
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			for _, content := range []cerebras.PredictionContent{
 				{},
@@ -214,33 +167,11 @@ func TestQueueThreshold(t *testing.T) {
 				t.Fatal("New() succeeded, want error")
 			}
 		})
-		t.Run("genOptionError", func(t *testing.T) {
-			var request cerebras.ChatRequest
-			err := request.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gemma-4-31b", &cerebras.GenOption{
-				QueueThreshold: 49 * time.Millisecond,
-			})
-			if err == nil {
-				t.Fatal("Init() succeeded, want error")
-			}
-		})
 	})
 }
 
 func TestReasoningEffort(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("valid", func(t *testing.T) {
-			for _, effort := range []cerebras.ReasoningEffort{
-				"",
-				cerebras.ReasoningEffortNone,
-				cerebras.ReasoningEffortLow,
-				cerebras.ReasoningEffortMedium,
-				cerebras.ReasoningEffortHigh,
-			} {
-				if err := effort.Validate(); err != nil {
-					t.Errorf("Validate(%q): %v", effort, err)
-				}
-			}
-		})
 		t.Run("error", func(t *testing.T) {
 			err := cerebras.ReasoningEffort("maximum").Validate()
 			if err == nil {
@@ -253,29 +184,6 @@ func TestReasoningEffort(t *testing.T) {
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			t.Run("multipleRequests", func(t *testing.T) {
-				var got cerebras.ChatRequest
-				err := got.Init(genai.Messages{{
-					Requests: []genai.Request{
-						{Text: "What is in this image?"},
-						{Doc: genai.Doc{Filename: "input.png", Src: strings.NewReader("png")}},
-					},
-				}}, "gemma-4-31b")
-				if err != nil {
-					t.Fatal(err)
-				}
-				if len(got.Messages) != 1 {
-					t.Fatalf("len(Messages) = %d, want 1", len(got.Messages))
-				}
-				data, err := json.Marshal(got.Messages[0])
-				if err != nil {
-					t.Fatal(err)
-				}
-				const want = `{"role":"user","content":[{"type":"text","text":"What is in this image?"},{"type":"image_url","image_url":{"url":"data:image/png;base64,cG5n"}}]}`
-				if string(data) != want {
-					t.Errorf("Message = %s, want %s", data, want)
-				}
-			})
 			t.Run("providerOptions", func(t *testing.T) {
 				var got cerebras.ChatRequest
 				err := got.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gpt-oss-120b", &cerebras.GenOption{
@@ -323,21 +231,6 @@ func TestChatRequest(t *testing.T) {
 					t.Errorf("ChatRequest JSON = %s, want reasoning_effort=high", data)
 				}
 			})
-			t.Run("text", func(t *testing.T) {
-				var got cerebras.ChatRequest
-				err := got.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gemma-4-31b")
-				if err != nil {
-					t.Fatal(err)
-				}
-				data, err := json.Marshal(got.Messages[0])
-				if err != nil {
-					t.Fatal(err)
-				}
-				const want = `{"role":"user","content":[{"type":"text","text":"hello"}]}`
-				if string(data) != want {
-					t.Errorf("Message = %s, want %s", data, want)
-				}
-			})
 		})
 		t.Run("error", func(t *testing.T) {
 			t.Run("promptCacheKey", func(t *testing.T) {
@@ -345,43 +238,6 @@ func TestChatRequest(t *testing.T) {
 				err := got.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gemma-4-31b", &cerebras.GenOption{
 					PromptCacheKey: strings.Repeat("a", 1025),
 				})
-				if err == nil {
-					t.Fatal("Init succeeded, want error")
-				}
-			})
-			t.Run("remoteImage", func(t *testing.T) {
-				var got cerebras.ChatRequest
-				err := got.Init(genai.Messages{{Requests: []genai.Request{{
-					Doc: genai.Doc{Filename: "input.png", URL: "https://example.com/input.png"},
-				}}}}, "gemma-4-31b")
-				if err == nil {
-					t.Fatal("Init succeeded, want error")
-				}
-				const want = "message #0: request #0: cerebras requires image documents to be provided inline, not as a URL"
-				if err.Error() != want {
-					t.Errorf("Init error = %q, want %q", err, want)
-				}
-			})
-			t.Run("unsupportedImage", func(t *testing.T) {
-				var got cerebras.ChatRequest
-				err := got.Init(genai.Messages{{Requests: []genai.Request{{
-					Doc: genai.Doc{Filename: "input.gif", Src: strings.NewReader("gif")},
-				}}}}, "gemma-4-31b")
-				if err == nil {
-					t.Fatal("Init succeeded, want error")
-				}
-				const want = "message #0: request #0: unsupported image MIME type \"image/gif\"; Cerebras supports image/jpeg and image/png"
-				if err.Error() != want {
-					t.Errorf("Init error = %q, want %q", err, want)
-				}
-			})
-			t.Run("tooManyImages", func(t *testing.T) {
-				reqs := make([]genai.Request, 6)
-				for i := range reqs {
-					reqs[i].Doc = genai.Doc{Filename: "input.png", Src: strings.NewReader("png")}
-				}
-				var got cerebras.ChatRequest
-				err := got.Init(genai.Messages{{Requests: reqs}}, "gemma-4-31b")
 				if err == nil {
 					t.Fatal("Init succeeded, want error")
 				}

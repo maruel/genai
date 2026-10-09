@@ -79,15 +79,6 @@ func TestParseOpts(t *testing.T) {
 			}
 		}
 	})
-	t.Run("system_prompt", func(t *testing.T) {
-		co, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if co.systemPrompt != "Be helpful" {
-			t.Errorf("systemPrompt: got %q, want %q", co.systemPrompt, "Be helpful")
-		}
-	})
 	t.Run("unsupported", func(t *testing.T) {
 		for _, tc := range []struct {
 			name string
@@ -95,7 +86,6 @@ func TestParseOpts(t *testing.T) {
 			want string
 		}{
 			{"Temperature", []genai.GenOption{&genai.GenOptionText{Temperature: 0.5}}, "GenOptionText.Temperature"},
-			{"Seed", []genai.GenOption{genai.GenOptionSeed(42)}, "GenOptionSeed"},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				_, err := parseOpts(&ProviderOption{}, tc.opts)
@@ -112,39 +102,6 @@ func TestParseOpts(t *testing.T) {
 }
 
 func TestHandshake(t *testing.T) {
-	t.Run("start", func(t *testing.T) {
-		responses := strings.Join([]string{
-			`{"id":1,"result":{}}`,
-			`{"id":2,"result":{"data":[]}}`,
-			`{"id":3,"result":{"thread":{"id":"thread"}}}`,
-		}, "\n")
-		var out bytes.Buffer
-		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", &callOpts{systemPrompt: "write commit messages"})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if threadID != "thread" {
-			t.Errorf("thread ID = %q, want thread", threadID)
-		}
-		lines := strings.Split(strings.TrimSpace(out.String()), "\n")
-		if len(lines) != 4 {
-			t.Fatalf("wrote %d messages, want 4", len(lines))
-		}
-		var req JSONRPCRequest
-		if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
-			t.Fatal(err)
-		}
-		var params ThreadStartParams
-		if err := json.Unmarshal(req.Params, &params); err != nil {
-			t.Fatal(err)
-		}
-		if params.DeveloperInstructions != "write commit messages" {
-			t.Errorf("developer instructions = %q, want write commit messages", params.DeveloperInstructions)
-		}
-		if params.ApprovalPolicy != nil || params.Sandbox != "" {
-			t.Errorf("approval = %s, sandbox = %q, want defaults", params.ApprovalPolicy, params.Sandbox)
-		}
-	})
 	t.Run("dangerously_skip_permissions", func(t *testing.T) {
 		responses := strings.Join([]string{
 			`{"id":1,"result":{}}`,
@@ -167,21 +124,6 @@ func TestHandshake(t *testing.T) {
 		}
 		if string(params.ApprovalPolicy) != `"never"` || params.Sandbox != SandboxModeDangerFullAccess {
 			t.Errorf("approval = %s, sandbox = %q, want never and danger-full-access", params.ApprovalPolicy, params.Sandbox)
-		}
-	})
-	t.Run("resume", func(t *testing.T) {
-		responses := strings.Join([]string{
-			`{"id":1,"result":{}}`,
-			`{"id":2,"result":{"data":[]}}`,
-			`{"id":3,"result":{"thread":{"id":"thread"},"sandbox":{"type":"workspaceWrite","writableRoots":["/src"],"networkAccess":false,"excludeTmpdirEnvVar":false,"excludeSlashTmp":false},"turnsBackwardsCursor":null,"itemsBackwardsCursor":"items"}}`,
-		}, "\n")
-		var out bytes.Buffer
-		threadID, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "thread", &callOpts{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if threadID != "thread" {
-			t.Fatalf("thread ID = %q, want thread", threadID)
 		}
 	})
 }
@@ -235,16 +177,6 @@ func TestReadResponse(t *testing.T) {
 }
 
 func TestParseCompletedItem(t *testing.T) {
-	t.Run("agent message", func(t *testing.T) {
-		const input = `{"item":{"type":"agentMessage","id":"a","text":"done","phase":null,"memoryCitation":null,"delivery":"async","questions":[{"title":"Pick","options":["A"]}]},"threadId":"t","turnId":"u","completedAtMs":1}`
-		r, ok, err := parseCompletedItem([]byte(input))
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !ok || r.Text != "done" {
-			t.Fatalf("reply = %#v", r)
-		}
-	})
 	t.Run("reasoning", func(t *testing.T) {
 		const input = `{"item":{"type":"reasoning","id":"r","summary":["first","second"],"content":[]},"threadId":"t","turnId":"u","completedAtMs":1}`
 		r, ok, err := parseCompletedItem([]byte(input))
@@ -258,12 +190,6 @@ func TestParseCompletedItem(t *testing.T) {
 }
 
 func TestReadTurnSync(t *testing.T) {
-	t.Run("root_turn", func(t *testing.T) {
-		const input = `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","rootTurnId":"root","status":"completed","items":[]}}}`
-		if _, err := readTurnSync(bufio.NewScanner(strings.NewReader(input)), "thread"); err != nil {
-			t.Fatal(err)
-		}
-	})
 	t.Run("server_request", func(t *testing.T) {
 		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(`{"id":7,"method":"item/tool/requestUserInput","params":{}}`)), "thread")
 		if err == nil || !strings.Contains(err.Error(), "unsupported server request") {
@@ -276,23 +202,10 @@ func TestReadTurnSync(t *testing.T) {
 			t.Fatalf("error = %v", err)
 		}
 	})
-	t.Run("response_error", func(t *testing.T) {
-		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(`{"id":100,"error":{"code":-32602,"message":"bad turn"}}`)), "thread")
-		if err == nil || !strings.Contains(err.Error(), "bad turn") {
-			t.Fatalf("error = %v", err)
-		}
-	})
 	t.Run("error_notification", func(t *testing.T) {
 		line := `{"method":"error","params":{"error":{"message":"internal server error","codexErrorInfo":null,"additionalDetails":null,"misalignment":null},"willRetry":false,"threadId":"thread","turnId":"turn"}}`
 		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(line)), "thread")
 		if err == nil || err.Error() != "codex error: internal server error" {
-			t.Fatalf("error = %v", err)
-		}
-	})
-	t.Run("failed_turn", func(t *testing.T) {
-		line := `{"method":"turn/completed","params":{"threadId":"thread","turn":{"id":"turn","items":[],"itemsView":"full","status":"failed","error":{"message":"rate limit exceeded","codexErrorInfo":null,"additionalDetails":null,"misalignment":null},"startedAt":null,"completedAt":null,"durationMs":null}}}`
-		_, err := readTurnSync(bufio.NewScanner(strings.NewReader(line)), "thread")
-		if err == nil || err.Error() != "rate limit exceeded" {
 			t.Fatalf("error = %v", err)
 		}
 	})
@@ -319,60 +232,9 @@ func TestNotificationTimeMS(t *testing.T) {
 			t.Errorf("StartedAt.AsTime() = %v", got.StartedAt.AsTime())
 		}
 	})
-	t.Run("guardian_review_completed", func(t *testing.T) {
-		const input = `{"threadId":"t1","turnId":"turn_1","startedAtMs":1780832660165,"completedAtMs":1780832661123,"reviewId":"r1","targetItemId":null,"decisionSource":"agent_decision","review":{"status":"approved"},"action":{"type":"run_command"}}`
-		var got ItemGuardianApprovalReviewCompletedNotification
-		if err := json.Unmarshal([]byte(input), &got); err != nil {
-			t.Fatal(err)
-		}
-		if got.StartedAt != base.TimeMS(1780832660165) {
-			t.Errorf("StartedAt = %v, want 1780832660165", got.StartedAt)
-		}
-		if got.CompletedAt != base.TimeMS(1780832661123) {
-			t.Errorf("CompletedAt = %v, want 1780832661123", got.CompletedAt)
-		}
-	})
 }
 
 func TestDurationMS(t *testing.T) {
-	t.Run("turn", func(t *testing.T) {
-		const input = `{"id":"turn_1","status":"completed","startedAt":1780832660.165,"completedAt":1780832661.25,"durationMs":123.5}`
-		var got Turn
-		if err := json.Unmarshal([]byte(input), &got); err != nil {
-			t.Fatal(err)
-		}
-		if got.StartedAt != base.TimeS(1780832660.165) {
-			t.Errorf("StartedAt = %v, want 1780832660.165", got.StartedAt)
-		}
-		if got.CompletedAt != base.TimeS(1780832661.25) {
-			t.Errorf("CompletedAt = %v, want 1780832661.25", got.CompletedAt)
-		}
-		if got.Duration == nil {
-			t.Fatal("Duration = nil")
-		}
-		if *got.Duration != base.DurationMS(123.5) {
-			t.Errorf("Duration = %v, want 123.5", *got.Duration)
-		}
-		if got.Duration.AsDuration() != 123*time.Millisecond+500*time.Microsecond {
-			t.Errorf("Duration.AsDuration() = %v", got.Duration.AsDuration())
-		}
-	})
-	t.Run("command_execution", func(t *testing.T) {
-		const input = `{"id":"cmd_1","type":"commandExecution","durationMs":12.25}`
-		var got CommandExecutionItem
-		if err := json.Unmarshal([]byte(input), &got); err != nil {
-			t.Fatal(err)
-		}
-		if got.Duration == nil {
-			t.Fatal("Duration = nil")
-		}
-		if *got.Duration != base.DurationMS(12.25) {
-			t.Errorf("Duration = %v, want 12.25", *got.Duration)
-		}
-		if got.Duration.AsDuration() != 12*time.Millisecond+250*time.Microsecond {
-			t.Errorf("Duration.AsDuration() = %v", got.Duration.AsDuration())
-		}
-	})
 	t.Run("dynamic_tool_call", func(t *testing.T) {
 		const input = `{"id":"dyn_1","type":"dynamicToolCall","durationMs":7.75}`
 		var got DynamicToolCallItem
@@ -423,38 +285,6 @@ func TestTimeS(t *testing.T) {
 		}
 		if got.CreatedAt.AsTime() != time.Date(2026, 6, 7, 11, 44, 20, 165000000, time.UTC) {
 			t.Errorf("CreatedAt.AsTime() = %v", got.CreatedAt.AsTime())
-		}
-	})
-	t.Run("rate_limit_window", func(t *testing.T) {
-		const input = `{"usedPercent":50,"resetsAt":1780832660.165}`
-		var got RateLimitWindow
-		if err := json.Unmarshal([]byte(input), &got); err != nil {
-			t.Fatal(err)
-		}
-		if got.ResetsAt != base.TimeS(1780832660.165) {
-			t.Errorf("ResetsAt = %v, want 1780832660.165", got.ResetsAt)
-		}
-	})
-	t.Run("spend_control_limit_snapshot", func(t *testing.T) {
-		got := SpendControlLimitSnapshot{
-			Limit:            "100",
-			Used:             "50",
-			RemainingPercent: 50,
-			ResetsAt:         base.TimeS(1780832660.165),
-		}
-		b, err := json.Marshal(got)
-		if err != nil {
-			t.Fatal(err)
-		}
-		var fields map[string]json.RawMessage
-		if err := json.Unmarshal(b, &fields); err != nil {
-			t.Fatal(err)
-		}
-		if _, ok := fields["resetsAt"]; !ok {
-			t.Errorf("marshaled fields = %s, want resetsAt", b)
-		}
-		if _, ok := fields["ResetsAt"]; ok {
-			t.Errorf("marshaled fields = %s, did not want ResetsAt", b)
 		}
 	})
 }

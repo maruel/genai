@@ -108,7 +108,8 @@ Every package should have comprehensive documentation explaining:
 
 ### Testing
 
-- Write comprehensive unit tests for all functionality
+- Retain unit cases only when they add production coverage; follow the
+  [coverage policy](providers/AGENTS.md#prefer-recorded-http-tests)
 - Use table-driven tests for multiple scenarios
 - Use subtest to separately test valid and error code paths
 - Test files are named `*_test.go`

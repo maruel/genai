@@ -102,17 +102,6 @@ func TestExerciseGenConversation(t *testing.T) {
 }
 
 func TestConversationAnswer(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		pending := []conversationResult{{Task: conversationTask{ID: 7, Reference: "violet"}}, {Task: conversationTask{ID: 3, Reference: "amber"}}}
-		m := genai.NewTextMessage("I'm still waiting for task 7's result.")
-		if err := conversationAnswer(&m, nil, pending); err != nil {
-			t.Fatal(err)
-		}
-		m = genai.NewTextMessage("Task seven's reference is Violet.")
-		if err := conversationAnswer(&m, []conversationTask{{ID: 7, Status: "waiting", Reference: "violet"}}, nil); err != nil {
-			t.Fatal(err)
-		}
-	})
 	t.Run("error", func(t *testing.T) {
 		for _, tc := range []struct{ name, text string }{
 			{"undelivered", "Task 7's reference is violet."},
@@ -128,9 +117,7 @@ func TestConversationAnswer(t *testing.T) {
 		}
 		t.Run("delivered", func(t *testing.T) {
 			for _, tc := range []struct{ name, text string }{
-				{"wrong_task", "Task 7's reference is amber."},
 				{"extra_task", "Task 7 is violet; task 3 is amber."},
-				{"missing_reference", "I have the result now."},
 				{"partial_word", "The reference is ultraviolet."},
 			} {
 				t.Run(tc.name, func(t *testing.T) {

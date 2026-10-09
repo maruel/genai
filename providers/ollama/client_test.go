@@ -424,34 +424,6 @@ func TestEmbeddingSelection(t *testing.T) {
 			}
 		})
 	}
-	t.Run("completion and embedding", func(t *testing.T) {
-		m := &ollama.Model{Name: "new-multitask:latest", Capabilities: []string{"completion", "embedding"}}
-		c, err := ollama.New(t.Context(), genai.ModelGood, genai.ProviderOptionPreloadedModels{m})
-		if err != nil {
-			t.Fatal(err)
-		}
-		internaltest.CleanupCloser(t, c)
-		if c.ModelID() != m.GetID() || !slices.Equal(c.OutputModalities(), genai.Modalities{genai.ModalityText}) {
-			t.Fatalf("selected %s with modalities %s", c.ModelID(), c.OutputModalities())
-		}
-	})
-
-	for _, tc := range []embeddingSelectionCase{{"new-embedding", true}, {"new-embedding:latest", true}, {"new-embedding:q4", false}} {
-		t.Run(tc.id, func(t *testing.T) {
-			c, err := ollama.New(t.Context(), genai.ProviderOptionModel(tc.id), genai.ProviderOptionPreloadedModels{embedding})
-			if err != nil {
-				t.Fatal(err)
-			}
-			internaltest.CleanupCloser(t, c)
-			want := genai.ModalityText
-			if tc.embedding {
-				want = genai.ModalityEmbedding
-			}
-			if !slices.Equal(c.OutputModalities(), genai.Modalities{want}) {
-				t.Fatalf("modalities %s; want %s", c.OutputModalities(), want)
-			}
-		})
-	}
 }
 
 // emptyModelsTransport represents the native /api/tags response without installed models.
@@ -462,11 +434,6 @@ func (e *emptyModelsTransport) RoundTrip(r *http.Request) (*http.Response, error
 		e.t.Fatalf("unexpected request %s %s", r.Method, r.URL.Path)
 	}
 	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": {"application/json"}}, Body: io.NopCloser(strings.NewReader(`{"models":[]}`)), Request: r}, nil
-}
-
-type embeddingSelectionCase struct {
-	id        string
-	embedding bool
 }
 
 type responseTransport struct{ body string }

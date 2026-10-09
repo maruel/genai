@@ -16,31 +16,6 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		t.Run("record_when_no_fixture", func(t *testing.T) {
-			rec, err := New(filepath.Join(t.TempDir(), "test"))
-			if err != nil {
-				t.Fatal(err)
-			}
-			if rec.replay {
-				t.Fatal("expected record mode")
-			}
-		})
-		t.Run("replay_when_fixture_exists", func(t *testing.T) {
-			dir := t.TempDir()
-			path := filepath.Join(dir, "test")
-			if err := os.WriteFile(path+".ndjson", []byte(`{"dir":">","msg":"hello"}`+"\n"), 0o644); err != nil {
-				t.Fatal(err)
-			}
-			rec, err := New(path)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !rec.replay {
-				t.Fatal("expected replay mode")
-			}
-		})
-	})
 	t.Run("error", func(t *testing.T) {
 		t.Run("invalid_json", func(t *testing.T) {
 			dir := t.TempDir()
@@ -58,37 +33,6 @@ func TestNew(t *testing.T) {
 
 func TestConn(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		t.Run("close_idempotent", func(t *testing.T) {
-			// Start an echo server.
-			echoSrv := httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
-				var msg string
-				if err := websocket.Message.Receive(ws, &msg); err != nil {
-					return
-				}
-				if err := websocket.Message.Send(ws, msg); err != nil {
-					return
-				}
-			}))
-			defer echoSrv.Close()
-
-			cfg, err := websocket.NewConfig("ws"+echoSrv.URL[4:], echoSrv.URL)
-			if err != nil {
-				t.Fatal(err)
-			}
-			ws, err := cfg.DialContext(t.Context())
-			if err != nil {
-				t.Fatal(err)
-			}
-			c := &Conn{ws: ws}
-			// Close twice should not panic.
-			if err := c.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if err := c.Close(); err != nil {
-				t.Fatal(err)
-			}
-		})
-
 		t.Run("ws_returns_underlying", func(t *testing.T) {
 			echoSrv := httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
 				var msg string

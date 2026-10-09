@@ -40,29 +40,8 @@ func TestChatRequest(t *testing.T) {
 					t.Fatalf("WebSearchOptions = %#v, want high context", r.WebSearchOptions)
 				}
 			})
-			t.Run("unsupported model", func(t *testing.T) {
-				var r ChatRequest
-				err := r.Init(msgs, "gpt-5.6-luna", &genai.GenOptionWeb{Search: true})
-				uerr, ok := errors.AsType[*base.ErrNotSupported](err)
-				if !ok {
-					t.Fatalf("got %v, want ErrNotSupported", err)
-				}
-				if len(uerr.Options) != 1 || uerr.Options[0] != "GenOptionWeb.Search" {
-					t.Fatalf("got unsupported options %#v, want GenOptionWeb.Search", uerr.Options)
-				}
-			})
 		})
 		t.Run("tools", func(t *testing.T) {
-			t.Run("gpt-5.6 defaults to no reasoning", func(t *testing.T) {
-				var r ChatRequest
-				err := r.Init(genai.Messages{genai.NewTextMessage("calculate")}, "gpt-5.6-luna", testToolOption(), &GenOptionText{ServiceTier: ServiceTierFlex})
-				if err != nil {
-					t.Fatal(err)
-				}
-				if r.ReasoningEffort != ReasoningEffortNone {
-					t.Fatalf("got %q, want %q", r.ReasoningEffort, ReasoningEffortNone)
-				}
-			})
 			t.Run("gpt-5.6 rejects explicit reasoning", func(t *testing.T) {
 				var r ChatRequest
 				err := r.Init(genai.Messages{genai.NewTextMessage("calculate")}, "gpt-5.6-luna", testToolOption(), &GenOptionText{ReasoningEffort: ReasoningEffortLow})

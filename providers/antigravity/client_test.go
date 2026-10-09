@@ -508,6 +508,9 @@ func TestCmdExecutor(t *testing.T) {
 				}
 				cmd := exec.Command(bin, "-test.run=^TestCmdExecutor$")
 				cmd.Env = append(os.Environ(), "GENAI_AGY_ERROR_HELPER=hold-stderr")
+				// The descendant outlives wait. On Windows, its working directory
+				// would keep the executor from removing its temporary directory.
+				cmd.Dir = os.TempDir()
 				cmd.Stderr = os.Stderr
 				if err := cmd.Start(); err != nil {
 					t.Fatal(err)

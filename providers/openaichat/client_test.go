@@ -12,15 +12,16 @@ import (
 	"errors"
 	"iter"
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 	"testing"
-	"time"
+
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
@@ -101,14 +102,14 @@ func TestClient(t *testing.T) {
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-	getClient := func(t *testing.T, m string) genai.Provider {
+	getClient := func(t *testing.T, m string, ropts ...recorder.Option) genai.Provider {
 		t.Parallel()
 		opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
 		if m != "" {
 			opts = append(opts, genai.ProviderOptionModel(m))
 		}
 		ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
+			return testRecorder.Record(t, h, ropts...)
 		}, opts...)
 		if err != nil {
 			t.Fatal(err)
@@ -214,25 +215,19 @@ func TestClient(t *testing.T) {
 	t.Run("Batch", func(t *testing.T) {
 		// This is a tricky test since batch operations can take up to 24h to complete.
 		ctx := t.Context()
-		c := getClient(t, "gpt-5.6-luna")
+		c := getClient(t, "gpt-5.6-luna", myrecorder.TrimPolls())
 		// Use Luna to keep the batch recording cheap while exercising the latest text model family.
 		msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
 			t.Fatal(err)
 		}
-		// TODO: Detect when recording and sleep only in this case.
-		isRecording := os.Getenv("RECORD") == "all"
 		for {
 			res, err := c.PokeResult(ctx, job)
 			if err != nil {
 				t.Fatal(err)
 			}
 			if res.Usage.FinishReason == genai.Pending {
-				if isRecording {
-					t.Logf("Waiting...")
-					time.Sleep(time.Second)
-				}
 				continue
 			}
 			if res.Usage.InputTokens == 0 || res.Usage.OutputTokens == 0 {

@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/maruel/roundtrippers"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 
 	"github.com/maruel/genai/httprecord"
@@ -126,6 +127,32 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 		return nil, err
 	}
 	return &Recorder{Recorder: rec, name: name + ".yaml", root: r.root}, nil
+}
+
+// TrimPolls returns a recorder option that shortens polling loops in saved
+// cassettes.
+//
+// In a run of consecutive interactions with the same method, URL and body, it
+// keeps the first two and the last, which holds the final state. A live poll
+// can repeat thousands of times; replay then exercises the pending path once
+// before reaching the result.
+func TrimPolls() recorder.Option {
+	const keep = 2
+	var prev *cassette.Interaction
+	run := 0
+	return recorder.WithHook(func(i *cassette.Interaction) error {
+		if prev != nil && prev.Request.Method == i.Request.Method && prev.Request.URL == i.Request.URL && prev.Request.Body == i.Request.Body {
+			run++
+			// prev is neither among the first keep nor the last of the run.
+			if run-1 > keep {
+				prev.DiscardOnSave = true
+			}
+		} else {
+			run = 1
+		}
+		prev = i
+		return nil
+	}, recorder.BeforeSaveHook)
 }
 
 type orphanedError struct {

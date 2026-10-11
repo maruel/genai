@@ -41,6 +41,22 @@
         "disabled": true
       }
     },
+    "claude-haiku-5-5": {
+      "max_input_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "thinking": {
+        "enabled": false,
+        "adaptive": true,
+        "disabled": true
+      },
+      "effort": {
+        "low": true,
+        "medium": true,
+        "high": true,
+        "xhigh": true,
+        "max": true
+      }
+    },
     "claude-opus-4-5-20251101": {
       "max_input_tokens": 200000,
       "max_output_tokens": 64000,
@@ -138,7 +154,7 @@
       }
     },
     "claude-sonnet-4-5-20250929": {
-      "max_input_tokens": 1000000,
+      "max_input_tokens": 200000,
       "max_output_tokens": 64000,
       "thinking": {
         "enabled": true,

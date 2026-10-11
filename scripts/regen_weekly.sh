@@ -13,6 +13,10 @@ repo_root="$(CDPATH='' cd -- "$script_dir/.." && pwd)"
 readonly repo_root
 cd -- "$repo_root"
 
+# Ensure Go build cache is writable.
+export GOCACHE="${GOCACHE:-/tmp/gocache}"
+mkdir -p "$GOCACHE"
+
 if [[ -f "./.env" ]]; then
   set -a
   # shellcheck disable=SC1091

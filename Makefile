@@ -1,11 +1,7 @@
 # Build, test, lint, and format the repository.
 
 .DEFAULT_GOAL := help
-.PHONY: help build test fix verify git-hooks tools custom-gcl
-
-tools:
-	@command -v uv > /dev/null 2>&1 || { echo 'uv is required for Python development tools; see https://docs.astral.sh/uv/' >&2; exit 1; }
-	@uv sync --locked --quiet
+.PHONY: help build test fix verify git-hooks custom-gcl
 
 # The custom-gcl binary is not byte-reproducible (golangci-lint custom builds
 # in a random temp directory and stamps VCS metadata), so staleness is tracked
@@ -28,7 +24,7 @@ custom-gcl:
 # same file, run reports the lint error only, so a formatting problem there
 # surfaces on the next verify after the lint fix. fix applies the formatters
 # through `go tool golangci-lint fmt`.
-verify: tools custom-gcl
+verify: custom-gcl
 	@go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
 	@./custom-gcl run --show-stats=false ./...
 	@uv run --locked ruff format --check --quiet .
@@ -41,7 +37,7 @@ verify: tools custom-gcl
 
 # Apply every autofix, then refresh the generated file index. Does not
 # re-check; run verify for that.
-fix: tools custom-gcl
+fix: custom-gcl
 	@./custom-gcl run --show-stats=false ./... --fix
 	@go tool golangci-lint fmt
 	@uv run --locked ruff check --quiet --fix .
@@ -67,4 +63,3 @@ help:
 	@printf '  %-14s - %s\n' 'make test' 'Run Go tests with coverage and benchmark smoke checks'
 	@printf '  %-14s - %s\n' 'make build' 'Build all Go packages'
 	@printf '  %-14s - %s\n' 'make git-hooks' 'Install git hooks'
-	@printf '  %-14s - %s\n' 'make tools' 'Sync pinned Python development tools with uv'

@@ -35,7 +35,6 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
-      - run: make build
       - name: "go install necessary tools"
         if: always()
         run: |

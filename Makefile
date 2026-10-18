@@ -1,7 +1,7 @@
-# Build, test, lint, and format the repository.
+# Test, lint, and format the repository.
 
 .DEFAULT_GOAL := help
-.PHONY: help build test fix verify git-hooks custom-gcl
+.PHONY: help test fix verify git-hooks custom-gcl
 
 # The custom-gcl binary is not byte-reproducible (golangci-lint custom builds
 # in a random temp directory and stamps VCS metadata), so staleness is tracked
@@ -45,9 +45,6 @@ fix: custom-gcl
 	@files=$$(git ls-files '*.sh' 'scripts/hooks/*'); [ -z "$$files" ] || go tool shfmt -w $$files
 	@uv run --locked python scripts/update_agents_file_index.py
 
-build:
-	@go build ./...
-
 test:
 	@go test -timeout=600s -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
 
@@ -61,5 +58,4 @@ help:
 	@printf '  %-14s - %s\n' 'make fix' 'Apply every autofix, then refresh the file index'
 	@printf '  %-14s - %s\n' 'make verify' 'Static gate: gofmt, ruff, shfmt, licenses, binaries, docs'
 	@printf '  %-14s - %s\n' 'make test' 'Run Go tests with coverage and benchmark smoke checks'
-	@printf '  %-14s - %s\n' 'make build' 'Build all Go packages'
 	@printf '  %-14s - %s\n' 'make git-hooks' 'Install git hooks'

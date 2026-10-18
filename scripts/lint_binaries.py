@@ -6,7 +6,6 @@
 """Lint git-tracked files for unexpected binary data and executable files."""
 
 import os
-import stat
 import subprocess
 import sys
 
@@ -26,6 +25,7 @@ ALLOWED_BINARY_EXTENSIONS = {
     ".pdf",
     ".png",
     ".svg",
+    ".syso",
     ".wasm",
     ".wav",
     ".webm",
@@ -43,36 +43,37 @@ def is_binary(path: str) -> bool:
         return b"\0" in f.read(1024)
 
 
-def is_executable(path: str) -> bool:
-    """Return whether path has the owner executable bit set."""
-    if os.path.islink(path) or not os.path.isfile(path):
-        return False
-    return bool(os.stat(path).st_mode & stat.S_IXUSR)
-
-
 def has_executable_preamble(path: str) -> bool:
     """Return whether path starts with a supported executable declaration."""
     with open(path, "rb") as f:
-        first_line = f.readline()
+        first_line = f.readline(256)
     # Go generator files use this shell/Go polyglot preamble to run with go run.
     return first_line.startswith((b"#!/", b"///usr/bin/true; exec /usr/bin/env go run "))
 
 
-def tracked_files() -> list[str]:
-    """Return all Git-tracked paths, including paths with whitespace."""
-    raw = subprocess.check_output(("git", "ls-files", "-z"))
-    return [os.fsdecode(path) for path in raw.split(b"\0") if path]
+def tracked_files() -> list[tuple[str, bool]]:
+    """Return tracked paths and Git executable modes, including paths with whitespace."""
+    raw = subprocess.check_output(("git", "ls-files", "--stage", "-z"))
+    files: list[tuple[str, bool]] = []
+    for record in raw.split(b"\0"):
+        if record:
+            metadata, path = record.split(b"\t", 1)
+            mode = metadata.split(b" ", 1)[0]
+            files.append((os.fsdecode(path), mode == b"100755"))
+    return files
 
 
 def main() -> int:
     """Report tracked files that are binary or executable without a declaration."""
     unexpected_binaries: list[str] = []
     unexpected_executables: list[str] = []
-    for path in tracked_files():
+    for path, executable in tracked_files():
         if is_binary(path) and os.path.splitext(path)[1].lower() not in ALLOWED_BINARY_EXTENSIONS:
             unexpected_binaries.append(path)
         if (
-            is_executable(path)
+            executable
+            and os.path.isfile(path)
+            and not os.path.islink(path)
             and os.path.splitext(path)[1].lower() not in ALLOWED_EXECUTABLE_EXTENSIONS
             and not has_executable_preamble(path)
         ):

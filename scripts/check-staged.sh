@@ -14,14 +14,14 @@ readonly repo_root
 
 cd -- "$repo_root"
 
-if ! git diff --quiet; then
-  printf '%s\n' 'Stage all tracked changes before committing; checks read the worktree.' >&2
+if ! git diff --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+  printf '%s\n' 'Stage or remove all changes before committing; checks run against the staged snapshot.' >&2
   exit 1
 fi
 
-python3 scripts/lint_binaries.py
+uv run --locked python scripts/lint_binaries.py
 
-python3 scripts/update_agents_file_index.py --check
+uv run --locked python scripts/update_agents_file_index.py --check
 
 declare -a unformatted=()
 while IFS= read -r -d '' file; do

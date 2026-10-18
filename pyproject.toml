@@ -2,7 +2,21 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
-# Python tool configuration.
+# Python development environment and tool configuration.
+
+[project]
+name = "genai-dev"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "ruff==0.16.8",
+]
+
+[tool.uv]
+package = false
 
 [tool.ruff]
 target-version = "py312"

@@ -13,7 +13,8 @@ To opt-in a directory, add these two markers to its AGENTS.md:
 The script auto-discovers all non-ignored AGENTS.md files that contain the
 markers, generates a file index from first-line comments, and injects it between
 the markers. Repository-relative glob patterns in .agents-index-ignore exclude
-content that should not require source-file summaries.
+content that should not require source-file summaries. Directories without
+markers, including the repository root, are left unchanged.
 """
 
 import argparse
@@ -70,7 +71,7 @@ def get_git_files() -> list[str]:
             text=True,
             check=True,
         )
-        return [f for f in result.stdout.split("\0") if f and (os.path.exists(f) or os.path.islink(f))]
+        return [f for f in result.stdout.split("\0") if f and os.path.lexists(f)]
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         print(f"Error listing git files: {e}", file=sys.stderr)
         return []
@@ -142,8 +143,10 @@ def get_file_description(filepath):
         "*.md": ("#",),
         "*.mjs": ("//", "/*"),
         "*.py": ("#",),
+        "*.service": ("#",),
         "*.sh": ("#",),
         "*.swift": ("//", "/*"),
+        "*.toml": ("#",),
         "*.ts": ("//", "/*"),
         "*.tsx": ("//", "/*"),
         "*.yaml": ("#",),
@@ -154,7 +157,10 @@ def get_file_description(filepath):
     if os.path.islink(filepath):
         return None
     fname = os.path.basename(filepath)
-    styles = next((styles for pat, styles in comment_styles.items() if fnmatch.fnmatch(fname, pat)), None)
+    styles = next(
+        (style for pat, style in comment_styles.items() if fnmatch.fnmatch(fname, pat)),
+        None,
+    )
     if not styles:
         return None  # unrecognised extension or explicitly excluded pattern
     prefix = styles[0]
@@ -168,7 +174,7 @@ def get_file_description(filepath):
         if not sline:
             in_copyright = False
             continue
-        if fname.endswith(".py") and (sline.startswith('"""') or sline.startswith("'''")):
+        if fname.endswith(".py") and sline.startswith(('"""', "'''")):
             return _py_docstring(lines, i)
         if "/*" in styles and sline.startswith("/*"):
             return _c_style_block_comment(lines, i)
@@ -194,8 +200,8 @@ def get_file_description(filepath):
             continue
         # Skip PEP 723 inline script metadata fields (requires-python, dependencies, etc.)
         # that appear between # /// script and # /// markers.
-        if fname.endswith(".py") and (
-            sline.startswith(f"{prefix} requires-") or sline.startswith(f"{prefix} dependencies")
+        if fname.endswith(".py") and sline.startswith(
+            (f"{prefix} requires-", f"{prefix} dependencies"),
         ):
             continue
         if sline.startswith(prefix):
@@ -214,7 +220,7 @@ def discover_configs(all_files):
     Returns a dict mapping target AGENTS.md path to its set of excluded child directories.
     """
     candidates = sorted(f for f in all_files if os.path.basename(f) == "AGENTS.md")
-    configs = {"AGENTS.md": set()}
+    configs = {}
     for f in candidates:
         with open(f, encoding="utf-8") as fh:
             if "<!-- BEGIN FILE INDEX -->" in fh.read():
@@ -271,9 +277,9 @@ def generate_index(target, exclude, all_files, all_configs, ignored):
         if "testdata" in rel_parts:
             continue
         # A file is excluded if its path starts with any excluded prefix.
-        if any(relpath.startswith(ex + "/") or relpath == ex for ex in exclude):
-            if filepath not in all_configs:
-                continue
+        excluded = any(relpath.startswith(ex + "/") or relpath == ex for ex in exclude)
+        if excluded and filepath not in all_configs:
+            continue
         desc = get_file_description(filepath)
         if desc is None:
             continue  # file type has no comment convention
@@ -302,7 +308,10 @@ def update_markdown(target_file: str, content: str, check: bool) -> bool:
         pattern = re.compile(f"{re.escape(start)}.*?{re.escape(end)}", re.DOTALL)
         updated = pattern.sub(new_section, original)
     else:
-        updated = (original.rstrip() + "\n\n" + new_section + "\n") if original.strip() else (new_section + "\n")
+        if original.strip():
+            updated = original.rstrip() + "\n\n" + new_section + "\n"
+        else:
+            updated = new_section + "\n"
     if updated == original:
         return False
     if check:
@@ -323,7 +332,10 @@ def report_missing_index_summaries(missing: list[str]) -> None:
     for filepath in sorted(missing):
         print(f"  {filepath}", file=sys.stderr)
     print(INDEX_SUMMARY_GUIDANCE, file=sys.stderr)
-    print("Run scripts/update_agents_file_index.py --help for examples.", file=sys.stderr)
+    print(
+        "Run scripts/update_agents_file_index.py --help for examples.",
+        file=sys.stderr,
+    )
 
 
 def main() -> int:
@@ -360,7 +372,10 @@ def main() -> int:
         ret = 1
     elif args.check and indexes_out_of_date:
         print(INDEX_SUMMARY_GUIDANCE, file=sys.stderr)
-        print("Run scripts/update_agents_file_index.py --help for examples.", file=sys.stderr)
+        print(
+            "Run scripts/update_agents_file_index.py --help for examples.",
+            file=sys.stderr,
+        )
     return ret
 
 

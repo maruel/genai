@@ -2,7 +2,7 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
-# Run tests and linters on main and release changes, pull requests, and automation requests.
+# Run shared checks on main and release changes, pull requests, and automation requests.
 
 on:
   push:
@@ -12,13 +12,10 @@ on:
   workflow_dispatch:
 name: Run tests
 jobs:
-  # Runs go test both with code coverage sent to codecov, race detector and
-  # benchmarks. At the end do a quick check to ensure the tests to not leave
-  # files in the tree.
-  test:
-    name: "test: ${{matrix.os}}"
+  # Share setup for static checks, runtime tests, coverage, and source integrity.
+  check:
+    name: "check: ${{matrix.os}}"
     runs-on: "${{matrix.os}}"
-    continue-on-error: true
     defaults:
       run:
         shell: bash
@@ -38,23 +35,24 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
+      - run: make build
       - name: "go install necessary tools"
         if: always()
         run: |
-          go install github.com/maruel/pat/cmd/ba@latest
+          go install github.com/maruel/pat/cmd/ba@v0.0.4
       - name: "Check: go test -cover (full)"
         # Only run costly tests on linux.
         if: matrix.os == 'ubuntu-latest'
         env:
           # Make sure we don't get throttled calling github apis.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: go test -timeout=600s -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
+        run: make test
       - name: "Check: go test -cover (light)"
         if: matrix.os == 'windows-latest' || matrix.os == 'macos-latest'
         env:
           # Make sure we don't get throttled calling github apis.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: go test -timeout=600s -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
+        run: make test
         # Don't send code coverage if anything failed to reduce spam.
       - uses: codecov/codecov-action@v7
         with:
@@ -74,36 +72,7 @@ jobs:
             git diff
             false
           fi
-
-    # Run linters. This workflow can be merged with the test_all one if desired
-    # to cut on runtime, at the cost of latency. I dislike waiting for results
-    # so I prefer to run them in parallel.
-  lint:
-    name: "lint: ${{matrix.os}}"
-    runs-on: "${{matrix.os}}"
-    continue-on-error: true
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    env:
-      PYTHONDONTWRITEBYTECODE: x
-    steps:
-      - name: Turn off git core.autocrlf
-        if: matrix.os == 'windows-latest'
-        run: git config --global core.autocrlf false
-      - uses: actions/checkout@v7
-      - uses: actions/setup-go@v7
-        with:
-          go-version-file: go.mod
-      - uses: actions/setup-python@v7
-        if: always() && matrix.os == 'ubuntu-latest'
-        with:
-          python-version: '3.x'
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         if: always() && matrix.os == 'ubuntu-latest'
       - run: make verify
         if: always() && matrix.os == 'ubuntu-latest'
@@ -132,7 +101,6 @@ jobs:
   codeql:
     name: "codeql: ${{matrix.os}}"
     runs-on: "${{matrix.os}}"
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:

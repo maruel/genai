@@ -25,6 +25,7 @@ custom-gcl:
 # surfaces on the next verify after the lint fix. fix applies the formatters
 # through `go tool golangci-lint fmt`.
 verify: custom-gcl
+	@go mod tidy -diff
 	@go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
 	@./custom-gcl run --show-stats=false ./...
 	@uv run --locked ruff format --check --quiet .

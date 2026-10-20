@@ -1674,6 +1674,7 @@ type CapabilitySupport struct {
 // ThinkingTypes describes supported thinking type configurations.
 type ThinkingTypes struct {
 	Adaptive CapabilitySupport `json:"adaptive"`
+	Disabled CapabilitySupport `json:"disabled"`
 	Enabled  CapabilitySupport `json:"enabled"`
 }
 
@@ -1701,6 +1702,13 @@ type EffortCapability struct {
 	XHigh     CapabilitySupport `json:"xhigh"`
 }
 
+// ServerToolsCapability describes server tools capability information.
+type ServerToolsCapability struct {
+	Supported     bool              `json:"supported"`
+	CodeExecution CapabilitySupport `json:"code_execution"`
+	WebSearch     CapabilitySupport `json:"web_search"`
+}
+
 // ModelCapabilities describes model capability information.
 type ModelCapabilities struct {
 	Batch             CapabilitySupport           `json:"batch"`
@@ -1710,6 +1718,7 @@ type ModelCapabilities struct {
 	Effort            EffortCapability            `json:"effort"`
 	ImageInput        CapabilitySupport           `json:"image_input"`
 	PDFInput          CapabilitySupport           `json:"pdf_input"`
+	ServerTools       ServerToolsCapability       `json:"server_tools"`
 	StructuredOutputs CapabilitySupport           `json:"structured_outputs"`
 	Thinking          ThinkingCapability          `json:"thinking"`
 }
@@ -1718,11 +1727,14 @@ type ModelCapabilities struct {
 type Model struct {
 	Capabilities   ModelCapabilities `json:"capabilities"`
 	CreatedAt      time.Time         `json:"created_at"`
+	DeprecatedAt   string            `json:"deprecated_at,omitzero"`
 	DisplayName    string            `json:"display_name"`
 	ID             string            `json:"id"`
+	Lifecycle      string            `json:"lifecycle,omitzero"`
 	Line           string            `json:"line,omitzero"`
 	MaxInputTokens int64             `json:"max_input_tokens"`
 	MaxTokens      int64             `json:"max_tokens"`
+	RetiresAt      string            `json:"retires_at,omitzero"`
 	Type           string            `json:"type"`
 }
 

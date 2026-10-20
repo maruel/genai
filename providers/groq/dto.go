@@ -776,6 +776,7 @@ type Model struct {
 	Active                      bool              `json:"active"`
 	ContextWindow               int64             `json:"context_window"`
 	ContextLength               int64             `json:"context_length"`
+	ModelCard                   string            `json:"model_card,omitzero"`
 	PublicApps                  []string          `json:"public_apps"`
 	InputModalities             []string          `json:"input_modalities"`
 	OutputModalities            []string          `json:"output_modalities"`

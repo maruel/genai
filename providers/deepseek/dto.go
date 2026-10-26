@@ -505,6 +505,7 @@ type EffortConfig struct {
 // AnthropicMessagesConfig describes the anthropic messages capability.
 type AnthropicMessagesConfig struct {
 	SystemPromptUpdate string `json:"system_prompt_update,omitzero"`
+	ToolUpdate         string `json:"tool_update,omitzero"`
 }
 
 // APICapabilities describes the API capabilities of a model.

@@ -551,6 +551,32 @@ type ChatStreamChunkResponse struct {
 	P     string `json:"p"` // "abcdefghijklmnopqrstu" WTF?
 }
 
+// StreamingDelay represents a delay range for streaming audio.
+type StreamingDelay struct {
+	Max int64 `json:"max"`
+	Min int64 `json:"min"`
+}
+
+// AudioTranscriptionCapabilities describes audio transcription capabilities.
+type AudioTranscriptionCapabilities struct {
+	ContextBias            bool             `json:"context_bias"`
+	Diarization            bool             `json:"diarization"`
+	Languages              []string         `json:"languages"`
+	Modes                  []string         `json:"modes"`
+	SpeakerReferences      bool             `json:"speaker_references"`
+	StreamingDelaysMS      []StreamingDelay `json:"streaming_delays_ms"`
+	TimestampGranularities []string         `json:"timestamp_granularities"`
+	TurnDetection          bool             `json:"turn_detection"`
+}
+
+// AudioSpeechCapabilities describes audio speech capabilities.
+type AudioSpeechCapabilities struct {
+	ConversationHistory bool     `json:"conversation_history"`
+	Instruction         bool     `json:"instruction"`
+	Modes               []string `json:"modes"`
+	ResponseFormats     []string `json:"response_formats"`
+}
+
 // Model is documented at https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get
 type Model struct {
 	ID           string     `json:"id"`
@@ -573,15 +599,17 @@ type Model struct {
 		UnifiedResources           bool `json:"unified_resources"`
 		Vision                     bool `json:"vision"`
 	} `json:"capabilities"`
-	Name                        string   `json:"name"`
-	Description                 string   `json:"description"`
-	MaxContextLength            int64    `json:"max_context_length"`
-	Aliases                     []string `json:"aliases"`
-	Deprecation                 string   `json:"deprecation"`
-	DeprecationReplacementModel string   `json:"deprecation_replacement_model,omitzero"`
-	DefaultModelTemperature     float64  `json:"default_model_temperature"`
-	BillingModelName            string   `json:"billing_model_name,omitzero"`
-	Type                        string   `json:"type"` // "base"
+	Name                           string                          `json:"name"`
+	Description                    string                          `json:"description"`
+	MaxContextLength               int64                           `json:"max_context_length"`
+	Aliases                        []string                        `json:"aliases"`
+	Deprecation                    string                          `json:"deprecation"`
+	DeprecationReplacementModel    string                          `json:"deprecation_replacement_model,omitzero"`
+	DefaultModelTemperature        float64                         `json:"default_model_temperature"`
+	BillingModelName               string                          `json:"billing_model_name,omitzero"`
+	Type                           string                          `json:"type"` // "base"
+	AudioTranscriptionCapabilities *AudioTranscriptionCapabilities `json:"audio_transcription_capabilities,omitzero"`
+	AudioSpeechCapabilities        *AudioSpeechCapabilities        `json:"audio_speech_capabilities,omitzero"`
 }
 
 // GetID returns the model ID.

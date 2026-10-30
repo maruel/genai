@@ -181,3 +181,133 @@ interactions:
         status: 200 OK
         code: 200
         duration: 2.059s
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 253
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-235B-A22B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"\n\nThe capital of Quackiland is Quack.","reasoning_content":"\nOkay, so the user is asking for the capital of Quackiland. Let me check the information provided.\n\nThe first sentence says, \"The capital of Quackiland is Quack.\" Then the second sentence mentions that the Big Canard Statue is located in Quack.\n\nSince the user''s question is directly answered by the first sentence, I don''t need to look elsewhere. The answer is Quack. I should make sure that the answer is presented clearly and directly, as per the example given.\n","role":"assistant"}}],"created":1793401515,"id":"chatcmpl-00e893b0-6bbe-499c-b749-f1c51a1dd927","model":"Qwen/Qwen3-235B-A22B","object":"chat.completion","system_fingerprint":"vllm-0.21.0-tp8-6962cd48","usage":{"prompt_tokens":38,"total_tokens":154,"completion_tokens":116}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 11b5a04509ce7aebf86a3d5432371da4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 9UVaRqVolR0o5rOSpVldw-dzk9bXtRAbSS3ARO7J9trwSs_EzpIIQg==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "12"
+            X-Inference-Provider:
+                - nscale
+            X-Powered-By:
+                - huggingface-moon
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 10.179s
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"Quack.","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"We need answer. Need be careful? User gives \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" Directly stated: Quack. Maybe trick with extra info. Answer concise."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793403530,"ec_transfer_params":null,"id":"chatcmpl-6e2977ef-0fcc-4bf6-8a84-3633228b6f45","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":61,"total_tokens":124,"completion_tokens":63,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":58}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 554411c0fa2da1e2b62647f6c411aef0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - WKvnDmO2b2I-L2DZZNwKTJWN4VBQnaMJX3lC9Ldkk9Gk1wmgg43Dqw==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "436"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999876"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 1ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 805ms

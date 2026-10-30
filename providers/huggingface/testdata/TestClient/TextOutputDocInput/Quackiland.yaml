@@ -181,3 +181,133 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.845s
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 253
+        host: router.huggingface.co
+        body: |
+            {"model":"Qwen/Qwen3-235B-A22B","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"\n\nThe capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the first sentence of the provided information. The additional detail about the Big Canard Statue in Quack serves as contextual enrichment but does not affect the answer. \n\nThus, the capital of Quackiland is Quack.","reasoning_content":"\nOkay, so the user is asking for the capital of Quackiland. Let me check the information provided.\n\nIn the first sentence, it clearly states that the capital of Quackiland is Quack. Then the second sentence provides additional information about the Big Canard Statue being located in Quack. But the key information here is the capital city.\n\nSo, the user''s question is directly answered by the first sentence provided. The capital of Quackiland is Quack. The additional information about the statue is probably just extra context that the user provided in case it''s relevant for a more complex answer, but in this case, the answer is straightforward.\n\nI need to make sure that there''s no trick here. Maybe Quackiland has a different capital? But the first sentence says the capital is Quack. The user might be testing attention to detail, especially since Quack is the name of both the capital and the country (Quackiland). It''s not uncommon for capitals to share names with the country, like Rome for Italy or Oslo for Norway. So in this case, Quack serves as both the capital city and the name of the country is Quackiland. Therefore, the answer is Quack. The mention of the Big Canard Statue in Quack adds context but isn''t necessary for answering the question. The user might be checking if I can extract the direct answer from the given information without being distracted by the additional details. So the answer is Quack.\n","role":"assistant"}}],"created":1793401515,"id":"chatcmpl-d8fe55e0-7020-4518-b98c-7dd44542c439","model":"Qwen/Qwen3-235B-A22B","object":"chat.completion","system_fingerprint":"vllm-0.21.0-tp8-6962cd48","usage":{"prompt_tokens":38,"total_tokens":403,"completion_tokens":365}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 11b5a04509ce7aebf86a3d5432371da4.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - nr94279uMGGJCbZ5MBEI19kUKrR8RJRLLcGsCYAd1exhBSG9n5Mf1A==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "12"
+            X-Inference-Provider:
+                - nscale
+            X-Powered-By:
+                - huggingface-moon
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 29.76s
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"Quack","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"We need answer. Need reason: They say capital of Quackiland is Quack. Big Canard statue located in Quack. Question capital? Quack. Need concise."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793403530,"ec_transfer_params":null,"id":"chatcmpl-9c0fccb0-76fa-4a52-9bed-4a6b6f031db2","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":61,"total_tokens":101,"completion_tokens":40,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":36}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 554411c0fa2da1e2b62647f6c411aef0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - uGFlbj-hFExasvbLKfzgDbSDwtEdStafHvapvu01tApw5dL8X5uLvw==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "377"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "598"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999898"
+            X-Ratelimit-Reset-Requests:
+                - 190ms
+            X-Ratelimit-Reset-Tokens:
+                - 1ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 760ms

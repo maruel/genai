@@ -1,0 +1,131 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 324
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer. Need parse maybe"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" trick?"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" User states"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":": \"The capital"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" of Quackiland"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" is Quack. The Big"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Canard Statue is located"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" in Quack. What is"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" the capital of Quackiland"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"?\" Directly says"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" capital is Quack"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":". Need"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" answer. Could be from"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" context"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"? \"Can"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"ard\" French"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" for"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" duck, Qu"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"ackiland,"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Quack. Answer"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Quack. Need"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"Quack","reasoning":" maybe concise."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a7bc0a9c-5712-4b2d-a1d0-78cc593b447b","object":"chat.completion.chunk","created":1793401845,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":66,"total_tokens":154,"completion_tokens":88,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":64},"completion_tokens_details":{"reasoning_tokens":83}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 b38727337117b2d9fe1a9714be8f8ee8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 3qUAu50_Cm4-uRNwkmntqw4Jg5KwptT2dmEpz-HKkOKgH4yfLtUExQ==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "214"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 592ms

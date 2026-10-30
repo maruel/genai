@@ -1,0 +1,151 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 486
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array","name":"response"}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"error":{"message":"You must use one kind of structured outputs constraint but none are specified: {''json'': None, ''regex'': None, ''choice'': None, ''grammar'': None, ''json_object'': None, ''disable_any_whitespace'': False, ''disable_additional_properties'': False, ''whitespace_pattern'': None, ''structural_tag'': None, ''_backend'': None, ''_backend_was_auto'': False}","type":"BadRequestError","param":null,"code":400}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 009ecf49cd3ec992e8ce658defad5174.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - -vXA1BXmWCcDJYPlSXhUZ6zVwBzgTcufnePw2S5lQ0n2KyF1M7vKrw==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Error from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "12"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 400 Bad Request
+        code: 400
+        duration: 206ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 497
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"[{\"color\":\"red\",\"name\":\"apple\"},{\"color\":\"yellow\",\"name\":\"banana\"}]","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"We need answer only JSON. Need name two fruits with color. Need no explanation. JSON format. Could be {\"fruits\":[{\"name\":\"apple\",\"color\":\"red\"},{\"name\":\"banana\",\"color\":\"yellow\"}]} Ensure only JSON."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793402046,"ec_transfer_params":null,"id":"chatcmpl-10046429-ab63-4908-a9b0-d55cd0ba16a9","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":48,"total_tokens":124,"completion_tokens":76,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":51}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 2d075d637de92ceb6fd18a1afe254efe.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 0CaGBYS8g7_XrbYHoZjizsrIHmP32-lqQMbaRDl777-zGBI_smzwMg==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "458"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999876"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 1ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 791ms

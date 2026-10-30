@@ -1,0 +1,111 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer only"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" one word"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" \"Hello"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"\" likely. Must"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" comply"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":". Use only"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" one word."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" \"Hello.\" includes"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" period maybe not"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" word."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Just Hello"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8c7565e7-605b-4dd7-8ee7-bad34107df09","object":"chat.completion.chunk","created":1793401578,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":38,"total_tokens":73,"completion_tokens":35,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0},"completion_tokens_details":{"reasoning_tokens":32}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 35ae06fe41dcf13a2b35ac8ce0ef654e.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 78YKLdFp6npwCeXUq3zt7xJwNzkE_sAKY-Mh6fDnZWEiYc9dUJp77w==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "180"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4969977"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 360ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 563ms

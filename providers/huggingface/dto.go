@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -92,8 +92,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				if err != nil {
 					errs = append(errs, err)
 				} else {
-					// Huggingface complains otherwise.
-					c.ResponseFormat.JSONSchema = append(s[:len(s)-1], `,"name":"response"}`...)
+					c.ResponseFormat.JSONSchema, err = json.Marshal(JSONSchemaFormat{Name: "response", Schema: s})
+					if err != nil {
+						errs = append(errs, err)
+					}
 				}
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
@@ -166,13 +168,20 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = stream
 }
 
+// JSONSchemaFormat wraps a structured response schema in the OpenAI-compatible format.
+type JSONSchemaFormat struct {
+	Name   string           `json:"name"`
+	Schema genai.JSONSchema `json:"schema"`
+}
+
 // Message is incorrectly documented at
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type Message struct {
-	Role      string     `json:"role"` // "system", "assistant", "user", "tool"
-	Content   Contents   `json:"content,omitzero"`
-	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
-	Name      string     `json:"name,omitzero"` // Not really documented
+	Role       string     `json:"role"` // "system", "assistant", "user", "tool"
+	Content    Contents   `json:"content,omitzero"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	Name       string     `json:"name,omitzero"` // Not really documented
+	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
 
 // From must be called with at most one ToolCallResults.
@@ -197,8 +206,10 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.Replies) != 0 {
-		m.Content = make([]Content, len(in.Replies))
 		for i := range in.Replies {
+			if in.Replies[i].Reasoning != "" {
+				continue
+			}
 			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
 				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
@@ -206,17 +217,18 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				continue
 			}
-			if err := m.Content[i].FromReply(&in.Replies[i]); err != nil {
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		// Huggingface doesn't use tool ID in the result, hence only one tool can safely be called at a time.
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = Contents{{Type: ContentText, Text: in.ToolCallResults[0].Result}}
 		m.Name = in.ToolCallResults[0].Name
+		m.ToolCallID = in.ToolCallResults[0].ID
 	}
 	return nil
 }
@@ -362,7 +374,7 @@ type Tool struct {
 	Function struct {
 		Name        string           `json:"name,omitzero"`
 		Description string           `json:"description,omitzero"`
-		Arguments   genai.JSONSchema `json:"arguments,omitzero"`
+		Arguments   genai.JSONSchema `json:"parameters,omitzero"`
 	} `json:"function,omitzero"`
 }
 
@@ -384,10 +396,14 @@ type ChatResponse struct {
 		Logprobs             Logprobs             `json:"logprobs,omitzero"`
 		Seed                 int64                `json:"seed,omitzero"`
 		TokenIDs             []int64              `json:"token_ids,omitzero"`
+		RoutedExperts        string               `json:"routed_experts,omitzero"` // Base64-encoded NumPy routing data.
 	} `json:"choices"`
 	Usage          Usage        `json:"usage"`
 	PromptLogprobs base.Unknown `json:"prompt_logprobs"`
 	ServiceTier    string       `json:"service_tier,omitzero"`
+	// ECTransferParams contains backend-specific encoder-cache transfer metadata.
+	ECTransferParams map[string]json.RawMessage `json:"ec_transfer_params,omitzero"`
+	Metrics          *RequestMetrics            `json:"metrics,omitzero"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -413,6 +429,29 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
+}
+
+// RequestMetrics reports vLLM per-request timing and throughput measurements.
+type RequestMetrics struct {
+	TimeToFirstTokenMS  base.DurationMS             `json:"time_to_first_token_ms,omitzero"`
+	GenerationTimeMS    base.DurationMS             `json:"generation_time_ms,omitzero"`
+	QueueTimeMS         base.DurationMS             `json:"queue_time_ms,omitzero"`
+	MeanITLMS           base.DurationMS             `json:"mean_itl_ms,omitzero"`
+	TokensPerSecond     float64                     `json:"tokens_per_second,omitzero"`
+	SpeculativeDecoding *SpeculativeDecodingMetrics `json:"speculative_decoding,omitzero"`
+}
+
+// SpeculativeDecodingMetrics reports vLLM draft-token acceptance measurements.
+type SpeculativeDecodingMetrics struct {
+	MeanAcceptanceLength   float64 `json:"mean_acceptance_length"`
+	DraftAcceptanceRate    float64 `json:"draft_acceptance_rate"`
+	AcceptanceHistogram    []int64 `json:"acceptance_histogram"`
+	NumSpecSteps           int64   `json:"num_spec_steps"`
+	NumAcceptedDraftTokens int64   `json:"num_accepted_draft_tokens"`
+	NumDraftTokens         int64   `json:"num_draft_tokens"`
+	NumSpecTokens          int64   `json:"num_spec_tokens"`
+	PerStepAccepted        []int64 `json:"per_step_accepted,omitzero"`
+	PerStepDrafted         []int64 `json:"per_step_drafted,omitzero"`
 }
 
 // Logprobs is the provider-specific log probabilities.
@@ -507,10 +546,12 @@ type Usage struct {
 	TotalTokens         int64       `json:"total_tokens"`
 	EstimatedCost       json.Number `json:"estimated_cost,omitzero"`
 	PromptTokensDetails struct {
-		AudioTokens              int64 `json:"audio_tokens"`
-		CachedTokens             int64 `json:"cached_tokens"`
-		CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
-		CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
+		AudioTokens              int64            `json:"audio_tokens"`
+		CachedTokens             int64            `json:"cached_tokens"`
+		CacheCreationInputTokens int64            `json:"cache_creation_input_tokens"`
+		CacheReadInputTokens     int64            `json:"cache_read_input_tokens"`
+		CreatedCacheTokens       int64            `json:"created_cache_tokens,omitzero"`
+		MultimodalTokens         map[string]int64 `json:"multimodal_tokens,omitzero"`
 	} `json:"prompt_tokens_details"`
 	CompletionTokensDetails struct {
 		AudioTokens              int64 `json:"audio_tokens"`
@@ -564,6 +605,9 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	if m.ReasoningContent != "" {
 		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 	}
+	if m.Reasoning != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
+	}
 	if m.Content != "" {
 		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
 	}
@@ -576,12 +620,14 @@ func (m *MessageResponse) To(out *genai.Message) error {
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
-	Object            string       `json:"object"` // "chat.completion.chunk"
-	Created           base.TimeS   `json:"created"`
-	ID                string       `json:"id"`
-	Model             string       `json:"model"`
-	SystemFingerprint string       `json:"system_fingerprint"`
-	ServiceTier       base.Unknown `json:"service_tier,omitzero"`
+	Object            string     `json:"object"` // "chat.completion.chunk"
+	Created           base.TimeS `json:"created"`
+	ID                string     `json:"id"`
+	Model             string     `json:"model"`
+	SystemFingerprint string     `json:"system_fingerprint"`
+	ServiceTier       string     `json:"service_tier,omitzero"`
+	PromptText        string     `json:"prompt_text,omitzero"`
+	PromptTokenIDs    []int64    `json:"prompt_token_ids,omitzero"`
 	Choices           []struct {
 		Index        int64        `json:"index,omitzero"`
 		FinishReason FinishReason `json:"finish_reason"`

@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 211
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer:"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Explain theory of relativity in great"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" details. Need likely provide comprehensive"},"logprobs":null,"finish_reason":"length","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":39,"total_tokens":55,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0},"completion_tokens_details":{"reasoning_tokens":16}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - ZMMPzDidwB5G9CvKuPJ1cLdGPslyf-aHYKhdosZqx284E_ATypdZYA==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "206"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4915266"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 1s16ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 382ms

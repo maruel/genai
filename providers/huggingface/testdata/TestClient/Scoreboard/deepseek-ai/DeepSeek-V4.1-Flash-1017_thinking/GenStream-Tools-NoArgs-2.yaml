@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 784
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"chatcmpl-tool-bea6e86c11452c17","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","name":"get_hostname","tool_call_id":"chatcmpl-tool-bea6e86c11452c17"}],"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-5502c2d7-12df-44f6-8603-1060d69da5f2","object":"chat.completion.chunk","created":1793404401,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-5502c2d7-12df-44f6-8603-1060d69da5f2","object":"chat.completion.chunk","created":1793404401,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"genai-smoke"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-5502c2d7-12df-44f6-8603-1060d69da5f2","object":"chat.completion.chunk","created":1793404401,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-5502c2d7-12df-44f6-8603-1060d69da5f2","object":"chat.completion.chunk","created":1793404401,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":367,"total_tokens":373,"completion_tokens":6,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":320},"completion_tokens_details":{"reasoning_tokens":0}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - GuHSBQ1Wz1gSZQX_gLiXZxr1MRSZC-CCZjz8hRE_qL6kUyt2-VWA3g==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "198"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 348ms

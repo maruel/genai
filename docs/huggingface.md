@@ -1,9 +1,9 @@
 # Scoreboard
 
-| Model                            | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| -------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| deepseek-ai/DeepSeek-V4.1-Flash🥇 | Sync🧠   | 💬📸  | 💬     | 💨🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4.1-Flash🥇 | Stream🧠 | 💬📸  | 💬     | 💨🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| Model                                   | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| --------------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| deepseek-ai/DeepSeek-V4.1-Flash-1017🥇🥈🥉 | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash-1017🥇🥈🥉 | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 310
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"banana","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"1.  **Analyze the user''s request:** The user has provided an image and asked \"What fruit is it?\" with a strict constraint: \"Reply with only one word.\"\n\n2.  **Examine the image:**\n    *   The image shows a single, elongated, curved object.\n    *   It has a bright yellow color.\n    *   There are some small brown spots on the skin.\n    *   One end has a dark, slightly dried-out stem.\n    *   The other end is dark and pointed.\n    *   The overall shape, color, and texture are characteristic of a specific fruit.\n\n3.  **Identify the object:** Based on the visual features (yellow, curved, elongated, specific stem/end), the object is unmistakably a banana.\n\n4.  **Format the output:**\n    *   The identification is \"banana\".\n    *   The constraint is \"Reply with only one word\".\n    *   Therefore, the response must be just the word \"banana\" (or \"Banana\"). I will use lowercase as it''s standard, but either works. Let''s just output \"banana\".\n\n5.  **Final check:** Does the response meet all criteria?\n    *   Correctly identifies the fruit? Yes.\n    *   Is it only one word? Yes.\n    *   No punctuation, no extra text. Just the word."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793401855,"ec_transfer_params":null,"id":"chatcmpl-ae491e1c-4bfc-439b-91c9-66353dc45fa0","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":238,"total_tokens":527,"completion_tokens":289,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":192,"multimodal_tokens":{"image":197}},"completion_tokens_details":{"reasoning_tokens":285}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 b38727337117b2d9fe1a9714be8f8ee8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 9zqbvp_zu82HLEPN_jsuAUnTogHpS9pykcRD5W83irN94QsGx8xaCQ==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "1113"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999473"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 6ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.438s

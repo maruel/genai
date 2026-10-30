@@ -1,0 +1,251 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 603
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer only"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" result."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Need call tool. But tool"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" schema has no params"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"? It"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" says parameters"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" null."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Need use square"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"_root tool. How pass"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" number"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"? likely"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" invoke with maybe"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" {"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"\"number\":132413"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"}? But"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" schema parameters"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" null means"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" no parameters"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" defined"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":". Yet need"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" calculate sqrt"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Tool description"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" \"Calcul"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"ates and"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" return the square root of a"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" number\". There is no"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" parameter schema. Could"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" call with empty"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"? H"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"mm."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Need follow. Since function"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" requires arguments"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" maybe null? Let"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"'s try tool"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" call."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"tool_calls":[{"id":"chatcmpl-tool-922c9e9bd39731ae","type":"function","index":0,"function":{"name":"square_root"}}]},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{}"}}]},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ff337e76-18ca-424f-9beb-11cd6fb11692","object":"chat.completion.chunk","created":1793401703,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":295,"total_tokens":419,"completion_tokens":124,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":256},"completion_tokens_details":{"reasoning_tokens":101}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - P3uffAjt27z39hfzeRpmg5QDjVCprze86KxjfQoCZq5ONgRUmowx3w==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "201"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 389ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 604
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-d0fff384-9966-4a1e-92f7-59dfda426fe2","object":"chat.completion.chunk","created":1793404399,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d0fff384-9966-4a1e-92f7-59dfda426fe2","object":"chat.completion.chunk","created":1793404399,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"tool_calls":[{"id":"chatcmpl-tool-828c444274b9bd30","type":"function","index":0,"function":{"name":"square_root"}}]},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d0fff384-9966-4a1e-92f7-59dfda426fe2","object":"chat.completion.chunk","created":1793404399,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"number\": "}}]},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d0fff384-9966-4a1e-92f7-59dfda426fe2","object":"chat.completion.chunk","created":1793404399,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"132413}"}}]},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d0fff384-9966-4a1e-92f7-59dfda426fe2","object":"chat.completion.chunk","created":1793404399,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d0fff384-9966-4a1e-92f7-59dfda426fe2","object":"chat.completion.chunk","created":1793404399,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":346,"total_tokens":386,"completion_tokens":40,"prompt_tokens_details":{"cached_tokens":192,"created_cache_tokens":128},"completion_tokens_details":{"reasoning_tokens":0}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - PF1wAzSLQplDz8KPDKx44zInARfrr1IWWD70p2Gg0lMix5_swwBbRQ==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "228"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 656ms

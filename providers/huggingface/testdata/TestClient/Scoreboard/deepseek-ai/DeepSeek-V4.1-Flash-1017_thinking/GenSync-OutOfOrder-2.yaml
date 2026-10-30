@@ -1,0 +1,151 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1428
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"chatcmpl-tool-ad22658229141124","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"chatcmpl-tool-840a38d3c44ff272","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"chatcmpl-tool-a5803750750ff84f","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"I don''t have task 7''s reference back yet — still waiting on it. I''ll let you know as soon as it comes in.","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"The tool results — wait, I called the tools but I don''t see results in the conversation. There''s no tool result block. Hmm. The function results weren''t returned. So I should say I''m still waiting / don''t have task 7''s reference yet.\n\nActually the tool call was made but no results came back. I must not claim results. So honestly: I don''t have task 7''s reference yet."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793401847,"ec_transfer_params":null,"id":"chatcmpl-cbe9fe8e-ad27-4abc-93e7-830f3acc34aa","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":476,"total_tokens":595,"completion_tokens":119,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":448,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":88}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 b38727337117b2d9fe1a9714be8f8ee8.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - SDockUnF18Z53pTcUoSfpGqWdOwHldzoDkBCDGYanSfqwxE1JwhwDg==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "510"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999405"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 7ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 663ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1429
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"chatcmpl-tool-a343d488df91872a","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"chatcmpl-tool-8778f4e9e93f5a19","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"chatcmpl-tool-bcc8a7cb3e4ee343","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"Not yet — I haven''t gotten task 7''s result back. I''ll pass along its reference as soon as it comes in, and I''ll keep the other two to myself.","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"The tool calls returned... but I don''t see the results in the conversation. Hmm, the function results weren''t provided. Actually the results should be in the conversation. Let me check — I made three calls, but there are no function result blocks showing. So I don''t have the results. I should say I don''t have task 7''s reference yet.\n\nPer instructions: never claim a task''s reference without tool result. I don''t have results shown, so I should say still waiting.\n\nHonest answer: I don''t have task 7''s reference yet."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793404404,"ec_transfer_params":null,"id":"chatcmpl-571f8cc5-0b0d-4ca9-8aa5-80db15ba2a62","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":529,"total_tokens":685,"completion_tokens":156,"prompt_tokens_details":{"cached_tokens":256,"created_cache_tokens":256,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":117}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - VkciW6CQfixbP4JS5OU2vR9VjCE3HIIy2ohkeU4EiamW3qmb7oBx_w==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "578"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999315"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 8ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 754ms

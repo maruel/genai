@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 168
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"Hello","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"We need answer only one word. User asks \"Say hello. Use only one word.\" Need one word likely \"Hello\". Must comply only one word. final Hello."},"logprobs":{"content":[{"token":"We","logprob":-0.038327813148498535,"bytes":[87,101],"top_logprobs":[{"token":"We","logprob":-0.038327813148498535,"bytes":[87,101]},{"token":"\u003c/think\u003e","logprob":-3.413327693939209,"bytes":[60,47,116,104,105,110,107,62]}]},{"token":" need","logprob":-8.344646857949556e-07,"bytes":[32,110,101,101,100],"top_logprobs":[{"token":" need","logprob":-8.344646857949556e-07,"bytes":[32,110,101,101,100]},{"token":" must","logprob":-14.625000953674316,"bytes":[32,109,117,115,116]}]},{"token":" answer","logprob":-0.0013940150383859873,"bytes":[32,97,110,115,119,101,114],"top_logprobs":[{"token":" answer","logprob":-0.0013940150383859873,"bytes":[32,97,110,115,119,101,114]},{"token":" to","logprob":-6.626393795013428,"bytes":[32,116,111]}]},{"token":" only","logprob":-0.5076974630355835,"bytes":[32,111,110,108,121],"top_logprobs":[{"token":" only","logprob":-0.5076974630355835,"bytes":[32,111,110,108,121]},{"token":" one","logprob":-1.2576974630355835,"bytes":[32,111,110,101]}]},{"token":" one","logprob":-3.075552376685664e-05,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":-3.075552376685664e-05,"bytes":[32,111,110,101]},{"token":" hello","logprob":-10.750030517578125,"bytes":[32,104,101,108,108,111]}]},{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100]},{"token":"-word","logprob":-20.0,"bytes":[45,119,111,114,100]}]},{"token":".","logprob":-0.1563570201396942,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.1563570201396942,"bytes":[46]},{"token":",","logprob":-2.4063570499420166,"bytes":[44]}]},{"token":" User","logprob":-2.675518035888672,"bytes":[32,85,115,101,114],"top_logprobs":[{"token":" User","logprob":-2.675518035888672,"bytes":[32,85,115,101,114]},{"token":" \"","logprob":-0.4255180358886719,"bytes":[32,34]}]},{"token":" asks","logprob":-1.3352620601654053,"bytes":[32,97,115,107,115],"top_logprobs":[{"token":" asks","logprob":-1.3352620601654053,"bytes":[32,97,115,107,115]},{"token":" says","logprob":-0.33526211977005005,"bytes":[32,115,97,121,115]}]},{"token":" \"","logprob":-0.530480146408081,"bytes":[32,34],"top_logprobs":[{"token":" \"","logprob":-0.530480146408081,"bytes":[32,34]},{"token":" Say","logprob":-1.030480146408081,"bytes":[32,83,97,121]}]},{"token":"Say","logprob":-4.768370445162873e-07,"bytes":[83,97,121],"top_logprobs":[{"token":"Say","logprob":-4.768370445162873e-07,"bytes":[83,97,121]},{"token":" Say","logprob":-15.25,"bytes":[32,83,97,121]}]},{"token":" hello","logprob":0.0,"bytes":[32,104,101,108,108,111],"top_logprobs":[{"token":" hello","logprob":0.0,"bytes":[32,104,101,108,108,111]},{"token":" hell","logprob":-17.875,"bytes":[32,104,101,108,108]}]},{"token":".","logprob":-1.680836794548668e-05,"bytes":[46],"top_logprobs":[{"token":".","logprob":-1.680836794548668e-05,"bytes":[46]},{"token":".\"","logprob":-11.000017166137695,"bytes":[46,34]}]},{"token":" Use","logprob":0.0,"bytes":[32,85,115,101],"top_logprobs":[{"token":" Use","logprob":0.0,"bytes":[32,85,115,101]},{"token":" One","logprob":-20.5625,"bytes":[32,79,110,101]}]},{"token":" only","logprob":-1.1920928244535389e-07,"bytes":[32,111,110,108,121],"top_logprobs":[{"token":" only","logprob":-1.1920928244535389e-07,"bytes":[32,111,110,108,121]},{"token":"只有","logprob":-16.375,"bytes":[229,143,170,230,156,137]}]},{"token":" one","logprob":0.0,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":0.0,"bytes":[32,111,110,101]},{"token":" on","logprob":-18.5625,"bytes":[32,111,110]}]},{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100]},{"token":" world","logprob":-17.5,"bytes":[32,119,111,114,108,100]}]},{"token":".\"","logprob":-2.9802276912960224e-06,"bytes":[46,34],"top_logprobs":[{"token":".\"","logprob":-2.9802276912960224e-06,"bytes":[46,34]},{"token":".","logprob":-13.37500286102295,"bytes":[46]}]},{"token":" Need","logprob":-0.05616327002644539,"bytes":[32,78,101,101,100],"top_logprobs":[{"token":" Need","logprob":-0.05616327002644539,"bytes":[32,78,101,101,100]},{"token":" We","logprob":-3.8061633110046387,"bytes":[32,87,101]}]},{"token":" one","logprob":-1.1148078441619873,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":-1.1148078441619873,"bytes":[32,111,110,101]},{"token":" say","logprob":-1.1148078441619873,"bytes":[32,115,97,121]}]},{"token":" word","logprob":-0.00020382710499688983,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":-0.00020382710499688983,"bytes":[32,119,111,114,100]},{"token":"-word","logprob":-8.500204086303711,"bytes":[45,119,111,114,100]}]},{"token":" likely","logprob":-0.6777057647705078,"bytes":[32,108,105,107,101,108,121],"top_logprobs":[{"token":" likely","logprob":-0.6777057647705078,"bytes":[32,108,105,107,101,108,121]},{"token":".","logprob":-1.1777057647705078,"bytes":[46]}]},{"token":" \"","logprob":-0.014169560745358467,"bytes":[32,34],"top_logprobs":[{"token":" \"","logprob":-0.014169560745358467,"bytes":[32,34]},{"token":" Hello","logprob":-4.264169692993164,"bytes":[32,72,101,108,108,111]}]},{"token":"Hello","logprob":-5.960462772236497e-07,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-5.960462772236497e-07,"bytes":[72,101,108,108,111]},{"token":"hello","logprob":-14.500000953674316,"bytes":[104,101,108,108,111]}]},{"token":"\".","logprob":-0.08685807883739471,"bytes":[34,46],"top_logprobs":[{"token":"\".","logprob":-0.08685807883739471,"bytes":[34,46]},{"token":".\"","logprob":-2.586858034133911,"bytes":[46,34]}]},{"token":" Must","logprob":-0.434161514043808,"bytes":[32,77,117,115,116],"top_logprobs":[{"token":" Must","logprob":-0.434161514043808,"bytes":[32,77,117,115,116]},{"token":" Ensure","logprob":-1.3091615438461304,"bytes":[32,69,110,115,117,114,101]}]},{"token":" comply","logprob":-0.28528597950935364,"bytes":[32,99,111,109,112,108,121],"top_logprobs":[{"token":" comply","logprob":-0.28528597950935364,"bytes":[32,99,111,109,112,108,121]},{"token":" only","logprob":-2.5352859497070312,"bytes":[32,111,110,108,121]}]},{"token":" only","logprob":-2.113332748413086,"bytes":[32,111,110,108,121],"top_logprobs":[{"token":" only","logprob":-2.113332748413086,"bytes":[32,111,110,108,121]},{"token":".","logprob":-0.36333271861076355,"bytes":[46]}]},{"token":" one","logprob":-0.0032096796203404665,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":-0.0032096796203404665,"bytes":[32,111,110,101]},{"token":" word","logprob":-5.753209590911865,"bytes":[32,119,111,114,100]}]},{"token":" word","logprob":-3.576278118089249e-07,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":-3.576278118089249e-07,"bytes":[32,119,111,114,100]},{"token":".","logprob":-15.0,"bytes":[46]}]},{"token":".","logprob":-0.017184292897582054,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.017184292897582054,"bytes":[46]},{"token":",","logprob":-4.767184257507324,"bytes":[44]}]},{"token":" final","logprob":-1.293047547340393,"bytes":[32,102,105,110,97,108],"top_logprobs":[{"token":" final","logprob":-1.293047547340393,"bytes":[32,102,105,110,97,108]},{"token":" Final","logprob":-0.6680475473403931,"bytes":[32,70,105,110,97,108]}]},{"token":" Hello","logprob":-1.524619221687317,"bytes":[32,72,101,108,108,111],"top_logprobs":[{"token":" Hello","logprob":-1.524619221687317,"bytes":[32,72,101,108,108,111]},{"token":".","logprob":-1.024619221687317,"bytes":[46]}]},{"token":".","logprob":-0.007507089525461197,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.007507089525461197,"bytes":[46]},{"token":"\u003c/think\u003e","logprob":-5.88250732421875,"bytes":[60,47,116,104,105,110,107,62]}]},{"token":"\u003c/think\u003e","logprob":-0.5218466520309448,"bytes":[60,47,116,104,105,110,107,62],"top_logprobs":[{"token":"\u003c/think\u003e","logprob":-0.5218466520309448,"bytes":[60,47,116,104,105,110,107,62]},{"token":" \n","logprob":-1.0218466520309448,"bytes":[32,10]}]},{"token":"Hello","logprob":-2.3841855067985307e-07,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-2.3841855067985307e-07,"bytes":[72,101,108,108,111]},{"token":" Hello","logprob":-15.875,"bytes":[32,72,101,108,108,111]}]},{"token":"\u003c｜end▁of▁sentence｜\u003e","logprob":-0.06197512149810791,"bytes":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,62],"top_logprobs":[{"token":"\u003c｜end▁of▁sentence｜\u003e","logprob":-0.06197512149810791,"bytes":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,62]},{"token":".","logprob":-2.8119750022888184,"bytes":[46]}]}]},"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793401700,"ec_transfer_params":null,"id":"chatcmpl-6c9d9813-f738-4ee4-8e12-9024bda553e7","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":38,"total_tokens":75,"completion_tokens":37,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":34}}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - eD-l4WBkopas6q0nzW1c7Ypu3TxaT3g4cIVrQOlQ38Q-GS1yYh-kcw==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "477"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "4999925"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 802ms

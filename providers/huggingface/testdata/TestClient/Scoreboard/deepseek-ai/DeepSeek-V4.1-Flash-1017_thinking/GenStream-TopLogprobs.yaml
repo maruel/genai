@@ -1,0 +1,99 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 207
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":true,"stream_options":{"include_usage":true},"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":{"content":[{"token":"We","logprob":-0.025821125134825706,"bytes":[87,101],"top_logprobs":[{"token":"We","logprob":-0.025821125134825706,"bytes":[87,101]},{"token":"</think>","logprob":-3.7758212089538574,"bytes":[60,47,116,104,105,110,107,62]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer one"},"logprobs":{"content":[{"token":" need","logprob":-8.344646857949556e-7,"bytes":[32,110,101,101,100],"top_logprobs":[{"token":" need","logprob":-8.344646857949556e-7,"bytes":[32,110,101,101,100]},{"token":" must","logprob":-14.500000953674316,"bytes":[32,109,117,115,116]}]},{"token":" answer","logprob":-0.002004758222028613,"bytes":[32,97,110,115,119,101,114],"top_logprobs":[{"token":" answer","logprob":-0.002004758222028613,"bytes":[32,97,110,115,119,101,114]},{"token":" to","logprob":-6.252004623413086,"bytes":[32,116,111]}]},{"token":" one","logprob":-1.275059461593628,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":-1.275059461593628,"bytes":[32,111,110,101]},{"token":" only","logprob":-0.5250594019889832,"bytes":[32,111,110,108,121]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" word."},"logprobs":{"content":[{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":0.0,"bytes":[32,119,111,114,100]},{"token":"-word","logprob":-19.75,"bytes":[45,119,111,114,100]}]},{"token":".","logprob":-0.36430037021636963,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.36430037021636963,"bytes":[46]},{"token":" only","logprob":-2.23930025100708,"bytes":[32,111,110,108,121]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" \"Hello."},"logprobs":{"content":[{"token":" \"","logprob":-0.2344321310520172,"bytes":[32,34],"top_logprobs":[{"token":" \"","logprob":-0.2344321310520172,"bytes":[32,34]},{"token":" Need","logprob":-2.2344322204589844,"bytes":[32,78,101,101,100]}]},{"token":"Hello","logprob":-0.000501983508002013,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-0.000501983508002013,"bytes":[72,101,108,108,111]},{"token":"hello","logprob":-8.00050163269043,"bytes":[104,101,108,108,111]}]},{"token":".\"","logprob":-2.1698758602142334,"bytes":[46,34],"top_logprobs":[{"token":".\"","logprob":-2.1698758602142334,"bytes":[46,34]},{"token":"\"","logprob":-0.16987590491771698,"bytes":[34]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"\" Only"},"logprobs":{"content":[{"token":" Only","logprob":-0.5874112844467163,"bytes":[32,79,110,108,121],"top_logprobs":[{"token":" Only","logprob":-0.5874112844467163,"bytes":[32,79,110,108,121]},{"token":" Need","logprob":-1.9624112844467163,"bytes":[32,78,101,101,100]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" one word. Need"},"logprobs":{"content":[{"token":" one","logprob":-0.00025769727653823793,"bytes":[32,111,110,101],"top_logprobs":[{"token":" one","logprob":-0.00025769727653823793,"bytes":[32,111,110,101]},{"token":" word","logprob":-8.62525749206543,"bytes":[32,119,111,114,100]}]},{"token":" word","logprob":-1.1920928244535389e-7,"bytes":[32,119,111,114,100],"top_logprobs":[{"token":" word","logprob":-1.1920928244535389e-7,"bytes":[32,119,111,114,100]},{"token":".","logprob":-16.375,"bytes":[46]}]},{"token":".","logprob":-0.03813757747411728,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.03813757747411728,"bytes":[46]},{"token":" likely","logprob":-4.038137435913086,"bytes":[32,108,105,107,101,108,121]}]},{"token":" Need","logprob":-0.36957675218582153,"bytes":[32,78,101,101,100],"top_logprobs":[{"token":" Need","logprob":-0.36957675218582153,"bytes":[32,78,101,101,100]},{"token":" Ensure","logprob":-1.9945766925811768,"bytes":[32,69,110,115,117,114,101]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" comply"},"logprobs":{"content":[{"token":" comply","logprob":-1.4408810138702393,"bytes":[32,99,111,109,112,108,121],"top_logprobs":[{"token":" comply","logprob":-1.4408810138702393,"bytes":[32,99,111,109,112,108,121]},{"token":" no","logprob":-0.9408810138702393,"bytes":[32,110,111]}]}]},"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"Hello","reasoning":"."},"logprobs":{"content":[{"token":".","logprob":-0.004107373300939798,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.004107373300939798,"bytes":[46]},{"token":" exactly","logprob":-5.754107475280762,"bytes":[32,101,120,97,99,116,108,121]}]},{"token":"</think>","logprob":-1.5126280784606934,"bytes":[60,47,116,104,105,110,107,62],"top_logprobs":[{"token":"</think>","logprob":-1.5126280784606934,"bytes":[60,47,116,104,105,110,107,62]},{"token":" final","logprob":-1.1376280784606934,"bytes":[32,102,105,110,97,108]}]},{"token":"Hello","logprob":-3.576278118089249e-7,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-3.576278118089249e-7,"bytes":[72,101,108,108,111]},{"token":" Hello","logprob":-15.5,"bytes":[32,72,101,108,108,111]}]},{"token":"<｜end▁of▁sentence｜>","logprob":-0.8271692395210266,"bytes":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,62],"top_logprobs":[{"token":"<｜end▁of▁sentence｜>","logprob":-0.8271692395210266,"bytes":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,62]},{"token":".","logprob":-0.5771692395210266,"bytes":[46]}]}]},"finish_reason":"stop","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-24c6e58c-7896-4360-8500-e2c8afa10e92","object":"chat.completion.chunk","created":1793401700,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":38,"total_tokens":57,"completion_tokens":19,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0},"completion_tokens_details":{"reasoning_tokens":16}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - aVDaynCD2Zk14xchCkLFnsKgpL_OXoY-xRgF9_-XA4u1KoT5z12wxw==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "189"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 526ms

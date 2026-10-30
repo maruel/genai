@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2266
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"chatcmpl-tool-8e6dca2439b26ee3","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"chatcmpl-tool-bd9ec2e5e0d26d29","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"chatcmpl-tool-a44b4c840ba0b6f0","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"No results have come back from those checks yet — so I don't have task 7's reference. Still waiting on it; I'll report just that when it lands."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","name":"task_status","tool_call_id":"chatcmpl-tool-a44b4c840ba0b6f0"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","name":"task_status","tool_call_id":"chatcmpl-tool-bd9ec2e5e0d26d29"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","name":"task_status","tool_call_id":"chatcmpl-tool-8e6dca2439b26ee3"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-69d62e47-ca70-45ad-9af7-0e3794ea1fbf","object":"chat.completion.chunk","created":1793404406,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-69d62e47-ca70-45ad-9af7-0e3794ea1fbf","object":"chat.completion.chunk","created":1793404406,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"Task 7's reference is"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-69d62e47-ca70-45ad-9af7-0e3794ea1fbf","object":"chat.completion.chunk","created":1793404406,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":" violet."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-69d62e47-ca70-45ad-9af7-0e3794ea1fbf","object":"chat.completion.chunk","created":1793404406,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":667,"total_tokens":677,"completion_tokens":10,"prompt_tokens_details":{"cached_tokens":256,"created_cache_tokens":384},"completion_tokens_details":{"reasoning_tokens":0}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - M72-Cg2CxqibMi2wITZ0Y7eFGAsy-xkRgnd2242liyafq78MBXE8pA==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "219"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 563ms

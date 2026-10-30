@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -19,7 +19,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -149,7 +148,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = mod
@@ -163,63 +162,22 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
 
-// selectBestTextModel selects the most recent model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	// Warning: listing models from Huggingface takes a while.
+// selectBestTextModel selects the most popular eligible DeepSeek model for every tier.
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
 	trending := 0.
-	weights := 0
-	re := regexp.MustCompile(`(\d+)B`)
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		if m.TrendingScore < 2 {
 			continue
 		}
-		// TODO: This algorithm would gain to be improved.
-		switch {
-		case cheap:
-			// HF doesn't report the number of weights in the model. Try to guess it.
-			matches := re.FindAllStringSubmatch(m.ID, 1)
-			if len(matches) != 1 {
-				continue
-			}
-			w, err2 := strconv.Atoi(matches[0][1])
-			if err2 != nil {
-				continue
-			}
-			if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && !strings.Contains(m.ID, "Llama-3.2-") && (weights == 0 || w < weights) {
-				weights = w
-				selectedModel = m.ID
-			}
-		case good:
-			// HF doesn't report the number of weights in the model. Try to guess it.
-			matches := re.FindAllStringSubmatch(m.ID, 1)
-			if len(matches) != 1 {
-				continue
-			}
-			w, err2 := strconv.Atoi(matches[0][1])
-			if err2 != nil {
-				continue
-			}
-			if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {
-				weights = w
-				selectedModel = m.ID
-			}
-		default:
-			if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
-				// Make it a popularity contest.
-				trending = m.TrendingScore
-				selectedModel = m.ID
-			}
+		if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && m.TrendingScore > trending {
+			trending = m.TrendingScore
+			selectedModel = m.ID
 		}
 	}
 	if selectedModel == "" {
@@ -331,50 +289,47 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				// There's only one at a time ever.
+				// Handle one tool-call delta per chunk.
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
 					return
 				}
-				f := genai.Reply{
-					Text:      pkt.Choices[0].Delta.Content,
-					Reasoning: pkt.Choices[0].Delta.ReasoningContent,
+				if r := pkt.Choices[0].Delta.ReasoningContent + pkt.Choices[0].Delta.Reasoning; r != "" {
+					if !yield(genai.Reply{Reasoning: r}) {
+						return
+					}
 				}
+				f := genai.Reply{}
 				// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-					// ID is not consistently set. Use Name for now but that's risky.
-					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.Function.Name == pendingToolCall.Function.Name {
+					// Continuation chunks may omit the ID and function name.
+					if t := pkt.Choices[0].Delta.ToolCalls[0]; pendingToolCall.Function.Name != "" &&
+						t.Index == pendingToolCall.Index && (t.ID == "" || t.ID == pendingToolCall.ID) &&
+						(t.Function.Name == "" || t.Function.Name == pendingToolCall.Function.Name) {
 						// Continuation.
 						pendingToolCall.Function.Arguments += t.Function.Arguments
-						if !f.IsZero() {
-							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-							return
-						}
-						continue
 					} else {
 						// A new call.
-						if pendingToolCall.Function.Name == "" {
-							pendingToolCall = t
-							if !f.IsZero() {
-								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-								return
-							}
-							continue
+						if pendingToolCall.Function.Name != "" {
+							pendingToolCall.To(&f.ToolCall)
 						}
-						// Flush.
-						pendingToolCall.To(&f.ToolCall)
-						pendingToolCall = ToolCall{}
+						pendingToolCall = t
 					}
 				} else if pendingToolCall.Function.Name != "" {
 					// Flush.
 					pendingToolCall.To(&f.ToolCall)
 					pendingToolCall = ToolCall{}
 				}
-				if !yield(f) {
+				if !f.IsZero() && !yield(f) {
 					return
 				}
+				if text := pkt.Choices[0].Delta.Content; text != "" {
+					if !yield(genai.Reply{Text: text}) {
+						return
+					}
+				}
 			}
-			// Hugginface doesn't send an "ending" packet, FinishReason isn't even set on the last packet.
+			// Flush any call still buffered when the stream ends.
 			if pendingToolCall.Function.Name != "" {
 				// Flush.
 				f := genai.Reply{}

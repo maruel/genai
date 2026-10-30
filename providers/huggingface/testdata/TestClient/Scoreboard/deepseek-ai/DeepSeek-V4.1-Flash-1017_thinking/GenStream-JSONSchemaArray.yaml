@@ -1,0 +1,201 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 525
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array","name":"response"}},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"error":{"message":"You must use one kind of structured outputs constraint but none are specified: {''json'': None, ''regex'': None, ''choice'': None, ''grammar'': None, ''json_object'': None, ''disable_any_whitespace'': False, ''disable_additional_properties'': False, ''whitespace_pattern'': None, ''structural_tag'': None, ''_backend'': None, ''_backend_was_auto'': False}","type":"BadRequestError","param":null,"code":400}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - FiwvRTZXVj5PqEWQjj-8FZWJo1OAigObqrBShF80h22rqGw8KRZA1g==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Error from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "9"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "599"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 100ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 400 Bad Request
+        code: 400
+        duration: 150ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 536
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer only"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" JSON."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Need name two fruits with"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" color"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":". No"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" explanation. Need valid"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" JSON. Could be"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" {\"f"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"ruits\":["},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"{\"name"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"\":\"apple\",\"color\":\"red"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"\"},{\"name\":\"banana"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"\",\"color\":\"yellow\"}]"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"}. Must only JSON. Ensure"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" no mark"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"[","reasoning":"down."},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"{\"color"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"\":\"red\",\"name\":\"apple"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"\"},{\"color\":\"yellow\","},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"content":"\"name\":\"banana\"}]"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8a60ce52-8f58-4629-9d1e-4bd8a766053d","object":"chat.completion.chunk","created":1793402046,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":48,"total_tokens":127,"completion_tokens":79,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0},"completion_tokens_details":{"reasoning_tokens":56}},"system_fingerprint":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Access-Control-Allow-Headers:
+                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
+            Access-Control-Allow-Methods:
+                - GET, POST, OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin
+            Via:
+                - 1.1 2d075d637de92ceb6fd18a1afe254efe.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - YhrT5xSQl0KDoiNpDN_VufzWHpymfCCmCDMu57_snowixu5cGXfpMQ==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Cache:
+                - Miss from cloudfront
+            X-Envoy-Upstream-Service-Time:
+                - "227"
+            X-Inference-Provider:
+                - scaleway
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "600"
+            X-Ratelimit-Limit-Tokens:
+                - "5000000"
+            X-Ratelimit-Remaining-Requests:
+                - "598"
+            X-Ratelimit-Remaining-Tokens:
+                - "5000000"
+            X-Ratelimit-Reset-Requests:
+                - 119ms
+            X-Ratelimit-Reset-Tokens:
+                - 0ms
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 644ms

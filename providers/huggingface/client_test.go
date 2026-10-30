@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -8,12 +8,9 @@ package huggingface_test
 
 import (
 	"net/http"
-	"slices"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
@@ -110,28 +107,6 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.HasPrefix(model.Model, "Qwen/Qwen3") {
-				if !model.Reason {
-					return &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/no_think"}}
-				}
-				// Check if it has predefined reasoning tokens.
-				for _, sc := range c.Scoreboard().Scenarios {
-					if sc.Reason && slices.Contains(sc.Models, model.Model) {
-						if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
-							return &adapters.ProviderReasoning{
-								Provider:            &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
-								ReasoningTokenStart: sc.ReasoningTokenStart,
-								ReasoningTokenEnd:   sc.ReasoningTokenEnd,
-							}
-						}
-						break
-					}
-				}
-			}
-			if strings.Contains(model.Model, "-1B-") || strings.Contains(model.Model, "Llama-3.1-8B") {
-				// Small Llama models return 502 on JSON.
-				return &internaltest.HideHTTPCode{Provider: c, StatusCode: 502}
-			}
 			return c
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
@@ -154,7 +129,6 @@ func TestClient(t *testing.T) {
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			// Cheap is too cheap.
 			return getClient(t, string(genai.ModelGood))
 		})
 	})

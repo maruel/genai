@@ -10,11 +10,12 @@
   "dashboardURL": "https://huggingface.co/settings/billing",
   "scenarios": [
     {
-      "comments": "Untested",
       "models": [
-        "deepseek-ai/DeepSeek-V4.1-Flash"
+        "deepseek-ai/DeepSeek-V4.1-Flash-1017"
       ],
       "sota": true,
+      "good": true,
+      "cheap": true,
       "reason": true,
       "in": {
         "image": {
@@ -41,9 +42,16 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -52,9 +60,16 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }

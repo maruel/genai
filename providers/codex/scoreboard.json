@@ -4,7 +4,7 @@
   "scenarios": [
     {
       "models": [
-        "gpt-5.6-sol"
+        "gpt-6-astra"
       ],
       "sota": true,
       "reason": true,
@@ -38,7 +38,7 @@
     },
     {
       "models": [
-        "gpt-5.6-terra"
+        "gpt-6.1-sol"
       ],
       "good": true,
       "reason": true,
@@ -72,42 +72,9 @@
     },
     {
       "models": [
-        "gpt-5.6-luna"
+        "gpt-6-luna"
       ],
       "cheap": true,
-      "reason": true,
-      "in": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
-      }
-    },
-    {
-      "models": [
-        "gpt-daybreak-blue-latest"
-      ],
       "reason": true,
       "in": {
         "image": {
@@ -142,10 +109,11 @@
         "gpt-5.4",
         "gpt-5.4-mini",
         "gpt-5.5",
-        "gpt-6-astra",
-        "gpt-6-luna",
+        "gpt-5.6-luna",
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
         "gpt-6-sol",
-        "gpt-6.1-sol"
+        "gpt-6.1-terra"
       ]
     }
   ]

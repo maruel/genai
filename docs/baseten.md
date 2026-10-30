@@ -1,31 +1,40 @@
 # Scoreboard
 
-| Model                                    | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ---------------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| zai-org/GLM-5.3-Flash🥇                   | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| zai-org/GLM-5.3-Flash🥇                   | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4.1-Flash🥈         | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b🥉                     | Sync🧠   | 💬    | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| openai/gpt-oss-120b🥉                     | Stream🧠 | 💬    | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| deepseek-ai/DeepSeek-V4-Flash-0731       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepseek-ai/DeepSeek-V4-Pro              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepseek-ai/DeepSeek-V4-Pro-0813         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K2.5                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K2.6                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K2.7-Code                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| moonshotai/Kimi-K3                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| nvidia/Nemotron-120B-A12B                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| thinkingmachines/inkling                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| thinkingmachines/inkling-small           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-4.7                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.1                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.2                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.2-Fast                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.3                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| zai-org/GLM-5.3-Fast                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Model                                         | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| --------------------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| zai-org/GLM-5.3-Flash🥇                        | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| zai-org/GLM-5.3-Flash🥇                        | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈              | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| deepseek-ai/DeepSeek-V4.1-Flash🥈              | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b🥉                          | Sync🧠   | 💬    | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| openai/gpt-oss-120b🥉                          | Stream🧠 | 💬    | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| decision-models/baseten-elephant-9b-latest    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| decision-models/baseten-joey-2b-latest        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| decision-models/baseten-mammoth-27b-latest    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4-Flash-0731            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4-Pro                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4-Pro-0813              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4.1-Flash-1017          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4.1-Flash-1017-Fast     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek-ai/DeepSeek-V4.1-Flash-Fast          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-models/muse-spark-open                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K2.5                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K2.6                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K2.7-Code                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/Kimi-K3                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/Nemotron-120B-A12B                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| reflection/Beam-1.0                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| thinkingmachines/inkling                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| thinkingmachines/inkling-small                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-4.7                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.1                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.2                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.2-Fast                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| zai-org/GLM-5.3-Fast                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

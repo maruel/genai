@@ -1522,8 +1522,9 @@ type Usage struct {
 		Ephemeral1hInputTokens int64 `json:"ephemeral_1h_input_tokens"`
 		Ephemeral5mInputTokens int64 `json:"ephemeral_5m_input_tokens"`
 	} `json:"cache_creation"`
-	ServiceTier   string `json:"service_tier"`  // "standard", "batch"
-	InferenceGeo  string `json:"inference_geo"` // "not_available", "us", "eu"
+	ServiceTier   string     `json:"service_tier"`  // "standard", "batch"
+	InferenceGeo  string     `json:"inference_geo"` // "not_available", "us", "eu"
+	Speed         UsageSpeed `json:"speed"`
 	ServerToolUse struct {
 		WebSearchRequests int64 `json:"web_search_requests"`
 		WebFetchRequests  int64 `json:"web_fetch_requests"`
@@ -1532,6 +1533,15 @@ type Usage struct {
 		ThinkingTokens int64 `json:"thinking_tokens"`
 	} `json:"output_tokens_details"`
 }
+
+// UsageSpeed is the inference speed mode used for a request.
+type UsageSpeed string
+
+// Inference speed modes.
+const (
+	UsageSpeedFast     UsageSpeed = "fast"
+	UsageSpeedStandard UsageSpeed = "standard"
+)
 
 //
 

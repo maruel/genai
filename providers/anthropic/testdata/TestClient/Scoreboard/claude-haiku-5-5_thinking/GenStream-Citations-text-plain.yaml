@@ -1,0 +1,162 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 516
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"document","cache_control":{"type":"ephemeral"},"citations":{"enabled":true},"source":{"type":"text","media_type":"text/plain","data":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-haiku-5-5","id":"msg_011CgZ9tf7Gg6dVUdG9pZbno","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":17,"cache_creation_input_tokens":0,"cache_read_input_tokens":837,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":8,"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}      }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm checking the document for"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the cap"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ital of Quackiland,"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" which it g"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ives as Quack in"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" sentence 1-1."}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'll answ"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"er with that"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" citation."}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"CAQSsgUKEAgTGAI4AUIIdGhpbmtpbmcSDGYA0xG19HAHYvkwjRoMyZTClOI9CwUFWAQnIjDHce+GoyD9m6XDztnegz/Bz4BWG6X8Zr+m/Ua7vt4L5UtIl9C9/Qx+hEJJnvlYa1oqzwRzph1/YJAcjcz+TySos4dcezUdTb6tqSyue9/+s5A1ak7Xv7mnzU1U0nSzTsLTxT7UF8mPfh7My04/FCD7EYf5ZwR52HvNCTxxCCFW+ooy0hdn4wS9H40XNf2Y8ghvyRvuP0c9zQshwVq0CNaPUtUrdyKjYSNS4K5L9tdfZH6Vuu4yvaLwTTj+eWEvih0F8jxKCbUrHANpRNzEPAC0Yx20oRa472giYqS7KTKX2IZB5H00ObX4zBZiQGtqogKk0zlJjTosebBhbv1EudF9ViXFzXFqjARh0cWtgyPDDACgyIkJq+MC7HtqSQ4VtWB0HHx/kwAZb9n5y8e4+XtfwUJjPSPsOYj9QWLBuKvY6Rgi6menKuy7TqJkw9z3AO1pkJCv+xcTW1AyipJx5/z6YWSqzrLMTnMr6t0zD5F61N615PNHJbUo7WekabUo/UXQXXG7wyNhiLStWvVCVTz47eFK1DhQ+GYCzHWFU0yZ//C1SGL8a2SkXsLfLQIMPsecjOP5y1Or9AFE016j2SXmB+MZNKrU79ulvy7gxkxVPzXqABXlgoX3RmoGFas7jBSvKfNeVrfYr5jipdvd8zu2wIKlqkp1iisHZisMigHKaEXYYJmn76Ay2kbugSbaj2o/TKqU5AlGpXimfL289NvHYxPHKlurcPTnflwewwL1ddYAQppIVho2F3brhG3XwrZtrOpWpZhc+hcWPLI4RLsgeU8anlbZBcAcmojdJWItDeFKwYRzSf4+3JA7rmwFyW6WPp4BvZXxhWwlVzEGwCsLDJ0YAQ=="}   }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0               }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"The capital of Quack"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"iland is"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":" Quack. "}      }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"citations":[],"type":"text","text":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"citations_delta","citation":{"type":"char_location","cited_text":"The capital of Quackiland is Quack. ","document_index":0,"document_title":null,"start_char_index":0,"end_char_index":36}}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"The"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" capital of Quackiland"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":" is Quack."}              }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2    }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"container":null},"usage":{"input_tokens":17,"cache_creation_input_tokens":0,"cache_read_input_tokens":837,"output_tokens":86,"output_tokens_details":{"thinking_tokens":37}}        }
+
+            event: message_stop
+            data: {"type":"message_stop"             }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:29Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:29Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:29Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:29Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9b749ef8255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=85
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-5db057c1671f5e413535f296ca86a7b7-a5964bbdd40a1bb8-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 442ms

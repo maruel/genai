@@ -44,3 +44,54 @@ interactions:
         status: 200 OK
         code: 200
         duration: 210ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 219
+        host: api.anthropic.com
+        body: |
+            {"requests":[{"custom_id":"TODO","params":{"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"test"}]}],"thinking":{"display":"summarized","type":"adaptive"}}}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msgbatch_013hdr9Q7yF8nHxDUcAfdmHJ","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-10-30T21:43:43.267930+00:00","expires_at":"2026-10-31T21:43:43.267930+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
+        headers:
+            Anthropic-Ratelimit-Batch-Requests-Limit:
+                - "500000"
+            Anthropic-Ratelimit-Batch-Requests-Remaining:
+                - "499999"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d98dca853f3e9-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=443
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 485ms

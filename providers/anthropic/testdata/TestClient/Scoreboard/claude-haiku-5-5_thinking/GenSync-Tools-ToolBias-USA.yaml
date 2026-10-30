@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 688
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-haiku-5-5","id":"msg_011CgZ9sgiEEyFyQrJTNzrEJ","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"I''m weighing whether to pick one option, since the question is subjective and the tool asks for a choice. I think the honest approach is to make a reasoned pick and say that the answer depends on the criteria that matter to the user.\n\nI''m comparing the two countries on quality-of-life measures like the UN Human Development Index and the World Happiness Report, where Canada tends to place higher than the US. Based on those, I''ll call Canada, while noting that \"better\" is subjective and the US leads on economic output, military strength, and innovation.\n\n","signature":"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"},{"type":"tool_use","id":"toolu_01E1Wfgky4ChY167aMczeSGu","name":"best_country","input":{"country":"Canada"},"caller":{"type":"direct"}}],"container":null,"stop_reason":"tool_use","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":461,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":493,"output_tokens_details":{"thinking_tokens":443},"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:16Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:19Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:15Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:16Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9b222eb6255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=3606
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-c11de05001c0577ac48e3c2bd362b5f8-34f1c5c41b3c11d8-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.661s

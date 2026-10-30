@@ -1,0 +1,249 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 702
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-haiku-5-5","id":"msg_011CgZ9sjUurS3ZuKazRJWpU","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":461,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}          }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}    }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm weighing wh"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ether to"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" call the"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" tool for a"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Canada-"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"versus-USA question"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", given that \"better"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\" dep"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ends on what"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the user values. I think it's"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" sub"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"jective call, so"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I should"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" say"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" so and still"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" offer a reasoned p"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ick based on common metrics like"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" development rankings."}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm chec"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"king wh"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ether Canada or"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the USA ranks higher"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" on well"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"-being meas"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ures like development indices and"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" quality-of-life r"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ankings, though"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I'm not certain of the"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" exact figures. Since \""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"better"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\" dep"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ends on what"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" some"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"one values, I should"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" make cl"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ear that"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" pic"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"king Canada is a judg"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ment call based on broad well-"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"being metrics, not an obj"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ective fact."}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"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"}      }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0   }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_014hnBKMLUkpsdFiJc11WwB3","name":"best_country","input":{},"caller":{"type":"direct"}}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"count"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ry\": \"C"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"anada\"}"}               }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1   }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null,"stop_details":null,"container":null},"usage":{"input_tokens":461,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":412,"output_tokens_details":{"thinking_tokens":362}}               }
+
+            event: message_stop
+            data: {"type":"message_stop"              }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:16Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:16Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:16Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:16Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9b263caf255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=88
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-f22f7bb8d4002a81684806cb1f14495c-11c4e4bcd12c314c-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 472ms

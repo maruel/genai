@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 324
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop_sequences":["is"],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-haiku-5-5","id":"msg_011CgZ9rY6XXFypxRuGUPT16","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"I''m planning a detailed overview of Canada that opens with \"Canada is,\" with headers and roughly 900 to 1200 words, keeping it accurate. The key facts I''m noting are that it''s the second-largest country by total area at about 9.98 million square kilometres, with ten provinces and three territories, Ottawa as the capital, and Toronto, Montreal, and Vancouver as the three largest cities.\n\nI''m filling in the remaining Canada facts: population near 40 million, English and French as official languages, a constitutional monarchy with a federal parliament, and Confederation in 1867. I''m also noting the Indigenous peoples and the country''s varied geography, plus its long coastline, large freshwater share, G7 membership, and resource-based economy with strong trade ties to the United States.\n\nI''m moving on to healthcare, which is publicly funded and universal under the Canada Health Act, and to multiculturalism policy from 1971 and the 1988 Multiculturalism Act, along with immigration. I''m also noting the sports and symbols: hockey as the national winter sport, lacrosse as the official summer sport, the maple leaf and beaver, the 1965 flag, and \"O Canada,\" plus the currency, six time zones, and cuisine like poutine and maple syrup, mostly from Quebec.\n\n","signature":"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"},{"type":"text","text":"Canada "}],"container":null,"stop_reason":"stop_sequence","stop_sequence":"is","stop_details":null,"usage":{"input_tokens":37,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":787,"output_tokens_details":{"thinking_tokens":783},"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:06Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9ac0ca33255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=5745
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-62c5281b3b2fb6748573db0d6d8babde-2d48df957073e0be-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 5.804s

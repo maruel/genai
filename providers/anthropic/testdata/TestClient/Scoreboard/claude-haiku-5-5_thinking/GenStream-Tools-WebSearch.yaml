@@ -1,0 +1,177 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 455
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_search_20250305","name":"web_search"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-haiku-5-5","id":"msg_011CgZ9tKtNq9ckiL6ibXRx4","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":2875,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}           }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}          }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm sup"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"posed to run"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" one"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" search and re"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ply with just"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the name, with no explanation"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":". Today is"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" October 30, 2026,"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" so I need to look it up now"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"."}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"CAQSxQUKEAgTGAI4AUIIdGhpbmtpbmcSDLCiQeySnDA2/l12jxoMcuRjuZPQb+ym5WclIjAxRRcFyBYl0b5pIcCRFiFEkbRbxet/Yfb8SXVbIc/LcYnbgMbpo+RGEcF5mOiaXvYq4gSYSB2RQVyNmH9w0aJxajqPnu+hvs//uUer8DrBJm1JcGXo7gI40Smnrf0vWmENPTz13g/TsRUwpE4+E1FYi/qbJuQD9spL1x3a65lVn5Nn6ncglYF87oGtQha46ln8PtxgXiHjzft9fZB/I6aNoV7YFeIdzSFc0VBssDhHlSZa0Ui/JwfnzYf0u+QUrRD2SASZWwizNWAvZdqonotxMxewW28qWVcLRTUwPiV6sO6s0zJV/qe1jjsWKPzIBgKNKKrFCLFl94YwHM6UIbty2mcu6jXfkscO8WyfHcmpxfABC+/R/GIWV5s4d83cDo/AWisFlB7LVEpfS+RXeYbXDrDgZtI2YErk8TNrRvTZqy87vBg3sEjTy3PHSkyGDTidjs9bz8sFtF611k6dZKaKRYvWvsNB0wsryVN2X7y21MI6LGxnX792ofsQ9LG2ylBsEHQg+E4tV0K/0luY0oHG3n5bQCyQxA8EHy7Ag6yLrh0H1ivjHkhecMkKpObgQ6F+6NchTlW1ima7nfm0+TzoDhLoRH8vYmSw8DNYxyVGa0PegYRNmTtWIxvJaoTok5gKt7TNbuE9iy5mCuI69jeplCBX33wXUkIaTbBuWeXRhOkBHmHlbG3pCmMorxkxiT1zartjrjK97yD3mXbMsgbWAbyHJGtL0rfXbBWAKIniEMha4lWTj4Jilzll287Z8eDl14CxSzTMh0vxQqFAr5nvwFwIOJMQPMCOaoW3aa+fm3VhkN+bugVj01PPrRpjs1K653gTIqNVKb6lMXabLONBIm44O9M4USsgY6um0f17KUyc2uBBGAE="}          }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0        }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"server_tool_use","id":"srvtoolu_011aihLTLuvpzYYPagHEUndw","name":"web_search","input":{}}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"query"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"\": \"cur"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"rent Pr"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ime Min"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ister o"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"f Canad"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"a\"}"}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1      }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"web_search_tool_result","tool_use_id":"srvtoolu_011aihLTLuvpzYYPagHEUndw","content":[{"type":"web_search_result","title":"Prime Minister of Canada","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada","encrypted_content":"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","page_age":null},{"type":"web_search_result","title":"List of prime ministers of Canada","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada","encrypted_content":"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","page_age":null},{"type":"web_search_result","title":"Prime Minister of Canada - Premier ministre du Canada","url":"https://www.pm.gc.ca/en/about","encrypted_content":"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","page_age":"385 days ago"},{"type":"web_search_result","title":"Spouse of the prime minister of Canada","url":"https://en.wikipedia.org/wiki/Spouse_of_the_prime_minister_of_Canada","encrypted_content":"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","page_age":null},{"type":"web_search_result","title":"Mark Carney","url":"https://en.wikipedia.org/wiki/Mark_Carney","encrypted_content":"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","page_age":"1 days ago"},{"type":"web_search_result","title":"Prime Minister of Canada","url":"https://www.facebook.com/CanadianPM/","encrypted_content":"EqsECioIFRgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDJQSuZut0zYcqhubzRoMQLHqOALgRSL1zW9MIjCnAS4CWX8Wj9DqJqEIAU7Gu4tg18FlO9MHBvVdLrTbLCVMLCFEZOHL0Ze0ZPKOqNAqrgPmyZ3Cry/7mrbjd9nFhhzkRfzQItUoEiLF7O2GpeOa27v23jPFxWlBWLiCHtTgFpcvNUI8cefGaGNsGUE1dKFYZcBASeTJoP61sCY0Fop1jdacmB0NPd2p34cXwEwtAqT3DQ5ZW12a5sKHR+jQgqt32GQAcbCTPq5Ky8LZjR4mBBzA7j/yQcnujU9FRN2BFsOCOuPkQ9JL39RnasNv2CS6yf0e9oQsRe7A9WuFA/dIRPlLsDyC9AldWIyCW/499rHIg2Hl3Uj5kzZqxrI1CCWl/3XL8FSmo6Yu8lw6Yl5trQSN9abby/FYHG/+oFy1J7IQnTugDqLQtUlD80bm/2ttjMv33iL2mFllaDx/RDUw8nq1/cfisya4WXvhFv2P9up2qd/N1aowdnh3HrmKFXnUbKZ8XT5McFJaGlATz475qODRmtWOxZlbRSrzGEDwMbv5JJ+VTtpLzeSVOvN8s8Ed5sT/ayTmx7T8zIAB+mseSbEe2jebf81SoMqbJ4gdza7RTuuXFeU/apr39ZCsENUGzEMQqN8M3q3Wyi/LIWX//yjXjistZEAT8wq662nRGAM=","page_age":"135 days ago"},{"type":"web_search_result","title":"Cabinet","url":"https://www.pm.gc.ca/en/cabinet","encrypted_content":"Er0LCioIFRgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDNA5dkmk/Koz7cQcWhoMI9pFoBxmczuYb1+pIjCujh849yS4WlnW/cDmVPsunOAOTj+Z8Wa/3Kt0CH4E7SifBBzszWDyoRHeGDXKxhoqwAogNwleyQ4Vg6f4y7UZQEyJFeQ1uzo9pNIKgyxKReiX+qEeVAXWx8P6fkW/oMeCs5r3XEa6cZab5FjGOO5vA5QvcPL2pFAG3QvGVQhorjENR9Q6cwT7DACS3+oDBtLPQTTyPyYfMdUFSSq0V16Q1+ZJAD0aKfFSb6pi0dxTjO45YEQEWHpZgudSeYQS1f1tNbMD6pZRqdaapmmdp/oP3HH5UCCBMk1CUpREynMYyn4dvZkadLsiRoNFrK5MVuZeMDvrdWPXC0g/A15xxF9/F7+OaFjlF76qlcDt8C6ZW9VdBMpQI0uWRkck8DZmQIvG6uO/KPgVBhM8DF1FhIZzStSTuFf158KShAwntZ9o8uP3S+y7MbGEoroO4hQ5pt2V4nRAfHSHvzlapr7xkkBqCA/VwaqXBVuNbtdQxqR6VQMZKUVjlu94Vm2xNwFpMzqclz/sN1eTRDMy6xodv1gGp/ekBMaXy4kbax8tMkJMC0nNd7ttNboMdfdk2VLSdLNV0qkZ2HgUhtHBzlqwPtaHXZjWjmzzo2lmw/+b+OHX3qfyqBmeA/vsb+obmsk1kIhNWYNOizPtX4IgaFSOXUhKOxmbzTY4sb4kzu2JCzO04GfXgyjnEKQh4VsvDU0Ab7F8gq1xfoTdIKLK+PVCNozx3O/70cNV0ySTHJORzyH5r5xsE61QArsvCOCvt5KJLOB9np2ZN1iP5Rq7hISsWLV4JvVamsh6OtzNSzG+g9hB1vtRb2eX0BicaDihJlOTh54HYNpi7+CZB8OHuutjaFcQSjOi6Jrvj0JxtpC1bhPnuUjSsRXD+dez7Jype1CTR/UzECqvJW1LxpbfXA7GJfehj+eFCYgFmADg5WaNL+YHAslbowXTnITXzsVlBT7TAfspcsA0JcSq8vIaEbA7koGvq751KIusDy2DFKohkq5kX3DuiTnp0WdGrBZ/MErAXprX5cchVEbc0eh5zmy504Fd4ubrNdlaUThaDbjF5KcmiXM2BlfqG/MmrO2X8792bqpYCThZ/XkWJO/vBZ7wHbPBB0haPJj4Huo8fuIvNEQSLMtI1YD0LzY33I6rxgCsH65aUegINTy13UaWVNMoO/I3C8IvN8bCq3tO/1eoDdk+XAjChKCRS/7vQXEeW9w8XO0j0y9/svDRsFIZvAxq0mDXS2lQU1F0FhUr3Cs2REXQSlNeggLbiPd1Qvrfh2tED8zJkAwydp3M7m4qZzlU5LNxpKR/ZMSWnGpvTBnBCTEtCXPRxDFH9rYgmXC+QbpoC5mAhLpOIhEwbhwlwn/0PYVTj53LtvvHPwG1Gl2FcsfbPidgiV33Nzorsajy0cBT0yapNHAzf+f7u5tg6m+5cpeO7/FI+1lBBtdHyFi9iHcJie+sm4nsa9z4dOAkvWmy8nrI+3DZvs+YA/d/Mi8ees5radZ6kPeIx2ncQ7or+jTn522RlQ4zxyU3uICobtOIT/QQiEa5Z4yLiVNhyuM33XSWznsntD72f5kif8FZZ1paWNUDNOK8WazbfML7R5RfT9lPb+ls2N/myS4HSWvdiRJPNQb18T0ffqcsw8YO22fzKnDY+KX0X+svtSmoKcAV2r7my0N82HzN7tRcQUpKp7jC9RptXF9tvxLxSOcxxZC+K5iifM67ruGwOh535noJIhrHOthKd4pNGBIdwogVLB0odUp7OzSPCAcQHXak733gIR8tJMYwO/dbRsbPHFy6TjGUNXLi2kFsaS9IahH2S62M9akWgLLmDagMn0OsTyNsGuZyGPXeEI8OoPJPWg332RIEa3EYAw==","page_age":"409 days ago"},{"type":"web_search_result","title":"Mark Carney","url":"https://www.britannica.com/biography/Mark-Carney","encrypted_content":"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","page_age":"1 days ago"},{"type":"web_search_result","title":"Prime Minister of Canada - YouTube","url":"https://www.youtube.com/@CanadianPM","encrypted_content":"EtUDCioIFRgCIiRiMDYwN2ExYy1lNjE1LTQwMGUtOTkyNC1lN2E1NTZkMjJlOWYSDH5kbeFuMFzlpSU3kBoMVZR4eiFwlGiOBQCkIjCKTdpkrBve62YFcTbV0GCVOODchkuvzXGucqaHJEjnXq1QDZl6A84aBioh6Obwdzkq2ALlIeM20OmZjINwD6K/Hcp/JKeL95KXX/wxP0KMe9EcW3hmlSCQqOKrzZdK06dshSgeyExGe5mq9mUsafLMTN0Ois0kTWmyOtgHcQ1xyKDAgFN0iFoht4zB9Kpcuww4lxuJOtmqIk28JqCh+I0Tp3f9luykeOKFigTKPGGThoQHB1TEeR1y1Jvjb7+6T+knUN+wF9uSFuq7V+pwDQktoIG1vG3AjC61U8cV9XBoGcQUzrRHBkLag+68Vw7gBKM2YYb1tYWZy/rjHW3E66l4g/+qioSKo2/kTfD+1fThdt2S65F1WtHmYiiHqPxckygq8pTKllikIVXcA13tchuxFkUBfcBA0Jtdps/UFz31p07zx4oTaFvjjUBziYto4cFXtGWGKzCo2E0XzUZMY58y6oAAKT4LWhpCXfZZeXv2IDLk14txVkW40dqc6MrvWHciRtqpOIIHn+FMRxgD","page_age":"631 days ago"},{"type":"web_search_result","title":"Canada and the European Union announce new Alliance for the Future to create greater affordability, opportunity, and sovereignty","url":"https://truenorthstrategicreview.ca/p/canada-and-the-european-union-announce","encrypted_content":"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","page_age":"0 days ago"}],"caller":{"type":"direct"}}               }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Mark Carney"}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":3          }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"container":null},"usage":{"input_tokens":13090,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":104,"output_tokens_details":{"thinking_tokens":38},"server_tool_use":{"web_search_requests":1,"web_fetch_requests":0}} }
+
+            event: message_stop
+            data: {"type":"message_stop"             }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9998000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:24Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:24Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:24Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11998000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:24Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9b574f7d255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=91
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-24efc930f34892888bfd22eae3f8875d-ea0e6d927d0839e2-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 614ms

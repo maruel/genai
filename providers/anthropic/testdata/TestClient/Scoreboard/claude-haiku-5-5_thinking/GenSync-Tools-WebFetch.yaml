@@ -1,0 +1,78 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 346
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-haiku-5-5","id":"msg_011CgZ9tL33fJqDrBF8v5fnJ","type":"message","role":"assistant","content":[{"type":"server_tool_use","id":"srvtoolu_014a92U6coNrWhvFzAXyf4GS","name":"web_fetch","input":{"url":"https://perdu.com"}},{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_014a92U6coNrWhvFzAXyf4GS","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-10-30T21:45:25+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"---\ntitle: Vous Etes Perdu ?\n---\n\n# Perdu sur l''Internet ?\n\n## Pas de panique, on va vous aider\n\n**`* <----- vous êtes ici`**"},"title":"Vous Etes Perdu ?"}},"caller":{"type":"direct"}},{"type":"thinking","thinking":"The page is tiny and short, so there''s no real copyright concern here. I''ll summarize it and give a translation, since the content is brief enough to describe directly.\n\n","signature":"CAQS6AUKEAgTGAI4AUIIdGhpbmtpbmcSDOCM6kYLrwWh340SnBoMgZmxfb4C7XXWjUfCIjB97LDiS+HOxLHRIufxVuXYrfB27ZUyEAtfEzsI6OukMNi6ulahX3TwyHbuDdFlNygqhQXMYdamWaQqc9BORcnZvchJxJlykwuEH924DJDcB7vKZssyuCNzudzPg9XtL6CwKPypntHc5aY1eRd7Ra4Pgzjuh76IwVukabSdYo61i9gQOHZPzbTlCTHAGJ7h6pTw94LyX5jLzYGdxQg4PrifTQyMtLr+Y4apFf7JzfEEgUAu4rkbe9X+5JoVVukCSUs4vlt3ZvhnbtiuBOssEZFLteFM1Wcl3BVioiviXmokC2Fl2TykIxlZHlvkpmdkHngxE2rlqRTnYUoU51NlaT+4OQVdCIypBecxOCJ1Am4SPzCfC+3XsIbzIOGNI+OyaqyCGnvvJl7Zg9nfMfC87VGHIeXyJqHSqKDZc40LM70MLSWhdblINZDNavyEKqsJJVYeuuf4KYaUpRuOvRllfWgzARoJldUfVxqSwCft7QVBNakCG8d/YuGNGGmJGQ9aaZUpC8K6OajM8uw3oOUjAdRjuJNrXueM0I9caHfflin9Wp4B0I10cPM/1SdVmMvmJ8Ezb3yX1tS7a90FVFb6ubTk7pZxU2nD85db4fJDqHVK0J/ikVD53aoa+D5sMh/vpdW6KOlxNW3LFDR0RCp16ifh5aJnWeA+AsIDMBQEJgO6D5lRuwZtvleqAqkJp+fWt+MSmfLNAm5hihJZhaE85N5gVXGWBPxywcloEJtYIF5y9XFdClIECd8CczZO84kRbQVr1ScwzZuQ8R/hhUIbp8d8Wntqiv34rUk5sVv0RsUI9bPwzIY5WmjEUZM3sDJWIrlo6KAPtP+2knRz4KjFDKuvGkEBSrep48gBCPemt7Cut5dzcwPCUUgGZnuJmwSFk52D032vGhHO+Bw6WqVX3FjKkrKvwOYNyBgYAQ=="},{"type":"text","text":"The page is short. It says, in French:\n\n- **Title:** \"Vous Etes Perdu ?\" (\"Are you lost?\")\n- **Heading:** \"Perdu sur l''Internet ?\" (\"Lost on the Internet?\")\n- **Subheading:** \"Pas de panique, on va vous aider\" (\"Don''t panic, we''ll help you\")\n- **Bold line:** `* <----- vous êtes ici` (\"you are here\"), with an arrow pointing to the asterisk.\n\nIt''s a lighthearted joke page for people who''ve wandered onto the internet by accident."}],"container":null,"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"usage":{"input_tokens":2346,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":291,"output_tokens_details":{"thinking_tokens":48},"service_tier":"standard","inference_geo":"global","speed":"standard","server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}},"diagnostics":null}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:25Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:27Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:24Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:25Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9b58bc2a255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=2426
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-31c99b8f03c10c294acfb5d04082e286-7b2345bcda6892a3-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.474s

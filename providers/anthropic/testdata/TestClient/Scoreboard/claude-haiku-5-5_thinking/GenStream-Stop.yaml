@@ -1,0 +1,597 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 338
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop_sequences":["is"],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-haiku-5-5","id":"msg_011CgZ9rXdG1oo5kQoQYbf1c","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":37,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":6,"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}           }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}    }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm planning a struct"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ured overview of Canada that"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" covers geography, history, government"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", economy, and"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" culture. I'm no"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ting that Canada is the second"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"-largest country by total area,"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" beh"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ind only"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Russia, and I'm"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" working through"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" which"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" facts to keep acc"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"urate."}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm checking the r"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"est of the"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Canada facts: ten prov"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"inces and three territories,"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Ottawa as the capital"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", Toronto as the larg"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"est city, and a"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" population of roughly 41 "}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"million as of 2024-2"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"025. I'm also"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" noting the"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" government struct"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ure as"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a constitutional monarch"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"y with a"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" pr"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ime minister, the key"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" constitutional ac"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ts, and the two official languages"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" al"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ongside Indigenous pe"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"oples."}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm now going"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" through"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Canada's history"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":","}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" from"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Indigenous pres"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ence and Norse landings"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" through"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" French"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" British col"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"onization,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Confederation in"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 1867, the"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" west"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ward expansion of"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" provinces, and the 1"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"982 constitutional changes"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":". I'm also star"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ting on the economy, where"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" I"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'m noting the r"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ough GDP size"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and the"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" main"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" natural resources"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", be"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ginning with oil and"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" g"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"as."}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm working"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" through"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Canada's economy and"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" its main"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" resources, now mo"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ving on"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to heal"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"thcare and the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" country"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"'s geography. I'm no"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ting the publ"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"icly funded heal"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"thcare system and the co"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"astlines on three oceans"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", along with the large"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" lakes and m"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ountain ranges."}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm no"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ting the phys"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ical features: M"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ount Logan as"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the highest peak at"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 5,959 m, the"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Arctic archipelago"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":", and Canada's rough"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ly 20% share"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" of the world's fresh sur"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"face water. I'm also chec"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"king the climate,"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" where most people live near"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the US border and the north"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" is much"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" colder than"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Vancouver."}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Then I'll"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" move on to wildlife and"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" national"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" symbols like"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the be"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"aver, the red"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" maple leaf fl"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ag from"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 1965, and \"O"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" Canada.\""}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm mo"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ving on to Canada's cul"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ture and"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" sports, noting hockey"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" as the national sport and l"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"acrosse as the official summ"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"er sport, along"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" with its"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" literature"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":","}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" music, and film. I'm"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" also loo"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"king at education"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" immigration, where"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" roughly a"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" quarter of resid"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ents were"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" born abroad,"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" holi"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"day cal"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"endar,"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" starting with Thanksg"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"iving in October."}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"I'm finishing the list"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" of challenges: housing aff"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ordability, Indigenous"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" reconciliation, climate"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" change with"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the Arctic warming f"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"astest, regional differences,"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and the Quebec sov"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ereignty refer"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"endums in 1980 and"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 1995. I'm also"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" weighing the relationship with"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the US"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and trade, and I'll"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"im for head"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"ers and"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" bullets at"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" around"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" 900 "}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"to 1100 words."}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"\n\n"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"CAQSuScKEAgTGAI4AUIIdGhpbmtpbmcSDFsbtnr4b0MS232NgxoMzVbUsNaq/i8PDgbMIjAZ1FxML66BZZCVqbxpApPIt570gvVJeMFYyTe16P67/ulPQw8yN5/NE5/QmWjdJ50q1ibKgnuJ2gmcXE8KDfcDBMh8U6ydn3CE8kZ7O3lP2sBolgBIJ4t8+qUSGpsfsPVadEByWEtoLEi6LmsF4UeXH8SJTPmKr+253ncF7AGJ1sETM3FihMaP7rxM5On2GDmnjMFA/oOsEOBQe3I9yeefUkPnfldHRwil7bDkjPk+g5irDHrYvU5zN2s5WSZJ+UoIVWFzm/7mWt4dOUO8tYNpNWB8EuGERPYgxbi+L1Noa/MtZTxrHtz3zeF4j9A/TPqR+xozCCq7QKp3q0z9+N437rGcOmG/+uzkrUE/2TxFzdRr6G2sauwN1Ur1rm21j5ZV7BQfmAeS6NaCqnqLD163uV58BVwfS5lXipI3yIqHwVqzLObCirCHFIG6Jm/b64bKGyQNAzufRE+ssS03I5ruszY2avswJSnW+aZ9f0Y4QN9PfyycsWayN0zYoB3L5VFi1Xu9H9Vp9UbDhSpeV7aYzA1GMMNAz3MrVxttMK45IawwtfhL3Pv227YgafHwD7b8M252y/wO83q9BdbDFZHtHmWuah3jNZF0/LCltdNzTz6B+OK5pE7XX4Z7sLIcHBQeZbKT/wHvQ18zrjkk/5asPNWYbqYCB4uOPbDvOQr/J3F+0tadhyIxk3rr6wjEBE+1kGwfNFIcvczU5TItMgUT+IRTj/MP8AwpiriZQHgyl0WV7j+sHGUCKs+1tL7krUAYxhyXg7s7x7Yu788biepb/KSRRhgHtwUqOZCvkMvxSH2AVZyg7Qo9lqeA6gUvOoaFLjMtI9F/2nSKZtqC7vgqSaLSUF9fDKD7QcyUz9yYrPEkokeq2m7mcOWm/DSISoiBsGCfEHcunsQMUOJPVwO4ZuDZNHYsmH5Ok4LXwGZwUcrKxCK6+FOQCTA//EsLf/obZ2zEELGhxWn17R14dE7IJb7L3zteip+8CyClMAAlDz8nxubBgtdhCw0VqFTgNdYHTQQLi+AaSfSjMfeLsennpbQRAFZUz197TiT2wagsheJXfJwWWNr9NpFuVXu3peQcoHEC7W53yKY/TYnX/ADIIrAIYeha+qDQCNZpksU7zn43KL2JddRwOi4bV0yAWslslsjcYkkfcnq0o5DXizmNc22xVL8ZsEUeX1hb7bwMoRsbX4cTiwJZfng19o0kJUoeBX0D8GydE5aDxIhSfMywok6wlcSbM5142XyjKT2nh5pWygVQ0Vm5nOwCYHExk4rp49gPFfuDNcWHBRXraiIgRwhrGNSJJTZzVNzn3g7n8aBICuMqep3NkamF3wkJoB+MymrT+qOo+a+BUxxRzQ6NpjoNMSJlvrs3OhlS9AZQsaFXKVMwxnDNR7vVYbYS/dP7J8SrdLyfg/XOUNjOXvvWhBwRKkibaSEU3iHFtI+pDAYnAvYuYk/Tc/Ppd7uqAPbT+90XrEr42h9GNhA4XjiwgRedW18j+mBwQMZGbFhrPRpKn5Kg6QBo2NNM3yR438N9D+KivFf1IuGBc7WXEGEJUkCaVmx4KMC+Ak+cPCK3lCPnMg/Kc+gqLDdFNHsDsnYauB3LxGLFQ8dO6XyP78GBEZIepkqbtKIt6herfP9Pv9hChqZX33pZrUJVyz6sGOTGCImMaTs82H7G0xgL3LB4fNWL5cg5dpVeizTbwv1i5KVudWmQxQhXKvt4BXb7aqsIRCS1Yyw8QBUxLi1SSSV4fGn5Jze1sppJ/jaSl4bUofq+QC41qAs+7E0V1K8m/akY5tBp5pdZFeClPkot22kI2X5RGSYEDCrzYLjlvQb7XfzBlVGO4GMvwt1f6ojthBxR2yYhGmL/l8EfyHtVmx68C273JzzozWhhxJFfJJ5D0fDX0NHAEcJ+Enz/MdH0aGIPnIIBd09bdpLDIiYj0eimdq372JezLRRlHCUL7mlVyCic1+lDAcAHIG65Mz4CCemgLuYZ/PfhIxmTf1aVaSt/24RraiyAj+SEk/nTF/Q1T1FkTSNclazAtZi34uDA8j0Sf2T3peaZxT3SpJavN7+N0NDZgATLpRIuH0foJYEX02lCBWMaCMImwUOw+llafaC6Sn6p1MHFg+53UQR85/MWj1Q0iN1wdtVbH8uxdvzeCfmrv6pBj/Nki+hZ4EeGorlEUF/5Qj472MG1eMGgBA4BxXoHcvsYqOfeVr4HUmg4aUX2VB124qBFcMvUfSvsyd5zby72ulZxZ+rU38JwZPwd0TgiQEr1P6oq1XUJpzRTtEwcrW7ZjdmDEeHmlax72uxQbPEIeEZU9YBov+G0+SEnPs4tW77D0gFxf/IYDIT+bNYdhyMQtZVQdPAieOux2RUUtSeWHc7JC2Z2TI1xJyWI23VhNQm7r/MedmiueYXbWKUvjtJ/kwrudYb30RBQZNK7AAbPC276csHKlgvzQjH0CIYHqvT19p1GW9SPNhqWDZUbB9ug8Mu17WCCWTr/e/Zu1R+bO9J5W/QFgLCMqb5PEWjHWVWsZcO+xu/+lAZGm6ho97Ba9P6WYhPWHPDHFwx7Ltmr2vud8Ogi93yIGKeQr+G9OnEuiCYIpV/iM9a98T7X5OAqHGnbMhOt8jQQeyMA53LmpHeTaATNDZjjdltQLhKO/kEf7S2ofMlXQnu4cUDJFQcmDV0CET/5gw+HM8I2zCsfalRBRRCibP9sw7HM1UG93+gZ8UhtjTL+eb5eIOVo0sodD31Q9Sa1fQGDHQdVqWXGZ3mkhSJNQq0ssJF2e3xe1mb1V5y/aJTBLJ4k29TCP6UhKBKoZevZwynM5HuotkyViywLXMpGRx7cQcw0EyHmsuXeF6e0/uar5+8PW9PqyOUvqDMU7kEfCVwu0BW0Mq6YRQcj71XYSMAjoXJ9b1NKw7TVQOiXum7JvRIrJhlPMLKOKSxYb3iuyPe0R8OVY8U3/Dtaq41+dijVX1oBzmkS4R2t+npY+YuF+yzTEHkgCt+/ylVmcOi7GPz6K9WcIA1ggbxtB9Y0P62iBrCVFAAZdbIxuBr5rPT/mvEMlqVr0JJ898TVC6wlZMIbgW4aQQqKhB/2IZCKSe5qQh0MSautnYaIocpVKr44Eisf+lS7Yd7TAVo6/ts+51JiScTyagWOKSkfT8oRl6QoXiB33FRMsHlqmvTKXWoQLhllkL0rVpPhH04kJxybmYVfSuPSv/gxC5QEUt9TC+Gsx0k8hLQ4hK6oKhYxCUGNYJ4uOPcC06IRjPwBL0cSdMzP5iLU8a5QOaEDBh1lPJRKg6kH8WYzvuEQZBLjDXIPW+G+GvKm19ky6onJgs8wlThcmhRR5u7rXljrylhiiIdHWvoKaSlU4Gp/80zdlWj3V4AgJh7sN/sNUZpgMPMMVvxkIk3WeaFuNIykobmwY39SlaIRfv7Pp4B6GA97e6/zYGTlnjxYQmpwY9CUNNqys9Nenf6dhdsKmWingKPwVlkBAegzx9pRvKPCBMrU+revwJUtOH1dNrhUDCrNWyGefMM2K3UhWKHTvxpR8cmN02Q1Thj3pO2DboGlCIjLCUtbpmPutJdnDb5ML2v1BOx6222ePYcBv1bSirX1rwK1qSBpz2Ez5awo1adKgx1QSNi3TjLiiklj+7X4zrI9YBe1jnNjq36foWRN6anACUg0Lloy1ZDZn6ZuBC0Sfl2XNaYLkiT8F9FKIQxUjDaHI65FZdG8Wp3kQ4XMRJ1XR6u6gb4Z7SegNte0CD4zvZNiQtlosJ20PFqUczB3q0kZfR42rkue7jvnD+RyHzlJFJ9tR4rvJ76fXIFYDkz0n+i5gU4dWjOlkSL+6am9GMBx4vstJIWeMnJDcs+bRcz2Wb2yGPldWWZQll5HSSx3aMWSTXTR91TUk55tTXvW63dof0EGlxa1geEoraC9jlC2wCElG0akOeb/ROuq5EXwzq1cu8LGHf9bQf9eCrCQxttCT2c3BBnmZXQ8zq4tM2lEOC8E2hRNXNy7rdG1RDPDRAMaVBW4OeeOamAWS6jersAt/SnJPl9nerM8V4rp3aQPJt0T3REo3PTNGJiR8JYmcvN/D+VsYGPr/K8PhtOmVegA1efHxD0UMcDEN178ROmfDBYSAwKw6oaWCEvLgg6gC4XxvGmRxUppNkrtcavtlxUwmq2OtvVyf/DYfOXMiqt7h3638ZoZrKBrQ4chJJ8bY4RQbCMR4HvelWuUopI9kBpob6KSMU0/1Vvrb+qeKQAKSfvDsY0OkiU7gpKKB/MHzPtTL9IuQ3hPOi+YvG+eqnABTZ5eWCD3Zdj68xKs3VDwc8NZOJCQ40okONI5V6iGw4Xj1YrXAC/lmlqJPmDpAXDujVkP3wFOiNIQI3LgQSv5b0ymrwLjgi6SscOfC3iUusnQg727C8YrHIPS7T7gDBbWMlKVf9R8FOLL0q+vAVNgxZKWLVZ8VOFW6QxbsbSEQnhUEanRKwpZD2jKpCk3B3ASz8QPWDOWnFtT2p0sOsamUJciW91J5Ms3GgPCeFS854SdV1S4UmY31hYBBeJpfZk7cWoKfi/7fsQ+gODZJO+qujrReRqPmqo+QovvCAekJ6cjrxIv8OKb9Fjho9mrqb3bAv0I83pQc6yCg5fumDKCoJRAIJbTCERQLuB84L5YJc0a8LIjjrA0K1G4DueXgo0xs1GuEJspAhvIOh4brEH+C9Xa5JjipF3GRLnsjv6oKrKWnkrsNY//RXi0ewa7Oo1INYDpdZpab+3XW0GhQfWv71UTUKnDebugjz1WGOmmbgaUKP+GUvdVybBCgtpBBVOLfi2O4oopxsSJqSeYAsOA44O+A05nLApiuACCipEPHoL4YgJgrkPcqqyGOSPHxkgXjjVweD85uiyEIuZ4BN6WLTFlDJBvpUQaK0m4HZMv6ATmxuGRR2lx/qo44FrFWNjZpoSeVlTZlkm4KazcJ41qNVp/WA7JGVXL+384kqlf1S48jtggzCgQL1cRgE9YCOz4F+IQIW/e00CHbk44ABkQ4zULrx08tQY3IOFicBcOMJRYGG3hxmFppioF2v96rB8Ftgh+Eis/PdfAasXu+kOqk8MkbAshxnZQ15eFWk5Mcg8OzG5FRha8gvgesqUWcCvyiK13YIKp09WEFm62Mq/qKh57SKesAE45jt3avi/1DlmrN3ZoO7QfgZ0wN9afjz7k26RVSxSq1febBPVAmRut9HRb2h6AZvw8hPp8g5KNXKWt1L2r4BQarQ6WwBahfIsT5pkjfgM5+SkYhZqyiErZXNGmsoaKWJJimxEWSq7ZNgVNLRIKV7TEqH5Tekxf+a2O8kuSXY1M6aOWkVsCeenfMuNnndxl1E+x6LK4scpXDenHiieN2K6LvqiOd2SthdmCanFKvMAZlbffss3vsI3XiQEzSuhycyLHJ+en/qRrC3jxShU9cVdlNJJg1t16QI96GRk9+1PFHb2Re22CDdIOGp134yaPn40E66U83aAJPrchEXfu1NrPqlxqxnOnVlyN+PEmT1hHZvMCZwLSSWP9OwrX/MCEfZ6hm1eOBE9+EGEYDlSyNo6pKzO6KjNm9CMk3oY+F5PNDK9MrONaMrZ0qy43Mrt4kE5yATG5G5UFDwHSJoKW2MF7cFlR7vJOZwjepuVjycAojpXIEqKYnTQIvCLUxwtcW+IUzodO+8FG4ZVpzXw0DHZ6oNX7WkdlWfnykhaJXvW1rTMi6+eObT5/h1WVb7cZyPc7FNndrKMbs8b8R2utAvXRLoh0bj/KeVHaQcdQRnyzbiyRjYMGsi+dgT5aoFied++S0d28zawrHy7NHuXS0mRWlnUS/BSVyg50LgDX+DfygqToaj8Wd9zrU/kGji7GyGdejpOZY3ajhU301vcKpRaGmlsySWQmElqDZZTklr/+DCzrUiAbB/WSXJxQm3VAYkphl1WLczEZ/ZwM5aYKBs2h3IAdbm6ltza7q7xUtcowzZXadKBstu7eSkOLnTZmlvCWEpHOOHxZ5C/rxLJ82rV9vS1TyLJQk7kLf37NRd5LFcMYkBdxqiS5T2crbstpPsa3it/mETViS5e7aeYILmUojmpRi1A4CA8siFILHElQA4NbKSlDwpsQ1djvZffinaZ6QFffyaf66H47RapliN+i14HJ6pYfOti7qmK8wgIXjDLXEYOsXD9GGUZ+HDZb+4PFsQL5uK8Q+Q1ALKuhxAb5qy6EbSMmCvo+UPgExA8RSb7E1gQffd/pwB2GUnwjPepxcS3hUU2JXEeKKr9B1A/LKbKo04FeKT/65DXz33OOkZLPMyb4s5qlnAaf3jUjz7YK7sPI6eWtNh84JevQVBLZRUoTKHLKQ4KKmx5iJKvwHIX1rx0meeXZ/HB9kod90F55a60/lV2VXvAJpa+krslzm6eXSwrDvrwXBTYXn0BQi4aRntG2CaVT+Em0QGIikRznXBTdVRInjfUBWpuzGOyddFgqsEzdFT9lRG79wxpvkPxEeIc2epAr8zqmODj4WW9RKNi1kcHv6wTTjr4e/AehwvK/g2ba2aagCAJlIr/ForBCXqWxA9/i6fKKZytDZvGq0YC1dQUiIRExEs2UG79uSPD961RHGS/y5FiF4obGkULko/cHEQAID0D8XX6aA8MkTu2ZFsVce/5voK5zUsT23naZWWTJtNwtAAb5WtOyBjFFrAQVYWfyOGMYAQ=="}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Canada "}           }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1           }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"stop_sequence","stop_sequence":"is","stop_details":null,"container":null},"usage":{"input_tokens":37,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":1800,"output_tokens_details":{"thinking_tokens":1796}}     }
+
+            event: message_stop
+            data: {"type":"message_stop"         }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:00Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9ac00fcd255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=92
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-946796edd7a267744c58fd712a4993f5-1fa72a14af3b91e1-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 700ms

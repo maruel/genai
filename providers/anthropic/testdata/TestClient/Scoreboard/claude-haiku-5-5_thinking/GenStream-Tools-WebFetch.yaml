@@ -1,0 +1,290 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 360
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-5-5","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"stream":true,"system":[{"type":"text","text":"Think step by step before answering."}],"thinking":{"display":"summarized","type":"adaptive"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-haiku-5-5","id":"msg_011CgZ9tWDitcEC5jjCfoGhQ","type":"message","role":"assistant","content":[],"container":null,"stop_reason":null,"stop_sequence":null,"stop_details":null,"usage":{"input_tokens":1079,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":24,"service_tier":"standard","inference_geo":"global","speed":"standard"},"diagnostics":null}           }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"server_tool_use","id":"srvtoolu_01UU3TqU9eZaajyu1si8P4zQ","name":"web_fetch","input":{}}               }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":""} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{\"url\":"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":" \"https"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"://perd"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"u.com\"}"}          }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0             }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_01UU3TqU9eZaajyu1si8P4zQ","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-10-30T21:45:25+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"---\ntitle: Vous Etes Perdu ?\n---\n\n# Perdu sur l'Internet ?\n\n## Pas de panique, on va vous aider\n\n**`* <----- vous êtes ici`**"},"title":"Vous Etes Perdu ?"}},"caller":{"type":"direct"}}       }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"thinking","thinking":"","signature":""}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"I'm going"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" to ke"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"ep this"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" one"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" simple: the"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" page"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" is short"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" and"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" qu"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"oting it is"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" fine, so I'll summ"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"arize it,"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" translate it, and give the text"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" as"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" it"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":" st"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"ands."}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"thinking_delta","thinking":"\n\n"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"signature_delta","signature":"CAQS/QUKEAgTGAI4AUIIdGhpbmtpbmcSDC7iTFIJRriKsMOZQhoMHiIPrAr3uSewUyThIjAKlASi6vUTriFRqI/5jZ4ANcG3ERNx0kNLwcd4DlBSHn0niwOpiDcBfMxEg6vgU/gqmgX12ylVEc+/EemrzGkez5q1GWLdeRaJhLUx0P5GaehSBQcDrGNjffFIeYiC94Pl/Tf7Q4M+y/J588GcTSL8qTJNFZMm/ScA/Z6SrlfUBMbvHjdVGlqaQrsUwaVdgqQAZ6BQtkWGFsLpoHyYIG4T5U/rYVpsA+oia/9F/1yc6menXfmGHHTWKCsjCnIACyHJVfRK7KYVUY9mqcFRx+49AD5vQILYQaSyfPRsXPHxK3gxBBqiXSrNU8/o7s/ov//5oKR3WH8Zsb8oy9N8DKmrLeWpvY9dX4DbkMIKqo4bBs0RgG6JOZp8c12pSzWLLbuokDggv1Nm7RU7j0/xwCxU2qde+7MvjaY6jJASzV1Y49wco2tCb49cJp2TiORQqAMYouci8wNx4UUJjCDHDk5rhaIZTEMQzhK5JcrKIElD/rgZhHPlbanMVMHFWkH/4ejwUZ0l6JDGVtLrzTaSQzdrUw4LDM8y6vKH4IFj8a6WxyOfJqSxUXcAqTn7UlRNaA6s6V+IiBLN4JZwOcmoI1cZTQyDnV1OCv7JbvHnP46twwUp2du1m5ZrhUyfEttQIDTnzqZCdCBXjnWJuOZ0R5BVMDOzRADgxHFm2hf1dHKdb5YUs1S98KBMOQS+BHg7bAPBmwKWwHcwpcihIwaYwKSfoKgf+3miMsC1Y+fpgbMaXdeUTQwEOFDDYZD/6ath8kIQbho99OZ0lEhRmQFrtbvH6x2Ax8KMeSonYQHIyEGAc82HJJ76hLyYMwcYE60Bmf37kfkLIaAD3QpKxzAjMGS+2VSZj6vcgkUM8HsPyPdpb1+AyQUFQcsI9kc+XICaLxL5nGM9gIa0gpSL4eVl5XKmEPN9Y0V8QfjXJMsE7rYnRIRa8kD8PL+M2EK1QMMYAQ=="}             }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"The page is"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" short"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"."}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" It says"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":":\n\n- **Title:**"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" \"Vous Etes"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" Perdu ?\" (French"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" for"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" \"Are you lost?\")"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\n- **Heading:**"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" \"Perdu sur l"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"'Internet ?\" "}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"(\"L"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ost on the Internet?\")"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\n- **Subheading:"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"** \"Pas de panique"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":", on va"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" vous aider\" (\""}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Don't panic, we're"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" going to help you\")\n- **"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Line:** \"`* <"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"----- vous êtes "}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ici`\" (\"you"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" are here,\""}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" with an arrow pointing"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" to"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" the as"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"terisk)\n\nIt's a"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" l"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"igh"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"thearted joke page for"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" people who have land"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ed on it"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" by accident."}  }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":3     }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null,"stop_details":null,"container":null},"usage":{"input_tokens":2346,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":296,"output_tokens_details":{"thinking_tokens":58},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}}             }
+
+            event: message_stop
+            data: {"type":"message_stop"        }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "10000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "9999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-10-30T21:45:27Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-10-30T21:45:27Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "45000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "44999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-10-30T21:45:27Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "12000000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "11999000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-10-30T21:45:27Z"
+            Anthropic-Workspace-Id:
+                - wrkspc_01M16ySPkmBfNcXwnWXUdSUp
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52d9b679a67255a-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=92
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Traceresponse:
+                - 00-54fa085142f99f81092d711d7b19bcef-c6c661a34958f1ef-01
+            Vary:
+                - Accept-Encoding
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 525ms

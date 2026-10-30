@@ -191,7 +191,8 @@ func TestClient(t *testing.T) {
 		for _, m := range genaiModels {
 			id := m.GetID()
 			models = append(models, scoreboard.Model{Model: id})
-			if strings.HasPrefix(id, "claude-sonnet") || strings.HasPrefix(id, "claude-opus") {
+			am := m.(*anthropic.Model)
+			if am.Capabilities.Thinking.Types.Enabled.Supported || am.Capabilities.Thinking.Types.Adaptive.Supported {
 				models = append(models, scoreboard.Model{Model: id, Reason: true})
 			}
 		}

@@ -142,6 +142,74 @@
     },
     {
       "models": [
+        "claude-haiku-5-5"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "webSearch": true,
+        "webFetch": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "webSearch": true,
+        "webFetch": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
         "claude-haiku-4-5-20251001"
       ],
       "in": {

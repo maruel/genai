@@ -17,13 +17,12 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 743
-        body: '{"object":"list","data":[{"id":"deepseek-flash","object":"model","owned_by":"deepseek","name":"DeepSeek-V4.1-Flash","context_window":1048576,"max_output_tokens":393216,"input_modalities":["text","image"],"output_modalities":["text"],"effort":{"supported_levels":["low","high","max"],"default_level":"high"},"api_capabilities":{"anthropic_messages":{"system_prompt_update":"in-history"}}},{"id":"deepseek-v4-pro","object":"model","owned_by":"deepseek","name":"DeepSeek-V4-Pro","context_window":1048576,"max_output_tokens":393216,"input_modalities":["text"],"output_modalities":["text"],"effort":{"supported_levels":["low","high","max"],"default_level":"high"},"api_capabilities":{"anthropic_messages":{"system_prompt_update":"leading-only"}}}]}'
+        content_length: -1
+        uncompressed: true
+        body: '{"object":"list","data":[{"id":"deepseek-flash","object":"model","owned_by":"deepseek","name":"DeepSeek-V4.1-Flash","context_window":1048576,"max_output_tokens":393216,"input_modalities":["text","image"],"output_modalities":["text"],"effort":{"supported_levels":["low","high","max"],"default_level":"high"},"api_capabilities":{"anthropic_messages":{"system_prompt_update":"in-history","tool_update":"addition-only"}}},{"id":"deepseek-v4-pro","object":"model","owned_by":"deepseek","name":"DeepSeek-V4-Pro","context_window":1048576,"max_output_tokens":393216,"input_modalities":["text"],"output_modalities":["text"],"effort":{"supported_levels":["low","high","max"],"default_level":"high"},"api_capabilities":{"anthropic_messages":{"system_prompt_update":"leading-only","tool_update":"leading-only"}}}]}'
         headers:
             Access-Control-Allow-Credentials:
                 - "true"
-            Content-Length:
-                - "743"
             Content-Type:
                 - application/json
             Server:
@@ -31,11 +30,12 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
             Vary:
+                - accept-encoding
                 - origin, access-control-request-method, access-control-request-headers
             Via:
-                - 1.1 f0f239c25f8c987fec1b377e81642e4e.cloudfront.net (CloudFront)
+                - 1.1 062c205794aface283d51d70d795ddde.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - Zzk9N-dZdXOJeNJXS9y3Fqsv4i2r6m7X_qVyz44O211mLRkHE8PdVA==
+                - gtYiUi0NfaCNzESmgsLkt4a91qyqr2rLVO1b2LJLW8iRLYAOMp09yg==
             X-Amz-Cf-Pop:
                 - YUL62-P4
             X-Cache:
@@ -44,4 +44,4 @@ interactions:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 356ms
+        duration: 354ms

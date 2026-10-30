@@ -25,7 +25,10 @@
 | @cf/black-forest-labs/flux-2-klein-4b         | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/black-forest-labs/flux-2-klein-9b         | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/bytedance/stable-diffusion-xl-lightning   | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| @cf/cloudflare/clairic                        | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/cloudflare/clef                           | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| @cf/cloudflare/clef-omni                      | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| @cf/daily-co/phonellm-mini-alpha-2            | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/deepgram/aura-1                           | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/deepgram/aura-2-en                        | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/deepgram/aura-2-es                        | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -34,6 +37,7 @@
 | @cf/deepseek-ai/deepseek-math-7b-instruct     | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/deepseek-ai/deepseek-v4-flash-0731        | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/deepseek-ai/deepseek-v4-pro-0813          | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| @cf/deepseek-ai/deepseek-v4.1-flash-1017      | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/defog/sqlcoder-7b-2                       | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/facebook/bart-large-cnn                   | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/fblgit/una-cybertron-7b-v2-bf16           | ?         | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

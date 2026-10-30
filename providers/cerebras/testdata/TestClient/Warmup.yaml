@@ -26,7 +26,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a447a3377b4ba2c4-YUL
+                - a52dc4609f93a210-YYZ
             Content-Type:
                 - application/json
             Referrer-Policy:
@@ -35,11 +35,11 @@ interactions:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=13,cfOrigin;dur=47
+                - cfEdge;dur=36,cfOrigin;dur=8
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 125ms
+        duration: 106ms

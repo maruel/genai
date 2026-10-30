@@ -427,6 +427,24 @@ interactions:
                   "thinking": true
                 },
                 {
+                  "name": "models/gemini-nano-banana-2.1",
+                  "version": "3.0",
+                  "displayName": "Nano Banana 2.1",
+                  "description": "Gemini Nano Banana 2.1.",
+                  "inputTokenLimit": 65536,
+                  "outputTokenLimit": 65536,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 1,
+                  "thinking": true
+                },
+                {
                   "name": "models/gemini-3.5-flash",
                   "version": "3.5-flash-05-2026",
                   "displayName": "Gemini 3.5 Flash",
@@ -512,8 +530,7 @@ interactions:
                   "temperature": 1,
                   "topP": 0.95,
                   "topK": 64,
-                  "maxTemperature": 2,
-                  "thinking": true
+                  "maxTemperature": 2
                 },
                 {
                   "name": "models/gemini-3.6-flash",
@@ -564,6 +581,24 @@ interactions:
                     "generateContent",
                     "countTokens",
                     "createCachedContent",
+                    "batchGenerateContent"
+                  ],
+                  "temperature": 1,
+                  "topP": 0.95,
+                  "topK": 64,
+                  "maxTemperature": 2,
+                  "thinking": true
+                },
+                {
+                  "name": "models/gemini-4-argon",
+                  "version": "3.0",
+                  "displayName": "Gemini 4 Argon",
+                  "description": "Gemini 4 Argon",
+                  "inputTokenLimit": 1048576,
+                  "outputTokenLimit": 32768,
+                  "supportedGenerationMethods": [
+                    "generateContent",
+                    "countTokens",
                     "batchGenerateContent"
                   ],
                   "temperature": 1,
@@ -635,8 +670,7 @@ interactions:
                   "temperature": 1,
                   "topP": 0.95,
                   "topK": 64,
-                  "maxTemperature": 2,
-                  "thinking": true
+                  "maxTemperature": 2
                 },
                 {
                   "name": "models/gemini-3.8-flash-tts",
@@ -781,8 +815,8 @@ interactions:
                 {
                   "name": "models/deep-research-pro-preview-12-2025",
                   "version": "deepthink-exp-05-20",
-                  "displayName": "Deep Research Pro Preview (Dec-12-2025)",
-                  "description": "Preview release (December 12th, 2025) of Deep Research Pro",
+                  "displayName": "Deep Research Pro Preview (Dec-12-2025) [Rerouted]",
+                  "description": "Deprecated preview agent; automatically rerouting traffic to deep-research-preview-04-2026.",
                   "inputTokenLimit": 131072,
                   "outputTokenLimit": 65536,
                   "supportedGenerationMethods": [
@@ -850,39 +884,6 @@ interactions:
                   "temperature": 0.2,
                   "topP": 1,
                   "topK": 40
-                },
-                {
-                  "name": "models/veo-3.1-generate-preview",
-                  "version": "3.1",
-                  "displayName": "Veo 3.1",
-                  "description": "Veo 3.1",
-                  "inputTokenLimit": 480,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "predictLongRunning"
-                  ]
-                },
-                {
-                  "name": "models/veo-3.1-fast-generate-preview",
-                  "version": "3.1",
-                  "displayName": "Veo 3.1 fast",
-                  "description": "Veo 3.1 fast",
-                  "inputTokenLimit": 480,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "predictLongRunning"
-                  ]
-                },
-                {
-                  "name": "models/veo-3.1-lite-generate-preview",
-                  "version": "3.1",
-                  "displayName": "Veo 3.1 lite",
-                  "description": "Veo 3.1 lite",
-                  "inputTokenLimit": 480,
-                  "outputTokenLimit": 8192,
-                  "supportedGenerationMethods": [
-                    "predictLongRunning"
-                  ]
                 },
                 {
                   "name": "models/gemini-3.5-transcribe-live",
@@ -1047,7 +1048,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=87
+                - gfet4t7; dur=119
             Vary:
                 - Origin
                 - X-Origin
@@ -1060,4 +1061,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 133ms
+        duration: 169ms

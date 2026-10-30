@@ -19,6 +19,8 @@
 | gemini-3.8-flash-tts                          | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.8-live                               | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.8-live-extended-thinking             | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-4-argon                                | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-nano-banana-2.1                        | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-omni-1.1-flash                         | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-omni-flash-preview                     | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-2-preview                  | ?       | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -143,7 +143,18 @@ func TestClient(t *testing.T) {
 		sbModels := make([]scoreboard.Model, 0, len(cachedModels))
 		for _, m := range cachedModels {
 			id := m.GetID()
-			sbModels = append(sbModels, scoreboard.Model{Model: id, Reason: id == "deepseek-reasoning"})
+			name := id[strings.LastIndexByte(id, '/')+1:]
+			if strings.HasPrefix(name, "gpt-5") {
+				continue
+			}
+			reason := id == "deepseek-reasoning"
+			for _, sc := range cl.Scoreboard().Scenarios {
+				if sc.Reason && slices.Contains(sc.Models, id) {
+					reason = true
+					break
+				}
+			}
+			sbModels = append(sbModels, scoreboard.Model{Model: id, Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{
@@ -182,9 +193,13 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records, nil)
 	})
 
-	// Note: Skipping Preferred test as pollinations is a router to multiple backends
-	// and preferred model selection is handled dynamically by the provider's
-	// selectBestTextModel/selectBestImageModel logic rather than static scoreboard entries.
+	t.Run("Preferred", func(t *testing.T) {
+		internaltest.TestPreferredModels(t, func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+			return getClientInner(t, &providerOptions{Model: model, OutputModalities: genai.Modalities{modality}, PreloadedModels: cachedModels}, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
+		})
+	})
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {

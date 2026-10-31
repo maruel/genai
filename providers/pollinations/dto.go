@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -302,6 +302,9 @@ type Content struct {
 		Data   []byte `json:"data,omitzero"`   // base64 encoded audio
 		Format string `json:"format,omitzero"` // "wav"
 	} `json:"input_audio,omitzero"`
+
+	// Type == "file"
+	File FileContent `json:"file,omitzero"`
 }
 
 // FromRequest converts from a genai request.
@@ -327,7 +330,18 @@ func (c *Content) FromRequest(in *genai.Request) error {
 			default:
 				return fmt.Errorf("implement mime type %s conversion", mimeType)
 			}
-		case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
+		case mimeType == "application/pdf":
+			c.Type = ContentFile
+			c.File.Filename = in.Doc.GetFilename()
+			if c.File.Filename == "" {
+				c.File.Filename = "document.pdf"
+			}
+			if in.Doc.URL != "" {
+				c.File.URL = in.Doc.URL
+			} else {
+				c.File.Data = "data:application/pdf;base64," + base64.StdEncoding.EncodeToString(data)
+			}
+		case strings.HasPrefix(mimeType, "image/") || mimeType == "" && in.Doc.URL != "":
 			c.Type = ContentImageURL
 			if in.Doc.URL == "" {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
@@ -372,7 +386,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			default:
 				return fmt.Errorf("implement mime type %s conversion", mimeType)
 			}
-		case strings.HasPrefix(mimeType, "image/") || in.Doc.URL != "":
+		case strings.HasPrefix(mimeType, "image/") || mimeType == "" && in.Doc.URL != "":
 			c.Type = ContentImageURL
 			if in.Doc.URL == "" {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
@@ -394,6 +408,13 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// FileContent is a PDF attachment supplied inline or by URL.
+type FileContent struct {
+	Filename string `json:"filename,omitzero"`
+	Data     string `json:"file_data,omitzero"` // PDF data URI.
+	URL      string `json:"file_url,omitzero"`
+}
+
 // ContentType is a provider-specific content type.
 type ContentType string
 
@@ -402,6 +423,7 @@ const (
 	ContentText     ContentType = "text"
 	ContentImageURL ContentType = "image_url"
 	ContentAudio    ContentType = "input_audio"
+	ContentFile     ContentType = "file"
 )
 
 // Tool is a provider-specific tool definition.
@@ -545,10 +567,11 @@ type Usage struct {
 		TextTokens               int64 `json:"text_tokens"`
 	} `json:"completion_tokens_details"`
 	PromptTokensDetails struct {
-		AudioTokens  int64 `json:"audio_tokens"`
-		CachedTokens int64 `json:"cached_tokens"`
-		ImageTokens  int64 `json:"image_tokens"`
-		TextTokens   int64 `json:"text_tokens"`
+		AudioTokens      int64 `json:"audio_tokens"`
+		CacheWriteTokens int64 `json:"cache_write_tokens,omitzero"`
+		CachedTokens     int64 `json:"cached_tokens"`
+		ImageTokens      int64 `json:"image_tokens"`
+		TextTokens       int64 `json:"text_tokens"`
 	} `json:"prompt_tokens_details"`
 }
 
@@ -930,6 +953,7 @@ type TextModel struct {
 	Title                  string   `json:"title"`
 	Tools                  bool     `json:"tools"`
 	Uncensored             bool     `json:"uncensored"`
+	Verified               bool     `json:"verified,omitzero"` // Agent published by an official Pollinations account.
 	Vision                 bool     `json:"vision"`
 	Voices                 []string `json:"voices"`
 	RequiredSafety         []string `json:"required_safety,omitzero"`

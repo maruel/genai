@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 757
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_ERfpMAWvGDm0RRQrojuMwm4h","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_ERfpMAWvGDm0RRQrojuMwm4h"}],"model":"openai/gpt-6-luna","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_033bde5986ba870c016ae54fc2917481948e8319fd3ae70799","object":"chat.completion","created":1793413058,"model":"gpt-6-luna","choices":[{"index":0,"message":{"role":"assistant","content":"genai-smoke"},"finish_reason":"stop"}],"usage":{"prompt_tokens":89,"completion_tokens":8,"total_tokens":97,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f2a18392a31ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:17:39.187Z"
+            X-Cache-Key:
+                - 12c80a89e1405110
+            X-Model-Requested:
+                - openai/gpt-6-luna
+            X-Model-Used:
+                - openai/gpt-6-luna
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "8"
+            X-Usage-Prompt-Text-Tokens:
+                - "89"
+        status: 200 OK
+        code: 200
+        duration: 2.876s

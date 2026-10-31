@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -199,34 +199,23 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	for _, mdl := range mdls {
-		m := mdl.(*TextModel)
-		if m.Audio || strings.HasSuffix(m.Name, "roblox") {
-			continue
-		}
-		// This is meh.
-		switch {
-		case cheap:
-			if m.Name == "openai/gpt-5.4-nano" {
-				selectedModel = m.Name
-			}
-		case good:
-			if strings.HasPrefix(m.Name, "openai") && !m.Reasoning {
-				selectedModel = m.Name
-			}
-		default:
-			if !strings.HasPrefix(m.Name, "openai") && m.Reasoning {
-				selectedModel = m.Name
+	var preferred []string
+	switch preference {
+	case string(genai.ModelCheap):
+		preferred = []string{"openai/gpt-6-luna"}
+	case string(genai.ModelGood), "":
+		preferred = []string{"openai/gpt-6.1-terra", "openai/gpt-6.1-sol", "openai/gpt-6-sol"}
+	default:
+		preferred = []string{"openai/gpt-6-astra"}
+	}
+	for _, id := range preferred {
+		for _, m := range mdls {
+			if m.GetID() == id {
+				return id, nil
 			}
 		}
 	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
+	return "", errors.New("failed to find a model automatically")
 }
 
 // selectBestImageModel selects the most appropriate image model.

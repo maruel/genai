@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 610
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"openai/gpt-6-luna","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"resp_07b63eae5666a3f4016ae54fb4ca60819784d920092fb6c86f","object":"chat.completion.chunk","created":1793413044,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_07b63eae5666a3f4016ae54fb4ca60819784d920092fb6c86f","object":"chat.completion.chunk","created":1793413044,"model":"gpt-6-luna","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_KA7FWHM2rWBV7PametuMJzFD","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_07b63eae5666a3f4016ae54fb4ca60819784d920092fb6c86f","object":"chat.completion.chunk","created":1793413044,"model":"gpt-6-luna","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}]}
+
+            data: {"id":"resp_07b63eae5666a3f4016ae54fb4ca60819784d920092fb6c86f","object":"chat.completion.chunk","created":1793413044,"model":"gpt-6-luna","choices":[],"usage":{"prompt_tokens":77,"completion_tokens":18,"total_tokens":95,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f29c73c0531ac-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Key:
+                - 9986b074e7e68523
+            X-Model-Requested:
+                - openai/gpt-6-luna
+            X-Model-Used:
+                - openai/gpt-6-luna
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 200 OK
+        code: 200
+        duration: 1.036s

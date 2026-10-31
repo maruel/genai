@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1462
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_gF59NxJMG2edkbvOtO6Kx72O","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","id":"call_4ywtS8BoBj73vFNtvy5FGySe","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","id":"call_6UX9NAUwrhv8TL3UdCS5dVXO","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-6.1-terra","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 516
+        body: '{"success":false,"error":{"message":"No tool output found for function call call_gF59NxJMG2edkbvOtO6Kx72O.","code":"BAD_REQUEST","timestamp":"2026-10-31T02:16:21.027Z","details":{"name":"UpstreamError","upstreamStatus":400,"upstreamHost":"myceli-prod-eastus.openai.azure.com","upstreamBody":"{\n  \"error\": {\n    \"message\": \"No tool output found for function call call_gF59NxJMG2edkbvOtO6Kx72O.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"input\",\n    \"code\": null\n  }\n}"}},"status":400}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cf-Ray:
+                - a52f282f1f7631ac-YUL
+            Content-Length:
+                - "516"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 400 Bad Request
+        code: 400
+        duration: 2.073s

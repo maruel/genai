@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 601
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"openai/gpt-6-luna","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_0177f21a8159672e016ae54fb7f31c8193b13ae98668166c8a","object":"chat.completion","created":1793413047,"model":"gpt-6-luna","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_iYQYblXPqt51HKROnwP8fsYf","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":73,"completion_tokens":19,"total_tokens":92,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f29d4aa0031ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:17:29.050Z"
+            X-Cache-Key:
+                - e1e60f64e932e9ba
+            X-Model-Requested:
+                - openai/gpt-6-luna
+            X-Model-Used:
+                - openai/gpt-6-luna
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "19"
+            X-Usage-Prompt-Text-Tokens:
+                - "73"
+        status: 200 OK
+        code: 200
+        duration: 3.645s

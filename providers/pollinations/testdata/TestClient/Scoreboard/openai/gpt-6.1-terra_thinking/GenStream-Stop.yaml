@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 215
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"model":"openai/gpt-6.1-terra","stream":true,"private":true,"stop":["is"],"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 261
+        body: '{"success":false,"error":{"message":"stop is not supported by this model''s stateless Responses adapter","code":"unsupported_parameter","timestamp":"2026-10-31T02:15:44.021Z","details":{"name":"UpstreamError","upstreamBody":"{\"param\":\"stop\"}"}},"status":400}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cf-Ray:
+                - a52f2751ceb031ac-YUL
+            Content-Length:
+                - "261"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 400 Bad Request
+        code: 400
+        duration: 412ms

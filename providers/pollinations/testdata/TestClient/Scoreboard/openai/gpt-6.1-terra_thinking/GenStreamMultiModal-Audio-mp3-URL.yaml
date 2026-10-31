@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"input_audio","input_audio":{"format":"mp3"}}]}],"model":"openai/gpt-6.1-terra","stream":true,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 242
+        body: '{"success":false,"error":{"message":"Unsupported Chat content part: input_audio","code":"unsupported_parameter","timestamp":"2026-10-31T02:16:16.339Z","details":{"name":"UpstreamError","upstreamBody":"{\"param\":\"messages\"}"}},"status":400}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cf-Ray:
+                - a52f281bfa7f31ac-YUL
+            Content-Length:
+                - "242"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 400 Bad Request
+        code: 400
+        duration: 361ms

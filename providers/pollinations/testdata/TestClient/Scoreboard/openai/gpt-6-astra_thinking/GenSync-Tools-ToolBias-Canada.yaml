@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 612
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"openai/gpt-6-astra","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_01b4637490bb26ed016ae55017f3ec8194ac29342b7d639224","object":"chat.completion","created":1793413144,"model":"gpt-6-astra","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_XmDxrQc57onLX9puXToENHOx","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":77,"completion_tokens":18,"total_tokens":95,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f2c2aad1131ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:19:06.338Z"
+            X-Cache-Key:
+                - c63276eaec7135a4
+            X-Model-Requested:
+                - openai/gpt-6-astra
+            X-Model-Used:
+                - openai/gpt-6-astra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "18"
+            X-Usage-Prompt-Text-Tokens:
+                - "77"
+        status: 200 OK
+        code: 200
+        duration: 4.927s

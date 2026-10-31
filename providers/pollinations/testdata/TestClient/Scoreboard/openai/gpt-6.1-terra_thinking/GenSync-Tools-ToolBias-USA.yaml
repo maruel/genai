@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 614
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"openai/gpt-6.1-terra","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_006992bfd5267b39016ae54f6c30b0819486b2a765c48eb2b9","object":"chat.completion","created":1793412972,"model":"gpt-6.1-terra","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_qJiEKZ7dFnIKgFMFTHw84box","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":77,"completion_tokens":68,"total_tokens":145,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":48,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f27fc1e0b31ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:16:13.539Z"
+            X-Cache-Key:
+                - ffe21c470e88106c
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Model-Used:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Reasoning-Tokens:
+                - "48"
+            X-Usage-Completion-Text-Tokens:
+                - "20"
+            X-Usage-Prompt-Text-Tokens:
+                - "77"
+        status: 200 OK
+        code: 200
+        duration: 3.384s

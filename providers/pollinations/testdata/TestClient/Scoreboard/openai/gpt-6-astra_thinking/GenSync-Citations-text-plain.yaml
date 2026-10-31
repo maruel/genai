@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"openai/gpt-6-astra","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_02266e0c833348dd016ae55025d2d88197988b4ab795e5a8c4","object":"chat.completion","created":1793413157,"model":"gpt-6-astra","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is Quack."},"finish_reason":"stop"}],"usage":{"prompt_tokens":35,"completion_tokens":14,"total_tokens":49,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f2c85a91931ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:19:18.806Z"
+            X-Cache-Key:
+                - 75b2db9da83bcd61
+            X-Model-Requested:
+                - openai/gpt-6-astra
+            X-Model-Used:
+                - openai/gpt-6-astra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "14"
+            X-Usage-Prompt-Text-Tokens:
+                - "35"
+        status: 200 OK
+        code: 200
+        duration: 2.892s

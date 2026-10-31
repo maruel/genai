@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 759
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_BGv8JvfUTkAmaD7sCrD4Mke2","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_BGv8JvfUTkAmaD7sCrD4Mke2"}],"model":"openai/gpt-6.1-terra","stream":true,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"delta":{"content":"gen"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"delta":{"content":"ai"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"delta":{"content":"-sm"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"delta":{"content":"oke"},"finish_reason":null}],"usage":null}
+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+            data: {"id":"resp_0d6545a1888adc11016ae54f57480881978e1f89ca364e9f5f","object":"chat.completion.chunk","created":1793412951,"model":"gpt-6.1-terra","choices":[],"usage":{"prompt_tokens":89,"completion_tokens":8,"total_tokens":97,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f277c0e6d31ac-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Key:
+                - 9fb518edac7519d1
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Model-Used:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 200 OK
+        code: 200
+        duration: 1.555s

@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 348
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"model":"openai/gpt-6-astra","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_040c78ac60c4f282016ae550480c3881949e6d28527d506055","object":"chat.completion","created":1793413192,"model":"gpt-6-astra","choices":[{"index":0,"message":{"role":"assistant","content":"Banana"},"finish_reason":"stop"}],"usage":{"prompt_tokens":150,"completion_tokens":6,"total_tokens":156,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f2d586ee731ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:19:53.075Z"
+            X-Cache-Key:
+                - 375cd965ba15171a
+            X-Model-Requested:
+                - openai/gpt-6-astra
+            X-Model-Used:
+                - openai/gpt-6-astra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "6"
+            X-Usage-Prompt-Text-Tokens:
+                - "150"
+        status: 200 OK
+        code: 200
+        duration: 3.382s

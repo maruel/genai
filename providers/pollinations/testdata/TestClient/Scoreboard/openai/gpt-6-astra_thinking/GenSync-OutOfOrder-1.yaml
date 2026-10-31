@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 789
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"model":"openai/gpt-6-astra","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_07feddb60b609622016ae55020e2b481909b215b5b83b38f09","object":"chat.completion","created":1793413152,"model":"gpt-6-astra","choices":[{"index":0,"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1gkM4mnT3qiBmDhyeEQBH9Qn","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"id":"call_RzFew2Vk0klzB9FUAsP46qkA","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"id":"call_D3iJvakLnbSKBn4YHep7hVhl","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":110,"completion_tokens":65,"total_tokens":175,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f2c66799531ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:19:14.706Z"
+            X-Cache-Key:
+                - e6b31dd4af470625
+            X-Model-Requested:
+                - openai/gpt-6-astra
+            X-Model-Used:
+                - openai/gpt-6-astra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "65"
+            X-Usage-Prompt-Text-Tokens:
+                - "110"
+        status: 200 OK
+        code: 200
+        duration: 3.753s

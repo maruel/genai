@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 843
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_xYZxS6MV2KS0T1RdzY9lAFDx","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_xYZxS6MV2KS0T1RdzY9lAFDx"}],"model":"openai/gpt-6.1-terra","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_0cc39ada8bf89a8a016ae54f5e9650819581539748573ba69b","object":"chat.completion","created":1793412958,"model":"gpt-6.1-terra","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"finish_reason":"stop"}],"usage":{"prompt_tokens":106,"completion_tokens":26,"total_tokens":132,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":17,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f27a4197c31ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:15:59.806Z"
+            X-Cache-Key:
+                - 95abd6a506e1a415
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Model-Used:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Reasoning-Tokens:
+                - "17"
+            X-Usage-Completion-Text-Tokens:
+                - "9"
+            X-Usage-Prompt-Text-Tokens:
+                - "106"
+        status: 200 OK
+        code: 200
+        duration: 3.732s

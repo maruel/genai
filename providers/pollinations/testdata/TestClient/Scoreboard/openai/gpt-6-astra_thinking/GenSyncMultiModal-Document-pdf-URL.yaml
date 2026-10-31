@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 371
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"file","file":{"filename":"document.pdf","file_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"model":"openai/gpt-6-astra","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 518
+        body: '{"success":false,"error":{"message":"Missing required parameter: ''input[0].content[1]''.","code":"BAD_REQUEST","timestamp":"2026-10-31T02:21:24.135Z","details":{"name":"UpstreamError","upstreamStatus":400,"upstreamHost":"myceli-prod-eastus.openai.azure.com","upstreamBody":"{\n  \"error\": {\n    \"message\": \"Missing required parameter: ''input[0].content[1]''.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"input[0].content[1]\",\n    \"code\": \"missing_required_parameter\"\n  }\n}"}},"status":400}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cf-Ray:
+                - a52f2f956dd553f0-YUL
+            Content-Length:
+                - "518"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Model-Requested:
+                - openai/gpt-6-astra
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 400 Bad Request
+        code: 400
+        duration: 2.108s

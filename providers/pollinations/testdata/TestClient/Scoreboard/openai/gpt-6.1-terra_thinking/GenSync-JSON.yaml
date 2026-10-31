@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        host: gen.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"openai/gpt-6.1-terra","stream":false,"response_format":{"type":"json_object"},"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://gen.pollinations.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"resp_0dfc1fd49db9acb8016ae54f571e8c8194bed3ad21d828e5f2","object":"chat.completion","created":1793412951,"model":"gpt-6.1-terra","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\":true}"},"finish_reason":"stop"}],"usage":{"prompt_tokens":35,"completion_tokens":14,"total_tokens":49,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"image_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Cache-Control:
+                - public, max-age=31536000, immutable
+            Cf-Ray:
+                - a52f2771eb5631ac-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - cloudflare
+            X-Cache:
+                - MISS
+            X-Cache-Date:
+                - "2026-10-31T02:15:51.831Z"
+            X-Cache-Key:
+                - ec20427f39329c05
+            X-Model-Requested:
+                - openai/gpt-6.1-terra
+            X-Model-Used:
+                - openai/gpt-6.1-terra
+            X-Robots-Tag:
+                - noindex, nofollow
+            X-Usage-Completion-Text-Tokens:
+                - "14"
+            X-Usage-Prompt-Text-Tokens:
+                - "35"
+        status: 200 OK
+        code: 200
+        duration: 3.851s

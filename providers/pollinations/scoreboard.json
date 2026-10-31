@@ -8,30 +8,123 @@
   "scenarios": [
     {
       "models": [
-        "black-forest-labs/flux.2-klein-4b"
+        "openai/gpt-6-astra"
       ],
+      "sota": true,
+      "reason": true,
       "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
       },
       "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
+        "text": {
+          "inline": true
         }
       },
       "GenSync": {
-        "seed": true
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true
       }
     },
     {
       "models": [
-        "openai/gpt-5.4-nano"
+        "openai/gpt-6.1-terra"
       ],
+      "good": true,
+      "reason": true,
       "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true
+      }
+    },
+    {
+      "models": [
+        "openai/gpt-6-luna"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
         "image": {
           "inline": true,
           "url": true,
@@ -59,8 +152,7 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
-        "json": true,
-        "maxTokens": true
+        "json": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
@@ -70,8 +162,28 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
-        "json": true,
-        "maxTokens": true
+        "json": true
+      }
+    },
+    {
+      "models": [
+        "black-forest-labs/flux.2-klein-4b"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
       }
     },
     {
@@ -239,18 +351,21 @@
         "community/AkshayCoder48/perplexity-search",
         "community/AkshayCoder48/poolside-laguna-s-2.1:free",
         "community/AkshayCoder48/qwen",
+        "community/Catniti/agnes-3.0-flash",
         "community/Catniti/agnes-image-2.5-flash",
         "community/Catniti/catniti-ai-agent",
         "community/Catniti/claude-sonnet-4",
         "community/Catniti/deepseek-r1:free",
         "community/Catniti/gemini-2.5-pro",
         "community/Catniti/gemini-3.6-flash",
+        "community/Catniti/glm-5.3-flash",
         "community/Catniti/gpt-5.2",
         "community/Catniti/gpt-5.4-mini",
         "community/Catniti/gpt-6-astra",
         "community/Catniti/grok-4-fast",
         "community/Catniti/llama3-8b",
         "community/Catniti/minimax-m2.7",
+        "community/Catniti/muse-glimmer-30b",
         "community/Catniti/nemotron-3.5-lightning",
         "community/Catniti/qwen3.7-flash",
         "community/CloudCompile/agnes-image-2.0-flash",
@@ -261,8 +376,12 @@
         "community/CloudCompile/glm-5.3",
         "community/CloudCompile/moondream3.1",
         "community/CloudCompile/pollinations-code-agent-but-weird",
+        "community/CloudCompile/reflection-beam-free",
         "community/CloudCompile/sdxl-lightning",
         "community/Creatneworld/pen",
+        "community/Davizigjojo/blazerrouter",
+        "community/Derlifed/retail-fastfood-interview-coach",
+        "community/Guest453/idea-judge",
         "community/Guest453/show-your-work",
         "community/JustScriptzz/agnes-2.5-flash",
         "community/JustScriptzz/deepseek-v4-pro",
@@ -281,8 +400,11 @@
         "community/MarcosFRG/flux-2-klein-4b",
         "community/MarcosFRG/gemini-2.5-flash-lite",
         "community/MarcosFRG/gemini-3-flash-preview",
+        "community/MarcosFRG/gemma-4-31b",
+        "community/MarcosFRG/glm-4.6v-flash",
         "community/MarcosFRG/glm-5.3",
         "community/MarcosFRG/glm-5.3-flash",
+        "community/MarcosFRG/lucid-origin",
         "community/MarcosFRG/metraxai",
         "community/MarcosFRG/mimo-v2.5",
         "community/MarcosFRG/moondream-3.1",
@@ -291,6 +413,17 @@
         "community/MarcosFRG/qwen3.8-27b",
         "community/MarcosFRG/qwen3.8-flash",
         "community/MarcosFRG/sdxl-lightning",
+        "community/Marcus-Mok-GH/pt-copperline",
+        "community/Marcus-Mok-GH/pt-emberforge",
+        "community/Marcus-Mok-GH/pt-fieldnote",
+        "community/Marcus-Mok-GH/pt-harbor",
+        "community/Marcus-Mok-GH/pt-lantern",
+        "community/Marcus-Mok-GH/pt-leasing",
+        "community/Marcus-Mok-GH/pt-lobby",
+        "community/Marcus-Mok-GH/pt-northwind",
+        "community/Marcus-Mok-GH/pt-orbit",
+        "community/Marcus-Mok-GH/pt-quietloop",
+        "community/Marcus-Mok-GH/pt-tidepool",
         "community/Minor-fun/deepseek-v3.2",
         "community/NamanSoni78/Claude-Fable-5.1",
         "community/NamanSoni78/DeepSeek-V4.1-Flash",
@@ -305,13 +438,19 @@
         "community/NamanSoni78/gpt-6-astra-pro",
         "community/NamanSoni78/kimi-k3",
         "community/NamanSoni78/nemotron-3-ultra-550b-a55b",
+        "community/Saauf/llama3.1-8B:ultrafast",
+        "community/Saauf/muse-glimmer-30b",
         "community/Spit-fires/muse-glimmer",
         "community/Takax62/minimax-m3-429b-vml",
         "community/YoannDev90/agentic-gt",
         "community/YoannDev90/kilocode-laguna-s-2.1:free",
         "community/YoannDev90/muse-glimmer-30b:free",
         "community/YoannDev90/poolside-laguna-s-2.1:free",
+        "community/YoannDev90/qwen3.7-flash",
+        "community/YoannDev90/vercel-beam:free",
+        "community/YoannDev90/vercel-nemotron-3.5-lightning:free",
         "community/ZapGaming/failure-reel-v1",
+        "community/ZapGaming/mix-router",
         "community/afanasevmylife/gazette",
         "community/afanasevmylife/polyrouter",
         "community/aikhusus2025-ctrl/ember-perch",
@@ -319,6 +458,9 @@
         "community/aikhusus2025-ctrl/sirius-scorekeeper",
         "community/chigwell/claude-haiku-4-5",
         "community/chigwell/llm7-fast",
+        "community/chirag-gamer/gpt-oss-120b",
+        "community/danhquach/bug-report-writer",
+        "community/danhquach/prompt-enhancer",
         "community/fadyabohamza-netizen/frugal",
         "community/gggff123/Glm-5.3",
         "community/gggff123/Inkling",
@@ -331,6 +473,7 @@
         "community/iotserver24/supercharge",
         "community/kreggscode/jev-test-triage",
         "community/mikl-shortcuts/ministral-3",
+        "community/morriszdweck/glm-5.3-flash-free",
         "community/morriszdweck/osaii-api-fast",
         "community/morriszdweck/osaii-api-smart",
         "community/morriszdweck/osaii-swarm",
@@ -339,8 +482,12 @@
         "community/pollinations-ai/floret",
         "community/pollinations-ai/midijourney",
         "community/pollinations-ai/polli",
+        "community/samueltargino0567-ux/Gt3",
+        "community/scriptsnsenses-sys/deepseek-v4.1-flash",
         "community/scriptsnsenses-sys/diffusiongema-26B-free",
+        "community/scriptsnsenses-sys/flux-2-dev-free",
         "community/scriptsnsenses-sys/glm-5.3-flash-free",
+        "community/scriptsnsenses-sys/minimax-m3.1-flash-free",
         "community/scriptsnsenses-sys/muse-spark-1.2-contributor-free",
         "community/scriptsnsenses-sys/sdxl-lightning-free",
         "community/sharktide/3D-agent",
@@ -356,6 +503,8 @@
         "community/sharktide/inferenceport.ai-gpt-oss-20b",
         "community/smplstuff/falcon-h1-tiny",
         "community/smplstuff/title-generator",
+        "community/sonofstrange/gemini-3.8-flash",
+        "community/sonofstrange/gpt-6.1-sol-quest",
         "community/tomdacatto/buddy",
         "community/tomdacatto/claude-haiku-4.5",
         "community/tomdacatto/claude-opus-4-6",
@@ -364,11 +513,20 @@
         "community/tomdacatto/claude-sonnet-5",
         "community/tomdacatto/ezra",
         "community/tomdacatto/gotcha-scout",
+        "community/tomdacatto/gpt-image-2.5-flare",
         "community/tomdacatto/llama-3.1-8B",
         "community/tomdacatto/muse-spark-1.3-contributor",
         "community/tomdacatto/nano-banana-pro",
         "community/tomdacatto/qwen-3.8-27B-fast",
         "community/tomdacatto/tiered-health-router",
+        "community/tomdacatto/tower-fieldnotes",
+        "community/tomdacatto/tower-kitchen-table",
+        "community/tomdacatto/tower-lumen-repairs",
+        "community/tomdacatto/tower-noticeboard",
+        "community/tomdacatto/tower-patchwork",
+        "community/tomdacatto/tower-seedbank",
+        "community/tomdacatto/tower-stillwater",
+        "community/tomdacatto/tower-tidewatch",
         "community/vendouple/anima",
         "community/vendouple/animagine",
         "community/vendouple/deepseek-v3.2",
@@ -384,6 +542,7 @@
         "community/vendouple/grok-4.6",
         "community/vendouple/grok-imagine",
         "community/vendouple/kimi-k2.6",
+        "community/vendouple/laguna-s-2.1:free",
         "community/vendouple/lucid-origin",
         "community/vendouple/muse-glimmer-30b:free",
         "community/vendouple/nano-banana-pro",
@@ -393,6 +552,17 @@
         "community/voodoohop/airforce-grok-4-fast",
         "community/voodoohop/airforce-qwen3-max",
         "community/voodoohop/anyvm-deepseek-chat",
+        "community/xiaotian1171/atrium-civic-atlas",
+        "community/xiaotian1171/atrium-clearclause",
+        "community/xiaotian1171/atrium-concierge",
+        "community/xiaotian1171/atrium-fieldnotes",
+        "community/xiaotian1171/atrium-loop-and-loom",
+        "community/xiaotian1171/atrium-mise-en-place",
+        "community/xiaotian1171/atrium-northstar-climate",
+        "community/xiaotian1171/atrium-papertrail-bio",
+        "community/xiaotian1171/atrium-shelflife",
+        "community/xiaotian1171/atrium-soundpost",
+        "community/xiaotian1171/atrium-tinyfactory",
         "community/xiaotian1171/triage-router",
         "deepseek",
         "deepseek-pro",
@@ -460,6 +630,7 @@
         "meta/muse-glimmer-30b",
         "microsoft/mai-image-2.6",
         "microsoft/mai-image-2.6-flash",
+        "microsoft/microsoft-decision-1",
         "midijourney",
         "midijourney-large",
         "mikl-shortcuts/ministral-3",
@@ -488,6 +659,7 @@
         "nova-micro",
         "nova-reel",
         "novastardev/olmo-3.1-32b",
+        "nvidia/nemotron-3-ultra",
         "nvidia/nemotron-3.5-lightning",
         "openai-audio-large",
         "openai-fast",
@@ -498,12 +670,11 @@
         "openai/gpt-5.3-codex",
         "openai/gpt-5.4",
         "openai/gpt-5.4-mini",
+        "openai/gpt-5.4-nano",
         "openai/gpt-5.5",
         "openai/gpt-5.6-luna",
         "openai/gpt-5.6-sol",
         "openai/gpt-5.6-terra",
-        "openai/gpt-6-astra",
-        "openai/gpt-6-luna",
         "openai/gpt-6-sol",
         "openai/gpt-6.1-sol",
         "openai/gpt-audio-1.5",
@@ -566,6 +737,7 @@
         "solarnode-developement/A-Hy3",
         "solarnode-developement/Qwen3.8-max",
         "solarnode-developement/hy3",
+        "stealth/glyph-cluster",
         "step-3.5-flash",
         "step-flash",
         "tomdacatto/FLUX.1-kontext-max",
@@ -615,6 +787,7 @@
         "vendouple/uncensored-image-v2",
         "vendouple/wai-illustrious-xl",
         "veo",
+        "vllm-sr/d3",
         "voodoohop/airforce-doubao-pro",
         "voodoohop/airforce-qwen3-max",
         "voodoohop/anyvm-deepseek-chat",

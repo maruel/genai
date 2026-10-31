@@ -78,7 +78,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | 🕸️       | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                   | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream                    | 💬📸       | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
+| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream🧠                   | 💬📄📸     | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬📸    | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [typesafe](docs/typesafe.md)               | 🇺🇸   | SystemOne                       | 💬         | 🎯       | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠                   | 🎤🎥💬📸   | 🎤💬    | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |

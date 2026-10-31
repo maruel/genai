@@ -1284,6 +1284,7 @@ type ContentBlock struct {
 	ID               string                     `json:"id,omitzero"`
 	Name             string                     `json:"name,omitzero"`
 	Arguments        map[string]json.RawMessage `json:"arguments,omitzero"`
+	ArgumentsError   string                     `json:"argumentsError,omitzero"` // Complete arguments were not a valid JSON object.
 	PartialArgs      string                     `json:"partialArgs,omitzero"`
 	StreamIndex      int                        `json:"streamIndex,omitzero"`
 	ThoughtSignature string                     `json:"thoughtSignature,omitzero"`

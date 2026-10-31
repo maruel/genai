@@ -27,7 +27,7 @@ history for multi-turn: `session/load` is used instead of `session/new`.
 
 The wire contract is pinned to the versions used by OpenCode itself:
 
-- OpenCode `1.18.30`, commit `95daf90670b7c039c436c85537da5fbfe2205b41`
+- OpenCode `1.19.4`, commit `148842ef7cb1bc34192b3fff57d0f9721ab9c801`
 - `@agentclientprotocol/sdk` `0.21.0`, commit `74372b59f8f56eb30e72f2538df2671a0adb376f`
 
 Relevant OpenCode sources:

@@ -237,14 +237,15 @@ func TestClient(t *testing.T) {
 			if res.Usage.OutputTokens == 0 {
 				t.Error("OutputTokens: got 0, want > 0")
 			}
-			if res.Usage.TotalTokens != 11654 {
-				t.Errorf("TotalTokens: got %d, want recorded ACP total 11654", res.Usage.TotalTokens)
+			if res.Usage.TotalTokens != 13256 {
+				t.Errorf("TotalTokens: got %d, want recorded ACP total 13256", res.Usage.TotalTokens)
 			}
 			if res.Usage.FinishReason != genai.FinishedStop {
 				t.Errorf("FinishReason: got %q, want %q", res.Usage.FinishReason, genai.FinishedStop)
 			}
 		})
 		t.Run("session_id_always_in_opaque", func(t *testing.T) {
+			t.Setenv("OPENCODE_CONFIG_CONTENT", `{"model":"opencode/big-pickle"}`)
 			c := newTestClient(t, "GenSync_hello_nomodel")
 			msgs := genai.Messages{genai.NewTextMessage("hello")}
 			res, err := c.GenSync(t.Context(), msgs)

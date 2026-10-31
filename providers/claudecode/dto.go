@@ -250,13 +250,14 @@ type ControlReqSetModel struct {
 // ControlReqSetMaxThinkingTokens configures extended thinking token limit.
 type ControlReqSetMaxThinkingTokens struct {
 	Subtype           ControlSubtype `json:"subtype"`             // ControlSetMaxThinking
-	MaxThinkingTokens *int           `json:"max_thinking_tokens"` // null = unlimited
+	MaxThinkingTokens *int           `json:"max_thinking_tokens"` // null resets to the session default.
 	ThinkingDisplay   *string        `json:"thinking_display,omitempty"`
 }
 
 // ControlReqMcpStatus queries status of all MCP server connections.
 type ControlReqMcpStatus struct {
-	Subtype ControlSubtype `json:"subtype"` // ControlMcpStatus
+	Subtype   ControlSubtype `json:"subtype"` // ControlMcpStatus
+	LiveReply bool           `json:"liveReply,omitempty"`
 }
 
 // ControlReqGetContextUsage returns a context window usage breakdown.
@@ -288,13 +289,14 @@ type ControlReqGetBinaryVersion struct {
 
 // ControlReqMcpCall invokes an MCP tool through Claude Code.
 type ControlReqMcpCall struct {
-	Subtype     ControlSubtype             `json:"subtype"`
-	Tool        string                     `json:"tool"`
-	Arguments   map[string]json.RawMessage `json:"arguments,omitempty"`
-	ExpiresAt   string                     `json:"expires_at,omitempty"`
-	TimeoutMS   base.DurationMS            `json:"timeout_ms,omitempty"`
-	InputFiles  []base.Unknown             `json:"input_files,omitempty"`
-	OutputFiles []base.Unknown             `json:"output_files,omitempty"`
+	Subtype           ControlSubtype             `json:"subtype"`
+	Tool              string                     `json:"tool"`
+	Arguments         map[string]json.RawMessage `json:"arguments,omitempty"`
+	ExpiresAt         string                     `json:"expires_at,omitempty"`
+	TimeoutMS         base.DurationMS            `json:"timeout_ms,omitempty"`
+	InputFiles        []base.Unknown             `json:"input_files,omitempty"`
+	OutputFiles       []base.Unknown             `json:"output_files,omitempty"`
+	ResultNotForModel bool                       `json:"result_not_for_model,omitempty"`
 }
 
 // ControlReqFileSuggestions requests file-path completions.
@@ -367,6 +369,14 @@ type ControlReqMcpSetServers struct {
 type ControlReqReloadPlugins struct {
 	Subtype           ControlSubtype `json:"subtype"` // ControlReloadPlugins
 	HoldOnCacheImpact bool           `json:"hold_on_cache_impact,omitempty"`
+	AddPlugins        []PluginConfig `json:"add_plugins,omitempty"`
+}
+
+// PluginConfig identifies a local plugin to load into the session.
+type PluginConfig struct {
+	Type             string `json:"type"` // "local"
+	Path             string `json:"path"`
+	SkipMcpDiscovery bool   `json:"skipMcpDiscovery,omitempty"`
 }
 
 // ControlReqReloadSkills refreshes skills from disk.
@@ -450,6 +460,7 @@ type ControlReqElicitation struct {
 	URL             string         `json:"url,omitempty"`
 	ElicitationID   string         `json:"elicitation_id,omitempty"`
 	RequestedSchema JSONSchema     `json:"requested_schema,omitempty"`
+	PropertyOrder   []string       `json:"property_order,omitempty"`
 	Title           string         `json:"title,omitempty"`
 	DisplayName     string         `json:"display_name,omitempty"`
 	Description     string         `json:"description,omitempty"`
@@ -1173,9 +1184,19 @@ type OutputAssistantMsg struct {
 	ContextUsage                  ContextUsage               `json:"context_usage,omitzero"`
 	ThinkingDurationMS            int64                      `json:"thinking_duration_ms,omitzero"`
 	UsageReport                   *UsageReport               `json:"usage_report,omitempty"`
-	// Runtime CLI metadata not declared by SDK 0.3.295.
+	// Runtime CLI metadata not declared by SDK 0.3.310.
+	ThinkingDisplay       string            `json:"thinking_display,omitempty"` // Observed runtime value: "updates".
 	NarrationBlockIndexes []int             `json:"narration_block_indexes,omitempty"`
 	ToolUseMeta           []ToolUseMetadata `json:"tool_use_meta,omitempty"`
+	APIErrorStatus        int               `json:"api_error_status,omitzero"`
+	APIError              string            `json:"api_error,omitempty"`
+	APIErrorOrigin        string            `json:"api_error_origin,omitempty"`
+	APIErrorParams        APIErrorParams    `json:"api_error_params,omitzero"`
+}
+
+// APIErrorParams contains structured details for a synthetic API error message.
+type APIErrorParams struct {
+	RateLimitInfo RateLimitInfo `json:"rate_limit_info,omitzero"`
 }
 
 // UsageReport reports session usage and the server's current plan meters.
@@ -1594,7 +1615,7 @@ type OutputUserMsg struct {
 	PastedContent   []UserMessageContent `json:"pasted_content,omitempty"`
 	InlinePastes    []string             `json:"inline_pastes,omitempty"`
 
-	// Runtime CLI metadata not declared by SDK 0.3.295.
+	// Runtime CLI metadata not declared by SDK 0.3.310.
 	ToolResultMeta []ToolResultMetadata `json:"tool_result_meta,omitempty"`
 }
 
@@ -1717,14 +1738,17 @@ type OutputResultMsg struct {
 	ResumeReason                string          `json:"resume_reason,omitempty"`
 	LocalCommand                string          `json:"local_command,omitempty"`
 
-	FastModeState          string                     `json:"fast_mode_state,omitempty"`
-	FastModeDisabledReason FastModeDisabledReason     `json:"fast_mode_disabled_reason,omitempty"`
-	ModelUsage             map[string]ModelUsageEntry `json:"modelUsage,omitempty"`
-	PermissionDenials      []PermissionDenial         `json:"permission_denials,omitempty"`
-	StopReason             string                     `json:"stop_reason,omitempty"`
-	TerminalReason         string                     `json:"terminal_reason,omitempty"`
-	APIErrorStatus         int                        `json:"api_error_status,omitzero"`
-	StartupFailureReason   StartupFailureReason       `json:"startup_failure_reason,omitempty"`
+	FastModeState             string                     `json:"fast_mode_state,omitempty"`
+	FastModeDisabledReason    FastModeDisabledReason     `json:"fast_mode_disabled_reason,omitempty"`
+	ModelUsage                map[string]ModelUsageEntry `json:"modelUsage,omitempty"`
+	PermissionDenials         []PermissionDenial         `json:"permission_denials,omitempty"`
+	StopReason                string                     `json:"stop_reason,omitempty"`
+	TerminalReason            string                     `json:"terminal_reason,omitempty"`
+	APIErrorStatus            int                        `json:"api_error_status,omitzero"`
+	APIError                  string                     `json:"api_error,omitempty"`
+	APIErrorOrigin            string                     `json:"api_error_origin,omitempty"`
+	ModelUsageSinceLastResult map[string]ModelUsageEntry `json:"model_usage_since_last_result,omitempty"`
+	StartupFailureReason      StartupFailureReason       `json:"startup_failure_reason,omitempty"`
 	// SafetyStops counts safety-policy stops in the runtime CLI.
 	SafetyStops     int             `json:"safety_stops,omitempty"`
 	DeferredToolUse DeferredToolUse `json:"deferred_tool_use,omitzero"`

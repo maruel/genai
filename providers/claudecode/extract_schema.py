@@ -10,9 +10,9 @@ binary-string extractor depended on. The npm package's sdk.d.ts is the released
 wire contract and can be checked reproducibly instead.
 
 Usage:
-  npm pack @anthropic-ai/claude-agent-sdk@0.3.295
-  tar -xzf anthropic-ai-claude-agent-sdk-0.3.295.tgz
-  ./extract_schema.py package/sdk.d.ts dto.go --version 0.3.295
+  npm pack @anthropic-ai/claude-agent-sdk@0.3.310
+  tar -xzf anthropic-ai-claude-agent-sdk-0.3.310.tgz
+  ./extract_schema.py package/sdk.d.ts dto.go --version 0.3.310
 """
 
 import argparse

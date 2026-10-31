@@ -193,6 +193,29 @@ func TestClient(t *testing.T) {
 			}
 		}
 	})
+	t.Run("usage_limit", func(t *testing.T) {
+		for _, name := range []string{"GenSync", "GenStream"} {
+			t.Run(name, func(t *testing.T) {
+				output, err := os.ReadFile("testdata/UsageLimit.jsonl")
+				if err != nil {
+					t.Fatal(err)
+				}
+				c := newOutputClient(t, string(output), nil)
+				msgs := genai.Messages{genai.NewTextMessage("say hello")}
+				if name == "GenSync" {
+					_, err = c.GenSync(t.Context(), msgs)
+				} else {
+					seq, finish := c.GenStream(t.Context(), msgs)
+					for range seq {
+					}
+					_, err = finish()
+				}
+				if err == nil || !strings.HasPrefix(err.Error(), "claude error (success): You've hit your monthly spend limit") {
+					t.Fatalf("error = %v, want Claude usage-limit error", err)
+				}
+			})
+		}
+	})
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
 			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("sonnet"))
@@ -313,19 +336,6 @@ func TestClient(t *testing.T) {
 			}
 			if len(res.Replies) == 0 || !strings.Contains(strings.ToLower(res.Replies[0].Text), "hello") {
 				t.Errorf("reply = %#v, want hello", res.Replies)
-			}
-		})
-		t.Run("error_result", func(t *testing.T) {
-			const output = `{"type":"result","subtype":"error_during_execution","is_error":true,"result":"boom","usage":{"input_tokens":0,"output_tokens":0},"session_id":"session"}
-`
-			c := newOutputClient(t, output, nil)
-			msgs := genai.Messages{genai.NewTextMessage("cause error")}
-			_, err := c.GenSync(t.Context(), msgs)
-			if err == nil {
-				t.Fatal("expected error, got nil")
-			}
-			if !strings.Contains(err.Error(), "claude error") {
-				t.Errorf("unexpected error message: %v", err)
 			}
 		})
 		t.Run("malformed_output", func(t *testing.T) {

@@ -266,6 +266,18 @@ func TestOutputMessages(t *testing.T) {
 }
 
 func TestWriteUserMsg(t *testing.T) {
+	t.Run("error", func(t *testing.T) {
+		t.Run("unsupported_url", func(t *testing.T) {
+			msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{URL: "https://example.com/input.wav"}}}}
+			var buf strings.Builder
+			if err := writeUserMsg(&buf, &msg); err == nil || err.Error() != `unsupported doc MIME type "audio/wav"` {
+				t.Fatalf("writeUserMsg error = %v, want unsupported audio MIME type", err)
+			}
+			if buf.Len() != 0 {
+				t.Fatal("wrote an unsupported URL message")
+			}
+		})
+	})
 	t.Run("empty_message", func(t *testing.T) {
 		msg := genai.NewTextMessage("")
 		var buf strings.Builder

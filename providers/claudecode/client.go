@@ -921,17 +921,24 @@ func writeInitialize(w io.Writer, co *callOpts) error {
 }
 
 // docToInputBlock converts a genai.Doc to an InputContentBlock for the claude CLI.
-// Text documents are inlined as text blocks; images are sent as base64 or URL.
+// Text documents are inlined as text blocks; images are sent as base64 or URL,
+// and PDF URLs are sent as document blocks.
 func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
-	if doc.URL != "" {
-		return InputContentBlock{
-			Type:   "image",
-			Source: anthropic.Source{Type: "url", URL: doc.URL},
-		}, nil
-	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
 		return InputContentBlock{}, fmt.Errorf("read doc: %w", err)
+	}
+	if doc.URL != "" {
+		kind := "image"
+		if mimeType == "application/pdf" {
+			kind = "document"
+		} else if mimeType != "" && !strings.HasPrefix(mimeType, "image/") {
+			return InputContentBlock{}, fmt.Errorf("unsupported doc MIME type %q", mimeType)
+		}
+		return InputContentBlock{
+			Type:   kind,
+			Source: anthropic.Source{Type: "url", URL: doc.URL},
+		}, nil
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "text/"):

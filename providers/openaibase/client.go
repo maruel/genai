@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -15,7 +15,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -27,9 +26,15 @@ import (
 	"github.com/maruel/genai/internal/bb"
 )
 
-// modelDateSuffixRE matches dated model IDs like "gpt-5.5-2026-04-23" so we can
-// prefer their undated aliases (e.g. "gpt-5.5") when selecting the best model.
-var modelDateSuffixRE = regexp.MustCompile(`-\d{4}-\d{2}-\d{2}$`)
+// UndatedModelID removes a valid YYYY-MM-DD snapshot suffix from a model ID.
+func UndatedModelID(id string) string {
+	if len(id) > 11 && id[len(id)-11] == '-' {
+		if _, err := time.Parse("2006-01-02", id[len(id)-10:]); err == nil {
+			return id[:len(id)-11]
+		}
+	}
+	return id
+}
 
 func textModelRank(id string, cheap, good bool) int {
 	if !strings.HasPrefix(id, "gpt") {
@@ -45,10 +50,10 @@ func textModelRank(id string, cheap, good bool) int {
 		return 0
 	}
 	if good {
-		if strings.HasSuffix(id, "-sol") {
+		if strings.HasSuffix(id, "-terra") {
 			return 3
 		}
-		if strings.HasSuffix(id, "-terra") {
+		if strings.HasSuffix(id, "-sol") {
 			return 2
 		}
 		if strings.HasSuffix(id, "-mini") {
@@ -252,7 +257,7 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 		}
 		// Prefer undated aliases (e.g. "gpt-5.5") over dated versions
 		// (e.g. "gpt-5.5-2026-04-23").
-		if modelDateSuffixRE.MatchString(m.ID) {
+		if UndatedModelID(m.ID) != m.ID {
 			continue
 		}
 		rank := textModelRank(m.ID, cheap, good)
@@ -260,8 +265,8 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 			continue
 		}
 		better := m.Created > created || m.Created == created && rank > selectedRank
-		// SOTA prefers Astra over newer Sol models; other tiers prefer recency.
-		if !cheap && !good && rank != selectedRank {
+		// SOTA and Good prefer their model family over newer fallback families.
+		if !cheap && rank != selectedRank {
 			better = rank > selectedRank
 		}
 		if selectedModel == "" || better {
@@ -293,7 +298,7 @@ func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (s
 		}
 		// Prefer undated aliases (e.g. "gpt-image-2") over dated
 		// versions (e.g. "gpt-image-2-2026-04-21").
-		if modelDateSuffixRE.MatchString(m.ID) {
+		if UndatedModelID(m.ID) != m.ID {
 			continue
 		}
 		if selectedModel == "" || m.Created > created {

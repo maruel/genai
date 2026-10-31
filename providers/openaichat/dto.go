@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -238,18 +238,33 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 	}
 
-	// GPT-5.6 Chat Completions rejects function tools unless reasoning_effort is explicitly disabled.
-	// API error: "Function tools with reasoning_effort are not supported for gpt-5.6-sol in
-	// /v1/chat/completions. To use function tools, use /v1/responses or set reasoning_effort to 'none'."
-	if strings.HasPrefix(model, "gpt-5.6") && len(c.Tools) != 0 {
-		if c.ReasoningEffort == "" {
-			c.ReasoningEffort = ReasoningEffortNone
-		} else if c.ReasoningEffort != ReasoningEffortNone {
-			unsupported = append(unsupported, "GenOptionText.ReasoningEffort")
+	// Chat Completions has stricter tool and input support than Responses for these models.
+	// https://developers.openai.com/api/docs/guides/latest-model
+	gpt6 := false
+	toolsNeedResponses := false
+	toolsNeedNoReasoning := strings.HasPrefix(model, "gpt-5.6")
+	switch openaibase.UndatedModelID(model) {
+	case "gpt-6-astra", "gpt-6.1-sol", "gpt-6.1-terra":
+		gpt6 = true
+		toolsNeedResponses = true
+	case "gpt-6-sol", "gpt-6-luna":
+		gpt6 = true
+		toolsNeedNoReasoning = true
+	}
+	if len(c.Tools) != 0 {
+		switch {
+		case toolsNeedResponses:
+			unsupported = append(unsupported, "GenOptionTools (requires Responses API)")
+		case toolsNeedNoReasoning:
+			if c.ReasoningEffort == "" {
+				c.ReasoningEffort = ReasoningEffortNone
+			} else if c.ReasoningEffort != ReasoningEffortNone {
+				unsupported = append(unsupported, "GenOptionText.ReasoningEffort")
+			}
 		}
 	}
 	hasAudioVideoInput := openaibase.HasInputWithMimePrefix(msgs, "audio/") || openaibase.HasInputWithMimePrefix(msgs, "video/")
-	if strings.HasPrefix(model, "gpt-5.6") && hasAudioVideoInput {
+	if (gpt6 || strings.HasPrefix(model, "gpt-5.6")) && hasAudioVideoInput {
 		unsupported = append(unsupported, "audio/video input")
 	}
 	if sp != "" {

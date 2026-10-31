@@ -72,7 +72,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream, SystemOne, Embed🧠 | 🎤💬📸     | 🎯💬🧬    | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream🧠                   | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠, Embed, SystemOne | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ❌    | ✅     | ✅    | ✅     |
+| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠, Embed            | 💬📄📸     | 💬📸🧬   | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
 | [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                   | 💬         | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |

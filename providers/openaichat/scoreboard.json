@@ -85,7 +85,7 @@
     },
     {
       "models": [
-        "gpt-6.1-sol"
+        "gpt-6.1-terra"
       ],
       "good": true,
       "reason": true,
@@ -211,7 +211,7 @@
     },
     {
       "models": [
-        "gpt-5.6-luna"
+        "gpt-6.1-sol"
       ],
       "reason": true,
       "in": {
@@ -245,10 +245,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
           "object": "true"
@@ -259,10 +255,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
           "object": "true"
@@ -271,9 +263,8 @@
     },
     {
       "models": [
-        "gpt-5.6-terra"
+        "gpt-6-luna"
       ],
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -307,12 +298,14 @@
         "seed": true,
         "outOfOrder": "false",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
           "object": "true"
-        }
+        },
+        "topLogprobs": true,
+        "maxTokens": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -326,7 +319,9 @@
         "json": true,
         "jsonSchema": {
           "object": "true"
-        }
+        },
+        "topLogprobs": true,
+        "maxTokens": true
       }
     },
     {
@@ -408,7 +403,6 @@
     },
     {
       "models": [
-        "gpt-5.6-sol",
         "gpt-6-sol"
       ],
       "reason": true
@@ -506,6 +500,9 @@
         "gpt-5.5-2026-04-23",
         "gpt-5.5-pro",
         "gpt-5.5-pro-2026-04-23",
+        "gpt-5.6-luna",
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
         "gpt-audio-1.5",
         "gpt-audio-2025-08-28",
         "gpt-audio-mini",

@@ -1,0 +1,75 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 246
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42,"store":true,"reasoning_effort":"low","service_tier":"flex","stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-Eeqxn2HxfezH0TdyVSBCg3uBWr7uk","object":"chat.completion.chunk","created":1793405419,"model":"gpt-6.1-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":""}
+
+            data: {"id":"chatcmpl-Eeqxn2HxfezH0TdyVSBCg3uBWr7uk","object":"chat.completion.chunk","created":1793405419,"model":"gpt-6.1-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}],"usage":null,"obfuscation":"heHfTzepkm6OP"}
+
+            data: {"id":"chatcmpl-Eeqxn2HxfezH0TdyVSBCg3uBWr7uk","object":"chat.completion.chunk","created":1793405419,"model":"gpt-6.1-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"."},"finish_reason":null}],"usage":null,"obfuscation":"a"}
+
+            data: {"id":"chatcmpl-Eeqxn2HxfezH0TdyVSBCg3uBWr7uk","object":"chat.completion.chunk","created":1793405419,"model":"gpt-6.1-terra","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"9hVqQ56Nhm7l"}
+
+            data: {"id":"chatcmpl-Eeqxn2HxfezH0TdyVSBCg3uBWr7uk","object":"chat.completion.chunk","created":1793405419,"model":"gpt-6.1-terra","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":14,"completion_tokens":5,"total_tokens":19,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"F1dwhakOdhz"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e6f9d6fc3f3e9-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "4045"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Openai-Proxy-Wasm:
+                - v0.1
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999989"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 4.492s

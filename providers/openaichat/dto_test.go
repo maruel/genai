@@ -7,25 +7,10 @@
 package openaichat
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 )
-
-func testToolOption() *genai.GenOptionTools {
-	return &genai.GenOptionTools{
-		Tools: []genai.ToolDef{
-			{
-				Name:                "square_root",
-				Description:         "Calculates and returns the square root of a number",
-				InputSchemaOverride: genai.JSONSchema(`{"type":"object","properties":{"number":{"type":"number"}},"required":["number"]}`),
-			},
-		},
-		Force: genai.ToolCallRequired,
-	}
-}
 
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
@@ -42,16 +27,26 @@ func TestChatRequest(t *testing.T) {
 			})
 		})
 		t.Run("tools", func(t *testing.T) {
-			t.Run("gpt-5.6 rejects explicit reasoning", func(t *testing.T) {
-				var r ChatRequest
-				err := r.Init(genai.Messages{genai.NewTextMessage("calculate")}, "gpt-5.6-luna", testToolOption(), &GenOptionText{ReasoningEffort: ReasoningEffortLow})
-				uerr, ok := errors.AsType[*base.ErrNotSupported](err)
-				if !ok {
-					t.Fatalf("got %v, want ErrNotSupported", err)
-				}
-				if len(uerr.Options) != 1 || uerr.Options[0] != "GenOptionText.ReasoningEffort" {
-					t.Fatalf("got unsupported options %#v, want GenOptionText.ReasoningEffort", uerr.Options)
-				}
+			t.Run("valid", func(t *testing.T) {
+				t.Run("snapshot disables reasoning by default", func(t *testing.T) {
+					opts := &genai.GenOptionTools{
+						Tools: []genai.ToolDef{
+							{
+								Name:                "square_root",
+								Description:         "Calculates and returns the square root of a number",
+								InputSchemaOverride: genai.JSONSchema(`{"type":"object","properties":{"number":{"type":"number"}},"required":["number"]}`),
+							},
+						},
+						Force: genai.ToolCallRequired,
+					}
+					var r ChatRequest
+					if err := r.Init(genai.Messages{genai.NewTextMessage("calculate")}, "gpt-6-luna-2026-10-01", opts); err != nil {
+						t.Fatal(err)
+					}
+					if r.ReasoningEffort != ReasoningEffortNone {
+						t.Fatalf("ReasoningEffort = %q, want none", r.ReasoningEffort)
+					}
+				})
 			})
 		})
 	})

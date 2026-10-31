@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 183
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"stop":["is"],"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"0a5fb250e1b2452bb0dc13a05040eba8","created":1793404834,"model":"mistral-large-4-0","usage":{"prompt_tokens":27,"total_tokens":43,"completion_tokens":16,"completion_tokens_details":{"reasoning_tokens":14},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants a detailed talk about Canada starting with the phrase \"Canada"}],"closed":true},{"type":"text","text":" "}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61566fdca2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-123f-79d0-b2a0-f397b070bcb1
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=15,cfOrigin;dur=681
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "565"
+            X-Kong-Proxy-Latency:
+                - "14"
+            X-Kong-Request-Id:
+                - 01a18f42-123f-79d0-b2a0-f397b070bcb1
+            X-Kong-Upstream-Latency:
+                - "567"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "993"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14999214"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "43"
+        status: 200 OK
+        code: 200
+        duration: 708ms

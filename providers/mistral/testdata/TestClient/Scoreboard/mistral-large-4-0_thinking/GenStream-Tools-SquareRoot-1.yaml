@@ -1,0 +1,98 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 584
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":""},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz012345678"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants me"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnop"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" to use the square"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvw"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"_root tool to calculate"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz0"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" the square root of"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghij"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" 132413."}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghi"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" They want only"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefg"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" the result with"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz0123456789"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" no explanation. Let"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopq"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" me call the tool"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijkl"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" with the number"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz0123"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" 132413."}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz01234"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[]}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopq"}
+
+            data: {"id":"50f0969e2ab448a89ccbf0fe121ae02e","object":"chat.completion.chunk","created":1793404848,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"tool_calls":[{"id":"oHjqfo3XC","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null,"prompt_logprobs":null}],"usage":{"prompt_tokens":131,"total_tokens":186,"completion_tokens":55,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":41},"service_tier":"standard"},"p":"abcdefghijklm"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61adf82ba2a6-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a18f42-48f6-70b8-ad88-b92a4684db1e
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=639
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "522"
+            X-Kong-Proxy-Latency:
+                - "17"
+            X-Kong-Request-Id:
+                - 01a18f42-48f6-70b8-ad88-b92a4684db1e
+            X-Kong-Upstream-Latency:
+                - "523"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "980"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14996351"
+        status: 200 OK
+        code: 200
+        duration: 658ms

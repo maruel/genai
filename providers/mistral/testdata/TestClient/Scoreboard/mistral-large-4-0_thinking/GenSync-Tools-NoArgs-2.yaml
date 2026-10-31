@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 951
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants me to use the get_hostname tool and reply with only the hostname, no explanation. Let me call the tool."}],"closed":true}],"tool_calls":[{"id":"loU0iW270","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"loU0iW270","name":"get_hostname"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"82b0386cfea7417bb2f8cff4ef18a4d2","created":1793404844,"model":"mistral-large-4-0","usage":{"prompt_tokens":151,"total_tokens":192,"completion_tokens":41,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":34},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"thinking","thinking":[{"type":"text","text":"The tool returned \"genai-smoke\". The user asked me to reply with only the hostname and no explanation. So I should just output \"genai-smoke\"."}],"closed":true},{"type":"text","text":"genai-smoke"}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61913deba2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-36ff-7e25-89c2-5f789b2c8c0c
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=8,cfOrigin;dur=841
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "727"
+            X-Kong-Proxy-Latency:
+                - "14"
+            X-Kong-Request-Id:
+                - 01a18f42-36ff-7e25-89c2-5f789b2c8c0c
+            X-Kong-Upstream-Latency:
+                - "727"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "983"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14997284"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "192"
+        status: 200 OK
+        code: 200
+        duration: 859ms

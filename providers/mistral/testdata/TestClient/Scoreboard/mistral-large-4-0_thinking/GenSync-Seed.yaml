@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6d641af669f049188dd436309e1279b1","created":1793404832,"model":"mistral-large-4-0","usage":{"prompt_tokens":23,"total_tokens":219,"completion_tokens":196,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":192},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants me to say hello using only one word. The most straightforward answer is \"Hello\" itself, which is one word. Other options could be \"Hi\", \"Hey\", \"Greetings\", \"Salutations\", etc. But \"Hello\" is the most direct and appropriate response.\n\nI need to make sure I use exactly one word and nothing else - no punctuation attached? The user said \"use only one word\" - typically punctuation like a period might be considered separate or part of the word, but to be safe and clear, I should probably just say the word without any punctuation, or with standard punctuation. But \"Hello.\" could be seen as one word with punctuation, or two tokens. To be safest and most literal, I''ll just say \"Hello\" without punctuation.\n\nActually, looking at the constraint: \"Use only one word.\" So my entire response should consist of exactly one word. \"Hello\" fits perfectly."}],"closed":true},{"type":"text","text":"Hello"}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61486aa3a2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-0988-7d7d-9872-597c227d83d0
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=12,cfOrigin;dur=1539
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "1419"
+            X-Kong-Proxy-Latency:
+                - "19"
+            X-Kong-Request-Id:
+                - 01a18f42-0988-7d7d-9872-597c227d83d0
+            X-Kong-Upstream-Latency:
+                - "1420"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "997"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14999708"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "219"
+        status: 200 OK
+        code: 200
+        duration: 1.564s

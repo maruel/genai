@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 454
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"e4a37b9623114524ad536e30bda266d5","created":1793404836,"model":"mistral-large-4-0","usage":{"prompt_tokens":91,"total_tokens":291,"completion_tokens":200,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":190},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user is asking whether a banana is a fruit, and they want the answer ONLY as JSON, with no explanation. They also provided a JSON schema that requires an object with a property \"is_fruit\" of type boolean, and no additional properties.\n\nSo I need to output:\n```json\n{\"is_fruit\": true}\n```\n\nSince a banana is indeed a fruit (botanically, it''s a berry), the value should be true.\n\nI must not include any markdown formatting, explanation, or additional text. Just the raw JSON.\n\nWait, the user said \"Do not include an explanation. Reply ONLY as JSON.\" and the system prompt says \"Always respond with valid JSON. Ensure the output is strictly formatted as JSON, with no additional text, explanations, or markdown formatting.\"\n\nSo I should output exactly:\n{\"is_fruit\": true}\n\nWithout backticks, without \"Here is the JSON:\", just the raw JSON string."}],"closed":true},{"type":"text","text":"{\"is_fruit\": true}"}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61656da7a2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-1b9c-76d8-8757-32c7bb152d6e
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=2242
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "2129"
+            X-Kong-Proxy-Latency:
+                - "13"
+            X-Kong-Request-Id:
+                - 01a18f42-1b9c-76d8-8757-32c7bb152d6e
+            X-Kong-Upstream-Latency:
+                - "2130"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "989"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14998511"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "291"
+        status: 200 OK
+        code: 200
+        duration: 2.261s

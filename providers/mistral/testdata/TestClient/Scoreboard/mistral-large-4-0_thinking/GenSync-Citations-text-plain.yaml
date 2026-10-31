@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5e67edeb79f847adac745eb37bfe1cf9","created":1793404862,"model":"mistral-large-4-0","usage":{"prompt_tokens":46,"total_tokens":198,"completion_tokens":152,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":138},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user is asking a question that seems to be a simple riddle or test of attention. Let me parse the statements:\n\n1. \"The capital of Quackiland is Quack.\"\n2. \"The Big Canard Statue is located in Quack.\"\n3. Question: \"What is the capital of Quackiland?\"\n\nThe answer is directly stated in the first sentence: Quack.\n\nThe second sentence about the Big Canard Statue is just extra information (possibly a distractor). The question asks specifically for the capital of Quackiland, which was already stated to be Quack.\n\nSo the answer is simply: Quack.\n\nI should answer clearly and directly."}],"closed":true},{"type":"text","text":"The capital of Quackiland is **Quack**."}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61e10cd1a2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-68df-7893-8959-bf26bf8256cc
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=7554
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "7427"
+            X-Kong-Proxy-Latency:
+                - "26"
+            X-Kong-Request-Id:
+                - 01a18f42-68df-7893-8959-bf26bf8256cc
+            X-Kong-Upstream-Latency:
+                - "7428"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "972"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14993727"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "198"
+        status: 200 OK
+        code: 200
+        duration: 7.572s

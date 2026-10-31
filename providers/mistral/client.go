@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -167,6 +167,10 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
+		// The rolling Large alias can lag newly released generations.
+		if !cheap && !good && m.ID == "mistral-large-4-0" && m.Capabilities.CompletionChat && m.Deprecation == "" {
+			return m.ID, nil
+		}
 		// TODO: Support magistral.
 		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") || strings.HasPrefix(m.ID, "voxtral") {
 			continue
@@ -275,6 +279,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if pkt.Usage.PromptTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
 					u.ServiceTier = pkt.Usage.ServiceTier
@@ -286,7 +291,23 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				if !yield(genai.Reply{Text: pkt.Choices[0].Delta.Content}) {
+				for i := range pkt.Choices[0].Delta.ContentChunks {
+					var r genai.Reply
+					if err := pkt.Choices[0].Delta.ContentChunks[i].ToReply(&r); err != nil {
+						finalErr = &internal.BadError{Err: err}
+						return
+					}
+					if r.Reasoning != "" && !yield(genai.Reply{Reasoning: r.Reasoning}) {
+						return
+					}
+					if len(r.Opaque) != 0 && !yield(genai.Reply{Opaque: r.Opaque}) {
+						return
+					}
+					if r.Text != "" && !yield(genai.Reply{Text: r.Text}) {
+						return
+					}
+				}
+				if text := pkt.Choices[0].Delta.Content; text != "" && !yield(genai.Reply{Text: text}) {
 					return
 				}
 				// Mistral is one of the rare provider that can stream multiple tool calls all at once. It's probably

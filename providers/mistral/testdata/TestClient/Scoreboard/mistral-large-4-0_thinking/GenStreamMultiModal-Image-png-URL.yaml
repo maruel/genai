@@ -1,0 +1,108 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 290
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":""},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz012345678"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuv"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" me to identify the"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijkl"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" fruit in"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwx"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" the image. The"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmno"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" image shows a single"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghij"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" yellow curved"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcd"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" fruit"}]}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmn"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" with a stem at"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcd"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" one"}]}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefgh"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" end and a dark"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdef"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" tip at the other"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijk"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":". This is clearly"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"ab"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" a banana. The"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstu"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" user wants only"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxy"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" one word as"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz01234"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" the reply"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstu"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"."}],"closed":true},{"type":"text","text":"Banana"}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefgh"}
+
+            data: {"id":"df8613be4c474635b6d23100ae274782","object":"chat.completion.chunk","created":1793404884,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null,"prompt_logprobs":null}],"usage":{"prompt_tokens":169,"total_tokens":224,"completion_tokens":55,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":50},"service_tier":"standard"},"p":"abcdefghijklmnopqrstuvwxy"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e6291a96da2a6-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a18f42-d744-758a-afac-38be6720bf05
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=6,cfOrigin;dur=678
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "562"
+            X-Kong-Proxy-Latency:
+                - "13"
+            X-Kong-Request-Id:
+                - 01a18f42-d744-758a-afac-38be6720bf05
+            X-Kong-Upstream-Latency:
+                - "563"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "981"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14991596"
+        status: 200 OK
+        code: 200
+        duration: 692ms

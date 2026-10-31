@@ -9,12 +9,22 @@
   "dashboardURL": "https://console.mistral.ai/usage",
   "scenarios": [
     {
-      "comments": "Untested",
       "models": [
-        "mistral-large-latest"
+        "mistral-large-4-0"
       ],
       "sota": true,
+      "reason": true,
       "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/aac",
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
         "document": {
           "url": true,
           "supportedFormats": [
@@ -47,7 +57,7 @@
         "seed": true,
         "outOfOrder": "false",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
@@ -58,12 +68,13 @@
         "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
         "outOfOrder": "false",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": {
@@ -578,6 +589,71 @@
       }
     },
     {
+      "comments": "Untested",
+      "models": [
+        "mistral-large-latest"
+      ],
+      "in": {
+        "document": {
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "false",
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
       "models": [
         "mistral-vibe-cli-latest"
       ],
@@ -696,6 +772,7 @@
         "codestral-2501",
         "codestral-2508",
         "codestral-latest",
+        "deepseek-v4-1-flash-1017",
         "devstral-2512",
         "devstral-medium-2507",
         "devstral-medium-latest",
@@ -717,6 +794,7 @@
         "mistral-code-fim-latest",
         "mistral-code-latest",
         "mistral-large-2411",
+        "mistral-large-4",
         "mistral-large-pixtral-2411",
         "mistral-medium",
         "mistral-medium-2505",
@@ -756,13 +834,22 @@
         "voxtral-mini-realtime-2602",
         "voxtral-mini-realtime-latest",
         "voxtral-mini-transcribe-2507",
+        "voxtral-mini-transcribe-3",
+        "voxtral-mini-transcribe-3-0",
         "voxtral-mini-transcribe-realtime-2602",
+        "voxtral-mini-transcribe-realtime-3",
+        "voxtral-mini-transcribe-realtime-3-0",
         "voxtral-mini-tts-2603",
+        "voxtral-mini-tts-3",
+        "voxtral-mini-tts-3-0",
         "voxtral-mini-tts-latest",
         "voxtral-small-2507",
+        "voxtral-small-transcribe-3",
+        "voxtral-small-transcribe-3-0",
         "zai-glm-5",
         "zai-glm-5-2",
         "zai-glm-5-3",
+        "zai-glm-5-3-flash",
         "zai-glm-latest"
       ]
     },

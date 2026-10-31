@@ -93,3 +93,44 @@ func TestUsageDurationS(t *testing.T) {
 		t.Errorf("PromptAudio.AsDuration() = %v", got.PromptAudio.AsDuration())
 	}
 }
+
+func TestMessageResponse(t *testing.T) {
+	t.Run("MarshalJSON", testMessageContentRoundTrip[mistral.MessageResponse])
+}
+
+func TestMessageDelta(t *testing.T) {
+	t.Run("MarshalJSON", testMessageContentRoundTrip[mistral.MessageDelta])
+}
+
+func testMessageContentRoundTrip[T any](t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			wire string
+		}{
+			{"chunks", `{"role":"assistant","content":[{"type":"thinking","thinking":[{"type":"text","text":"Checking the result."}],"closed":false},{"type":"text","text":"42"}]}`},
+			{"string", `{"role":"assistant","content":"42"}`},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				var msg T
+				if err := json.Unmarshal([]byte(tc.wire), &msg); err != nil {
+					t.Fatal(err)
+				}
+				b, err := json.Marshal(msg)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var want, got map[string]any
+				if err := json.Unmarshal([]byte(tc.wire), &want); err != nil {
+					t.Fatal(err)
+				}
+				if err := json.Unmarshal(b, &got); err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff(want["content"], got["content"]); diff != "" {
+					t.Fatal(diff)
+				}
+			})
+		}
+	})
+}

@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -253,6 +253,11 @@ func (m *Message) From(in *genai.Message) error {
 type Content struct {
 	Type ContentType `json:"type"`
 
+	// Type == ContentThinking
+	Thinking  []ThinkingContent `json:"thinking,omitzero"`
+	Signature string            `json:"signature,omitzero"`
+	Closed    *bool             `json:"closed,omitzero"`
+
 	// Type == ContentText
 	Text string `json:"text,omitzero"`
 
@@ -272,6 +277,33 @@ type Content struct {
 
 	// Type == ContentInputAudio
 	InputAudio []byte `json:"input_audio,omitzero"`
+}
+
+// ToReply converts a text or reasoning content chunk, retaining replay metadata.
+func (c *Content) ToReply(out *genai.Reply) error {
+	switch c.Type {
+	case ContentText:
+		out.Text = c.Text
+	case ContentThinking:
+		for _, t := range c.Thinking {
+			if t.Type != ContentText {
+				return fmt.Errorf("unsupported thinking content type %q", t.Type)
+			}
+			out.Reasoning += t.Text
+		}
+		if c.Signature != "" || c.Closed != nil {
+			out.Opaque = map[string]any{}
+			if c.Signature != "" {
+				out.Opaque["mistral_signature"] = c.Signature
+			}
+			if c.Closed != nil {
+				out.Opaque["mistral_closed"] = *c.Closed
+			}
+		}
+	default:
+		return fmt.Errorf("unsupported response content type %q", c.Type)
+	}
+	return nil
 }
 
 // FromRequest converts a genai.Request to a Content.
@@ -325,8 +357,29 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 // FromReply converts a genai.Reply to a Content.
 func (c *Content) FromReply(in *genai.Reply) error {
-	if len(in.Opaque) != 0 {
-		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+	if in.Reasoning != "" || len(in.Opaque) != 0 {
+		c.Type = ContentThinking
+		if in.Reasoning != "" {
+			c.Thinking = []ThinkingContent{{Type: ContentText, Text: in.Reasoning}}
+		}
+		for k, v := range in.Opaque {
+			switch k {
+			case "mistral_signature":
+				var ok bool
+				if c.Signature, ok = v.(string); !ok {
+					return fmt.Errorf("invalid reasoning signature type %T", v)
+				}
+			case "mistral_closed":
+				b, ok := v.(bool)
+				if !ok {
+					return fmt.Errorf("invalid reasoning closed type %T", v)
+				}
+				c.Closed = &b
+			default:
+				return fmt.Errorf("unsupported Reply.Opaque field %q", k)
+			}
+		}
+		return nil
 	}
 	if in.Text != "" {
 		c.Type = ContentText
@@ -375,6 +428,12 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// ThinkingContent is a text block within a reasoning chunk.
+type ThinkingContent struct {
+	Type ContentType `json:"type"`
+	Text string      `json:"text"`
+}
+
 // ContentType is the type of a content block in a message.
 //
 // I got the whole list from an error message by sending a bad content type.
@@ -412,10 +471,11 @@ type ChatResponse struct {
 	Model   string     `json:"model"`
 	Created base.TimeS `json:"created"`
 	Choices []struct {
-		FinishReason FinishReason    `json:"finish_reason"`
-		Index        int64           `json:"index"`
-		Message      MessageResponse `json:"message"`
-		Logprobs     base.Unknown    `json:"logprobs"`
+		FinishReason   FinishReason    `json:"finish_reason"`
+		Index          int64           `json:"index"`
+		Message        MessageResponse `json:"message"`
+		Logprobs       base.Unknown    `json:"logprobs"`
+		PromptLogprobs base.Unknown    `json:"prompt_logprobs,omitzero"`
 	} `json:"choices"`
 	Usage Usage `json:"usage"`
 }
@@ -427,6 +487,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
+			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
 			TotalTokens:       c.Usage.TotalTokens,
 			ServiceTier:       c.Usage.ServiceTier,
 		},
@@ -479,20 +540,93 @@ type Usage struct {
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details"`
+	CompletionTokensDetails struct {
+		ReasoningTokens int64 `json:"reasoning_tokens"`
+	} `json:"completion_tokens_details,omitzero"`
+}
+
+// responseContent decodes either legacy text or typed content chunks.
+func responseContent(b json.RawMessage) (string, []Content, error) {
+	if len(b) == 0 || bytes.Equal(bytes.TrimSpace(b), []byte("null")) {
+		return "", nil, nil
+	}
+	if bytes.TrimSpace(b)[0] == '"' {
+		var text string
+		err := json.Unmarshal(b, &text)
+		return text, nil, err
+	}
+	var chunks []Content
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	err := d.Decode(&chunks)
+	return "", chunks, err
+}
+
+type messageResponseWire struct {
+	Role      string          `json:"role"`
+	Content   json.RawMessage `json:"content"`
+	Prefix    bool            `json:"prefix"`
+	ToolCalls []ToolCall      `json:"tool_calls"`
 }
 
 // MessageResponse represents a message in the API response.
 type MessageResponse struct {
-	Role      string     `json:"role"`
-	Content   string     `json:"content"`
-	Prefix    bool       `json:"prefix"`
-	ToolCalls []ToolCall `json:"tool_calls"`
+	Role    string `json:"role"`
+	Content string `json:"content"`
+	// ContentChunks holds structured content and takes precedence over Content when non-nil.
+	ContentChunks []Content  `json:"-"`
+	Prefix        bool       `json:"prefix"`
+	ToolCalls     []ToolCall `json:"tool_calls"`
+}
+
+// MarshalJSON preserves the decoded content representation.
+func (m MessageResponse) MarshalJSON() ([]byte, error) { //nolint:gocritic // hugeParam: value receiver preserves JSON encoding of non-addressable responses.
+	var content []byte
+	var err error
+	if m.ContentChunks != nil {
+		content, err = json.Marshal(m.ContentChunks)
+	} else {
+		content, err = json.Marshal(m.Content)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(messageResponseWire{Role: m.Role, Content: content, Prefix: m.Prefix, ToolCalls: m.ToolCalls})
+}
+
+// UnmarshalJSON accepts text or content chunks without changing the legacy Content field.
+func (m *MessageResponse) UnmarshalJSON(b []byte) error {
+	var raw messageResponseWire
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&raw); err != nil {
+		return err
+	}
+	text, chunks, err := responseContent(raw.Content)
+	if err != nil {
+		return err
+	}
+	*m = MessageResponse{Role: raw.Role, Content: text, ContentChunks: chunks, Prefix: raw.Prefix, ToolCalls: raw.ToolCalls}
+	return nil
 }
 
 // To converts a MessageResponse to a genai.Message.
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.Content != "" {
 		out.Replies = []genai.Reply{{Text: m.Content}}
+	}
+	for i := range m.ContentChunks {
+		var r genai.Reply
+		if err := m.ContentChunks[i].ToReply(&r); err != nil {
+			return fmt.Errorf("content #%d: %w", i, err)
+		}
+		if !r.IsZero() {
+			out.Replies = append(out.Replies, r)
+		}
 	}
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
@@ -531,6 +665,54 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 	out.Arguments = t.Function.Arguments
 }
 
+// MessageDelta is an assistant streaming update with text or typed content chunks.
+type MessageDelta struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+	// ContentChunks holds structured content and takes precedence over Content when non-nil.
+	ContentChunks []Content  `json:"-"`
+	ToolCalls     []ToolCall `json:"tool_calls"`
+}
+
+// MarshalJSON preserves the decoded streaming content representation.
+func (m MessageDelta) MarshalJSON() ([]byte, error) { //nolint:gocritic // hugeParam: value receiver preserves JSON encoding of non-addressable responses.
+	var content []byte
+	var err error
+	if m.ContentChunks != nil {
+		content, err = json.Marshal(m.ContentChunks)
+	} else {
+		content, err = json.Marshal(m.Content)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(messageDeltaWire{Role: m.Role, Content: content, ToolCalls: m.ToolCalls})
+}
+
+// UnmarshalJSON accepts both streaming content representations and rejects unknown fields.
+func (m *MessageDelta) UnmarshalJSON(b []byte) error {
+	var raw messageDeltaWire
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&raw); err != nil {
+		return err
+	}
+	text, chunks, err := responseContent(raw.Content)
+	if err != nil {
+		return err
+	}
+	*m = MessageDelta{Role: raw.Role, Content: text, ContentChunks: chunks, ToolCalls: raw.ToolCalls}
+	return nil
+}
+
+type messageDeltaWire struct {
+	Role      string          `json:"role"`
+	Content   json.RawMessage `json:"content"`
+	ToolCalls []ToolCall      `json:"tool_calls"`
+}
+
 // ChatStreamChunkResponse represents a streaming chunk from the chat API.
 type ChatStreamChunkResponse struct {
 	ID      string     `json:"id"`
@@ -538,14 +720,11 @@ type ChatStreamChunkResponse struct {
 	Created base.TimeS `json:"created"`
 	Model   string     `json:"model"`
 	Choices []struct {
-		Index int64 `json:"index"`
-		Delta struct {
-			Role      string     `json:"role"`
-			Content   string     `json:"content"`
-			ToolCalls []ToolCall `json:"tool_calls"`
-		} `json:"delta"`
-		FinishReason FinishReason `json:"finish_reason"`
-		Logprobs     base.Unknown `json:"logprobs"`
+		Index          int64        `json:"index"`
+		Delta          MessageDelta `json:"delta"`
+		FinishReason   FinishReason `json:"finish_reason"`
+		Logprobs       base.Unknown `json:"logprobs"`
+		PromptLogprobs base.Unknown `json:"prompt_logprobs,omitzero"`
 	} `json:"choices"`
 	Usage Usage  `json:"usage"`
 	P     string `json:"p"` // "abcdefghijklmnopqrstu" WTF?

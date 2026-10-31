@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -76,13 +76,23 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		genaiModels, err := getClient(t, "").ListModels(t.Context())
+		c := getClient(t, "")
+		genaiModels, err := c.ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
+		scenarios := c.Scoreboard().Scenarios
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
-			models = append(models, scoreboard.Model{Model: m.GetID()})
+			id := m.GetID()
+			reason := false
+			for _, sc := range scenarios {
+				if slices.Contains(sc.Models, id) {
+					reason = sc.Reason
+					break
+				}
+			}
+			models = append(models, scoreboard.Model{Model: id, Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
@@ -103,9 +113,6 @@ func TestClient(t *testing.T) {
 			}
 			if err != nil {
 				t.Fatal(err)
-			}
-			if model.Reason {
-				t.Fatal("implement me")
 			}
 			if strings.HasPrefix(model.Model, "voxtral") {
 				// If anyone at Mistral reads this, please get your shit together.

@@ -1,0 +1,90 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1092
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants me to use the square_root tool to calculate the square root of 132413. They want only the result with no explanation. Let me call the tool with the number 132413."}],"closed":true}],"tool_calls":[{"id":"oHjqfo3XC","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"oHjqfo3XC","name":"square_root"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":""},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefgh"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abc"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" wants only the result"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijk"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" with no explanation."}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmn"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" The tool"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnop"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" returned 363."}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"a"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"89. I should"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghi"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" reply with just"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdef"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" that."}],"closed":true},{"type":"text","text":"363"}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghi"}
+
+            data: {"id":"e66dc160b37e455a99324debc0f0f966","object":"chat.completion.chunk","created":1793404849,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":".89"},"finish_reason":"stop","logprobs":null,"prompt_logprobs":null}],"usage":{"prompt_tokens":102,"total_tokens":133,"completion_tokens":31,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":25},"service_tier":"standard"},"p":"abcdefghijklmnopqrstuvwxyz012345"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61b36947a2a6-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a18f42-4c50-7fc6-a558-90ecff177da2
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=1199
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "1078"
+            X-Kong-Proxy-Latency:
+                - "20"
+            X-Kong-Request-Id:
+                - 01a18f42-4c50-7fc6-a558-90ecff177da2
+            X-Kong-Upstream-Latency:
+                - "1079"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "979"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14995336"
+        status: 200 OK
+        code: 200
+        duration: 1.214s

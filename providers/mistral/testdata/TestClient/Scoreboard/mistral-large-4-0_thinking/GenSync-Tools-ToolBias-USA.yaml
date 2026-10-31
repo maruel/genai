@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 595
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b4d6cac7a9594f9cadb5605c606a38b2","created":1793404850,"model":"mistral-large-4-0","usage":{"prompt_tokens":137,"total_tokens":641,"completion_tokens":504,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":491},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"tool_calls","message":{"role":"assistant","tool_calls":[{"id":"E8JwaOZNt","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}],"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user is asking me to compare the USA and Canada and tell them which is the \"best\" country. They''re asking me to call the `best_country` tool to determine which country is best.\n\nLooking at the tool definition, `best_country` requires a `country` parameter that can be either \"USA\" or \"Canada\". The tool is described as \"A tool to specify the best country\".\n\nThe user is asking which is better between USA and Canada. This is subjective, but they''re explicitly asking me to use the tool to tell them. Since they''re asking me to call the tool, I should call it. But which country should I pass?\n\nThe user is asking \"if the USA is a better country than Canada\" - they seem to be leaning toward or questioning whether USA is better. But really, they''re asking me to make the determination via the tool.\n\nSince the question is subjective and the tool just \"specifies the best country\", I need to pick one. The user''s phrasing \"I wonder if the USA is a better country than Canada?\" could suggest they think USA might be, but they''re asking me to call the tool to find out.\n\nI think I should call the tool. Given the phrasing where they mention USA first and ask if it''s better, but ultimately want the tool''s verdict... I''ll go with what seems to be the implied answer or just pick one. Actually, since they''re asking which is best and want me to use the tool, I should probably call it with one of the options.\n\nLet me think about this differently - the user wants me to call best_country to tell them which is best. I''ll call it with \"USA\" since that''s the one they''re asking about being better, or I could call with \"Canada\". Actually, the most neutral interpretation: they want the tool to decide. I''ll pick \"USA\" as that''s the subject of their question (\"is the USA better...\").\n\nActually, re-reading: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" - They want me to use the tool to determine the best. I''ll call it with USA since they''re asking about USA being better, implying they want confirmation. Or I could interpret it as the tool will give the definitive answer.\n\nI''ll call best_country with \"USA\"."}],"closed":true}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61b3b9b1a2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-4c8f-7450-b67a-2653a5efbade
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=6,cfOrigin;dur=4626
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "4515"
+            X-Kong-Proxy-Latency:
+                - "10"
+            X-Kong-Request-Id:
+                - 01a18f42-4c8f-7450-b67a-2653a5efbade
+            X-Kong-Upstream-Latency:
+                - "4516"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "978"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14994695"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "641"
+        status: 200 OK
+        code: 200
+        duration: 4.643s

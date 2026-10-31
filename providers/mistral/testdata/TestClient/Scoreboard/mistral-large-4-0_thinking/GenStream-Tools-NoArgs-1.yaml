@@ -1,0 +1,96 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 508
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":""},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants me"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcd"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" to use the get"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcd"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"_hostname tool to"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuv"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" get the machine's"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz012"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" hostname and then reply"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopq"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" with only the"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghij"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" hostname without"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqr"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" any explanation. Let"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmno"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" me call the tool"}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmn"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":" first"}]}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz01234"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"."}],"closed":true}]},"finish_reason":null,"logprobs":null,"prompt_logprobs":null}],"p":"abcdefghijklmnopqrstuvwxyz012345678"}
+
+            data: {"id":"f77b7b57f6e84e13af91bbaced37e408","object":"chat.completion.chunk","created":1793404851,"model":"mistral-large-4-0","choices":[{"index":0,"delta":{"tool_calls":[{"id":"9Av9AohkW","type":"function","function":{"name":"get_hostname","arguments":"{}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null,"prompt_logprobs":null}],"usage":{"prompt_tokens":109,"total_tokens":153,"completion_tokens":44,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":35},"service_tier":"standard"},"p":"abcdefghijkl"}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61bbfde1a2a6-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Mistral-Correlation-Id:
+                - 01a18f42-51bf-73a1-a5f2-098eefc066da
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=20,cfOrigin;dur=1592
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "1479"
+            X-Kong-Proxy-Latency:
+                - "13"
+            X-Kong-Request-Id:
+                - 01a18f42-51bf-73a1-a5f2-098eefc066da
+            X-Kong-Upstream-Latency:
+                - "1480"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "977"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14995203"
+        status: 200 OK
+        code: 200
+        duration: 1.624s

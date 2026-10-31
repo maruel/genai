@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 517
+        host: api.mistral.ai
+        body: |
+            {"model":"mistral-large-4-0","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"name":"response","strict":true,"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b9cd7fcf57154a98b3b08524de28a284","created":1793404839,"model":"mistral-large-4-0","usage":{"prompt_tokens":109,"total_tokens":320,"completion_tokens":211,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":169},"service_tier":"standard"},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":[{"type":"thinking","thinking":[{"type":"text","text":"The user wants two fruits with their color, formatted as JSON only, no explanation. The schema provided requires an array of objects, each with \"name\" (string) and \"color\" (string) properties.\n\nLet me construct a valid JSON array with two fruits:\n1. Apple - Red\n2. Banana - Yellow\n\nOr:\n1. Strawberry - Red\n2. Orange - Orange\n\nI need to make sure it strictly follows the schema:\n- type: array\n- items: object with properties name and color, both strings, both required, no additional properties\n\nExample:\n[\n  {\n    \"name\": \"Apple\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Banana\",\n    \"color\": \"Yellow\"\n  }\n]\n\nThis looks good. No explanation, just the JSON."}],"closed":true},{"type":"text","text":"[\n  {\n    \"name\": \"Apple\",\n    \"color\": \"Red\"\n  },\n  {\n    \"name\": \"Banana\",\n    \"color\": \"Yellow\"\n  }\n]"}]},"logprobs":null,"prompt_logprobs":null}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52e61738dc8a2a6-YUL
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 01a18f42-2474-7188-9e2b-c1e9a8bb85a5
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=10,cfOrigin;dur=1633
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "1522"
+            X-Kong-Proxy-Latency:
+                - "11"
+            X-Kong-Request-Id:
+                - 01a18f42-2474-7188-9e2b-c1e9a8bb85a5
+            X-Kong-Upstream-Latency:
+                - "1523"
+            X-Max-Retry-Attempts-Reached:
+                - "false"
+            X-Ratelimit-Limit-Req-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "15000000"
+            X-Ratelimit-Remaining-Req-Minute:
+                - "987"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "14997944"
+            X-Ratelimit-Tokens-Query-Cost:
+                - "320"
+        status: 200 OK
+        code: 200
+        duration: 1.654s

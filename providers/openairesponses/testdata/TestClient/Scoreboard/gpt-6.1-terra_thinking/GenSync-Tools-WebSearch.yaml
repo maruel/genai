@@ -1,0 +1,309 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 408
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0b3c1fa2399f556d006ae54634f08887d183c9aae81458b2b1",
+              "object": "response",
+              "created_at": 1793410612,
+              "status": "completed",
+              "access_programs": {
+                "cyber": "standard"
+              },
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1793410618,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6.1-terra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "ws_0b3c1fa2399f556d006ae54636cd5887d193d16f04befdbbdf",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "current prime minister of Canada 2026"
+                    ],
+                    "query": "current prime minister of Canada 2026",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/0e6749a03730bd292cd32dea47518394"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/03dd3faeeac5a8f97e023ce0153eb97e"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.thedailybeast.com/snarling-trumps-rage-posts-backfire-spectacularly"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/about"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/cabinet?trk=article-ssr-frontend-pulse_little-text-block"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://rbcglobalconnect.rbc.com/en/resources/explore-new-markets/country-profiles/canada/political-outline"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/members/en/ministries"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://migova.ca/canada/en/privy-council.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/Members/en/ministries"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.ourcommons.ca/Members/en/ministries?ministryNumber=29"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://interprov.ca/leadership"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers.html?lang=en"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/2026_in_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://chopinsociety.org/files2026/Program.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/30th_Canadian_Ministry"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/List_of_Commonwealth_heads_of_government"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://timhodgson.libparl.ca/wp-content/uploads/sites/193/2026/01/NEWSRE1.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.skillscompetencescanada.com/wp-content/uploads/2025/06/SCNC2026-Official-Program_EN_web_06052026.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.grc.net/documents/6989d26d80550CanadaGccCountryProfilecompressed.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://researchbriefings.files.parliament.uk/documents/CBP-10244/CBP-10244.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en?utm_source=openai"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "msg_0b3c1fa2399f556d006ae5463a702087d19a2f9d6f63397d55",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [
+                        {
+                          "type": "url_citation",
+                          "end_index": 67,
+                          "start_index": 12,
+                          "title": "Mark Carney - Prime Minister of Canada | Prime Minister of Canada",
+                          "url": "https://www.pm.gc.ca/en?utm_source=openai"
+                        }
+                      ],
+                      "logprobs": [],
+                      "text": "Mark Carney ([pm.gc.ca](https://www.pm.gc.ca/en?utm_source=openai))"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 1
+                }
+              },
+              "tools": [
+                {
+                  "type": "web_search",
+                  "return_token_budget": "default",
+                  "search_content_types": [
+                    "text"
+                  ],
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8700,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 4467
+                },
+                "output_tokens": 53,
+                "output_tokens_details": {
+                  "reasoning_tokens": 31
+                },
+                "total_tokens": 8753
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eee6a6d5d2df2-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "6370"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "996085"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 234ms
+        status: 200 OK
+        code: 200
+        duration: 6.485s

@@ -1,0 +1,187 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 636
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","parallel_tool_calls":true,"previous_response_id":"resp_0d01f5b16f238c97006ae54626464887d18c85d7547abdaf74","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_CzNll8Ju6v0H10qDaGvY3vNH","output":"363.89"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0d01f5b16f238c97006ae54628047887d1acbe2b7d5158bf19",
+              "object": "response",
+              "created_at": 1793410600,
+              "status": "completed",
+              "access_programs": {
+                "cyber": "standard"
+              },
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1793410602,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6.1-terra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_0d01f5b16f238c97006ae54629d86487d1b3b0be191e8b0de4",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABq5UYqxr8LOgyI9XUE5mZiqVMz3jQ9X6SkNZkcQAquy-7JpMgivMfLKYd9a6uZF5D5Q-sP7_WslXO4ffHN2wdmo9InZzBfs5DsijAfA9jnR7tCDesOCZJLbzv0UPrefLNKm7Lg2j84yqIbbLVpKpImZuQWYUuRzg78lUyY4g-EEN_0S_qjeG9EJW7n-gImOhJD2WIXBAJQDrVtc9sRqcharyLF88FvD_g3Y5mewdI4bQsBy-BlMIBqFjktIBUyGQiqUfZwIVfOlxLbqrhs2toSNQvLaaE4WUxtmtjWTROFBIuJVS2O34aNezvhW2JqcjC7rezCi1UJeoQl7uAH22VfFAgbjFiHLKwHLmSxv0z1JhlRfL8mchQuC4RP15ucKI2pQReSH-CZOeOhm7clptx6ougQtyXiuW_l6nwibGL2DFVSQrkqPRccRycoTfco_YifRmWUy5WTpxdtx9WbiuBPGtlrHyFLaFWvJjM_YYOvl4xEIxTHtpCcDHCkhgJ6z1AuWcjt4xoacoH4jLHdlxGoEETB8Lia2oWY6tR7DDpfF6owkxtobdVW-dDKdnQIIdOOlfLEZQYG-qHua_5H7E1mZ9noo_t5HoouWV_gOeM-k6Cmg9jVoTGC6jsYTVEvsWjyhUE5O7I7vZ0Mh-f3k2QVuBPNtFWYsgBXIlFJEQwHRzFJTYmgjL2UtVEo7B_-j_7m5Q24BB_gpLd154cuWNl-Y2vt1BhggLAFsujmaDN96XORi378saK8b0imjVYxq4xdjFGXKil40P9I_6K1DbfAufZF5XgQBDILROV1PYBnMwVHqJ0B7CL-cqjL0boLrl4506GaKThUwBEMUqLpw8Oolel1_rAJz6ygMYfuvnAO9F3mFMcMIa58Dyl8ownCA13xVnVpsqGiYtgeOk_NIafzi7WKqn9TDr531XRFWHLjDFJRB0oJSlugHC1DX9bXgBFDXC55yhKCLkUgNEhuX62BM65Bgq8lgZ8ncnusqD9OJ2h4UgtGptqE2joycnL8fJjIMUFotub1T2x6p1nkSBI_nxTzsZ6CBtELwV6jpmyJNC9KiP3A_LXZ870gI0SOV-N8VAFzPd08-zCveUjg8lk3w2ip-Vh52n_xzoyG93mDrbKFsZuv2BmnlaiIw54RrGHshe7tbdkMi-Xv7PICMw-AFLBMzRFzGpH0O0mJ8xuz0Ww-LlT-rFUH5W196woJzez907F-8UI6b-YZ5aGWenUNM-C9btpdtbQey4HN0rysPfW8-0aU3L-77BuLWTPnKlR-9B53Cz693HfQzljxOqMW-u_dxqjJNHrlMXvp4AfvIm11MVxq3VqgQ-qZSuXF6LUkyVsPn1S9koQELslH9AK5jqAT0WcdpR_mR6TRfYH6ryMNSiumsctD9FQWIkJMKoNluvNhtmoR91186P70GhvADGAjm6PIzA4yvU1JJ4mACKVpOAV1tIoIiL9FPFmV3Ue8_B_qsk8iULoaTl3DddE64MfuSjimjd3rfQavboolSABq6BIHZ1nFA2KEB5Irg4EEgQzlg17ZaTP-3zL2R-cmJdgSpV4aI3c_W6yHN9tMS5ixQeI=",
+                  "summary": []
+                },
+                {
+                  "id": "msg_0d01f5b16f238c97006ae5462a352487d190323822343743aa",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "363.89"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": "resp_0d01f5b16f238c97006ae54626464887d18c85d7547abdaf74",
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "none",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Calculates and return the square root of a number",
+                  "name": "square_root",
+                  "output_schema": null,
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "properties": {
+                      "number": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "number"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 106,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 10
+                },
+                "total_tokens": 125
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eee197e462df2-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "2705"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000000"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 2.849s

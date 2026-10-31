@@ -1,4 +1,4 @@
-// Copyright 2025 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
@@ -50,7 +50,7 @@ func TestClient(t *testing.T) {
 	t.Run("New", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			t.Run("embedding modality", func(t *testing.T) {
-				for _, id := range []string{"text-embedding-3-small", "gpt-5.6-luna", "unknown-model"} {
+				for _, id := range []string{"text-embedding-3-small", "gpt-6-luna", "unknown-model"} {
 					t.Run(id, func(t *testing.T) {
 						c, err := openairesponses.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel(id), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))
 						if err != nil {
@@ -115,15 +115,29 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		genaiModels, err := getClient(t, "").ListModels(t.Context())
+		c := getClient(t, "")
+		genaiModels, err := c.ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
+		scenarios := c.Scoreboard().Scenarios
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
-			reason := (strings.HasPrefix(id, "gpt-5") || strings.HasPrefix(id, "gpt-6") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
-			models = append(models, scoreboard.Model{Model: id, Reason: reason})
+			if strings.HasPrefix(id, "gpt-5") {
+				continue
+			}
+			found := false
+			for _, sc := range scenarios {
+				if slices.Contains(sc.Models, id) {
+					models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
+					found = true
+				}
+			}
+			if !found {
+				reason := (strings.HasPrefix(id, "gpt-6") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
+				models = append(models, scoreboard.Model{Model: id, Reason: reason})
+			}
 		}
 		if !slices.Contains(models, scoreboard.Model{Model: "text-embedding-3-small"}) {
 			models = append(models, scoreboard.Model{Model: "text-embedding-3-small"})
@@ -173,7 +187,7 @@ func TestClient(t *testing.T) {
 			}
 			if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
 				// See https://platform.openai.com/docs/guides/flex-processing
-				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
+				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-6") {
 					var p genai.Provider = &internaltest.InjectOptions{
 						Provider: c,
 						Opts:     []genai.GenOption{&openairesponses.GenOptionText{ServiceTier: tier}},
@@ -192,46 +206,6 @@ func TestClient(t *testing.T) {
 			return c
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
-	})
-
-	t.Run("Batch", func(t *testing.T) {
-		t.Skip("implement")
-		/*
-			// This is a tricky test since batch operations can take up to 24h to complete.
-			ctx := t.Context()
-			c := getClient(t, "gpt-5.6-luna")
-			// Use Luna to keep the batch recording cheap while exercising the latest text model family.
-			msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
-			job, err := c.GenAsync(ctx, msgs)
-			if err != nil {
-				t.Fatal(err)
-			}
-			// TODO: Detect when recording and sleep only in this case.
-			isRecording := os.Getenv("RECORD") == "all"
-			for {
-				res, err := c.PokeResult(ctx, job)
-				if err != nil {
-					t.Fatal(err)
-				}
-				if res.FinishReason == genai.Pending {
-					if isRecording {
-						t.Logf("Waiting...")
-						time.Sleep(time.Second)
-					}
-					continue
-				}
-				if res.InputTokens == 0 || res.OutputTokens == 0 {
-					t.Error("expected usage")
-				}
-				if res.FinishReason != genai.FinishedStop {
-					t.Errorf("finish reason: %s", res.FinishReason)
-				}
-				if s := res.String(); len(s) < 15 {
-					t.Errorf("not enough text: %q", s)
-				}
-				break
-			}
-		*/
 	})
 
 	t.Run("Preferred", func(t *testing.T) {
@@ -261,7 +235,7 @@ func TestClient(t *testing.T) {
 				Name: "bad apiKey",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("bad apiKey"),
-					genai.ProviderOptionModel("gpt-5.6-luna"),
+					genai.ProviderOptionModel("gpt-6-luna"),
 				},
 				ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 				ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
@@ -318,7 +292,7 @@ func TestClient(t *testing.T) {
 func TestPreviousResponseID(t *testing.T) {
 	t.Run("empty_messages_without_prev_id", func(t *testing.T) {
 		var req openairesponses.Response
-		err := req.Init(nil, "gpt-5.6-luna")
+		err := req.Init(nil, "gpt-6-luna")
 		if err == nil {
 			t.Fatal("expected error for empty messages without PreviousResponseID")
 		}

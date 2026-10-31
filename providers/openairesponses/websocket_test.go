@@ -86,10 +86,10 @@ func TestWebSocketConn(t *testing.T) {
 		})
 
 		if !rec.IsReplay() {
-			if os.Getenv("RECORD") != "all" || os.Getenv("OPENAI_API_KEY") == "" {
-				t.Skip("set RECORD=all and OPENAI_API_KEY to record")
+			if os.Getenv("RECORD") != "failure_only" || os.Getenv("OPENAI_API_KEY") == "" {
+				t.Skip("set RECORD=failure_only and OPENAI_API_KEY to record")
 			}
-			model := "gpt-5.6-luna"
+			model := "gpt-6-luna"
 			if v := os.Getenv("WS_MODEL"); v != "" {
 				model = v
 			}
@@ -271,7 +271,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient(t, "gpt-5.6-luna")}
+		w := &WebSocketConn{client: newClient(t, "gpt-6-luna")}
 		msgs := genai.Messages{genai.NewTextMessage("Hello")}
 		req, err := w.buildRequest(msgs)
 		if err != nil {
@@ -280,8 +280,8 @@ func TestWebSocketConn(t *testing.T) {
 		if req.Type != "response.create" {
 			t.Errorf("Type = %q, want %q", req.Type, "response.create")
 		}
-		if req.Model != "gpt-5.6-luna" {
-			t.Errorf("Model = %q, want %q", req.Model, "gpt-5.6-luna")
+		if req.Model != "gpt-6-luna" {
+			t.Errorf("Model = %q, want %q", req.Model, "gpt-6-luna")
 		}
 		if req.PreviousResponseID != "" {
 			t.Errorf("PreviousResponseID = %q, want empty", req.PreviousResponseID)
@@ -289,7 +289,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest_with_meta", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient(t, "gpt-5.6-luna")}
+		w := &WebSocketConn{client: newClient(t, "gpt-6-luna")}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Hello"),
 			{Replies: []genai.Reply{
@@ -315,7 +315,7 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("buildRequest_user_override", func(t *testing.T) {
-		w := &WebSocketConn{client: newClient(t, "gpt-5.6-luna")}
+		w := &WebSocketConn{client: newClient(t, "gpt-6-luna")}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Hello"),
 			{Replies: []genai.Reply{{Opaque: map[string]any{

@@ -1,0 +1,106 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0808fbae2c009031006ae54633e5d887d1a8178cde27d580c0","object":"response","created_at":1793410612,"status":"in_progress","access_programs":{"cyber":"standard"},"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0808fbae2c009031006ae54633e5d887d1a8178cde27d580c0","object":"response","created_at":1793410612,"status":"in_progress","access_programs":{"cyber":"standard"},"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"ws_0808fbae2c009031006ae54634babc87d1820974d0948b0852","type":"web_search_call","status":"in_progress"},"output_index":0,"sequence_number":2}
+
+            event: response.web_search_call.in_progress
+            data: {"type":"response.web_search_call.in_progress","item_id":"ws_0808fbae2c009031006ae54634babc87d1820974d0948b0852","output_index":0,"sequence_number":3}
+
+            event: response.web_search_call.searching
+            data: {"type":"response.web_search_call.searching","item_id":"ws_0808fbae2c009031006ae54634babc87d1820974d0948b0852","output_index":0,"sequence_number":4}
+
+            event: response.web_search_call.completed
+            data: {"type":"response.web_search_call.completed","item_id":"ws_0808fbae2c009031006ae54634babc87d1820974d0948b0852","output_index":0,"sequence_number":5}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"ws_0808fbae2c009031006ae54634babc87d1820974d0948b0852","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current prime minister of Canada"],"query":"current prime minister of Canada","sources":[{"type":"url","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8"},{"type":"url","url":"https://apnews.com/article/0e6749a03730bd292cd32dea47518394"},{"type":"url","url":"https://apnews.com/article/614e0028ea8a45adaf6b793f3f2c986d"},{"type":"url","url":"https://apnews.com/article/03dd3faeeac5a8f97e023ce0153eb97e"},{"type":"url","url":"https://www.thedailybeast.com/snarling-trumps-rage-posts-backfire-spectacularly"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet?trk=article-ssr-frontend-pulse_little-text-block"},{"type":"url","url":"https://www.canada.ca/en/government/ministers.html"},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries"},{"type":"url","url":"https://www.dfat.gov.au/geo/heads-of-government/canada"},{"type":"url","url":"https://rbcglobalconnect.rbc.com/en/resources/explore-new-markets/country-profiles/canada/political-outline"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries?ministryNumber=29"},{"type":"url","url":"https://migova.ca/canada/en/privy-council.html"},{"type":"url","url":"https://interprov.ca/leadership"},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://www.ourcommons.ca/Procedure/procedure-and-practice-4/app06-e.html"},{"type":"url","url":"https://en.wikipedia.org/wiki/2026_in_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://www.craigmarlatt.com/canada/images%26downloads/cabinet.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_Commonwealth_heads_of_government"},{"type":"url","url":"https://en.wikipedia.org/wiki/30th_Canadian_Ministry"},{"type":"url","url":"https://en.wikipedia.org/wiki/Parliament_of_Canada"},{"type":"url","url":"https://lop.parl.ca/about/parliament/education/GetToKnowTheHOC-en.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"},{"type":"url","url":"https://www.japancanadatoday.ca/wp-content/uploads/2023/12/Prime-Minister-Justin-Trudeau_Japan-Canada-Today.pdf"},{"type":"url","url":"https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"},{"type":"url","url":"https://www.japancanadatoday.ca/wp-content/uploads/2022/12/PM_Christmas-Message-2022_ENG.pdf"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://www.youtube.com/watch?v=l5YYWGUHV_I"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"},{"type":"url","url":"https://www.youtube.com/watch?v=i4glttVzK1Q"}]}},"output_index":0,"sequence_number":6}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":7}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":8}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"Mark Carney ([apnews.com](https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai))","item_id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","logprobs":[],"obfuscation":"9jPOCZK","output_index":1,"sequence_number":9}
+
+            event: response.output_text.annotation.added
+            data: {"type":"response.output_text.annotation.added","annotation":{"type":"url_citation","end_index":105,"start_index":12,"title":"Carney eyes June deal for Canada to become EU associate member as Trump reshapes alliances","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai"},"annotation_index":0,"content_index":0,"item_id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","output_index":1,"sequence_number":10}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","logprobs":[],"output_index":1,"sequence_number":11,"text":"Mark Carney ([apnews.com](https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai))"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","output_index":1,"part":{"type":"output_text","annotations":[{"type":"url_citation","end_index":105,"start_index":12,"title":"Carney eyes June deal for Canada to become EU associate member as Trump reshapes alliances","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai"}],"logprobs":[],"text":"Mark Carney ([apnews.com](https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai))"},"sequence_number":12}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","type":"message","status":"completed","content":[{"type":"output_text","annotations":[{"type":"url_citation","end_index":105,"start_index":12,"title":"Carney eyes June deal for Canada to become EU associate member as Trump reshapes alliances","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai"}],"logprobs":[],"text":"Mark Carney ([apnews.com](https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai))"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":13}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_0808fbae2c009031006ae54633e5d887d1a8178cde27d580c0","object":"response","created_at":1793410612,"status":"completed","access_programs":{"cyber":"standard"},"background":false,"completed_at":1793410616,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[{"id":"ws_0808fbae2c009031006ae54634babc87d1820974d0948b0852","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current prime minister of Canada"],"query":"current prime minister of Canada","sources":[{"type":"url","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8"},{"type":"url","url":"https://apnews.com/article/0e6749a03730bd292cd32dea47518394"},{"type":"url","url":"https://apnews.com/article/614e0028ea8a45adaf6b793f3f2c986d"},{"type":"url","url":"https://apnews.com/article/03dd3faeeac5a8f97e023ce0153eb97e"},{"type":"url","url":"https://www.thedailybeast.com/snarling-trumps-rage-posts-backfire-spectacularly"},{"type":"url","url":"https://www.canada.ca/en/privy-council.html"},{"type":"url","url":"https://www.pm.gc.ca/en/about"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet?trk=article-ssr-frontend-pulse_little-text-block"},{"type":"url","url":"https://www.canada.ca/en/government/ministers.html"},{"type":"url","url":"https://www.ourcommons.ca/members/en/ministries"},{"type":"url","url":"https://www.dfat.gov.au/geo/heads-of-government/canada"},{"type":"url","url":"https://rbcglobalconnect.rbc.com/en/resources/explore-new-markets/country-profiles/canada/political-outline"},{"type":"url","url":"https://www.ourcommons.ca/Members/en/ministries?ministryNumber=29"},{"type":"url","url":"https://migova.ca/canada/en/privy-council.html"},{"type":"url","url":"https://interprov.ca/leadership"},{"type":"url","url":"https://www.pm.gc.ca/en/news/news-releases/2025/03/14/swearing-30th-canadian-ministry"},{"type":"url","url":"https://www.ourcommons.ca/Procedure/procedure-and-practice-4/app06-e.html"},{"type":"url","url":"https://en.wikipedia.org/wiki/2026_in_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://www.craigmarlatt.com/canada/images%26downloads/cabinet.pdf"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_Commonwealth_heads_of_government"},{"type":"url","url":"https://en.wikipedia.org/wiki/30th_Canadian_Ministry"},{"type":"url","url":"https://en.wikipedia.org/wiki/Parliament_of_Canada"},{"type":"url","url":"https://lop.parl.ca/about/parliament/education/GetToKnowTheHOC-en.pdf"},{"type":"url","url":"https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"},{"type":"url","url":"https://www.japancanadatoday.ca/wp-content/uploads/2023/12/Prime-Minister-Justin-Trudeau_Japan-Canada-Today.pdf"},{"type":"url","url":"https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"},{"type":"url","url":"https://www.japancanadatoday.ca/wp-content/uploads/2022/12/PM_Christmas-Message-2022_ENG.pdf"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://www.youtube.com/watch?v=l5YYWGUHV_I"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1hx2dun"},{"type":"url","url":"https://www.youtube.com/watch?v=i4glttVzK1Q"},{"type":"url","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai"}]}},{"id":"msg_0808fbae2c009031006ae54638008887d1aece6f08379f1725","type":"message","status":"completed","content":[{"type":"output_text","annotations":[{"type":"url_citation","end_index":105,"start_index":12,"title":"Carney eyes June deal for Canada to become EU associate member as Trump reshapes alliances","url":"https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai"}],"logprobs":[],"text":"Mark Carney ([apnews.com](https://apnews.com/article/d8543b3d496dd2b98d68b4ca13e7f2f8?utm_source=openai))"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":1}},"tools":[{"type":"web_search","return_token_budget":"default","search_content_types":["text"],"search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":8866,"input_tokens_details":{"cache_write_tokens":4467,"cached_tokens":0},"output_tokens":50,"output_tokens_details":{"reasoning_tokens":28},"total_tokens":8916},"user":null,"metadata":{}},"sequence_number":14}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eee63d99e2df2-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "380"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "995162"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 290ms
+        status: 200 OK
+        code: 200
+        duration: 504ms

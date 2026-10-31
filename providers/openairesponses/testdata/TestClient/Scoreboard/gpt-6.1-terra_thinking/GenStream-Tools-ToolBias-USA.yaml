@@ -1,0 +1,100 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 691
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0ae485c7fc325644006ae54630c56087d1b6f0dfd875f7d5ad","object":"response","created_at":1793410608,"status":"in_progress","access_programs":{"cyber":"standard"},"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"required","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0ae485c7fc325644006ae54630c56087d1b6f0dfd875f7d5ad","object":"response","created_at":1793410608,"status":"in_progress","access_programs":{"cyber":"standard"},"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"required","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"rs_0ae485c7fc325644006ae546315fa887d1bff5b660d666a922","type":"reasoning","content":[],"encrypted_content":"gAAAAABq5UYxvF5ubHNiP4vkTo7l0v6RqYHqsHPEMlF67aR1ABS8oI2JC-ZwM-YKB5n3tc6jUtg6acRlOcXwfDDfsvV_ZO6t6d_v2_MRz_qrjqZe2a7GQl9Ccbc7BmBjQDKVRhxIaeAhQhHUubrF2_-P_dQY3tIO54DCNnZQoTVw4FC3Ffpc_Kf1rqsiVvrztwTFsq8lLirLSEDguWqtYgSTG-3BccRLw1EsiM9HK_PbzYOByGz7Zu-r4wO7OMB3SfaBBcx9oaDfyBeAyKqaLJlZTyiCWWGhnjoQstira9WPkRurIK_J3Sh0qhg8TVAn_RSVIrgbpQ2KI9NJuZZSOv7FT6jLKSPIPUSeNrjX2ia1h-bHZ3CYjDWpmiU02WuwrCu7beTxpiOABfn3XmYz5vj-745lu8iFGl03IKAk4G8tKCGmPcU8i_kCzOrcKcnXjpVbO3VL7yhnpDAnUOXSfaz2SQoXooh9c6-v6iUf14YQbA09svAdZyihMjuu4TMWjPacLR98Nb4R5JxNU40alIUG6PtFfO_tE4F6FWY89UtaAZBtyGvK6Wr5Zd0uS0Jt4Bsm6Q9y4bUD5vE2l-eUgr-BhhPLLYCnqpido5Nk4PmroDojvNtR3LjeSS-X6LfKQz9nJY96RRZykFsWZxeiN5KvA93qFkjhc4nKCY_A9iWGW0uExHKEKDYuoPFkZtcaCDnZkpUGk4D0Gp4HOP8LTG76eu2ETxY2pA_khzSWmwPvjB0EmVsNnNz50DC6nzKRqZv6BF3nrKDWTNq0dgoPXI7v2Pk0PDS2VDHyoHHR_HNJC0g5ee8SmOBnjUwF6XopmoMn7BaBILyGHkoN8sLGHCU2MmPbStMUgzOB4g7q05tIJNKqV4AIux5ENinirMKx5kqBoChAyGPTXNonFVDl90AI5V_2XE3g8UaHhpuN35TB8Rj5MpEtqLtQlcCKCqvg50JfHCcanpCHYr5uIgV3EVNLI9Gnp9BjQgHXi_EI8mAHFX3DUd0qpwrVThipXxJKH-jeD5kZJVljN6CNBQ9pwHfFUvMkg7pK3rPFyD-XpQVYV6FQAV_8W8CEE4O4450n6p2gANLgkbvuErw1CONZttHL50cxkxC1sDvexP-prGoZcHb-k1pcIE_Ls4KcfWds6jbh2rmWdV-WiU9594NaJTJgu6FEwENAZzxVR0fxtj1bBNU-mmO6wYjPHBp0U-tJR-EglLNLBhHJ","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"rs_0ae485c7fc325644006ae546315fa887d1bff5b660d666a922","type":"reasoning","content":[],"encrypted_content":"gAAAAABq5UYxkK7lW5oQdjP_fqNz8rLcj5q9hvV_MN-gF1_qsCe0XfQbWM40k1hh4T5N-LxbXaWLKxdoSfLLisC1Fqza9ElA99XvWNivze0uO8B1PbfGU9NCh_GwgqUZ5HAvbMQEiV49l4GUlYOemrjJDiQasKvJHNqB0cIjdMMut7CYHK10RsAQ1o56fmw7TI5hK0S2oZyYbqTSmxybMW6hfdxFCcSOpoglYuhH7Jgrh0osTMKp7gl9RCCEmSoslc_SBKJzpa84dQrD4Wy-pKoo5tJHHrMx0emhN0XHQeqDTpxCN1mUbvD4G-rUGiboQkDN1R9RZX5xIzbxqW6FEcpRtfZI8-IWv9x0X1w2cLFwPhcF5fgV3lXfL8m41TX0UVhOYvaR7E1lKl2Eq51xXYB0tiGxVDp-LTkxDxNvrxVwrOd2QG33Vtz3QPC0WPaiuD1QIIZtKe30ePph79Gi2BK8Cgq_rcxvNf8QIVT0qZ9UHvVBPqverGWddKXKNHW6O0uSUhX9MbWWXYhyQjIc4xvzmH2DbnWSXvV0ByFDFrlMXMELCDn0V9dqye0Zw7uS0VTLW1eu0O9H9rZPn8s0kjmtHyLSMlw3iZNkQgzIxv51q-RuOpzyPePrnkpU95X9RkliKZSFqr-4bLfYtg3swASOLAPGSoOMq4dOwlp-KR9Ht1b_RecMye1qHaHTYv2gq3pZ4eW4mA0t_rfHvqt3xEsbBboWwDnC37S6OvMIbb6Hndp8u9-HvGNulOrFREDqzLqW3j3q4fwoZaTAHxJKiJ-3oQkd10ysNutFLVCsSnMWGGQfyRk6M0KDkonOpcuSnBd-sPixnMVXcwHInEtwN7JfE5ckWKfWWPIxevt4fIyElVJtV_w1koaNH_FAeQbYExCHXCugZgSF7v9BwEoJPq-bhsWGnlSisKFdUNrAdRVnKTl14Y7PUgNvy1BHM5ZM-vch9tAgdPVK-1KBIs1bJy7wquDK5xVrQubRV8LjHyoybt1MT8kaw8SmauCVXgvLJgQDG7GHwsrLmssjiqPeb3TTVZowpCxaGfuU9MNalbegsFi3Pd86QUW4NkEs8OxFbkk2JUNP4gE363nr9d9qf1KLSI25BpviJ2SQUY3Z6wQYnvqbHww6vO94PkI2rwcniiiqglfMhc65DTrJ-BnJ7vXMIheWl4Ajcw5_0GVLFa25PgXS3UHOgYVg-R7ZpoTe_XyvWqnhkIGO9g4eFeNWT4Xn-Tt8HnYgZQbHOYmYwS3kIs8PD15_ZGMSrMhcVddyZeAKv-P4zkPkC6ShgsDHi0xJpZpoygOIERLXb4iwVgzMsXRHSfYfUTU_uhxm5wAVxDwFmv2g5_tuJaOQT7XMbfvIz8bHmWx0ECHu7ewdKSbUCdGfQrRsTbLNpKK3sDAtTcZyLbFDrnalraWsrtH5Xm7CuIdUihgZE6FU35aPEcuQ0Eh3Zie9pu6rRD8SIU98jOatEbZq0p93mcSIfY5BnutGz6OiJRixNYKwGdptd6lm9XALe6hzbuk2eeq0vmQ1ysP1EZnsz-NjU5tyk7OuxmhDXuxsliBpZLhtUSEznjJds4Bwo6NnG6ecFqMsGp25BvpdT7U_Ym0Lgbh0eiEa0gkulHu0TyKpRntVAnxewCRn4xJ5j8LicILsudB2GRjoQZtBdTSJI34d","summary":[]},"output_index":0,"sequence_number":3}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","type":"function_call","status":"in_progress","arguments":"","call_id":"call_VJ2eA2qPwiEO08dzh9yxTjeu","name":"best_country"},"output_index":1,"sequence_number":4}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"{\"","item_id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","obfuscation":"CofttmaVgdPxUu","output_index":1,"sequence_number":5}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"country","item_id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","obfuscation":"gyYfdIvwU","output_index":1,"sequence_number":6}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"\":\"","item_id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","obfuscation":"Pmd7QvV97Idpg","output_index":1,"sequence_number":7}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"Canada","item_id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","obfuscation":"ZgDVEzWQLb","output_index":1,"sequence_number":8}
+
+            event: response.function_call_arguments.delta
+            data: {"type":"response.function_call_arguments.delta","delta":"\"}","item_id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","obfuscation":"1yqPn40D3WaQo6","output_index":1,"sequence_number":9}
+
+            event: response.function_call_arguments.done
+            data: {"type":"response.function_call_arguments.done","arguments":"{\"country\":\"Canada\"}","item_id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","output_index":1,"sequence_number":10}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","type":"function_call","status":"completed","arguments":"{\"country\":\"Canada\"}","call_id":"call_VJ2eA2qPwiEO08dzh9yxTjeu","name":"best_country"},"output_index":1,"sequence_number":11}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_0ae485c7fc325644006ae54630c56087d1b6f0dfd875f7d5ad","object":"response","created_at":1793410608,"status":"completed","access_programs":{"cyber":"standard"},"background":false,"completed_at":1793410609,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[{"id":"rs_0ae485c7fc325644006ae546315fa887d1bff5b660d666a922","type":"reasoning","content":[],"encrypted_content":"gAAAAABq5UYxrSBzvX341wP-rXcMhOlBjQYijkIwK7n_3zRcitj9N14r1Vhyy9bQQPA--reBhcoBFP1AKqtD6X-rAyN-cKEBNXLHSbgEFlMzDo3CcOOnw6dGQivry_5kvvxEo-L4WDtdw4TTxFgVFfqyOzCrjlVcLFq0_JJYM84Bh3byBKgduGtqnJw3gLgPOUBJtXR4lKHSswsyRBLIR3KmgOzsQi_PiTrnY_ImmZkUnL3W5tCsAtPpAIAB6XCcXdIkGu26Ew2tEnnhHYEF5Z7Q2K1eKp26z5pXwJENPKbNeEMZ9Z8VAcF6Uj3mgEr_8Ms6St3_pY3XSKutErJ_C0mt8FI2RvElosQHQbRoYMAWInvYQX9O7RckH5qx6tFdwZe-KbNZAM4K3roh3fNVLLvx16LtcjUeXjFlIjV4iz-pJTpU8fXUVdCNT-HVEug6dHxBFSmbHtgRXn1tzuEuXzMzFt9V81cgpRa57bkG0U0kyYvk9zjHSix05oefUBsKtLBNYt3lYjygwBR49tpjBWkIX9aGNOPslotgectonSLQxKVSPvkOUeGAguuISaGj-Nt8U2r_DLYI-lwV3by27XKcH16XgTNbD7SRA_jCJjLqNusaz2AWOqBSDF3bcJbXcyxEr9QNukIQfRWEXHF_aaoLAoWOUTxxVBNNT1Lzw5u6KgyQ4lhH_N_c1hZr3dwKv1ZoJGZaUDpVhbR7q8BKWM6tuqn4hPG2pplNK0Sf34IaulnNbcoEikG74KP69uPZ5es7bhCiSXNjEfa5HGl5GPaTSjdW2wKdkC_ZPwFN7zIvtQ2w3jcy1Y3ZyWTSrlCLEEQyYPwrVBAAEcmMQniiti-HW9r4NxwefHmWrZoN2dOouYO6kMLB_hCElaFAWezykB-Bkty6uwxlhhS6kv6JFSBUFtUtVMkxk1ueo7VYRDaeXVRF6RS5fqC91PlOICclQePtSD5WOEDOhMkcCP4u40-e8Rs-bwG5w9n26zWkOt0KXHrKIY_6cvfruIKhT0Q-iuGKilh0iEHNhm3hy1GDwrJDKk7nP331WnAgMe0kOhzSEoT3cWKQ1djzhYGfOVcuObFOy4GA-k_1t6B9_AUBgwmBfsr9eD6pdzAtkCBEVPkPwm3KF8tH5PxYieDLe7iKFSvRjUmKCA88UpFO1acWRMEoKU6wbasXzKUdHpaB7DvwJtm0dK1StBvi-gmOSOLH-ytHQnS45IijvK5Uv2eJ1uEj0sEAdK-_iyEsVei5ygSV61x6ARr5bhD3ZgnDMSBedLzIdNtKpa8qtntOhukCCP2pP9bjUy-wylIu4aaoCu8CiFpy2wJGwIsSOBfrBIa07bcCCBhdQXmtn68clFoNzzIw0Vx8dqIeU_UijZRe5M8ETHvx3Sh5LpGWR1sXpGzqV5FIQXOFzJq4WXUAn77BOldKMgy2ZR1fGQ1ClcUJu2t-XlSYcMstFwPHY2F5NiuuOA6nnNQhwzTYdMKws9UfmaqgBZmeFbrZShJxgkpn4q-7NqaWarSOriwUxM3cqpwCXtvGumB4I2VU5iXi7_pvUhRX_eQqjPAFk6TkM5LApDtlpLPUSB6NRVJy9f0-akq1-0yGUB77XV7MpWHFf5Gk8P9bUHZ6NN4IdDgAWwpXqp5e29iuwmG2_tqeiyoGIpUlYa-UJGFb53rB","summary":[]},{"id":"fc_0ae485c7fc325644006ae54631bd8887d1b256a881b2ad295d","type":"function_call","status":"completed","arguments":"{\"country\":\"Canada\"}","call_id":"call_VJ2eA2qPwiEO08dzh9yxTjeu","name":"best_country"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"required","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"A tool to specify the best country","name":"best_country","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":77,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":36,"output_tokens_details":{"reasoning_tokens":16},"total_tokens":113},"user":null,"metadata":{}},"sequence_number":12}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eee5049ee2df2-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "282"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999365"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 38ms
+        status: 200 OK
+        code: 200
+        duration: 388ms

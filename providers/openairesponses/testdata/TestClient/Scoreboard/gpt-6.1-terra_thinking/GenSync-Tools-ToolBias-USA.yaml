@@ -1,0 +1,189 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 677
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0be11ccb9c9bf03b006ae54630a2d087d18984e3430a442cc6",
+              "object": "response",
+              "created_at": 1793410608,
+              "status": "completed",
+              "access_programs": {
+                "cyber": "standard"
+              },
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1793410610,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-6.1-terra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_0be11ccb9c9bf03b006ae5463166e887d19d9d1f155ddaeaaa",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABq5UYySn2D0rhko6xnSQwFG4m4D1FoVYZGbTezDTCXrSIKzaJ5NQgDB-9pvdwi62ENUhyK44TWtZyLama_Mp5-UF8TBC_oI3tcXEzBucqD2OpOKIsC8YJf08l5kOAGqcYAq_EOg_c8T1xIWQFzaIkpMmfGia29TxAlxztBCXXx5utoOAuGV63c-Euoureqz9MVG9KAjwuH4klb4GtjmJ1pGkChtx1CO8_5TGuR1SqQqRt684PPeXiloSLgqFc6D_4Ejg8hv7SHJeXUO7JgUliDaSExra4nh_EvvJLJ_qnnREtAN-IKZ6sOUzfS2uZmSKrxF8BhxIpNc4zrGgQn5MermYN5rlf4AS3hZ9ieuaoJ-0v6Wtd1ttN4IB5ESgP65zUjBk6dyDTn8TuvQKiuvjIYubX5SL5kptzhi9aNhxXSXDpHdzfrbOmincdulzxXqt92jxHWcYi-SGZsXUIWHsogJf-vpszWOJwG1U9XDFp4bnbTuKvYk3TTedzyrE6jeISQsLSCUMHhAF984E37Q-WNb19k8KzkLyjOcxb2ooO2P-8WJrp-8b32hIozVxxgEen0kPFLlV3CQxK-PKxrDLqVjokerRdrjRp1sCS-bbUcvLoq0EMm3FDltqQKquwZO_Ce8UrzrK2BoVgPFJDjCAiHwnxJ6adNvukvQghX6MDyXCG515q7pbbrL9LKExyHJv9gHwiizF2S6xiALiLDoYTciqBqQdl92VliWh_JE_58OpAFn7XtyOZPO9nL62XrhpTf5NnseidFgicChYrTGT11OF0c4zMILABvY-gtDJ53XshbWkQqoN8p0QGyzSMfJ1tg9THsouAvfMrCBp-SDpTsq3C4IK8OMIoIqC-O6GtjtYfwO-4MOGPFRhaeP7Z6wqpqv7Atf9BeEiZ5MexYx0WPQs2mPLmOKug9LXKvP2_dgwcuzgRtLVP-ISJ2_JtUOfv4iu-nZDbHoTgmjgQ-T9nVzZxF1gLaMlnOSxYIBWtzrPuIl4ycWL8jghdlJ4BZM-sWd_jfHccZtedyV1LAAvR7knZfHwiuIlwLtwfMEbEzO_0OalVsSoBt-K3YzLME0ro3Uvdm3cvzzuTK2Co4uOxc8K4CuEeOv36tLm65NnXG4f6DxdwNfYgAj9PU40HX3pEY0bKN6DEFm3XvoYvTDMKbfa_YHq09O4j9iNInsOXxxeapj4Ah7LDORvRIoYpOiA0LY6j2Uo1uxYkBZNQ7PLrPP1RV0Ci1oHsxAyMyQW_u5CIdPaLHgtFIH8cbdYkIe4r4t7gPYPuTU-nWzC2_uTRn9qXAALabCVW41I0VLWGF3M2JAhDf2DHruWuHVm1-noi-eRl_xE5X5XdgUpuuHrTDTW7Gvykt-w39ALUGGompheifiwXEIB3viTmw2CUHcRlIMel_6m5ifXONEZbteQw7OMqUbJ5OMKCE-TorpKz8t3oktAG-7iBk7rtYLdqeHc3aRsqnTgxlSeXA6x_06HPwXivrQLg7IdPAFepndDdecd9Vum9tvwmGlebB809giGwx75RAtvoNfq9Nt3Bfmh5z-RLOF6satCIexZoMBH459p0ToW5KrjEu615Cq7HHqsfoCmgz_I2Z0eJWtl703pDOo83Q-bwqzk9i48ua3AYN5OyACS5jCUHnU5La1yZD1v-yX-6Cd-BXdp0FrHH6GF96ZllCp9WjmUXDBPVF8fB4_hUr-DbqNM_S2CaGtBmvsZByzBdi",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Choosing the country**\n\nI see that the tool requires me to select a country, and since the question seems to imply the USA, I think that makes the most sense. Still, it's a bit subjective. I want to make sure I'm aligning with what the user might expect. It's tricky because I don't want to assume, but the context points towards the USA. I\u2019ll go ahead and make that selection!"
+                    }
+                  ]
+                },
+                {
+                  "id": "fc_0be11ccb9c9bf03b006ae54632664887d1ac76cded28ecaad3",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"country\":\"USA\"}",
+                  "call_id": "call_9dKs6aAqbfn8urnXq3rhpWm7",
+                  "name": "best_country"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "required",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "A tool to specify the best country",
+                  "name": "best_country",
+                  "output_schema": null,
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "USA",
+                          "Canada"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "country"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 41,
+                "output_tokens_details": {
+                  "reasoning_tokens": 21
+                },
+                "total_tokens": 118
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eee4f6f3e2df2-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "2388"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "1000000"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 2.503s

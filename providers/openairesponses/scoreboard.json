@@ -92,7 +92,7 @@
     },
     {
       "models": [
-        "gpt-6.1-sol"
+        "gpt-6.1-terra"
       ],
       "good": true,
       "reason": true,
@@ -128,7 +128,7 @@
         "reportFinishReason": "true",
         "outOfOrder": "false",
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -234,7 +234,7 @@
     },
     {
       "models": [
-        "gpt-5.6-luna"
+        "gpt-6.1-sol"
       ],
       "reason": true,
       "in": {
@@ -283,67 +283,7 @@
         "reportFinishReason": "true",
         "outOfOrder": "false",
         "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "json": true,
-        "jsonSchema": {
-          "object": "true"
-        }
-      }
-    },
-    {
-      "models": [
-        "gpt-5.6-terra"
-      ],
-      "reason": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "outOfOrder": "false",
-        "tools": "true",
         "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "json": true,
-        "jsonSchema": {
-          "object": "true"
-        }
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -377,7 +317,9 @@
         "gpt-5.4-mini",
         "gpt-5.4-nano",
         "gpt-5.5",
+        "gpt-5.6-luna",
         "gpt-5.6-sol",
+        "gpt-5.6-terra",
         "gpt-6-sol"
       ],
       "reason": true

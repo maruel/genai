@@ -1,0 +1,146 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 267
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","max_output_tokens":16,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_035778d43fee25a9006ae5461d19a487d190c164f93ca5b6eb",
+              "object": "response",
+              "created_at": 1793410589,
+              "status": "incomplete",
+              "access_programs": {
+                "cyber": "standard"
+              },
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": null,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": {
+                "reason": "max_output_tokens"
+              },
+              "instructions": null,
+              "max_output_tokens": 16,
+              "max_tool_calls": null,
+              "model": "gpt-6.1-terra",
+              "moderation": null,
+              "output": [
+                {
+                  "id": "rs_035778d43fee25a9006ae5461e8c4487d182343294ab6405c7",
+                  "type": "reasoning",
+                  "content": [],
+                  "encrypted_content": "gAAAAABq5UYg84Z-B8_NkcDPdp8u_928fh5wosOosX3UJqTgdG5g9kIH_Hxt8gqEXSq5K05FghKvkjuFdi7tBeo6y33P3718iVJOURGMJmpSG6vLJycf-CSWrylJBHa-ppHRxSUx7ItkQMo_uZXtQ3P3-FRB2fJyIdHlihQqeZUI1KGba4dnf7w0MgUn8Wdg1dmMO4TZY-vRaBYWZNlF_jR2aLA029hoVAOw0ZoS-Ra6CafmAW_4MOQUPq7yGYouGANiaQvHd40q0NIAeeTjHXaRuIa7vgIEvZa1JDj-OBVsbOzHQ9D9C8E1jZrHg3AuEKpkPHFT_J-qYBXyF3odoOVIk_W4NzBJxDYnXCxQYjhAROObKDsWpTqNX9iKxnxnDgv74MY8MTkOMFVfmUzTFPn3qrAvSaTbz41UK3zA3mA8hp6yU7Ez-WwgqjvE0SWYTCer-vG3Fddfa7vkeTcoyrd_ul3BpBh3HleZaiQlzzULgruXEKsmEaVhbcDfALbSWEQ_GGMJ6YCB_h7H_OcKU3J1dmtOoWRV-XKn8jfx0RR_7BP8H-4spV1nUGHiGJaIwrRSGMMnALbzDAdoFVxC0tLKNkdeN7zMe_yduCxyLEXsZrlitOgrwePmOGREtmlzZgXhdjqgMaPwtVl7vRFEaH-cjUfRnEOdoZSSpa6_R_MSRljcU6ZoJj8AjqXfqHsNcrG43y0pQaYc-BRcjoMnwE-U9jFc2xDWS-EUomw7S4x8LEyg51PhZ3uY3cG2-Y7fP_iGrg3wmX7TLwUbWovZqXLLjxc-s9gTdqq5WXJwaPv8H-3t4Mp8t82y3_gfnoreamacDVwigpHIOfYHKwe-NeTsQTZB5ZO8o6-Qp3a1LHbPJ6d7l9pEEvmLqWB8SzJbvln8F5yjmZPBXcMZjpikluqUjzMYDxW801Fk0eYF_PDbzKfdQ976HkPKdyx9d5b1mRk4ySY3W8vFZzbIj2eoQrQR-AufI_ywYli_UWq6xSaVSBQbZovk-QVO4MWxax7a2PbNWZfNPoGvtVhLN03Kiw6XqPF0ygWH9ASmt6BBbh43YGqIDo0mWMCuydVeLfYSQp6TemUcaXbGvu5V9P9Tyn-EPzzZSOnLX_VlsiQcMMwjYrvM2MmZytQL3zvaIGmZsgaK5oNnchDyGuSb8hMNDAg_t2OrQ5xBWtmjLK87aQk3iB_o-71QvhCIF0DGW5hpmo7AbTb4GdO6c1jVJei19b8vop_in_HEUgKR6rnZKmK-Dyj-tS4UzSWWSIDdR_Yj5gw7pe5F0V1Bkejad7USF7EAlMDPs4wpcLEE9EGoiOUxa6YulmYyJE0=",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Delivering equations carefully**\n\nI need to provide both general equations and specific details, while being mindful of any caveats. It\u2019s essential to cover all aspects thoroughly, but I don't want to overwhelm anyone with unnecessary information. Balancing depth with clarity is key, and I want to ensure that my explanations are understandable while also being technically accurate. I\u2019ll take my time to present this information carefully to make sure it\u2019s helpful and straightforward."
+                    }
+                  ]
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": "24h",
+              "reasoning": {
+                "context": "all_turns",
+                "effort": "low",
+                "mode": "standard",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": true,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tool_usage": {
+                "image_gen": {
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "image_tokens": 0,
+                    "text_tokens": 0
+                  },
+                  "total_tokens": 0
+                },
+                "web_search": {
+                  "num_requests": 0
+                }
+              },
+              "tools": [],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 16,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 16,
+                "output_tokens_details": {
+                  "reasoning_tokens": 16
+                },
+                "total_tokens": 32
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eedd55c422df2-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "3485"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 3.597s

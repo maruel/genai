@@ -1,0 +1,100 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 650
+        host: api.openai.com
+        body: |
+            {"model":"gpt-6.1-terra","parallel_tool_calls":true,"previous_response_id":"resp_0001569be47aaf21006ae54625ae6487d1a1f4d28b55b876aa","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"function_call_output","call_id":"call_ySeUaNNIgzqXACoquzSgoexk","output":"363.89"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0001569be47aaf21006ae546292f9487d1b5f1016093d4de8a","object":"response","created_at":1793410601,"status":"in_progress","access_programs":{"cyber":"standard"},"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":"resp_0001569be47aaf21006ae54625ae6487d1a1f4d28b55b876aa","prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0001569be47aaf21006ae546292f9487d1b5f1016093d4de8a","object":"response","created_at":1793410601,"status":"in_progress","access_programs":{"cyber":"standard"},"background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":"resp_0001569be47aaf21006ae54625ae6487d1a1f4d28b55b876aa","prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"rs_0001569be47aaf21006ae5462b2b3c87d19c803cc69a0191f8","type":"reasoning","content":[],"encrypted_content":"gAAAAABq5UYrywU5EsPS9bJpPswbpJWerbBqviK1T0C7HyfVma7B-NS-9in9Rg_pBIaEqoN4J9pSyBVFOJ6R--mC9DnUfLVNBm993-DxCUJmua7UEIcipD-rHvLD_L-o1uw48SnwDk_EmuY5krx8TlbX0gMZcbd1qSyvnh6Lw90bqW6odW0WPBVjqRaNae_Eht2VtAViRwdhwS5ydIUg7Mo2WUqR3o_2VJ2rteB-NPYopFRFgYoLm_gb7HQED0t-QQG1VEiUTIwwTf_HT6qGvCn1o4Ayv_9k3jqUHgLLvYoGYb6KxfK-QtrbQO2AOxtZPNOPuUY-WoR6RlBiIOcuCDOyTVNuMEdTMKUhAp0J-Nv723kvTeZod-46v81tdrkk1bZkTvFNssm0aY6waWtVpWNk5baJ2peAZ3ZY7RP5xhv0Yzls5LLbMh_h5poL_ZPcUn8Use3x_NUTTMfnT2f8Yk1kg6aYOApO7BRRsyWFlPI-suEwcHkEZrgAtHog1e1MR1Yn5-yFGeyUB43qYPygitVmjcX_rEwP23926J_zc--EXPAzTxwHWNSSUByu20xxQL8gGDv93qvs4v4srOZfWn5w_fk551hCBo6fb3ULn0k8el7BvNTSEpLktzrvsGk_OJf9NzkBorSIkUpTSCVRu9xIdi_Eq28oM5t6JbkxxaySW416tewu8mRQduQUaLSEA2ON4Q2BbmMARayFPGKrQAVfo6RJNiB5YFXxMZoKfYb5orp2T5EMhJ6n5TFYOwKxB25zoGRueRg1jN06KpVCE5DecIZOMWNF7cZiOEKFUCyB8d6wgq1jmEQoWaC-Nah4mPxipL6btpk49eigYcLARf-KEAf9KQ7bDQtMCgxQouWFDJgKqIYzSRReJlrfr2O9D951tgEYYB1snLrmft4VqREncoOVcrXQnhK-mUPS1c_tUdliwPEnaJzwiWz61OP9CNN-zQcnT2iT6nVsVG3mmJ9yOnSTsaM9ojZMZE-Z6Z_uocOwBbAWot83dKEVQViAeUXtX6JpHe7YnlV_i3BOww_VkA80_KBCthBh-DwKcw_pawDr9MH6QdLQFk3IAPCL_uyadzYCvr5VNK-4_YQbDmmM2Z_0WdC3tRvezfK0sUAHDRkl3FBHpzHqAo61-f-LNJwOrOs17j2fAYiCXuzQPSZKdPW4Qyoh6QHCZCWbXIjO6gtYC126lP9mGs5WyX2WH6zsLejVwcYT","summary":[]},"output_index":0,"sequence_number":2}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"rs_0001569be47aaf21006ae5462b2b3c87d19c803cc69a0191f8","type":"reasoning","content":[],"encrypted_content":"gAAAAABq5UYrjt5iGe8Djj8aDs05wxIx2KPMc8tu6ZEzObdphzkWajAUdUX3u87XTPH2DEaIk3kqcNQv7MceeEyp93Kj58Ywf9Jn71FoFaEC3_rV5sY0Bl5fDsdBZfImNz5Arn_xD9mmOLHMhxh77U4CeFWXTrg4cbG-GbUjrDajBiV2Ca9N66nTHWqwEE0kKDe_Tqd9Dez-j-6IjDGQXQ-PNqXI_q_QDiUIgEErcUkvfoQAzIaRGmN5PKRIlnlJ8NMUzYcJQ_o9ge1J-tpTXncHQF4DvpQFWtEvp0TnfUZerY8BIazcByAjyX8FEW2YibI4pjGytsD4fVNNXY_ja1TpidbSoQji8OduvgElRJrCg4RsoAoFsCdA34a8Y-kmjaY19dCJPrJib6GjzJkvhzc8hBP0ajiLKAiEodoaeat7X1i_ZRPblhthYHhkM5Mcxun5eqO5WQZhfAQfwC1BmCvKuxseGWXQwPHRImz5DAbcou4qZvR-fDqgTHvtnM0USo2CUj8OL2URHmRJQc5pTZVz5LMQ_u4m_LI0bOqRr4aeVisX5ANggW4FkTGch4PJyPYgebMPSRR-8Ph-fXknqrTMCI7YnGar8s-CxPs1Rfx132UJya3rf8NjpXeB9YHk4bYNv6OzBUqXyHa9eQ4nD7UC-k-vUHetZ7jDuTQRPChRElHhtUIAE9K1z2SxDqDXOLnmUv1MU5d9K_kdQdiF3yXOIZVKIM19k4JntdldhCmEE3C4EnwVEcTuVJpz2L-iJg5qIMlXOpHUyp9ITeEQ_kf0J6yP9UW9qIW46WdyIK6mascaBDZV5nw9AxpH-JjL7YNqyNUUoyhkd3ZiBZcwButkxsTaS0oSFWq2ZqhhMRJTLntqPn6nGgWBgD50QCb7CnMxVjppA5a8EM2-I4ANkdd8IdeZXuWJ0KMK0wuIJleo4ntyhGR9FlOw5eVQ9JC_XpggWH-re3NZgcc5ns3lTdBaKPYn5R_zXtYAFWmChHIpVHDDZSKn4F4YcQa0WrPHn5y4eqNuSnCuvw51_33KTbZA7oglkcFYVaevPy3a8lbG4Q-_HxRtQz3vM68uIWJ-JM22TUd_9ib7S6wK2XPSxzix2ssZU8qg0_XZjewU-ZgKTtSd_cdhc9Wk73Zb_gnNbjeM9Hg0xDIStWL2bUFcMVtheAnkKwL2PLlxGcwpSjV0RjFKGrGj7IrRdI77ToTQRqaPlQt7QFBIophVz3a9weAl5Z8OC8mXHH_gLg7mPjmOBaaap6DyRfM_OwgfuWk0VLRRCO3E99yFE-OT_k8IHJ1gehr9dG7kLZnHpeDS8Vk4q08x6RIJ6OHJFDmQrwxJ3VB4Jvwi-BJ6jL2x5n3OzrlsBZLNxTHdODjw13c4QixJcyfABSC0WVCZhK90AT212OUhwKcqCSGiKI0gBDw4SbD6_OPrl0CiYvHmgfOhNBkrKCeEHbaOAkPiCLGHZlQZR68czLS9-vWyP5GJpk8iuZBJFIEZaxLpQc_gamtvoMoj-Yj98lFcQtMyQbcLxIuzmN8X1HFKmVHEfE4q-7hUJiqsl7vbVnIQa-Wi5mYzN77WLqKrCyA1_E4=","summary":[]},"output_index":0,"sequence_number":3}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":4}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":5}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"363","item_id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","logprobs":[],"obfuscation":"sVtNrQYpkRbpq","output_index":1,"sequence_number":6}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","logprobs":[],"obfuscation":"IqZGWCv1YWolUTk","output_index":1,"sequence_number":7}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"89","item_id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","logprobs":[],"obfuscation":"Yg4MU85BsOcPvt","output_index":1,"sequence_number":8}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","logprobs":[],"output_index":1,"sequence_number":9,"text":"363.89"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"},"sequence_number":10}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":11}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_0001569be47aaf21006ae546292f9487d1b5f1016093d4de8a","object":"response","created_at":1793410601,"status":"completed","access_programs":{"cyber":"standard"},"background":false,"completed_at":1793410603,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-6.1-terra","moderation":null,"output":[{"id":"rs_0001569be47aaf21006ae5462b2b3c87d19c803cc69a0191f8","type":"reasoning","content":[],"encrypted_content":"gAAAAABq5UYrDM__7HrCHnd2g70gjq_gzdILogIcxS8mxGx1XIi5qA3oihlzsPOB5Hdn6a4MO4YbUJvIGCdDlW8wKR51yBGW0wHsWfiTj0CkhK9_GZRAmGvmWMbYaSsIhW1sFaMfRtiiI3zkVdYhXGfXuqvJ-z2lOPSrnG2YByZj_0ivVxsa_F9T7jMdnxeRj68m5lrOIDIQiutSTpCKanSv651HuivPiv_RJkzB68zxTLRanVFEAYH7mo4J4vO4m9HGxAgcCAR4iWbsRtoj4E9vTulmKWrJaqOHIXv_UmeHkLdhy_c8JxsAxNCklXi7JWxxYc6kzB-dzVlX-bkmFOtLSngsR274lngBKjq90eI0OrHjrx4w-t3nonGSs3YVOFyYMnccyi8dZ7TQy1L75jhmmMtAQG2SXrigM1mhJdl52uEsXWxnmcCtY4K74CGfBF0HizmBZ_3ib4uLraphcXefuavr0bDq3jvp5Cm_SZFGNmTUNz_2mov1h2ka_74gcArfdETp8U-T6cQZTWiS4pESMC_doM9qywVgcX-YnYprOuCe9ZlUr3qx4S2jNv8RL14f-j-mgfF4fRNfyR6hV5Mfj46dIrrD7_s8c1EajkknPggJM-0c1b6UVpqXFOcg-cp6k-LEzDuFgexug7OI7kK2XNxpbztSh5USnwA-NMkcfzTdNMK3vLVrW36fEucFwyfd4_gihdDi3ruhJ0eQNZPF7ygFZs11IJjv9EQHYtw1V90ah25u7Ae53AceMf18x-LFmg5_cEH9ceYAXB9aOa37ZnM0VVdiBRce5zpWHRZFoxPEesQHa5RhJ6TiC5sKueRtlDoZrrB4FKAUoUI4D5_5sN_v8DD6sHuXwAcGKxpFOk4VZe6ZsKlmm4QdcglZw5AihG5fa3WZp6z1GHQeSEe7Zt8mB-0_K_v_ps9QKcOgovZ8I5rBElSdDUnimghqrligbnS_te13RQXOoa64Taynusfy_33Lei-udRfcecBZp9xAAq4Ot-rDJ_4RuuQ2W4teAFbIjjTp1LwXiTrQ3LnFFftOaGPU_xBR1o5Qxebt2WLc_OOnLZoKauS-c7nLzBVV7XfstTMEYGbWE2p0rXCJLeoMhYovIkPO2FkfHjZzPxWjkdVxBNW8hHsMohzWbQ1R6NjAAW_xi9IXywQH0tEozqQHmXA926r1K2IaDimstBWL3Fa-ofq_tb6bV_ga6otPeQ3vNsPCiDMlUb0VY8lqiWuOdr3Uw9rl0InBCN4HQzvm39QXXnCmYtrczQ48wtK2X3D9d0YL2RW4pzfvOmFVw27BibpfLA8WiHOSZlupypBQ2tvC3ClvSNqTAIVgT1TOASbf6fa0gLCIWyLW2NooPgCryK8Re15XfTKAhUMRMaKncG7o-c3rZOS43aUu6Qi3unquiZtd9HclGCMVcyineBPHlTKMCFeefopIBkydGQql8MW54RZtV55l1hA5Tni7AvjmSmxcwTNRglx5tqaA_qddXiWe4yP0lT5mwMzhS-Q7tKKJZbkL--z5HuSwKAHjgD1z7XP7EP1vvHcx57VHZtkGcf3sdxsfnfX8H_wiVAOIIm98OLs=","summary":[]},{"id":"msg_0001569be47aaf21006ae5462b8c4487d1bb05e1a64b61f1f0","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":"resp_0001569be47aaf21006ae54625ae6487d1a1f4d28b55b876aa","prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"all_turns","effort":"low","mode":"standard","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tool_usage":{"image_gen":{"input_tokens":0,"input_tokens_details":{"image_tokens":0,"text_tokens":0},"output_tokens":0,"output_tokens_details":{"image_tokens":0,"text_tokens":0},"total_tokens":0},"web_search":{"num_requests":0}},"tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","output_schema":null,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":106,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},"output_tokens":20,"output_tokens_details":{"reasoning_tokens":11},"total_tokens":126},"user":null,"metadata":{}},"sequence_number":12}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID, Server-Timing-Total
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52eee20dd062df2-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "698"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "5000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "4999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999387"
+            X-Ratelimit-Reset-Requests:
+                - 12ms
+            X-Ratelimit-Reset-Tokens:
+                - 36ms
+        status: 200 OK
+        code: 200
+        duration: 815ms

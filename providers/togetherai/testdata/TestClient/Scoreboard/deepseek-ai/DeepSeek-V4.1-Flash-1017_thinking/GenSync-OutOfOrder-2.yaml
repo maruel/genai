@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1495
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","content":"I'll check all three at once.","tool_calls":[{"index":0,"id":"call_01a18fce408977c184d2f002","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"index":0,"id":"call_01a18fce408977c184d2f017","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"index":0,"id":"call_01a18fce408977c184d2f026","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 461
+        body: '{"error":{"message":"Invalid parameter: messages.[3].role: an assistant message with ''tool_calls'' must be followed by tool messages responding to each ''tool_call_id''; the following tool_call_ids did not have response messages: call_01a18fce408977c184d2f002, call_01a18fce408977c184d2f017, call_01a18fce408977c184d2f026; every tool call in a parallel group must be answered","type":"invalid_request_error","param":null,"code":"tool_calls_without_tool_messages"}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f41a12a77a284-YUL
+            Content-Length:
+                - "461"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-9693d8d8790fcdbd0b99cb34f6759c33-1ebe7ea920039c57-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:41.363Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - 128e8b8e-aws_cc1/9a4b68f2/fd83cce7/cf00ff47
+        status: 400 Bad Request
+        code: 400
+        duration: 107ms

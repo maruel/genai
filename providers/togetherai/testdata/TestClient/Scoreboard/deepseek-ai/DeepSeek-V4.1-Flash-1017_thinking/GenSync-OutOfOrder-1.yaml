@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 752
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"99e9d969-aws_cc1","object":"chat.completion","created":1793414021,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","choices":[{"index":0,"message":{"role":"assistant","content":"I''ll check all three at once.","refusal":null,"annotations":[],"tool_calls":[{"id":"call_01a18fce408977c184d2f002","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"id":"call_01a18fce408977c184d2f017","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"id":"call_01a18fce408977c184d2f026","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}],"reasoning_content":null},"logprobs":null,"finish_reason":"tool_calls","matched_stop":1}],"usage":{"prompt_tokens":376,"completion_tokens":105,"total_tokens":481,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"system_fingerprint":"default","service_tier":"default"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f419f6f69a284-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-ee7af51474b7db6f0e220165b09713a7-f65eda23e64c1b57-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:41.077Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - 99e9d969-aws_cc1/9a4b68f2/fd83cce7/353bb197
+        status: 200 OK
+        code: 200
+        duration: 278ms

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 314
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 236
+        body: '{"error":{"type":"invalid_request_error","code":"invalid_multimodal_request","message":"Invalid multimodal request: invalid media request for model deepseek_v41: modality video is not supported by model spec deepseek_v41","param":null}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f40ef3e805683-YUL
+            Content-Length:
+                - "236"
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-0842544af5823c9798f2e8e128768aea-fc218aaef8be2a05-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:12.901Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Error-Code:
+                - invalid_multimodal_request
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - c3126218-aws_cc1/9a4b68f2/fd83cce7/85863e6b
+        status: 400 Bad Request
+        code: 400
+        duration: 104ms

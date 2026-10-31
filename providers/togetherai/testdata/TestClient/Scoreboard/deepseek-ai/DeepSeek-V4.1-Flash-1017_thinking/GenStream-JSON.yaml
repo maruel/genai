@@ -1,0 +1,83 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 272
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"391b8ea3-aws_cc1","object":"chat.completion.chunk","created":1793413983,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"391b8ea3-aws_cc1","object":"chat.completion.chunk","created":1793413983,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"We need answer only JSON schema. Need answer banana is fruit botanically yes. {\"is_fruit\": true}. Ensure no explanation."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"391b8ea3-aws_cc1","object":"chat.completion.chunk","created":1793413983,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":"{\"is_fruit"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"391b8ea3-aws_cc1","object":"chat.completion.chunk","created":1793413983,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":"\": true}"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"391b8ea3-aws_cc1","object":"chat.completion.chunk","created":1793413983,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop","matched_stop":1}],"usage":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f40b6cb095683-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-3d073c732d0ec3810162b2bb9bdadd08-f8968d962069b4fd-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:03.828Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - use3a-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - use3a-b200-2
+            X-Together-Trace-Info:
+                - 391b8ea3-aws_cc1/23b2df96/5fae072b/1c8a8ff9
+        status: 200 OK
+        code: 200
+        duration: 199ms

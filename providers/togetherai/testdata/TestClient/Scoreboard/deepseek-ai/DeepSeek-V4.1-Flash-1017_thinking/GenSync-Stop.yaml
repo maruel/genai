@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 177
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"faa55a0b-aws_cc1","object":"chat.completion","created":1793414012,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","choices":[{"index":0,"message":{"role":"assistant","content":"Canada","refusal":null,"annotations":[],"reasoning_content":"We need answer. User asks \"Talk about Canada in great details. Start with: Canada is\". Need provide detailed overview. Need start exactly \"Canada is\". Desired oververbosity 5. Need talk Canada in great details. Could structure geography, history, government, economy, demographics, culture, provinces/territories, foreign relations, environment, education, healthcare, etc. Need ensure start \"Canada is\". We can write comprehensive but not insane. Need maybe mention it''s a country in North America, second-largest by area, northernmost, ten provinces three territories, capital Ottawa, largest city Toronto, bilingual federal, constitutional monarchy/parliamentary democracy, history Indigenous, French/British colonial, Confederation 1867, Statute Westminster 1931, Constitution Act 1982 with Charter. Economy resource-rich, high income, mixed, trade with US. Demographics diverse, immigration, Indigenous peoples. Culture. Need \"great details\" maybe headings. Start sentence: \"Canada is a country in the northern part of North America, the world’s second-largest country by total area and the largest by land area in the Americas...\" Need answer.\n\nNeed include details accurately. Let''s craft. Need maybe mention Canada has 10 provinces: Alberta, British Columbia, Manitoba, New Brunswick, Newfoundland and Labrador, Nova Scotia, Ontario, Prince Edward Island, Quebec, Saskatchewan; 3 territories: Northwest Territories, Nunavut, Yukon. Capital Ottawa in Ontario. Largest city Toronto. Official languages English and French. Population ~41 million (2024). Geography: spans Atlantic to Pacific to Arctic, borders US longest land border, Greenland? maritime border? diverse: Canadian Shield, Rocky Mountains, Prairies, Great Lakes, Arctic tundra, boreal forest. Climate varies. Time zones six? Actually Canada has six time zones: Pacific, Mountain, Central, Eastern, Atlantic, Newfoundland; plus some areas? Yukon? yes.\n\nGovernment: federal parliamentary democracy under constitutional monarchy; King Charles III head of state represented by Governor General; PM Justin Trudeau? As of 2026? Need careful current date 2026-05-07. Current PM? Justin Trudeau resigned? In 2025 Mark Carney became Liberal leader/PM? Need not mention current leaders maybe. Since current date 2026, PM Mark Carney? Let''s verify: Canadian politics: Trudeau announced resignation Jan 6 2025; Mark Carney won Liberal leadership March 9 2025, sworn in PM March 14 2025. Then 2025 election? Liberal won minority? Carney remained PM. So as 2026 PM is Mark Carney. Governor General Mary Simon. Head of state King Charles III. Could mention as of 2026. But risk. We can say \"as of 2026, the prime minister is Mark Carney and the governor general is Mary Simon\" if accurate. Need maybe avoid if uncertain. But \"great details\" can include.\n\nHistory: Indigenous civilizations for millennia; Norse arrival ~1000 CE; French exploration 16th century; British colonies; Seven Years'' War 1763; Confederation 1867 (Ontario, Quebec, Nova Scotia, New Brunswick); expansion; 1931 Statute Westminster; 1982 patriation and Charter; Quebec sovereignty referendums 1980/1995; Indigenous reconciliation; Truth and Reconciliation Commission 2015. \n\nEconomy: high-income mixed economy; GDP ~2.1 trillion USD? 2024 maybe 2.2; per capita ~55k; G7 member, OECD, NATO, UN, Commonwealth, Francophonie, CPTPP, USMCA. Sectors: services, manufacturing, natural resources: oil/gas (Alberta), mining, forestry, agriculture (wheat, canola), fishing, tech, finance, tourism. Trade heavily US. Currency Canadian dollar. Strong banking. Healthcare publicly funded Medicare. Education strong.\n\nDemographics: ~41.5 million; growth via immigration; largest cities Toronto, Montreal, Vancouver, Calgary, Edmonton, Ottawa. Ethnic diversity; Indigenous peoples (First Nations, Inuit, Métis) ~5%? 1.8 million? 2021 5%. Official bilingualism; many languages. Religion: Christian majority declining, secular, others. \n\nCulture: bilingual, multicultural, hockey, lacrosse national sport? Canada''s national sports: hockey (winter) and lacrosse (summer) by National Sports of Canada Act 1994. Arts: Group of Seven, Margaret Atwood, Alice Munro, Leonard Cohen, Joni Mitchell, Drake, Celine Dion. Cuisine: poutine, maple syrup, butter tarts, tourtière, bannock, multicultural. Media CBC. Holidays: Canada Day July 1, Thanksgiving second Monday Oct, Victoria Day, Remembrance Day. \n\nEnvironment: vast forests, freshwater, Arctic; climate change impacts; resource extraction tensions; protected areas; carbon pricing? biodiversity. \n\nForeign relations: NATO founding member, UN, G7, G20, Commonwealth, OAS, APEC; peacekeeping history; NORAD with US; strong US ties and trade; Arctic sovereignty; sanctions. \n\nSociety: universal healthcare, strong education, social safety net, high life expectancy, income inequality, housing crisis, rural/urban differences, Indigenous issues (clean water, missing/murdered Indigenous women, land rights), climate policy, immigration debates, Quebec identity, regional tensions. \n\nNeed answer starts with \"Canada is\". We can use headings after first sentence. Ensure not too long but \"great details\". Desired oververbosity 5. Maybe ~1200-1800 words? \"great details\" could be 1500. Need not exceed. Let''s aim ~1300-1600 words. Use bullet/headings. Start exactly. \n\nNeed maybe mention \"Canada is a federation\" etc. The first paragraph can be definition. Then sections.\n\nNeed include no unsupported exact stats maybe approximate. Use \"about 41–42 million\" and \"second-largest by total area\" (Russia largest; Canada second by total area; by land area second? Actually by total area Canada second; by land area Canada fourth? Wait land area: Russia, China, US? Let''s check: Canada total area 9,984,670 km²; land 9,093,507; water 891,163. By land area, Canada fourth? Russia 16.4, China 9.3, US 9.1, Canada 9.09. Actually Canada land area 9,093,507; US land 9,147,593? US slightly larger land; China 9,326,410; so Canada fourth by land. But \"largest by land area in Americas\" maybe yes? US land 9.147 vs Canada 9.093, so US slightly larger land area. Wait Canada total area second, land area fourth. Largest in Americas by total area. \"largest by land area in Americas\" maybe false because US land area slightly larger? Need avoid. Say second-largest by total area and largest in North America by total area. It shares longest land border. Good.\n\nNeed mention \"Canada is a country in North America. It is a parliamentary democracy and constitutional monarchy. It has 10 provinces and 3 territories. Capital Ottawa.\" Good.\n\nNeed maybe mention \"Canada is officially bilingual at federal level, with English and French official languages.\" \n\nNeed mention \"Canada''s name from St. Lawrence Iroquoian kanata meaning village/settlement.\" Nice detail.\n\nNeed include \"two national sports: hockey, lacrosse.\" Good.\n\nNeed mention \"Canada has six time zones.\" Good.\n\nNeed mention \"Canada uses constitutional monarchy, King Charles III, represented by Governor General; PM is head of government; Parliament is bicameral: House of Commons elected, Senate appointed.\" Good.\n\nNeed mention \"federalism: provinces have major powers over health, education, natural resources; territories delegated powers.\" Good.\n\nNeed mention \"legal system: common law except Quebec civil law; bijural.\" Good.\n\nNeed mention \"Quebec is majority French-speaking; New Brunswick official bilingual; Nunavut Inuit homeland.\" Good.\n\nNeed mention \"Indigenous peoples: First Nations, Inuit, Métis; treaties and land claims; Truth and Reconciliation; National Day for Truth and Reconciliation Sept 30.\" Good.\n\nNeed mention \"economy: G7; mixed; high GDP per capita; natural resources; trade US; USMCA; banking; immigration.\" \n\nNeed mention \"healthcare: Medicare publicly funded, administered by provinces; not all services covered; pharmacare? no.\" Good.\n\nNeed mention \"challenges: housing affordability, climate change, Indigenous reconciliation, regional tensions, productivity, immigration integration.\" Good.\n\nNeed mention \"foreign policy: multilateral, NATO, UN, G7, G20, Commonwealth, Francophonie, NORAD, Arctic.\" Good.\n\nNeed answer as \"Canada is ...\". Avoid \"I\". Final only. Good.\n\nNeed maybe include \"great details\" with headings. Let''s craft final. Use not too many exact stats. \n\nNeed maybe note \"as of 2026\" for PM. We can mention \"As of 2026, Prime Minister Mark Carney and Governor General Mary Simon.\" Need if wrong? Let''s double-check current 2026: Mary Simon still GG? Her term began July 2021; typically 5 years, could be extended. As of May 2026 likely still. Mark Carney PM after 2025 election? Let''s see 2025 Canadian federal election held April 28 2025; Liberals won 169 seats? Need 172 for majority? They won 169? Actually 2025 election: Liberal Party won 169 seats, Conservative 144, Bloc 22, NDP 7, Green 1, others. So Liberal minority. Carney PM. Yes. Include.\n\nNeed mention \"Canada is a constitutional monarchy and parliamentary democracy.\" Good.\n\nNeed answer length. Let''s produce. \n\nNeed start with \"Canada is\" exactly. The first sentence can be long. Use \"Canada is a country...\" Good.\n\nNeed ensure no markdown? Fine. Use headings. \n\nLet''s final."},"logprobs":null,"finish_reason":"stop","matched_stop":"is"}],"usage":{"prompt_tokens":42,"completion_tokens":2110,"total_tokens":2152,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":2107,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"system_fingerprint":"default","service_tier":"default"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f41685fb5a284-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-320562d473414d164f59f97f4ede2ee1-68f52c412685f89d-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:32.284Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - faa55a0b-aws_cc1/9a4b68f2/fd83cce7/f0da093a
+        status: 200 OK
+        code: 200
+        duration: 6.125s

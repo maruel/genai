@@ -1,0 +1,87 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning_content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" need answer. Need explain theory"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" relativity in great details"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". Need likely comprehensive"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" but"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"d6a45fc9-aws_cc1","object":"chat.completion.chunk","created":1793413975,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"length"}],"usage":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f4084c9365683-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-a3d3d0fd5cdbfde80a659cc411b77434-432bbf26cce76e85-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:32:55.858Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - d6a45fc9-aws_cc1/9a4b68f2/fd83cce7/05dafdba
+        status: 200 OK
+        code: 200
+        duration: 134ms

@@ -165,9 +165,11 @@ func (c *ChatRequest) SetStream(stream bool) {
 
 // Message is documented at https://docs.together.ai/reference/chat-completions-1
 type Message struct {
-	Role      string   `json:"role,omitzero"` // "system", "assistant", "user"
-	Content   Contents `json:"content,omitzero"`
-	Reasoning string   `json:"reasoning,omitzero"`
+	Role        string         `json:"role,omitzero"` // "system", "assistant", "user"
+	Content     Contents       `json:"content,omitzero"`
+	Reasoning   string         `json:"reasoning,omitzero"`
+	Refusal     string         `json:"refusal,omitzero"`
+	Annotations []base.Unknown `json:"annotations,omitzero"`
 	// Warning: using a small model may fail.
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
@@ -508,7 +510,7 @@ type ChatResponse struct {
 		// The seed is returned as a int128.
 		Seed         big.Int      `json:"seed"`
 		FinishReason FinishReason `json:"finish_reason"`
-		MatchedStop  string       `json:"matched_stop"`
+		MatchedStop  StopReason   `json:"matched_stop"`
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
@@ -520,8 +522,8 @@ type ChatResponse struct {
 	Warnings         []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
-	SystemFingerprint string       `json:"system_fingerprint"`
-	Servicetier       base.Unknown `json:"service_tier"`
+	SystemFingerprint string `json:"system_fingerprint"`
+	Servicetier       string `json:"service_tier"`
 	Metadata          struct {
 		WeightVersion string `json:"weight_version"` // "default"
 	} `json:"metadata"`
@@ -688,9 +690,13 @@ type Usage struct {
 	CachedTokens        int64 `json:"cached_tokens"`
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
+		AudioTokens  int64 `json:"audio_tokens"`
 	} `json:"prompt_tokens_details"`
 	CompletionTokensDetails struct {
-		ReasoningTokens int64 `json:"reasoning_tokens"`
+		ReasoningTokens          int64 `json:"reasoning_tokens"`
+		AudioTokens              int64 `json:"audio_tokens"`
+		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
+		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
 	} `json:"completion_tokens_details"`
 }
 
@@ -733,6 +739,7 @@ type ChatStreamChunkResponse struct {
 			ToolCalls        []ToolCall `json:"tool_calls"`
 			Reasoning        string     `json:"reasoning"`
 			ReasoningContent string     `json:"reasoning_content"`
+			Refusal          string     `json:"refusal,omitzero"`
 		} `json:"delta"`
 		FinishReason FinishReason `json:"finish_reason"`
 		MatchedStop  StopReason   `json:"matched_stop"`

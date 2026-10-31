@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 	"iter"
-	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -142,10 +141,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	if err == nil {
 		switch model {
-		case "":
-		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+		case "", string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			if len(modalities) == 0 || modalities[0] == genai.ModalityText {
-				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.selectBestTextModel(ctx); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
@@ -193,48 +191,20 @@ func (c *Client) detectModelModalities(ctx context.Context, model string) (genai
 	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
 }
 
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+// selectBestTextModel selects the qualified text model for every automatic tier.
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	bestVer := 0.
-	price := math.Inf(1)
-	cutoff := time.Now().Add(-365 * 25 * time.Hour)
+	const selected = "deepseek-ai/DeepSeek-V4.1-Flash-1017"
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
-		if m.Type != "chat" || strings.Contains(m.ID, "-VL-") || strings.Contains(m.ID, "-Vision-") || (m.Created > 1000 && m.Created.AsTime().Before(cutoff)) {
-			continue
-		}
-		switch {
-		case cheap:
-			if strings.HasPrefix(m.ID, "openai/gpt") && (m.Pricing.Output == 0 || (price > m.Pricing.Output)) {
-				price = m.Pricing.Output
-				selectedModel = m.ID
-			}
-		case good:
-			if v := deepseekVersion(m.ID); v > bestVer {
-				bestVer = v
-				selectedModel = m.ID
-			}
-		default:
-			if v := glmVersion(m.ID); v > bestVer {
-				bestVer = v
-				selectedModel = m.ID
-			}
+		if m.ID == selected && m.Type == "chat" {
+			return selected, nil
 		}
 	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
+	return "", fmt.Errorf("failed to automatically select the text model: %s is not available", selected)
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
@@ -431,54 +401,6 @@ func flux2Rank(id string) int {
 		return 2
 	}
 	return 1
-}
-
-// parseVersion extracts a leading version number (digits and dots) from s.
-// Returns the version and the remaining string. Returns 0 if s doesn't start with a digit.
-func parseVersion(s string) (float64, string) {
-	i := 0
-	for i < len(s) && (s[i] >= '0' && s[i] <= '9' || s[i] == '.') {
-		i++
-	}
-	if i == 0 {
-		return 0, s
-	}
-	v, err := strconv.ParseFloat(s[:i], 64)
-	if err != nil {
-		return 0, s
-	}
-	return v, s[i:]
-}
-
-// glmVersion returns the version of a base GLM model (e.g. GLM-5.1 → 5.1) or 0 for
-// non-base variants (e.g. GLM-OCR, GLM-4.5V, GLM-5-FP4).
-func glmVersion(modelID string) float64 {
-	s, ok := strings.CutPrefix(modelID, "zai-org/GLM-")
-	if !ok {
-		return 0
-	}
-	v, rem := parseVersion(s)
-	if rem != "" {
-		return 0
-	}
-	return v
-}
-
-// deepseekVersion returns the version of a DeepSeek chat model (e.g.
-// DeepSeek-V4.1-Flash → 4.1) or 0 for non-DeepSeek models or non-chat variants
-// (e.g. DeepSeek-R1, DeepSeek-OCR, DeepSeek-Coder).
-func deepseekVersion(modelID string) float64 {
-	s, ok := strings.CutPrefix(modelID, "deepseek-ai/DeepSeek-V")
-	if !ok {
-		return 0
-	}
-	v, rem := parseVersion(s)
-	// Accept plain version numbers and current chat variants, but reject non-chat
-	// variants (R1, Coder, OCR).
-	if rem != "" && rem != "-Flash" && rem != "-Pro" {
-		return 0
-	}
-	return v
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

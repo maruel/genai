@@ -57,7 +57,7 @@ func TestClient(t *testing.T) {
 	})
 	cl, err2 := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
-	})
+	}, genai.ProviderOptionModel("deepseek-ai/DeepSeek-V4.1-Flash-1017"), genai.ProviderOptionModalities{genai.ModalityText})
 	if err2 != nil {
 		t.Fatal(err2)
 	}
@@ -93,6 +93,10 @@ func TestClient(t *testing.T) {
 		for _, m := range genaiModels {
 			// TODO: This is weak.
 			id := m.GetID()
+			switch id {
+			case "deepseek-ai/DeepSeek-V4.1-Flash", "openai/gpt-oss-20b", "openai/gpt-oss-120b", "zai-org/GLM-5.1":
+				continue
+			}
 			reason := (strings.Contains(id, "-Thinking") ||
 				strings.HasPrefix(id, "openai/gpt") ||
 				strings.HasPrefix(id, "deepseek-ai/DeepSeek") ||
@@ -144,7 +148,6 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{
 			Qualify: []scoreboard.Model{
 				{Model: "black-forest-labs/FLUX.2-pro"},
-				{Model: "deepseek-ai/DeepSeek-V4.1-Flash", Reason: true},
 			},
 		})
 	})
@@ -161,6 +164,23 @@ func TestClient(t *testing.T) {
 			return getClientInner(st, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
 			}, opts...)
+		})
+		t.Run("unavailable_text_model", func(t *testing.T) {
+			models := []genai.Model{
+				&togetherai.Model{ID: "deepseek-ai/DeepSeek-V4.1-Flash-1017", Type: "image"},
+			}
+			c, err := togetherai.New(t.Context(),
+				genai.ProviderOptionAPIKey("<insert_api_key_here>"),
+				genai.ProviderOptionPreloadedModels(models),
+				genai.ModelGood,
+			)
+			if c != nil {
+				internaltest.CleanupCloser(t, c)
+			}
+			const want = "failed to automatically select the text model: deepseek-ai/DeepSeek-V4.1-Flash-1017 is not available"
+			if err == nil || err.Error() != want {
+				t.Fatalf("New: got %v, want %s", err, want)
+			}
 		})
 	})
 

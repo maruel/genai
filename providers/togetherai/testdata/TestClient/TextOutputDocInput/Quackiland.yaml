@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 251
+        content_length: 269
         host: api.together.xyz
         body: |
-            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,66 +21,50 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: |-
-            {
-              "id": "omJGRgW-3pDw3Z-a04666d50bf9a2f9",
-              "object": "chat.completion",
-              "created": 1780234946,
-              "model": "openai/gpt-oss-20b",
-              "metadata": {
-                "weight_version": "default"
-              },
-              "prompt": [],
-              "choices": [
-                {
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": "The capital of Quackiland is **Quack**.",
-                    "tool_calls": [],
-                    "reasoning": "The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The answer: Quack. We should respond with the answer, maybe more context? But it's straightforward. Probably just \"Quack\". We'll keep it concise."
-                  },
-                  "logprobs": null,
-                  "finish_reason": "stop",
-                  "seed": null
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 97,
-                "total_tokens": 186,
-                "completion_tokens": 89,
-                "reasoning_tokens": 0
-              }
-            }
+        body: '{"id":"449de74f-aws_cc1","object":"chat.completion","created":1793455246,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","choices":[{"index":0,"message":{"role":"assistant","content":"Quack.","refusal":null,"annotations":[],"reasoning_content":"We need answer simple. Need be careful question embeds statement: capital of Quackiland is Quack. Big Canard Statue located in Quack. Ask capital? Quack. Final concise."},"logprobs":null,"finish_reason":"stop","matched_stop":1}],"usage":{"prompt_tokens":61,"completion_tokens":46,"total_tokens":107,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":41,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"system_fingerprint":"default","service_tier":"default"}'
         headers:
             Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
                 - '*'
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04666d50bf9a2f9-YUL
+                - a533301cbf27a284-YUL
             Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"383-fpUsQ/b83pQZDG7AwFFoxkzGhnI"
+                - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-606a8cf1dec7fe767ba996c64a9c79d9-4951271b877b9a30-01
             Vary:
-                - accept-encoding
-            X-Amzn-Trace-Id:
-                - 97256d59-69d1-4ff2-88d5-d050ef163f88-noamzn
-            X-Api-Call-End:
-                - "2026-05-31T13:42:26.046Z"
-            X-Api-Call-Start:
-                - "2026-05-31T13:42:25.202Z"
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
             X-Api-Received:
-                - "2026-05-31T13:42:24.955Z"
-            X-Inference-Version:
-                - v2
+                - "2026-10-31T14:00:46.916Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "208"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - 449de74f-aws_cc1/9a4b68f2/fd83cce7/b8eb2d5f
         status: 200 OK
         code: 200
-        duration: 1.315s
+        duration: 313ms

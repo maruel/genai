@@ -1,0 +1,99 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 751
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning_content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":"I'll check all three at"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"content":" once."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_01a18fcdbab879518ee9d486","type":"function","function":{"name":"task_status"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"task_id\":3}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_01a18fcdbadc74b0b96a6e8a","type":"function","function":{"name":"task_status"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"\"task_id\":7}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":2,"id":"call_01a18fcdbaf97de39a36cd11","type":"function","function":{"name":"task_status"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":2,"function":{"arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":2,"function":{"arguments":"\"task_id\":11}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"c7ed09e5-aws_cc1","object":"chat.completion.chunk","created":1793413986,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls","matched_stop":1}],"usage":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f40c9deab5683-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-2bca598e703fa70a20e196412264e562-c88dec7e6cb97038-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:06.918Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - c7ed09e5-aws_cc1/9a4b68f2/fd83cce7/f6ed8ef8
+        status: 200 OK
+        code: 200
+        duration: 200ms

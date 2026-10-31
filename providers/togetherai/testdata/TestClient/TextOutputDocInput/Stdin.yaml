@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 251
+        content_length: 269
         host: api.together.xyz
         body: |
-            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,66 +21,50 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: |-
-            {
-              "id": "omJGRic-4YNCb4-a04666d50c02a2f9",
-              "object": "chat.completion",
-              "created": 1780234946,
-              "model": "openai/gpt-oss-20b",
-              "metadata": {
-                "weight_version": "default"
-              },
-              "prompt": [],
-              "choices": [
-                {
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": "The capital of Quackiland is **Quack**.",
-                    "tool_calls": [],
-                    "reasoning": "We have a question: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The user says: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\n\nThis is a puzzle? Likely a trick: The answer: Quack. Because they state that. The user essentially repeating the statement. The answer: Quack. But we might want to express politely: \"Qud\" Actually \"Quack\"? Yes.\n\nThus answer is \"Quack\".\n\nWe might provide explanation: The statement is the answer.\n\nThus respond succinctly."
-                  },
-                  "logprobs": null,
-                  "finish_reason": "stop",
-                  "seed": null
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 97,
-                "total_tokens": 265,
-                "completion_tokens": 168,
-                "reasoning_tokens": 0
-              }
-            }
+        body: '{"id":"fcc02322-aws_cc1","object":"chat.completion","created":1793455246,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","refusal":null,"annotations":[],"reasoning_content":"We need answer. Need consider wording: It states capital is Quack. Then asks capital? Answer Quack. Straight. Ensure not trick."},"logprobs":null,"finish_reason":"stop","matched_stop":1}],"usage":{"prompt_tokens":61,"completion_tokens":42,"total_tokens":103,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":29,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"system_fingerprint":"default","service_tier":"default"}'
         headers:
             Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
                 - '*'
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - a04666d50c02a2f9-YUL
+                - a533301cbf19a284-YUL
             Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"4c7-Fa2JlnKfu+Pw49wBjZCNP6zjPuo"
+                - application/json
             Server:
                 - cloudflare
             Strict-Transport-Security:
                 - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-e11c3855a23d331a9ffb13bebcb7799f-c9df1744d5930d66-01
             Vary:
-                - accept-encoding
-            X-Amzn-Trace-Id:
-                - e4ab61f5-d8e7-4796-b528-a8d9a6bc5094-noamzn
-            X-Api-Call-End:
-                - "2026-05-31T13:42:26.895Z"
-            X-Api-Call-Start:
-                - "2026-05-31T13:42:25.222Z"
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
             X-Api-Received:
-                - "2026-05-31T13:42:25.077Z"
-            X-Inference-Version:
-                - v2
+                - "2026-10-31T14:00:46.908Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - caw1b-b200-2
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "208"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - caw1b-b200-2
+            X-Together-Trace-Info:
+                - fcc02322-aws_cc1/9a4b68f2/fd83cce7/b8eb2d5f
         status: 200 OK
         code: 200
-        duration: 2.155s
+        duration: 301ms

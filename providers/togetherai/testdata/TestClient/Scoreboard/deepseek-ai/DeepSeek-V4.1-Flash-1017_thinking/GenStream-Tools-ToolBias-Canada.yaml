@@ -1,0 +1,183 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 574
+        host: api.together.xyz
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"role":"assistant","content":null,"reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" need need"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" respond call"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" tool. Need choose"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" User asks"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" call tool"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" tell"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" which best"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". Tool just specify"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" best country. Need decide Canada"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" or"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" USA. Maybe based"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" on their phrasing"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" We need call"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". Which"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" is best"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"? Could call"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" Canada perhaps"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" The tool"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" name"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" best_country. Need maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" no external info"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". User"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" says I"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" wonder if Canada better. Need"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" call tool"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" We can choose Canada? Need"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" be honest?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" Tool simply"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" takes a country,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" no"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" result"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" returned"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" selection"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". It says A"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" tool to specify the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" best country. So invoke"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" with Canada likely"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" satisfying"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". Need perhaps then"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" tell"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" them Canada"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":". Let's call"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":" Canada"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"reasoning_content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_01a18fcdb29871d3bba5f91c","type":"function","function":{"name":"best_country"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"9bf0cc42-aws_cc1","object":"chat.completion.chunk","created":1793413984,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","system_fingerprint":"default","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls","matched_stop":1}],"usage":null}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a52f40bf1c825683-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Traceparent:
+                - 00-57a231fe98c6c6379fc642d84ee13d6b-9420e2b254568233-01
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers, accept-encoding
+            X-Api-Received:
+                - "2026-10-31T02:33:04.840Z"
+            X-Cluster:
+                - dep-agqykir3552a5k6yejumkpwg2u
+            X-Smg-Parser:
+                - legacy
+            X-Smg-Routed-Worker-Id:
+                - grpc://127.0.0.1:8100
+            X-Together-Cluster:
+                - peppypopstar
+            X-Together-Path-Policy-Mode:
+                - enforce
+            X-Together-Path-Policy-Source:
+                - ca-central-1
+            X-Together-Path-Policy-Version:
+                - "202"
+            X-Together-Routing:
+                - de2
+            X-Together-Target-Cluster:
+                - peppypopstar
+            X-Together-Trace-Info:
+                - 9bf0cc42-aws_cc1/2075a1b0/e73e9f29/cdda6d47
+        status: 200 OK
+        code: 200
+        duration: 229ms

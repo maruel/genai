@@ -242,7 +242,7 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // Ping, so New succeeds even when the CLI is not installed.
 //
 // Supported ProviderOptions:
-//   - genai.ProviderOptionModel — model ID (e.g. "gpt-6-astra", "gpt-6.1-sol").
+//   - genai.ProviderOptionModel — model ID (e.g. "gpt-6-astra", "gpt-6.1-terra").
 //     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.

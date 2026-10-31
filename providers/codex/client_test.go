@@ -312,7 +312,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("gpt-6.1-sol"))
+			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("gpt-6.1-terra"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			res, err := c.GenSync(t.Context(), msgs)
 			if err != nil {
@@ -354,7 +354,7 @@ func TestClient(t *testing.T) {
 		})
 		t.Run("thread_resumed_from_opaque", func(t *testing.T) {
 			// Turn 1: establish a session with a unique fact.
-			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("gpt-6.1-sol"))
+			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("gpt-6.1-terra"))
 			msgs1 := genai.Messages{genai.NewTextMessage("Remember this test marker: blue-fox-42. Just confirm you noted it.")}
 			res1, err := c1.GenSync(t.Context(), msgs1)
 			if err != nil {
@@ -371,7 +371,7 @@ func TestClient(t *testing.T) {
 			}
 
 			// Turn 2: resume the session and ask it to recall the fact.
-			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("gpt-6.1-sol"))
+			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("gpt-6.1-terra"))
 			msgs2 := genai.Messages{
 				msgs1[0],
 				{Replies: res1.Replies},
@@ -393,7 +393,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("gen_stream", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("gpt-6.1-sol"))
+			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("gpt-6.1-terra"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 
@@ -421,7 +421,7 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("gpt-6.1-sol"))
+			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("gpt-6.1-terra"))
 			msgs := genai.Messages{genai.NewTextMessage("Without using tools or running code, think carefully: is 104729 prime? Explain briefly, then say hello.")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 

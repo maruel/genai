@@ -16,7 +16,7 @@ import (
 )
 
 func Example() {
-	c, err := codex.New(context.Background(), genai.ProviderOptionModel("gpt-6.1-sol"))
+	c, err := codex.New(context.Background(), genai.ProviderOptionModel("gpt-6.1-terra"))
 	if c != nil {
 		defer func() {
 			if err := c.Close(); err != nil {

@@ -9,7 +9,7 @@
 //	packages/opencode/src/acp/agent.ts — session update types and request/response handling
 //	@agentclientprotocol/sdk 0.21.0 src/schema/types.gen.ts — wire schema
 //
-// Checked against OpenCode 1.18.35 (388406238bd5ca15564a762840a2362c3a45bd9c).
+// Checked against OpenCode 1.19.4 (148842ef7cb1bc34192b3fff57d0f9721ab9c801).
 //
 // Source: https://github.com/anomalyco/opencode
 // Spec:   https://agentclientprotocol.com
@@ -334,6 +334,16 @@ type PromptContent struct {
 	Size        *int64          `json:"size,omitzero"`     // Resource-link size in bytes.
 	Resource    base.Unknown    `json:"resource,omitzero"` // Embedded resource object.
 	Meta        json.RawMessage `json:"_meta,omitzero"`
+}
+
+// MarshalJSON preserves the required image data and MIME type fields for URI-only images.
+//
+//nolint:gocritic // A value receiver also preserves required fields for non-addressable image values.
+func (p PromptContent) MarshalJSON() ([]byte, error) {
+	if p.Type == ContentImage {
+		return json.Marshal(imagePromptContentJSON{promptContentJSON: promptContentJSON(p), Data: p.Data, MimeType: p.MimeType})
+	}
+	return json.Marshal(promptContentJSON(p))
 }
 
 // SessionPromptParams holds the params for session/prompt.
@@ -917,4 +927,12 @@ type PermissionOutcome struct {
 	Outcome  PermissionOutcomeType `json:"outcome"`
 	OptionID string                `json:"optionId,omitzero"`
 	Meta     json.RawMessage       `json:"_meta,omitzero"`
+}
+
+type promptContentJSON PromptContent
+
+type imagePromptContentJSON struct {
+	promptContentJSON
+	Data     string `json:"data"`
+	MimeType string `json:"mimeType"`
 }

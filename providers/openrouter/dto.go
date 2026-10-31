@@ -745,6 +745,7 @@ type Model struct {
 	PerRequestLimits    map[string]base.Unknown `json:"per_request_limits"`
 	SupportedParameters []string                `json:"supported_parameters"`
 	DefaultParameters   ModelDefaultParameters  `json:"default_parameters"`
+	Endpoints           []string                `json:"endpoints"` // Request API paths serving this model.
 	Reasoning           ModelReasoning          `json:"reasoning,omitzero"`
 	Benchmarks          ModelBenchmarks         `json:"benchmarks,omitzero"`
 	CanonicalSlug       string                  `json:"canonical_slug"`

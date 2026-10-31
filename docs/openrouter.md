@@ -43,6 +43,8 @@
 | anthropic/claude-fable-5:batch                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-haiku-4.5                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-haiku-4.5:batch                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| anthropic/claude-haiku-5.5                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| anthropic/claude-haiku-5.5:batch                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-opus-4.1                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-opus-4.1:batch                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-opus-4.5                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -118,9 +120,11 @@
 | deepseek/deepseek-v4-pro                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-v4-pro-0813                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-v4.1-flash                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek/deepseek-v4.1-flash-1017                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-v4.1-flash:batch                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | dots-studio/dots-3-note-preview:free                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | eleutherai/llemma_7b                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| elorian/glimpse                                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | essentialai/rnj-1-instruct                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | fireworks/ember-1                                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemini-2.0-flash-001                                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -158,6 +162,9 @@
 | google/gemini-3.7-flash:batch                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemini-3.8-flash                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemini-3.8-flash:batch                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| google/gemini-4-argon                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| google/gemini-4-argon:batch                                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| google/gemini-nano-banana-2.1                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemma-2-27b-it                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemma-2-9b-it                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | google/gemma-3-12b-it                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -181,6 +188,7 @@
 | inception/mercury                                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | inception/mercury-2                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | inception/mercury-2.5                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| inception/mercury-3                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | inception/mercury-coder                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | inclusionai/ling-2.6-1t                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | inclusionai/ling-2.6-flash                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -202,6 +210,7 @@
 | liquid/lfm-2.5-1.2b-instruct:free                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | liquid/lfm-2.5-1.2b-thinking:free                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | liquid/lfm-2.5-2.6b:free                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| liquid/lfm-2.5-24b-a2b                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | liquid/lfm2-8b-a1b                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mancer/weaver                                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meituan/longcat-2.0                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -229,6 +238,8 @@
 | meta/muse-spark-1.2-contributor                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta/muse-spark-1.3                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta/muse-spark-1.3-contributor                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta/muse-spark-open                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta/muse-wonder                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | microsoft/phi-4                                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | microsoft/phi-4-mini-instruct                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | microsoft/wizardlm-2-8x22b                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -241,6 +252,7 @@
 | minimax/minimax-m2.5:free                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | minimax/minimax-m2.7                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | minimax/minimax-m3                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| minimax/minimax-m3.1-flash                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/codestral-2508                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/codestral-2508:batch                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/devstral-2512                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -259,6 +271,7 @@
 | mistralai/mistral-large-2411                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/mistral-large-2512                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/mistral-large-2512:batch                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| mistralai/mistral-large-4-0                                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/mistral-medium-3                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/mistral-medium-3-5                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/mistral-medium-3-5:batch                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -277,6 +290,8 @@
 | mistralai/mixtral-8x7b-instruct                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/pixtral-large-2411                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mistralai/voxtral-small-24b-2507                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moondream/moondream3-preview                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moondream/moondream3.1-9b-a2b                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/kimi-k2                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/kimi-k2-0905                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/kimi-k2-0905:exacto                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -287,6 +302,7 @@
 | moonshotai/kimi-k2.7-code                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/kimi-k2.7-code:batch                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/kimi-k3                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| moonshotai/kimi-k3.1-pro                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | moonshotai/kimi-k3:batch                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | morph/morph-v3-fast                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | morph/morph-v3-large                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -314,6 +330,8 @@
 | nvidia/nemotron-3.5-content-safety:free                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-3.5-lightning                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-3.5-lightning:free                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/nemotron-3.5-super-vl                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| nvidia/nemotron-3.5-super-vl:free                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-nano-12b-v2-vl                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-nano-12b-v2-vl:free                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-nano-9b-v2                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -413,6 +431,12 @@
 | openai/gpt-6-sol:batch                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-6.1-sol                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-6.1-sol-pro                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-sol-pro:batch                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-sol:batch                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-terra                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-terra-pro                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-terra-pro:batch                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai/gpt-6.1-terra:batch                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-audio                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-audio-mini                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai/gpt-chat-latest                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -450,6 +474,7 @@
 | openrouter/fusion                                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/owl-alpha                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openrouter/pareto-code                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| particle-ai/particle-1                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | perceptron/perceptron-mk1                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | perceptron/perceptron-mk1.5                                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | perplexity/sonar                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -467,6 +492,7 @@
 | poolside/laguna-xs.2:free                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | prime-intellect/intellect-3                                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | prism-ml/ternary-bonsai-2-27b                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| prism-ml/ternary-bonsai-2-9b                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen-2.5-72b-instruct                                    | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen-2.5-7b-instruct                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen-2.5-coder-32b-instruct                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -524,6 +550,7 @@
 | qwen/qwen3.7-flash                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen3.7-max                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen3.7-plus                                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen/qwen3.7-plus:batch                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen3.8-2.4t-a95b                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen3.8-27b                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwen3.8-27b:free                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -533,6 +560,8 @@
 | qwen/qwen3.8-omni-flash                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | qwen/qwq-32b                                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | raifle/sorcererlm-8x22b                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| recursive/flint-v1.0:free                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| reflection/beam-1.0-501b-a23b                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | rekaai/reka-edge                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | rekaai/reka-flash-3                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | relace/relace-apply-3                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -546,11 +575,14 @@
 | sao10k/l3.1-70b-hanami-x1                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | sao10k/l3.1-euryale-70b                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | sao10k/l3.3-euryale-70b                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| scaledown/extract                                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| scaledown/summarize                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | stealth/ox-alpha                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | stealth/space-bunny-alpha                                     | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | stepfun/step-3.5-flash                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | stepfun/step-3.5-flash:free                                   | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | stepfun/step-3.7-flash                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| stepfun/step-5-preview                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | switchpoint/router                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | tencent/hunyuan-a13b-instruct                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | tencent/hy-mt2-1.8b                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -570,7 +602,9 @@
 | tngtech/deepseek-r1t2-chimera                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | typesafe/jev-router                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | unbiased/pareto                                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| unbiased/pareto-26.10                                         | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | unbiased/pareto-26.10-preview                                 | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| unbiased/pareto-26.9                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | undi95/remm-slerp-l2-13b                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | upstage/solar-mini4                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | upstage/solar-pro-3                                           | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -601,6 +635,7 @@
 | xiaomi/mimo-v2.6-flash                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi/mimo-v2.6-pro                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | xiaomi/mimo-v2.6-pro-ultraspeed                               | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| xingchen-agi/xing4.0-29b-a4b:free                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | z-ai/glm-4-32b                                                | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | z-ai/glm-4.5                                                  | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | z-ai/glm-4.5-air                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -638,6 +673,7 @@
 | ~openai/gpt-mini-latest                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ~openai/gpt-sol-latest                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ~openai/gpt-terra-latest                                      | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| ~unbiased/pareto-latest                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ~x-ai/grok-latest                                             | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ~z-ai/glm-flash-latest                                        | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | ~z-ai/glm-latest                                              | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

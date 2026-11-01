@@ -7,169 +7,216 @@
 package websocketrecord
 
 import (
+	"bytes"
+	"context"
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
-	"golang.org/x/net/websocket"
+	"github.com/coder/websocket"
 )
 
 func TestNew(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
-		t.Run("invalid_json", func(t *testing.T) {
-			dir := t.TempDir()
-			path := filepath.Join(dir, "test")
-			if err := os.WriteFile(path+".ndjson", []byte("not json\n"), 0o644); err != nil {
-				t.Fatal(err)
-			}
-			_, err := New(path)
-			if err == nil {
-				t.Fatal("expected error for invalid JSON")
-			}
-		})
-	})
-}
-
-func TestConn(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		t.Run("ws_returns_underlying", func(t *testing.T) {
-			echoSrv := httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
-				var msg string
-				if err := websocket.Message.Receive(ws, &msg); err != nil {
-					return
+		for name, data := range map[string]string{
+			"invalid_json":      "not json\n",
+			"invalid_direction": `{"dir":"?","msg":"x"}` + "\n",
+			"invalid_type":      `{"dir":">","type":"other","msg":"x"}` + "\n",
+			"text_with_data":    `{"dir":">","msg":"x","data":"AQ=="}` + "\n",
+			"binary_with_text":  `{"dir":">","type":"binary","msg":"x"}` + "\n",
+		} {
+			t.Run(name, func(t *testing.T) {
+				path := filepath.Join(t.TempDir(), "test")
+				if err := os.WriteFile(path+".ndjson", []byte(data), 0o644); err != nil {
+					t.Fatal(err)
 				}
-				if err := websocket.Message.Send(ws, msg); err != nil {
-					return
-				}
-			}))
-			defer echoSrv.Close()
-
-			cfg, err := websocket.NewConfig("ws"+echoSrv.URL[4:], echoSrv.URL)
-			if err != nil {
-				t.Fatal(err)
-			}
-			ws, err := cfg.DialContext(t.Context())
-			if err != nil {
-				t.Fatal(err)
-			}
-			c := &Conn{ws: ws}
-			t.Cleanup(func() {
-				if err := c.Close(); err != nil {
-					t.Error(err)
+				if _, err := New(path); err == nil {
+					t.Fatal("expected error")
 				}
 			})
-			if c.WS() != ws {
-				t.Fatal("WS() should return the underlying connection")
-			}
-		})
-	})
-	t.Run("error", func(t *testing.T) {
-		t.Run("send_on_closed", func(t *testing.T) {
-			c := &Conn{}
-			err := c.Send("test")
-			if err == nil {
-				t.Fatal("expected error sending on nil connection")
-			}
-		})
-		t.Run("receive_on_closed", func(t *testing.T) {
-			c := &Conn{}
-			var msg string
-			err := c.Receive(&msg)
-			if err == nil {
-				t.Fatal("expected error receiving on nil connection")
-			}
-		})
+		}
 	})
 }
 
-func TestMessageRoundTrip(t *testing.T) {
+func TestRecorder(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		t.Run("json_messages", func(t *testing.T) {
-			dir := t.TempDir()
-			path := filepath.Join(dir, "test")
-
-			// Record phase with JSON messages.
-			echoSrv := httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
-				for {
-					var msg string
-					if err := websocket.Message.Receive(ws, &msg); err != nil {
-						return
-					}
-					// Echo back with a wrapper.
-					resp := `{"echo":"` + msg + `"}`
-					if err := websocket.Message.Send(ws, resp); err != nil {
-						return
-					}
-				}
-			}))
-			defer echoSrv.Close()
-
-			rec, err := New(path)
-			if err != nil {
-				t.Fatal(err)
-			}
-			cfg, err := websocket.NewConfig("ws"+echoSrv.URL[4:], echoSrv.URL)
-			if err != nil {
-				t.Fatal(err)
-			}
-			c, err := rec.DialContext(t.Context(), cfg)
-			if err != nil {
+		t.Run("text_and_binary", func(t *testing.T) {
+			path := filepath.Join(t.TempDir(), "test")
+			rec := newRecorder(t, path, echoServer(t))
+			recordMessages(t, rec.WSURL())
+			if err := rec.Close(); err != nil {
 				t.Fatal(err)
 			}
 
-			requests := []string{`{"type":"a"}`, `{"type":"b"}`, `{"type":"c"}`}
-			for _, req := range requests {
-				if err := c.Send(req); err != nil {
-					t.Fatal(err)
-				}
-				var resp string
-				if err := c.Receive(&resp); err != nil {
-					t.Fatal(err)
-				}
-				if resp != `{"echo":"`+req+`"}` {
-					t.Fatalf("got %q, want %q", resp, `{"echo":"`+req+`"}`)
-				}
-			}
-			if err := c.Close(); err != nil {
-				t.Fatal(err)
-			}
-			if err := rec.Stop(); err != nil {
-				t.Fatal(err)
-			}
-
-			// Replay.
 			rec2, err := New(path)
 			if err != nil {
 				t.Fatal(err)
 			}
-			cfg2, err := websocket.NewConfig("ws://localhost:0", "http://localhost:0")
+			t.Cleanup(func() {
+				if err := rec2.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			if !rec2.IsReplay() {
+				t.Fatal("expected replay mode")
+			}
+			if err := rec2.Start(""); err != nil {
+				t.Fatal(err)
+			}
+			replayMessages(t, rec2.WSURL())
+		})
+	})
+	t.Run("error", func(t *testing.T) {
+		t.Run("start_target", func(t *testing.T) {
+			rec, err := New(filepath.Join(t.TempDir(), "test"))
 			if err != nil {
 				t.Fatal(err)
 			}
-			c2, err := rec2.DialContext(t.Context(), cfg2)
+			t.Cleanup(func() {
+				if err := rec.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			if rec.URL() != "" || rec.WSURL() != "" {
+				t.Fatal("URL before Start")
+			}
+			for _, target := range []string{"", "http://example.com", "ws://"} {
+				if err := rec.Start(target); err == nil {
+					t.Fatalf("accepted target %q", target)
+				}
+			}
+		})
+		t.Run("mismatch", func(t *testing.T) {
+			path := filepath.Join(t.TempDir(), "test")
+			rec := newRecorder(t, path, echoServer(t))
+			recordMessages(t, rec.WSURL())
+			if err := rec.Close(); err != nil {
+				t.Fatal(err)
+			}
+
+			rec2, err := New(path)
 			if err != nil {
 				t.Fatal(err)
 			}
-			for _, req := range requests {
-				if err := c2.Send(req); err != nil {
-					t.Fatal(err)
+			t.Cleanup(func() {
+				if err := rec2.Close(); err != nil {
+					t.Error(err)
 				}
-				var resp string
-				if err := c2.Receive(&resp); err != nil {
-					t.Fatal(err)
-				}
-				want := `{"echo":"` + req + `"}`
-				if resp != want {
-					t.Fatalf("replay: got %q, want %q", resp, want)
-				}
-			}
-			if err := c2.Close(); err != nil {
+			})
+			if err := rec2.Start(""); err != nil {
 				t.Fatal(err)
 			}
-			if err := rec2.Stop(); err != nil {
+			c, _, err := websocket.Dial(t.Context(), rec2.WSURL(), &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
+			if err != nil {
 				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = c.CloseNow() })
+			if err := c.Write(t.Context(), websocket.MessageText, []byte("wrong")); err != nil {
+				t.Fatal(err)
+			}
+			if _, _, err := c.Read(t.Context()); websocket.CloseStatus(err) != websocket.StatusPolicyViolation {
+				t.Fatalf("Read() = %v, want policy violation", err)
 			}
 		})
 	})
+}
+
+func newRecorder(t *testing.T, path, target string) *Recorder {
+	t.Helper()
+	rec, err := New(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := rec.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	if err := rec.Start(target); err != nil {
+		t.Fatal(err)
+	}
+	return rec
+}
+
+func recordMessages(t *testing.T, endpoint string) {
+	t.Helper()
+	c, _, err := websocket.Dial(t.Context(), endpoint, &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = c.CloseNow() })
+	for _, msg := range []struct {
+		typ  websocket.MessageType
+		data []byte
+	}{
+		{websocket.MessageText, []byte("hello")},
+		{websocket.MessageBinary, []byte{0, 1, 2, 255}},
+	} {
+		if err := c.Write(t.Context(), msg.typ, msg.data); err != nil {
+			t.Fatal(err)
+		}
+		typ, data, err := c.Read(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if typ != msg.typ || !bytes.Equal(data, msg.data) {
+			t.Fatalf("echo %v %v", typ, data)
+		}
+	}
+	_ = c.CloseNow()
+}
+
+func replayMessages(t *testing.T, endpoint string) {
+	t.Helper()
+	c, _, err := websocket.Dial(t.Context(), endpoint, &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = c.CloseNow() })
+	for _, msg := range []struct {
+		typ  websocket.MessageType
+		data []byte
+	}{
+		{websocket.MessageText, []byte("hello")},
+		{websocket.MessageBinary, []byte{0, 1, 2, 255}},
+	} {
+		if err := c.Write(t.Context(), msg.typ, msg.data); err != nil {
+			t.Fatal(err)
+		}
+		typ, data, err := c.Read(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if typ != msg.typ || !bytes.Equal(data, msg.data) {
+			t.Fatalf("replay %v %v", typ, data)
+		}
+	}
+}
+
+func echoServer(t *testing.T) string {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		defer func() { _ = c.CloseNow() }()
+		ctx, cancel := context.WithCancel(r.Context())
+		defer cancel()
+		for {
+			typ, data, err := c.Read(ctx)
+			if err != nil {
+				return
+			}
+			if err := c.Write(ctx, typ, data); err != nil {
+				return
+			}
+		}
+	}))
+	t.Cleanup(srv.Close)
+	return "ws" + strings.TrimPrefix(srv.URL, "http")
 }

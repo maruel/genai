@@ -25,8 +25,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/coder/websocket"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/net/websocket"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -515,28 +515,14 @@ func (c *Client) WebSocket(ctx context.Context) (*WebSocketConn, error) {
 	wsURL = strings.Replace(wsURL, "http://", "ws://", 1)
 	wsURL += "/responses"
 
-	wsCfg, err := websocket.NewConfig(wsURL, wsURL)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create websocket config: %w", err)
-	}
-	// Extract auth headers from the HTTP client's transport chain.
-	wsCfg.Header = http.Header{}
-	wsCfg.Header.Set("OpenAI-Beta", "responses=v1")
-	if h, ok := c.impl.Client.Transport.(*roundtrippers.Header); ok {
-		for k, vs := range h.Header {
-			for _, v := range vs {
-				wsCfg.Header.Set(k, v)
-			}
-		}
-	}
-	raw, err := wsCfg.DialContext(ctx)
+	raw, _, err := websocket.Dial(ctx, wsURL, &websocket.DialOptions{ //nolint:bodyclose // coder/websocket owns the response body.
+		HTTPClient: &c.impl.Client,
+		HTTPHeader: http.Header{"OpenAI-Beta": []string{"responses=v1"}},
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to websocket %s: %w", wsURL, err)
 	}
-	return &WebSocketConn{
-		client: c,
-		ws:     &websocketConn{raw},
-	}, nil
+	return &WebSocketConn{client: c, ws: raw}, nil
 }
 
 // prepareDelta resolves the delta messages and previous_response_id for GenSync/GenStream.

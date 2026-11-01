@@ -9,6 +9,7 @@
 package openairesponses
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -16,36 +17,15 @@ import (
 	"io"
 	"iter"
 	"net/http"
-	"strings"
 	"sync"
 
-	"golang.org/x/net/websocket"
+	"github.com/coder/websocket"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
 )
-
-// wsConn abstracts a WebSocket text-message connection for recording/replay.
-type wsConn interface {
-	Send(data string) error
-	Receive(msg *string) error
-	Close() error
-}
-
-// websocketConn adapts *websocket.Conn to wsConn.
-type websocketConn struct {
-	*websocket.Conn
-}
-
-func (c *websocketConn) Send(data string) error {
-	return websocket.Message.Send(c.Conn, data)
-}
-
-func (c *websocketConn) Receive(msg *string) error {
-	return websocket.Message.Receive(c.Conn, msg)
-}
 
 // WebSocketConn is a persistent WebSocket connection to the OpenAI Responses API.
 //
@@ -73,7 +53,7 @@ type WebSocketConn struct {
 
 	mu sync.Mutex
 	// Protected by mu.
-	ws wsConn
+	ws *websocket.Conn
 }
 
 // Name implements genai.Provider.
@@ -127,20 +107,20 @@ func (w *WebSocketConn) Close() error {
 	if w.ws == nil {
 		return nil
 	}
-	err := w.ws.Close()
+	err := w.ws.CloseNow()
 	w.ws = nil
 	return err
 }
 
-// send sends a message over the WebSocket.
-func (w *WebSocketConn) send(data []byte) error {
+// send sends a text message over the WebSocket.
+func (w *WebSocketConn) send(ctx context.Context, data []byte) error {
 	w.mu.Lock()
 	ws := w.ws
 	w.mu.Unlock()
 	if ws == nil {
 		return errors.New("websocket connection is closed")
 	}
-	return ws.Send(string(data))
+	return ws.Write(ctx, websocket.MessageText, data)
 }
 
 // recvEvents returns an iterator of streaming events from the WebSocket.
@@ -163,20 +143,27 @@ func (w *WebSocketConn) recvEvents(ctx context.Context) (iter.Seq[ResponseStream
 				errCh <- errors.New("websocket connection is closed")
 				return
 			}
-			var msg string
-			if err := ws.Receive(&msg); err != nil {
-				if errors.Is(err, io.EOF) || strings.Contains(err.Error(), "use of closed network connection") {
+			typ, data, err := ws.Read(ctx)
+			if err != nil {
+				switch {
+				case ctx.Err() != nil:
+					errCh <- ctx.Err()
+				case websocket.CloseStatus(err) == websocket.StatusNormalClosure || websocket.CloseStatus(err) == websocket.StatusGoingAway:
 					errCh <- nil
-				} else {
+				default:
 					errCh <- fmt.Errorf("websocket receive: %w", err)
 				}
 				return
 			}
+			if typ != websocket.MessageText {
+				errCh <- fmt.Errorf("unexpected websocket message type %v", typ)
+				return
+			}
 			var chunk ResponseStreamChunkResponse
-			d := json.NewDecoder(strings.NewReader(msg))
+			d := json.NewDecoder(bytes.NewReader(data))
 			d.DisallowUnknownFields()
 			if err := d.Decode(&chunk); err != nil {
-				errCh <- fmt.Errorf("failed to decode event: %w; raw: %s", err, msg)
+				errCh <- fmt.Errorf("failed to decode event: %w; raw: %s", err, data)
 				return
 			}
 			select {
@@ -236,7 +223,7 @@ func (w *WebSocketConn) buildRequest(msgs genai.Messages, opts ...genai.GenOptio
 }
 
 // sendRequest builds and sends a WSRequest.
-func (w *WebSocketConn) sendRequest(msgs genai.Messages, opts ...genai.GenOption) error {
+func (w *WebSocketConn) sendRequest(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) error {
 	req, err := w.buildRequest(msgs, opts...)
 	if err != nil {
 		return err
@@ -245,7 +232,7 @@ func (w *WebSocketConn) sendRequest(msgs genai.Messages, opts ...genai.GenOption
 	if err != nil {
 		return fmt.Errorf("failed to marshal request: %w", err)
 	}
-	return w.send(data)
+	return w.send(ctx, data)
 }
 
 // GenSync implements genai.Provider.
@@ -267,7 +254,7 @@ func (w *WebSocketConn) GenStream(ctx context.Context, msgs genai.Messages, opts
 	msgCount := len(msgs)
 
 	fnFragments := func(yield func(genai.Reply) bool) {
-		if err := w.sendRequest(msgs, opts...); err != nil {
+		if err := w.sendRequest(ctx, msgs, opts...); err != nil {
 			finalErr = err
 			return
 		}
@@ -334,7 +321,7 @@ func (w *WebSocketConn) GenStreamRaw(ctx context.Context, in *Response) (iter.Se
 			return fmt.Errorf("failed to marshal request: %w", err)
 		}
 	}
-	if err := w.send(data); err != nil {
+	if err := w.send(ctx, data); err != nil {
 		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error { return err }
 	}
 	return w.recvEvents(ctx)

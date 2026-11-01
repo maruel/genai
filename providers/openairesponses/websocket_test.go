@@ -12,12 +12,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
 
-	"github.com/maruel/roundtrippers"
-	"golang.org/x/net/websocket"
+	"github.com/coder/websocket"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -74,116 +74,108 @@ func TestWebSocketConn(t *testing.T) {
 		return c
 	}
 
+	t.Run("WebSocket", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "test")
+		rec, err := websocketrecord.New(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if err := rec.Close(); err != nil {
+				t.Error(err)
+			}
+		})
+		if err := rec.Start(startEchoServer(t)); err != nil {
+			t.Fatal(err)
+		}
+		c, err := makeTestClient(t, "gpt-6-luna")
+		if err != nil {
+			t.Fatal(err)
+		}
+		c.baseURL = rec.URL()
+		w, err := c.WebSocket(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := w.Close(); err != nil {
+			t.Fatal(err)
+		}
+	})
+
 	t.Run("Smoke", func(t *testing.T) {
 		rec, err := websocketrecord.New("testdata/TestWebSocketConn/Smoke")
 		if err != nil {
 			t.Fatal(err)
 		}
 		t.Cleanup(func() {
-			if err := rec.Stop(); err != nil {
+			if err := rec.Close(); err != nil {
 				t.Error(err)
 			}
 		})
 
+		model := "gpt-6-luna"
+		if v := os.Getenv("WS_MODEL"); v != "" {
+			model = v
+		}
+		c, err := makeTestClient(t, model)
+		if err != nil {
+			t.Fatal(err)
+		}
+		target := ""
 		if !rec.IsReplay() {
 			if os.Getenv("RECORD") != "failure_only" || os.Getenv("OPENAI_API_KEY") == "" {
 				t.Skip("set RECORD=failure_only and OPENAI_API_KEY to record")
 			}
-			model := "gpt-6-luna"
-			if v := os.Getenv("WS_MODEL"); v != "" {
-				model = v
-			}
-			c, err := makeTestClient(t, model)
-			if err != nil {
-				t.Fatal(err)
-			}
-			wsCfg, err := buildWSConfig(c)
-			if err != nil {
-				t.Fatal(err)
-			}
-			conn, err := rec.DialContext(t.Context(), wsCfg)
-			if err != nil {
-				t.Fatal(err)
-			}
-			t.Cleanup(func() {
-				if err := conn.Close(); err != nil {
-					t.Error(err)
-				}
-			})
-
-			// Record 3 turns with raw messages, exercising the recorder.
-			// Each turn sends a response.create and waits for the terminal event.
-			var prevID string
-			texts := []string{
-				"Say hello in exactly 3 words.",
-				"Now count from 1 to 3.",
-				"Good, now say goodbye in exactly 2 words.",
-			}
-			for i, text := range texts {
-				req := fmt.Sprintf(`{"type":"response.create","model":%q,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":%q}]}],"store":false%s}`,
-					model, text, prevIDStr(prevID))
-				if err := conn.Send(req); err != nil {
-					t.Fatal(err)
-				}
-				prevID = ""
-				for {
-					var msg string
-					if err := conn.Receive(&msg); err != nil {
-						t.Fatal(err)
-					}
-					var evt struct {
-						Type     string `json:"type"`
-						Response struct {
-							ID string `json:"id"`
-						} `json:"response"`
-					}
-					if err := json.Unmarshal([]byte(msg), &evt); err != nil {
-						t.Fatal(err)
-					}
-					if evt.Response.ID != "" {
-						prevID = evt.Response.ID
-					}
-					if evt.Type == "response.completed" || evt.Type == "response.failed" {
-						t.Logf("Turn %d: %s (id=%s)", i+1, evt.Type, prevID)
-						break
-					}
-				}
-			}
-			return
+			target = "wss://api.openai.com/v1/responses"
 		}
-
-		// Replay: exercise the fixture with raw send/receive.
-		wsCfg, err := websocket.NewConfig("ws://localhost:0", "http://localhost:0")
-		if err != nil {
+		if err := rec.Start(target); err != nil {
 			t.Fatal(err)
 		}
-		conn, err := rec.DialContext(t.Context(), wsCfg)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Cleanup(func() {
-			if err := conn.Close(); err != nil {
-				t.Error(err)
-			}
+		conn, _, err := websocket.Dial(t.Context(), rec.WSURL(), &websocket.DialOptions{ //nolint:bodyclose // coder/websocket owns the response body.
+			HTTPClient: &c.impl.Client,
+			HTTPHeader: http.Header{"OpenAI-Beta": []string{"responses=v1"}},
 		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { _ = conn.CloseNow() })
 
-		for turn := range 3 {
-			if err := conn.Send("request"); err != nil {
+		// Each turn sends a response.create and waits for the terminal event.
+		var prevID string
+		texts := []string{
+			"Say hello in exactly 3 words.",
+			"Now count from 1 to 3.",
+			"Good, now say goodbye in exactly 2 words.",
+		}
+		for i, text := range texts {
+			req := fmt.Sprintf(`{"type":"response.create","model":%q,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":%q}]}],"store":false%s}`,
+				model, text, prevIDStr(prevID))
+			if err := conn.Write(t.Context(), websocket.MessageText, []byte(req)); err != nil {
 				t.Fatal(err)
 			}
+			prevID = ""
 			for {
-				var msg string
-				if err := conn.Receive(&msg); err != nil {
+				typ, data, err := conn.Read(t.Context())
+				if err != nil {
 					t.Fatal(err)
+				}
+				if typ != websocket.MessageText {
+					t.Fatalf("message type %v", typ)
 				}
 				var evt struct {
-					Type string `json:"type"`
+					Type     string `json:"type"`
+					Response struct {
+						ID string `json:"id"`
+					} `json:"response"`
 				}
-				if err := json.Unmarshal([]byte(msg), &evt); err != nil {
+				if err := json.Unmarshal(data, &evt); err != nil {
 					t.Fatal(err)
 				}
+				if evt.Response.ID != "" {
+					prevID = evt.Response.ID
+				}
 				if evt.Type == "response.completed" || evt.Type == "response.failed" {
-					t.Logf("Replay turn %d: %s", turn+1, evt.Type)
+					t.Logf("Turn %d: %s (id=%s)", i+1, evt.Type, prevID)
 					break
 				}
 			}
@@ -193,81 +185,45 @@ func TestWebSocketConn(t *testing.T) {
 	t.Run("Smoke_Local", func(t *testing.T) {
 		// Self-contained test with a local echo server. Verifies the full
 		// record→replay flow without any network dependency.
-		srv := startEchoServer()
-		t.Cleanup(srv.Close)
+		target := startEchoServer(t)
+		path := filepath.Join(t.TempDir(), "smoke")
 
-		dir := t.TempDir()
-		path := dir + "/smoke"
-
-		// Record phase.
 		rec, err := websocketrecord.New(path)
 		if err != nil {
 			t.Fatal(err)
 		}
-		wsCfg, err := websocket.NewConfig("ws"+srv.URL[4:], srv.URL)
-		if err != nil {
-			t.Fatal(err)
-		}
-		conn, err := rec.DialContext(t.Context(), wsCfg)
-		if err != nil {
-			t.Fatal(err)
-		}
-		// Simulate multi-turn: send request, receive "echoed" response.
-		for i := range 3 {
-			req := fmt.Sprintf("turn %d", i+1)
-			if err := conn.Send(req); err != nil {
-				t.Fatal(err)
+		t.Cleanup(func() {
+			if err := rec.Close(); err != nil {
+				t.Error(err)
 			}
-			var resp string
-			if err := conn.Receive(&resp); err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Turn %d: %s → %s", i+1, req, resp)
-		}
-		if err := conn.Close(); err != nil {
+		})
+		if err := rec.Start(target); err != nil {
 			t.Fatal(err)
 		}
-		if err := rec.Stop(); err != nil {
+		conn := dialProxy(t, rec.WSURL())
+		runEchoTurns(t, conn)
+		_ = conn.CloseNow()
+		if err := rec.Close(); err != nil {
 			t.Fatal(err)
 		}
 
-		// Replay phase.
 		rec2, err := websocketrecord.New(path)
 		if err != nil {
 			t.Fatal(err)
 		}
 		t.Cleanup(func() {
-			if err := rec2.Stop(); err != nil {
+			if err := rec2.Close(); err != nil {
 				t.Error(err)
 			}
 		})
 		if !rec2.IsReplay() {
 			t.Fatal("expected replay mode after recording")
 		}
-		wsCfg2, err := websocket.NewConfig("ws://localhost:0", "http://localhost:0")
-		if err != nil {
+		if err := rec2.Start(""); err != nil {
 			t.Fatal(err)
 		}
-		conn2, err := rec2.DialContext(t.Context(), wsCfg2)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Cleanup(func() {
-			if err := conn2.Close(); err != nil {
-				t.Error(err)
-			}
-		})
-		for i := range 3 {
-			req := fmt.Sprintf("turn %d", i+1)
-			if err := conn2.Send(req); err != nil {
-				t.Fatal(err)
-			}
-			var resp string
-			if err := conn2.Receive(&resp); err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Replay turn %d: %s → %s", i+1, req, resp)
-		}
+		conn2 := dialProxy(t, rec2.WSURL())
+		runEchoTurns(t, conn2)
 	})
 
 	t.Run("buildRequest", func(t *testing.T) {
@@ -386,28 +342,6 @@ func makeTestClient(t *testing.T, model string) (*Client, error) {
 	return c, err
 }
 
-// buildWSConfig creates a websocket.Config for the OpenAI Responses API,
-// replicating the logic in Client.WebSocket().
-func buildWSConfig(c *Client) (*websocket.Config, error) {
-	wsURL := strings.Replace(c.baseURL, "https://", "wss://", 1)
-	wsURL = strings.Replace(wsURL, "http://", "ws://", 1)
-	wsURL += "/responses"
-	cfg, err := websocket.NewConfig(wsURL, wsURL)
-	if err != nil {
-		return nil, err
-	}
-	cfg.Header = http.Header{}
-	cfg.Header.Set("OpenAI-Beta", "responses=v1")
-	if h, ok := c.impl.Client.Transport.(*roundtrippers.Header); ok {
-		for k, vs := range h.Header {
-			for _, v := range vs {
-				cfg.Header.Set(k, v)
-			}
-		}
-	}
-	return cfg, nil
-}
-
 func prevIDStr(id string) string {
 	if id == "" {
 		return ""
@@ -417,19 +351,56 @@ func prevIDStr(id string) string {
 
 // startEchoServer starts a local WebSocket server that echoes received
 // messages with a prefix, simulating a conversation for testing.
-func startEchoServer() *httptest.Server {
-	return httptest.NewServer(websocket.Handler(func(ws *websocket.Conn) {
+func startEchoServer(t *testing.T) string {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		defer func() { _ = c.CloseNow() }()
 		for {
-			var msg string
-			if err := websocket.Message.Receive(ws, &msg); err != nil {
+			typ, data, err := c.Read(r.Context())
+			if err != nil {
 				return
 			}
-			resp := "echo: " + strings.ToUpper(msg)
-			if err := websocket.Message.Send(ws, resp); err != nil {
+			if err := c.Write(r.Context(), typ, []byte("echo: "+strings.ToUpper(string(data)))); err != nil {
 				return
 			}
 		}
 	}))
+	t.Cleanup(srv.Close)
+	return "ws" + strings.TrimPrefix(srv.URL, "http")
+}
+
+func dialProxy(t *testing.T, endpoint string) *websocket.Conn {
+	t.Helper()
+	c, _, err := websocket.Dial(t.Context(), endpoint, &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = c.CloseNow() })
+	return c
+}
+
+func runEchoTurns(t *testing.T, c *websocket.Conn) {
+	t.Helper()
+	for i := range 3 {
+		req := fmt.Sprintf("turn %d", i+1)
+		if err := c.Write(t.Context(), websocket.MessageText, []byte(req)); err != nil {
+			t.Fatal(err)
+		}
+		typ, data, err := c.Read(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := "echo: " + strings.ToUpper(req)
+		if typ != websocket.MessageText || string(data) != want {
+			t.Fatalf("replay turn %d: %v %q, want %q", i+1, typ, data, want)
+		}
+		t.Logf("Turn %d: %s -> %s", i+1, req, data)
+	}
 }
 
 type embeddingWireRequest struct {

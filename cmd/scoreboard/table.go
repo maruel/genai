@@ -127,12 +127,9 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 				}
 				t.Mode += "Stream"
 			}
-			// Do a small hack to put the brain at the end.
-			if strings.Contains(t.Mode, "🧠") {
-				t.Mode = strings.ReplaceAll(t.Mode, "🧠", "") + "🧠"
-			}
 		}
 	}
+	t.finishMode()
 	fillEmptyFields(t, "❌")
 }
 
@@ -158,6 +155,28 @@ type tableDataRow struct {
 	RateLimits string `title:"Limits"`
 	Usage      string `title:"Usage"`
 	Finish     string `title:"Finish"`
+}
+
+// finishMode puts the brain where thinking happens, after the last generation
+// mode, instead of wherever a reasoning scenario happened to be merged.
+func (t *tableDataRow) finishMode() {
+	if !strings.Contains(t.Mode, "🧠") {
+		return
+	}
+	modes := slices.DeleteFunc(strings.Split(strings.ReplaceAll(t.Mode, "🧠", ""), ", "), func(m string) bool { return m == "" })
+	if len(modes) == 0 {
+		t.Mode = "🧠"
+		return
+	}
+	i := len(modes) - 1
+	for j := i; j >= 0; j-- {
+		if modes[j] == "Sync" || modes[j] == "Stream" {
+			i = j
+			break
+		}
+	}
+	modes[i] += "🧠"
+	t.Mode = strings.Join(modes, ", ")
 }
 
 func (t *tableDataRow) initFromEmbed(s *scoreboard.Scenario) {

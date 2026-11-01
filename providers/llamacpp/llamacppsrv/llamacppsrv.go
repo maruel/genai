@@ -2,8 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package llamacppsrv downloads and starts llama-server from
-// llama.cpp, directly from GitHub releases.
+// Package llamacppsrv downloads llama.cpp executables and starts llama-server.
 package llamacppsrv
 
 import (
@@ -190,19 +189,47 @@ func (s *Server) Done() <-chan error {
 // A cached resolution and matching executable need no GitHub requests.
 // Missing or invalid executables are downloaded again for the resolved build.
 func DownloadVersion(ctx context.Context, cache, version string) (string, error) {
+	return downloadVersion(ctx, cache, version, toolServer)
+}
+
+// DownloadTTSVersion downloads a stable release (vX.Y.Z) or nightly build
+// (bNNNN) into cache and returns the path to llama-tts in a build-specific
+// directory. The release must contain llama-tts.
+//
+// Stable releases use the same cached resolution as DownloadVersion.
+func DownloadTTSVersion(ctx context.Context, cache, version string) (string, error) {
+	return downloadVersion(ctx, cache, version, toolTTS)
+}
+
+// DownloadRelease downloads a specific release from GitHub into the specified
+// directory and returns the file path to llama.cpp executable.
+//
+// Returns the file path to the executable.
+func DownloadRelease(ctx context.Context, cache string, version int) (string, error) {
+	return downloadRelease(ctx, cache, version, toolServer)
+}
+
+type tool string
+
+const (
+	toolServer tool = "llama-server"
+	toolTTS    tool = "llama-tts"
+)
+
+func downloadVersion(ctx context.Context, cache, version string, tool tool) (string, error) {
 	if regexp.MustCompile(`^b[1-9]\d*$`).MatchString(version) {
 		n, err := strconv.Atoi(version[1:])
 		if err != nil {
 			return "", fmt.Errorf("invalid build tag %q: %w", version, err)
 		}
-		return DownloadRelease(ctx, filepath.Join(cache, version), n)
+		return downloadRelease(ctx, filepath.Join(cache, version), n, tool)
 	}
 	if !regexp.MustCompile(`^v\d+\.\d+\.\d+$`).MatchString(version) {
 		return "", fmt.Errorf("invalid llama.cpp release tag %q", version)
 	}
 	link := filepath.Join(cache, version)
 	if tag, err := readReleaseAlias(link); err == nil {
-		return DownloadVersion(ctx, cache, tag)
+		return downloadVersion(ctx, cache, tag, tool)
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return "", fmt.Errorf("reading cached release %s: %w", version, err)
 	}
@@ -237,7 +264,7 @@ func DownloadVersion(ctx context.Context, cache, version string) (string, error)
 	if !regexp.MustCompile(`^b[1-9]\d*$`).MatchString(tag) {
 		return "", fmt.Errorf("invalid nightly tag %q in release %s", tag, version)
 	}
-	exe, err := DownloadVersion(ctx, cache, tag)
+	exe, err := downloadVersion(ctx, cache, tag, tool)
 	if err != nil {
 		return "", err
 	}
@@ -259,11 +286,7 @@ func DownloadVersion(ctx context.Context, cache, version string) (string, error)
 	return exe, nil
 }
 
-// DownloadRelease downloads a specific release from GitHub into the specified
-// directory and returns the file path to llama.cpp executable.
-//
-// Returns the file path to the executable.
-func DownloadRelease(ctx context.Context, cache string, version int) (string, error) {
+func downloadRelease(ctx context.Context, cache string, version int, tool tool) (string, error) {
 	if version <= 0 {
 		return "", fmt.Errorf("invalid llama.cpp build number %d", version)
 	}
@@ -271,16 +294,16 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	if runtime.GOOS == "windows" {
 		execSuffix = ".exe"
 	}
-	llamaserver := filepath.Join(cache, "llama-server"+execSuffix)
-	if cachedExecutable(llamaserver) {
+	executable := filepath.Join(cache, string(tool)+execSuffix)
+	if cachedExecutable(executable) {
 		// Run it to confirm the version and that the file is not corrupted.
 		// If this fails, starts from scratch.
-		cmd := exec.CommandContext(ctx, llamaserver, "--version")
-		cmd.Dir = filepath.Dir(llamaserver)
+		cmd := exec.CommandContext(ctx, executable, "--version") // #nosec G702 -- The caller-owned cache selects the runtime; this version probe uses no shell.
+		cmd.Dir = filepath.Dir(executable)
 		cmd.Env = serverEnv(cmd.Dir)
 		if out, err := cmd.CombinedOutput(); err == nil {
 			if v, ok := parseBuildNumber(out); ok && v == version {
-				return llamaserver, nil
+				return executable, nil
 			}
 		}
 	}
@@ -313,8 +336,8 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 			return "", fmt.Errorf("failed to download %s from github: %w", asset.Name, err)
 		}
 	}
-	if !cachedExecutable(filepath.Join(dir, "llama-server"+execSuffix)) {
-		return "", fmt.Errorf("release %s did not contain llama-server%s", build, execSuffix)
+	if !cachedExecutable(filepath.Join(dir, string(tool)+execSuffix)) {
+		return "", fmt.Errorf("release %s did not contain %s%s", build, tool, execSuffix)
 	}
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -340,7 +363,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 			return "", err
 		}
 	}
-	return llamaserver, nil
+	return filepath.Join(cache, string(tool)+execSuffix), nil
 }
 
 // readReleaseAlias reads only the two supported alias types, without following

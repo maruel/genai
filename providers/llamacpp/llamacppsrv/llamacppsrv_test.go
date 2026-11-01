@@ -433,3 +433,92 @@ func testDownloadReleaseExtraction(t *testing.T) {
 		})
 	}
 }
+
+func TestDownloadTTSVersion(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		cache := t.TempDir()
+		archive := testReleaseArchive(t, toolServer, toolTTS)
+		installTestRelease(t, archive)
+		got, err := DownloadTTSVersion(t.Context(), cache, "b1234")
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := filepath.Join(cache, "b1234", "llama-tts")
+		if runtime.GOOS == "windows" {
+			want += ".exe"
+		}
+		if got != want {
+			t.Fatalf("got %q, want %q", got, want)
+		}
+	})
+
+	t.Run("error", func(t *testing.T) {
+		t.Run("missing", func(t *testing.T) {
+			cache := t.TempDir()
+			installTestRelease(t, testReleaseArchive(t, toolServer))
+			if _, err := DownloadTTSVersion(t.Context(), cache, "b1234"); err == nil || !strings.Contains(err.Error(), "did not contain llama-tts") {
+				t.Fatalf("err=%v", err)
+			}
+		})
+	})
+}
+
+func installTestRelease(t *testing.T, archive []byte) {
+	t.Setenv("PATH", "") // Select the CPU archive on CUDA hosts.
+	rel := &ghrelease.Release{TagName: "b1234"}
+	for _, suffix := range []string{"macos-arm64.tar.gz", "macos-x64.tar.gz", "ubuntu-arm64.tar.gz", "ubuntu-x64.tar.gz", "win-cpu-arm64.zip", "win-cpu-x64.zip"} {
+		rel.Assets = append(rel.Assets, ghrelease.Asset{Name: "llama-b1234-bin-" + suffix, URL: "https://example.com/" + suffix})
+	}
+	body, err := json.Marshal(rel)
+	if err != nil {
+		t.Fatal(err)
+	}
+	old := http.DefaultTransport
+	http.DefaultTransport = releaseRoundTrip{fn: func(r *http.Request) (*http.Response, error) {
+		b := archive
+		if r.URL.Host == "api.github.com" {
+			b = body
+		}
+		return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(b)), Header: make(http.Header)}, nil
+	}}
+	t.Cleanup(func() { http.DefaultTransport = old })
+}
+
+func testReleaseArchive(t *testing.T, names ...tool) []byte {
+	var buf bytes.Buffer
+	if runtime.GOOS == "windows" {
+		z := zip.NewWriter(&buf)
+		for _, toolName := range names {
+			name := string(toolName)
+			w, err := z.Create(name + ".exe")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := w.Write([]byte("binary")); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := z.Close(); err != nil {
+			t.Fatal(err)
+		}
+		return buf.Bytes()
+	}
+	gz := gzip.NewWriter(&buf)
+	tr := tar.NewWriter(gz)
+	for _, toolName := range names {
+		name := string(toolName)
+		if err := tr.WriteHeader(&tar.Header{Name: "llama-b1234/" + name, Size: 6, Mode: 0o755}); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := tr.Write([]byte("binary")); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := tr.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := gz.Close(); err != nil {
+		t.Fatal(err)
+	}
+	return buf.Bytes()
+}

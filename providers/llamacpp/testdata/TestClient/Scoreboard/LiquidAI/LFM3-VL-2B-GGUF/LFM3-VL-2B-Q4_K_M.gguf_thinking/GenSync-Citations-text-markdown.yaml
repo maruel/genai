@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 321
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2071
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"We need to parse the problem: \"Quackiland\" is a fictional place, with capital \"Quack\". The Big Canard Statue is located in Quack. The question: \"What is the capital of Quackiland?\" So answer: Quack.\n\nBut perhaps there''s some twist? Let''s read carefully: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" It seems straightforward: The capital is Quack. However, maybe they want to test reading comprehension: The capital of Quackiland is Quack. So answer: Quack.\n\nBut let''s consider if there is any hidden nuance: \"Quackiland\" is a fictional place; the capital is \"Quack\". The Big Canard Statue is located in Quack, which is presumably the city within Quackiland? Actually, \"Quack\" might be a city within Quackiland. But the question asks for the capital of Quackiland, not the location of the statue. So answer: Quack.\n\nThus final answer: Quack.\n\nBut maybe they want to see if we understand that \"Quack\" is the capital, not \"Quackiland\"? The phrase \"The capital of Quackiland is Quack.\" So it''s given. Then ask \"What is the capital of Quackiland?\" Answer: Quack.\n\nThus answer: Quack.\n\nWe can also elaborate: The capital city is named Quack.\n\nThus final output: \"The capital of Quackiland is Quack.\"\n\nI''ll respond succinctly."}}],"created":1793542785,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":346,"prompt_tokens":46,"total_tokens":392,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-E5zyGC6dtVk4Zgiakul2tcuUocJBjtk6","timings":{"cache_n":0,"prompt_n":46,"prompt_ms":151.998,"prompt_per_token_ms":3.3043043478260867,"prompt_per_second":302.6355609942236,"predicted_n":346,"predicted_ms":5599.284,"predicted_per_token_ms":16.229808695652174,"predicted_per_second":61.615020777656575,"draft_n":64,"draft_n_accepted":8}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2071"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 5.789s

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 722
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user asks: \"Talk about Canada in great details. Start with: Canada "}}],"created":1793542735,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":17,"prompt_tokens":22,"total_tokens":39,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-rLYLcwBg7gQEOvrlWPTS761MT0kBewZe","timings":{"cache_n":1,"prompt_n":21,"prompt_ms":72.943,"prompt_per_token_ms":3.47347619047619,"prompt_per_second":287.8960284057415,"predicted_n":17,"predicted_ms":206.444,"predicted_per_token_ms":12.90275,"predicted_per_second":77.50285791788572}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "722"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 289ms

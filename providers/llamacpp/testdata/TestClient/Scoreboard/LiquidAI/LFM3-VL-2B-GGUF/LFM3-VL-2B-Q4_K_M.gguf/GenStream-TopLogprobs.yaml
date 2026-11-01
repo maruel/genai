@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 214
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"chat_template_kwargs":{"enable_thinking":false},"logprobs":true,"top_logprobs":2,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1793542393,"id":"chatcmpl-K96Gvt6UbzvvM0HlvYuA1cWsDDXe6Lnv","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Hello"},"logprobs":{"content":[{"id":35808,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-0.03192105144262314,"top_logprobs":[{"id":35808,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-0.03192105144262314},{"id":41619,"token":"Hi","bytes":[72,105],"logprob":-3.5254695415496826}]}]}}],"created":1793542393,"id":"chatcmpl-K96Gvt6UbzvvM0HlvYuA1cWsDDXe6Lnv","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."},"logprobs":{"content":[{"id":22,"token":".","bytes":[46],"logprob":-0.03410477191209793,"top_logprobs":[{"id":22,"token":".","bytes":[46],"logprob":-0.03410477191209793},{"id":9,"token":"!","bytes":[33],"logprob":-3.675759792327881}]}]}}],"created":1793542393,"id":"chatcmpl-K96Gvt6UbzvvM0HlvYuA1cWsDDXe6Lnv","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1793542393,"id":"chatcmpl-K96Gvt6UbzvvM0HlvYuA1cWsDDXe6Lnv","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk","timings":{"cache_n":1,"prompt_n":18,"prompt_ms":80.087,"prompt_per_token_ms":4.449277777777778,"prompt_per_second":224.7555783085894,"predicted_n":3,"predicted_ms":23.73,"predicted_per_token_ms":11.865,"predicted_per_second":84.28150021070375}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+            X-Accel-Buffering:
+                - 'no'
+        status: 200 OK
+        code: 200
+        duration: 1ms

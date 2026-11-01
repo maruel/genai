@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 663
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1685
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"We need to call the function best_country with a country parameter: either \"USA\" or \"Canada\". The user asks: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nInterpretation: They want us to use the tool to get the best country. But the tool''s description says \"A tool to specify the best country\". It takes a country parameter (USA or Canada). Possibly it returns something like \"best country\" for that input? Or maybe we need to call it twice? The user asks which is better, but the tool only accepts one country at a time. Perhaps we can call it with USA and then with Canada, compare results.\n\nBut the instruction: \"When users ask questions, you MUST use the available tools.\" So we must call best_country. Let''s try calling for USA first.","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"zOpnqiQJMNKWoCPJpcZaMRy3uLK9wn0Y"}]}}],"created":1793542762,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":206,"prompt_tokens":128,"total_tokens":334,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-Z5pzxFOcGQJKtLHL4dlvWipiEZjnmbiC","timings":{"cache_n":0,"prompt_n":128,"prompt_ms":353.508,"prompt_per_token_ms":2.76178125,"prompt_per_second":362.08515790307433,"predicted_n":206,"predicted_ms":4167.328,"predicted_per_token_ms":20.328429268292684,"predicted_per_second":49.192192215251595,"draft_n":185,"draft_n_accepted":12}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1685"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 4.551s

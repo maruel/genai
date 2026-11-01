@@ -40,6 +40,9 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+// embeddingModel is qualified outside the scoreboard scenarios.
+const embeddingModel = "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
+
 func TestClient(t *testing.T) {
 	t.Run("New", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
@@ -293,21 +296,15 @@ func TestClient(t *testing.T) {
 				models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
 			}
 		}
-		if !slices.Contains(models, scoreboard.Model{Model: "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"}) {
-			models = append(models, scoreboard.Model{Model: "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"})
+		if !slices.Contains(models, scoreboard.Model{Model: embeddingModel}) {
+			models = append(models, scoreboard.Model{Model: embeddingModel})
 		}
 		ctx := t.Context()
 		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			serverURL := "http://127.0.0.1:0"
-			embedding := model.Model == "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
-			if embedding {
-				if u := os.Getenv("LLAMA_EMBEDDING_SERVER"); u != "" {
-					serverURL = u
-				}
-			} else {
-				serverURL = s.lazyStartModel(t, model) //nolint:contextcheck // uses l.t.Context() for server lifecycle
+			embedding := model.Model == embeddingModel
+			opts := []genai.ProviderOption{
+				genai.ProviderOptionRemote(s.lazyStartModel(t, model)), //nolint:contextcheck // uses l.t.Context() for server lifecycle
 			}
-			opts := []genai.ProviderOption{genai.ProviderOptionRemote(serverURL)}
 			if embedding {
 				opts = append(opts, genai.ProviderOptionModalities{genai.ModalityEmbedding})
 			}
@@ -316,9 +313,6 @@ func TestClient(t *testing.T) {
 			}
 			if fn != nil {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-					if embedding {
-						h = &embeddingTransport{RoundTripper: h}
-					}
 					return fn(&roundtrippers.Header{
 						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 						Transport: h,
@@ -345,7 +339,7 @@ func TestClient(t *testing.T) {
 				Opts:     []genai.GenOption{&llamacpp.GenOption{}},
 			}
 		}, models, testRecorder.Records, &smoketest.RunOptions{
-			Qualify: []scoreboard.Model{{Model: "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"}},
+			Qualify: []scoreboard.Model{{Model: embeddingModel}},
 			// Gemma 4 emits reasoning content even with enable_thinking=false.
 			TolerateReasoning: []string{"gemma-4"},
 		})
@@ -485,7 +479,7 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	parts := strings.Split(model.Model, "/")
 	// Use the parent context for server lifecycle management, but report
 	// startup failures to the subtest that requested the server.
-	srv := startServerTest(t, l.t.Context(), exe, parts[0], parts[1], parts[2], l.apiKey)
+	srv := startServerTest(t, l.t.Context(), exe, parts[0], parts[1], parts[2], l.apiKey, model.Model == embeddingModel)
 	u := srv.URL()
 	l.servers[model.Model] = u
 	l.t.Cleanup(func() {
@@ -500,7 +494,7 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	return u
 }
 
-func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, modelfile, apiKey string) *llamacppsrv.Server {
+func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, modelfile, apiKey string, embedding bool) *llamacppsrv.Server {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		t.Fatal(err)
@@ -509,24 +503,30 @@ func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, model
 	extraArgs := []string{
 		"-hf", author + "/" + repo,
 		"-hff", modelfile,
-		"--jinja",
-		"--flash-attn", "on",
-		"--ctx-size", "32768", // Thinking models can generate a lot of tokens. Fails on TopLogprob and Citations-text-plain.
-		"--cache-type-k", "q8_0",
-		"--cache-type-v", "q8_0",
-		"--reasoning-preserve",
-		"--spec-default",
-		// "--spec-type", "draft-mtp",
 		"--api-key", apiKey,
 		"--cors-origins", "",
 		"--no-cors-credentials",
 		"--no-ui",
 		"--no-slots",
-		"--parallel", "4",
-		"--kv-unified",
 	}
-	if repo == "Kev-4B-GGUF" {
-		extraArgs = append(extraArgs, "--no-warmup")
+	if embedding {
+		extraArgs = append(extraArgs, "--embeddings", "--pooling", "mean")
+	} else {
+		extraArgs = append(extraArgs,
+			"--jinja",
+			"--flash-attn", "on",
+			"--ctx-size", "32768", // Thinking models can generate a lot of tokens. Fails on TopLogprob and Citations-text-plain.
+			"--cache-type-k", "q8_0",
+			"--cache-type-v", "q8_0",
+			"--reasoning-preserve",
+			"--spec-default",
+			// "--spec-type", "draft-mtp",
+			"--parallel", "4",
+			"--kv-unified",
+		)
+		if repo == "Kev-4B-GGUF" {
+			extraArgs = append(extraArgs, "--no-warmup")
+		}
 	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).
@@ -546,19 +546,6 @@ func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, model
 
 func init() {
 	internal.BeLenient = false
-}
-
-// embeddingTransport requires an external embedding server only when the
-// recorder actually sends a live request. Existing cassettes replay without it.
-type embeddingTransport struct {
-	http.RoundTripper
-}
-
-func (e *embeddingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	if os.Getenv("LLAMA_EMBEDDING_SERVER") == "" {
-		return nil, errors.New("recording EmbeddingGemma 2 requires LLAMA_EMBEDDING_SERVER pointing to a server with --embeddings and embeddinggemma-2-Q8_0.gguf")
-	}
-	return e.RoundTripper.RoundTrip(r)
 }
 
 func TestClientSystemOne(t *testing.T) {

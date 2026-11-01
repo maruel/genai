@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 276
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 936
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**. \n\nThis is a playful, fictional scenario where the city''s name matches its state''s name (Quackiland), and the landmark \"Big Canard Statue\" is located there. It''s a fun example of naming conventions in fantasy or humorous contexts!"}}],"created":1793542407,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":65,"prompt_tokens":42,"total_tokens":107,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-wamNqLna221wDeUPDDNKl5j0rtmDn1xV","timings":{"cache_n":1,"prompt_n":41,"prompt_ms":108.856,"prompt_per_token_ms":2.655024390243902,"prompt_per_second":376.64437421915187,"predicted_n":65,"predicted_ms":918.24,"predicted_per_token_ms":14.3475,"predicted_per_second":69.69855375500958,"draft_n":64,"draft_n_accepted":7}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "936"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.037s

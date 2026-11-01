@@ -19,17 +19,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 151
-        body: '{"error":{"code":500,"message":"audio input is not supported - hint: if this is unexpected, you may need to provide the mmproj","type":"server_error"}}'
+        content_length: 4312
+        body: '{"model":"ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf","object":"list","usage":{"prompt_tokens":23,"total_tokens":23},"data":[{"embedding":"kXV+vJ2lPDydlo683Jo/OXqUobynN3O6FPuEPD3LJLzCvGU85/USvkNhgbwTeMo5AhX6vC8iAD3aoJI9ZrrrvCZqLD2HDj283UeIvBg6F737HCy9vFJavV+ymzwQLZY4kgilPPLwc7me16w7uVh7PKx3VL3SF4o+mV/SvPJmszu8fIY8TXkOvLIaizyjWpo6lMwzPLxfIj0cnr+8vt0DveIhmLyNECu9P/1svfygvTzuz7S7Js+xPKedKzrm14i9dtINvaps1jxzpDQ9iXkCvbnVR72GllE9/NPfPHojP71rj0+9jL9aPD3T0rzeufE8idk2PQJs/bx2bK48uZwivA+4UL2gdwI9qySIvKNrsbsfVyA9isHhPEul9Ts0TxA9idWXPBwS6jyUVYy7eOUlvWyRBb0Hn1s8AOuhPP+GFb1naQG9++jou5IK5jzkRxo9GNszPNiyWb1R4Aq8SPMKPaWc2bwYA8w7NNw1Pc5qJz0LhfW85NMIvNAip7tb96a8M1DqO46KQbxV/zC7NCn/PMQsDr2V6+s8SO3IuzQg/7uG57S8sN2cvIKlT7yk5sA7d1Bfve06Cb3CiDi65MbavlWPQT0no5I8RrlvvT0AMz7yugA78YaMPOwGujyerl89kw+ruhdlBz00p7s8CYyJO0AoOLy8ZWs7x3XmPAbpVz0gzfi6HPAkPTJRAT0Dnls9VO1cPNlUNjxRLwO95eclvTOtZbzPpLO8RQZfPfSuBb3xK3C7KJESvRyvdLp/JXa8f84YvbC9WD3pxRC8dDR9u9aOo7wu/Zg8Hca6vCCNA70nYWW8FaX8ujqW37kXBzq8ZpUpPXuuRr0sYcw8+U6SPKz9jzwrViU9SPU1ux7cnjtfJrc842jPPHV/MD3EIJ28ItNhPNv+f7xSK2w86bEmvW6kazybaxo9bssgPVTeObuZXzs8KY1fvFPV17vQ0XM8OBNKvRn57rzXwWw8fHO/PKoHUTuk6N88VzLuOjoJT72o37u8PwCfvKNJ0rzW6vG7YiIqO6q787pYJfW8RR4WPchJsbsZo7k7O5adPTL65zt0USU8OvHyPBUzwjxuyHS8b8Xqu0Ct+Dypw7C8mj1hPC07Vbsdd7c82w78PIsas7uk/GU85DcYvLl9g7u8YMG8MEsBPbzFrT3GeYA83lXXvBAUBj3U8dU7mxbDvBTXrzweC/+8oZaDPDVWAj1zBRM82S/Pu8ZGAj0nSEs8IAQhvODZiTzxOpy85JiIPRlZID0ccGm9gbo4O7gGw7ssJBY9nYiyvJvSx7uc+9u765OmPO1KjDwULDu8g6JXvfg+1bxFyiY97+FbPCybuzzHv6U8BIVbvCl2fDwKhbe89BQWPRXvj7x19w89By/UO85jybzlCBe9aGd2vINyvLt2RX+8ctICPaJESzxKm827rXc2u3Xar7zUPBm8NH4yvM/sTrzbucG7ZoicvFhlyjydZqq7jn3pvO6GvDz9ihI8o18qvKy4D70U7LA8Z/9wPE8SjjtHwwI7T6dYPXJWbzqNe+U7ahtSO0AyIbweFc+6o4fru3OBZz2ilBW8DxkwPO4DwDxmEmm89/cbPRvzb7z+QiU83BKpPDvoOby2KD489whVPPonlzyjZTI6I1meuzaS6bw4YQs88tPUvN7CAr1LWuO4lzAMvYxburvsIAI8ehExvG5DFT1PglS8WXTBO6N/sb0xiT88NFToOXl2WrxBwkW72jsWPF7pZrzwwo88q+QtvQ+dqru+4Kk8oK4oPeWybLxSvaG8qJS/PPuR5Dw93yM8/l7wvCTDDj1jaxq8tNBruttRabzwSoK+t2Zlu+ftFz3X9Do9Fi0dPK5W0LuWn968U08ZvRwSerxGcG+8hw55OwL/lDlre8e5NSr1vOonLzu3weg7Mw8UPNbvdrtjt9w6WMPIvMLO4zwaYVM8CBgKPZkc/boHWlM9N24Rvce8xDzsVrG8F88AvFwqG7sNTY68GsIRPfMGnDycVA496quuPExb5zwlDI484rZcuRFdujyiF967DICsu7o0K7sC9Dq9eq8LPW9TJLz2uL88RFjVPPsc17y+oVo9TYTzvIVHXD6CS2O8XMmRO1xHV7yRCEa81jfWPGRsUbyDlZC85P/LvFXXPjtyT1+8Qv0NPYuX3DwDeJC8+F3pvAIxPD0K7N28TEQSvGqG0DvQrWi8SpXzu/RlA7ycLpC8Vqs/vflbLz3jm4I8erwNvaUQAL1WqEk8ZqTRPKiisTxMHDm8sNPNO52KfjyQxFk7WAkqvNtuGjpdyOk7OE87vKoQkTziDaY8xvyrPPm6Mbw6mDq8gc8Lu1a/YzxlQKU81o5ovJGhLrdNrQc7a1/2vOVa3jwgEYy8NMYgOXzPS71rPwc8gysBvQrHCrz0hEk8430qvOAuVbzwwKw8/EBYPFprULzY7GS8iNNrvJlt7jvjmCm8n2eXPMAawLnTVZy8gEBuu8QwlrxZSnG8GGEIu6GKPzzz5Pq8eWM/PFEjJrxIiyK8uiR0O0WW3ryMAQU8JGS7O5WHATzl86A81SPrPDNZVL3YG/e7HKFBOi1sXDx8qG47jqJYvXZs6jxE52s8/1b2PM0hXDy3CRo8HcK5vICmgzzRGNE8N87xPDvOfTzI+AA9l5KKu8kEljzO/XK8UiETvCWh+zyPP2A8TU3wPGOSGDx9e7+8GSiFO3uY2rrHrGC8/iVXvh2Dx7yLwoQ8fTu3O8xjFjxtisI8HQXIu5kVKzyU+7061LEfPaPgdTrHDzA9qao/vZUaKr2W8ZI8A7AAPOcUCzypK/28ImgYPDh3cbych8+7wf8gPJ5ZmLyhtAa9lhsSPSzZ47xSDre7A6B2vITb3TsJWWs8QqWmPK02NDtCzFE79vldvFSHjTuk4zg8wdkOO6DG5Lsw74A6hhkqvCkxZ7zvTKg7d6GOO7Eqfru2gpq6orJNvAPYGrwcqVG+WWAGvK8Hbb3/ya88Sy3OvE7lmDuYRsc8oxQbPDJ9yTxmAw68WZ8Qvdlp67zTytS8OyPCO5txjLxJqpw8rFzePD2NzTuMLzy9m8R9vKkhGT4XGRW8yv+8O6ePHbxLiGI8i/2DPUYPDr2ATic84Uy+vKeZhzw1/Ku8BT5kvNZsNbznhkq8Me3SvOAFljwdtIE88st+Oy+SfzxORCc8S3jovM89srxlqgM9nYTMPLclH71Fv1q8iwE7PNscBb30hYy8WelYO8W1EjvP0Zu82iEDPA5v1bu7bYC7Gn4ZPLYJhDuoO5E8iQsHPK0FR7sOAUW7rToevAq/vjxy4bO8kwoBOxsNgbtbkwk7bFfsO1Jz5zto1um7HwydvL8WmjudwmC8YkqGPDQu3bgOoAq9HsDRu79WdTxrNHQ8gqeeuTUKqrwT5CI8NkVnvMC9mjurfGc7DuCgPFo4y7wtRq+8Di+dO3xhfzztgG+8oGu3PK86OLsPS+I8H9fMvI5PmruJgJu8hhDKPPulbzuKuHU7NnslvC6pNDwM4KY8S1iEvIKMnrxiOx67ahO7O7uXArxXLM88ZOYMvfzfNbx3+Ze5f64NPFDjdTyEEJA8XOQpPBlp9DvbK688sScTOkWt7Lm97xa8qzMCPZOJrDy5fBk9SXqwvNP/3LyY7xu8VQv9PNlA9DvzuXc85wo3vcfNWbuU2Ew83n0KPJgjhLud/Yc8ntavPFxGCDqjLas8tDeCOwckRDx5r6A8t3CtOoy5Er0ahH07bUjJPFpX2D03YjK9ETE/vHXEhLuIhRg8osM4vD4Cu7wii7g718iyPDSmpzozV5Q8ME4QvXEVJr1E3K88uQ1GO5KllzxjRn88spyoPKjHSL1xKBg7ndE6vHn6gjxmP7k7bPBqPFqcm7yQ1rQ723KnvFH8OzxWL4C81x6LPN/IOT0VSge8FFVQPqp0Ej16ziS8FpT0PG5Kz7yrywE9yUeKPDjORTx4A+m856rTPCw+fLsk1B87pp4QvFaJ07z+cDw5urMgPNESBDxDGMY8JsDgOuAwobyQNbw8cy0OuyPNOztS3Lm7gIkOvP2NWjzBpIq7I/eWO1SiEDtD1Ws8weQTPTH1R7z4S5i8Yd0xPLH+1Dx5ERA9","index":0,"object":"embedding","encoding_format":"base64"}]}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "151"
+                - "4312"
             Content-Type:
                 - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
             Server:
                 - llama.cpp
-        status: 500 Internal Server Error
-        code: 500
-        duration: 1ms
+        status: 200 OK
+        code: 200
+        duration: 31ms

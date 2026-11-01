@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 519
+        host: 127.0.0.1
+        body: |
+            {"state":{"ticket":"I was charged twice for my order. Please refund the duplicate charge today."},"model":"LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 488
+        body: '{"model":"LiquidAI/d1-2B-GGUF","answers":{"billing":{"type":"noul","noul":0.8859168358800074},"route":{"type":"choice","choice":"billing","probabilities":{"billing":0.9950015802683527,"support":0.004998419731647327},"confidence":0.9950015802683527},"urgency":{"type":"score","score":1.0,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.050422235233375454,"1":0.9495777647666246},"confidence":0.9495777647666246}},"usage":{"input_tokens":172,"output_tokens":0}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "488"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 330ms

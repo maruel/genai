@@ -2,16 +2,17 @@
 
 | Model                                                      | Mode      | ➛In    | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ---------------------------------------------------------- | --------- | ------ | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Sync🧠     | 💬📸   | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf         | Stream🧠   | 💬📸   | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf            | Sync🧠     | 💬📸   | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf            | Stream🧠   | 💬📸   | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Sync🧠     | 🎤💬📸 | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf | Stream🧠   | 🎤💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf            | Sync      | 💬📸   | 💬     | 💨🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf            | Stream    | 💬📸   | 💬     | 💨🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf                      | SystemOne | 💬📸   | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf                    | SystemOne | 💬     | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Sync      | 🎤💬   | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf      | Stream    | 🎤💬   | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf  | Embed     | 💬     | 🧬      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Sync      | 💬📸   | 💬     | ❌     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf             | Stream    | 💬📸   | 💬     | ❌     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf  | Embed     | 🎤💬📸 | 🧬      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

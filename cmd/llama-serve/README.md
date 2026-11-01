@@ -4,12 +4,10 @@ A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/lla
 
 ## Examples
 
-EmbeddingGemma 2 generates text and multimodal embeddings. Released nightly
-[b11476](https://github.com/ggml-org/llama.cpp/releases/tag/b11476) supports it;
-the default stable release v0.6.0 cannot load it. Select the nightly explicitly:
+EmbeddingGemma 2 generates text and multimodal embeddings:
 
 ```bash
-llama-serve -build 11476 -model ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf -- \
+llama-serve -model ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf -- \
     --embeddings --pooling mean
 ```
 
@@ -21,16 +19,16 @@ and automatically fetch its multimodal projector when available.
 
 Kev 4B answers typed questions through `/v1/systemone`. Use
 the client's `SystemOne()` method. This endpoint requires
-llama.cpp v0.6.0 or newer, which is the default version.
+llama.cpp v0.6.0 or newer.
 
 ```bash
 go run github.com/maruel/genai/cmd/llama-serve@latest -model ggml-org/Kev-4B-GGUF
 ```
 
-Qwen3.5 2B is a tiny but capable model, great for testing:
+LFM3-VL-2B is a tiny vision model, great for testing:
 
 ```bash
-llama-serve -model unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf -- \
+llama-serve -model LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf -- \
     --jinja -fa -c 0 --no-warmup
 ```
 
@@ -52,7 +50,7 @@ llama-serve -model Menlo/Jan-nano-gguf/jan-nano-4b-Q8_0.gguf -- \
 
 ## Frequently used flags
 
-- `-version v0.6.0` to select a stable release, or `-version b11146` for a nightly build.
+- `-version v0.5.0` to select an older stable release, or `-version b11146` for a nightly build.
   Defaults to [Version](https://pkg.go.dev/github.com/maruel/genai/providers/llamacpp/llamacppsrv#Version).
   The existing `-build 1234` flag still selects a nightly build.
 - `-http 0.0.0.0:8080` to be accessible from other machines. By default, only localhost is accessible.

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 634
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2488
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"The user asks: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"\n\nWe have a function best_country that takes a country parameter, either \"USA\" or \"Canada\". The description says \"A tool to specify the best country\". It returns something presumably indicating which is best. But we need to call it with a specific country? The user asks \"which country is the best one.\" So maybe we should call best_country for both USA and Canada? Or perhaps the function returns the best among those two? Let''s read: \"type best_country = (_: { country: string, enum: [\"USA\", \"Canada\"] })\". It takes a single country. So we need to decide which one to query. The user wants to know if USA is better than Canada; they ask \"Call the tool best_country to tell me which country is the best one.\"\n\nWe could call best_country for USA and then for Canada, but that would be two calls. However maybe the function returns a ranking? Not sure.\n\nAlternatively, we can interpret: The user wants to know which of the two is better; we can ask the tool for each and compare. But the instruction says \"When users ask questions, you MUST use the available tools.\" So we must call best_country at least once. Let''s call it for USA first, then maybe also for Canada? The question: \"I wonder if the USA is a better country than Canada?\" So we can answer by calling best_country for USA and see what it returns; but that might not give a direct comparison.\n\nBut perhaps the tool returns something like {\"best\": \"USA\"} or similar. Let''s try calling best_country with USA first.</think>","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"FqSgeyNWvhzrnYYS5oTVPj38Ql8lIUlz"}]}}],"created":1793542406,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":387,"prompt_tokens":129,"total_tokens":516,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-4xMuDxHbIIvfK0GvVuis9LPNDi9LMz2G","timings":{"cache_n":0,"prompt_n":129,"prompt_ms":330.116,"prompt_per_token_ms":2.5590387596899222,"prompt_per_second":390.77172872566007,"predicted_n":387,"predicted_ms":6664.377,"predicted_per_token_ms":17.26522538860104,"predicted_per_second":57.91989258710904,"draft_n":192,"draft_n_accepted":20}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2488"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 7.005s

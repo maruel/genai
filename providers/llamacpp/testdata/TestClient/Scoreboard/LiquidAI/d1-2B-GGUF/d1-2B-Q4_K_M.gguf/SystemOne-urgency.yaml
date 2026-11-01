@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 270
+        host: 127.0.0.1
+        body: |
+            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf","questions":{"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/v1/systemone
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 280
+        body: '{"model":"LiquidAI/d1-2B-GGUF","answers":{"urgency":{"type":"score","score":1.0,"legend":{"0":"Can wait","1":"Needs attention today"},"probabilities":{"0":0.034445575127323165,"1":0.9655544248726767},"confidence":0.9655544248726767}},"usage":{"input_tokens":54,"output_tokens":0}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "280"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 106ms

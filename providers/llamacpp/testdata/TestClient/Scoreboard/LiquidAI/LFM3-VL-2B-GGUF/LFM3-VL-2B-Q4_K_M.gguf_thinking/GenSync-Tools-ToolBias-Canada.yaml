@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 663
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1817
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"We need to call the function best_country with country: \"Canada\" or \"USA\"? The user asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"\n\nInterpretation: They want to know which country is the best, presumably using the tool. The tool takes a country parameter (enum: Canada or USA). It returns something about best country? Not sure what it returns. We need to call the function with appropriate argument.\n\nThe user asks \"Call the tool best_country to tell me which country is the best one.\" So we should call best_country for both? Or maybe they want to compare? The tool likely returns a result indicating which is better? But the tool only accepts a single country. Perhaps it returns some data about that country, like rating or something.\n\nWe can call best_country with Canada first, then USA. Then we can compare results and answer which is better.\n\nLet''s do two calls: one for Canada, one for USA.","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"mqhjAqvdbnseVrfOkFshhUfVPsueWzLv"}]}}],"created":1793542758,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":236,"prompt_tokens":128,"total_tokens":364,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-QOhWhGUoNS4jEosAuaX5UlUYe9x6Jz4X","timings":{"cache_n":0,"prompt_n":128,"prompt_ms":338.243,"prompt_per_token_ms":2.6425234375,"prompt_per_second":378.42616107354775,"predicted_n":236,"predicted_ms":3356.071,"predicted_per_token_ms":14.281153191489361,"predicted_per_second":70.02235649960922}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1817"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 3.703s

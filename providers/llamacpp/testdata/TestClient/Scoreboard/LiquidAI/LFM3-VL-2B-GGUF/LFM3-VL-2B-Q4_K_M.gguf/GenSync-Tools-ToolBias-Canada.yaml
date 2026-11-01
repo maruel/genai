@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 634
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1586
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"The user asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"\n\nWe have a function best_country that takes a country parameter, either \"Canada\" or \"USA\". The description says \"A tool to specify the best country\". It returns something presumably indicating which is best. But we need to call it for each? Or maybe we can pass both? The schema: best_country takes { country: \"Canada\" | \"USA\" }. So we can only query one at a time.\n\nThe user wants to know which is the best between Canada and USA. We could call best_country with Canada, then with USA, compare results. Or maybe the tool returns something like \"Canada is better\" or \"USA is better\". Let''s try calling for Canada first.</think>","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"RpIF23xDAg6wXB2p9ApsM5ye1x2wfOya"}]}}],"created":1793542399,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":196,"prompt_tokens":129,"total_tokens":325,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-7ri13SeIcUxjrwilmt51q4osdmlAlZGN","timings":{"cache_n":0,"prompt_n":129,"prompt_ms":451.924,"prompt_per_token_ms":3.503286821705426,"prompt_per_second":285.44622547153944,"predicted_n":196,"predicted_ms":2501.339,"predicted_per_token_ms":12.827379487179487,"predicted_per_second":77.9582455636761}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1586"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.963s

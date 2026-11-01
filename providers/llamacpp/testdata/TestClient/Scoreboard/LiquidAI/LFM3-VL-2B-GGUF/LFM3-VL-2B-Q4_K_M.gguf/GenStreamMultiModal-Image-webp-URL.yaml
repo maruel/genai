@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1793542414,"id":"chatcmpl-dY3W7AYUJhFiywWJwrjMEbYYLkRP6yeH","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"B"}}],"created":1793542414,"id":"chatcmpl-dY3W7AYUJhFiywWJwrjMEbYYLkRP6yeH","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"an"}}],"created":1793542414,"id":"chatcmpl-dY3W7AYUJhFiywWJwrjMEbYYLkRP6yeH","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"ana"}}],"created":1793542414,"id":"chatcmpl-dY3W7AYUJhFiywWJwrjMEbYYLkRP6yeH","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1793542414,"id":"chatcmpl-dY3W7AYUJhFiywWJwrjMEbYYLkRP6yeH","model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk","timings":{"cache_n":1,"prompt_n":114,"prompt_ms":399.677,"prompt_per_token_ms":3.5059385964912284,"prompt_per_second":285.2303234862151,"predicted_n":4,"predicted_ms":27.288,"predicted_per_token_ms":9.096,"predicted_per_second":109.93843447669305}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+            X-Accel-Buffering:
+                - 'no'
+        status: 200 OK
+        code: 200
+        duration: 402ms

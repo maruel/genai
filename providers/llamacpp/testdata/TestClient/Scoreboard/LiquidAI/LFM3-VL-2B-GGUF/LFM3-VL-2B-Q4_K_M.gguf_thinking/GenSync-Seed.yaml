@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"seed":42,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1116
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"The user says: \"Say hello. Use only one word.\" So we need to respond with a single word that says hello. The instruction is to use only one word. So we can say \"Hello\". That''s one word. Or \"Hi\". But the user said \"Say hello.\" So \"Hello\" is appropriate. Must be exactly one word, no punctuation? Usually punctuation counts as part of the word? Typically a single word with no extra characters. \"Hello\" is fine.\n\nThus answer: Hello."}}],"created":1793542732,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":107,"prompt_tokens":18,"total_tokens":125,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-kMUBW2r53zpVio1W8p3OQMmQQ3FuXm8X","timings":{"cache_n":1,"prompt_n":17,"prompt_ms":64.927,"prompt_per_token_ms":3.8192352941176475,"prompt_per_second":261.83251959893414,"predicted_n":107,"predicted_ms":1989.539,"predicted_per_token_ms":18.769235849056603,"predicted_per_second":53.27867410490572}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1116"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.064s

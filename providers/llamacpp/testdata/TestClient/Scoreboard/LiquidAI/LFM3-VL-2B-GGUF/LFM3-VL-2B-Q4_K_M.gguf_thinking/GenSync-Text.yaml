@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 999
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"The user says: \"Say hello. Use only one word.\" So they want a single-word greeting. The instruction is to say hello using only one word. So we can respond with \"Hello\". That''s one word. Or \"Hi\". But \"Hello\" is fine.\n\nWe need to obey the request. There''s no policy violation. It''s a simple request. So answer: \"Hello\"."}}],"created":1793542730,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":86,"prompt_tokens":18,"total_tokens":104,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-5j2XsFeKP0wKxexzKkL5ulD1iQLtLyNw","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":108.852,"prompt_per_token_ms":6.0473333333333334,"prompt_per_second":165.3621430933745,"predicted_n":86,"predicted_ms":1121.855,"predicted_per_token_ms":13.198294117647059,"predicted_per_second":75.76736744053376}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "999"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.232s

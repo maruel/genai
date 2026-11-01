@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 850
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"VH9ixTVYAfwarIZZaXOPR7hBAOHCmyvv","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"VH9ixTVYAfwarIZZaXOPR7hBAOHCmyvv"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 854
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"genai-smoke","reasoning_content":"The user wants us to use get_hostname tool to get machine''s hostname and reply with only the hostname, no explanation. The tool returned \"genai-smoke\". So we just output that."}}],"created":1793542754,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":48,"prompt_tokens":131,"total_tokens":179,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-1Tu0MxikFFgySNY6PlZkSJyHF0xBCvfV","timings":{"cache_n":0,"prompt_n":131,"prompt_ms":353.176,"prompt_per_token_ms":2.6959999999999997,"prompt_per_second":370.919881305638,"predicted_n":48,"predicted_ms":941.983,"predicted_per_token_ms":20.042191489361702,"predicted_per_second":49.894743323393314}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "854"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.303s

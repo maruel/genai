@@ -1054,9 +1054,9 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 func (c *Content) To(out *genai.Reply) error {
 	switch c.Type {
 	case "text":
-		// Allow empty text content. Some models (e.g. Qwen thinking) return
-		// empty text content alongside reasoning_content in non-streaming
-		// mode; the reasoning is handled separately in Message.To().
+		// Allow empty text content. Some thinking models return an empty text
+		// content alongside reasoning_content in non-streaming mode; the
+		// reasoning is handled separately in Message.To().
 		if c.Text == "" {
 			return nil
 		}

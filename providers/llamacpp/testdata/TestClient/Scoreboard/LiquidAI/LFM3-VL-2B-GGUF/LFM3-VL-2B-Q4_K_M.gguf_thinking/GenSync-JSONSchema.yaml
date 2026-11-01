@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 477
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2216
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"We need to answer: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\" So we must output only a JSON object, presumably with the answer. The question: \"Is a banana a fruit?\" The answer is yes. But we need to be careful: The user says \"Do not include an explanation. Reply ONLY as JSON.\" So we should produce a JSON object that contains the answer. Possibly something like {\"answer\": \"Yes\"} or {\"is_fruit\": true}. But they said \"Reply ONLY as JSON.\" So we must output only valid JSON, no extra text. Also no explanation. So we can just output a JSON with a key like \"banana_is_fruit\" set to true, or \"yes\". Let''s think: The question is \"Is a banana a fruit?\" The answer: Yes. So we can output {\"answer\": \"Yes\"} or {\"is_fruit\": true}. Both are valid JSON. But maybe they want a boolean? Usually \"Is a banana a fruit?\" expects yes/no. I''ll go with {\"yes\": true} or {\"banana_is_fruit\": true}. However, the instruction: \"Do not include an explanation.\" So we must avoid any extra text. Also ensure it''s valid JSON. Let''s output:\n\n{\n  \"is_banana_a_fruit\": true\n}\n\nBut that includes a key and value. That is fine.\n\nAlternatively, maybe they want just the answer as a string: {\"answer\":\"Yes\"}.\n\nI''ll choose something simple: {\"answer\":\"Yes\"}.\n\nCheck: The user said \"Reply ONLY as JSON.\" So we must not include any other characters like quotes outside JSON. So output exactly that.\n\nThus final answer: {\"answer\":\"Yes\"}"}}],"created":1793542742,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":369,"prompt_tokens":28,"total_tokens":397,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-CZD6jtM0lfcC5wCgxOI13KEbN83oBKIU","timings":{"cache_n":1,"prompt_n":27,"prompt_ms":82.406,"prompt_per_token_ms":3.052074074074074,"prompt_per_second":327.64604519088414,"predicted_n":369,"predicted_ms":4582.021,"predicted_per_token_ms":12.451144021739129,"predicted_per_second":80.31390515233343,"draft_n":59,"draft_n_accepted":28}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2216"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 4.675s

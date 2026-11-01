@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 305
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1602
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"We need to parse the user query: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" This seems like a simple question: The capital of Quackiland is Quack. So answer: Quack.\n\nBut we must consider any nuance: The user says \"The capital of Quackiland is Quack.\" Then asks \"What is the capital of Quackiland?\" So answer: Quack.\n\nWe should respond with a short answer, maybe also mention that it''s given in the premise. There''s no conflict. It''s straightforward.\n\nBut we need to be mindful of any policy about providing trivial answers? No problem.\n\nThus final answer: The capital is Quack.\n\nWe can elaborate: According to the statement, the capital is Quack. So answer accordingly.\n\nThus output: \"The capital of Quackiland is Quack.\"\n\nMake sure it''s clear.\n\nNow produce final."}}],"created":1793542779,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":215,"prompt_tokens":41,"total_tokens":256,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-v94WrBt3NL1hjcBAGEzY6joEkBsm58ja","timings":{"cache_n":0,"prompt_n":41,"prompt_ms":147.862,"prompt_per_token_ms":3.606390243902439,"prompt_per_second":277.2855770921535,"predicted_n":215,"predicted_ms":2466.967,"predicted_per_token_ms":11.527883177570095,"predicted_per_second":86.7461948214143,"draft_n":128,"draft_n_accepted":102}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1602"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.625s

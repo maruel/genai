@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 540
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3075
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"[{\"name\": \"apple\", \"color\": \"red\"}, {\"name\": \"banana\", \"color\": \"yellow\"}]","reasoning_content":"We need to answer: \"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON.\" So we must output a JSON object or array? The instruction says \"Reply ONLY as JSON.\" So we should produce valid JSON. Two fruits and their colors. Could be like {\"fruits\": [\"apple\", \"red\"]} but that includes keys and values. Or maybe an array: [\"apple\",\"red\",\"banana\",\"yellow\"]? But they said \"Name two fruits with their color.\" That implies each fruit has a color, so we need to pair them. Typically we could output something like {\"fruit1\": \"apple\", \"color1\": \"red\", \"fruit2\": \"banana\", \"color2\": \"yellow\"} but that''s four keys. Or maybe an array of objects: [{\"fruit\":\"apple\",\"color\":\"red\"},{\"fruit\":\"banana\",\"color\":\"yellow\"}] That is valid JSON. But the instruction says \"Name two fruits with their color.\" So we need to give two fruit-color pairs. The simplest is a JSON object with two entries? But JSON doesn''t have a direct mapping of fruit to color without keys. Could be an array of objects: [{\"fruit\": \"apple\", \"color\": \"red\"}, {\"fruit\": \"banana\", \"color\": \"yellow\"}]. That seems fine.\n\nBut we must ensure no explanation, only JSON. So output exactly that.\n\nCheck for any hidden traps: The user says \"Name two fruits with their color.\" Could be ambiguous: maybe they want a list of two items each containing fruit and color? But typical interpretation: Provide two fruit names and their colors. So I''ll do an array of objects.\n\nThus final answer: [{\"fruit\":\"apple\",\"color\":\"red\"},{\"fruit\":\"banana\",\"color\":\"yellow\"}]\n\nBut is \"apple\" red or green? Typically apple can be red, but also green. The instruction says \"with their color.\" We can pick any two fruits and colors. Let''s choose \"apple\" and \"red\", \"banana\" and \"yellow\". That''s fine.\n\nAlternatively, we could do {\"fruits\": [\"apple\",\"banana\"], \"colors\": [\"red\",\"yellow\"]} but that doesn''t pair them directly. The phrase \"with their color\" suggests each fruit has a color. So better to have objects.\n\nThus final: [{\"fruit\":\"apple\",\"color\":\"red\"},{\"fruit\":\"banana\",\"color\":\"yellow\"}]\n\nMake sure it''s valid JSON, no extra whitespace? It''s okay.\n\nI''ll output exactly that."}}],"created":1793542750,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":539,"prompt_tokens":29,"total_tokens":568,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-uMQ7SFdZkarUqe7RadR6vE8cePk3mdC1","timings":{"cache_n":1,"prompt_n":28,"prompt_ms":90.1,"prompt_per_token_ms":3.2178571428571425,"prompt_per_second":310.7658157602664,"predicted_n":539,"predicted_ms":7376.783,"predicted_per_token_ms":13.711492565055762,"predicted_per_second":72.93152042021569,"draft_n":64,"draft_n_accepted":56}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "3075"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 7.475s

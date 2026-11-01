@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1133
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"We need to answer: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\" So we must output only JSON with key is_fruit and value boolean. The question: Is a banana a fruit? Yes, botanically a banana is a fruit (a berry). So answer true. Must be only JSON, no extra text. So output: {\"is_fruit\": true}. Ensure no extra whitespace or characters."}}],"created":1793542737,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":114,"prompt_tokens":40,"total_tokens":154,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-ppaeK1c196zWKVdc1ACAC3tBQ14xP08J","timings":{"cache_n":0,"prompt_n":40,"prompt_ms":122.759,"prompt_per_token_ms":3.068975,"prompt_per_second":325.8416898150034,"predicted_n":114,"predicted_ms":1758.854,"predicted_per_token_ms":15.565079646017699,"predicted_per_second":64.246378607889,"draft_n":115,"draft_n_accepted":12}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1133"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.895s

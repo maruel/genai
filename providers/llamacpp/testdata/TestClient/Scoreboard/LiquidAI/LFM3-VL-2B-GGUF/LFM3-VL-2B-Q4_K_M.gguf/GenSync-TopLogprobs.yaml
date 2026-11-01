@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 200
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"chat_template_kwargs":{"enable_thinking":false},"logprobs":true,"top_logprobs":2,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1389
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello."},"logprobs":{"content":[{"id":35808,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-0.03192105144262314,"top_logprobs":[{"id":35808,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-0.03192105144262314},{"id":41619,"token":"Hi","bytes":[72,105],"logprob":-3.5254695415496826}]},{"id":22,"token":".","bytes":[46],"logprob":-0.03410477191209793,"top_logprobs":[{"id":22,"token":".","bytes":[46],"logprob":-0.03410477191209793},{"id":9,"token":"!","bytes":[33],"logprob":-3.675759792327881}]},{"id":124900,"token":"","bytes":[],"logprob":-2.30076584557537e-05,"top_logprobs":[{"id":124900,"token":"","bytes":[],"logprob":-2.30076584557537e-05},{"id":124902,"token":"</think>","bytes":[60,47,116,104,105,110,107,62],"logprob":-10.84109878540039}]}]}}],"created":1793542393,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":19,"total_tokens":22,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-Mq4UYZgu5hHrU6QuLkNSbqSQJIzZchQN","timings":{"cache_n":1,"prompt_n":18,"prompt_ms":79.52,"prompt_per_token_ms":4.417777777777777,"prompt_per_second":226.35814889336018,"predicted_n":3,"predicted_ms":23.731,"predicted_per_token_ms":11.8655,"predicted_per_second":84.27794867472925}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1389"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 105ms

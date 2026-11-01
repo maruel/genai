@@ -15,9 +15,7 @@
 // rejects nonzero Dimensions. Declare embedding output with ProviderOptionModalities.
 // [Client.EmbedRaw] also supports token inputs, multimodal content and
 // normalization control. Start llama-server with --embeddings and an embedding
-// model. EmbeddingGemma 2 works with released nightly b11476:
-// https://github.com/ggml-org/llama.cpp/releases/tag/b11476
-// Stable v0.6.0 does not support it. With b11476, run:
+// model. EmbeddingGemma 2 supports text and multimodal embeddings:
 //
 //	llama-server -hf ggml-org/embeddinggemma-2-GGUF --embeddings --pooling mean
 //

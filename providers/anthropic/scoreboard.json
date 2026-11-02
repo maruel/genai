@@ -209,77 +209,11 @@
       }
     },
     {
-      "models": [
-        "claude-haiku-4-5-20251001"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "webFetch": true,
-        "jsonSchema": {
-          "object": "true",
-          "array": "true"
-        },
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "webFetch": true,
-        "jsonSchema": {
-          "object": "true",
-          "array": "true"
-        },
-        "citations": true,
-        "maxTokens": true
-      }
-    },
-    {
       "comments": "Other models",
       "models": [
         "claude-fable-5",
         "claude-fable-5-1",
+        "claude-haiku-4-5-20251001",
         "claude-opus-4-1-20250805",
         "claude-opus-4-20250514",
         "claude-opus-4-5-20251101",

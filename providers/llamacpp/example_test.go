@@ -81,7 +81,7 @@ func startServer(ctx context.Context, author, repo, modelfile string) (*llamacpp
 		return nil, err
 	}
 	defer func() { _ = l.Close() }()
-	return llamacppsrv.New(ctx, exe, "", l, "", 0, extraArgs)
+	return llamacppsrv.New(ctx, exe, &llamacppsrv.Config{Args: extraArgs, LogOutput: l})
 }
 
 // ExampleClient_SystemOne evaluates typed questions using a decision model.

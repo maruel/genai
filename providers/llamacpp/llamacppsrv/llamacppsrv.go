@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net"
 	"os"
 	"os/exec"
@@ -19,6 +20,8 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -38,42 +41,34 @@ type Server struct {
 	cmd  *exec.Cmd
 }
 
-// New creates a new instance of the llama-server and ensures the server is healthy.
+// New starts llama-server and waits until it is healthy.
 //
-// hostPort can be one of the forms "localhost", "localhost:8080", "localhost:0", ":8080", ":0" or "". "" is effectively
-// "localhost:0", trying with port 8080 first then falling back to an ephemeral port.
+// exe must be an absolute path. Config supplies the model, projector, network,
+// resource limits, extra arguments and output destination. Config.Args may
+// contain -hf/-hff instead of a local model.
 //
-// modelPath must be an absolute path to a local model file, or empty when using -hf/-hff in extraArgs
-// to let llama-server download from HuggingFace directly.
-//
-// Doesn't pass "-ngl", "9999" by default so the user can override it.
-//
-// Output is redirected to logOutput if non-nil.
-func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPort string, threads int, extraArgs []string) (*Server, error) {
+// New does not pass -ngl by default, so the caller can set it in Config.Args.
+func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
 	}
-	if modelPath != "" && !filepath.IsAbs(modelPath) {
-		return nil, errors.New("modelPath must be an absolute path")
+	if err := cfg.Validate(); err != nil {
+		return nil, err
 	}
-	if hostPort == "" {
-		hostPort = "localhost:0"
-	}
+	hostPort := cfg.hostPort()
 	host, portStr, err := net.SplitHostPort(hostPort)
 	if err != nil {
 		return nil, err
 	}
-	port := 0
-	if portStr != "" {
-		if port, err = strconv.Atoi(portStr); err != nil {
-			return nil, err
-		}
+	port, err := strconv.Atoi(portStr)
+	if err != nil || port < 0 || port > 65535 {
+		return nil, errors.New("port must be between 0 and 65535")
 	}
 	if port == 0 {
 		// First try the default port.
 		var l net.Listener
-		if l, err = net.Listen("tcp", host+":8080"); err != nil {
-			if l, err = net.Listen("tcp", host+":0"); err != nil {
+		if l, err = net.Listen("tcp", net.JoinHostPort(host, "8080")); err != nil {
+			if l, err = net.Listen("tcp", net.JoinHostPort(host, "0")); err != nil {
 				return nil, err
 			}
 		}
@@ -82,50 +77,52 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 			return nil, err
 		}
 	}
-	u := "http://" + host + ":" + strconv.Itoa(port)
-	if threads == 0 {
-		// Surprisingly llama-server seems to be hardcoded to 8 threads. Leave 2
-		// cores (especially critical when HT) to allow us to get some CPU time.
-		if threads = runtime.NumCPU() - 2; threads == 0 {
-			threads = 1
-		}
-	}
-	args := []string{exe, "--metrics", "--threads", strconv.Itoa(threads), "--port", strconv.Itoa(port)}
-	if modelPath != "" {
-		args = append([]string{exe, "--model", modelPath}, args[1:]...)
-	}
-	if host != "" {
-		args = append(args, "--host", host)
-	}
-	args = append(args, extraArgs...)
+	u := "http://" + net.JoinHostPort(host, strconv.Itoa(port))
+	args := cfg.args(exe, port)
 	log.Printf("Args: %s", args)
-	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...) // #nosec G702 -- The caller explicitly selects an absolute executable; arguments use no shell.
 	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
 	cmd.Env = serverEnv(cmd.Dir)
-	if logOutput != nil {
-		cmd.Stdout = logOutput
-		cmd.Stderr = logOutput
+	if cfg.LogOutput != nil {
+		cmd.Stdout = cfg.LogOutput
+		cmd.Stderr = cfg.LogOutput
 	} else {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
+	// Context cancellation and Close share one shutdown signal. llama-server's
+	// second SIGINT forces exit(1), interrupting its first graceful shutdown.
+	var signalOnce sync.Once
+	var signalErr error
+	var shutdownRequested atomic.Bool
 	cmd.Cancel = func() error {
-		if runtime.GOOS == "windows" {
-			return cmd.Process.Kill()
-		}
-		return cmd.Process.Signal(os.Interrupt)
+		signalOnce.Do(func() {
+			shutdownRequested.Store(true)
+			if runtime.GOOS == "windows" {
+				signalErr = cmd.Process.Kill()
+			} else {
+				signalErr = cmd.Process.Signal(os.Interrupt)
+			}
+		})
+		return signalErr
 	}
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
-	done := make(chan error)
+	done := make(chan error, 1)
 	go func() {
 		err2 := cmd.Wait()
+		// CommandContext reports its context even when the one shutdown signal
+		// produced a successful exit. That is expected termination, not cleanup failure.
+		if ctx.Err() != nil && errors.Is(err2, ctx.Err()) && cmd.ProcessState != nil && cmd.ProcessState.Success() {
+			err2 = nil
+		}
 		if er, ok := errors.AsType[*exec.ExitError](err2); ok {
 			s, ok := er.Sys().(syscall.WaitStatus)
-			if ok && s.Signaled() {
-				// It was simply killed.
+			if ok && shutdownRequested.Load() && s.Signaled() && s.Signal() == os.Interrupt {
+				// The owner requested this interrupt. Other signals remain failures,
+				// including crashes or external termination during shutdown.
 				err2 = nil
 			}
 			// TODO: on Windows, figure out how to differentiate between normal quitting and an error.
@@ -134,12 +131,11 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 		close(done)
 	}()
 
+	srv := &Server{url: u, done: done, cmd: cmd}
 	// Wait for the server to be ready.
 	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(u))
 	if err != nil {
-		_ = cmd.Cancel()
-		<-done
-		return nil, fmt.Errorf("failed to create llamacpp client: %w", err)
+		return nil, errors.Join(fmt.Errorf("failed to create llamacpp client: %w", err), srv.Close())
 	}
 	// Loop until the server is healthy, process exits or the context is canceled.
 	for ctx.Err() == nil {
@@ -150,21 +146,24 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 		case err := <-done:
 			return nil, fmt.Errorf("starting llm server failed while querying for health: %w", err)
 		case <-ctx.Done():
-			_ = cmd.Cancel()
-			<-done
-			return nil, ctx.Err()
+			return nil, errors.Join(ctx.Err(), srv.Close())
 		case <-time.After(20 * time.Millisecond):
 		}
 	}
 
-	return &Server{url: u, done: done, cmd: cmd}, nil
+	if err := ctx.Err(); err != nil {
+		return nil, errors.Join(err, srv.Close())
+	}
+	return srv, nil
 }
 
 // Close stops the server and waits for it to exit.
 func (s *Server) Close() error {
-	_ = s.cmd.Cancel()
-	err := <-s.done
-	return err
+	err := s.cmd.Cancel()
+	if errors.Is(err, os.ErrProcessDone) {
+		err = nil
+	}
+	return errors.Join(err, <-s.done)
 }
 
 // URL returns the URL to the server.
@@ -176,6 +175,104 @@ func (s *Server) URL() string {
 // Close() if it is set.
 func (s *Server) Done() <-chan error {
 	return s.done
+}
+
+// Config configures a managed llama-server process.
+type Config struct {
+	// ModelPath is an absolute path to a local GGUF model. Empty is valid when
+	// Args supplies -hf, -hff, or --model.
+	ModelPath string
+	// ProjectorPath is an absolute path to an mmproj GGUF. Empty disables --mmproj.
+	// Multimodal models such as LFM3-Audio require it.
+	ProjectorPath string
+	// HostPort is host:port; empty defaults to localhost:0. A host without a port
+	// defaults to port 0.
+	HostPort string
+	// Threads uses the normal server default when zero.
+	Threads int
+	// Slots sets --parallel. Zero leaves the server default.
+	Slots int
+	// ContextSize is tokens per slot. Zero leaves the server default.
+	ContextSize int
+	// Args are appended verbatim after the generated arguments.
+	Args []string
+	// LogOutput receives server stdout and stderr. Nil uses the process streams.
+	LogOutput io.Writer
+}
+
+// Validate checks arguments that do not depend on the executable or the network.
+func (c *Config) Validate() error {
+	if c == nil {
+		return errors.New("server configuration is required")
+	}
+	for _, p := range []string{c.ModelPath, c.ProjectorPath} {
+		if p != "" && !filepath.IsAbs(p) {
+			return errors.New("model and projector paths must be absolute")
+		}
+	}
+	if c.Threads < 0 || c.Slots < 0 || c.ContextSize < 0 {
+		return errors.New("threads, slots and context size must not be negative")
+	}
+	if c.Slots > 0 && c.ContextSize > math.MaxInt/c.Slots {
+		return errors.New("total context size overflows")
+	}
+	hostPort := c.hostPort()
+	host, port, err := net.SplitHostPort(hostPort)
+	if err != nil {
+		return fmt.Errorf("host:port: %w", err)
+	}
+	if ip := net.ParseIP(host); ip != nil && ip.To4() == nil {
+		return errors.New("host must be an IPv4 address or hostname")
+	}
+	n, err := strconv.Atoi(port)
+	if err != nil || n < 0 || n > 65535 {
+		return errors.New("port must be between 0 and 65535")
+	}
+	return nil
+}
+
+func (c *Config) hostPort() string {
+	if c.HostPort == "" {
+		return "localhost:0"
+	}
+	if !strings.Contains(c.HostPort, ":") {
+		return c.HostPort + ":0"
+	}
+	return c.HostPort
+}
+
+func (c *Config) args(exe string, port int) []string {
+	host, _, _ := net.SplitHostPort(c.hostPort())
+	threads := c.Threads
+	if threads == 0 {
+		// Surprisingly llama-server seems to be hardcoded to 8 threads. Leave 2
+		// cores (especially critical when HT) to allow us to get some CPU time.
+		if threads = runtime.NumCPU() - 2; threads == 0 {
+			threads = 1
+		}
+	}
+	args := []string{exe}
+	if c.ModelPath != "" {
+		args = append(args, "--model", c.ModelPath)
+	}
+	args = append(args, "--metrics", "--threads", strconv.Itoa(threads), "--port", strconv.Itoa(port))
+	if host != "" {
+		args = append(args, "--host", host)
+	}
+	if c.ProjectorPath != "" {
+		args = append(args, "--mmproj", c.ProjectorPath)
+	}
+	if c.Slots > 0 {
+		args = append(args, "--parallel", strconv.Itoa(c.Slots))
+	}
+	if c.ContextSize > 0 {
+		slots := c.Slots
+		if slots == 0 {
+			slots = 1
+		}
+		args = append(args, "--ctx-size", strconv.Itoa(c.ContextSize*slots))
+	}
+	return append(args, c.Args...)
 }
 
 // DownloadVersion downloads a stable release (vX.Y.Z) or nightly build (bNNNN)

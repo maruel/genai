@@ -43,7 +43,7 @@ func mainImpl() (err error) {
 		return err
 	}
 	// Only the Go client needs access; grant no browser origins cross-origin access.
-	srv, err := llamacppsrv.New(ctx, exe, "", os.Stderr, "localhost:0", 0, []string{"-hf", "ggml-org/Kev-4B-GGUF", "--no-warmup", "--cors-origins", "", "--no-cors-credentials", "--no-ui", "--no-slots", "--parallel", "4", "--kv-unified"})
+	srv, err := llamacppsrv.New(ctx, exe, &llamacppsrv.Config{Args: []string{"-hf", "ggml-org/Kev-4B-GGUF", "--no-warmup", "--cors-origins", "", "--no-cors-credentials", "--no-ui", "--no-slots", "--parallel", "4", "--kv-unified"}, LogOutput: os.Stderr})
 	if err != nil {
 		return err
 	}

@@ -537,7 +537,7 @@ func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, model
 	hostPort := ln.Addr().String()
 	_ = ln.Close()
 	l := internaltest.LogFile(t, cache, "llama-server.log")
-	srv, err := llamacppsrv.New(ctx, exe, "", l, hostPort, 0, extraArgs)
+	srv, err := llamacppsrv.New(ctx, exe, &llamacppsrv.Config{HostPort: hostPort, Args: extraArgs, LogOutput: l})
 	if err != nil {
 		t.Fatal(err)
 	}

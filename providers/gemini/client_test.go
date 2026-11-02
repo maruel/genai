@@ -9,11 +9,15 @@ package gemini_test
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"errors"
 	"io"
+	"iter"
 	"math"
 	"net/http"
+	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"reflect"
 	"slices"
 	"strconv"
@@ -21,6 +25,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/coder/websocket"
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/roundtrippers"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -29,10 +34,13 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
+
+const liveEndpoint = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
 
 var thinkingModels = []string{
 	"gemini-3.8-flash",
@@ -67,6 +75,695 @@ func getClientInner(t *testing.T, model string, modalities genai.Modalities, pre
 }
 
 func TestClient(t *testing.T) {
+	t.Run("ConnectRealtime", func(t *testing.T) {
+		t.Run("unsupported option type", func(t *testing.T) {
+			s, err := liveClient(t).ConnectRealtime(t.Context(), genai.GenOptionSeed(1))
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); s != nil || !ok {
+				t.Fatalf("unsupported option: %+v, %v", s, err)
+			}
+		})
+		t.Run("Conversation", func(t *testing.T) {
+			received := make(chan []map[string]any, 1)
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+				s := setup["setup"].(map[string]any)
+				if s["model"] != "models/gemini-3.8-live" {
+					t.Errorf("model: %v", s)
+				}
+				g := s["generationConfig"].(map[string]any)
+				if !reflect.DeepEqual(g["responseModalities"], []any{"AUDIO"}) || len(g) != 1 {
+					t.Errorf("unexpected generation config: %v", g)
+				}
+				ri := s["realtimeInputConfig"].(map[string]any)
+				if ri["turnCoverage"] != "TURN_INCLUDES_ONLY_ACTIVITY" || ri["activityHandling"] != "START_OF_ACTIVITY_INTERRUPTS" {
+					t.Errorf("input config: %v", ri)
+				}
+				trans := s["inputAudioTranscription"].(map[string]any)
+				if !reflect.DeepEqual(trans["languageCodes"], []any{"en-US"}) {
+					t.Errorf("transcription: %v", trans)
+				}
+				for _, key := range []string{"proactivity", "enableAffectiveDialog", "thinkingConfig"} {
+					if _, ok := s[key]; ok {
+						t.Errorf("unexpected %s", key)
+					}
+				}
+				messages := make([]map[string]any, 4)
+				for i := range messages {
+					messages[i] = realtimetest.Read(t, ctx, ws)
+				}
+				received <- messages
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"}]},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"inputTranscription":{"text":"world","finished":true},"outputTranscription":{"text":"day","finished":true},"turnComplete":true},"usageMetadata":{"promptTokenCount":3,"responseTokenCount":5,"totalTokenCount":8},"goAway":{"timeLeft":"30s"},"sessionResumptionUpdate":{"newHandle":"resume","resumable":true}}`)
+				_, _, _ = ws.Read(ctx)
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = s.Close() })
+			info := s.Info()
+			if info.ID != "live-test" || info.InputFormat != (genai.AudioFormat{SampleRate: 16000}) || info.OutputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.TurnDetection != genai.RealtimeTurnServer || info.Capabilities.CancelResponse {
+				t.Fatalf("info: %+v", info)
+			}
+			inputs := []genai.RealtimeInput{genai.RealtimeInputContent{Text: "context"}, genai.RealtimeInputContent{Text: "question", Generate: true}, genai.RealtimeInputContent{Audio: []byte{1, 0}}, genai.RealtimeInputContent{Commit: true}}
+			for i := range inputs {
+				if err := s.Send(t.Context(), inputs[i]); err != nil {
+					t.Fatal(err)
+				}
+			}
+			messages := <-received
+			passive := messages[0]["clientContent"].(map[string]any)
+			if passive["turnComplete"] != false || passive["turns"].([]any)[0].(map[string]any)["role"] != "user" {
+				t.Fatalf("passive context: %v", messages[0])
+			}
+			cc := messages[1]["clientContent"].(map[string]any)
+			if cc["turnComplete"] != true {
+				t.Errorf("text did not complete turn: %v", cc)
+			}
+			turns := cc["turns"].([]any)
+			if turns[0].(map[string]any)["role"] != "user" {
+				t.Errorf("text changed role: %v", cc)
+			}
+			if messages[2]["realtimeInput"].(map[string]any)["audio"].(map[string]any)["mimeType"] != "audio/pcm;rate=16000" {
+				t.Errorf("audio: %v", messages[2])
+			}
+			if messages[3]["realtimeInput"].(map[string]any)["audioStreamEnd"] != true {
+				t.Errorf("stream end: %v", messages[3])
+			}
+			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
+			for i, kind := range want {
+				e := realtimetest.Receive(t, s, kind)
+				if e.ResponseID != "" || e.ItemID != "" {
+					t.Fatalf("event %d: %+v", i, e)
+				}
+				switch i {
+				case 0:
+					if !reflect.DeepEqual(e.Content.Audio, []byte{1, 0, 2, 0}) {
+						t.Errorf("audio: %v", e.Content.Audio)
+					}
+				case 5:
+					if !e.Content.Final || e.Content.Text != "hello world" {
+						t.Errorf("final transcript: %+v", e)
+					}
+				case 6:
+					if !e.Content.Final || e.Content.Text != "good day" {
+						t.Errorf("final transcript: %+v", e)
+					}
+				case 8:
+					if e.Usage.TotalTokens != 8 {
+						t.Errorf("usage: %+v", e)
+					}
+				case 9:
+					if p, ok := e.ProviderEvent.(*gemini.GoAway); !ok || p.TimeLeft != 30*time.Second {
+						t.Errorf("goaway: %+v", e)
+					}
+				case 10:
+					if p, ok := e.ProviderEvent.(*gemini.Resumption); !ok || p.Handle != "resume" {
+						t.Errorf("resumption: %+v", e)
+					}
+				}
+			}
+		})
+		t.Run("ThinkingLevel", func(t *testing.T) {
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+				g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
+				if c, ok := g["thinkingConfig"].(map[string]any); !ok || c["thinkingLevel"] != "high" || len(g) != 2 {
+					t.Errorf("generation config: %v", g)
+				}
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint, ThinkingLevel: gemini.ThinkingLevelHigh})
+			if err != nil {
+				t.Fatal(err)
+			}
+			realtimetest.Close(t, s)
+		})
+		t.Run("valid", func(t *testing.T) {
+			t.Run("InteractionStatus", func(t *testing.T) {
+				endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+					declarations := setup["setup"].(map[string]any)["tools"].([]any)[0].(map[string]any)["functionDeclarations"].([]any)
+					if got := declarations[0].(map[string]any)["behavior"]; got != "NON_BLOCKING" {
+						t.Errorf("behavior=%v", got)
+					}
+					realtimetest.Write(t, ctx, ws, `{"serverContent":{"generationComplete":true,"turnComplete":true,"interactionStatus":"IN_PROGRESS"}}`)
+					realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"call","name":"lookup","args":{}}]}}`)
+					if _, ok := realtimetest.Read(t, ctx, ws)["toolResponse"]; !ok {
+						t.Error("missing tool response")
+					}
+					realtimetest.Write(t, ctx, ws, `{"serverContent":{"generationComplete":true,"turnComplete":true,"interactionStatus":"IDLE"}}`)
+				})
+				s, err := liveClientForModel(t, "gemini-3.8-live-extended-thinking").ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}})
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				next, stop := iter.Pull2(s.Receive(t.Context()))
+				t.Cleanup(stop)
+				e, err, ok := next()
+				if !ok || err != nil {
+					t.Fatalf("event=%+v err=%v ok=%v", e, err, ok)
+				}
+				if p, ok := e.ProviderEvent.(*gemini.InteractionStatus); !ok || p.Status != gemini.InteractionStatusInProgress || e.Kind != genai.RealtimeEventProvider {
+					t.Fatalf("first event=%+v", e)
+				}
+				if e, err, ok = next(); !ok || err != nil || e.Kind != genai.RealtimeEventGenerationDone {
+					t.Fatalf("generation event=%+v err=%v ok=%v", e, err, ok)
+				}
+				if e, err, ok = next(); !ok || err != nil || e.Kind != genai.RealtimeEventContentToolCalls || len(e.Content.ToolCalls) != 1 {
+					t.Fatalf("tool event=%+v err=%v ok=%v", e, err, ok)
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "call", Name: "lookup", Result: "ok"}}}); err != nil {
+					t.Fatal(err)
+				}
+				if e, err, ok = next(); !ok || err != nil {
+					t.Fatalf("event=%+v err=%v ok=%v", e, err, ok)
+				}
+				if p, ok := e.ProviderEvent.(*gemini.InteractionStatus); !ok || p.Status != gemini.InteractionStatusIdle || e.Kind != genai.RealtimeEventProvider {
+					t.Fatalf("idle event=%+v", e)
+				}
+				if e, err, ok = next(); !ok || err != nil || e.Kind != genai.RealtimeEventGenerationDone {
+					t.Fatalf("answer generation event=%+v err=%v ok=%v", e, err, ok)
+				}
+				if e, err, ok = next(); !ok || err != nil || e.Kind != genai.RealtimeEventTurnDone {
+					t.Fatalf("turn event=%+v err=%v ok=%v", e, err, ok)
+				}
+			})
+		})
+
+		t.Run("ToolCorrelation", func(t *testing.T) {
+			result := make(chan map[string]any, 1)
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+				s := setup["setup"].(map[string]any)
+				declarations := s["tools"].([]any)[0].(map[string]any)["functionDeclarations"].([]any)
+				if declarations[0].(map[string]any)["behavior"] != "BLOCKING" {
+					t.Error("tools must block")
+				}
+				realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"name":"lookup","args":{"q":"a"}},{"id":"provided","name":"lookup","args":{}}]}}`)
+				result <- realtimetest.Read(t, ctx, ws)
+				realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"cancel-me","name":"lookup","args":{}},{"id":"still-pending","name":"lookup","args":{}}]},"toolCallCancellation":{"ids":["cancel-me"]}}`)
+				result <- realtimetest.Read(t, ctx, ws)
+				_, _, _ = ws.Read(ctx)
+			})
+			cfg := []genai.RealtimeOption{&genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}}
+			s, err := liveClient(t).ConnectRealtime(t.Context(), append([]genai.RealtimeOption{&gemini.RealtimeOption{Endpoint: endpoint}}, cfg...)...)
+			if err != nil {
+				t.Fatal(err)
+			}
+			closed := false
+			t.Cleanup(func() {
+				if !closed {
+					if err := s.Close(); err != nil {
+						t.Error(err)
+					}
+				}
+			})
+			e := realtimetest.Receive(t, s, genai.RealtimeEventContentToolCalls)
+			if len(e.Content.ToolCalls) != 2 || e.Content.ToolCalls[0].ID == "" || e.Content.ToolCalls[0].ID == e.Content.ToolCalls[1].ID {
+				t.Fatalf("calls: %+v", e)
+			}
+			bad := genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: e.Content.ToolCalls[0].ID, Name: "lookup", Result: "ok"}, {ID: "unknown", Name: "lookup", Result: "ok"}}}
+			if err := s.Send(t.Context(), bad); err == nil {
+				t.Fatal("accepted unmatched result batch")
+			}
+			good := genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: e.Content.ToolCalls[0].ID, Name: "lookup", Result: "ok"}, {ID: "provided", Name: "lookup", Result: `{"found":true}`}}}
+			if err := s.Send(t.Context(), good); err != nil {
+				t.Fatal(err)
+			}
+			responses := (<-result)["toolResponse"].(map[string]any)["functionResponses"].([]any)
+			first := responses[0].(map[string]any)
+			if _, ok := first["id"]; ok {
+				t.Error("synthetic ID leaked to provider")
+			}
+			if first["response"].(map[string]any)["response"] != "ok" || responses[1].(map[string]any)["id"] != "provided" {
+				t.Errorf("results: %v", responses)
+			}
+			if err := s.Send(t.Context(), good); err == nil {
+				t.Fatal("accepted duplicate results")
+			}
+			call := realtimetest.Receive(t, s, genai.RealtimeEventContentToolCalls)
+			// Translation has already cancelled the call, while the cancellation
+			// event remains queued. This deterministically exercises the host race.
+			late := genai.ToolCallResult{ID: "cancel-me", Name: "lookup", Result: "late"}
+			valid := genai.ToolCallResult{ID: "still-pending", Name: "lookup", Result: "ok"}
+			for _, batch := range [][]genai.ToolCallResult{{late}, {valid, late}, {late, valid}} {
+				err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: batch})
+				cancelErr, ok := errors.AsType[*gemini.ToolCallCancelledError](err)
+				if !ok || !reflect.DeepEqual(cancelErr.ToolCallIDs, []string{"cancel-me"}) {
+					t.Fatalf("cancelled batch error = %v", err)
+				}
+			}
+			for _, bad := range []genai.ToolCallResult{{ID: "unknown", Name: "lookup", Result: "ok"}, {ID: "cancel-me", Name: "wrong", Result: "ok"}} {
+				for _, batch := range [][]genai.ToolCallResult{{bad}, {late, bad}, {bad, late}} {
+					err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: batch})
+					if _, ok := errors.AsType[*gemini.ToolCallCancelledError](err); err == nil || ok {
+						t.Fatalf("unmatched batch error = %v", err)
+					}
+				}
+			}
+			if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{valid}}); err != nil {
+				t.Fatal(err)
+			}
+			remaining := (<-result)["toolResponse"].(map[string]any)["functionResponses"].([]any)
+			if len(remaining) != 1 || remaining[0].(map[string]any)["id"] != "still-pending" {
+				t.Fatalf("rejected batch mutated wire or correlation: %+v", remaining)
+			}
+			cancelled := realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+			cancel, ok := cancelled.ProviderEvent.(*gemini.ToolCallCancellation)
+			if !ok || cancelled.Kind != genai.RealtimeEventProvider || cancelled.ProviderEvent.RealtimeEventName() != "toolCallCancellation" || !reflect.DeepEqual(cancel.IDs, []string{"cancel-me"}) {
+				t.Fatalf("cancellation: %+v %+v", call, cancelled)
+			}
+			err = s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{late}})
+			cancelErr, ok := errors.AsType[*gemini.ToolCallCancelledError](err)
+			if !ok || !reflect.DeepEqual(cancelErr.ToolCallIDs, []string{"cancel-me"}) {
+				t.Fatalf("late cancelled result: %v", err)
+			}
+			err = s.Close()
+			closed = true
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{late}}); err == nil {
+				t.Fatalf("closed transport misclassified as cancellation: %v", err)
+			} else if _, ok := errors.AsType[*gemini.ToolCallCancelledError](err); ok {
+				t.Fatalf("closed transport misclassified as cancellation: %v", err)
+			}
+		})
+		t.Run("CancellationAfterResult", func(t *testing.T) {
+			for _, reusedID := range []string{"answered", "unknown"} {
+				t.Run(reusedID, func(t *testing.T) {
+					endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+						realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"answered","name":"lookup","args":{}}]}}`)
+						if _, ok := realtimetest.Read(t, ctx, ws)["toolResponse"]; !ok {
+							t.Error("missing valid result")
+						}
+						realtimetest.Write(t, ctx, ws, `{"toolCallCancellation":{"ids":["answered","unknown"]}}`)
+						if _, ok := realtimetest.Read(t, ctx, ws)["clientContent"]; !ok {
+							t.Error("unmatched cancelled result wrote to wire")
+						}
+						realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"`+reusedID+`","name":"lookup","args":{}}]}}`)
+						_, _, _ = ws.Read(ctx)
+					})
+					s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &gemini.RealtimeOption{Endpoint: endpoint})
+					if err != nil {
+						t.Fatal(err)
+					}
+					t.Cleanup(func() {
+						if err := s.Close(); err != nil {
+							t.Error(err)
+						}
+					})
+					realtimetest.Receive(t, s, genai.RealtimeEventContentToolCalls)
+					if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "answered", Name: "lookup", Result: "ok"}}}); err != nil {
+						t.Fatal(err)
+					}
+					realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+					for _, id := range []string{"answered", "unknown"} {
+						err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: id, Name: "lookup", Result: "late"}}})
+						if _, ok := errors.AsType[*gemini.ToolCallCancelledError](err); err == nil || ok {
+							t.Fatalf("unknown cancellation provenance misclassified: %v", err)
+						}
+					}
+					if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "continue"}); err != nil {
+						t.Fatal(err)
+					}
+					next, stop := iter.Pull2(s.Receive(t.Context()))
+					e, err, ok := next()
+					stop()
+					if !ok {
+						t.Fatal("realtime session ended")
+					}
+					if err == nil || e.Kind == genai.RealtimeEventContentToolCalls {
+						t.Fatalf("cancelled ID reuse admitted: %+v, %v", e, err)
+					}
+				})
+			}
+		})
+		t.Run("CancelledToolHistory", func(t *testing.T) {
+			for _, failure := range []string{"reused ID", "entry limit", "metadata limit"} {
+				t.Run(failure, func(t *testing.T) {
+					endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+						count := 1
+						if failure == "entry limit" {
+							count = 1024
+						}
+						calls := make([]map[string]any, count)
+						ids := make([]string, count)
+						for i := range calls {
+							ids[i] = "cancel-" + strconv.Itoa(i)
+							if failure == "metadata limit" {
+								ids[i] = strings.Repeat("a", 64*1024-len("lookup"))
+							}
+							calls[i] = map[string]any{"id": ids[i], "name": "lookup", "args": map[string]any{}}
+						}
+						data, err := json.Marshal(map[string]any{"toolCall": map[string]any{"functionCalls": calls}, "toolCallCancellation": map[string]any{"ids": ids}})
+						if err != nil {
+							t.Error(err)
+							return
+						}
+						realtimetest.Write(t, ctx, ws, string(data))
+						if failure == "reused ID" {
+							realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"cancel-0","name":"lookup","args":{}}]}}`)
+						} else {
+							realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"overflow","name":"lookup","args":{}}]},"toolCallCancellation":{"ids":["overflow"]}}`)
+						}
+						_, _, _ = ws.Read(ctx)
+					})
+					s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint})
+					if err != nil {
+						t.Fatal(err)
+					}
+					t.Cleanup(func() {
+						if err := s.Close(); err != nil {
+							t.Error(err)
+						}
+					})
+					realtimetest.Receive(t, s, genai.RealtimeEventContentToolCalls)
+					realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+					next, stop := iter.Pull2(s.Receive(t.Context()))
+					event, err, ok := next()
+					stop()
+					if !ok {
+						t.Fatal("realtime session ended")
+					}
+					_, cancelled := errors.AsType[*gemini.ToolCallCancelledError](err)
+					if err == nil || cancelled || event.Kind == genai.RealtimeEventContentToolCalls {
+						t.Fatalf("ambiguous history admitted: %+v, %v", event, err)
+					}
+				})
+			}
+		})
+		t.Run("ManualActivity", func(t *testing.T) {
+			got := make(chan []map[string]any, 1)
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+				ri := setup["setup"].(map[string]any)["realtimeInputConfig"].(map[string]any)
+				if ri["automaticActivityDetection"].(map[string]any)["disabled"] != true {
+					t.Error("manual VAD not disabled")
+				}
+				msgs := make([]map[string]any, 3)
+				for i := range msgs {
+					msgs[i] = realtimetest.Read(t, ctx, ws)
+				}
+				got <- msgs
+				realtimetest.Write(t, ctx, ws, `{"voiceActivity":{"type":"ACTIVITY_START"}}`)
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"turnComplete":true}}`)
+				_, _, _ = ws.Read(ctx)
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &gemini.RealtimeOption{Endpoint: endpoint})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = s.Close() })
+			if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{0, 0}, Generate: true}); err != nil {
+				t.Fatal(err)
+			}
+			for _, in := range []genai.RealtimeInput{genai.RealtimeTruncate{ItemID: "item_1"}, genai.RealtimeCancel{}} {
+				err := s.Send(t.Context(), in)
+				if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+					t.Errorf("%T: %v", in, err)
+				}
+			}
+			if err := s.Send(t.Context(), genai.RealtimeInputContent{Generate: true}); err != nil {
+				t.Fatalf("empty text generation: %v", err)
+			}
+			msgs := <-got
+			if _, ok := msgs[0]["realtimeInput"].(map[string]any)["activityStart"]; !ok {
+				t.Errorf("activity start: %v", msgs)
+			}
+			if _, ok := msgs[1]["realtimeInput"].(map[string]any)["audio"]; !ok {
+				t.Errorf("audio: %v", msgs)
+			}
+			if _, ok := msgs[2]["realtimeInput"].(map[string]any)["activityEnd"]; !ok {
+				t.Errorf("activity end: %v", msgs)
+			}
+			realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+		})
+		t.Run("TerminalProtocolErrors", func(t *testing.T) {
+			for _, frame := range []string{`{`, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=16000","data":"AAAA"}}]}}}`, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AA=="}}]}}}`, `{"toolCall":{"functionCalls":[{"name":"bad","args":[]}]}}`, `{"toolCall":{"functionCalls":[{"id":"same","name":"a"},{"id":"same","name":"b"}]}}`, `{"goAway":{"timeLeft":"bad"}}`, `{"error":{"code":400,"message":"secret-sensitive-content"}}`} {
+				t.Run(frame, func(t *testing.T) {
+					endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+						realtimetest.Write(t, ctx, ws, frame)
+						_, _, _ = ws.Read(ctx)
+					})
+					s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint})
+					if err != nil {
+						t.Fatal(err)
+					}
+					t.Cleanup(func() { _ = s.Close() })
+					next1, stop1 := iter.Pull2(s.Receive(t.Context()))
+					_, first, ok := next1()
+					stop1()
+					if !ok {
+						t.Fatal("realtime session ended")
+					}
+					if first == nil || strings.Contains(first.Error(), "secret-sensitive-content") {
+						t.Fatalf("protocol error: %v", first)
+					}
+					next2, stop2 := iter.Pull2(s.Receive(t.Context()))
+					_, second, ok := next2()
+					stop2()
+					if !ok {
+						t.Fatal("realtime session ended")
+					}
+					if !errors.Is(second, first) {
+						t.Fatalf("terminal cause changed: %v / %v", first, second)
+					}
+				})
+			}
+		})
+		t.Run("Lifetime", func(t *testing.T) {
+			for _, mode := range []string{"close", "lifetime", "receive"} {
+				t.Run(mode, func(t *testing.T) {
+					endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) { _, _, _ = ws.Read(ctx) })
+					life, cancel := context.WithCancel(t.Context())
+					t.Cleanup(cancel)
+					s, err := liveClient(t).ConnectRealtime(life, &gemini.RealtimeOption{Endpoint: endpoint})
+					if err != nil {
+						t.Fatal(err)
+					}
+					if mode != "close" {
+						t.Cleanup(func() { _ = s.Close() })
+					}
+					recv, stop := context.WithCancel(t.Context())
+					t.Cleanup(stop)
+					done := make(chan error, 1)
+					go func() {
+						next, stop := iter.Pull2(s.Receive(recv))
+						_, err, _ := next()
+						stop()
+						done <- err
+					}()
+					want := context.Canceled
+					switch mode {
+					case "close":
+						want = io.EOF
+						_ = s.Close()
+					case "lifetime":
+						cancel()
+					case "receive":
+						stop()
+					}
+					select {
+					case err := <-done:
+						if !errors.Is(err, want) {
+							t.Errorf("receive: %v", err)
+						}
+					case <-time.After(3 * time.Second):
+						t.Fatal("Receive did not wake")
+					}
+					if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "late"}); !errors.Is(err, want) {
+						t.Errorf("send after termination: %v", err)
+					}
+				})
+			}
+		})
+		t.Run("OptionValidation", func(t *testing.T) {
+			c := liveClient(t)
+			if _, err := c.ConnectRealtime(t.Context(), &gemini.RealtimeOption{}, &gemini.RealtimeOption{}); err == nil || !strings.Contains(err.Error(), "duplicate realtime option type") {
+				t.Fatalf("duplicate option validation: %v", err)
+			}
+			for _, cfg := range [][]genai.RealtimeOption{{nil}, {genai.Modalities{genai.ModalityText}}} {
+				if s, err := c.ConnectRealtime(t.Context(), append([]genai.RealtimeOption{}, cfg...)...); err == nil || s != nil {
+					t.Errorf("accepted config: %+v", cfg)
+				}
+			}
+			for _, opt := range []*gemini.RealtimeOption{nil, {Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingTimeout: -time.Second}, {InputLanguages: []string{"en"}}, {ThinkingLevel: "extreme"}, {Compression: &gemini.RealtimeCompression{TriggerTokens: 1, TargetTokens: 2}}} {
+				if s, err := c.ConnectRealtime(t.Context(), opt); err == nil || s != nil {
+					t.Errorf("accepted option: %+v", opt)
+				}
+			}
+		})
+		t.Run("KeepaliveTimeout", func(t *testing.T) {
+			release := make(chan struct{})
+			endpoint := livePeer(t, func(_ context.Context, _ *websocket.Conn, _ map[string]any) { <-release })
+			t.Cleanup(func() { close(release) })
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint, PingInterval: 10 * time.Millisecond, PingTimeout: 20 * time.Millisecond})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = s.Close() })
+			ctx, cancel := context.WithTimeout(t.Context(), 3*time.Second)
+			t.Cleanup(cancel)
+			next, stop := iter.Pull2(s.Receive(ctx))
+			_, recvErr, _ := next()
+			stop()
+			if recvErr == nil || !strings.Contains(recvErr.Error(), "keepalive failed") {
+				t.Fatalf("keepalive: %v", recvErr)
+			}
+		})
+		t.Run("BinaryJSON", func(t *testing.T) {
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+				if err := ws.Write(ctx, websocket.MessageBinary, []byte(`{"serverContent":{"turnComplete":true}}`)); err != nil {
+					t.Error(err)
+				}
+				_, _, _ = ws.Read(ctx)
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() {
+				if err := s.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+		})
+		t.Run("TranscriptionIndependentOfTurn", func(t *testing.T) {
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"outputTranscription":{"text":"hello"},"turnComplete":true}}`)
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"outputTranscription":{"text":" world","finished":true}}}`)
+				_, _, _ = ws.Read(ctx)
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() {
+				if err := s.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			next, stop := iter.Pull2(s.Receive(t.Context()))
+			t.Cleanup(stop)
+			for i := range 3 {
+				e, err, ok := next()
+				if !ok {
+					t.Fatal("realtime session ended")
+				}
+				if err != nil {
+					t.Fatal(err)
+				}
+				if i == 2 && (e.Kind != genai.RealtimeEventTranscriptOutput || !e.Content.Final || e.Content.Text != "hello world") {
+					t.Fatalf("late final transcription: %+v", e)
+				}
+			}
+		})
+		t.Run("Interruption", func(t *testing.T) {
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"interrupted":true,"turnComplete":true},"goAway":{},"sessionResumptionUpdate":{"newHandle":"still-valid","resumable":true}}`)
+				_, _, _ = ws.Read(ctx)
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() {
+				if err := s.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			realtimetest.Receive(t, s, genai.RealtimeEventInterrupted)
+			realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+			realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+			g := realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+			if p, ok := g.ProviderEvent.(*gemini.GoAway); !ok || p.TimeLeft != 0 {
+				t.Fatalf("optional duration: %+v", g)
+			}
+			r := realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+			if p, ok := r.ProviderEvent.(*gemini.Resumption); !ok || p.Handle != "still-valid" {
+				t.Fatalf("resumption: %+v", r)
+			}
+		})
+		t.Run("ToolResults", func(t *testing.T) {
+			got := make(chan map[string]any, 1)
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
+				realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"id":"a","name":"lookup","args":{}},{"id":"b","name":"lookup","args":{}}]}}`)
+				got <- realtimetest.Read(t, ctx, ws)
+				_, _, _ = ws.Read(ctx)
+			})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &gemini.RealtimeOption{Endpoint: endpoint})
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() {
+				if err := s.Close(); err != nil {
+					t.Error(err)
+				}
+			})
+			realtimetest.Receive(t, s, genai.RealtimeEventContentToolCalls)
+			results := []genai.ToolCallResult{{ID: "a", Name: "lookup", Result: "ok"}, {ID: "b", Name: "lookup", Result: "ok"}}
+			if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: results}); err != nil {
+				t.Fatal(err)
+			}
+			if _, ok := (<-got)["toolResponse"]; !ok {
+				t.Fatal("invalid batch mutated wire or correlation")
+			}
+		})
+		t.Run("Redirects", func(t *testing.T) {
+			for _, secure := range []bool{false, true} {
+				t.Run(map[bool]string{false: "cross-origin", true: "downgrade"}[secure], func(t *testing.T) {
+					visited := make(chan string, 1)
+					dest := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						visited <- r.Header.Get("x-goog-api-key")
+						w.WriteHeader(http.StatusForbidden)
+					}))
+					t.Cleanup(dest.Close)
+					handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { http.Redirect(w, r, dest.URL, http.StatusFound) })
+					var source *httptest.Server
+					if secure {
+						source = httptest.NewTLSServer(handler)
+					} else {
+						source = httptest.NewServer(handler)
+					}
+					t.Cleanup(source.Close)
+					c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test-live-key"), genai.ProviderOptionModel("gemini-3.8-live"), genai.ProviderOptionModalities{genai.ModalityAudio}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return source.Client().Transport }))
+					if err != nil {
+						t.Fatal(err)
+					}
+					endpoint := "ws" + strings.TrimPrefix(source.URL, "http")
+					if _, err := c.ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint}); err == nil {
+						t.Fatal("accepted redirect")
+					}
+					select {
+					case key := <-visited:
+						t.Fatalf("redirect destination received a request (credential present=%t)", key != "")
+					default:
+					}
+					if c.HTTPClient().CheckRedirect != nil {
+						t.Fatal("mutated caller redirect policy")
+					}
+				})
+			}
+			t.Run("stricter caller policy", func(t *testing.T) {
+				visited, checked := false, false
+				source := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					if r.URL.Path == "/target" {
+						visited = true
+						w.WriteHeader(http.StatusForbidden)
+						return
+					}
+					http.Redirect(w, r, "/target", http.StatusFound)
+				}))
+				t.Cleanup(source.Close)
+				c := liveClient(t)
+				c.HTTPClient().CheckRedirect = func(*http.Request, []*http.Request) error { checked = true; return http.ErrUseLastResponse }
+				if _, err := c.ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: "ws" + strings.TrimPrefix(source.URL, "http")}); err == nil {
+					t.Fatal("accepted redirect forbidden by caller")
+				}
+				if !checked || visited {
+					t.Fatalf("caller redirect policy ignored (checked=%t visited=%t)", checked, visited)
+				}
+			})
+		})
+	})
 	t.Run("New", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			t.Run("embedding preference", func(t *testing.T) {
@@ -306,13 +1003,23 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		mdls, err := getClient(t, "").ListModels(t.Context())
+		c := getClient(t, "")
+		mdls, err := c.ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
+		scenarios := c.Scoreboard().Scenarios
 		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
+			if i := slices.IndexFunc(scenarios, func(sc scoreboard.Scenario) bool {
+				return sc.Realtime != nil && slices.Contains(sc.Models, id)
+			}); i != -1 {
+				// Realtime sessions have no reasoning mode; the scoreboard owns their
+				// Reason value so qualification selects the realtime scenario.
+				models = append(models, scoreboard.Model{Model: id, Reason: scenarios[i].Reason})
+				continue
+			}
 			if strings.Contains(id, "embedding") {
 				if id == "gemini-embedding-2" {
 					models = append(models, scoreboard.Model{Model: id})
@@ -358,14 +1065,40 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			rec := &internaltest.RealtimeRecorder{
+				Provider: c,
+				T:        t,
+				Target:   liveEndpoint,
+				Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
+				Updating: smoketest.UpdatingScoreboard(),
+				Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
+					out := slices.Clone(opts)
+					for i, opt := range out {
+						if o, ok := opt.(*gemini.RealtimeOption); ok {
+							clone := *o
+							clone.Endpoint = endpoint
+							out[i] = &clone
+							return out
+						}
+					}
+					return append(out, &gemini.RealtimeOption{Endpoint: endpoint})
+				},
+			}
+			if model.Model == "gemini-3.8-live-extended-thinking" && model.Reason {
+				// The non-thinking live model keeps its fixed latency profile.
+				return &internaltest.InjectRealtimeOptions{
+					Provider: rec,
+					Opts:     []genai.RealtimeOption{&gemini.RealtimeOption{ThinkingLevel: gemini.ThinkingLevelHigh}},
+				}
+			}
 			if model.Reason && slices.Contains(thinkingModels, model.Model) {
 				// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 				return &internaltest.InjectOptions{
-					Provider: c,
+					Provider: rec,
 					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingLevel: gemini.ThinkingLevelHigh}},
 				}
 			}
-			return c
+			return rec
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "gemini-embedding-2"}}})
 	})

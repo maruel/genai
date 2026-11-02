@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/maruel/genai"
@@ -27,7 +28,9 @@ type RealtimeOption struct {
 	Endpoint string
 	// InputTranscriptionModel is required when InputTranscription is requested.
 	// It is explicit because transcription model availability changes separately
-	// from realtime models. InputLanguage is an optional ISO-639-1 hint.
+	// from realtime models. InputLanguage is an optional language hint. A full
+	// locale with '-' or '_' is accepted and reduced to its ISO-639-1 primary
+	// language.
 	InputTranscriptionModel string
 	InputLanguage           string
 	// ReasoningEffort sets the session reasoning effort. Empty leaves the
@@ -54,6 +57,11 @@ func (o *RealtimeOption) Validate() error {
 	}
 	if o.PingInterval < 0 || o.PingTimeout < 0 {
 		return errors.New("OpenAI realtime keepalive durations must not be negative")
+	}
+	if o.InputLanguage != "" {
+		if _, err := normalizeInputLanguage(o.InputLanguage); err != nil {
+			return err
+		}
 	}
 	if o.ReasoningEffort == ReasoningEffortNone {
 		return errors.New("OpenAI realtime reasoning effort does not accept none; use minimal, low, medium, high or xhigh")
@@ -82,8 +90,8 @@ var _ genai.RealtimeOption = (*RealtimeOption)(nil)
 // Text with Generate=true requests a response from the current context.
 //
 // A successful response emits one complete parallel tool batch. Submit every
-// call's ID and name in RealtimeInputContent.ToolResults. Set Generate=true to
-// request the continuation; otherwise results are passive context. Cancelled,
+// call's ID and name in RealtimeInputContent.ToolResults. Tool results always
+// request the continuation. Cancelled,
 // failed and incomplete responses never authorize tools. Function-call argument
 // deltas and completions are informational provider events; execute only the
 // complete batch. Sessions retain at most 1024 pending calls and 4096 historical
@@ -209,8 +217,40 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 		if o.InputTranscriptionModel == "" {
 			return nil, errors.New("InputTranscription requires an explicit OpenAI transcription model")
 		}
+		language, err := normalizeInputLanguage(o.InputLanguage)
+		if err != nil {
+			return nil, err
+		}
 		setup.Audio.Input.Transcription.Model = o.InputTranscriptionModel
-		setup.Audio.Input.Transcription.Language = o.InputLanguage
+		setup.Audio.Input.Transcription.Language = language
 	}
 	return ConnectRealtime(ctx, hc, u.String(), o.PingInterval, o.PingTimeout, setup)
+}
+
+// normalizeInputLanguage accepts a language or locale and returns its ISO-639-1
+// primary language. Both '-' and '_' separators are accepted.
+func normalizeInputLanguage(value string) (string, error) {
+	if value == "" {
+		return "", nil
+	}
+	parts := strings.Split(strings.ReplaceAll(value, "_", "-"), "-")
+	if len(parts[0]) != 2 {
+		return "", errors.New("OpenAI realtime input language must start with an ISO-639-1 code")
+	}
+	for _, c := range strings.ToLower(parts[0]) {
+		if c < 'a' || c > 'z' {
+			return "", errors.New("OpenAI realtime input language must start with an ISO-639-1 code")
+		}
+	}
+	for _, part := range parts[1:] {
+		if part == "" {
+			return "", errors.New("OpenAI realtime input language has an empty locale segment")
+		}
+		for _, c := range strings.ToLower(part) {
+			if (c < 'a' || c > 'z') && (c < '0' || c > '9') {
+				return "", errors.New("OpenAI realtime input language has an invalid locale segment")
+			}
+		}
+	}
+	return strings.ToLower(parts[0]), nil
 }

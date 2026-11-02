@@ -547,8 +547,8 @@ func (c *Client) HTTPClient() *http.Client {
 // Text with Generate=true requests a response from the current context.
 //
 // A successful response emits one complete parallel tool batch. Submit every
-// call's ID and name in RealtimeInputContent.ToolResults. Set Generate=true to
-// request the continuation; otherwise results are passive context. Cancelled,
+// call's ID and name in RealtimeInputContent.ToolResults. Tool results always
+// request the continuation. Cancelled,
 // failed and incomplete responses never authorize tools. Function-call argument
 // deltas and completions are informational provider events; execute only the
 // complete batch. Sessions retain at most 1024 pending calls and 4096 historical

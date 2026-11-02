@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"strings"
 )
 
 // RealtimeSession is one provider-owned conversation and its transport.
@@ -197,6 +198,19 @@ type RealtimeInput interface {
 	Validate() error
 }
 
+// RealtimeToolCallCancelledError means a tool result batch matched one or more
+// calls the provider cancelled. The batch was rejected locally without wire
+// effects. Callers may discard the listed calls and retry the remaining results.
+type RealtimeToolCallCancelledError struct {
+	// ToolCallIDs are the cancelled calls matched in the rejected batch.
+	ToolCallIDs []string
+}
+
+// Error implements error.
+func (e *RealtimeToolCallCancelledError) Error() string {
+	return "realtime tool result batch contains cancelled calls: " + strings.Join(e.ToolCallIDs, ", ")
+}
+
 // RealtimeInputContent sends one content command. Audio is selected by Audio or
 // Commit; otherwise exactly one of Text or ToolResults is set. The zero value
 // is invalid.
@@ -214,14 +228,14 @@ type RealtimeInput interface {
 // generation command may ignore it.
 //
 // ToolResults answers completed calls. Send complete batches to preserve
-// parallel call ordering. Generate requests a response after the results;
-// providers that resume automatically treat it as advisory.
+// parallel call order. Tool results always request a response; Generate is
+// ignored for this payload.
 type RealtimeInputContent struct {
 	// Audio appends PCM at Info().InputFormat. It may be empty only with Commit.
 	Audio []byte
 	// Text adds a user text turn. It may be empty only with Generate.
 	Text string
-	// ToolResults answers completed calls.
+	// ToolResults answers completed calls. It always requests a response.
 	ToolResults []ToolCallResult
 	// Commit commits buffered audio. Alone it does not request a reply; with
 	// Generate it commits before requesting one.

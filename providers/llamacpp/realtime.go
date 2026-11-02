@@ -127,9 +127,10 @@ type realtimePendingTool struct {
 //     Set Commit to commit audio without generating, or Generate to commit
 //     nonempty audio and request the response. Commit and Generate together
 //     commit buffered audio, then request the response. Empty text with
-//     Generate=true requests a response from the current turn or tool results.
+//     Generate=true requests a response from the current turn.
 //   - RequireToolCall forces a tool call in the first response when the session
 //     declares tools. Submit one complete result batch; call order is restored.
+//     Tool results always request the continuation.
 //   - Cancellation suppresses late output but does not roll back prefilled audio
 //     or model history.
 //   - There is no automatic history surgery. Context or output-limit exhaustion
@@ -495,7 +496,7 @@ func (s *RealtimeSession) validateLocked(in genai.RealtimeInput) error {
 			if !s.info.Capabilities.ToolResults {
 				return &base.ErrNotSupported{Options: []string{"tool results"}}
 			}
-			generate = v.Generate
+			generate = true
 			if s.turn {
 				return errors.New("llama.cpp tool results cannot follow a new user turn")
 			}
@@ -563,14 +564,11 @@ func (s *RealtimeSession) sentLocked(in genai.RealtimeInput) {
 			}
 		}
 	case c.ToolResults != nil:
-		s.results = true
+		s.turn = false
+		s.audio = false
+		s.results = false
 		s.started = true
-		if c.Generate {
-			s.turn = false
-			s.audio = false
-			s.results = false
-			s.generationPending = true
-		}
+		s.generationPending = true
 	default:
 		s.turn = true
 		s.started = true

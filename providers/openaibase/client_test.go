@@ -213,3 +213,27 @@ func (e embeddingNoTransport) RoundTrip(*http.Request) (*http.Response, error) {
 	e.t.Fatal("unexpected HTTP request")
 	return nil, errors.New("unexpected HTTP request")
 }
+
+func TestNormalizeInputLanguage(t *testing.T) {
+	for _, tc := range []struct {
+		in   string
+		want string
+	}{
+		{in: "", want: ""},
+		{in: "fr", want: "fr"},
+		{in: "FR", want: "fr"},
+		{in: "fr-CA", want: "fr"},
+		{in: "fr_CA", want: "fr"},
+		{in: "zh-Hant-TW", want: "zh"},
+	} {
+		got, err := normalizeInputLanguage(tc.in)
+		if err != nil || got != tc.want {
+			t.Errorf("normalizeInputLanguage(%q) = %q, %v; want %q", tc.in, got, err, tc.want)
+		}
+	}
+	for _, in := range []string{"e", "english", "fr--CA", "fr_", "_CA", "fr-CA!"} {
+		if _, err := normalizeInputLanguage(in); err == nil {
+			t.Errorf("normalizeInputLanguage(%q) accepted invalid input", in)
+		}
+	}
+}

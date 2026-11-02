@@ -424,8 +424,8 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // adapter does not expose it.
 //
 // Only complete successful responses authorize tools. Send one complete
-// correlated result batch before new user audio or text. Set Generate=true on
-// the results to continue the turn; otherwise they are passive context.
+// correlated result batch before new user audio or text. Tool results always
+// continue the turn; Generate is ignored for them.
 // Function-call argument deltas and completions are informational provider
 // events. Cancelling a response
 // cannot discharge an already-completed tool batch. The adapter restores the

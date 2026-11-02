@@ -590,7 +590,7 @@ func (c *Client) HTTPClient() *http.Client {
 // blocking calls. Extended-thinking
 // models require non-blocking calls, which may emit filler turns before the
 // tool call. Return one RealtimeInputContent batch with ToolResults; the provider resumes
-// automatically, so Generate is advisory. A batch that includes a provider-cancelled
+// automatically, so Generate is ignored for tool results. A batch that includes a provider-cancelled
 // call is rejected in full with *ToolCallCancelledError, which lists the
 // cancelled calls. Cancelled tool IDs cannot be reused.
 //

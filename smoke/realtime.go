@@ -373,12 +373,13 @@ func realtimeAudioSupported(info *genai.RealtimeSessionInfo) bool {
 
 // sendRealtimeAudio sends audio in 100 ms chunks, as live APIs expect. Server
 // VAD also needs the chunks paced at playback speed to detect silence. The last
-// chunk commits the turn and optionally requests a reply.
-func sendRealtimeAudio(ctx context.Context, s genai.RealtimeSession, audio []byte, rate int, paced, generate bool) error {
+// chunk commits when the session supports it and optionally requests a reply.
+func sendRealtimeAudio(ctx context.Context, s genai.RealtimeSession, audio []byte, rate int, paced, commit, generate bool) error {
 	chunk := max(2, rate/10*2)
 	for len(audio) != 0 {
 		n := min(chunk, len(audio))
-		if err := s.Send(ctx, genai.RealtimeInputContent{Audio: audio[:n], Commit: len(audio) == n, Generate: len(audio) == n && generate}); err != nil {
+		last := len(audio) == n
+		if err := s.Send(ctx, genai.RealtimeInputContent{Audio: audio[:n], Commit: last && commit, Generate: last && generate}); err != nil {
 			return err
 		}
 		audio = audio[n:]
@@ -412,7 +413,7 @@ func realtimeAudioTurn(ctx context.Context, ev *realtimeEvents, s genai.Realtime
 		// whole samples keeps PCM16 valid for odd sample rates.
 		audio = append(audio, make([]byte, (rate/2)*2)...)
 	}
-	if err := sendRealtimeAudio(ctx, s, audio, rate, info.TurnDetection == genai.RealtimeTurnServer, manual); err != nil {
+	if err := sendRealtimeAudio(ctx, s, audio, rate, info.TurnDetection == genai.RealtimeTurnServer, info.Capabilities.AudioCommit, manual); err != nil {
 		return fmt.Errorf("probe %s: %w", probe, err)
 	}
 	if expectTool {

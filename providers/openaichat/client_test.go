@@ -95,13 +95,36 @@ func TestClient(t *testing.T) {
 				}
 			})
 
+			t.Run("server VAD rejects audio commit", func(t *testing.T) {
+				endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimeSetup(t, ctx, ws)
+				})
+				s, err := realtimeClient(t).ConnectRealtime(t.Context(), &openaichat.RealtimeOption{Endpoint: endpoint})
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if s.Info().Capabilities.AudioCommit {
+					t.Fatal("server VAD advertised audio commit")
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Commit: true}); err == nil {
+					t.Fatal("server VAD accepted audio commit")
+				} else if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+					t.Fatalf("audio commit error = %v", err)
+				}
+			})
+
 			t.Run("manual audio tools and transcripts", func(t *testing.T) {
 				commands := make(chan []map[string]any, 1)
 				endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 					setup := realtimeSetup(t, ctx, ws)
 					audio := setup["audio"].(map[string]any)
-					if audio["input"].(map[string]any)["turn_detection"] != nil || !reflect.DeepEqual(setup["output_modalities"], []any{"audio"}) {
+					input := audio["input"].(map[string]any)
+					if input["turn_detection"] != nil || !reflect.DeepEqual(setup["output_modalities"], []any{"audio"}) {
 						t.Error("incorrect manual audio setup")
+					}
+					if transcription := input["transcription"].(map[string]any); transcription["language"] != "fr" {
+						t.Errorf("transcription language %#v", transcription)
 					}
 					got := make([]map[string]any, 0, 8)
 					for range 5 {
@@ -129,13 +152,13 @@ func TestClient(t *testing.T) {
 						realtimetest.Write(t, ctx, ws, b)
 					}
 				})
-				s, err := realtimeClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup a value", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "gpt-realtime-whisper"})
+				s, err := realtimeClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup a value", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "gpt-realtime-whisper", InputLanguage: "fr_CA"})
 				if err != nil {
 					t.Fatal(err)
 				}
 				realtimetest.Close(t, s)
 				info := s.Info()
-				if info.ID != "sess_test" || info.InputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.OutputFormat != info.InputFormat || !info.Capabilities.Truncate || info.TurnDetection != genai.RealtimeTurnManual || !info.Capabilities.ToolResults {
+				if info.ID != "sess_test" || info.InputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.OutputFormat != info.InputFormat || !info.Capabilities.Truncate || info.TurnDetection != genai.RealtimeTurnManual || !info.Capabilities.AudioCommit || !info.Capabilities.ToolResults {
 					t.Fatalf("info %+v", info)
 				}
 				info.ID = "changed"
@@ -341,6 +364,9 @@ func TestClient(t *testing.T) {
 					t.Fatal(err)
 				}
 				t.Cleanup(func() { _ = s.Close() })
+				if s.Info().Capabilities.AudioCommit {
+					t.Fatal("server VAD advertised audio commit")
+				}
 				instr := "be terse"
 				tools := []genai.ToolDef{{Name: "lookup", Description: "Lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}
 				none := genai.ToolCallNone
@@ -356,6 +382,9 @@ func TestClient(t *testing.T) {
 				case <-sent:
 				case <-time.After(5 * time.Second):
 					t.Fatal("timeout waiting for session update")
+				}
+				if !s.Info().Capabilities.AudioCommit {
+					t.Fatal("manual turn detection did not advertise audio commit")
 				}
 			})
 
@@ -457,7 +486,7 @@ func TestClient(t *testing.T) {
 						t.Fatal("accepted invalid setup")
 					}
 				}
-				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {ReasoningEffort: openaichat.ReasoningEffortNone}, {ReasoningEffort: "extreme"}} {
+				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr--CA"}, {ReasoningEffort: openaichat.ReasoningEffortNone}, {ReasoningEffort: "extreme"}} {
 					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
 						t.Fatal("accepted invalid option")
 					}
@@ -904,6 +933,10 @@ func TestClient(t *testing.T) {
 										t.Errorf("tool result %#v, want %#v", m, want)
 										return
 									}
+								}
+								if m := realtimetest.Read(t, ctx, ws); !reflect.DeepEqual(m, map[string]any{"type": "response.create"}) {
+									t.Errorf("tool continuation %#v", m)
+									return
 								}
 							}
 						}

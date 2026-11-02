@@ -28,18 +28,8 @@ import (
 // Gemini does not document a WebSocket message limit.
 const maxMessageBytes = 16 << 20
 
-// ToolCallCancelledError means a tool result batch matched one or more calls
-// Gemini Live cancelled. The batch was rejected locally without wire effects.
-// Callers may discard the listed calls and retry the remaining results.
-type ToolCallCancelledError struct {
-	// ToolCallIDs are the cancelled calls matched in the rejected batch.
-	ToolCallIDs []string
-}
-
-// Error implements error.
-func (e *ToolCallCancelledError) Error() string {
-	return "gemini live tool result batch contains cancelled calls: " + strings.Join(e.ToolCallIDs, ", ")
-}
+// ToolCallCancelledError is the portable realtime tool cancellation error.
+type ToolCallCancelledError = genai.RealtimeToolCallCancelledError
 
 // RealtimeOption configures Gemini Live features beyond the portable contract.
 // Affective dialogue and proactivity fields are deliberately omitted.

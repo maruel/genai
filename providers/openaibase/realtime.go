@@ -208,6 +208,7 @@ func (s *Session) Send(ctx context.Context, in genai.RealtimeInput) error {
 		}
 		if u.TurnDetection != nil {
 			s.info.TurnDetection = *u.TurnDetection
+			s.info.Capabilities.AudioCommit = *u.TurnDetection == genai.RealtimeTurnManual
 		}
 		return nil
 	}
@@ -220,6 +221,9 @@ func (s *Session) Send(ctx context.Context, in genai.RealtimeInput) error {
 		case v.Audio != nil || v.Commit:
 			if len(v.Audio) != 0 {
 				msgs = append(msgs, ClientMessage{Type: EventAudioAppend, Audio: v.Audio})
+			}
+			if v.Commit && s.info.TurnDetection != genai.RealtimeTurnManual {
+				return &base.ErrNotSupported{Options: []string{"audio commit with server turn detection"}}
 			}
 			if (v.Commit || (v.Audio != nil && v.Generate)) && s.info.TurnDetection == genai.RealtimeTurnManual {
 				if !s.info.Capabilities.AudioCommit {
@@ -269,6 +273,9 @@ func (s *Session) Send(ctx context.Context, in genai.RealtimeInput) error {
 			}
 		}
 		generate = v.Generate
+		if v.ToolResults != nil {
+			generate = true
+		}
 	case genai.RealtimeCancel:
 		if !s.info.Capabilities.CancelResponse {
 			return &base.ErrNotSupported{Options: []string{"cancel"}}
@@ -755,7 +762,7 @@ func acceptSetup(want, got *SessionConfig, info *genai.RealtimeSessionInfo) erro
 	info.InputFormat = f
 	info.OutputFormat = f
 	info.Capabilities = genai.RealtimeCapabilities{
-		AudioCommit:    true,
+		AudioCommit:    info.TurnDetection == genai.RealtimeTurnManual,
 		CancelResponse: true,
 		ToolResults:    len(want.Tools) != 0,
 		Truncate:       got.OutputModalities[0] == genai.ModalityAudio,

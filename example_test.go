@@ -23,6 +23,8 @@ import (
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/gemini"
+	"github.com/maruel/genai/providers/llamacpp"
+	"github.com/maruel/genai/providers/openaichat"
 )
 
 func ExampleProvider_genSync_vision() {
@@ -453,4 +455,126 @@ func ExampleProvider_embed() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Returned %d vectors with %d dimensions\n", len(out.Embeddings), len(out.Embeddings[0]))
+}
+
+func ExampleRealtimeSession_manualTurns() {
+	ctx := context.Background()
+	// Run llama-server with a native audio model. The loaded model owns the
+	// input and output sample rates. See the llamacppsrv package for a managed
+	// runtime.
+	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote("http://127.0.0.1:8080"))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+	s, err := c.ConnectRealtime(ctx, &llamacpp.RealtimeOption{MaxOutputTokens: 256})
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := s.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+
+	// A live application captures the microphone at s.Info().InputFormat.
+	// This recorded turn is mono PCM16LE at the model's native input rate.
+	pcm, err := os.ReadFile("question-16k.pcm")
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	if err := s.Send(ctx, genai.RealtimeInputContent{Audio: pcm, Commit: true, Generate: true}); err != nil {
+		log.Print(err)
+		return
+	}
+
+	// GenerationDone is not terminal: the provider may emit filler output or a
+	// tool call before TurnDone. Keep receiving until TurnDone.
+	for e, err := range s.Receive(ctx) {
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		switch e.Kind {
+		case genai.RealtimeEventContentAudio:
+			// Play e.Content.Audio at s.Info().OutputFormat.
+		case genai.RealtimeEventContentText:
+			fmt.Print(e.Content.Text)
+		case genai.RealtimeEventContentToolCalls:
+			results := make([]genai.ToolCallResult, len(e.Content.ToolCalls))
+			for i := range e.Content.ToolCalls {
+				results[i] = genai.ToolCallResult{ID: e.Content.ToolCalls[i].ID, Name: e.Content.ToolCalls[i].Name, Result: `{"ok":true}`}
+			}
+			if err := s.Send(ctx, genai.RealtimeInputContent{ToolResults: results, Generate: true}); err != nil {
+				log.Print(err)
+				return
+			}
+		case genai.RealtimeEventTurnDone:
+			// TurnDone is terminal: no content or tool call follows it.
+			return
+		default:
+		}
+	}
+}
+
+func ExampleRealtimeSession_serverTurns() {
+	ctx := context.Background()
+	// llama.cpp supports manual turns only. Use a provider with server turn
+	// detection, such as OpenAI Realtime, for this mode.
+	c, err := openaichat.New(ctx, genai.ProviderOptionModel("gpt-realtime-2.1"))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+	s, err := c.ConnectRealtime(ctx, &genai.RealtimeOptionAudio{OutputTranscription: true})
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := s.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+
+	// Send a text turn. A microphone loop would send Audio at
+	// s.Info().InputFormat instead and let the provider detect the turn end.
+	if err := s.Send(ctx, genai.RealtimeInputContent{Text: "Say hello in one word.", Generate: true}); err != nil {
+		log.Print(err)
+		return
+	}
+	// GenerationDone is not terminal. Continue until TurnDone, which marks the
+	// end of the turn and is never followed by content or tool calls.
+	for e, err := range s.Receive(ctx) {
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		switch e.Kind {
+		case genai.RealtimeEventContentAudio:
+			// Play e.Content.Audio at s.Info().OutputFormat.
+		case genai.RealtimeEventTranscriptOutput:
+			fmt.Print(e.Content.Text)
+		case genai.RealtimeEventError:
+			log.Printf("Provider rejected a command: %v", e.Error)
+		case genai.RealtimeEventInterrupted:
+			// Stop playback and discard queued audio.
+		case genai.RealtimeEventTurnDone:
+			// TurnDone is terminal: no content or tool call follows it.
+			return
+		default:
+		}
+	}
 }

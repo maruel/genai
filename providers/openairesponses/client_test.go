@@ -9,6 +9,7 @@ package openairesponses_test
 import (
 	"errors"
 	"net/http"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -114,6 +115,26 @@ func TestClient(t *testing.T) {
 		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
 
+	t.Run("ConnectRealtime", func(t *testing.T) {
+		c := getClient(t, "gpt-realtime-2.1")
+		for _, tc := range []struct {
+			name string
+			opts []genai.RealtimeOption
+		}{
+			{name: "nil", opts: []genai.RealtimeOption{nil}},
+			{name: "image", opts: []genai.RealtimeOption{genai.Modalities{genai.ModalityImage}}},
+			{name: "endpoint", opts: []genai.RealtimeOption{&openairesponses.RealtimeOption{Endpoint: "https://example.com"}}},
+			{name: "duplicate", opts: []genai.RealtimeOption{&openairesponses.RealtimeOption{}, &openairesponses.RealtimeOption{}}},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				s, err := c.ConnectRealtime(t.Context(), tc.opts...)
+				if s != nil || err == nil {
+					t.Fatalf("session %v, error %v", s, err)
+				}
+			})
+		}
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		c := getClient(t, "")
 		genaiModels, err := c.ListModels(t.Context())
@@ -161,6 +182,35 @@ func TestClient(t *testing.T) {
 			}
 			if err != nil {
 				t.Fatal(err)
+			}
+			if strings.Contains(model.Model, "realtime") {
+				rec := &internaltest.RealtimeRecorder{
+					Provider: c,
+					T:        t,
+					Target:   "wss://api.openai.com/v1/realtime",
+					Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
+					Updating: smoketest.UpdatingScoreboard(),
+					Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
+						out := slices.Clone(opts)
+						for i, opt := range out {
+							if o, ok := opt.(*openairesponses.RealtimeOption); ok {
+								clone := *o
+								clone.Endpoint = endpoint
+								out[i] = &clone
+								return out
+							}
+						}
+						return append(out, &openairesponses.RealtimeOption{Endpoint: endpoint})
+					},
+				}
+				effort := openairesponses.ReasoningEffortMinimal
+				if model.Reason {
+					effort = openairesponses.ReasoningEffortHigh
+				}
+				return &internaltest.InjectRealtimeOptions{
+					Provider: rec,
+					Opts:     []genai.RealtimeOption{&openairesponses.RealtimeOption{ReasoningEffort: effort}},
+				}
 			}
 			// This will lead to spurious HTTP 500 but it is 25% of the cost.
 			tier := openairesponses.ServiceTierFlex

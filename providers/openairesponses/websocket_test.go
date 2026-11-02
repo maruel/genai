@@ -16,6 +16,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/coder/websocket"
 
@@ -412,4 +413,52 @@ func runEchoTurns(t *testing.T, c *websocket.Conn) {
 type embeddingWireRequest struct {
 	Model string
 	Input []string
+}
+
+func TestWebSocketSendRaw(t *testing.T) {
+	got := make(chan string, 1)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ws, err := websocket.Accept(w, r, nil)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		defer func() { _ = ws.CloseNow() }()
+		typ, data, err := ws.Read(r.Context())
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if typ != websocket.MessageText {
+			t.Errorf("message type %v", typ)
+			return
+		}
+		got <- string(data)
+	}))
+	t.Cleanup(srv.Close)
+	c, err := makeTestClient(t, "gpt-6-luna")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.baseURL = srv.URL
+	w, err := c.WebSocket(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = w.Close() })
+	if err := w.SendRaw(t.Context(), nil); err == nil {
+		t.Fatal("empty raw message accepted")
+	}
+	const message = `{"type":"response.create","response":{}}`
+	if err := w.SendRaw(t.Context(), []byte(message)); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case v := <-got:
+		if v != message {
+			t.Fatalf("raw message %s", v)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("timeout waiting for raw message")
+	}
 }

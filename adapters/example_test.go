@@ -16,6 +16,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/providers/gemini"
+	"github.com/maruel/genai/providers/openaichat"
 )
 
 func ExampleGenSyncWithToolCallLoop() {
@@ -87,6 +88,54 @@ func ExampleGenStreamWithToolCallLoop() {
 	if _, _, err = finish(); err != nil {
 		log.Print(err)
 		return
+	}
+}
+
+func ExampleRealtimeWithToolCallLoop() {
+	ctx := context.Background()
+	c, err := openaichat.New(ctx, genai.ProviderOptionModel("gpt-realtime-2.1"))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+	tools := []genai.ToolDef{GetTodayClockTime}
+	s, err := c.ConnectRealtime(ctx, &genai.RealtimeOptionTools{Tools: tools}, genai.RealtimeTurnManual)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	s = adapters.RealtimeWithToolCallLoop(s, tools)
+	defer func() {
+		if err := s.Close(); err != nil {
+			log.Printf("Close: %v", err)
+		}
+	}()
+	// The adapter uses these tools. Send RealtimeUpdate with new Tools to
+	// replace the active set.
+	if err := s.Send(ctx, genai.RealtimeInputContent{Text: "What time is it?", Generate: true}); err != nil {
+		log.Print(err)
+		return
+	}
+	for e, err := range s.Receive(ctx) {
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		switch e.Kind {
+		case genai.RealtimeEventContentText:
+			fmt.Print(e.Content.Text)
+		case genai.RealtimeEventError:
+			log.Printf("Provider rejected a command: %v", e.Error)
+		case genai.RealtimeEventTurnDone:
+			return
+		default:
+			// Audio and transcription events are ignored in this example.
+		}
 	}
 }
 

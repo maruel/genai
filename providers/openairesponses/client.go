@@ -6,8 +6,9 @@
 //
 // It is described at https://platform.openai.com/docs/api-reference/responses/create
 //
-// Embedding requests use [Client.Embed] or [Client.EmbedRaw]. Shared native
-// types and embedding controls are documented in [openaibase].
+// Embedding requests use [Client.Embed] or [Client.EmbedRaw]. Realtime sessions
+// use the shared OpenAI GA /v1/realtime implementation. Shared native types and
+// embedding controls are documented in [openaibase].
 package openairesponses
 
 // See official client at http://pkg.go.dev/github.com/openai/openai-go/responses
@@ -70,6 +71,13 @@ func (o *GenOptionText) Validate() error {
 	}
 	return o.ServiceTier.Validate()
 }
+
+// RealtimeSession is the concrete OpenAI realtime session returned by
+// ConnectRealtime.
+type RealtimeSession = openaibase.Session
+
+// RealtimeOption configures OpenAI Realtime beyond the portable session contract.
+type RealtimeOption = openaibase.RealtimeOption
 
 // Client is a client for the OpenAI Responses API.
 type Client struct {
@@ -269,7 +277,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 
 // Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{Embed: true, GenAsync: true}
+	return genai.ProviderCapabilities{Realtime: true, Embed: true, GenAsync: true}
 }
 
 // GenAsync implements genai.Provider.
@@ -500,6 +508,17 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		return res, nil
 	}
 	return fnFragments, fnFinish
+}
+
+// ConnectRealtime opens an OpenAI GA realtime conversation with this client's
+// explicit model and HTTP authentication transport. It uses the shared OpenAI
+// realtime implementation; see [openaibase.ConnectRealtimeSession].
+func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	s, err := openaibase.ConnectRealtimeSession(ctx, c.HTTPClient(), c.ModelID(), opts...)
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
 // WebSocket opens a persistent WebSocket connection to the OpenAI Responses API.

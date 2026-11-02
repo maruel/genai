@@ -262,6 +262,37 @@
       }
     },
     {
+      "comments": "Realtime thinking mode: ReasoningEffortHigh.",
+      "models": [
+        "gpt-realtime-2.1"
+      ],
+      "reason": true,
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "true",
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
       "models": [
         "gpt-6-luna"
       ],
@@ -379,6 +410,36 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "maxTokens": true
+      }
+    },
+    {
+      "comments": "Realtime non-thinking mode: ReasoningEffortMinimal.",
+      "models": [
+        "gpt-realtime-2.1"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "true",
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
       }
     },
     {
@@ -520,7 +581,6 @@
         "gpt-realtime",
         "gpt-realtime-1.5",
         "gpt-realtime-2",
-        "gpt-realtime-2.1",
         "gpt-realtime-2.1-mini",
         "gpt-realtime-2025-08-28",
         "gpt-realtime-mini",

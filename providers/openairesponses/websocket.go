@@ -112,15 +112,20 @@ func (w *WebSocketConn) Close() error {
 	return err
 }
 
-// send sends a text message over the WebSocket.
-func (w *WebSocketConn) send(ctx context.Context, data []byte) error {
+// SendRaw writes one complete Responses WebSocket message verbatim. It bypasses
+// request validation and response correlation. The caller owns the message and
+// any resulting state changes.
+func (w *WebSocketConn) SendRaw(ctx context.Context, message []byte) error {
+	if len(message) == 0 {
+		return errors.New("raw websocket message is empty")
+	}
 	w.mu.Lock()
 	ws := w.ws
 	w.mu.Unlock()
 	if ws == nil {
 		return errors.New("websocket connection is closed")
 	}
-	return ws.Write(ctx, websocket.MessageText, data)
+	return ws.Write(ctx, websocket.MessageText, message)
 }
 
 // recvEvents returns an iterator of streaming events from the WebSocket.
@@ -232,7 +237,7 @@ func (w *WebSocketConn) sendRequest(ctx context.Context, msgs genai.Messages, op
 	if err != nil {
 		return fmt.Errorf("failed to marshal request: %w", err)
 	}
-	return w.send(ctx, data)
+	return w.SendRaw(ctx, data)
 }
 
 // GenSync implements genai.Provider.
@@ -321,7 +326,7 @@ func (w *WebSocketConn) GenStreamRaw(ctx context.Context, in *Response) (iter.Se
 			return fmt.Errorf("failed to marshal request: %w", err)
 		}
 	}
-	if err := w.send(ctx, data); err != nil {
+	if err := w.SendRaw(ctx, data); err != nil {
 		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error { return err }
 	}
 	return w.recvEvents(ctx)

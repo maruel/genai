@@ -2,11 +2,17 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package openaibase contains shared types and client operations used by both
-// the OpenAI Chat Completion and Responses API providers.
+// Package openaibase contains shared types and client operations used by the
+// OpenAI Chat Completion, Responses and Realtime providers, and by compatible
+// providers such as llama.cpp.
 //
-// These types map directly to the JSON objects exchanged with the OpenAI
-// platform API endpoints that are shared between the two APIs (models, files,
+// # Realtime
+//
+// The realtime wire types and [Session] implement the OpenAI GA protocol.
+// Providers with a different protocol, such as Gemini Live, do not use them.
+//
+// Other types map directly to the JSON objects exchanged with the OpenAI
+// platform API endpoints that are shared between the APIs (models, files,
 // images, batches, embeddings, errors).
 //
 // Source: https://platform.openai.com/docs/api-reference/

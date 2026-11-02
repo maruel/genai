@@ -202,10 +202,11 @@ type RealtimeInput interface {
 // is invalid.
 //
 // Audio appends PCM at Info().InputFormat to the buffered user audio. Commit
-// commits the buffer without requesting a reply and may close the provider audio
-// stream; an empty Commit commits audio sent earlier. Generate requests a reply
-// and commits nonempty audio first when needed. With server turn detection, the
-// provider may ignore Generate and reply on its own.
+// commits the buffer and may close the provider audio stream; an empty Commit
+// commits audio sent earlier. Generate requests a reply and commits nonempty
+// audio first when needed. Commit and Generate may be combined: Commit
+// finalizes buffered audio, then Generate requests the response. With server
+// turn detection, the provider may ignore Generate and reply on its own.
 //
 // Text adds a user text turn. Generate=false adds passive context; Generate=true
 // submits the turn and requests a response. An empty Text with Generate=true
@@ -222,7 +223,8 @@ type RealtimeInputContent struct {
 	Text string
 	// ToolResults answers completed calls.
 	ToolResults []ToolCallResult
-	// Commit commits buffered audio without requesting a reply.
+	// Commit commits buffered audio. Alone it does not request a reply; with
+	// Generate it commits before requesting one.
 	Commit bool
 	// Generate requests a response. It commits nonempty audio first.
 	Generate bool

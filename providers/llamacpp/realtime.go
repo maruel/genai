@@ -125,8 +125,9 @@ type realtimePendingTool struct {
 //     Tool choice, max output tokens and output modalities remain updatable.
 //   - New user input requires an idle response and no pending tool calls.
 //     Set Commit to commit audio without generating, or Generate to commit
-//     nonempty audio and request the response. Empty text with Generate=true
-//     requests a response from the current turn or tool results.
+//     nonempty audio and request the response. Commit and Generate together
+//     commit buffered audio, then request the response. Empty text with
+//     Generate=true requests a response from the current turn or tool results.
 //   - RequireToolCall forces a tool call in the first response when the session
 //     declares tools. Submit one complete result batch; call order is restored.
 //   - Cancellation suppresses late output but does not roll back prefilled audio

@@ -107,18 +107,7 @@ func generate(ctx context.Context, exe string, p phrase) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(filepath.Join(outDir, p.name+"-24000.flac"), raw, 0o644); err != nil {
-		return err
-	}
-	pcm, err = smoke.ResamplePCM16(pcm, rate, 16000)
-	if err != nil {
-		return err
-	}
-	raw, err = smoke.EncodePCM16FLAC(pcm, 16000)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(outDir, p.name+"-16000.flac"), raw, 0o644)
+	return os.WriteFile(filepath.Join(outDir, p.name+"-24000.flac"), raw, 0o644)
 }
 
 func main() {

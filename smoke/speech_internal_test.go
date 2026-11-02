@@ -104,7 +104,7 @@ func TestEncodePCM16WAV(t *testing.T) {
 }
 
 func TestDecodePCM16FLAC(t *testing.T) {
-	raw, err := scoreboard.TestdataFiles.ReadFile("testdata/speech/orange-16000.flac")
+	raw, err := scoreboard.TestdataFiles.ReadFile("testdata/speech/orange-24000.flac")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -114,7 +114,7 @@ func TestDecodePCM16FLAC(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if rate != 16000 || len(got) == 0 || len(got)%2 != 0 {
+		if rate != 24000 || len(got) == 0 || len(got)%2 != 0 {
 			t.Fatalf("rate=%d bytes=%d", rate, len(got))
 		}
 	})

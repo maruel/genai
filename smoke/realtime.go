@@ -146,7 +146,7 @@ func RunRealtime(ctx context.Context, f RealtimeSessionFactory) (report Realtime
 	if !realtimeAudioSupported(&info) {
 		report.Probes = append(report.Probes, RealtimeProbeResult{Probe: RealtimeProbeAudio, Skipped: true, Reason: "session does not accept audio turns"})
 	} else {
-		if err := realtimeAudioTurn(ctx, ev, s, &info, realtimeAudioPrompt, RealtimeProbeAudio, false); err != nil {
+		if err := realtimeAudioTurn(ctx, ev, s, &info, speechFixtureOrange, RealtimeProbeAudio, false); err != nil {
 			return report, err
 		}
 		report.Probes = append(report.Probes, RealtimeProbeResult{Probe: RealtimeProbeAudio})
@@ -184,7 +184,7 @@ func RunRealtime(ctx context.Context, f RealtimeSessionFactory) (report Realtime
 			report.Probes = append(report.Probes, RealtimeProbeResult{Probe: RealtimeProbeAudioTool, Skipped: true, Reason: "audio-tool session does not accept audio turns"})
 		default:
 			aev := newRealtimeEvents(ctx, as, &report)
-			turnErr := realtimeAudioTurn(ctx, aev, as, &ainfo, realtimeAudioToolPrompt, RealtimeProbeAudioTool, true)
+			turnErr := realtimeAudioTurn(ctx, aev, as, &ainfo, speechFixtureCode, RealtimeProbeAudioTool, true)
 			aev.release()
 			closeErr := as.Close()
 			if closeErr != nil {
@@ -321,15 +321,13 @@ func realtimePreviousTools(c genai.Provider, model string) scoreboard.TriState {
 const realtimeEventBudget = 1000
 
 const (
-	realtimeTextPrompt      = "Say hello. Use only one word."
-	realtimeReusePrompt     = "Say goodbye. Use only one word."
-	realtimeAudioPrompt     = "Please say the word orange."
-	realtimeAudioToolPrompt = "What is the access code? Call the lookup code tool, then reply with only the code."
-	realtimeToolPrompt      = "What is the access code? Call lookup_code, then use its result. Reply with only the code."
-	realtimeToolName        = "lookup_code"
-	realtimeToolResult      = `{"code":"violet seven"}`
-	realtimeToolCode        = "violet seven"
-	realtimeCancelPrompt    = "Count slowly from one to one hundred. Say each number as a separate word."
+	realtimeTextPrompt   = "Say hello. Use only one word."
+	realtimeReusePrompt  = "Say goodbye. Use only one word."
+	realtimeToolPrompt   = "What is the access code? Call lookup_code, then use its result. Reply with only the code."
+	realtimeToolName     = "lookup_code"
+	realtimeToolResult   = `{"code":"violet seven"}`
+	realtimeToolCode     = "violet seven"
+	realtimeCancelPrompt = "Count slowly from one to one hundred. Say each number as a separate word."
 )
 
 // realtimeToolDefs returns the session tools the tool probe expects.
@@ -396,9 +394,9 @@ func sendRealtimeAudio(ctx context.Context, s genai.RealtimeSession, audio []byt
 }
 
 // realtimeAudioTurn sends one synthesized audio turn.
-func realtimeAudioTurn(ctx context.Context, ev *realtimeEvents, s genai.RealtimeSession, info *genai.RealtimeSessionInfo, text string, probe RealtimeProbe, expectTool bool) error {
+func realtimeAudioTurn(ctx context.Context, ev *realtimeEvents, s genai.RealtimeSession, info *genai.RealtimeSessionInfo, fixture speechFixture, probe RealtimeProbe, expectTool bool) error {
 	rate := info.InputFormat.SampleRate
-	audio, err := speech(ctx, text, rate)
+	audio, err := speech(ctx, fixture, rate)
 	if err != nil {
 		return fmt.Errorf("probe %s: synthesize audio: %w", probe, err)
 	}

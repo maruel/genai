@@ -58,32 +58,29 @@ func TestResamplePCM16(t *testing.T) {
 
 func TestSpeech(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		for _, text := range []string{
-			"Please say the word orange.",
-			"What is the access code? Call the lookup code tool, then reply with only the code.",
-		} {
+		for _, fixture := range []speechFixture{speechFixtureCode, speechFixtureOrange} {
 			for _, rate := range []int{8000, 16000, 24000} {
-				got, err := speech(t.Context(), text, rate)
+				got, err := speech(t.Context(), fixture, rate)
 				if err != nil {
-					t.Fatalf("text=%q rate=%d: %v", text, rate, err)
+					t.Fatalf("fixture=%q rate=%d: %v", fixture, rate, err)
 				}
 				if len(got) == 0 || len(got)%2 != 0 {
-					t.Fatalf("text=%q rate=%d: %d bytes", text, rate, len(got))
+					t.Fatalf("fixture=%q rate=%d: %d bytes", fixture, rate, len(got))
 				}
 			}
 		}
 	})
 
 	t.Run("error", func(t *testing.T) {
-		if _, err := speech(t.Context(), "unknown", 16000); err == nil {
-			t.Fatal("accepted unknown text")
+		if _, err := speech(t.Context(), speechFixture("unknown"), 16000); err == nil {
+			t.Fatal("accepted unknown fixture")
 		}
-		if _, err := speech(t.Context(), "Please say the word orange.", 0); err == nil {
+		if _, err := speech(t.Context(), speechFixtureOrange, 0); err == nil {
 			t.Fatal("accepted zero rate")
 		}
 		ctx, cancel := context.WithCancel(t.Context())
 		cancel()
-		if _, err := speech(ctx, "Please say the word orange.", 16000); err == nil {
+		if _, err := speech(ctx, speechFixtureOrange, 16000); err == nil {
 			t.Fatal("accepted canceled context")
 		}
 	})

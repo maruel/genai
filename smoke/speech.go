@@ -12,7 +12,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"strings"
 
 	flacpcm "github.com/tphakala/go-flac/pcm"
 
@@ -63,38 +62,36 @@ func ResamplePCM16(in []byte, fromRate, toRate int) ([]byte, error) {
 	return out, nil
 }
 
-// speech returns synthesized speech for a realtime audio probe.
+// speechFixture identifies a recorded speech fixture.
+type speechFixture string
+
+const (
+	speechFixtureCode   speechFixture = "code"
+	speechFixtureOrange speechFixture = "orange"
+)
+
+// speech returns the named 24 kHz fixture as mono PCM16LE at rate.
 //
-// The recorded phrases match the smoke runner's audio prompts. It returns mono
-// PCM16LE at rate. It uses the 16 kHz or 24 kHz FLAC fixture and resamples only
-// when the session requests another rate.
-func speech(ctx context.Context, text string, rate int) ([]byte, error) {
+// It resamples only when the session requests another rate.
+func speech(ctx context.Context, fixture speechFixture, rate int) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
 	if rate <= 0 {
 		return nil, errors.New("speech rate must be positive")
 	}
-	base := ""
-	switch {
-	case strings.Contains(text, "orange"):
-		base = "orange"
-	case strings.Contains(text, "access code"):
-		base = "code"
+	switch fixture {
+	case speechFixtureCode, speechFixtureOrange:
 	default:
-		return nil, fmt.Errorf("no speech fixture for %q", text)
+		return nil, fmt.Errorf("unknown speech fixture %q", fixture)
 	}
-	fixtureRate := 16000
-	if rate >= 24000 {
-		fixtureRate = 24000
-	}
-	raw, err := scoreboard.TestdataFiles.ReadFile(fmt.Sprintf("testdata/speech/%s-%d.flac", base, fixtureRate))
+	raw, err := scoreboard.TestdataFiles.ReadFile(fmt.Sprintf("testdata/speech/%s-24000.flac", fixture))
 	if err != nil {
 		return nil, err
 	}
 	pcm, gotRate, err := DecodePCM16FLAC(raw)
 	if err != nil {
-		return nil, fmt.Errorf("decode %s speech: %w", base, err)
+		return nil, fmt.Errorf("decode %s speech: %w", fixture, err)
 	}
 	if gotRate == rate {
 		return pcm, nil

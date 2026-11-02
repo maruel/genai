@@ -288,6 +288,28 @@ func (i *InjectOptions) inject(opts []genai.GenOption) []genai.GenOption {
 	return mergeGenOptions(opts, i.Opts)
 }
 
+// InjectRealtimeOptions appends options to the provider ConnectRealtime calls.
+//
+// The caller's options are kept first. The provider rejects a duplicate option
+// type, so a caller must not pass an option type that Opts also contains.
+type InjectRealtimeOptions struct {
+	genai.Provider
+	Opts []genai.RealtimeOption
+}
+
+// ConnectRealtime implements genai.Provider.
+func (i *InjectRealtimeOptions) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	injected := make([]genai.RealtimeOption, 0, len(opts)+len(i.Opts))
+	injected = append(injected, opts...)
+	injected = append(injected, i.Opts...)
+	return i.Provider.ConnectRealtime(ctx, injected...)
+}
+
+// Unwrap returns the wrapped provider.
+func (i *InjectRealtimeOptions) Unwrap() genai.Provider {
+	return i.Provider
+}
+
 // mergeGenOptions returns base with injected merged in.
 //
 // Injected options of a type absent from base are appended. For a type already in base, injected fills only

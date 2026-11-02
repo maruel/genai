@@ -48,6 +48,12 @@ func printList(ctx context.Context, w io.Writer) error {
 			if f := scenario.SystemOne; f != nil {
 				_, _ = fmt.Fprintf(w, "    SystemOne: noul=%t choice=%t score=%t object=%t array=%t usage=%s\n", f.Noul, f.Choice, f.Score, f.Object, f.Array, f.ReportTokenUsage)
 			}
+			if scenario.Reason {
+				_, _ = fmt.Fprintf(w, "    thinking: enabled\n")
+			}
+			if f := scenario.Realtime; f != nil {
+				_, _ = fmt.Fprintf(w, "    Realtime: input=%dHz output=%dHz%s\n", f.InputSampleRate, f.OutputSampleRate, realtimeCapabilities(f))
+			}
 			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
 				_, _ = fmt.Fprintf(w, "    in/out:   text only\n")
 			} else {
@@ -96,6 +102,26 @@ func modalityMapToString(m map[genai.Modality]scoreboard.ModalCapability) string
 // isTextOnly checks if a modality map contains only text.
 func isTextOnly(m map[genai.Modality]scoreboard.ModalCapability) bool {
 	return len(m) == 1 && m[genai.ModalityText].Inline
+}
+
+// realtimeCapabilities returns the accepted realtime operations, prefixed with a
+// space when any are set.
+func realtimeCapabilities(f *scoreboard.RealtimeFunctionality) string {
+	var items []string
+	if f.CancelResponse {
+		items = append(items, "cancelResponse")
+	}
+	switch f.Tools {
+	case scoreboard.True:
+		items = append(items, "tools")
+	case scoreboard.Flaky:
+		items = append(items, "tools=flaky")
+	case scoreboard.False:
+	}
+	if len(items) == 0 {
+		return ""
+	}
+	return " " + strings.Join(items, " ")
 }
 
 func functionality(f *scoreboard.Functionality) string {

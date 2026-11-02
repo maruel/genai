@@ -129,6 +129,35 @@
       }
     },
     {
+      "comments": "The audio tool probe forces the first tool call with tool_choice=required. Without it, LFM3-Audio answers the spoken probe with speech instead of calling the tool. The forced audio tool roundtrip is flaky: 2 of 3 live runs passed.",
+      "models": [
+        "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 16000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "flaky",
+        "reportTokenUsage": "true"
+      }
+    },
+    {
       "models": [
         "LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf"
       ],

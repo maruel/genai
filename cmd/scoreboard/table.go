@@ -37,6 +37,7 @@ const legend = `<details>
 - 💬: Text
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
+- Realtime: Bidirectional audio and text session through ConnectRealtime
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -114,6 +115,9 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 			}
 			if s.Scenarios[i].SystemOne != nil {
 				t.initFromSystemOne(&s.Scenarios[i])
+			}
+			if s.Scenarios[i].Realtime != nil {
+				t.initFromRealtime(&s.Scenarios[i])
 			}
 			// Assume GenSync has the best values.
 			f := s.Scenarios[i].GenSync
@@ -199,6 +203,20 @@ func (t *tableDataRow) initFromSystemOne(s *scoreboard.Scenario) {
 		}
 		t.Mode += "SystemOne"
 	}
+}
+
+func (t *tableDataRow) initFromRealtime(s *scoreboard.Scenario) {
+	if !strings.Contains(t.Mode, "Realtime") {
+		if t.Mode != "" {
+			t.Mode += ", "
+		}
+		t.Mode += "Realtime"
+	}
+	t.initFromScenario(s, &scoreboard.Functionality{
+		Tools:            s.Realtime.Tools,
+		ReportRateLimits: s.Realtime.ReportRateLimits,
+		ReportTokenUsage: s.Realtime.ReportTokenUsage,
+	})
 }
 
 func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Functionality) {
@@ -404,6 +422,12 @@ func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
 		if sc.SystemOne != nil {
 			row := tableModelRow{}
 			row.initFromSystemOne(sc)
+			fillEmptyFields(&row, "❌")
+			tmpRows = append(tmpRows, row)
+		}
+		if sc.Realtime != nil {
+			row := tableModelRow{}
+			row.initFromRealtime(sc)
 			fillEmptyFields(&row, "❌")
 			tmpRows = append(tmpRows, row)
 		}

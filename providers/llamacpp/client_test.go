@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -27,6 +28,9 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
+
+	"github.com/coder/websocket"
 
 	"github.com/maruel/roundtrippers"
 
@@ -34,6 +38,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/genai/scoreboard"
@@ -44,6 +49,465 @@ import (
 const embeddingModel = "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
 
 func TestClient(t *testing.T) {
+	t.Run("ConnectRealtime", func(t *testing.T) {
+		t.Run("unsupported option type", func(t *testing.T) {
+			s, err := realtimeClient(t, "http://127.0.0.1:1").ConnectRealtime(t.Context(), genai.GenOptionSeed(1))
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); s != nil || !ok {
+				t.Fatalf("unsupported option: %+v, %v", s, err)
+			}
+		})
+		t.Run("valid", func(t *testing.T) {
+			t.Run("incremental audio tools and native rates", func(t *testing.T) {
+				commands := make(chan []map[string]any, 1)
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					setup := realtimeSetup(t, ctx, ws)
+					if !reflect.DeepEqual(setup["output_modalities"], []any{"text", "audio"}) || setup["max_output_tokens"] != float64(128) {
+						t.Errorf("setup %#v", setup)
+					}
+					got := make([]map[string]any, 0, 8)
+					for range 5 {
+						got = append(got, realtimetest.Read(t, ctx, ws))
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.created","response":{"id":"r_tools"}}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.function_call_arguments.delta","response_id":"r_tools","item_id":"i","output_index":0,"delta":"{}"}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.function_call_arguments.done","response_id":"r_tools","item_id":"i","output_index":0,"call_id":"c","name":"lookup","arguments":"{}"}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.done","response":{"id":"r_tools","status":"completed","output":[{"type":"function_call","call_id":"c","name":"lookup","arguments":"{}"},{"type":"function_call","call_id":"d","name":"lookup","arguments":"{}"}],"usage":{"output_tokens":5}}}`)
+					for range 3 {
+						got = append(got, realtimetest.Read(t, ctx, ws))
+					}
+					commands <- got
+					for _, b := range []string{
+						`{"type":"response.created","response":{"id":"r_audio"}}`,
+						`{"type":"response.output_text.delta","response_id":"r_audio","item_id":"a","delta":"Hi"}`,
+						`{"type":"response.output_audio.delta","response_id":"r_audio","item_id":"a","content_index":1,"delta":"AQACAA=="}`,
+						`{"type":"response.output_text.done","response_id":"r_audio","item_id":"a","text":"Hi."}`,
+						`{"type":"response.done","response":{"id":"r_audio","status":"completed"}}`,
+					} {
+						realtimetest.Write(t, ctx, ws, b)
+					}
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), genai.Modalities{genai.ModalityAudio, genai.ModalityText}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &llamacpp.RealtimeOption{MaxOutputTokens: 128, RequireToolCall: true})
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				info := s.Info()
+				want := genai.RealtimeSessionInfo{ID: "local", InputFormat: genai.AudioFormat{SampleRate: 16000}, OutputFormat: genai.AudioFormat{SampleRate: 24000}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true, CancelResponse: true, ToolResults: true, Update: genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true, ToolChoiceRequired: true, MaxOutputTokens: true, OutputModalities: true}}}
+				if info != want {
+					t.Fatalf("info %+v, want %+v", info, want)
+				}
+				for _, in := range []genai.RealtimeInput{genai.RealtimeInputContent{Text: "context"}, genai.RealtimeInputContent{Audio: []byte{1, 0}}, genai.RealtimeInputContent{Audio: []byte{2, 0}}, genai.RealtimeInputContent{Commit: true, Generate: true}} {
+					if err := s.Send(t.Context(), in); err != nil {
+						t.Fatal(err)
+					}
+				}
+				p := realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+				if p.ProviderEvent.RealtimeEventName() != "response.function_call_arguments.delta" {
+					t.Fatalf("provider event %+v", p)
+				}
+				if d, ok := p.ProviderEvent.(*llamacpp.FunctionCallArgsDelta); !ok || d.ItemID != "i" || d.Delta != "{}" {
+					t.Fatalf("delta %+v", p)
+				}
+				p = realtimetest.Receive(t, s, genai.RealtimeEventProvider)
+				if d, ok := p.ProviderEvent.(*llamacpp.FunctionCallArgsDone); !ok || d.CallID != "c" || d.Name != "lookup" || d.Arguments != "{}" {
+					t.Fatalf("done %+v", p)
+				}
+				e := realtimetest.Receive(t, s, genai.RealtimeEventContentToolCalls)
+				if len(e.Content.ToolCalls) != 2 || e.Content.ToolCalls[0].ID != "c" {
+					t.Fatal(e)
+				}
+				u := realtimetest.Receive(t, s, genai.RealtimeEventUsage)
+				if u.Usage.OutputTokens != 5 {
+					t.Fatal(u)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "cannot skip pending tool"}); err == nil {
+					t.Fatal("accepted new input before tool results")
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "c", Name: "wrong", Result: "value"}}, Generate: true}); err == nil {
+					t.Fatal("mismatched tool name accepted")
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "d", Name: "lookup", Result: "second"}, {ID: "c", Name: "lookup", Result: "value"}}, Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				got := <-commands
+				wantCommands := []map[string]any{
+					{"type": "conversation.item.create", "item": map[string]any{"type": "message", "role": "user", "content": []any{map[string]any{"type": "input_text", "text": "context"}}}},
+					{"type": "input_audio_buffer.append", "audio": "AQA="}, {"type": "input_audio_buffer.append", "audio": "AgA="}, {"type": "input_audio_buffer.commit"}, {"type": "response.create", "response": map[string]any{"tool_choice": "required"}},
+					{"type": "conversation.item.create", "item": map[string]any{"type": "function_call_output", "call_id": "c", "output": "value"}}, {"type": "conversation.item.create", "item": map[string]any{"type": "function_call_output", "call_id": "d", "output": "second"}}, {"type": "response.create"},
+				}
+				if !reflect.DeepEqual(got, wantCommands) {
+					t.Fatalf("commands %#v", got)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventContentText)
+				a := realtimetest.Receive(t, s, genai.RealtimeEventContentAudio)
+				if !bytes.Equal(a.Content.Audio, []byte{1, 0, 2, 0}) || a.ContentIndex != 1 {
+					t.Fatal(a)
+				}
+				e = realtimetest.Receive(t, s, genai.RealtimeEventContentText)
+				if !e.Content.Final || e.Content.Text != "Hi." {
+					t.Fatal(e)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+			})
+			t.Run("discover model-defined native formats", func(t *testing.T) {
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					frame := strings.ReplaceAll(strings.ReplaceAll(nativeSession, `"rate":16000`, `"rate":8000`), `"rate":24000`, `"rate":48000`)
+					realtimetest.Write(t, ctx, ws, frame)
+					m := realtimetest.Read(t, ctx, ws)
+					settings := m["session"].(map[string]any)
+					settings["id"] = "local"
+					b, err := json.Marshal(map[string]any{"type": "session.updated", "session": settings})
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					realtimetest.Write(t, ctx, ws, string(b))
+					_, _, _ = ws.Read(ctx)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if info := s.Info(); info.InputFormat != (genai.AudioFormat{SampleRate: 8000}) || info.OutputFormat != (genai.AudioFormat{SampleRate: 48000}) {
+					t.Fatalf("native model format discovery: %+v", info)
+				}
+			})
+			t.Run("target current response", func(t *testing.T) {
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimeSetup(t, ctx, ws)
+					for range 2 {
+						realtimetest.Read(t, ctx, ws)
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.created","response":{"id":"active"}}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.output_text.delta","response_id":"active","item_id":"text","delta":"speaking"}`)
+					if m := realtimetest.Read(t, ctx, ws); !reflect.DeepEqual(m, map[string]any{"type": "response.cancel", "response_id": "active"}) {
+						t.Errorf("targeted cancellation: %+v", m)
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.done","response":{"id":"active","status":"cancelled"}}`)
+					_, _, _ = ws.Read(ctx)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "first", Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventContentText)
+				if err := s.Send(t.Context(), genai.RealtimeCancel{ResponseID: "wrong"}); err == nil || errors.Is(err, llamacpp.ErrNoActiveResponse) {
+					t.Fatalf("wrong active target: %v", err)
+				}
+				if err := s.Send(t.Context(), genai.RealtimeCancel{ResponseID: "active"}); err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventInterrupted)
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+			})
+			t.Run("cancel pending response and queue next streamed turn", func(t *testing.T) {
+				done := make(chan struct{})
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimeSetup(t, ctx, ws)
+					for range 2 {
+						realtimetest.Read(t, ctx, ws)
+					}
+					m := realtimetest.Read(t, ctx, ws)
+					if m["type"] != "response.cancel" {
+						t.Fatal("missing cancel")
+					}
+					for _, b := range []string{
+						`{"type":"response.created","response":{"id":"old"}}`,
+						`{"type":"response.output_audio.delta","response_id":"old","item_id":"a","delta":"AQACAA=="}`,
+						`{"type":"response.output_text.delta","response_id":"old","item_id":"a","delta":"stale"}`,
+						`{"type":"response.function_call_arguments.done","response_id":"old","call_id":"never","name":"lookup","arguments":"{}"}`,
+						`{"type":"response.done","response":{"id":"old","status":"cancelled","output":[{"type":"function_call","call_id":"never","name":"lookup","arguments":"{}"}]}}`,
+					} {
+						realtimetest.Write(t, ctx, ws, b)
+					}
+					for _, kind := range []string{"input_audio_buffer.append", "input_audio_buffer.commit", "response.create"} {
+						if m := realtimetest.Read(t, ctx, ws); m["type"] != kind {
+							t.Errorf("next command %+v, want %s", m, kind)
+						}
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.created","response":{"id":"new"}}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.output_text.done","response_id":"new","item_id":"b","text":"fresh"}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.done","response":{"id":"new","status":"completed"}}`)
+					close(done)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if err := s.Send(t.Context(), genai.RealtimeCancel{}); !errors.Is(err, llamacpp.ErrNoActiveResponse) {
+					t.Fatal("idle cancel would poison next response")
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "first", Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				for _, in := range []genai.RealtimeInput{genai.RealtimeInputContent{Audio: []byte{1, 0}}, genai.RealtimeCancel{ResponseID: "unknown"}} {
+					if err := s.Send(t.Context(), in); err == nil {
+						t.Fatal("invalid active command accepted")
+					}
+				}
+				if err := s.Send(t.Context(), genai.RealtimeCancel{}); err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventInterrupted)
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{1, 0}, Commit: true, Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				e := realtimetest.Receive(t, s, genai.RealtimeEventContentText)
+				if e.Content.Text != "fresh" || e.ResponseID != "new" {
+					t.Fatal(e)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+				<-done
+			})
+
+			t.Run("cancel after decoding terminal response before completion delivery", func(t *testing.T) {
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimeSetup(t, ctx, ws)
+					for _, kind := range []string{"conversation.item.create", "response.create"} {
+						if m := realtimetest.Read(t, ctx, ws); m["type"] != kind {
+							t.Errorf("initial command %+v, want %s", m, kind)
+						}
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.created","response":{"id":"old"}}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.done","response":{"id":"old","status":"completed","usage":{"input_tokens":1,"output_tokens":1,"total_tokens":2}}}`)
+					// These must be the next commands: idle/targeted/unsupported
+					// rejections cannot leak any cancellation to the next response.
+					for _, kind := range []string{"input_audio_buffer.append", "input_audio_buffer.commit", "response.create"} {
+						if m := realtimetest.Read(t, ctx, ws); m["type"] != kind {
+							t.Errorf("next command %+v, want %s", m, kind)
+						}
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.created","response":{"id":"new"}}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.output_text.done","response_id":"new","item_id":"text","text":"fresh"}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.done","response":{"id":"new","status":"completed"}}`)
+					_, _, _ = ws.Read(ctx)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "first", Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				// Usage is the first event from response.done, proving the complete
+				// terminal frame was decoded while GenerationDone remains queued.
+				realtimetest.Receive(t, s, genai.RealtimeEventUsage)
+				if err := s.Send(t.Context(), genai.RealtimeCancel{}); !errors.Is(err, llamacpp.ErrNoActiveResponse) {
+					t.Fatalf("idle cancel: %v", err)
+				}
+				for _, id := range []string{"old", "unknown"} {
+					err := s.Send(t.Context(), genai.RealtimeCancel{ResponseID: id})
+					if _, unsupported := errors.AsType[*base.ErrNotSupported](err); err == nil || errors.Is(err, llamacpp.ErrNoActiveResponse) || unsupported {
+						t.Fatalf("invalid targeted cancellation: %v", err)
+					}
+				}
+				err = s.Send(t.Context(), genai.RealtimeTruncate{ItemID: "a"})
+				if _, unsupported := errors.AsType[*base.ErrNotSupported](err); !unsupported || errors.Is(err, llamacpp.ErrNoActiveResponse) {
+					t.Fatalf("unsupported command: %v", err)
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{1, 0}, Commit: true, Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+				if e := realtimetest.Receive(t, s, genai.RealtimeEventContentText); e.Content.Text != "fresh" || e.ResponseID != "new" {
+					t.Fatal(e)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			t.Run("unsupported setup and options", func(t *testing.T) {
+				c := realtimeClient(t, "http://127.0.0.1:1")
+				if _, err := c.ConnectRealtime(t.Context(), nil); err == nil {
+					t.Fatal("nil option accepted")
+				}
+				for _, tc := range []struct {
+					name string
+					opt  genai.RealtimeOption
+				}{
+					{"audio", &genai.RealtimeOptionAudio{}},
+					{"voice", &genai.RealtimeOptionAudio{Voice: "voice"}},
+					{"input transcription", &genai.RealtimeOptionAudio{InputTranscription: true}},
+					{"output transcription", &genai.RealtimeOptionAudio{OutputTranscription: true}},
+					{"server turns", genai.RealtimeTurnServer},
+					{"output modality", genai.Modalities{genai.ModalityImage}},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						_, err := c.ConnectRealtime(t.Context(), tc.opt)
+						if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+							t.Fatalf("error = %v, want ErrNotSupported", err)
+						}
+					})
+				}
+				for _, o := range []*llamacpp.RealtimeOption{{MaxOutputTokens: -1}, {MaxOutputTokens: 1 << 32}, {PingInterval: -time.Second}, {Endpoint: "http://127.0.0.1:1"}, {Endpoint: "ws://"}, nil} {
+					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
+						t.Fatal("invalid option accepted")
+					}
+				}
+				if _, err := c.ConnectRealtime(t.Context(), &llamacpp.RealtimeOption{}, &llamacpp.RealtimeOption{}); err == nil || !strings.Contains(err.Error(), "duplicate realtime option type") {
+					t.Fatal("duplicate options accepted")
+				}
+			})
+			t.Run("malformed native formats before setup write", func(t *testing.T) {
+				for name, frame := range map[string]string{
+					"input zero rate":     strings.Replace(nativeSession, `"rate":16000`, `"rate":0`, 1),
+					"input negative rate": strings.Replace(nativeSession, `"rate":16000`, `"rate":-1`, 1),
+					"input encoding":      strings.Replace(nativeSession, `"type":"audio/pcm","rate":16000`, `"type":"audio/pcmu","rate":16000`, 1),
+					"output zero rate":    strings.Replace(nativeSession, `"rate":24000`, `"rate":0`, 1),
+					"output encoding":     strings.Replace(nativeSession, `"type":"audio/pcm","rate":24000`, `"type":"audio/pcmu","rate":24000`, 1),
+				} {
+					t.Run(name, func(t *testing.T) {
+						done := make(chan struct{})
+						remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+							realtimetest.Write(t, ctx, ws, frame)
+							if _, _, err := ws.Read(ctx); err == nil {
+								t.Error("malformed native format wrote setup")
+							}
+							close(done)
+						})
+						if _, err := realtimeClient(t, remote).ConnectRealtime(t.Context()); err == nil {
+							t.Fatal("malformed native format accepted")
+						}
+						<-done
+					})
+				}
+			})
+			t.Run("command ownership", func(t *testing.T) {
+				done := make(chan struct{})
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimeSetup(t, ctx, ws)
+					for _, want := range []string{"input_audio_buffer.append", "input_audio_buffer.append", "input_audio_buffer.commit", "response.create"} {
+						m := realtimetest.Read(t, ctx, ws)
+						if m["type"] != want {
+							t.Errorf("command %#v", m)
+						}
+					}
+					close(done)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				for _, in := range []genai.RealtimeInput{genai.RealtimeTruncate{ItemID: "a"}} {
+					if err := s.Send(t.Context(), in); err == nil {
+						t.Fatal("invalid command accepted")
+					}
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{1, 0}}); err != nil {
+					t.Fatal(err)
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "turn", Generate: true}); err == nil {
+					t.Fatal("generation implicitly committed audio")
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{2, 0}, Commit: true, Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				<-done
+			})
+			t.Run("malformed accepted configuration", func(t *testing.T) {
+				for _, field := range []string{"rate", "modality", "tools", "transcription"} {
+					t.Run(field, func(t *testing.T) {
+						remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+							realtimetest.Write(t, ctx, ws, nativeSession)
+							m := realtimetest.Read(t, ctx, ws)
+							v := m["session"].(map[string]any)
+							v["id"] = "local"
+							switch field {
+							case "rate":
+								v["audio"].(map[string]any)["output"].(map[string]any)["format"].(map[string]any)["rate"] = json.Number("16000")
+							case "modality":
+								v["output_modalities"] = []string{"audio", "text", "audio"}
+							case "tools":
+								v["tools"] = []any{map[string]any{"type": "function", "name": "extra", "parameters": map[string]any{"type": "object"}}}
+							case "transcription":
+								v["audio"].(map[string]any)["input"].(map[string]any)["transcription"] = map[string]any{"model": "ignored"}
+							}
+							b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
+							if err != nil {
+								t.Error(err)
+								return
+							}
+							realtimetest.Write(t, ctx, ws, string(b))
+						})
+						if _, err := realtimeClient(t, remote).ConnectRealtime(t.Context()); err == nil {
+							t.Fatal("changed setup accepted")
+						}
+					})
+				}
+			})
+			t.Run("recoverable errors release pending generation", func(t *testing.T) {
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimeSetup(t, ctx, ws)
+					for range 2 {
+						realtimetest.Read(t, ctx, ws)
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"error","error":{"type":"invalid_request_error","code":null,"message":"bad request","param":null}}`)
+					for range 2 {
+						realtimetest.Read(t, ctx, ws)
+					}
+					realtimetest.Write(t, ctx, ws, `{"type":"response.created","response":{"id":"recovered"}}`)
+					realtimetest.Write(t, ctx, ws, `{"type":"response.done","response":{"id":"recovered","status":"completed"}}`)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "first", Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventError)
+				if err := s.Send(t.Context(), genai.RealtimeCancel{}); err == nil {
+					t.Fatal("rejected generation remained cancellable")
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "retry", Generate: true}); err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
+				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+			})
+			t.Run("lifetime cancellation", func(t *testing.T) {
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) { realtimeSetup(t, ctx, ws) })
+				ctx, cancel := context.WithCancel(t.Context())
+				t.Cleanup(cancel)
+				s, err := realtimeClient(t, remote).ConnectRealtime(ctx)
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				cancel()
+				next, stop := iter.Pull2(s.Receive(t.Context()))
+				_, err, ok := next()
+				stop()
+				if !ok {
+					t.Fatal("realtime session ended")
+				}
+				if !errors.Is(err, context.Canceled) {
+					t.Fatal(err)
+				}
+				if err := s.Send(t.Context(), genai.RealtimeCancel{}); !errors.Is(err, context.Canceled) || errors.Is(err, llamacpp.ErrNoActiveResponse) {
+					t.Fatalf("closed transport cancellation: %v", err)
+				}
+			})
+		})
+	})
+
 	t.Run("New", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			t.Run("embedding preference", func(t *testing.T) {
@@ -302,9 +766,8 @@ func TestClient(t *testing.T) {
 		ctx := t.Context()
 		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			embedding := model.Model == embeddingModel
-			opts := []genai.ProviderOption{
-				genai.ProviderOptionRemote(s.lazyStartModel(t, model)), //nolint:contextcheck // uses l.t.Context() for server lifecycle
-			}
+			remote := s.lazyStartModel(t, model) //nolint:contextcheck // uses l.t.Context() for server lifecycle
+			opts := []genai.ProviderOption{genai.ProviderOptionRemote(remote)}
 			if embedding {
 				opts = append(opts, genai.ProviderOptionModalities{genai.ModalityEmbedding})
 			}
@@ -326,18 +789,44 @@ func TestClient(t *testing.T) {
 			if err2 != nil {
 				t.Fatal(err2)
 			}
+			var p genai.Provider = &internaltest.InjectOptions{
+				Provider: c2,
+				Opts:     []genai.GenOption{&llamacpp.GenOption{}},
+			}
 			if model.Reason {
-				return &internaltest.InjectOptions{
+				p = &internaltest.InjectOptions{
 					Provider: c2,
 					Opts:     []genai.GenOption{&llamacpp.GenOption{ReasoningFormat: llamacpp.ReasoningFormatDeepSeek, Thinking: true}},
 				}
 			}
-			// llama-server defaults enable_thinking to true, so explicitly
-			// disable it for non-reasoning scenarios.
-			return &internaltest.InjectOptions{
-				Provider: c2,
-				Opts:     []genai.GenOption{&llamacpp.GenOption{}},
+			rec := &internaltest.RealtimeRecorder{
+				Provider: p,
+				T:        t,
+				Target:   "ws" + strings.TrimPrefix(remote, "http") + "/v1/realtime",
+				Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
+				Updating: smoketest.UpdatingScoreboard(),
+				Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
+					out := slices.Clone(opts)
+					for i, opt := range out {
+						if o, ok := opt.(*llamacpp.RealtimeOption); ok {
+							clone := *o
+							clone.Endpoint = endpoint
+							out[i] = &clone
+							return out
+						}
+					}
+					return append(out, &llamacpp.RealtimeOption{Endpoint: endpoint})
+				},
 			}
+			if model.Model == "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf" {
+				// LFM3-Audio answers the spoken tool probe instead of calling the tool
+				// unless the first response requires a tool call.
+				return &internaltest.InjectRealtimeOptions{
+					Provider: rec,
+					Opts:     []genai.RealtimeOption{&llamacpp.RealtimeOption{RequireToolCall: true}},
+				}
+			}
+			return rec
 		}, models, testRecorder.Records, &smoketest.RunOptions{
 			Qualify: []scoreboard.Model{{Model: embeddingModel}},
 			// Gemma 4 emits reasoning content even with enable_thinking=false.
@@ -455,13 +944,10 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		// no server is needed.
 		return "http://127.0.0.1:0"
 	}
-	// Skip server startup when not recording. The HTTP cassettes in testdata/
-	// are replayed by the recording transport so the URL is never contacted.
-	if os.Getenv("RECORD") == "" {
+	// Replay HTTP cassettes in normal tests. Scoreboard updates own a managed
+	// llama-server so every measured row comes from a live process.
+	if os.Getenv("RECORD") == "" && !smoketest.UpdatingScoreboard() {
 		return "http://127.0.0.1:0"
-	}
-	if url := os.Getenv("LLAMA_SERVER"); url != "" {
-		return url
 	}
 	l.mu.Lock()
 	defer l.mu.Unlock()

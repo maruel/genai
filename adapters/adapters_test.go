@@ -8,6 +8,7 @@ package adapters_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -145,6 +146,24 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 }
 
 func TestProviderUsage(t *testing.T) {
+	t.Run("ConnectRealtime through stacked adapters", func(t *testing.T) {
+		connectErr := errors.New("realtime setup failed")
+		provider := &realtimeProviderSpy{err: connectErr}
+		var p genai.Provider = &adapters.ProviderReasoning{Provider: &adapters.ProviderAppend{Provider: &adapters.ProviderUsage{Provider: provider}}}
+		if !p.Capabilities().Realtime {
+			t.Fatal("adapters hid realtime implementation")
+		}
+		ctx := t.Context()
+		opt := &llamacpp.RealtimeOption{MaxOutputTokens: 42}
+		opts := []genai.RealtimeOption{genai.RealtimeOptionInstructions("voice instructions"), opt}
+		s, err := p.ConnectRealtime(ctx, opts...)
+		if s != nil || !errors.Is(err, connectErr) {
+			t.Fatalf("session %+v, error %v", s, err)
+		}
+		if provider.ctx != ctx || !slices.Equal(provider.opts, opts) {
+			t.Fatalf("forwarded context/options changed: %+v", provider)
+		}
+	})
 	t.Run("Embed", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			provider := &embeddingProviderSpy{}
@@ -299,4 +318,20 @@ func (p *embeddingProviderSpy) Embed(_ context.Context, in *genai.EmbeddingReque
 
 func (*embeddingProviderSpy) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{Embed: true}
+}
+
+type realtimeProviderSpy struct {
+	mockProviderGenSync
+	ctx  context.Context
+	opts []genai.RealtimeOption
+	err  error
+}
+
+func (p *realtimeProviderSpy) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	p.ctx, p.opts = ctx, opts
+	return nil, p.err
+}
+
+func (*realtimeProviderSpy) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{Realtime: true}
 }

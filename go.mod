@@ -9,6 +9,7 @@ require (
 	github.com/klauspost/compress v1.20.1
 	github.com/maruel/httpjson v0.5.3
 	github.com/maruel/roundtrippers v0.5.1
+	github.com/tphakala/go-flac v1.4.0
 	golang.org/x/image v0.43.0
 	golang.org/x/sync v0.23.0
 	gopkg.in/dnaeon/go-vcr.v4 v4.0.7
@@ -203,6 +204,7 @@ require (
 	github.com/timonwong/loggercheck v0.12.0 // indirect
 	github.com/tomarrell/wrapcheck/v2 v2.12.0 // indirect
 	github.com/tommy-muehle/go-mnd/v2 v2.5.1 // indirect
+	github.com/tphakala/simd v1.14.0 // indirect
 	github.com/ultraware/funlen v0.2.0 // indirect
 	github.com/ultraware/whitespace v0.2.0 // indirect
 	github.com/uudashr/gocognit v1.2.1 // indirect
@@ -223,7 +225,7 @@ require (
 	go.yaml.in/yaml/v4 v4.0.0-rc.6 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20260811152304-ee035b5b010f // indirect
 	golang.org/x/mod v0.41.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/term v0.46.0 // indirect
 	golang.org/x/text v0.42.0 // indirect
 	golang.org/x/tools v0.50.0 // indirect

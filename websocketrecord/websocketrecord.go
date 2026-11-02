@@ -43,6 +43,13 @@ import (
 	"github.com/coder/websocket"
 )
 
+// NormalizeFunc rewrites a WebSocket payload before recording and comparison.
+//
+// Returning the input unchanged is allowed. The recorder still forwards the
+// original payload while recording; only the fixture and replay comparison use
+// the normalized form.
+type NormalizeFunc func(typ websocket.MessageType, data []byte) []byte
+
 // message is a single recorded WebSocket message.
 type message struct {
 	Dir  string `json:"dir"`
@@ -91,6 +98,9 @@ func (m *message) validate() error {
 type Recorder struct {
 	fixture string
 	replay  bool
+
+	// Normalize rewrites payloads before recording and replay comparison.
+	Normalize NormalizeFunc
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -332,12 +342,21 @@ func (r *Recorder) replayConn(ctx context.Context, c *websocket.Conn) {
 			if err != nil {
 				return
 			}
-			if typ != m.messageType() || !bytes.Equal(data, m.payload()) {
+			want := m.payload()
+			if r.Normalize != nil {
+				data = r.Normalize(typ, data)
+				want = r.Normalize(m.messageType(), want)
+			}
+			if typ != m.messageType() || !bytes.Equal(data, want) {
 				_ = c.Close(websocket.StatusPolicyViolation, "replay message mismatch")
 				return
 			}
 		case "<":
-			if err := c.Write(ctx, m.messageType(), m.payload()); err != nil {
+			payload := m.payload()
+			if r.Normalize != nil {
+				payload = r.Normalize(m.messageType(), payload)
+			}
+			if err := c.Write(ctx, m.messageType(), payload); err != nil {
 				return
 			}
 		}
@@ -346,6 +365,9 @@ func (r *Recorder) replayConn(ctx context.Context, c *websocket.Conn) {
 }
 
 func (r *Recorder) record(dir string, typ websocket.MessageType, data []byte) error {
+	if r.Normalize != nil {
+		data = r.Normalize(typ, data)
+	}
 	m := message{Dir: dir}
 	if typ == websocket.MessageBinary {
 		m.Type = "binary"

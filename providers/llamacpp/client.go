@@ -57,7 +57,9 @@ import (
 	"iter"
 	"math"
 	"net/http"
+	"net/url"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -68,6 +70,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/realtime"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -348,7 +351,7 @@ func (c *Client) SystemOneRaw(ctx context.Context, in *SystemOneRequest, out *Sy
 
 // Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
-	return genai.ProviderCapabilities{Embed: true, SystemOne: true}
+	return genai.ProviderCapabilities{Realtime: true, Embed: true, SystemOne: true}
 }
 
 // SystemOne implements genai.Provider using /v1/systemone.
@@ -386,6 +389,222 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter.Seq[ChatStreamChunkResponse], finish func() error) {
 	return c.impl.GenStreamRaw(ctx, in)
+}
+
+// ConnectRealtime opens a native audio conversation on a realtime-capable
+// llama.cpp server. It negotiates the loaded model's PCM formats from
+// session.created and waits for session.updated to acknowledge them. The loaded
+// model owns selection; no model-list request occurs. LFM3 uses mono PCM16LE at
+// 16 kHz input and 24 kHz output. Empty output modalities select audio; request
+// text and audio for interleaved output. The caller owns tools, microphone
+// segmentation, playback and slot admission.
+//
+// The runtime supports manual turns, explicit generation, tools and response
+// cancellation. It supports neither server VAD, voice selection, transcription,
+// microphone stream-end/activity messages nor playback truncation. It rejects
+// RealtimeOptionAudio. Unsupported commands fail locally. Stream microphone
+// chunks, then set Commit to commit without generating or Generate to commit
+// pending audio and request generation. Empty commits and overlapping generation
+// are rejected before wire effects. LFM3 prefetches audio while the user speaks
+// and answers after the turn ends; input and output are not simultaneous. LFM3
+// conversation instructions should request its function-call and interleaved
+// text-and-audio format. Set RealtimeOption.RequireToolCall when
+// a model answers instead of calling a tool; LFM3-Audio does this with audio
+// output.
+//
+// Cancel before sending a new user turn while a response is active. Cancel can
+// arrive before response.created; the adapter reserves locally requested
+// responses. An explicit ResponseID must match the current observed response.
+// Microphone chunks and commit can follow cancellation immediately, but the next
+// generation must wait for terminal completion. Idle cancellation returns
+// ErrNoActiveResponse without a wire write. Late audio and text are
+// suppressed until the response finishes.
+// Cancel does not roll back prefilled audio or reconcile unheard output in model
+// history. The runtime's input_audio_buffer.clear does not remove input, so the
+// adapter does not expose it.
+//
+// Only complete successful responses authorize tools. Send one complete
+// correlated result batch before new user audio or text. Set Generate=true on
+// the results to continue the turn; otherwise they are passive context.
+// Function-call argument deltas and completions are informational provider
+// events. Cancelling a response
+// cannot discharge an already-completed tool batch. The adapter restores the
+// original call order. Host applications own bounded microphone queues while
+// tools run and must not discard input silently. The session retains the same
+// pending-call and history bounds as OpenAI. There is no automatic rolling
+// conversation or history surgery. See the managed runtime configuration for slot
+// and context sizing; context or output-limit exhaustion can end the connection
+// and may be reported as completed.
+//
+// Protocol source:
+// https://github.com/ggml-org/llama.cpp/blob/8642541b255bfb5dc39cd351a178be09013a55d6/tools/server/README.md#realtime-conversation
+func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	setup := SessionConfig{Type: SessionRealtime, OutputModalities: Modalities{genai.ModalityAudio}, Tools: ToolList{}}
+	var providerOpts []genai.RealtimeOption
+	seen := make(map[reflect.Type]struct{}, len(opts))
+	for _, opt := range opts {
+		if opt == nil || (reflect.ValueOf(opt).Kind() == reflect.Pointer && reflect.ValueOf(opt).IsNil()) {
+			return nil, errors.New("realtime option must not be nil")
+		}
+		t := reflect.TypeOf(opt)
+		if _, ok := seen[t]; ok {
+			return nil, fmt.Errorf("duplicate realtime option type %s", t)
+		}
+		seen[t] = struct{}{}
+		switch o := opt.(type) {
+		case genai.RealtimeOptionInstructions:
+			setup.Instructions = string(o)
+		case *genai.RealtimeOptionTools:
+			if err := setup.Tools.Init(o.Tools); err != nil {
+				return nil, err
+			}
+		case *genai.RealtimeOptionAudio:
+			return nil, fmt.Errorf("llama.cpp realtime does not support voice or transcription: %w", &base.ErrNotSupported{Options: []string{internal.TypeName(o)}})
+		case genai.Modalities:
+			for i, m := range o {
+				if m != genai.ModalityAudio && m != genai.ModalityText {
+					return nil, fmt.Errorf("realtime option %T: unsupported realtime output modality %q: %w", opt, m, &base.ErrNotSupported{Options: []string{string(m)}})
+				}
+				for _, prev := range o[:i] {
+					if prev == m {
+						return nil, fmt.Errorf("realtime option %T: duplicate output modality %q", opt, m)
+					}
+				}
+			}
+			switch len(o) {
+			case 0:
+			case 1:
+				setup.OutputModalities = Modalities{o[0]}
+			case 2:
+				setup.OutputModalities = Modalities{genai.ModalityText, genai.ModalityAudio}
+			}
+		case genai.RealtimeTurnDetection:
+			if o == genai.RealtimeTurnServer {
+				return nil, fmt.Errorf("llama.cpp realtime requires manual turns: %w", &base.ErrNotSupported{Options: []string{"server turns"}})
+			}
+		default:
+			providerOpts = append(providerOpts, opt)
+		}
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, fmt.Errorf("realtime option %T: %w", opt, err)
+		}
+	}
+	opts = providerOpts
+	o := RealtimeOption{}
+	for _, opt := range opts {
+		v, ok := opt.(*RealtimeOption)
+		if !ok {
+			return nil, fmt.Errorf("unsupported llama.cpp realtime option %T: %w", opt, &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opt)}})
+		}
+		o = *v
+	}
+	u, err := url.Parse(c.baseURL)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
+		return nil, errors.New("llama.cpp realtime requires an absolute HTTP(S) server URL without credentials, query or fragment")
+	}
+	if o.Endpoint != "" {
+		u, err = url.Parse(o.Endpoint)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		if u.Scheme == "https" {
+			u.Scheme = "wss"
+		} else {
+			u.Scheme = "ws"
+		}
+		u.Path = strings.TrimRight(u.Path, "/") + "/v1/realtime"
+	}
+	if o.PingInterval == 0 {
+		o.PingInterval = 30 * time.Second
+	}
+	if o.PingTimeout == 0 {
+		o.PingTimeout = 10 * time.Second
+	}
+	names := setup.Tools.Names()
+	if o.MaxOutputTokens != 0 {
+		setup.MaxOutputTokens = &MaxOutputTokens{Value: o.MaxOutputTokens}
+	}
+	ws, err := realtime.Dial(ctx, u.String(), c.HTTPClient(), maxMessageBytes, o.PingInterval, o.PingTimeout)
+	if err != nil {
+		return nil, err
+	}
+	var want *SessionConfig
+	var info genai.RealtimeSessionInfo
+	for range 32 {
+		data, err := ws.Read(ctx)
+		if err != nil {
+			return nil, errors.Join(err, ws.Close())
+		}
+		var m ServerMessage
+		if err := internal.UnmarshalJSON(data, &m); err != nil {
+			return nil, errors.Join(fmt.Errorf("invalid llama.cpp realtime setup payload: %w", err), ws.Close())
+		}
+		switch m.Type {
+		case EventSessionCreated:
+			if want != nil || m.Session == nil {
+				return nil, errors.Join(errors.New("invalid llama.cpp session creation"), ws.Close())
+			}
+			got := m.Session
+			if got.ID == "" || len(got.ID) > 256 || got.Type != SessionRealtime {
+				return nil, errors.Join(errors.New("invalid llama.cpp session identity"), ws.Close())
+			}
+			in, err := nativeFormat(got.Audio.Input.Format)
+			if err != nil {
+				return nil, errors.Join(err, ws.Close())
+			}
+			out, err := nativeFormat(got.Audio.Output.Format)
+			if err != nil {
+				return nil, errors.Join(err, ws.Close())
+			}
+			info = genai.RealtimeSessionInfo{ID: got.ID, InputFormat: in, OutputFormat: out, TurnDetection: genai.RealtimeTurnManual}
+			want = &setup
+			want.Audio = AudioConfig{Input: AudioInput{Format: got.Audio.Input.Format}, Output: AudioOutput{Format: got.Audio.Output.Format}}
+			data, err := json.Marshal(ClientMessage{Type: EventSessionUpdate, Session: want})
+			if err != nil {
+				return nil, errors.Join(err, ws.Close())
+			}
+			if err := ws.Write(ctx, data); err != nil {
+				return nil, errors.Join(err, ws.Close())
+			}
+		case EventSessionUpdated:
+			if want == nil || m.Session == nil {
+				return nil, errors.Join(errors.New("llama.cpp setup acknowledgement missing"), ws.Close())
+			}
+			got := m.Session
+			if got.ID != info.ID || got.Type != SessionRealtime || got.Instructions != want.Instructions || !slices.Equal(got.OutputModalities, want.OutputModalities) || got.Audio.Input.Format != want.Audio.Input.Format || got.Audio.Output.Format != want.Audio.Output.Format || got.Audio.Input.TurnDetection != nil || got.Audio.Input.Transcription != nil || got.Audio.Output.Voice != "" {
+				return nil, errors.Join(errors.New("llama.cpp did not accept realtime configuration"), ws.Close())
+			}
+			if want.MaxOutputTokens != nil && (got.MaxOutputTokens == nil || *want.MaxOutputTokens != *got.MaxOutputTokens) {
+				return nil, errors.Join(errors.New("llama.cpp did not accept output token limit"), ws.Close())
+			}
+			if err := acceptRealtimeTools(want.Tools, got.Tools); err != nil {
+				return nil, errors.Join(err, ws.Close())
+			}
+			info.Capabilities = genai.RealtimeCapabilities{
+				AudioCommit:    true,
+				CancelResponse: true,
+				ToolResults:    len(want.Tools) != 0,
+				Update: genai.RealtimeUpdateCapabilities{
+					Instructions:       true,
+					Tools:              true,
+					ToolChoice:         true,
+					ToolChoiceRequired: true,
+					MaxOutputTokens:    true,
+					OutputModalities:   true,
+				},
+			}
+			s := newRealtimeSession(ws, &info, names)
+			s.requireToolCall = o.RequireToolCall
+			return s, nil
+		case EventError:
+			return nil, errors.Join(errors.New("llama.cpp rejected realtime setup"), ws.Close())
+		default:
+		}
+	}
+	return nil, errors.Join(errors.New("llama.cpp setup exceeded event limit"), ws.Close())
 }
 
 // ListModels implements genai.Provider.
@@ -856,4 +1075,4 @@ func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (fr
 func yieldNothing[T any](yield func(T) bool) {
 }
 
-var _ genai.Provider = &Client{}
+var _ genai.Provider = (*Client)(nil)

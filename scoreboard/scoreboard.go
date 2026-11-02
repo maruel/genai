@@ -376,6 +376,45 @@ func (f *EmbeddingFunctionality) Validate() error {
 	return f.ReportTokenUsage.Validate()
 }
 
+// RealtimeFunctionality records measured bidirectional realtime session behavior.
+//
+// The sample rates are measured from the qualified session. Boolean fields
+// report capabilities whose probe passed; false means the probe was skipped,
+// failed, or did not run. Tools is tri-state because models can call tools only
+// intermittently with audio output.
+type RealtimeFunctionality struct {
+	// InputSampleRate is the native mono PCM16LE input rate in Hz.
+	InputSampleRate int `json:"inputSampleRate,omitzero"`
+	// OutputSampleRate is the native mono PCM16LE output rate in Hz.
+	OutputSampleRate int `json:"outputSampleRate,omitzero"`
+	// CancelResponse reports that the cancellation probe passed.
+	CancelResponse bool `json:"cancelResponse,omitzero"`
+	// Tools reports whether a tool-call roundtrip passed. Flaky means the audio
+	// roundtrip passed only in some runs.
+	Tools TriState `json:"tools,omitzero"`
+	// ReportRateLimits reports that the session supplies rate limits in usage.
+	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
+	// ReportTokenUsage reports that session usage events include token counts.
+	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
+}
+
+// Validate returns an error if the sample rates are negative.
+func (f *RealtimeFunctionality) Validate() error {
+	if f.InputSampleRate < 0 {
+		return errors.New("input sample rate must not be negative")
+	}
+	if f.OutputSampleRate < 0 {
+		return errors.New("output sample rate must not be negative")
+	}
+	if err := f.Tools.Validate(); err != nil {
+		return fmt.Errorf("tools: %w", err)
+	}
+	if err := f.ReportTokenUsage.Validate(); err != nil {
+		return fmt.Errorf("token usage: %w", err)
+	}
+	return nil
+}
+
 // Scenario defines one way to use the provider.
 type Scenario struct {
 	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
@@ -414,13 +453,16 @@ type Scenario struct {
 
 	// Embed declares text embedding support. An empty value requests qualification.
 	Embed *EmbeddingFunctionality `json:"Embed,omitzero,omitempty"`
+	// Realtime declares bidirectional realtime session support. An empty value
+	// requests qualification through genai.Provider.ConnectRealtime.
+	Realtime *RealtimeFunctionality `json:"Realtime,omitzero,omitempty"`
 
 	_ struct{}
 }
 
 // Untested returns true if the scenario has no test results.
 func (s *Scenario) Untested() bool {
-	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && s.Embed == nil && len(s.In) == 0 && len(s.Out) == 0
+	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && s.Embed == nil && s.Realtime == nil && len(s.In) == 0 && len(s.Out) == 0
 }
 
 // Validate returns an error if the Scenario is not correctly configured.
@@ -463,6 +505,14 @@ func (s *Scenario) Validate() error {
 			return errors.New("scenario with decision functionality must define input and output modalities")
 		}
 		if err := s.SystemOne.Validate(); err != nil {
+			return err
+		}
+	}
+	if s.Realtime != nil {
+		if *s.Realtime != (RealtimeFunctionality{}) && len(s.In) == 0 {
+			return errors.New("realtime functionality requires input and output modalities")
+		}
+		if err := s.Realtime.Validate(); err != nil {
 			return err
 		}
 	}

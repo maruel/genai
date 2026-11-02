@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package internaltest provides shared test case definitions.
+// Shared test case definitions.
 
 package internaltest
 
@@ -125,10 +125,25 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 
 // TestCapabilities tests that declared provider capabilities match actual behavior.
 //
-// For each capability (Embed, SystemOne, GenAsync, Caching):
+// For each capability (Realtime, Embed, SystemOne, GenAsync, Caching):
 // - If declared as true, calling the method should not return ErrNotSupported
 // - If declared as false, calling the method should return ErrNotSupported.
 func TestCapabilities(t *testing.T, c genai.Provider) {
+	t.Run("Realtime", func(t *testing.T) {
+		// A nil option must fail before network effects. Implementations validate
+		// options, while unsupported providers return the standard fallback.
+		s, err := c.ConnectRealtime(t.Context(), nil)
+		if s != nil {
+			if closeErr := s.Close(); closeErr != nil {
+				t.Error(closeErr)
+			}
+			t.Fatal("nil realtime option returned a session")
+		}
+		_, unsupported := errors.AsType[*base.ErrNotSupported](err)
+		if err == nil || unsupported == c.Capabilities().Realtime {
+			t.Errorf("Realtime capability %t does not match error: %v", c.Capabilities().Realtime, err)
+		}
+	})
 	caps := c.Capabilities()
 	t.Run("Embed", func(t *testing.T) {
 		out, err := c.Embed(t.Context(), &genai.EmbeddingRequest{})

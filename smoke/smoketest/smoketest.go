@@ -17,6 +17,10 @@
 // The scoreboard.json file will be automatically updated with the new scenario results while
 // preserving existing metadata like Comments, SOTA, Good, and Cheap flags.
 //
+// Realtime WebSocket sessions record one fixture per session under
+// testdata/TestClient/Scoreboard/<model>/Realtime-N.ndjson. Normal tests replay
+// them; -update-scoreboard replaces them.
+//
 // When a model is no longer being tested (e.g., the provider stopped supporting it), the
 // corresponding HTTP recordings in testdata/TestClient/Scoreboard/<model>/ are automatically
 // deleted to keep the repository clean and remove stale test data.
@@ -69,6 +73,11 @@ type RunOptions struct {
 
 func (r *RunOptions) qualifies(m scoreboard.Model) bool {
 	return *updateScoreboard && slices.Contains(r.Qualify, m)
+}
+
+// UpdatingScoreboard reports whether -update-scoreboard is set.
+func UpdatingScoreboard() bool {
+	return *updateScoreboard
 }
 
 // Run regenerates the scoreboard and asserts it is up to date.
@@ -135,15 +144,25 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			var want scoreboard.Scenario
 			for i := range sb.Scenarios {
 				sc := &sb.Scenarios[i]
-				if m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
-					if sc.Models[0] != m.Model && (!sc.Untested() || !opts.qualifies(m)) {
-						// We only run the first model in the scenario for cost savings purposes. Create one scenario per
-						// model to smoke test.
-						t.Skip("Only run first model in scenario for cost savings")
-					}
+				if sc.Realtime != nil && m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
 					want = *sc
 					want.Models = []string{m.Model}
 					break
+				}
+			}
+			if len(want.Models) == 0 {
+				for i := range sb.Scenarios {
+					sc := &sb.Scenarios[i]
+					if m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
+						if sc.Models[0] != m.Model && (!sc.Untested() || !opts.qualifies(m)) {
+							// We only run the first model in the scenario for cost savings purposes. Create one scenario per
+							// model to smoke test.
+							t.Skip("Only run first model in scenario for cost savings")
+						}
+						want = *sc
+						want.Models = []string{m.Model}
+						break
+					}
 				}
 			}
 			if len(want.Models) == 0 {
@@ -271,7 +290,14 @@ func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, 
 		return gc(t, t.Name()+"/"+name)
 	}
 	ctx, _ := internaltest.Log(t)
-	got, usage, err := smoke.Run(ctx, providerFactory)
+	var got scoreboard.Scenario
+	var usage genai.Usage
+	var err error
+	if want.Realtime != nil {
+		got, usage, err = smoke.RunRealtimeScenario(ctx, providerFactory(""), want.Reason)
+	} else {
+		got, usage, err = smoke.Run(ctx, providerFactory)
+	}
 	t.Logf("Usage: %#v", usage)
 	if err != nil {
 		t.Fatalf("CreateScenario failed: %v", err)

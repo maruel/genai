@@ -178,6 +178,37 @@ func TestFunctionality(t *testing.T) {
 	})
 }
 
+func TestRealtimeFunctionality(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, f := range []*RealtimeFunctionality{
+				{},
+				{InputSampleRate: 16000, OutputSampleRate: 24000},
+				{Tools: True},
+				{Tools: Flaky},
+				{ReportRateLimits: true, ReportTokenUsage: True},
+			} {
+				if err := f.Validate(); err != nil {
+					t.Fatalf("got err=%v", err)
+				}
+			}
+		})
+
+		t.Run("error", func(t *testing.T) {
+			for _, f := range []*RealtimeFunctionality{
+				{InputSampleRate: -1},
+				{OutputSampleRate: -1},
+				{Tools: TriState(2)},
+				{ReportTokenUsage: TriState(2)},
+			} {
+				if err := f.Validate(); err == nil {
+					t.Fatal("got err=nil, want error")
+				}
+			}
+		})
+	})
+}
+
 func TestScenario(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		tests := []*Scenario{
@@ -193,6 +224,8 @@ func TestScenario(t *testing.T) {
 			{Models: []string{"embed"}, Embed: &EmbeddingFunctionality{}},
 			{Models: []string{"embed"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityEmbedding: {Inline: true}}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
 			{Models: []string{"new-model"}, GenSync: &Functionality{}, GenStream: &Functionality{}},
+			{Models: []string{"live"}, In: map[Modality]ModalCapability{ModalityAudio: {Inline: true}, ModalityText: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityAudio: {Inline: true}, ModalityText: {Inline: true}}, Realtime: &RealtimeFunctionality{InputSampleRate: 16000, OutputSampleRate: 24000, Tools: True}},
+			{Models: []string{"live"}, Realtime: &RealtimeFunctionality{}},
 		}
 
 		for _, s := range tests {
@@ -218,12 +251,46 @@ func TestScenario(t *testing.T) {
 			{Models: []string{"embed"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
 			{Models: []string{"clef"}, SystemOne: &DecisionFunctionality{ReportTokenUsage: TriState(2)}},
 			{Models: []string{"gpt-4"}, GenSync: &Functionality{}, GenStream: &Functionality{JSON: true}},
+			{Models: []string{"live"}, Realtime: &RealtimeFunctionality{InputSampleRate: 16000}},
+			{Models: []string{"live"}, In: map[Modality]ModalCapability{ModalityAudio: {Inline: true}}, Out: map[Modality]ModalCapability{ModalityAudio: {Inline: true}}, Realtime: &RealtimeFunctionality{InputSampleRate: -1}},
 		}
 
 		for _, s := range tests {
 			if err := s.Validate(); err == nil {
 				t.Fatalf("got err=nil, want error")
 			}
+		}
+	})
+
+	t.Run("Untested", func(t *testing.T) {
+		s := Scenario{
+			Models:   []string{"live"},
+			In:       map[Modality]ModalCapability{ModalityAudio: {Inline: true}, ModalityText: {Inline: true}},
+			Out:      map[Modality]ModalCapability{ModalityAudio: {Inline: true}, ModalityText: {Inline: true}},
+			Realtime: &RealtimeFunctionality{InputSampleRate: 16000, OutputSampleRate: 24000, Tools: True},
+		}
+		if s.Untested() {
+			t.Fatal("realtime marker reported as untested")
+		}
+	})
+
+	t.Run("JSON", func(t *testing.T) {
+		in := Scenario{
+			Models:   []string{"live"},
+			In:       map[Modality]ModalCapability{ModalityAudio: {Inline: true}, ModalityText: {Inline: true}},
+			Out:      map[Modality]ModalCapability{ModalityAudio: {Inline: true}, ModalityText: {Inline: true}},
+			Realtime: &RealtimeFunctionality{InputSampleRate: 16000, OutputSampleRate: 24000, CancelResponse: true, Tools: Flaky},
+		}
+		raw, err := json.Marshal(&in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var out Scenario
+		if err := json.Unmarshal(raw, &out); err != nil {
+			t.Fatal(err)
+		}
+		if out.Realtime == nil || *out.Realtime != *in.Realtime {
+			t.Fatalf("round trip %+v", out.Realtime)
 		}
 	})
 }

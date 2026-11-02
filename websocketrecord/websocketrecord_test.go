@@ -9,6 +9,7 @@ package websocketrecord
 import (
 	"bytes"
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -20,6 +21,45 @@ import (
 )
 
 func TestNew(t *testing.T) {
+	t.Run("discard", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "test")
+		rec := newRecorder(t, path, echoServer(t))
+		recordMessages(t, rec.WSURL())
+		if err := rec.Discard(); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := os.Stat(path + ".ndjson"); !errors.Is(err, os.ErrNotExist) {
+			t.Fatalf("fixture remains: %v", err)
+		}
+		rec2, err := New(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if err := rec2.Close(); err != nil {
+				t.Error(err)
+			}
+		})
+		if rec2.IsReplay() {
+			t.Fatal("discarded fixture replayed")
+		}
+	})
+	t.Run("empty", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "test")
+		rec, err := New(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := rec.Start(echoServer(t)); err != nil {
+			t.Fatal(err)
+		}
+		if err := rec.Close(); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := os.Stat(path + ".ndjson"); !errors.Is(err, os.ErrNotExist) {
+			t.Fatalf("empty fixture remains: %v", err)
+		}
+	})
 	t.Run("error", func(t *testing.T) {
 		for name, data := range map[string]string{
 			"invalid_json":      "not json\n",

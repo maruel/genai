@@ -108,7 +108,13 @@ func TestWebSocketConn(t *testing.T) {
 			t.Fatal(err)
 		}
 		t.Cleanup(func() {
-			if err := rec.Close(); err != nil {
+			var err error
+			if t.Failed() {
+				err = rec.Discard()
+			} else {
+				err = rec.Close()
+			}
+			if err != nil {
 				t.Error(err)
 			}
 		})

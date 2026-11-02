@@ -11,7 +11,8 @@
 //
 // A Recorder starts a local proxy. In record mode, the proxy forwards messages
 // to the target and records every data message. In replay mode, the proxy
-// replays the recorded script and verifies each client message.
+// replays the recorded script and verifies each client message. Discard a
+// recording when the live exchange fails so a partial fixture is never replayed.
 //
 // Recording format is NDJSON where each line is a JSON object with direction,
 // message type and content:
@@ -86,7 +87,7 @@ func (m *message) validate() error {
 // Recorder records or replays WebSocket messages through a local proxy.
 //
 // Call Start to start the proxy, then point the client at URL or WSURL. Call
-// Close when done.
+// Close when done, or Discard when the recording failed.
 type Recorder struct {
 	fixture string
 	replay  bool
@@ -105,14 +106,21 @@ type Recorder struct {
 // New creates a Recorder for the given path.
 //
 // The path should not include the ".ndjson" extension; it is appended
-// automatically. If the fixture file exists, the recorder replays it.
-// Otherwise it records.
+// automatically. If a non-empty fixture file exists, the recorder replays it.
+// An empty fixture is removed as an incomplete recording. Otherwise the
+// recorder records.
 func New(path string) (*Recorder, error) {
 	fixture := path + ".ndjson"
 	ctx, cancel := context.WithCancel(context.Background())
 	r := &Recorder{fixture: fixture, ctx: ctx, cancel: cancel}
-	_, err := os.Stat(fixture)
+	st, err := os.Stat(fixture)
 	switch {
+	case err == nil && st.Size() == 0:
+		// An empty fixture is an incomplete recording. Remove it and record again.
+		if err := os.Remove(fixture); err != nil {
+			cancel()
+			return nil, fmt.Errorf("websocketrecord: failed to remove empty fixture: %w", err)
+		}
 	case err == nil:
 		r.replay = true
 		if err := r.load(); err != nil {
@@ -182,14 +190,27 @@ func (r *Recorder) IsReplay() bool {
 	return r.replay
 }
 
-// Close stops the proxy and closes the fixture file.
+// Close stops the proxy and closes the fixture file. In record mode it removes
+// an empty fixture because no exchange was recorded.
 func (r *Recorder) Close() error {
+	return r.close(false)
+}
+
+// Discard stops the proxy and removes a recorded fixture. It does not remove
+// the fixture in replay mode. Call it when a live recording fails and must not
+// be replayed.
+func (r *Recorder) Discard() error {
+	return r.close(true)
+}
+
+func (r *Recorder) close(discard bool) error {
 	r.mu.Lock()
 	srv := r.srv
 	r.srv = nil
 	f := r.f
 	r.f = nil
 	r.enc = nil
+	replay := r.replay
 	r.cancel()
 	r.mu.Unlock()
 	var errs []error
@@ -198,6 +219,19 @@ func (r *Recorder) Close() error {
 	}
 	if f != nil {
 		errs = append(errs, f.Close())
+	}
+	if !replay {
+		if discard {
+			if err := os.Remove(r.fixture); err != nil && !errors.Is(err, os.ErrNotExist) {
+				errs = append(errs, err)
+			}
+		} else if st, err := os.Stat(r.fixture); err == nil && st.Size() == 0 {
+			if err := os.Remove(r.fixture); err != nil {
+				errs = append(errs, err)
+			}
+		} else if err != nil && !errors.Is(err, os.ErrNotExist) {
+			errs = append(errs, err)
+		}
 	}
 	return errors.Join(errs...)
 }

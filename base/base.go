@@ -182,6 +182,11 @@ func (e *ErrNotSupported) Error() string {
 // NotImplemented implements remote genai.Provider methods, all returning ErrNotSupported.
 type NotImplemented struct{}
 
+// ConnectRealtime implements genai.Provider.
+func (*NotImplemented) ConnectRealtime(context.Context, ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	return nil, &ErrNotSupported{}
+}
+
 // Embed implements genai.Provider.
 func (*NotImplemented) Embed(context.Context, *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
 	return nil, &ErrNotSupported{}

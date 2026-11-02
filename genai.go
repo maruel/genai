@@ -91,6 +91,9 @@ type Provider interface {
 	// Capabilities().Embed describes endpoint implementation; the scoreboard
 	// Embedding lookup describes tested support for the configured model.
 	Embed(ctx context.Context, in *EmbeddingRequest) (*EmbeddingResponse, error)
+	// ConnectRealtime opens a bidirectional conversation and waits for setup acceptance.
+	// Requires Capabilities().Realtime. Unsupported session features return base.ErrNotSupported.
+	ConnectRealtime(ctx context.Context, opts ...RealtimeOption) (RealtimeSession, error)
 	// ListModels returns the list of models the provider supports. Not all providers support it, some will
 	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
 	// model currently loaded.
@@ -134,6 +137,10 @@ type Provider interface {
 
 // ProviderCapabilities describes optional capabilities implemented by a client.
 type ProviderCapabilities struct {
+	// Realtime indicates that the client implements bidirectional realtime sessions,
+	// independent of its configured model. Session capabilities are negotiated by
+	// ConnectRealtime and reported through RealtimeSession.Info.
+	Realtime bool
 	// Embed indicates that the client implements the embedding endpoint, independent
 	// of its configured model. scoreboard.Score.Embedding reports qualified support;
 	// a missing measurement means unknown, not unsupported.

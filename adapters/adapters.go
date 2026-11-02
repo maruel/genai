@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package adapters includes multiple adapters to convert one ProviderFoo interface into another one.
+// Package adapters provides adapters for genai providers and realtime sessions.
 package adapters
 
 import (

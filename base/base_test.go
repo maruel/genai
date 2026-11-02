@@ -230,6 +230,19 @@ func TestUnknown(t *testing.T) {
 }
 
 func TestNotImplemented(t *testing.T) {
+	t.Run("ConnectRealtime", func(t *testing.T) {
+		p := NotImplemented{}
+		if p.Capabilities().Realtime {
+			t.Fatal("fallback advertises realtime implementation")
+		}
+		for _, cfg := range [][]genai.RealtimeOption{nil, {genai.RealtimeOptionInstructions("hello")}} {
+			s, err := p.ConnectRealtime(t.Context(), append([]genai.RealtimeOption{}, cfg...)...,
+			)
+			if _, ok := errors.AsType[*ErrNotSupported](err); !ok || s != nil {
+				t.Fatalf("session %+v, error %v", s, err)
+			}
+		}
+	})
 	t.Run("Embed", func(t *testing.T) {
 		p := NotImplemented{}
 		if p.Capabilities().Embed {

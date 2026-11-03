@@ -26,11 +26,34 @@ func TestTakeRecordings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	used := TakeRecordings(t.Name())
-	if _, ok := used[abs]; !ok {
-		t.Fatalf("fixture not recorded: %v", used)
+	usage := TakeRecordings(t.Name())
+	if _, ok := usage.Used[abs]; !ok {
+		t.Fatalf("fixture not recorded: %v", usage.Used)
 	}
-	if used := TakeRecordings(t.Name()); len(used) != 0 {
-		t.Fatalf("fixture not cleared: %v", used)
+	if usage := TakeRecordings(t.Name()); len(usage.Used) != 0 || len(usage.Missing) != 0 {
+		t.Fatalf("fixture not cleared: %+v", usage)
+	}
+	NewSubprocessRecorder(t, "TestTakeRecordings/missing", "true", nil)
+	missingPath, err := filepath.Abs(filepath.Join("testdata", "TestTakeRecordings", "missing.ndjson"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if usage := TakeRecordings(t.Name()); len(usage.Missing) != 1 {
+		t.Fatalf("missing fixture not recorded: %+v", usage)
+	} else if _, ok := usage.Missing[missingPath]; !ok {
+		t.Fatalf("missing fixture path: %+v", usage)
+	}
+	NewSubprocessRecorder(t, "TestTakeRecordings/failed", "true", nil)
+	failedPath, err := filepath.Abs(filepath.Join("testdata", "TestTakeRecordings", "failed.ndjson"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(failedRecordingPath(failedPath), []byte("{}\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if usage := TakeRecordings(t.Name()); len(usage.Used) != 1 {
+		t.Fatalf("failed twin not used: %+v", usage)
+	} else if _, ok := usage.Used[failedPath]; !ok {
+		t.Fatalf("failed twin path: %+v", usage)
 	}
 }

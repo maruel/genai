@@ -61,7 +61,7 @@ type Records struct {
 func (r *Records) Close() error {
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.run" {
+		if f.Name == "test.run" || f.Name == "test.skip" {
 			filtered = true
 		}
 	})

@@ -33,11 +33,12 @@ import (
 // the recording proxy endpoint to opts before the provider connects.
 //
 // When Updating is true, existing fixtures are replaced, and a session is
-// recorded even where no fixture exists. Otherwise a missing fixture skips the
-// test. Set it from [UpdatingRecordings] so that cassettes follow RECORD and not
-// -update-scoreboard, which only refreshes the scoreboard. A failed test discards its recordings; a successful
-// test keeps them. Audio payloads are replaced with a two-byte marker so
-// fixtures stay small; event structure and transcripts are preserved.
+// recorded even where no fixture exists. Otherwise a missing fixture fails
+// unless RECORD is set. Set it from [UpdatingRecordings] so that cassettes
+// follow RECORD and not -update-scoreboard, which only refreshes the scoreboard.
+// A failed session keeps its recording as Realtime-N.failed.ndjson. Audio
+// payloads are replaced with a two-byte marker so fixtures stay small; event
+// structure and transcripts are preserved.
 type RealtimeRecorder struct {
 	genai.Provider
 	T        testing.TB
@@ -79,13 +80,9 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 	}
 	rec.Normalize = MaskRealtimeAudio
 	r.T.Cleanup(func() {
-		var err error
-		// A failed session keeps its fixture while recording: the call number is
-		// positional, so discarding it leaves a gap that replay cannot number.
-		if r.T.Failed() && !r.Updating {
-			err = rec.Discard()
-		} else {
-			err = rec.Close()
+		err := rec.Close()
+		if r.T.Failed() && !rec.IsReplay() {
+			err = errors.Join(err, retainFailedRecording(path+".ndjson"))
 		}
 		if err != nil {
 			r.T.Error(err)
@@ -204,4 +201,15 @@ func maskRealtimeAudio(v any) bool {
 // scoreboard refresh.
 func UpdatingRecordings() bool {
 	return os.Getenv("RECORD") == "all"
+}
+
+func retainFailedRecording(fixture string) error {
+	failed := failedRecordingPath(fixture)
+	if err := os.Remove(failed); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("remove failed recording: %w", err)
+	}
+	if err := os.Rename(fixture, failed); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return fmt.Errorf("retain failed recording: %w", err)
+	}
+	return nil
 }

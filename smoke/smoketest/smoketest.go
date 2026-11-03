@@ -63,6 +63,9 @@ type RunOptions struct {
 	// failure. Some models (e.g. Gemma 4) emit reasoning even with
 	// enable_thinking=false.
 	TolerateReasoning []string
+	// SkipURLMedia skips image, audio, and video URL probes for this provider.
+	// Document URL probes still run.
+	SkipURLMedia bool
 }
 
 func (r *RunOptions) qualifies(m scoreboard.Model) bool {
@@ -92,7 +95,7 @@ func Run(t *testing.T, rf smoke.RecorderFactory, models []scoreboard.Model, opts
 	}
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.run" {
+		if f.Name == "test.run" || f.Name == "test.skip" {
 			filtered = true
 		}
 	})
@@ -141,7 +144,7 @@ func Run(t *testing.T, rf smoke.RecorderFactory, models []scoreboard.Model, opts
 			queued := !qualify && isQueuedFor(&sb, m)
 			// Each section measures its own rows: a model may hold a chat row and an
 			// embedding row at the same time.
-			measured.Chat = append(measured.Chat, runSection(ctx, t, r, m, smoke.Chat{}, sb.Chat, &sb, qualify, queued, true, tolerate, &usage, nil)...)
+			measured.Chat = append(measured.Chat, runSection(ctx, t, r, m, smoke.Chat{SkipURLMedia: opts.SkipURLMedia}, sb.Chat, &sb, qualify, queued, true, tolerate, &usage, nil)...)
 			// A family sees what this run already measured for the model.
 			view := sb
 			view.Chat = append(slices.Clone(sb.Chat), measured.Chat...)
@@ -196,12 +199,16 @@ func Run(t *testing.T, rf smoke.RecorderFactory, models []scoreboard.Model, opts
 	}
 	if !filtered {
 		t.Run("Unexpected Recordings", func(t *testing.T) {
-			extra, err := unexpectedRecordings(recordingsDir, internaltest.TakeRecordings(runName))
+			usage := internaltest.TakeRecordings(runName)
+			extra, err := unexpectedRecordings(recordingsDir, usage.Used)
 			if err != nil {
 				t.Fatalf("failed to find unexpected recordings: %v", err)
 			}
 			if len(extra) != 0 {
 				t.Errorf("unexpected recordings:\n  %s", strings.Join(extra, "\n  "))
+			}
+			for path := range usage.Missing {
+				t.Logf("missing recording: %s", path)
 			}
 		})
 	}
@@ -770,7 +777,7 @@ func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error
 		if err != nil {
 			return err
 		}
-		if d.IsDir() || !strings.HasSuffix(path, ".ndjson") {
+		if d.IsDir() || !strings.HasSuffix(path, ".ndjson") || strings.HasSuffix(path, ".failed.ndjson") {
 			return nil
 		}
 		abs, err := filepath.Abs(path)

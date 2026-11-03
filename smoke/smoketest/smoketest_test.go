@@ -526,7 +526,7 @@ type qualificationNotesCase struct {
 
 func TestUnexpectedRecordings(t *testing.T) {
 	dir := t.TempDir()
-	for _, name := range []string{"used.ndjson", "extra.ndjson", "Realtime-1.ndjson", "ignored.yaml", "sub/extra.ndjson"} {
+	for _, name := range []string{"used.ndjson", "extra.ndjson", "probe.failed.ndjson", "Realtime-1.ndjson", "ignored.yaml", "sub/extra.ndjson"} {
 		path := filepath.Join(dir, filepath.FromSlash(name))
 		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 			t.Fatal(err)

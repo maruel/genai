@@ -7,6 +7,7 @@
 package internaltest
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -18,21 +19,42 @@ var recordings = struct {
 	used map[string]map[string]struct{}
 }{used: map[string]map[string]struct{}{}}
 
+// RecordingUsage reports which fixtures tests attempted to use.
+type RecordingUsage struct {
+	// Used contains fixtures present on disk, including failed twins.
+	Used map[string]struct{}
+	// Missing contains fixtures absent from disk.
+	Missing map[string]struct{}
+}
+
 // TakeRecordings returns the fixture paths used by tests named prefix or one
-// of its subtests, then clears those entries.
-func TakeRecordings(prefix string) map[string]struct{} {
+// of its subtests, then clears those entries. It classifies each path as Used
+// or Missing at call time; a Realtime-N.failed.ndjson twin counts as Used.
+func TakeRecordings(prefix string) RecordingUsage {
 	recordings.Lock()
 	defer recordings.Unlock()
-	out := map[string]struct{}{}
+	out := RecordingUsage{Used: map[string]struct{}{}, Missing: map[string]struct{}{}}
 	for name, paths := range recordings.used {
 		if name == prefix || strings.HasPrefix(name, prefix+"/") {
 			for path := range paths {
-				out[path] = struct{}{}
+				if _, err := os.Stat(path); err == nil {
+					out.Used[path] = struct{}{}
+					continue
+				}
+				if _, err := os.Stat(failedRecordingPath(path)); err == nil {
+					out.Used[path] = struct{}{}
+					continue
+				}
+				out.Missing[path] = struct{}{}
 			}
 			delete(recordings.used, name)
 		}
 	}
 	return out
+}
+
+func failedRecordingPath(path string) string {
+	return strings.TrimSuffix(path, ".ndjson") + ".failed.ndjson"
 }
 
 func markRecording(t testing.TB, fixture string) {

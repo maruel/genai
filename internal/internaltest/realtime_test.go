@@ -7,6 +7,10 @@
 package internaltest
 
 import (
+	"errors"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"slices"
 	"testing"
 
@@ -58,5 +62,22 @@ func TestMaskRealtimeAudio(t *testing.T) {
 				t.Fatalf("got %s, want %s", got, tc.want)
 			}
 		})
+	}
+}
+
+func TestRetainFailedRecording(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(dir, "Realtime-1.ndjson")
+	if err := os.WriteFile(src, []byte("{}\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := retainFailedRecording(src); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(src); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("source still exists: %v", err)
+	}
+	if got, err := os.ReadFile(filepath.Join(dir, "Realtime-1.failed.ndjson")); err != nil || string(got) != "{}\n" {
+		t.Fatalf("failed recording: %q, %v", got, err)
 	}
 }

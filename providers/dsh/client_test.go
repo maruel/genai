@@ -148,7 +148,9 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, smoke.Subprocess(getClient), models, nil)
+		// dsh cannot interpret image, audio, or video media, and its tools can
+		// read this repository's answer files. Only test document URLs.
+		smoketest.Run(t, smoke.Subprocess(getClient), models, &smoketest.RunOptions{SkipURLMedia: true})
 	})
 
 	t.Run("GenSync", func(t *testing.T) {

@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -44,11 +45,13 @@ type SubprocessRecorder struct {
 // When RECORD is "all", a fresh trace is always recorded. When RECORD is
 // "failure_only", recording happens only when the fixture is missing or empty.
 // Otherwise the existing fixture is replayed, and a missing or empty fixture
-// makes the starter fail without launching the binary. If sanitize is non-nil,
-// it transforms each stdout line before storage while preserving the original
-// stream for the client.
+// makes the starter fail without launching the binary. Recorded lines are
+// sanitized to redact IPv4 addresses and emails. A non-nil sanitize also
+// transforms each stdout line before storage; the client always receives the
+// original stream.
 func NewSubprocessRecorder(t testing.TB, name, binaryName string, sanitize subprocessrecord.LineSanitizer) *SubprocessRecorder {
 	fixture := filepath.Join("testdata", name)
+	sanitize = composeSanitizers(sanitizeSubprocessLine, sanitize)
 	markRecording(t, fixture+".ndjson")
 	st, err := os.Stat(fixture + ".ndjson")
 	exists := err == nil && st.Size() != 0
@@ -88,4 +91,29 @@ func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
 		}
 	}
 	return s.rec.Wrap(inner)
+}
+
+var (
+	ipv4Pattern  = regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
+	emailPattern = regexp.MustCompile(`\b[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}\b`)
+)
+
+// sanitizeSubprocessLine removes identifying network data from a recorded line.
+func sanitizeSubprocessLine(line []byte) ([]byte, error) {
+	line = ipv4Pattern.ReplaceAll(line, []byte("<ip>"))
+	line = emailPattern.ReplaceAll(line, []byte("<email>"))
+	return line, nil
+}
+
+func composeSanitizers(first, second subprocessrecord.LineSanitizer) subprocessrecord.LineSanitizer {
+	if second == nil {
+		return first
+	}
+	return func(line []byte) ([]byte, error) {
+		var err error
+		if line, err = first(line); err != nil {
+			return nil, err
+		}
+		return second(line)
+	}
 }

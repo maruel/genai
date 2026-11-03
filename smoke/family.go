@@ -50,7 +50,10 @@ var ErrUnsupported = errors.New("model does not support the probes")
 //
 // It is the only family more than one wire carries, so one model can hold an HTTP row
 // and a WebSocket row: the wire on the row tells them apart.
-type Chat struct{}
+type Chat struct {
+	// SkipURLMedia skips image, audio, and video URL probes.
+	SkipURLMedia bool
+}
 
 // Wires implements [Family].
 func (Chat) Wires() []scoreboard.Wire {
@@ -71,8 +74,8 @@ func (Chat) Fits(spec Spec, sb *scoreboard.Score, model string) bool {
 }
 
 // Run implements [Family].
-func (Chat) Run(ctx context.Context, rec Recorder, _ scoreboard.Model, wire scoreboard.Wire, _ *scoreboard.Chat) (scoreboard.Chat, genai.Usage, error) {
-	return runSync(ctx, func(name string) genai.Provider { return rec.Provider(wire, name) })
+func (c Chat) Run(ctx context.Context, rec Recorder, _ scoreboard.Model, wire scoreboard.Wire, _ *scoreboard.Chat) (scoreboard.Chat, genai.Usage, error) {
+	return runSync(ctx, func(name string) genai.Provider { return rec.Provider(wire, name) }, c.SkipURLMedia)
 }
 
 // Embed measures text and media embeddings.

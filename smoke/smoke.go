@@ -38,7 +38,7 @@ type ProviderFactory func(name string) genai.Provider
 // scenario as found in practice.
 //
 // ProviderFactory must be concurrent safe and never fail.
-func runSync(ctx context.Context, pf ProviderFactory) (scoreboard.Chat, genai.Usage, error) {
+func runSync(ctx context.Context, pf ProviderFactory, skipURLMedia bool) (scoreboard.Chat, genai.Usage, error) {
 	usage := genai.Usage{}
 	c := pf("")
 	m := c.ModelID()
@@ -90,7 +90,7 @@ func runSync(ctx context.Context, pf ProviderFactory) (scoreboard.Chat, genai.Us
 
 				cs = callState{pf: pf, isStream: false}
 				ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
-				in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
+				in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-", skipURLMedia)
 				mu.Lock()
 				usage.Add(&cs.usage)
 				if len(in) != 0 {
@@ -169,7 +169,7 @@ func runSync(ctx context.Context, pf ProviderFactory) (scoreboard.Chat, genai.Us
 
 			cs = callState{pf: pf, isStream: true}
 			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStreamMultiModal"))
-			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenStreamMultiModal-")
+			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenStreamMultiModal-", skipURLMedia)
 			mu.Lock()
 			usage.Add(&cs.usage)
 			if len(in) != 0 {
@@ -524,7 +524,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	return f, nil
 }
 
-func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (in, out map[genai.Modality]scoreboard.ModalCapability, f *scoreboard.Functionality, retErr error) {
+func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string, skipURLMedia bool) (in, out map[genai.Modality]scoreboard.ModalCapability, f *scoreboard.Functionality, retErr error) {
 	in = map[genai.Modality]scoreboard.ModalCapability{}
 	out = map[genai.Modality]scoreboard.ModalCapability{}
 	f = &scoreboard.Functionality{}
@@ -536,7 +536,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	if err != nil {
 		return in, out, f, err
 	}
-	m, err = exerciseGenInputImage(ctx, cs, f, prefix+"Image-")
+	m, err = exerciseGenInputImage(ctx, cs, f, prefix+"Image-", skipURLMedia)
 	if m != nil {
 		in[genai.ModalityImage] = *m
 		out[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
@@ -544,7 +544,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	if err != nil {
 		return in, out, f, err
 	}
-	m, err = exerciseGenInputAudio(ctx, cs, f, prefix+"Audio-")
+	m, err = exerciseGenInputAudio(ctx, cs, f, prefix+"Audio-", skipURLMedia)
 	if m != nil {
 		in[genai.ModalityAudio] = *m
 		out[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
@@ -552,7 +552,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	if err != nil {
 		return in, out, f, err
 	}
-	m, err = exerciseGenInputVideo(ctx, cs, f, prefix+"Video-")
+	m, err = exerciseGenInputVideo(ctx, cs, f, prefix+"Video-", skipURLMedia)
 	if m != nil {
 		in[genai.ModalityVideo] = *m
 		out[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
@@ -613,7 +613,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 	return m, nil
 }
 
-func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (*scoreboard.ModalCapability, error) {
+func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string, skipURLMedia bool) (*scoreboard.ModalCapability, error) {
 	var m *scoreboard.ModalCapability
 	want := regexp.MustCompile("^banana$")
 	// Try jpeg first. If jpg is not supported, there is no point in trying other formats.
@@ -647,21 +647,23 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "image." + format.ext}}
-		name = prefix + format.ext + "-URL"
-		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
-			if m == nil {
-				m = &scoreboard.ModalCapability{}
+		if !skipURLMedia {
+			msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "image." + format.ext}}
+			name = prefix + format.ext + "-URL"
+			if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+				if m == nil {
+					m = &scoreboard.ModalCapability{}
+				}
+				m.URL = true
+				if !slices.Contains(m.SupportedFormats, format.mime) {
+					m.SupportedFormats = append(m.SupportedFormats, format.mime)
+					sort.Strings(m.SupportedFormats)
+				}
+			} else if isBadError(ctx, err) {
+				return m, err
+			} else {
+				internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 			}
-			m.URL = true
-			if !slices.Contains(m.SupportedFormats, format.mime) {
-				m.SupportedFormats = append(m.SupportedFormats, format.mime)
-				sort.Strings(m.SupportedFormats)
-			}
-		} else if isBadError(ctx, err) {
-			return m, err
-		} else {
-			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		if m == nil && i == 0 {
 			break
@@ -670,7 +672,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 	return m, nil
 }
 
-func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (*scoreboard.ModalCapability, error) {
+func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string, skipURLMedia bool) (*scoreboard.ModalCapability, error) {
 	var m *scoreboard.ModalCapability
 	// Use a relaxed pattern: ASR models may wrap the transcription in
 	// format-specific tags (e.g. "language English<asr_text>Orange.").
@@ -706,21 +708,23 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Fun
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "audio." + format.ext}}
-		name = prefix + format.ext + "-URL"
-		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
-			if m == nil {
-				m = &scoreboard.ModalCapability{}
+		if !skipURLMedia {
+			msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "audio." + format.ext}}
+			name = prefix + format.ext + "-URL"
+			if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+				if m == nil {
+					m = &scoreboard.ModalCapability{}
+				}
+				m.URL = true
+				if !slices.Contains(m.SupportedFormats, format.mime) {
+					m.SupportedFormats = append(m.SupportedFormats, format.mime)
+					sort.Strings(m.SupportedFormats)
+				}
+			} else if isBadError(ctx, err) {
+				return m, err
+			} else {
+				internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 			}
-			m.URL = true
-			if !slices.Contains(m.SupportedFormats, format.mime) {
-				m.SupportedFormats = append(m.SupportedFormats, format.mime)
-				sort.Strings(m.SupportedFormats)
-			}
-		} else if isBadError(ctx, err) {
-			return m, err
-		} else {
-			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		if m == nil && i == 1 {
 			break
@@ -729,7 +733,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Fun
 	return m, nil
 }
 
-func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (*scoreboard.ModalCapability, error) {
+func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string, skipURLMedia bool) (*scoreboard.ModalCapability, error) {
 	var m *scoreboard.ModalCapability
 	// Relax the check, as the model will try to describe the fact that the word is rotating.
 	want := regexp.MustCompile("banana")
@@ -761,21 +765,23 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Fun
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "video." + format.ext}}
-		name = prefix + format.ext + "-URL"
-		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
-			if m == nil {
-				m = &scoreboard.ModalCapability{}
+		if !skipURLMedia {
+			msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "video." + format.ext}}
+			name = prefix + format.ext + "-URL"
+			if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+				if m == nil {
+					m = &scoreboard.ModalCapability{}
+				}
+				m.URL = true
+				if !slices.Contains(m.SupportedFormats, format.mime) {
+					m.SupportedFormats = append(m.SupportedFormats, format.mime)
+					sort.Strings(m.SupportedFormats)
+				}
+			} else if isBadError(ctx, err) {
+				return m, err
+			} else {
+				internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 			}
-			m.URL = true
-			if !slices.Contains(m.SupportedFormats, format.mime) {
-				m.SupportedFormats = append(m.SupportedFormats, format.mime)
-				sort.Strings(m.SupportedFormats)
-			}
-		} else if isBadError(ctx, err) {
-			return m, err
-		} else {
-			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
 		if m == nil && i == 0 {
 			break

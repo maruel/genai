@@ -95,6 +95,9 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 		r.mu.Unlock()
 		return nil, errors.Join(err, rec.Discard())
 	}
+	if rec.IsReplay() {
+		return &replaySession{RealtimeSession: s}, nil
+	}
 	return s, nil
 }
 
@@ -102,6 +105,15 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 func (r *RealtimeRecorder) Unwrap() genai.Provider {
 	return r.Provider
 }
+
+// replaySession marks a session that replays a recording. Consumers skip the
+// playback-speed pacing that only a live server needs.
+type replaySession struct {
+	genai.RealtimeSession
+}
+
+// IsReplay reports that the session replays a recording.
+func (r *replaySession) IsReplay() bool { return true }
 
 // realtimeAudioMarker is base64 for two zero PCM16 bytes.
 const realtimeAudioMarker = "AAA="

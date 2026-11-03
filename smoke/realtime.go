@@ -82,6 +82,13 @@ type RealtimeReport struct {
 	Usage genai.Usage
 }
 
+// RealtimeReplay is implemented by a realtime session that replays a recording
+// instead of talking to a live server.
+type RealtimeReplay interface {
+	// IsReplay reports whether the session replays a recording.
+	IsReplay() bool
+}
+
 // RunRealtime qualifies a realtime provider with the core probes.
 //
 // The runner opens one session without tools and qualifies it: setup validates
@@ -236,7 +243,8 @@ func RunRealtime(ctx context.Context, f RealtimeSessionFactory) (report Realtime
 // and capabilities the probes exercised. It returns the accumulated
 // non-cumulative usage; usage is partial when the run fails. Realtime sessions
 // are WebSocket conversations, not HTTP requests; provider tests record them
-// separately.
+// separately. Audio turns are paced at playback speed unless the session
+// reports through RealtimeReplay that it replays a recording.
 // A previously recorded tool result must keep passing. A model that never
 // recorded one records a failed audio probe instead of failing the run. A Flaky
 // result stays Flaky across later passes and failures.
@@ -447,6 +455,16 @@ func realtimeAudioSupported(info *genai.RealtimeSessionInfo) bool {
 	return info.TurnDetection == genai.RealtimeTurnServer || info.Capabilities.AudioCommit
 }
 
+// pacedAudio reports whether audio turns sent to s must be paced at playback
+// speed. Only a live server-virtual-agent session needs real-time arrival to
+// close an utterance; a replayed recording does not.
+func pacedAudio(s genai.RealtimeSession, info *genai.RealtimeSessionInfo) bool {
+	if r, ok := s.(RealtimeReplay); ok && r.IsReplay() {
+		return false
+	}
+	return info.TurnDetection == genai.RealtimeTurnServer
+}
+
 // sendRealtimeAudio sends audio in 100 ms chunks, as live APIs expect. Server
 // VAD also needs the chunks paced at playback speed to detect silence. The last
 // chunk commits when the session supports it and optionally requests a reply.
@@ -489,7 +507,7 @@ func realtimeAudioTurn(ctx context.Context, ev *realtimeEvents, s genai.Realtime
 		// whole samples keeps PCM16 valid for odd sample rates.
 		audio = append(audio, make([]byte, (rate/2)*2)...)
 	}
-	if err := sendRealtimeAudio(ctx, s, audio, rate, info.TurnDetection == genai.RealtimeTurnServer, info.Capabilities.AudioCommit, manual); err != nil {
+	if err := sendRealtimeAudio(ctx, s, audio, rate, pacedAudio(s, info), info.Capabilities.AudioCommit, manual); err != nil {
 		return fmt.Errorf("probe %s: %w", probe, err)
 	}
 	if expectTool {

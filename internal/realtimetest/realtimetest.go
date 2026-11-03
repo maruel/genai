@@ -113,6 +113,8 @@ type FakeSession struct {
 	Reply func(turn int, in genai.RealtimeInput) []genai.RealtimeEvent
 	// CloseErr is returned by Close.
 	CloseErr error
+	// Replay makes IsReplay report that the session replays a recording.
+	Replay bool
 	// Sent records the inputs Send accepted, in order.
 	Sent []genai.RealtimeInput
 
@@ -133,6 +135,9 @@ func NewFakeSession(info genai.RealtimeSessionInfo) *FakeSession { //nolint:gocr
 		ended:       make(chan struct{}),
 	}
 }
+
+// IsReplay reports whether the session replays a recording.
+func (s *FakeSession) IsReplay() bool { return s.Replay }
 
 // Close implements genai.RealtimeSession.
 func (s *FakeSession) Close() error {

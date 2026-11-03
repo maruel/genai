@@ -119,6 +119,8 @@ type fakeRealtimeFactory struct {
 	// session's info when set.
 	info       genai.RealtimeSessionInfo
 	secondInfo *genai.RealtimeSessionInfo
+	// replay makes the sessions report that they replay a recording.
+	replay bool
 	// closeErr fails Close.
 	closeErr error
 	// err fails every factory call.
@@ -173,6 +175,7 @@ func (f *fakeRealtimeFactory) open(ctx context.Context, probe smoke.RealtimeProb
 	}
 	s := realtimetest.NewFakeSession(info)
 	s.CloseErr = f.closeErr
+	s.Replay = f.replay
 	s.Reply = func(_ int, in genai.RealtimeInput) []genai.RealtimeEvent {
 		switch v := in.(type) {
 		case genai.RealtimeInputContent:
@@ -247,6 +250,30 @@ func probeResult(t *testing.T, r *smoke.RealtimeReport, p smoke.RealtimeProbe) s
 
 func TestRunRealtime(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
+		t.Run("Replay", func(t *testing.T) {
+			// A replayed recording does not depend on when audio arrives, so its audio
+			// turns skip the playback-speed pacing a live server needs.
+			elapsed := func(replay bool) time.Duration {
+				var d time.Duration
+				synctest.Test(t, func(t *testing.T) {
+					f := newFakeRealtimeFactory(t)
+					f.info.TurnDetection = genai.RealtimeTurnServer
+					f.replay = replay
+					start := time.Now()
+					if _, err := smoke.RunRealtime(t.Context(), f.open); err != nil {
+						t.Fatal(err)
+					}
+					d = time.Since(start)
+				})
+				return d
+			}
+			if got := elapsed(true); got != 0 {
+				t.Fatalf("replayed recording paced audio for %v", got)
+			}
+			if got := elapsed(false); got == 0 {
+				t.Fatal("live session did not pace audio")
+			}
+		})
 		t.Run("success", func(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
 			report, err := smoke.RunRealtime(t.Context(), f.open)

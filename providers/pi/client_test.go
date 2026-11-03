@@ -8,6 +8,7 @@ package pi
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"io"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -314,7 +316,7 @@ func TestReadResponseForCommand(t *testing.T) {
 }
 
 func TestBuildResult(t *testing.T) {
-	res, err := buildResult([]byte(`{"type":"agent_end","messages":[{"role":"assistant","content":[{"type":"text","text":"Hello."}],"usage":{"input":10,"output":8,"cacheRead":4,"cacheWrite":2,"cacheWrite1h":1,"reasoning":3,"totalTokens":24,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop"}]}`), "", "")
+	res, err := buildResult([]byte(`{"type":"agent_end","messages":[{"role":"assistant","content":[{"type":"text","text":"Hello."}],"usage":{"input":10,"output":8,"cacheRead":4,"cacheWrite":2,"cacheWrite1h":1,"reasoning":3,"totalTokens":24,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop"}]}`), "", "", 0, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -389,6 +391,63 @@ func TestParseOpts(t *testing.T) {
 			t.Error("expected ErrNotSupported")
 		} else if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 			t.Errorf("err = %v, want ErrNotSupported", err)
+		}
+	})
+}
+
+func TestReadUntilDoneContextUsage(t *testing.T) {
+	input := strings.Join([]string{
+		`{"type":"agent_end","messages":[]}`,
+		`{"type":"agent_settled"}`,
+		`{"type":"response","command":"get_session_stats","success":true,"data":{"sessionId":"s","contextUsage":{"tokens":1234,"contextWindow":10000}}}`,
+	}, "\n")
+	var stdin bytes.Buffer
+	sc := bufio.NewScanner(strings.NewReader(input))
+	res, err := readUntilDone(sc, &stdin, func(string, string) bool { return true })
+	if err != nil {
+		t.Fatalf("readUntilDone: %v", err)
+	}
+	if res.Usage.ContextTokens != 1234 || res.Usage.ContextWindow != 10000 {
+		t.Errorf("context usage: got %d/%d, want 1234/10000", res.Usage.ContextTokens, res.Usage.ContextWindow)
+	}
+	if !strings.Contains(stdin.String(), string(CmdGetSessionStats)) {
+		t.Errorf("get_session_stats command not sent: %q", stdin.String())
+	}
+}
+
+func TestGenOption(t *testing.T) {
+	t.Run("unsupported", func(t *testing.T) {
+		_, err := parseOpts([]genai.GenOption{
+			genai.GenOptionSeed(1),
+			&genai.GenOptionText{
+				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
+				TopK: 2, Stop: []string{"stop"}, ReplyAsJSON: true, DecodeAs: &struct{}{},
+			},
+			&genai.GenOptionTools{},
+			&genai.GenOptionWeb{},
+			genai.GenOptionPollInterval(time.Millisecond),
+			&genai.GenOptionAudio{},
+			&genai.GenOptionImage{},
+			&genai.GenOptionVideo{},
+		})
+		uerr, ok := errors.AsType[*base.ErrNotSupported](err)
+		if !ok {
+			t.Fatalf("expected ErrNotSupported, got %v", err)
+		}
+		want := []string{
+			"GenOptionSeed",
+			"GenOptionText.Temperature", "GenOptionText.TopP", "GenOptionText.MaxTokens", "GenOptionText.TopLogprobs",
+			"GenOptionText.SystemPrompt", "GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
+			"GenOptionText.DecodeAs",
+			"GenOptionTools", "GenOptionWeb", "GenOptionPollInterval", "GenOptionAudio", "GenOptionImage", "GenOptionVideo",
+		}
+		if !slices.Equal(uerr.Options, want) {
+			t.Errorf("options: got %v, want %v", uerr.Options, want)
+		}
+	})
+	t.Run("empty_text", func(t *testing.T) {
+		if _, err := parseOpts([]genai.GenOption{&genai.GenOptionText{}}); err != nil {
+			t.Fatalf("empty GenOptionText: %v", err)
 		}
 	})
 }

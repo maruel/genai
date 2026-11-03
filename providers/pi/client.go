@@ -133,10 +133,39 @@ func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
 		if err := opt.Validate(); err != nil {
 			return "", err
 		}
-		if v, ok := opt.(*GenOption); ok {
+		switch v := opt.(type) {
+		case *GenOption:
 			effort = v.Effort
-		} else {
-			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
+		case *genai.GenOptionText:
+			if v.Temperature != 0 {
+				unsupported = append(unsupported, "GenOptionText.Temperature")
+			}
+			if v.TopP != 0 {
+				unsupported = append(unsupported, "GenOptionText.TopP")
+			}
+			if v.MaxTokens != 0 {
+				unsupported = append(unsupported, "GenOptionText.MaxTokens")
+			}
+			if v.TopLogprobs != 0 {
+				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
+			}
+			if v.SystemPrompt != "" {
+				unsupported = append(unsupported, "GenOptionText.SystemPrompt")
+			}
+			if v.TopK != 0 {
+				unsupported = append(unsupported, "GenOptionText.TopK")
+			}
+			if len(v.Stop) != 0 {
+				unsupported = append(unsupported, "GenOptionText.Stop")
+			}
+			if v.ReplyAsJSON {
+				unsupported = append(unsupported, "GenOptionText.ReplyAsJSON")
+			}
+			if v.DecodeAs != nil {
+				unsupported = append(unsupported, "GenOptionText.DecodeAs")
+			}
+		default:
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 	if len(unsupported) != 0 {
@@ -548,6 +577,23 @@ func readResponseForCommand(sc *bufio.Scanner, cmd EventType) (*Response, error)
 	return nil, fmt.Errorf("pi exited without %s response", cmd)
 }
 
+// readContextUsage requests session statistics. It returns a zero value when
+// the server cannot provide them, so the turn still succeeds.
+func readContextUsage(sc *bufio.Scanner, stdin io.Writer) ContextUsage {
+	if err := msgutil.WriteNDJSON(stdin, GetSessionStatsCmd{Type: CmdGetSessionStats}); err != nil {
+		return ContextUsage{}
+	}
+	resp, err := readResponseForCommand(sc, CmdGetSessionStats)
+	if err != nil {
+		return ContextUsage{}
+	}
+	var stats SessionStatsData
+	if err := internal.UnmarshalJSON(resp.Data, &stats); err != nil {
+		return ContextUsage{}
+	}
+	return stats.ContextUsage
+}
+
 // readUntilDone reads events until the agent settles, building a genai.Result.
 // For each text or reasoning delta, onDelta is called; returning false stops early.
 func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reasoning string) bool) (genai.Result, error) {
@@ -595,7 +641,8 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 			if retryErr != nil {
 				return genai.Result{}, retryErr
 			}
-			return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String())
+			cu := readContextUsage(sc, stdin)
+			return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String(), cu.Tokens, cu.ContextWindow)
 
 		case EventAutoRetryEnd:
 			var ev AutoRetryEndEvent
@@ -654,7 +701,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 	// non-retrying agent_end. That event already contains the authoritative
 	// messages needed to construct the result.
 	if finalAgentEnd != nil {
-		return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String())
+		return buildResult(finalAgentEnd, textBuf.String(), thinkBuf.String(), 0, 0)
 	}
 	return genai.Result{}, errors.New("pi exited without agent_end")
 }
@@ -725,7 +772,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 
 // buildResult constructs a genai.Result from an agent_end event, using
 // accumulated text/thinking buffers and the final assistant message's usage.
-func buildResult(line []byte, text, thinking string) (genai.Result, error) {
+func buildResult(line []byte, text, thinking string, contextTokens, contextWindow int64) (genai.Result, error) {
 	r := genai.Result{}
 	var ev AgentEndEvent
 	if err := internal.UnmarshalJSON(line, &ev); err != nil {
@@ -753,6 +800,8 @@ func buildResult(line []byte, text, thinking string) (genai.Result, error) {
 		}
 		break
 	}
+	r.Usage.ContextTokens = contextTokens
+	r.Usage.ContextWindow = contextWindow
 
 	if thinking != "" {
 		r.Replies = append(r.Replies, genai.Reply{Reasoning: thinking})

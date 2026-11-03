@@ -2,8 +2,8 @@
 
 | Model                                                              | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------------------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| google/gemini-3.1-flash-lite-preview                               | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| google/gemini-3.1-flash-lite-preview                               | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| google/gemini-3.1-flash-lite-preview                               | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| google/gemini-3.1-flash-lite-preview                               | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | anthropic/claude-3-5-haiku-20241022                                | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-3-5-haiku-latest                                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-3-5-sonnet-20240620                               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

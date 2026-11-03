@@ -26,27 +26,25 @@
 package opencode
 
 import (
-	"bufio"
 	"bytes"
 	"cmp"
 	"context"
 	_ "embed"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"iter"
 	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/acp"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/cli"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -115,80 +113,16 @@ func (g *GenOption) Validate() error {
 	return nil
 }
 
-// callOpts holds the settings of one call.
-type callOpts struct {
-	effort Effort
-	mode   Mode
-}
+// Client is a genai provider that delegates to the local `opencode` CLI.
+type Client struct {
+	base.NotImplemented
 
-// parseOpts collects the call settings from the process settings p and opts.
-func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
-	co := callOpts{effort: p.Effort}
-	if err := base.CheckDuplicateGenOptions(opts); err != nil {
-		return co, err
-	}
-	var unsupported []string
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return co, err
-		}
-		switch v := opt.(type) {
-		case *GenOption:
-			co.effort = cmp.Or(v.Effort, co.effort)
-			co.mode = v.Mode
-		default:
-			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
-		}
-	}
-	if len(unsupported) != 0 {
-		return co, &base.ErrNotSupported{Options: unsupported}
-	}
-	return co, nil
-}
-
-func marshalJSONRaw(v any) (json.RawMessage, error) {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return nil, err
-	}
-	return json.RawMessage(b), nil
-}
-
-// sessionIDKey is the key used in Reply.Opaque to carry session IDs.
-const sessionIDKey = "session_id"
-
-// cmdExecutor is the production executor backed by exec.Cmd.
-type cmdExecutor struct{ bin string }
-
-func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	dir, err := os.MkdirTemp("", "genai-opencode-*")
-	if err != nil {
-		return nil, nil, nil, fmt.Errorf("create temp dir: %w", err)
-	}
-	cmd := exec.CommandContext(ctx, e.bin, args...)
-	cmd.Dir = dir
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
-	}
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("stdout pipe: %w", err), os.RemoveAll(dir))
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("start opencode: %w", err), os.RemoveAll(dir))
-	}
-	return stdin, stdout, func() error {
-		return errors.Join(cmd.Wait(), os.RemoveAll(dir))
-	}, nil
-}
-
-// newScanner wraps an io.Reader in a bufio.Scanner sized for large JSON-RPC
-// messages (up to 32 MB).
-func newScanner(r io.Reader) *bufio.Scanner {
-	sc := bufio.NewScanner(r)
-	sc.Buffer(make([]byte, 1<<20), 32<<20) // 1 MB initial, 32 MB max
-	return sc
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+	opts           ProviderOption
+	binOnce        sync.Once
+	binErr         error
 }
 
 // New creates a Client for the `opencode` CLI.
@@ -225,39 +159,6 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, nil
-}
-
-// Client is a genai provider that delegates to the local `opencode` CLI.
-type Client struct {
-	base.NotImplemented
-	exec           genai.Starter
-	starterWrapper genai.ProviderOptionStarterWrapper
-	bin            string
-	model          string
-	opts           ProviderOption
-	binOnce        sync.Once
-	binErr         error
-}
-
-// ensureBin locates the opencode binary on first call. Safe for concurrent use.
-func (c *Client) ensureBin() error {
-	c.binOnce.Do(func() {
-		bin, err := exec.LookPath("opencode")
-		if err != nil {
-			if c.starterWrapper == nil {
-				c.binErr = fmt.Errorf("opencode CLI not found on PATH: %w", err)
-				return
-			}
-			bin = "opencode"
-		}
-		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin}).start)
-		if c.starterWrapper != nil {
-			s = c.starterWrapper(s)
-		}
-		c.exec = s
-	})
-	return c.binErr
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -310,7 +211,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, err := c.exec(ctx, []string{"acp"})
+	stdin, stdout, wait, cwd, err := c.start(ctx, []string{"acp"})
 	if err != nil {
 		return nil, err
 	}
@@ -319,18 +220,18 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		_ = wait()
 	}()
 
-	sc := newScanner(stdout)
-	hs, err := handshake(stdin, sc, "", "", "", "")
+	s, err := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{})
 	if err != nil {
-		return nil, err
+		return nil, wrapACP(err)
 	}
-	out := make([]genai.Model, 0, len(hs.availableModels))
-	for _, m := range hs.availableModels {
+	choices := s.ModelChoices()
+	out := make([]genai.Model, 0, len(choices))
+	for _, m := range choices {
 		name := m.Name
 		if name == "" {
-			name = m.ModelID
+			name = m.Value
 		}
-		out = append(out, &model{id: m.ModelID, displayName: name})
+		out = append(out, &model{id: m.Value, displayName: name})
 	}
 	return out, nil
 }
@@ -355,9 +256,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err != nil {
 		return genai.Result{}, err
 	}
-	resumeSessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
+	resumeSessionID := msgutil.ExtractOpaqueID(msgs, acp.SessionIDKey)
 
-	stdin, stdout, wait, err := c.exec(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
+	stdin, stdout, wait, cwd, err := c.start(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -366,18 +267,23 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		err = errors.Join(err, wait())
 	}()
 
-	sc := newScanner(stdout)
-	hs, err := handshake(stdin, sc, c.model, co.effort, co.mode, resumeSessionID)
+	s, err := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{
+		Model:           c.model,
+		Effort:          string(co.effort),
+		Mode:            string(co.mode),
+		ResumeSessionID: resumeSessionID,
+	})
 	if err != nil {
-		return genai.Result{}, err
+		return genai.Result{}, wrapACP(err)
 	}
 
-	promptID, err := sendUserPrompt(stdin, hs, &userMsg)
+	promptID, err := s.SendPrompt(&userMsg)
 	if err != nil {
-		return genai.Result{}, err
+		return genai.Result{}, wrapACP(err)
 	}
 
-	return readTurn(sc, stdin, hs.sessionID, promptID, c.opts.DangerouslySkipPermissions, func(string, string) bool { return true })
+	r, err = s.ReadTurn(promptID, c.opts.DangerouslySkipPermissions, func(string, string) bool { return true })
+	return r, wrapACP(err)
 }
 
 // GenStream implements genai.Provider.
@@ -395,14 +301,14 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	resumeSessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
+	resumeSessionID := msgutil.ExtractOpaqueID(msgs, acp.SessionIDKey)
 
 	var (
 		result   genai.Result
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
+		stdin, stdout, wait, cwd, startErr := c.start(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -412,19 +318,24 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			finalErr = errors.Join(finalErr, wait())
 		}()
 
-		sc := newScanner(stdout)
-		hs, hsErr := handshake(stdin, sc, c.model, co.effort, co.mode, resumeSessionID)
+		s, hsErr := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{
+			Model:           c.model,
+			Effort:          string(co.effort),
+			Mode:            string(co.mode),
+			ResumeSessionID: resumeSessionID,
+		})
 		if hsErr != nil {
-			finalErr = hsErr
+			finalErr = wrapACP(hsErr)
 			return
 		}
-		promptID, err := sendUserPrompt(stdin, hs, &userMsg)
+		promptID, err := s.SendPrompt(&userMsg)
 		if err != nil {
-			finalErr = err
+			finalErr = wrapACP(err)
 			return
 		}
 
-		result, finalErr = readTurn(sc, stdin, hs.sessionID, promptID, c.opts.DangerouslySkipPermissions, func(text, reasoning string) bool {
+		var readErr error
+		result, readErr = s.ReadTurn(promptID, c.opts.DangerouslySkipPermissions, func(text, reasoning string) bool {
 			if text != "" && !yield(genai.Reply{Text: text}) {
 				return false
 			}
@@ -433,6 +344,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			}
 			return true
 		})
+		finalErr = wrapACP(readErr)
 	}
 	return seq, func() (genai.Result, error) {
 		if finalErr == nil {
@@ -442,558 +354,94 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	}
 }
 
-// handshakeResult bundles everything returned by a successful handshake.
-type handshakeResult struct {
-	sessionID       string
-	supportsImage   bool
-	nextID          int64
-	availableModels []ModelInfo
-	configOptions   []SessionConfigOption
-}
-
-// handshake performs the ACP initialize → session/new sequence.
-func handshake(stdin io.Writer, sc *bufio.Scanner, mdl string, effort Effort, mode Mode, resumeSessionID string) (*handshakeResult, error) {
-	hs := &handshakeResult{}
-
-	// 1. Send initialize request.
-	hs.nextID++
-	params, err := marshalJSONRaw(InitializeParams{
-		ProtocolVersion:    1,
-		ClientCapabilities: ClientCapabilities{Terminal: false},
-		ClientInfo:         ClientInfo{Name: "genai-opencode", Title: "genai-opencode", Version: "1.0.0"},
+// ensureBin locates the opencode binary on first call. Safe for concurrent use.
+func (c *Client) ensureBin() error {
+	c.binOnce.Do(func() {
+		bin, err := exec.LookPath("opencode")
+		if err != nil {
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("opencode CLI not found on PATH: %w", err)
+				return
+			}
+			bin = "opencode"
+		}
+		c.bin = bin
 	})
+	return c.binErr
+}
+
+// start launches the ACP subprocess in a fresh temporary directory and returns
+// the ACP session working directory.
+func (c *Client) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
+	dir, err := os.MkdirTemp("", "genai-opencode-*")
 	if err != nil {
-		return nil, fmt.Errorf("marshal initialize params: %w", err)
+		return nil, nil, nil, "", fmt.Errorf("create temp dir: %w", err)
 	}
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		ID:      hs.nextID,
-		Method:  MethodInitialize,
-		Params:  params,
-	}); err != nil {
-		return nil, fmt.Errorf("write initialize: %w", err)
+	s := cli.NewStarter(c.bin, dir)
+	if c.starterWrapper != nil {
+		s = c.starterWrapper(s)
 	}
-	initData, err := readResponse(sc, stdin, hs.nextID)
+	stdin, stdout, wait, err := s(ctx, args)
 	if err != nil {
-		return nil, fmt.Errorf("read initialize response: %w", err)
+		return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
 	}
-	var initResult InitializeResult
-	if err := internal.UnmarshalJSON(initData, &initResult); err != nil {
-		return nil, fmt.Errorf("parse initialize response: %w", err)
-	}
-	hs.supportsImage = initResult.AgentCapabilities.PromptCapabilities.Image
-
-	// 2. Create or resume session.
-	hs.nextID++
-	var sessionReq JSONRPCRequest
-	if resumeSessionID != "" {
-		params, err := marshalJSONRaw(SessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir(), McpServers: []MCPServer{}})
-		if err != nil {
-			return nil, fmt.Errorf("marshal session/load params: %w", err)
-		}
-		sessionReq = JSONRPCRequest{
-			JSONRPC: "2.0",
-			ID:      hs.nextID,
-			Method:  MethodSessionLoad,
-			Params:  params,
-		}
-	} else {
-		params, err := marshalJSONRaw(SessionNewParams{Cwd: os.TempDir(), McpServers: []MCPServer{}})
-		if err != nil {
-			return nil, fmt.Errorf("marshal session/new params: %w", err)
-		}
-		sessionReq = JSONRPCRequest{
-			JSONRPC: "2.0",
-			ID:      hs.nextID,
-			Method:  MethodSessionNew,
-			Params:  params,
-		}
-	}
-	if err := msgutil.WriteNDJSON(stdin, sessionReq); err != nil {
-		return nil, fmt.Errorf("write session request: %w", err)
-	}
-	sessionData, err := readResponse(sc, stdin, hs.nextID)
-	if err != nil {
-		return nil, fmt.Errorf("read session response: %w", err)
-	}
-	var snResult SessionNewResult
-	if err := internal.UnmarshalJSON(sessionData, &snResult); err != nil {
-		return nil, fmt.Errorf("parse session result: %w", err)
-	}
-	if snResult.SessionID != "" {
-		hs.sessionID = snResult.SessionID
-	} else if resumeSessionID != "" {
-		hs.sessionID = resumeSessionID
-	}
-	if hs.sessionID == "" {
-		return nil, errors.New("session response missing sessionId")
-	}
-	hs.availableModels = snResult.Models.AvailableModels
-	hs.setConfigOptions(snResult.ConfigOptions)
-
-	// 3. Select the model and effort through ACP config options. Older OpenCode
-	// versions do not expose config options, so model selection falls back to
-	// their unstable session/set_model method. Effort requires the config option
-	// because only the server knows which variants the selected model supports.
-	if mdl != "" {
-		if err := hs.setSessionModel(stdin, sc, mdl); err != nil {
-			return nil, err
-		}
-	}
-	if effort != "" {
-		if err := hs.setSessionConfigOption(stdin, sc, ConfigOptionEffort, string(effort)); err != nil {
-			return nil, err
-		}
-	}
-	if mode != "" {
-		if err := hs.setSessionConfigOption(stdin, sc, ConfigOptionMode, string(mode)); err != nil {
-			return nil, err
-		}
-	}
-
-	return hs, nil
+	return stdin, stdout, func() error {
+		return errors.Join(wait(), os.RemoveAll(dir))
+	}, dir, nil
 }
 
-func (h *handshakeResult) setConfigOptions(opts []SessionConfigOption) {
-	h.configOptions = opts
-	for i := range opts {
-		if opts[i].ID != ConfigOptionModel {
-			continue
-		}
-		h.availableModels = make([]ModelInfo, len(opts[i].Options))
-		for j := range opts[i].Options {
-			h.availableModels[j] = ModelInfo{ModelID: opts[i].Options[j].Value, Name: opts[i].Options[j].Name}
-		}
-		return
-	}
+// callOpts holds the settings of one call.
+type callOpts struct {
+	effort Effort
+	mode   Mode
 }
 
-func (h *handshakeResult) configOption(id ConfigOptionID) *SessionConfigOption {
-	for i := range h.configOptions {
-		if h.configOptions[i].ID == id {
-			return &h.configOptions[i]
+// parseOpts collects the call settings from the process settings p and opts.
+func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
+	co := callOpts{effort: p.Effort}
+	if err := base.CheckDuplicateGenOptions(opts); err != nil {
+		return co, err
+	}
+	var unsupported []string
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return co, err
+		}
+		switch v := opt.(type) {
+		case *GenOption:
+			co.effort = cmp.Or(v.Effort, co.effort)
+			co.mode = v.Mode
+		default:
+			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
 		}
 	}
-	return nil
+	if len(unsupported) != 0 {
+		return co, &base.ErrNotSupported{Options: unsupported}
+	}
+	return co, nil
 }
 
-func (h *handshakeResult) setSessionConfigOption(stdin io.Writer, sc *bufio.Scanner, id ConfigOptionID, value string) error {
-	option := h.configOption(id)
-	if option == nil {
-		return fmt.Errorf("opencode ACP does not expose %q for the selected model", id)
+// wrapACP adds the provider name to an error from the shared ACP engine.
+func wrapACP(err error) error {
+	if err == nil {
+		return nil
 	}
-	if option.Type != ConfigOptionTypeSelect {
-		return fmt.Errorf("opencode ACP %q option has unsupported type %q", id, option.Type)
-	}
-	// Model selections may append a valid OpenCode variant to the advertised
-	// base model ID, so the server must validate them. Other options are exact.
-	valid := id == ConfigOptionModel
-	if !valid {
-		for i := range option.Options {
-			if option.Options[i].Value == value {
-				valid = true
-				break
-			}
-		}
-	}
-	if !valid {
-		available := make([]string, len(option.Options))
-		for i := range option.Options {
-			available[i] = option.Options[i].Value
-		}
-		return fmt.Errorf("opencode ACP %q %q is unavailable; supported values: %s", id, value, strings.Join(available, ", "))
-	}
-
-	h.nextID++
-	params, err := marshalJSONRaw(SetSessionConfigOptionParams{SessionID: h.sessionID, ConfigID: id, Value: value})
-	if err != nil {
-		return fmt.Errorf("marshal session/set_config_option params: %w", err)
-	}
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		ID:      h.nextID,
-		Method:  MethodSessionSetConfigOption,
-		Params:  params,
-	}); err != nil {
-		return fmt.Errorf("write session/set_config_option: %w", err)
-	}
-	data, err := readResponse(sc, stdin, h.nextID)
-	if err != nil {
-		return fmt.Errorf("read session/set_config_option response: %w", err)
-	}
-	var result SetSessionConfigOptionResult
-	if err := internal.UnmarshalJSON(data, &result); err != nil {
-		return fmt.Errorf("parse session/set_config_option response: %w", err)
-	}
-	if len(result.ConfigOptions) == 0 {
-		return errors.New("session/set_config_option response missing configOptions")
-	}
-	h.setConfigOptions(result.ConfigOptions)
-	return nil
+	return fmt.Errorf("opencode: %w", err)
 }
 
-func (h *handshakeResult) setSessionModel(stdin io.Writer, sc *bufio.Scanner, model string) error {
-	if h.configOption(ConfigOptionModel) != nil {
-		return h.setSessionConfigOption(stdin, sc, ConfigOptionModel, model)
+// acpOptions returns the ACP settings for one call in cwd.
+func acpOptions(cwd string) *acp.Options {
+	return &acp.Options{
+		ClientName:         "genai-opencode",
+		ClientVersion:      "1.0.0",
+		Cwd:                cwd,
+		ResumeMethod:       acp.MethodSessionLoad,
+		SetModelMethod:     acp.MethodSessionSetModel,
+		ModelID:            acp.ConfigOptionModel,
+		EffortID:           ConfigOptionEffort,
+		ModeID:             ConfigOptionMode,
+		AllowUnlistedModel: true,
 	}
-
-	h.nextID++
-	params, err := marshalJSONRaw(SetSessionModelParams{SessionID: h.sessionID, ModelID: model})
-	if err != nil {
-		return fmt.Errorf("marshal session/set_model params: %w", err)
-	}
-	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		ID:      h.nextID,
-		Method:  MethodSessionSetModel,
-		Params:  params,
-	}); err != nil {
-		return fmt.Errorf("write session/set_model: %w", err)
-	}
-	_, err = readResponse(sc, stdin, h.nextID)
-	return err
-}
-
-// sendUserPrompt sends a session/prompt JSON-RPC request with the user message.
-func sendUserPrompt(stdin io.Writer, hs *handshakeResult, msg *genai.Message) (int64, error) {
-	content, err := msgToPromptContent(msg, hs.supportsImage)
-	if err != nil {
-		return 0, err
-	}
-	hs.nextID++
-	id := hs.nextID
-	params, err := marshalJSONRaw(SessionPromptParams{SessionID: hs.sessionID, Prompt: content})
-	if err != nil {
-		return 0, fmt.Errorf("marshal session/prompt params: %w", err)
-	}
-	return id, msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		ID:      id,
-		Method:  MethodSessionPrompt,
-		Params:  params,
-	})
-}
-
-// msgToPromptContent converts a genai.Message to ACP prompt content blocks.
-func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]PromptContent, error) {
-	var items []PromptContent
-	for i := range msg.Requests {
-		req := &msg.Requests[i]
-		if req.Text != "" {
-			items = append(items, PromptContent{Type: ContentText, Text: req.Text})
-		}
-		if !req.Doc.IsZero() {
-			blk, err := docToPromptContent(req.Doc, supportsImage)
-			if err != nil {
-				return nil, err
-			}
-			items = append(items, blk)
-		}
-	}
-	if len(items) == 0 {
-		return nil, errors.New("user message has no content")
-	}
-	return items, nil
-}
-
-// docToPromptContent converts a genai.Doc to a promptContent block.
-func docToPromptContent(doc genai.Doc, supportsImage bool) (PromptContent, error) {
-	if doc.URL != "" {
-		mimeType, _, err := doc.Read(10 * 1024 * 1024)
-		if err != nil {
-			return PromptContent{}, fmt.Errorf("read URL document: %w", err)
-		}
-		if !supportsImage {
-			return PromptContent{}, errors.New("opencode agent does not support image input")
-		}
-		if !strings.HasPrefix(mimeType, "image/") {
-			return PromptContent{}, fmt.Errorf("unsupported URL document MIME type %q for opencode (images only)", mimeType)
-		}
-		u, err := url.ParseRequestURI(doc.URL)
-		if err != nil {
-			return PromptContent{}, fmt.Errorf("parse image URL: %w", err)
-		}
-		if u.Scheme != "http" && u.Scheme != "https" {
-			return PromptContent{}, fmt.Errorf("unsupported image URL scheme %q for opencode", u.Scheme)
-		}
-		return PromptContent{Type: ContentImage, URI: doc.URL, MimeType: mimeType}, nil
-	}
-	mimeType, data, err := doc.Read(10 * 1024 * 1024)
-	if err != nil {
-		return PromptContent{}, fmt.Errorf("read doc: %w", err)
-	}
-	if strings.HasPrefix(mimeType, "text/") {
-		return PromptContent{Type: ContentText, Text: string(data)}, nil
-	}
-	if !supportsImage {
-		return PromptContent{}, errors.New("opencode agent does not support image input")
-	}
-	if !strings.HasPrefix(mimeType, "image/") {
-		return PromptContent{}, fmt.Errorf("unsupported doc MIME type %q for opencode (text and images only)", mimeType)
-	}
-	return PromptContent{
-		Type:     ContentImage,
-		Data:     base64.StdEncoding.EncodeToString(data),
-		MimeType: mimeType,
-	}, nil
-}
-
-// readResponse reads lines from the scanner until the expected JSON-RPC
-// response is found. Notifications are skipped and agent requests are answered.
-func readResponse(sc *bufio.Scanner, stdin io.Writer, expectedID int64) (json.RawMessage, error) {
-	for sc.Scan() {
-		line := sc.Bytes()
-		var msg JSONRPCMessage
-		if err := json.Unmarshal(line, &msg); err != nil {
-			return nil, fmt.Errorf("unmarshal JSON-RPC message: %w", err)
-		}
-		if msg.IsAgentRequest() {
-			if err := handleAgentRequest(stdin, line, false); err != nil {
-				return nil, fmt.Errorf("handle agent request during handshake: %w", err)
-			}
-			continue
-		}
-		if !msg.IsResponse() {
-			continue
-		}
-		var id int64
-		if err := json.Unmarshal(msg.ID, &id); err != nil {
-			return nil, fmt.Errorf("invalid JSON-RPC response id %s: %w", msg.ID, err)
-		}
-		if id != expectedID {
-			return nil, fmt.Errorf("unexpected JSON-RPC response id %d, want %d", id, expectedID)
-		}
-		if msg.Error != nil {
-			if len(msg.Error.Data) != 0 {
-				return nil, fmt.Errorf("JSON-RPC error %d: %s: %s", msg.Error.Code, msg.Error.Message, msg.Error.Data)
-			}
-			return nil, fmt.Errorf("JSON-RPC error %d: %s", msg.Error.Code, msg.Error.Message)
-		}
-		return msg.Result, nil
-	}
-	if err := sc.Err(); err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return nil, errors.New("opencode exited during handshake")
-}
-
-// readTurn reads session/update notifications until the session/prompt response
-// arrives. For each text or reasoning delta, onDelta is called; returning false
-// stops the read loop early (used by GenStream when the caller breaks).
-//
-// allow approves permission requests; otherwise they are rejected.
-func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int64, allow bool, onDelta func(text, reasoning string) bool) (genai.Result, error) {
-	var textBuf, thinkBuf strings.Builder
-	for sc.Scan() {
-		line := sc.Bytes()
-		var msg JSONRPCMessage
-		if err := json.Unmarshal(line, &msg); err != nil {
-			return genai.Result{}, fmt.Errorf("unmarshal JSON-RPC message: %w", err)
-		}
-
-		// Response to our prompt request → turn complete.
-		if msg.IsResponse() {
-			var id int64
-			if err := json.Unmarshal(msg.ID, &id); err != nil {
-				return genai.Result{}, fmt.Errorf("invalid JSON-RPC response id %s: %w", msg.ID, err)
-			}
-			if id != promptID {
-				return genai.Result{}, fmt.Errorf("unexpected JSON-RPC response id %d, want %d", id, promptID)
-			}
-			return buildPromptResult(line, textBuf.String(), thinkBuf.String(), sessionID)
-		}
-
-		if msg.IsAgentRequest() {
-			if err := handleAgentRequest(stdin, line, allow); err != nil {
-				return genai.Result{}, fmt.Errorf("handle agent request: %w", err)
-			}
-			continue
-		}
-
-		if msg.Method != MethodSessionUpdate {
-			continue
-		}
-
-		text, reasoning, err := parseSessionUpdateDelta(msg.Params)
-		if err != nil {
-			return genai.Result{}, err
-		}
-		textBuf.WriteString(text)
-		thinkBuf.WriteString(reasoning)
-		if (text != "" || reasoning != "") && !onDelta(text, reasoning) {
-			if err := cancelSession(stdin, sessionID); err != nil {
-				return genai.Result{}, fmt.Errorf("cancel session: %w", err)
-			}
-			return genai.Result{}, nil
-		}
-	}
-	if err := sc.Err(); err != nil {
-		return genai.Result{}, fmt.Errorf("read stdout: %w", err)
-	}
-	return genai.Result{}, errors.New("opencode exited without prompt response")
-}
-
-func cancelSession(stdin io.Writer, sessionID string) error {
-	params, err := marshalJSONRaw(SessionCancelParams{SessionID: sessionID})
-	if err != nil {
-		return fmt.Errorf("marshal session/cancel params: %w", err)
-	}
-	return msgutil.WriteNDJSON(stdin, JSONRPCRequest{
-		JSONRPC: "2.0",
-		Method:  MethodSessionCancel,
-		Params:  params,
-	})
-}
-
-// parseSessionUpdateDelta extracts text and reasoning deltas from a
-// session/update notification's params.
-func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, err error) {
-	var sup SessionUpdateParams
-	if err := internal.UnmarshalJSON(params, &sup); err != nil {
-		return "", "", fmt.Errorf("unmarshal session/update params: %w", err)
-	}
-	var probe UpdateProbe
-	if err := json.Unmarshal(sup.Update, &probe); err != nil {
-		return "", "", fmt.Errorf("unmarshal session/update discriminator: %w", err)
-	}
-	switch probe.SessionUpdate {
-	case UpdateAgentMessageChunk:
-		var u AgentMessageChunkUpdate
-		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
-			return "", "", fmt.Errorf("unmarshal agent_message_chunk: %w", err)
-		}
-		return u.Content.Text, "", nil
-	case UpdateAgentThoughtChunk:
-		var u AgentThoughtChunkUpdate
-		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
-			return "", "", fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
-		}
-		return "", u.Content.Text, nil
-	case UpdateUserMessageChunk:
-		return "", "", decodeSessionUpdate[UserMessageChunkUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateToolCall:
-		return "", "", decodeSessionUpdate[ToolCallUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateToolCallUpdate:
-		return "", "", decodeSessionUpdate[ToolCallUpdateUpdate](sup.Update, probe.SessionUpdate)
-	case UpdatePlan:
-		return "", "", decodeSessionUpdate[PlanUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateUsageUpdate:
-		return "", "", decodeSessionUpdate[UsageUpdateUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateCurrentModeUpdate:
-		return "", "", decodeSessionUpdate[CurrentModeUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateSessionInfoUpdate:
-		return "", "", decodeSessionUpdate[SessionInfoUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateAvailableCommandsUpdate:
-		return "", "", decodeSessionUpdate[AvailableCommandsUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateConfigOptionUpdate:
-		return "", "", decodeSessionUpdate[ConfigOptionUpdate](sup.Update, probe.SessionUpdate)
-	default:
-		return "", "", nil
-	}
-}
-
-func decodeSessionUpdate[T any](data json.RawMessage, updateType UpdateType) error {
-	var update T
-	if err := internal.UnmarshalJSON(data, &update); err != nil {
-		return fmt.Errorf("unmarshal %s: %w", updateType, err)
-	}
-	return nil
-}
-
-// handleAgentRequest responds to JSON-RPC requests from the agent. A permission
-// request selects the first allow option when allow is set and the first
-// reject option otherwise, and is cancelled when no such option exists.
-func handleAgentRequest(stdin io.Writer, line []byte, allow bool) error {
-	var msg JSONRPCMessage
-	if err := internal.UnmarshalJSON(line, &msg); err != nil {
-		return fmt.Errorf("unmarshal agent request: %w", err)
-	}
-	if msg.Method != MethodSessionRequestPermission {
-		data, err := marshalJSONRaw(struct {
-			Method Method `json:"method"`
-		}{Method: msg.Method})
-		if err != nil {
-			return fmt.Errorf("marshal method-not-found data: %w", err)
-		}
-		return msgutil.WriteNDJSON(stdin, JSONRPCResponse{
-			JSONRPC: "2.0",
-			ID:      msg.ID,
-			Error: JSONRPCError{
-				Code:    -32601,
-				Message: fmt.Sprintf("method not found: %s", msg.Method),
-				Data:    data,
-			},
-		})
-	}
-	var params PermissionRequestParams
-	if err := internal.UnmarshalJSON(msg.Params, &params); err != nil {
-		return fmt.Errorf("unmarshal permission request: %w", err)
-	}
-	optionID := ""
-	for _, o := range params.Options {
-		isAllow := o.Kind == PermissionAllowOnce || o.Kind == PermissionAllowAlways
-		isReject := o.Kind == PermissionRejectOnce || o.Kind == PermissionRejectAlways
-		if allow && isAllow || !allow && isReject {
-			optionID = o.OptionID
-			break
-		}
-	}
-	outcome := PermissionOutcome{Outcome: PermissionOutcomeCancelled}
-	if optionID != "" {
-		outcome = PermissionOutcome{Outcome: PermissionOutcomeSelected, OptionID: optionID}
-	}
-	result, err := marshalJSONRaw(PermissionResponseResult{Outcome: outcome})
-	if err != nil {
-		return fmt.Errorf("marshal permission response result: %w", err)
-	}
-	return msgutil.WriteNDJSON(stdin, JSONRPCResponse{
-		JSONRPC: "2.0",
-		ID:      msg.ID,
-		Result:  result,
-	})
-}
-
-// buildPromptResult constructs a genai.Result from the session/prompt response.
-// Returns an error if the JSON-RPC response is an error.
-func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Result, error) {
-	r := genai.Result{}
-
-	var msg JSONRPCMessage
-	if err := internal.UnmarshalJSON(line, &msg); err != nil {
-		return r, fmt.Errorf("unmarshal session/prompt response: %w", err)
-	}
-	if msg.Error != nil {
-		if len(msg.Error.Data) != 0 {
-			return r, fmt.Errorf("JSON-RPC error %d: %s: %s", msg.Error.Code, msg.Error.Message, msg.Error.Data)
-		}
-		return r, fmt.Errorf("JSON-RPC error %d: %s", msg.Error.Code, msg.Error.Message)
-	}
-	if msg.Result != nil {
-		var pr PromptResult
-		if err := internal.UnmarshalJSON(msg.Result, &pr); err != nil {
-			return r, fmt.Errorf("unmarshal session/prompt result: %w", err)
-		}
-		r.Usage.FinishReason = stopReasonToFinishReason(pr.StopReason)
-		r.Usage.InputTokens = int64(pr.Usage.InputTokens)
-		r.Usage.OutputTokens = int64(pr.Usage.OutputTokens)
-		r.Usage.ReasoningTokens = int64(pr.Usage.ThoughtTokens)
-		r.Usage.InputCachedTokens = int64(pr.Usage.CachedReadTokens)
-		// ACP totals include reasoning and both cache token categories.
-		r.Usage.TotalTokens = int64(pr.Usage.TotalTokens)
-	}
-
-	if thinking != "" {
-		r.Replies = append(r.Replies, genai.Reply{Reasoning: thinking})
-	}
-	if text != "" {
-		r.Replies = append(r.Replies, genai.Reply{Text: text})
-	}
-	if sessionID != "" {
-		r.Replies = append(r.Replies, genai.Reply{
-			Opaque: map[string]any{sessionIDKey: sessionID},
-		})
-	}
-	return r, nil
 }
 
 // yieldNothing is an empty iterator used for early error returns in GenStream.
@@ -1013,18 +461,6 @@ type model struct {
 func (m *model) GetID() string  { return m.id }
 func (m *model) String() string { return m.displayName }
 func (m *model) Context() int64 { return 200_000 }
-
-// stopReasonToFinishReason maps an ACP stop reason string to a genai.FinishReason.
-func stopReasonToFinishReason(reason StopReason) genai.FinishReason {
-	switch reason {
-	case StopReasonMaxTokens, StopReasonMaxTurnRequests:
-		return genai.FinishedLength
-	case StopReasonCancelled, StopReasonRefusal:
-		return genai.FinishedContentFilter
-	default:
-		return genai.FinishedStop
-	}
-}
 
 // Compile-time interface checks.
 var (

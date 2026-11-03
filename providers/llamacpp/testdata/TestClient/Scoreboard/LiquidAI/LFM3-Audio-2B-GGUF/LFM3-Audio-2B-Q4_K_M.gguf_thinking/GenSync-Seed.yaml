@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"seed":42,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1716
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"We need to respond: \"Use only one word.\" The user says: \"Use only one word.\" They want a greeting: \"Hello.\" But they want only one word. So we must respond with a single word. Possibly \"Hello\". That''s one word. Or \"Hi\". But the instruction: \"Use only one word.\" So we must respond with exactly one word. The user said \"Use only one word.\" So we must comply. The content: \"Use only one word.\" So we must respond with a single word. The appropriate greeting could be \"Hello\". That''s one word. So answer: \"Hello\". Ensure it''s exactly one word, no punctuation? The instruction says \"Use only one word.\" It doesn''t explicitly forbid punctuation, but to be safe, we can just output \"Hello\". No period? The period is punctuation, but it''s not a word. The word \"Hello\" is the word. The period after it is punctuation, but it''s not a word. The instruction \"Use only one word.\" Might be interpreted as the response should contain only one word, no extra punctuation. Safer to output just \"Hello\". No period. So answer: \"Hello\"."}}],"created":1793724557,"model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":255,"prompt_tokens":17,"total_tokens":272,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-rBJsc8wxnHMPv7Hfvda6OE6n7TH1OO4d","timings":{"cache_n":1,"prompt_n":16,"prompt_ms":165.018,"prompt_per_token_ms":10.313625,"prompt_per_second":96.95911961119393,"predicted_n":255,"predicted_ms":7977.056,"predicted_per_token_ms":31.405732283464566,"predicted_per_second":31.841320908365198}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1716"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 8.145s

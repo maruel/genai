@@ -7,10 +7,10 @@
 | mimo-v2.6-flash🥈🥉         | Sync🧠   | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | mimo-v2.6-flash🥈🥉         | Stream🧠 | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | mimo-v2.5-tts             | Sync    | 💬       | 🎤     | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| mimo-v2.6-pro-ultraspeed  | ?       | ?        | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mimo-v2.5-asr             | ?       | ?        | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mimo-v2.5-tts-voiceclone  | ?       | ?        | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mimo-v2.5-tts-voicedesign | ?       | ?        | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| mimo-v2.6-pro-ultraspeed  | ?       | ?        | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

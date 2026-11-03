@@ -413,18 +413,6 @@
       }
     },
     {
-      "models": [
-        "gpt-5.4-mini",
-        "gpt-5.4-nano",
-        "gpt-5.5",
-        "gpt-5.6-luna",
-        "gpt-5.6-sol",
-        "gpt-5.6-terra",
-        "gpt-6-sol"
-      ],
-      "reason": true
-    },
-    {
       "comments": "Untested",
       "models": [
         "babbage-002",
@@ -574,6 +562,18 @@
         "sora-2",
         "sora-2-pro"
       ]
+    },
+    {
+      "models": [
+        "gpt-5.4-mini",
+        "gpt-5.4-nano",
+        "gpt-5.5",
+        "gpt-5.6-luna",
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-6-sol"
+      ],
+      "reason": true
     }
   ]
 }

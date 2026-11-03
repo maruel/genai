@@ -19,6 +19,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -76,6 +77,9 @@ type RealtimeReport struct {
 	// OutputText reports that a probe observed nonempty text output. Output
 	// transcripts are not text output.
 	OutputText bool
+	// Reasoning reports that a probe observed reasoning content or reasoning
+	// tokens. The reasoning mode is a session setting; this is its measured effect.
+	Reasoning bool
 	// Usage accumulates non-cumulative usage snapshots and keeps the latest rate
 	// limits. It is partial when the run fails. Duplicate response IDs are counted
 	// once.
@@ -233,11 +237,38 @@ func RunRealtime(ctx context.Context, f RealtimeSessionFactory) (report Realtime
 	return report, nil
 }
 
+// RealtimeSupported reports whether the model accepts a realtime session.
+//
+// It opens one session with the default options, closes it, and returns the
+// provider message when the model is turned down. A provider without the
+// realtime capability reports false without a request. Use it to discover which
+// models a realtime-capable provider serves before running the probes.
+func RealtimeSupported(ctx context.Context, c genai.Provider) (bool, string, error) {
+	if !c.Capabilities().Realtime {
+		return false, "provider does not support realtime", nil
+	}
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	s, err := c.ConnectRealtime(ctx, genai.RealtimeOptionInstructions("Reply with one word."))
+	if err != nil {
+		if ctx.Err() != nil {
+			return false, "", fmt.Errorf("realtime setup: %w", err)
+		}
+		return false, err.Error(), nil
+	}
+	if err := s.Close(); err != nil {
+		return true, err.Error(), nil
+	}
+	return true, "", nil
+}
+
 // RunRealtimeScenario qualifies bidirectional realtime support for the
 // provider's configured model.
 //
 // It requires the provider to implement ConnectRealtime. reason selects the
-// reasoning mode the returned scenario declares. The text tool probe requests
+// reasoning mode the returned scenario declares; the mode is a session setting,
+// so the probes verify its effect through Usage.ReasoningTokens and reasoning
+// events instead of inferring it. The text tool probe requests
 // text output; the audio tool probe requests audio output. The returned scenario
 // declares text input and audio or text output and records the measured formats
 // and capabilities the probes exercised. It returns the accumulated
@@ -295,6 +326,9 @@ func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (sc
 	usage = report.Usage
 	if err != nil {
 		return sc, usage, err
+	}
+	if report.Reasoning != reason {
+		internal.Logger(ctx).DebugContext(ctx, "realtime reasoning mode", "declared", reason, "measured", report.Reasoning)
 	}
 	previousTools := realtimePreviousTools(c, model)
 	tools := scoreboard.False
@@ -687,7 +721,7 @@ func realtimeToolAnswer(probe RealtimeProbe, ev *realtimeEvents, calls *genai.Re
 				}
 				text.WriteString(e.Content.Text)
 			}
-		case genai.RealtimeEventError, genai.RealtimeEventGenerationDone, genai.RealtimeEventInputSpeechEnd, genai.RealtimeEventInputSpeechStart, genai.RealtimeEventTranscriptInput, genai.RealtimeEventInterrupted, genai.RealtimeEventProvider, genai.RealtimeEventContentToolCalls, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage:
+		case genai.RealtimeEventContentReasoning, genai.RealtimeEventError, genai.RealtimeEventGenerationDone, genai.RealtimeEventInputSpeechEnd, genai.RealtimeEventInputSpeechStart, genai.RealtimeEventTranscriptInput, genai.RealtimeEventInterrupted, genai.RealtimeEventProvider, genai.RealtimeEventContentToolCalls, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage:
 		}
 	}
 	// The first await skips a queued tool-call TurnDone and stale output from the
@@ -810,6 +844,8 @@ func (e *realtimeEvents) await(probe RealtimeProbe, match func(*genai.RealtimeEv
 			e.report.OutputAudio = e.report.OutputAudio || len(ev.Content.Audio) != 0
 		case genai.RealtimeEventContentText:
 			e.report.OutputText = e.report.OutputText || ev.Content.Text != ""
+		case genai.RealtimeEventContentReasoning:
+			e.report.Reasoning = e.report.Reasoning || ev.Content.Reasoning != ""
 		case genai.RealtimeEventUsage:
 			e.addUsage(&ev)
 		default:
@@ -842,6 +878,9 @@ func (e *realtimeEvents) addUsage(ev *genai.RealtimeEvent) {
 		e.usageIDs[ev.ResponseID] = struct{}{}
 	}
 	e.report.Usage.Add(ev.Usage)
+	if ev.Usage.ReasoningTokens != 0 {
+		e.report.Reasoning = true
+	}
 	if e.report.Usage.ServiceTier == "" {
 		e.report.Usage.ServiceTier = ev.Usage.ServiceTier
 	}

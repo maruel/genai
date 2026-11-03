@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 591
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1793724602,"id":"chatcmpl-hpPPOdlY8Y8mIQ4ZhdagSmtgeXrdbywd","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"id":"Ujrts0Q7VCGxPUjlFvC8LA7hLMdSmFPe","type":"function","function":{"name":"get_hostname","arguments":"{"}}]}}],"created":1793724602,"id":"chatcmpl-hpPPOdlY8Y8mIQ4ZhdagSmtgeXrdbywd","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]}}],"created":1793724602,"id":"chatcmpl-hpPPOdlY8Y8mIQ4ZhdagSmtgeXrdbywd","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"tool_calls","index":0,"delta":{}}],"created":1793724602,"id":"chatcmpl-hpPPOdlY8Y8mIQ4ZhdagSmtgeXrdbywd","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":101,"prompt_ms":658.772,"prompt_per_token_ms":6.522495049504951,"prompt_per_second":153.3155628958122,"predicted_n":11,"predicted_ms":451.607,"predicted_per_token_ms":45.160700000000006,"predicted_per_second":22.143146585416076}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+            X-Accel-Buffering:
+                - 'no'
+        status: 200 OK
+        code: 200
+        duration: 37ms

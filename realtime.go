@@ -403,6 +403,9 @@ const (
 	// RealtimeEventContentText carries generated text. Content.Text is a delta unless
 	// Final is true, in which case it replaces the accumulated deltas.
 	RealtimeEventContentText RealtimeEventKind = "text"
+	// RealtimeEventContentReasoning carries reasoning text that the provider
+	// separates from the answer. Content.Reasoning is a delta.
+	RealtimeEventContentReasoning RealtimeEventKind = "reasoning"
 	// RealtimeEventContentToolCalls carries complete function calls from one response.
 	// Arguments are validated JSON, and IDs are unique and nonempty. The caller
 	// executes the calls and sends the results in RealtimeInputContent.ToolResults. The
@@ -475,6 +478,8 @@ type RealtimeContent struct {
 	// Text is a delta for Text and transcript events. When Final is true, Text
 	// is the complete text and replaces accumulated deltas.
 	Text string
+	// Reasoning is a delta for Reasoning events.
+	Reasoning string
 	// Final marks Text as complete for Text and transcript events.
 	Final bool
 	// ToolCalls contains complete calls with validated JSON arguments and unique
@@ -492,11 +497,14 @@ func (c *RealtimeContent) Validate() error {
 	if c.Text != "" {
 		n++
 	}
+	if c.Reasoning != "" {
+		n++
+	}
 	if len(c.ToolCalls) != 0 {
 		n++
 	}
 	if n > 1 {
-		return errors.New("realtime content sets more than one of Audio, Text, or ToolCalls")
+		return errors.New("realtime content sets more than one of Audio, Text, Reasoning, or ToolCalls")
 	}
 	if c.Final && c.Text == "" {
 		return errors.New("realtime content Final requires Text")

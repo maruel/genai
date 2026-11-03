@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 540
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3345
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"[\n  {\n    \"name\": \"apple\",\n    \"color\": \"red\"\n  },\n  {\n    \"name\": \"banana\",\n    \"color\": \"yellow\"\n  }\n]","reasoning_content":"We need to produce JSON, with two fruits and their colors. No explanation. Just JSON.\n\nThe user: \"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON.\"\n\nThus we need to output something like:\n\n{\n  \"fruits\": [\n    {\n      \"name\": \"apple\",\n      \"color\": \"red\"\n    },\n    {\n      \"name\": \"banana\",\n      \"color\": \"yellow\"\n    }\n  ]\n}\n\nBut the user said \"Name two fruits with their color.\" Could be just an array of objects with name and color. Or maybe just two lines? But JSON requires proper structure.\n\nWe must ensure we follow the instruction: \"Reply ONLY as JSON.\" So we must output only JSON, no extra text. So we need to produce a JSON object (or array) containing the fruit names and colors.\n\nBetter to produce:\n\n[\n  {\n    \"fruit\": \"apple\",\n    \"color\": \"red\"\n  },\n  {\n    \"fruit\": \"banana\",\n    \"color\": \"yellow\"\n  }\n]\n\nOr maybe:\n\n{\n  \"apple\": \"red\",\n  \"banana\": \"yellow\"\n}\n\nBut the request: \"Name two fruits with their color.\" Could be like \"apple (red)\" and \"banana (yellow)\". But JSON can have keys like \"apple\" and \"banana\" with values being strings? Actually they said \"Name two fruits with their color.\" Could be like:\n\n{\n  \"apple\": \"red\",\n  \"banana\": \"yellow\"\n}\n\nBut that would be ambiguous: the value is the color, not the fruit name. The request says \"Name two fruits with their color.\" So we need to name the fruit and give its color. So we need to include both the fruit name and the color. So we can have an array of objects with \"fruit\" and \"color\". Or we can have \"name\" and \"color\". Let''s decide.\n\nBetter to have:\n\n[\n  {\n    \"name\": \"apple\",\n    \"color\": \"red\"\n  },\n  {\n    \"name\": \"banana\",\n    \"color\": \"yellow\"\n  }\n]\n\nThat is clear.\n\nThus final answer:\n\n{\n  \"fruits\": [\n    {\n      \"name\": \"apple\",\n      \"color\": \"red\"\n    },\n    {\n      \"name\": \"banana\",\n      \"color\": \"yellow\"\n    }\n  ]\n}\n\nBut the top-level could be just array. The user didn''t specify top-level structure. It''s safe to include \"fruits\" key.\n\nBut the instruction \"Reply ONLY as JSON.\" So we must not include any extra text like \"Here are the fruits:\" etc. So just the JSON.\n\nThus final answer:\n\n[\n  {\n    \"name\": \"apple\",\n    \"color\": \"red\"\n  },\n  {\n    \"name\": \"banana\",\n    \"color\": \"yellow\"\n  }\n]\n\nMake sure it''s valid JSON. Yes.\n\nThus final."}}],"created":1793724628,"model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":655,"prompt_tokens":28,"total_tokens":683,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-42L3MrHf4c359KpkGqTtZukfrrKgLZs0","timings":{"cache_n":1,"prompt_n":27,"prompt_ms":183.342,"prompt_per_token_ms":6.790444444444445,"prompt_per_second":147.26576561835256,"predicted_n":655,"predicted_ms":34535.872,"predicted_per_token_ms":52.80714373088686,"predicted_per_second":18.936831825181653,"draft_n":371,"draft_n_accepted":117}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "3345"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 34.748s

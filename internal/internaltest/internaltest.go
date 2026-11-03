@@ -34,17 +34,6 @@ import (
 	"github.com/maruel/genai/internal/myrecorder"
 )
 
-// IsTestFiltered reports whether -run or -skip narrowed the test set.
-func IsTestFiltered() bool {
-	filtered := false
-	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.run" || f.Name == "test.skip" {
-			filtered = true
-		}
-	})
-	return filtered
-}
-
 // NewRecords creates a new Records instance.
 func NewRecords() *Records {
 	rr, err := myrecorder.NewRecords("testdata")
@@ -70,7 +59,13 @@ type Records struct {
 // When RECORD=failure_only is set, it re-runs failed tests to re-record their
 // cassettes.
 func (r *Records) Close() error {
-	if IsTestFiltered() {
+	filtered := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "test.run" {
+			filtered = true
+		}
+	})
+	if filtered {
 		return nil
 	}
 	// Collect orphaned recordings before proceeding to rerun.

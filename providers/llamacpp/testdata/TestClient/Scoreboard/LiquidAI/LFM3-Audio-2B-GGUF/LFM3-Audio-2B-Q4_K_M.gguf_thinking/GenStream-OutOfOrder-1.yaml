@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 904
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1793724609,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"id":"hLZ06zdLfNq2RR0ejo3V4dhqSjUdW0cF","type":"function","function":{"name":"task_status","arguments":"{"}}]}}],"created":1793724609,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"task_id\":"}}]}}],"created":1793724609,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"3"}}]}}],"created":1793724609,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]}}],"created":1793724609,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":1,"id":"HrLkzi12e3IY7GsvypvUaNwiOxfyVIWU","type":"function","function":{"name":"task_status","arguments":"{"}}]}}],"created":1793724610,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"\"task_id\":"}}]}}],"created":1793724610,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"7"}}]}}],"created":1793724610,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":1,"function":{"arguments":"}"}}]}}],"created":1793724610,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":2,"id":"pur56iSCHva5G175Rqa45Ed1WHEMFT0A","type":"function","function":{"name":"task_status","arguments":"{"}}]}}],"created":1793724611,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":2,"function":{"arguments":"\"task_id\":"}}]}}],"created":1793724611,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":2,"function":{"arguments":"11"}}]}}],"created":1793724611,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":2,"function":{"arguments":"}"}}]}}],"created":1793724611,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"tool_calls","index":0,"delta":{}}],"created":1793724611,"id":"chatcmpl-RltcuBk7pHB6zpvAOdhJ2OtjUGbhA8k7","model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":154,"prompt_ms":932.767,"prompt_per_token_ms":6.056928571428572,"prompt_per_second":165.10018043091148,"predicted_n":54,"predicted_ms":2647.286,"predicted_per_token_ms":49.94879245283019,"predicted_per_second":20.020504018077382}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+            X-Accel-Buffering:
+                - 'no'
+        status: 200 OK
+        code: 200
+        duration: 40ms

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1073
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"We need to respond with \"Hello\" but the instruction: \"Use only one word.\" So we must respond with exactly one word. The user said: \"Use only one word.\" So we must respond with a single word. The greeting \"Hello\" is two words? Actually \"Hello\" is one word. It''s just \"Hello\". That''s one word. So we can just say \"Hello\". That satisfies \"Use only one word.\"\n\nThus answer: \"Hello\"."}}],"created":1793724549,"model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":104,"prompt_tokens":17,"total_tokens":121,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-NPX93csUhSTplqlcBBoQ5f5KpiktH3fX","timings":{"cache_n":0,"prompt_n":17,"prompt_ms":214.383,"prompt_per_token_ms":12.610764705882353,"prompt_per_second":79.29733234444895,"predicted_n":104,"predicted_ms":3696.339,"predicted_per_token_ms":35.88678640776699,"predicted_per_second":27.865409530889888}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1073"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 3.912s

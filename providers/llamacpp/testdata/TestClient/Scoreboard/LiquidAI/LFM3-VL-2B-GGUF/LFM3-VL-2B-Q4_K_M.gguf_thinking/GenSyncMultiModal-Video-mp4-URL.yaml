@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 355
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"input_video","input_video":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 980
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"The user is asking to identify the word shown in the video frames. Looking at the frames, yellow text on a black background clearly spells \"BANANA.\" The frames show the word rotating, but the word itself is \"BANANA.\" The instruction is to reply with only that word.\n\nTherefore, the answer is: BANANA"}}],"created":1793720730,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":72,"prompt_tokens":937,"total_tokens":1009,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-MNIFOSNWC7wayuLl2m9vNqgccW2vDaD7","timings":{"cache_n":1,"prompt_n":936,"prompt_ms":7857.344,"prompt_per_token_ms":8.39459829059829,"prompt_per_second":119.12422314716017,"predicted_n":72,"predicted_ms":15369.667,"predicted_per_token_ms":216.47418309859154,"predicted_per_second":4.619488502906406}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "980"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 23.874s

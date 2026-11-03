@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 648
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1793733544,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"id":"w2e8GU2DkOWOqEr5VqJkwpZPvOpoPMyM","type":"function","function":{"name":"best_country","arguments":"{"}}]}}],"created":1793733544,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"country\":\""}}]}}],"created":1793733544,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"Canada"}}]}}],"created":1793733544,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\""}}]}}],"created":1793733544,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"}"}}]}}],"created":1793733544,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"tool_calls","index":0,"delta":{}}],"created":1793733545,"id":"chatcmpl-qQ4CuFLZ2jgxtnYIYqqh5guawKJP1UkS","model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":129,"prompt_ms":572.722,"prompt_per_token_ms":4.439705426356589,"prompt_per_second":225.24016887774525,"predicted_n":18,"predicted_ms":869.637,"predicted_per_token_ms":51.15511764705882,"predicted_per_second":19.548386280712528}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+            X-Accel-Buffering:
+                - 'no'
+        status: 200 OK
+        code: 200
+        duration: 141ms

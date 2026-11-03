@@ -237,7 +237,7 @@ func TestRun(t *testing.T) {
 				for i := range sb.Scenarios {
 					for _, id := range sb.Scenarios[i].Models {
 						models = append(models, scoreboard.Model{Model: id})
-						p := &qualificationProvider{model: id, score: sb, output: genai.Modalities{genai.ModalityText}}
+						p := &qualificationProvider{model: id, score: sb, output: genai.Modalities{genai.ModalityText}, realtime: true}
 						if id == "embedding" || id == "embedding2" {
 							p.output = genai.Modalities{genai.ModalityEmbedding}
 						}
@@ -246,7 +246,7 @@ func TestRun(t *testing.T) {
 				}
 				if tc.update {
 					models = append(models, scoreboard.Model{Model: "new-embedding"})
-					clients["new-embedding"] = &qualificationProvider{model: "new-embedding", score: sb, output: genai.Modalities{genai.ModalityEmbedding}}
+					clients["new-embedding"] = &qualificationProvider{model: "new-embedding", score: sb, output: genai.Modalities{genai.ModalityEmbedding}, realtime: true}
 				}
 				Run(t, func(_ testing.TB, m scoreboard.Model, _ func(http.RoundTripper) http.RoundTripper) genai.Provider {
 					if m.Model == "" {
@@ -320,6 +320,19 @@ func TestRun(t *testing.T) {
 				slices.Sort(untested)
 				if !slices.Equal(untested, []string{"aaa-first", "generation-first", "generation-last", "zzz-last"}) {
 					t.Fatalf("untouched siblings = %v", untested)
+				}
+				// A measured model that returns speech or text is probed for a session
+				// once; a skipped model, and one that returns images or embeddings, stays
+				// untouched.
+				for id, p := range clients {
+					if id == "" {
+						continue
+					}
+					measured := p.syncCalls.Load() != 0 || p.streamCalls.Load() != 0 || len(p.dimensions) != 0
+					serves := slices.Contains(p.output, genai.ModalityText) || slices.Contains(p.output, genai.ModalityAudio)
+					if probed := p.realtimeCalls.Load(); (probed == 1) != (measured && serves) {
+						t.Fatalf("%s: measured=%v serves=%v realtime probes=%d", id, measured, serves, probed)
+					}
 				}
 			})
 		}
@@ -423,12 +436,21 @@ type qualificationProvider struct {
 	dimensions      []int
 	syncCalls       atomic.Int64
 	streamCalls     atomic.Int64
+	realtimeCalls   atomic.Int64
+	realtime        bool
 	generationError error
 }
 
 func (p *qualificationProvider) ModelID() string                    { return p.model }
 func (p *qualificationProvider) Scoreboard() scoreboard.Score       { return p.score }
 func (p *qualificationProvider) OutputModalities() genai.Modalities { return p.output }
+func (p *qualificationProvider) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{Realtime: p.realtime}
+}
+func (p *qualificationProvider) ConnectRealtime(context.Context, ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	p.realtimeCalls.Add(1)
+	return nil, errors.New("model does not support realtime")
+}
 func (p *qualificationProvider) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	p.syncCalls.Add(1)
 	if p.generationError != nil {

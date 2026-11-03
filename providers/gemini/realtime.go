@@ -444,7 +444,13 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 				s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventContentAudio, Content: genai.RealtimeContent{Audio: p.InlineData.Data}})
 			}
 			if p.Text != "" {
-				s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventContentText, Content: genai.RealtimeContent{Text: p.Text}})
+				kind := genai.RealtimeEventContentText
+				c := genai.RealtimeContent{Text: p.Text}
+				if p.Thought {
+					kind = genai.RealtimeEventContentReasoning
+					c = genai.RealtimeContent{Reasoning: p.Text}
+				}
+				s.pending = append(s.pending, genai.RealtimeEvent{Kind: kind, Content: c})
 			}
 		}
 		if c.InputTranscription != nil {

@@ -944,6 +944,52 @@ func (p *realtimeProvider) ConnectRealtime(ctx context.Context, opts ...genai.Re
 	return p.f.open(ctx, probe, tools)
 }
 
+// rejectedRealtimeProvider turns down every session.
+type rejectedRealtimeProvider struct {
+	base.NotImplemented
+	caps  genai.ProviderCapabilities
+	opens int
+}
+
+func (p *rejectedRealtimeProvider) Close() error             { return nil }
+func (p *rejectedRealtimeProvider) Name() string             { return "rejected" }
+func (p *rejectedRealtimeProvider) ModelID() string          { return "model" }
+func (p *rejectedRealtimeProvider) HTTPClient() *http.Client { return nil }
+func (p *rejectedRealtimeProvider) OutputModalities() genai.Modalities {
+	return genai.Modalities{genai.ModalityAudio}
+}
+func (p *rejectedRealtimeProvider) Scoreboard() scoreboard.Score             { return scoreboard.Score{} }
+func (p *rejectedRealtimeProvider) Capabilities() genai.ProviderCapabilities { return p.caps }
+
+func (p *rejectedRealtimeProvider) ConnectRealtime(context.Context, ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	p.opens++
+	return nil, errors.New("model does not support realtime")
+}
+
+func TestRealtimeSupported(t *testing.T) {
+	t.Run("provider without realtime", func(t *testing.T) {
+		p := &rejectedRealtimeProvider{}
+		ok, reason, err := smoke.RealtimeSupported(t.Context(), p)
+		if ok || err != nil || reason == "" || p.opens != 0 {
+			t.Fatalf("ok=%v reason=%q err=%v opens=%d", ok, reason, err, p.opens)
+		}
+	})
+	t.Run("model rejected", func(t *testing.T) {
+		p := &rejectedRealtimeProvider{caps: genai.ProviderCapabilities{Realtime: true}}
+		ok, reason, err := smoke.RealtimeSupported(t.Context(), p)
+		if ok || err != nil || !strings.Contains(reason, "does not support realtime") || p.opens != 1 {
+			t.Fatalf("ok=%v reason=%q err=%v opens=%d", ok, reason, err, p.opens)
+		}
+	})
+	t.Run("accepted", func(t *testing.T) {
+		p := &realtimeProvider{f: newFakeRealtimeFactory(t), model: "model", caps: genai.ProviderCapabilities{Realtime: true}}
+		ok, reason, err := smoke.RealtimeSupported(t.Context(), p)
+		if !ok || err != nil || reason != "" || len(p.opens) != 1 {
+			t.Fatalf("ok=%v reason=%q err=%v opens=%d", ok, reason, err, len(p.opens))
+		}
+	})
+}
+
 func TestRunRealtimeScenario(t *testing.T) {
 	realtimeScoreboard := func() scoreboard.Score {
 		return scoreboard.Score{Scenarios: []scoreboard.Scenario{{

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 511
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}},"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 742
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"[\n  {\"name\": \"Apple\", \"color\": \"Red\"},\n  {\"name\": \"Banana\", \"color\": \"Yellow\"}\n]"}}],"created":1793733537,"model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":32,"prompt_tokens":30,"total_tokens":62,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-TqvR8bSp0HPGIdl29yQWR4CWkqG6Tfs9","timings":{"cache_n":1,"prompt_n":29,"prompt_ms":183.198,"prompt_per_token_ms":6.317172413793104,"prompt_per_second":158.29867138287537,"predicted_n":32,"predicted_ms":1394.608,"predicted_per_token_ms":44.98735483870968,"predicted_per_second":22.228468501543087}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "742"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.609s

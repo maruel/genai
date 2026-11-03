@@ -645,11 +645,11 @@ func (s *Session) translateLocked(m *ServerMessage) error {
 		}
 		if r.Usage != nil {
 			u := r.Usage
-			if u.InputTokens < 0 || u.OutputTokens < 0 || u.TotalTokens < 0 || u.InputDetails.CachedTokens < 0 {
+			if u.InputTokens < 0 || u.OutputTokens < 0 || u.TotalTokens < 0 || u.InputDetails.CachedTokens < 0 || u.OutputDetails.ReasoningTokens < 0 {
 				return errors.New("invalid realtime usage")
 			}
 			e.Kind = genai.RealtimeEventUsage
-			e.Usage = &genai.Usage{InputTokens: u.InputTokens, OutputTokens: u.OutputTokens, TotalTokens: u.TotalTokens, InputCachedTokens: u.InputDetails.CachedTokens}
+			e.Usage = &genai.Usage{InputTokens: u.InputTokens, InputCachedTokens: u.InputDetails.CachedTokens, ReasoningTokens: u.OutputDetails.ReasoningTokens, OutputTokens: u.OutputTokens, TotalTokens: u.TotalTokens}
 			s.pending = append(s.pending, e)
 			e.Usage = nil
 		}

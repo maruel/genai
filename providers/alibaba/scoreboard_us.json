@@ -101,25 +101,6 @@
       }
     },
     {
-      "comments": "Open-weight text models.",
-      "models": [
-        "qwen3-235b-a22b-thinking-2507",
-        "qwen3-30b-a3b-thinking-2507",
-        "qwen3-next-80b-a3b-thinking"
-      ],
-      "reason": true
-    },
-    {
-      "comments": "Vision open-weight models.",
-      "models": [
-        "qwen3-vl-235b-a22b-thinking",
-        "qwen3-vl-30b-a3b-thinking",
-        "qwen3-vl-32b-thinking",
-        "qwen3-vl-8b-thinking"
-      ],
-      "reason": true
-    },
-    {
       "comments": "Translation models.",
       "models": [
         "deepseek-v4-flash",
@@ -218,6 +199,15 @@
       ]
     },
     {
+      "comments": "Open-weight text models.",
+      "models": [
+        "qwen3-235b-a22b-thinking-2507",
+        "qwen3-30b-a3b-thinking-2507",
+        "qwen3-next-80b-a3b-thinking"
+      ],
+      "reason": true
+    },
+    {
       "comments": "ASR (speech) models.",
       "models": [
         "qwen3-asr-flash-2025-09-08-us",
@@ -248,6 +238,16 @@
         "qwen3-vl-flash-us",
         "qwen3-vl-plus-2025-09-23"
       ]
+    },
+    {
+      "comments": "Vision open-weight models.",
+      "models": [
+        "qwen3-vl-235b-a22b-thinking",
+        "qwen3-vl-30b-a3b-thinking",
+        "qwen3-vl-32b-thinking",
+        "qwen3-vl-8b-thinking"
+      ],
+      "reason": true
     },
     {
       "comments": "Image generation models.",

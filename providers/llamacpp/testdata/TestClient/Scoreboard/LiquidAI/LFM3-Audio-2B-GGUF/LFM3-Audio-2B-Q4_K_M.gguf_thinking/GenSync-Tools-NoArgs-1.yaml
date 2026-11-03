@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 577
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 768
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","tool_calls":[{"type":"function","function":{"name":"get_hostname","arguments":"{}"},"id":"oIF17n0E2jtO12vDzZfe2sgu9sJwEMUg"}]}}],"created":1793724631,"model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":11,"prompt_tokens":101,"total_tokens":112,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-OkRTbv7jMpfeznsFLOnuqXnUiAV6OgEf","timings":{"cache_n":0,"prompt_n":101,"prompt_ms":526.122,"prompt_per_token_ms":5.209128712871287,"prompt_per_second":191.97068360570364,"predicted_n":11,"predicted_ms":377.654,"predicted_per_token_ms":37.7654,"predicted_per_second":26.47926408829246}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "768"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 938ms

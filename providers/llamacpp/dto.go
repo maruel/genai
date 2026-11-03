@@ -916,6 +916,10 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// maxDocBytes bounds one document read into a request. Base64 inflates the
+// request body by one third.
+const maxDocBytes = 128 << 20
+
 // Content is not documented.
 //
 // You can look at how it's used in oaicompat_chat_params_parse() in
@@ -948,8 +952,7 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 		return false, nil
 	}
 	if !in.Doc.IsZero() {
-		// Check if this is a text document
-		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		mimeType, data, err := in.Doc.Read(maxDocBytes)
 		if err != nil {
 			return false, fmt.Errorf("failed to read document: %w", err)
 		}
@@ -982,6 +985,13 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 			} else {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
+		case strings.HasPrefix(mimeType, "video/"):
+			c.Type = "input_video"
+			if in.Doc.URL != "" {
+				c.InputVideo.URL = in.Doc.URL
+			} else {
+				c.InputVideo.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			}
 		default:
 			return false, fmt.Errorf("mime type %s is unsupported", mimeType)
 		}
@@ -1007,8 +1017,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		return false, nil
 	}
 	if !in.Doc.IsZero() {
-		// Check if this is a text document
-		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		mimeType, data, err := in.Doc.Read(maxDocBytes)
 		if err != nil {
 			return false, fmt.Errorf("failed to read document: %w", err)
 		}
@@ -1220,9 +1229,9 @@ type SystemOneRequest struct {
 
 // From converts shared decision input, preserving Model.
 // One JSON document can supply the state. Images are encoded as data URLs.
-// Each document read is bounded to 10 MiB.
+// Each document read is bounded to 128 MiB.
 func (r *SystemOneRequest) From(in *genai.SystemOneRequest) error {
-	state, docs, err := in.ReadState(10 * 1024 * 1024)
+	state, docs, err := in.ReadState(maxDocBytes)
 	if err != nil {
 		return err
 	}
@@ -1245,7 +1254,7 @@ func (r *SystemOneRequest) From(in *genai.SystemOneRequest) error {
 	}
 	for j := range docs {
 		d := docs[j]
-		mt, data, err := d.Read(10 * 1024 * 1024)
+		mt, data, err := d.Read(maxDocBytes)
 		if err != nil {
 			return fmt.Errorf("image #%d: %w", j, err)
 		}

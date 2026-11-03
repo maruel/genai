@@ -25,10 +25,12 @@
 // corresponding HTTP recordings in testdata/TestClient/Scoreboard/<model>/ are automatically
 // deleted to keep the repository clean and remove stale test data. Recordings (.ndjson) that no
 // probe consumed are reported at the end of a full run; remove them or restore the probe.
+// deleted to keep the repository clean and remove stale test data.
 package smoketest
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -81,6 +83,18 @@ func UpdatingScoreboard() bool {
 	return *updateScoreboard
 }
 
+// modelSource identifies a model and whether it comes from a realtime session.
+// The reasoning mode stays out of it: untested models consolidate across
+// reasoning modes.
+type modelSource struct {
+	model    string
+	realtime bool
+}
+
+func sourceOf(m string, sc *scoreboard.Scenario) modelSource {
+	return modelSource{model: m, realtime: sc.Realtime != nil}
+}
+
 // Run regenerates the scoreboard and asserts it is up to date.
 //
 // If the -update-scoreboard flag is set, it will update the scoreboard files
@@ -94,20 +108,29 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	if scoreboardFile == "" {
 		scoreboardFile = "scoreboard.json"
 	}
-	runName := t.Name()
 
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
 
-	filtered := internaltest.IsTestFiltered()
+	filtered := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "test.run" {
+			filtered = true
+		}
+	})
+	// A model that holds several scenarios is listed once per scenario.
 	seen := map[scoreboard.Model]struct{}{}
+	unique := make([]scoreboard.Model, 0, len(models))
 	for _, m := range models {
 		if _, ok := seen[m]; ok {
-			t.Fatalf("duplicate model in ListModel: %v", m)
+			continue
 		}
 		seen[m] = struct{}{}
+		unique = append(unique, m)
 	}
+	models = unique
+	runName := t.Name()
 	recordingsDir := filepath.Join("testdata", filepath.FromSlash(t.Name()))
 	t.Run("Stale Recordings", func(t *testing.T) {
 		// Delete orphaned recordings that don't correspond to any model in the list of models to test.
@@ -119,52 +142,49 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	if err := sb.Validate(); err != nil {
 		t.Fatal(err)
 	}
-	modelsToTest := map[scoreboard.Model]struct{}{}
-	allScoreboardModels := map[scoreboard.Model]struct{}{}
+	allScoreboardModels := map[scoreboard.Key]struct{}{}
 	for i := range sb.Scenarios {
 		sc := &sb.Scenarios[i]
 		if len(sc.Models) == 0 {
 			t.Fatalf("scenario #%d has no models", i)
 		}
-		// Track all models from scenarios for stale detection
 		for _, m := range sc.Models {
-			allScoreboardModels[scoreboard.Model{Model: m, Reason: sc.Reason}] = struct{}{}
+			allScoreboardModels[sc.Key(m)] = struct{}{}
 		}
-		// Only mark first model as expected to be tested (others skipped for cost savings)
-		modelsToTest[scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason}] = struct{}{}
 	}
 	usage := genai.Usage{}
 	updatedScenarios := []scoreboard.Scenario{}
 	failed := false
 	for _, m := range models {
 		if !t.Run(m.String(), func(t *testing.T) {
-			// First try to find exact match with the requested Reason value
-			var want scoreboard.Scenario
+			// A model holds one scenario per probe family, so collect every scenario
+			// that names it: a realtime session and its GenSync/GenStream counterpart
+			// coexist.
+			runs := make([]scoreboard.Scenario, 0, 2)
+			kept := make([]scoreboard.Scenario, 0, 1)
 			for i := range sb.Scenarios {
 				sc := &sb.Scenarios[i]
-				if sc.Realtime != nil && m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
-					want = *sc
-					want.Models = []string{m.Model}
-					break
+				if sc.Reason != m.Reason || !slices.Contains(sc.Models, m.Model) {
+					continue
 				}
-			}
-			if len(want.Models) == 0 {
-				for i := range sb.Scenarios {
-					sc := &sb.Scenarios[i]
-					if m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
-						if sc.Models[0] != m.Model && (!sc.Untested() || !opts.qualifies(m)) {
-							// We only run the first model in the scenario for cost savings purposes. Create one scenario per
-							// model to smoke test.
-							t.Skip("Only run first model in scenario for cost savings")
-						}
-						want = *sc
-						want.Models = []string{m.Model}
-						break
-					}
+				if sc.Models[0] != m.Model && (!sc.Untested() || !opts.qualifies(m)) {
+					// Only the first model of a scenario runs, for cost savings. Create
+					// one scenario per model to smoke test the others.
+					t.Logf("Skipping scenario: only %s runs", sc.Models[0])
+					continue
 				}
+				want := *sc
+				want.Models = []string{m.Model}
+				if want.Untested() && !opts.qualifies(m) {
+					// Keep the placeholder so the scoreboard still lists the model.
+					kept = append(kept, want)
+					continue
+				}
+				runs = append(runs, want)
 			}
-			if len(want.Models) == 0 {
-				want = scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason}
+			if len(runs) == 0 && len(kept) == 0 {
+				// The model has no scenario yet.
+				want := scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason}
 				if !opts.qualifies(m) {
 					for i := range sb.Scenarios {
 						sc := &sb.Scenarios[i]
@@ -173,15 +193,13 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 							break
 						}
 					}
+					kept = append(kept, want)
+				} else {
+					runs = append(runs, want)
 				}
 			}
-			if want.Untested() && !opts.qualifies(m) {
-				// Collect the untested scenario for validation
-				updatedScenarios = append(updatedScenarios, want)
-				t.Skip("Explicitly unsupported model")
-			}
-			// Run one model at a time otherwise we can't collect the total usage.
-			u, got := runOneModel(t, func(t testing.TB, sn string) genai.Provider {
+			updatedScenarios = append(updatedScenarios, kept...)
+			newProvider := func(t testing.TB, sn string) genai.Provider {
 				fn := func(h http.RoundTripper) http.RoundTripper {
 					if sn == "" {
 						return h
@@ -198,13 +216,19 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 					return r
 				}
 				return pf(t, m, fn)
-			}, &want, !m.Reason && slices.ContainsFunc(opts.TolerateReasoning, func(s string) bool {
-				return strings.Contains(m.Model, s)
-			}))
-			usage.Add(&u)
-			if got != nil {
-				updatedScenarios = append(updatedScenarios, *got)
 			}
+			tolerate := !m.Reason && slices.ContainsFunc(opts.TolerateReasoning, func(s string) bool {
+				return strings.Contains(m.Model, s)
+			})
+			if len(runs) == 0 {
+				if len(kept) != 0 {
+					t.Skip("Explicitly unsupported model")
+				}
+				t.Skip("Only run first model in scenario for cost savings")
+			}
+			u, got := runOneModel(t, newProvider, m, runs, tolerate)
+			usage.Add(&u)
+			updatedScenarios = append(updatedScenarios, got...)
 		}) {
 			failed = true
 		}
@@ -216,37 +240,30 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		return
 	}
 
-	staleModels := map[scoreboard.Model]struct{}{}
+	staleModels := map[scoreboard.Key]struct{}{}
 	if !filtered {
 		// Only mark models as truly stale on complete test runs (no filtering)
 		// Check for models in scoreboard that are not in discovered models
 		// These are truly stale (removed from the API).
 		// Untested scenarios are skipped since they intentionally have no test results.
-		for sbModel := range allScoreboardModels {
-			if _, ok := seen[sbModel]; !ok {
-				// Check if this model is in an untested scenario - if so, don't mark it as stale
-				isUntested := false
-				for i := range sb.Scenarios {
-					sc := &sb.Scenarios[i]
-					for _, m := range sc.Models {
-						if m == sbModel.Model && sc.Reason == sbModel.Reason {
-							if sc.Untested() {
-								isUntested = true
-							}
-							break
-						}
-					}
-					if isUntested {
-						break
-					}
+		for key := range allScoreboardModels {
+			if _, ok := seen[scoreboard.Model{Model: key.Model, Reason: key.Reason}]; ok {
+				continue
+			}
+			// Untested scenarios intentionally have no test results.
+			isUntested := false
+			for i := range sb.Scenarios {
+				sc := &sb.Scenarios[i]
+				if sc.Key(key.Model) == key && sc.Untested() {
+					isUntested = true
+					break
 				}
-				if !isUntested {
-					// This model is in scoreboard but not in API and is tested
-					staleModels[sbModel] = struct{}{}
-				}
-				if !*updateScoreboard && !isUntested {
-					t.Errorf("stale model in scoreboard: %v", sbModel)
-				}
+			}
+			if !isUntested {
+				staleModels[key] = struct{}{}
+			}
+			if !*updateScoreboard && !isUntested {
+				t.Errorf("stale model in scoreboard: %v", key)
 			}
 		}
 	}
@@ -290,8 +307,7 @@ type getClientOneModel func(t testing.TB, scenarioName string) genai.Provider
 // enable_thinking=false.
 //
 // Returns the usage and the generated scenario (or nil if not updated).
-func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, tolerateReasoning bool) (genai.Usage, *scoreboard.Scenario) {
-	// Calculate the scenario.
+func runOneModel(t testing.TB, gc getClientOneModel, m scoreboard.Model, wants []scoreboard.Scenario, tolerateReasoning bool) (genai.Usage, []scoreboard.Scenario) {
 	providerFactory := func(name string) genai.Provider {
 		if name == "" {
 			return gc(t, name)
@@ -299,13 +315,57 @@ func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, 
 		return gc(t, t.Name()+"/"+name)
 	}
 	ctx, _ := internaltest.Log(t)
+	usage := genai.Usage{}
+	got := make([]scoreboard.Scenario, 0, len(wants)+1)
+	hasRealtime := false
+	for i := range wants {
+		// Run one scenario at a time otherwise we can't collect the total usage.
+		u, sc := measureScenario(t, ctx, providerFactory, &wants[i], tolerateReasoning)
+		usage.Add(&u)
+		hasRealtime = hasRealtime || wants[i].Realtime != nil
+		if sc != nil {
+			got = append(got, *sc)
+		}
+	}
+	// A model may serve both families, and only a session tells whether it accepts
+	// one. The session is recorded either way, so replay confirms the answer.
+	// Realtime returns speech or text, so an image or embedding model is out of
+	// scope even though the provider serves sessions.
+	if !hasRealtime && servesSpeechOrText(got) {
+		c := providerFactory("")
+		if c.Capabilities().Realtime {
+			ok, reason, err := smoke.RealtimeSupported(ctx, c)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !ok {
+				t.Logf("realtime unsupported: %s", reason)
+			} else if sc, u, err2 := smoke.RunRealtimeScenario(ctx, c, m.Reason); err2 != nil {
+				// A model that accepts a session and then fails the probes stays untested,
+				// and it does not abort the run for the models after it.
+				t.Logf("realtime probes failed: %v", err2)
+			} else {
+				if tolerateReasoning {
+					sc.Reason = false
+				}
+				usage.Add(&u)
+				got = append(got, sc)
+			}
+		}
+	}
+	return usage, got
+}
+
+// measureScenario runs the probes of one scenario and compares the measurement.
+func measureScenario(t testing.TB, ctx context.Context, providerFactory func(string) genai.Provider, want *scoreboard.Scenario, tolerateReasoning bool) (genai.Usage, *scoreboard.Scenario) {
 	var got scoreboard.Scenario
 	var usage genai.Usage
 	var err error
+	// A model may be scored for both families, so pick the one this scenario names.
 	if want.Realtime != nil {
 		got, usage, err = smoke.RunRealtimeScenario(ctx, providerFactory(""), want.Reason)
 	} else {
-		got, usage, err = smoke.Run(ctx, providerFactory)
+		got, usage, err = smoke.RunGenai(ctx, providerFactory)
 	}
 	t.Logf("Usage: %#v", usage)
 	if err != nil {
@@ -401,7 +461,7 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 // It merges tested scenarios with the existing scoreboard to preserve metadata,
 // removes stale models, and sorts scenarios so SOTA/Good/Cheap appear first.
 // Returns the old and new scoreboard JSON bytes.
-func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Model, filtered bool) (rawOld, rawNew []byte) {
+func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Key, filtered bool) (rawOld, rawNew []byte) {
 	rawOld, err := os.ReadFile(scoreboardPath)
 	if err != nil {
 		t.Fatalf("failed to read scoreboard.json: %v", err)
@@ -417,23 +477,23 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	}
 
 	// Build a map of old scenarios for quick lookup and metadata preservation
-	oldScenarios := make(map[scoreboard.Model]*scoreboard.Scenario)
+	oldScenarios := make(map[scoreboard.Key]*scoreboard.Scenario)
 	for i := range oldScore.Scenarios {
 		sc := &oldScore.Scenarios[i]
 		for _, m := range sc.Models {
-			oldScenarios[scoreboard.Model{Model: m, Reason: sc.Reason}] = sc
+			oldScenarios[sc.Key(m)] = sc
 		}
 	}
 
 	// Mark stale models for removal
-	staleSet := make(map[scoreboard.Model]struct{})
+	staleSet := make(map[scoreboard.Key]struct{})
 	for _, m := range staleModels {
 		staleSet[m] = struct{}{}
 	}
 
 	// Regenerate scenarios in a single pass
 	result := make([]scoreboard.Scenario, 0, len(scenarios)+len(oldScore.Scenarios))
-	seenPairs := make(map[scoreboard.Model]struct{})
+	seenPairs := make(map[scoreboard.Key]struct{})
 	usedOldScenarios := make(map[*scoreboard.Scenario]struct{})
 
 	// First pass: add tested scenarios, preserving metadata from old scenarios
@@ -447,12 +507,12 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		// tested scenario for the same model.
 		if newSc.Untested() {
 			if len(newSc.Models) > 0 {
-				seenPairs[scoreboard.Model{Model: newSc.Models[0], Reason: newSc.Reason}] = struct{}{}
+				seenPairs[newSc.Key(newSc.Models[0])] = struct{}{}
 			}
 			continue
 		}
 		model := newSc.Models[0]
-		key := scoreboard.Model{Model: model, Reason: newSc.Reason}
+		key := newSc.Key(model)
 
 		// Skip if already seen
 		if _, seen := seenPairs[key]; seen {
@@ -495,7 +555,7 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 				usedOldScenarios[oldSc] = struct{}{}
 				// Mark all models in this old scenario as seen to avoid processing them again
 				for _, m := range oldSc.Models {
-					seenPairs[scoreboard.Model{Model: m, Reason: oldSc.Reason}] = struct{}{}
+					seenPairs[oldSc.Key(m)] = struct{}{}
 				}
 			} else {
 				sc.Models = []string{model}
@@ -507,7 +567,7 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		// Remove stale models from the model list
 		remainingModels := make([]string, 0, len(sc.Models))
 		for _, m := range sc.Models {
-			if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
+			if _, isStale := staleSet[sc.Key(m)]; !isStale {
 				remainingModels = append(remainingModels, m)
 			} else {
 				t.Logf("Removing stale model %q with reason=%v", m, sc.Reason)
@@ -535,7 +595,7 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	for i := range oldScore.Scenarios {
 		oldSc := oldScore.Scenarios[i]
 		// Skip if this scenario was already processed as tested
-		if _, seen := seenPairs[scoreboard.Model{Model: oldSc.Models[0], Reason: oldSc.Reason}]; seen {
+		if _, seen := seenPairs[oldSc.Key(oldSc.Models[0])]; seen {
 			continue
 		}
 
@@ -547,7 +607,7 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		// Remove stale models from the old scenario
 		remainingModels := make([]string, 0, len(oldSc.Models))
 		for _, m := range oldSc.Models {
-			if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: oldSc.Reason}]; !isStale {
+			if _, isStale := staleSet[oldSc.Key(m)]; !isStale {
 				remainingModels = append(remainingModels, m)
 			} else {
 				t.Logf("Removing stale model %q with reason=%v", m, oldSc.Reason)
@@ -569,10 +629,10 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 
 	// Collect all model names from tested scenarios to avoid including them
 	// in untested scenarios (a model should only appear once in the doc).
-	testedModels := map[string]struct{}{}
+	testedModels := map[modelSource]struct{}{}
 	for i := range result {
 		for _, m := range result[i].Models {
-			testedModels[m] = struct{}{}
+			testedModels[sourceOf(m, &result[i])] = struct{}{}
 		}
 	}
 
@@ -582,22 +642,22 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 
 	// Track which old scenarios have models represented in the new scenarios
 	// to avoid adding the same scenario twice
-	newScenarioModels := make(map[scoreboard.Model]struct{})
+	newScenarioModels := make(map[scoreboard.Key]struct{})
 
 	// First, collect all untested scenarios from new results, removing stale
 	// models and models already present in tested scenarios.
 	for i := range scenarios {
 		sc := scenarios[i]
 		if len(sc.Models) > 0 && sc.Untested() {
-			if oldSc := oldScenarios[scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason}]; oldSc != nil {
+			if oldSc := oldScenarios[sc.Key(sc.Models[0])]; oldSc != nil {
 				sc.Comments = oldSc.Comments
 			}
 			// Remove stale models
 			remainingModels := make([]string, 0, len(sc.Models))
 			for _, m := range sc.Models {
-				modelKey := scoreboard.Model{Model: m, Reason: sc.Reason}
+				modelKey := sc.Key(m)
 				if _, isStale := staleSet[modelKey]; !isStale {
-					if _, isTested := testedModels[m]; !isTested {
+					if _, isTested := testedModels[sourceOf(m, &sc)]; !isTested {
 						remainingModels = append(remainingModels, m)
 						newScenarioModels[modelKey] = struct{}{}
 					}
@@ -623,10 +683,10 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		// models already present in tested scenarios.
 		remainingModels := make([]string, 0, len(oldSc.Models))
 		for _, m := range oldSc.Models {
-			modelKey := scoreboard.Model{Model: m, Reason: oldSc.Reason}
+			modelKey := oldSc.Key(m)
 			if _, isStale := staleSet[modelKey]; !isStale {
 				if _, inNew := newScenarioModels[modelKey]; !inNew {
-					if _, isTested := testedModels[m]; !isTested {
+					if _, isTested := testedModels[sourceOf(m, oldSc)]; !isTested {
 						remainingModels = append(remainingModels, m)
 					}
 				}
@@ -644,25 +704,17 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	// Deduplicate models across untested scenarios: a model should only
 	// appear in one untested scenario. Prefer the non-reasoning scenario
 	// first to avoid speculative 🧠 markers.
-	seenUntestedModels := map[string]struct{}{}
-	for i := range allUntested {
-		if !allUntested[i].Reason {
-			deduped := make([]string, 0, len(allUntested[i].Models))
-			for _, m := range allUntested[i].Models {
-				if _, seen := seenUntestedModels[m]; !seen {
-					seenUntestedModels[m] = struct{}{}
-					deduped = append(deduped, m)
-				}
+	seenUntestedModels := map[modelSource]struct{}{}
+	for _, reason := range []bool{false, true} {
+		for i := range allUntested {
+			if allUntested[i].Reason != reason {
+				continue
 			}
-			allUntested[i].Models = deduped
-		}
-	}
-	for i := range allUntested {
-		if allUntested[i].Reason {
 			deduped := make([]string, 0, len(allUntested[i].Models))
 			for _, m := range allUntested[i].Models {
-				if _, seen := seenUntestedModels[m]; !seen {
-					seenUntestedModels[m] = struct{}{}
+				key := sourceOf(m, &allUntested[i])
+				if _, seen := seenUntestedModels[key]; !seen {
+					seenUntestedModels[key] = struct{}{}
 					deduped = append(deduped, m)
 				}
 			}
@@ -728,4 +780,17 @@ func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error
 	})
 	slices.Sort(extra)
 	return extra, err
+}
+
+// servesSpeechOrText reports whether a measured scenario of the model returns
+// speech or text, the two outputs a realtime session produces.
+func servesSpeechOrText(scenarios []scoreboard.Scenario) bool {
+	for i := range scenarios {
+		for mod := range scenarios[i].Out {
+			if mod == genai.ModalityText || mod == genai.ModalityAudio {
+				return true
+			}
+		}
+	}
+	return false
 }

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 663
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 933
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"I3TgprUDgfkKkRbJIMSDFMZLE092bQ5Q"},{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"biGvNh4zrebX44yP9osZC4ke7FHTVxmP"}]}}],"created":1793724636,"model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":36,"prompt_tokens":127,"total_tokens":163,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-7CXdrhyO853MgnYKcX7xn0YZ2h9qQfuC","timings":{"cache_n":0,"prompt_n":127,"prompt_ms":646.376,"prompt_per_token_ms":5.089574803149606,"prompt_per_second":196.48006732923253,"predicted_n":36,"predicted_ms":1382.643,"predicted_per_token_ms":39.504085714285715,"predicted_per_second":25.31383733906728}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "933"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.062s

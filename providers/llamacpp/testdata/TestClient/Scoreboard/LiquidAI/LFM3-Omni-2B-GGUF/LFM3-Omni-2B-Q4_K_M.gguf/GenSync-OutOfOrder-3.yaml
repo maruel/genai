@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2615
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"5dVUBNMcXrlfFH39V43XFfpNjTgW2fWf","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"8Z0U4cxQT0sarmNnftFEKULLsW6FkEuE","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"mOGhNbRUfEJ3OoMBtmiM7IkftlNG6vbb","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"J48gZAajgJ26vBZStGCGP9Ph0mrhlxxL","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},{"role":"tool","content":[{"type":"text","text":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}],"tool_call_id":"J48gZAajgJ26vBZStGCGP9Ph0mrhlxxL"},{"role":"tool","content":[{"type":"text","text":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}"}],"tool_call_id":"mOGhNbRUfEJ3OoMBtmiM7IkftlNG6vbb"},{"role":"tool","content":[{"type":"text","text":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}"}],"tool_call_id":"8Z0U4cxQT0sarmNnftFEKULLsW6FkEuE"},{"role":"tool","content":[{"type":"text","text":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}"}],"tool_call_id":"5dVUBNMcXrlfFH39V43XFfpNjTgW2fWf"},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 689
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Yes, I have task 7''s reference: **violet**."}}],"created":1793733555,"model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":15,"prompt_tokens":429,"total_tokens":444,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-S4CBNyxpmxMFvo94jos4RuARoh7h0plj","timings":{"cache_n":0,"prompt_n":429,"prompt_ms":2926.999,"prompt_per_token_ms":6.8228414918414915,"prompt_per_second":146.5665003643664,"predicted_n":15,"predicted_ms":632.962,"predicted_per_token_ms":45.211571428571425,"predicted_per_second":22.11823142621516}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "689"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 3.589s

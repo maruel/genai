@@ -8,10 +8,10 @@
 | qwen3.5:2b🥈       | Stream    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | gemma4:e2b🥉       | Sync      | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | gemma4:e2b🥉       | Stream    | 💬📸  | 💬     | ❌   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b        | Sync🧠     | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| gemma4:e2b        | Stream🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | all-minilm        | Embed     | 💬    | 🧬      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | clef-flash:latest | SystemOne | 💬📸  | 🎯      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| gemma4:e2b        | Sync🧠     | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| gemma4:e2b        | Stream🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

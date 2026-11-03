@@ -35,6 +35,26 @@ func (m *Model) String() string {
 	return normalized
 }
 
+// Key identifies one scenario entry: a model, its reasoning mode, and whether it
+// comes from a realtime session. A model holds at most one entry per key.
+type Key struct {
+	Model    string
+	Reason   bool
+	Realtime bool
+}
+
+// String returns the model with its reasoning and realtime suffixes.
+func (k Key) String() string {
+	normalized := strings.ReplaceAll(k.Model, ":", "-")
+	if k.Reason {
+		normalized += "_thinking"
+	}
+	if k.Realtime {
+		normalized += "_realtime"
+	}
+	return normalized
+}
+
 // Modality is one of the supported modalities.
 type Modality string
 
@@ -460,6 +480,11 @@ type Scenario struct {
 	_ struct{}
 }
 
+// Key returns the identity of the scenario for model.
+func (s *Scenario) Key(model string) Key {
+	return Key{Model: model, Reason: s.Reason, Realtime: s.Realtime != nil}
+}
+
 // Untested returns true if the scenario has no test results.
 func (s *Scenario) Untested() bool {
 	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && s.Embed == nil && s.Realtime == nil && len(s.In) == 0 && len(s.Out) == 0
@@ -636,17 +661,17 @@ func (s *Score) Embedding(model string) *EmbeddingFunctionality {
 
 // Validate returns an error if the Score is not correctly configured.
 func (s *Score) Validate() error {
-	// Check for duplicate model/reason pairs
-	seen := make(map[Model]struct{})
+	// Check for duplicate model entries
+	seen := make(map[Key]struct{})
 	for i := range s.Scenarios {
 		sc := &s.Scenarios[i]
 		if err := sc.Validate(); err != nil {
 			return err
 		}
 		for _, model := range sc.Models {
-			key := Model{model, sc.Reason}
+			key := sc.Key(model)
 			if _, ok := seen[key]; ok {
-				return fmt.Errorf("duplicate model in scoreboard: %q (reason=%v)", model, sc.Reason)
+				return fmt.Errorf("duplicate model in scoreboard: %q (reason=%v, realtime=%v)", model, sc.Reason, sc.Realtime != nil)
 			}
 			seen[key] = struct{}{}
 		}
@@ -782,7 +807,7 @@ func ConsolidateUntestedScenarios(scenarios []Scenario) []Scenario {
 			result = append(result, *sc)
 			continue
 		}
-		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
+		key := fmt.Sprintf("%s|%v|%v", sc.Comments, sc.Reason, sc.Realtime != nil)
 		if idx, found := untestedByKey[key]; found {
 			// Merge models, avoiding duplicates
 			existing := &result[idx]
@@ -845,15 +870,8 @@ func CompareScenarios(a, b Scenario) int { //nolint:gocritic // hugeParam: requi
 		return -1
 	}
 
-	// Same preference and tested status: reasoning comes before non-reasoning
-	if a.Reason != b.Reason {
-		if a.Reason {
-			return -1
-		}
-		return 1
-	}
-
-	// Same preference, tested status, and reasoning: sort alphabetically by first model name
+	// Same preference and tested status: group the scenarios of one model, with
+	// reasoning first, then the realtime sessions.
 	aModel := ""
 	bModel := ""
 	if len(a.Models) > 0 {
@@ -868,7 +886,18 @@ func CompareScenarios(a, b Scenario) int { //nolint:gocritic // hugeParam: requi
 		}
 		return 1
 	}
-
+	if a.Reason != b.Reason {
+		if a.Reason {
+			return -1
+		}
+		return 1
+	}
+	if (a.Realtime != nil) != (b.Realtime != nil) {
+		if a.Realtime == nil {
+			return -1
+		}
+		return 1
+	}
 	return 0
 }
 

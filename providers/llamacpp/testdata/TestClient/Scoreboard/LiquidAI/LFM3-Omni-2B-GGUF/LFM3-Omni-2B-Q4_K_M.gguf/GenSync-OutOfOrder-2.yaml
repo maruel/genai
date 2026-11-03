@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1621
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"5dVUBNMcXrlfFH39V43XFfpNjTgW2fWf","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"8Z0U4cxQT0sarmNnftFEKULLsW6FkEuE","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"mOGhNbRUfEJ3OoMBtmiM7IkftlNG6vbb","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 790
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","tool_calls":[{"type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"id":"J48gZAajgJ26vBZStGCGP9Ph0mrhlxxL"}]}}],"created":1793733552,"model":"LiquidAI/LFM3-Omni-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":18,"prompt_tokens":278,"total_tokens":296,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-BWVgf2rJwG7kOMeSzKpwdm8rclb3l6lJ","timings":{"cache_n":0,"prompt_n":278,"prompt_ms":1980.473,"prompt_per_token_ms":7.124003597122302,"prompt_per_second":140.37050744948306,"predicted_n":18,"predicted_ms":769.342,"predicted_per_token_ms":45.25541176470588,"predicted_per_second":22.09680480202563}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "790"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.782s

@@ -111,7 +111,7 @@ func TestClient(t *testing.T) {
 					messages[i] = realtimetest.Read(t, ctx, ws)
 				}
 				received <- messages
-				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"}]},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"},{"text":"weighing","thought":true}]},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
 				realtimetest.Write(t, ctx, ws, `{"serverContent":{"inputTranscription":{"text":"world","finished":true},"outputTranscription":{"text":"day","finished":true},"turnComplete":true},"usageMetadata":{"promptTokenCount":3,"responseTokenCount":5,"totalTokenCount":8},"goAway":{"timeLeft":"30s"},"sessionResumptionUpdate":{"newHandle":"resume","resumable":true}}`)
 				_, _, _ = ws.Read(ctx)
 			})
@@ -149,7 +149,7 @@ func TestClient(t *testing.T) {
 			if messages[3]["realtimeInput"].(map[string]any)["audioStreamEnd"] != true {
 				t.Errorf("stream end: %v", messages[3])
 			}
-			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
+			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventContentReasoning, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
 			for i, kind := range want {
 				e := realtimetest.Receive(t, s, kind)
 				if e.ResponseID != "" || e.ItemID != "" {
@@ -160,23 +160,27 @@ func TestClient(t *testing.T) {
 					if !reflect.DeepEqual(e.Content.Audio, []byte{1, 0, 2, 0}) {
 						t.Errorf("audio: %v", e.Content.Audio)
 					}
-				case 5:
+				case 2:
+					if e.Content.Reasoning != "weighing" || e.Content.Text != "" {
+						t.Errorf("reasoning: %+v", e.Content)
+					}
+				case 6:
 					if !e.Content.Final || e.Content.Text != "hello world" {
 						t.Errorf("final transcript: %+v", e)
 					}
-				case 6:
+				case 7:
 					if !e.Content.Final || e.Content.Text != "good day" {
 						t.Errorf("final transcript: %+v", e)
 					}
-				case 8:
+				case 9:
 					if e.Usage.TotalTokens != 8 {
 						t.Errorf("usage: %+v", e)
 					}
-				case 9:
+				case 10:
 					if p, ok := e.ProviderEvent.(*gemini.GoAway); !ok || p.TimeLeft != 30*time.Second {
 						t.Errorf("goaway: %+v", e)
 					}
-				case 10:
+				case 11:
 					if p, ok := e.ProviderEvent.(*gemini.Resumption); !ok || p.Handle != "resume" {
 						t.Errorf("resumption: %+v", e)
 					}
@@ -1012,6 +1016,10 @@ func TestClient(t *testing.T) {
 		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
+			if strings.HasPrefix(id, "gemini-2") {
+				// The scoreboard covers Gemini 3 and later.
+				continue
+			}
 			if i := slices.IndexFunc(scenarios, func(sc scoreboard.Scenario) bool {
 				return sc.Realtime != nil && slices.Contains(sc.Models, id)
 			}); i != -1 {
@@ -1070,7 +1078,7 @@ func TestClient(t *testing.T) {
 				T:        t,
 				Target:   liveEndpoint,
 				Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
-				Updating: smoketest.UpdatingScoreboard(),
+				Updating: internaltest.UpdatingRecordings(),
 				Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
 					out := slices.Clone(opts)
 					for i, opt := range out {

@@ -220,9 +220,12 @@ func testSystemOneDocs(t *testing.T) {
 				}
 			})
 			qs := genai.Questions{"yes": {Type: genai.QuestionNoul, Instructions: genai.Text("yes?")}}
-			limit := 10 * 1024 * 1024
-			if name == "cloudflare" {
+			limit := 128 * 1024 * 1024
+			switch name {
+			case "cloudflare":
 				limit = 4 * 1024 * 1024
+			case "typesafe":
+				limit = 10 * 1024 * 1024
 			}
 			invalid := []decisionDocCase{
 				{name: "empty"},

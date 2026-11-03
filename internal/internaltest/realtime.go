@@ -32,8 +32,10 @@ import (
 // fixtures named Realtime-1.ndjson, Realtime-2.ndjson, and so on. Mutation adds
 // the recording proxy endpoint to opts before the provider connects.
 //
-// When Updating is true, existing fixtures are replaced. Otherwise a missing
-// fixture skips the test. A failed test discards its recordings; a successful
+// When Updating is true, existing fixtures are replaced, and a session is
+// recorded even where no fixture exists. Otherwise a missing fixture skips the
+// test. Set it from [UpdatingRecordings] so that cassettes follow RECORD and not
+// -update-scoreboard, which only refreshes the scoreboard. A failed test discards its recordings; a successful
 // test keeps them. Audio payloads are replaced with a two-byte marker so
 // fixtures stay small; event structure and transcripts are preserved.
 type RealtimeRecorder struct {
@@ -90,10 +92,12 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 	opts = r.Mutation(opts, rec.WSURL())
 	s, err := r.Provider.ConnectRealtime(ctx, opts...)
 	if err != nil {
-		r.mu.Lock()
-		r.calls--
-		r.mu.Unlock()
-		return nil, errors.Join(err, rec.Discard())
+		if !r.Updating {
+			return nil, err
+		}
+		// A refused session is a result. Keep the exchange, and keep the call number
+		// that names it, so replay reproduces the refusal instead of asking again.
+		return nil, errors.Join(err, rec.Close())
 	}
 	if rec.IsReplay() {
 		return &replaySession{RealtimeSession: s}, nil
@@ -183,4 +187,16 @@ func maskRealtimeAudio(v any) bool {
 		}
 	}
 	return changed
+}
+
+// UpdatingRecordings reports whether the run re-records cassettes.
+//
+// It follows the RECORD environment variable, so -update-scoreboard refreshes
+// the scoreboard from the cassettes instead of re-recording them.
+func UpdatingRecordings() bool {
+	switch os.Getenv("RECORD") {
+	case "all", "failure_only":
+		return true
+	}
+	return false
 }

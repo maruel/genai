@@ -163,6 +163,58 @@
     },
     {
       "models": [
+        "all-minilm"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "embedding": {
+          "inline": true
+        }
+      },
+      "Embed": {
+        "dimensions": 384,
+        "requestedDimensions": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "comments": "CPU qualification uses memory mapping (use_mmap=true), a small context (num_ctx=512), and LLAMA_ARG_REPACK=0. Default loading exhausted memory on a 9.7 GiB host.",
+      "models": [
+        "clef-flash:latest"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "decision": {
+          "inline": true
+        }
+      },
+      "SystemOne": {
+        "noul": true,
+        "choice": true,
+        "score": true,
+        "object": true,
+        "array": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "models": [
         "gemma4:e2b"
       ],
       "reason": true,
@@ -217,58 +269,6 @@
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "all-minilm"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "embedding": {
-          "inline": true
-        }
-      },
-      "Embed": {
-        "dimensions": 384,
-        "requestedDimensions": true,
-        "reportTokenUsage": "true"
-      }
-    },
-    {
-      "comments": "CPU qualification uses memory mapping (use_mmap=true), a small context (num_ctx=512), and LLAMA_ARG_REPACK=0. Default loading exhausted memory on a 9.7 GiB host.",
-      "models": [
-        "clef-flash:latest"
-      ],
-      "in": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "decision": {
-          "inline": true
-        }
-      },
-      "SystemOne": {
-        "noul": true,
-        "choice": true,
-        "score": true,
-        "object": true,
-        "array": true,
-        "reportTokenUsage": "true"
       }
     }
   ]

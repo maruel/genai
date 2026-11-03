@@ -262,11 +262,10 @@
       }
     },
     {
-      "comments": "Realtime thinking mode: ThinkingLevelHigh raises latency.",
+      "comments": "Realtime non-thinking mode: the model's fixed latency profile.",
       "models": [
-        "gemini-3.8-live-extended-thinking"
+        "gemini-3.8-live"
       ],
-      "reason": true,
       "in": {
         "audio": {
           "inline": true
@@ -291,10 +290,11 @@
       }
     },
     {
-      "comments": "Realtime non-thinking mode: the model's fixed latency profile.",
+      "comments": "Realtime thinking mode: ThinkingLevelHigh raises latency.",
       "models": [
-        "gemini-3.8-live"
+        "gemini-3.8-live-extended-thinking"
       ],
+      "reason": true,
       "in": {
         "audio": {
           "inline": true
@@ -352,25 +352,6 @@
     },
     {
       "models": [
-        "gemini-3.5-flash-lite",
-        "gemini-3.5-transcribe",
-        "gemini-3.5-transcribe-live",
-        "gemini-3.6-flash",
-        "gemini-3.7-flash",
-        "gemini-3.8-flash",
-        "gemini-3.8-flash-lite-tts",
-        "gemini-3.8-flash-tts",
-        "gemini-4-argon",
-        "gemini-nano-banana-2.1",
-        "gemini-omni-1.1-flash",
-        "gemini-omni-flash-preview",
-        "gemini-robotics-er-2-preview",
-        "gemini-robotics-er-2-streaming-preview"
-      ],
-      "reason": true
-    },
-    {
-      "models": [
         "antigravity-preview-05-2026",
         "antigravity-preview-09-2026",
         "antigravity-preview-latest",
@@ -379,27 +360,6 @@
         "deep-research-preview-04-2026",
         "embedding-001",
         "embedding-gecko-001",
-        "gemini-2.0-flash",
-        "gemini-2.0-flash-001",
-        "gemini-2.0-flash-exp",
-        "gemini-2.0-flash-exp-image-generation",
-        "gemini-2.0-flash-lite",
-        "gemini-2.0-flash-lite-001",
-        "gemini-2.0-flash-lite-preview",
-        "gemini-2.0-flash-lite-preview-02-05",
-        "gemini-2.5-computer-use-preview-10-2025",
-        "gemini-2.5-flash",
-        "gemini-2.5-flash-image",
-        "gemini-2.5-flash-image-preview",
-        "gemini-2.5-flash-lite",
-        "gemini-2.5-flash-lite-preview-09-2025",
-        "gemini-2.5-flash-native-audio-latest",
-        "gemini-2.5-flash-native-audio-preview-09-2025",
-        "gemini-2.5-flash-native-audio-preview-12-2025",
-        "gemini-2.5-flash-preview-09-2025",
-        "gemini-2.5-flash-preview-tts",
-        "gemini-2.5-pro",
-        "gemini-2.5-pro-preview-tts",
         "gemini-3-flash-preview",
         "gemini-3-pro-image",
         "gemini-3-pro-image-preview",
@@ -439,6 +399,25 @@
         "veo-3.1-generate-preview",
         "veo-3.1-lite-generate-preview"
       ]
+    },
+    {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-transcribe",
+        "gemini-3.5-transcribe-live",
+        "gemini-3.6-flash",
+        "gemini-3.7-flash",
+        "gemini-3.8-flash",
+        "gemini-3.8-flash-lite-tts",
+        "gemini-3.8-flash-tts",
+        "gemini-4-argon",
+        "gemini-nano-banana-2.1",
+        "gemini-omni-1.1-flash",
+        "gemini-omni-flash-preview",
+        "gemini-robotics-er-2-preview",
+        "gemini-robotics-er-2-streaming-preview"
+      ],
+      "reason": true
     }
   ]
 }

@@ -809,7 +809,7 @@ func TestClient(t *testing.T) {
 				T:        t,
 				Target:   "ws" + strings.TrimPrefix(remote, "http") + "/v1/realtime",
 				Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
-				Updating: smoketest.UpdatingScoreboard(),
+				Updating: internaltest.UpdatingRecordings(),
 				Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
 					out := slices.Clone(opts)
 					for i, opt := range out {
@@ -949,9 +949,8 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		// no server is needed.
 		return "http://127.0.0.1:0"
 	}
-	// Replay HTTP cassettes in normal tests. Scoreboard updates own a managed
-	// llama-server so every measured row comes from a live process.
-	if os.Getenv("RECORD") == "" && !smoketest.UpdatingScoreboard() {
+	// Replay cassettes unless the run records them.
+	if os.Getenv("RECORD") == "" {
 		return "http://127.0.0.1:0"
 	}
 	l.mu.Lock()
@@ -1011,13 +1010,11 @@ func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, model
 			"--cache-type-v", "q8_0",
 			"--reasoning-preserve",
 			"--spec-default",
+			"--no-warmup",
 			// "--spec-type", "draft-mtp",
 			"--parallel", "4",
 			"--kv-unified",
 		)
-		if repo == "Kev-4B-GGUF" {
-			extraArgs = append(extraArgs, "--no-warmup")
-		}
 	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1470
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"We need to answer the question: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe are asked: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe must output JSON with key \"is_fruit\" set to true or false.\n\nIs a banana a fruit? Yes, bananas are fruits. So answer: {\"is_fruit\": true}.\n\nBut we must ensure no extra spaces? The schema says {\"is_fruit\": bool}. So we need to produce JSON with that key and value.\n\nThus:\n\n{\n  \"is_fruit\": true\n}\n\nBut the instruction: \"Reply ONLY as JSON\". So we should output just the JSON, no extra text. So:\n\n{\"is_fruit\": true}"}}],"created":1793724579,"model":"LiquidAI/LFM3-Audio-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":201,"prompt_tokens":39,"total_tokens":240,"prompt_tokens_details":{"cached_tokens":1}},"id":"chatcmpl-jEjBmpGvt2CrdBpKvFdIZxtnxo8zvlRH","timings":{"cache_n":1,"prompt_n":38,"prompt_ms":252.477,"prompt_per_token_ms":6.644131578947369,"prompt_per_second":150.50875921371053,"predicted_n":201,"predicted_ms":9025.709,"predicted_per_token_ms":45.128545,"predicted_per_second":22.158924024694347,"draft_n":128,"draft_n_accepted":9}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1470"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 9.311s

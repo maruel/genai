@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 355
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"input_video","input_video":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1134
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"BANANA","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user wants to know \"the word said\" in the provided video frame and requests the reply to be \"only the word.\"\n2.  **Analyze the Image/Video Content:** The image clearly displays the word \"BANANA\" in yellow text against a black background.\n3.  **Determine the Answer:** The word is BANANA.\n4.  **Format the Output:** The instruction requires *only* the word.\n5.  **Final Output Generation:** BANANA."}}],"created":1793720987,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":120,"prompt_tokens":1735,"total_tokens":1855,"prompt_tokens_details":{"cached_tokens":1734}},"id":"chatcmpl-CHZMjf2p1X68uiCj4jDvmlwIdvlZudiR","timings":{"cache_n":1734,"prompt_n":1,"prompt_ms":125.311,"prompt_per_token_ms":125.311,"prompt_per_second":7.980145398249156,"predicted_n":120,"predicted_ms":39653.755,"predicted_per_token_ms":333.2248319327731,"predicted_per_second":3.000976830567496}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1134"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 40.376s

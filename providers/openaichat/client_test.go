@@ -1210,7 +1210,7 @@ func TestClient(t *testing.T) {
 				T:        t,
 				Target:   "wss://api.openai.com/v1/realtime",
 				Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
-				Updating: smoketest.UpdatingScoreboard(),
+				Updating: internaltest.UpdatingRecordings(),
 				Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
 					out := slices.Clone(opts)
 					for i, opt := range out {

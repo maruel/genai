@@ -34,12 +34,35 @@ import (
 // This may be used for HTTP recording and replays.
 type ProviderFactory func(name string) genai.Provider
 
-// Run runs a smoke test on the provider and model.
+// Run runs a smoke test on the provider and model and returns the scenario as
+// found in practice.
 //
-// It returns the supported Scenario as found in practice.
+// The probes follow the provider scoreboard and the model capabilities, so an
+// unqualified model needs nothing else.
 //
 // ProviderFactory must be concurrent safe and never fail.
 func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
+	c := pf("")
+	m := c.ModelID()
+	if m == "" {
+		return scoreboard.Scenario{}, genai.Usage{}, errors.New("provider must have a model")
+	}
+	// A model may be scored for both families, so only the scoreboard tells which
+	// one applies. Call [RunGenai] or [RunRealtimeScenario] to pick one.
+	sb := c.Scoreboard()
+	for i := range sb.Scenarios {
+		if sc := &sb.Scenarios[i]; sc.Realtime != nil && slices.Contains(sc.Models, m) {
+			return RunRealtimeScenario(ctx, c, sc.Reason)
+		}
+	}
+	return RunGenai(ctx, pf)
+}
+
+// RunGenai runs the GenSync, GenStream, GenAsync, Embed and SystemOne probes and
+// returns the scenario as found in practice.
+//
+// ProviderFactory must be concurrent safe and never fail.
+func RunGenai(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
 	usage := genai.Usage{}
 	c := pf("")
 	m := c.ModelID()
@@ -47,12 +70,6 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 		return scoreboard.Scenario{}, usage, errors.New("provider must have a model")
 	}
 	sb := c.Scoreboard()
-	for i := range sb.Scenarios {
-		sc := &sb.Scenarios[i]
-		if sc.Realtime != nil && slices.Contains(sc.Models, m) {
-			return RunRealtimeScenario(ctx, c, sc.Reason)
-		}
-	}
 	mods := c.OutputModalities()
 	if slices.Equal(mods, genai.Modalities{genai.ModalityEmbedding}) {
 		return RunEmbeddings(ctx, pf, EmbeddingProbeDimensions)

@@ -334,6 +334,9 @@ func TestClient(t *testing.T) {
 			if res.Usage.FinishReason != genai.FinishedStop {
 				t.Errorf("FinishReason: got %q, want %q", res.Usage.FinishReason, genai.FinishedStop)
 			}
+			if res.Usage.ContextTokens != 15098 || res.Usage.ContextWindow != 475000 {
+				t.Errorf("context usage: got %d/%d, want 15098/475000", res.Usage.ContextTokens, res.Usage.ContextWindow)
+			}
 		})
 		t.Run("thread_id_always_in_opaque", func(t *testing.T) {
 			c := newTestClient(t, "GenSync_hello")
@@ -419,6 +422,9 @@ func TestClient(t *testing.T) {
 			if len(res.Replies) == 0 || !strings.Contains(strings.ToLower(res.Replies[0].Text), "hello") {
 				t.Errorf("Result text: got %v", res.Replies)
 			}
+			if res.Usage.ContextTokens != 15098 || res.Usage.ContextWindow != 475000 {
+				t.Errorf("context usage: got %d/%d, want 15098/475000", res.Usage.ContextTokens, res.Usage.ContextWindow)
+			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
 			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("gpt-6.1-terra"))
@@ -474,4 +480,17 @@ func TestClient(t *testing.T) {
 			t.Errorf("gpt-6-astra not found in models: %v", ids)
 		}
 	})
+}
+
+func TestAccumulateUsageContext(t *testing.T) {
+	window := int64(475000)
+	var u genai.Usage
+	accumulateUsage(&u, &ThreadTokenUsage{
+		Last:               TokenUsageBreakdown{TotalTokens: 15255},
+		Total:              TokenUsageBreakdown{TotalTokens: 45615},
+		ModelContextWindow: &window,
+	})
+	if u.ContextTokens != 15255 || u.ContextWindow != 475000 {
+		t.Errorf("context usage: got %d/%d, want 15255/475000", u.ContextTokens, u.ContextWindow)
+	}
 }

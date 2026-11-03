@@ -457,6 +457,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	var initSessionID string
 	var asstBlocks []OutputContentBlock
 	var summaries []string
+	var contextUsage ContextUsage
 	for _, line := range records {
 		var b OutputTypeProbe
 		if e := json.Unmarshal(line, &b); e != nil {
@@ -483,6 +484,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 				return genai.Result{}, errors.Join(fmt.Errorf("parse assistant: %w", e), err)
 			}
 			asstBlocks = append(asstBlocks, asst.Message.Content...)
+			if !asst.ContextUsage.IsZero() {
+				contextUsage = asst.ContextUsage
+			}
 		case OutputResult:
 			var res OutputResultMsg
 			if e := internal.UnmarshalJSON(line, &res); e != nil {
@@ -491,7 +495,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			if e := res.AsError(); e != nil {
 				return genai.Result{}, errors.Join(e, err)
 			}
-			return buildResult(&res, asstBlocks, summaries, initSessionID), err
+			return buildResult(&res, asstBlocks, summaries, initSessionID, contextUsage.TotalTokens, contextUsage.RawMaxTokens), err
 		default:
 		}
 	}
@@ -615,6 +619,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		var initSessionID string
 		var asstBlocks []OutputContentBlock
 		var summaries []string
+		var contextUsage ContextUsage
 		var streamUsage MsgUsage
 		for sc.Scan() {
 			line := sc.Bytes()
@@ -681,6 +686,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					return
 				}
 				asstBlocks = append(asstBlocks, asst.Message.Content...)
+				if !asst.ContextUsage.IsZero() {
+					contextUsage = asst.ContextUsage
+				}
 			case OutputResult:
 				var res OutputResultMsg
 				if err := internal.UnmarshalJSON(line, &res); err != nil {
@@ -691,7 +699,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = err
 					return
 				}
-				result = buildResult(&res, asstBlocks, summaries, initSessionID)
+				result = buildResult(&res, asstBlocks, summaries, initSessionID, contextUsage.TotalTokens, contextUsage.RawMaxTokens)
 				if result.Usage.ReasoningTokens == 0 {
 					result.Usage.ReasoningTokens = streamUsage.OutputTokensDetails.ThinkingTokens
 				}
@@ -958,7 +966,7 @@ func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 }
 
 // buildResult converts a resultMsg and accumulated assistant content blocks into a genai.Result.
-func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summaries []string, sessionID string) genai.Result {
+func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summaries []string, sessionID string, contextTokens, contextWindow int64) genai.Result {
 	r := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       res.Usage.InputTokens,
@@ -969,6 +977,20 @@ func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summarie
 			FinishReason:      mapFinishReason(res.StopReason),
 			ServiceTier:       res.Usage.ServiceTier,
 		},
+	}
+	r.Usage.ContextTokens = contextTokens
+	r.Usage.ContextWindow = contextWindow
+	if r.Usage.ContextWindow == 0 {
+		// Fall back to the model context window reported by the result.
+		usage := res.ModelUsageSinceLastResult
+		if len(usage) == 0 {
+			usage = res.ModelUsage
+		}
+		if len(usage) == 1 {
+			for _, m := range usage {
+				r.Usage.ContextWindow = m.ContextWindow
+			}
+		}
 	}
 
 	for _, s := range summaries {

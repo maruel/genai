@@ -924,6 +924,10 @@ func accumulateUsage(usage *genai.Usage, tu *ThreadTokenUsage) {
 	usage.OutputTokens += tu.Last.OutputTokens
 	usage.ReasoningTokens += tu.Last.ReasoningOutputTokens
 	usage.TotalTokens = usage.InputTokens + usage.OutputTokens
+	if tu.ModelContextWindow != nil {
+		usage.ContextWindow = *tu.ModelContextWindow
+	}
+	usage.ContextTokens = tu.Last.TotalTokens
 }
 
 // buildResult constructs a genai.Result from collected replies, usage, and

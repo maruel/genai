@@ -636,3 +636,47 @@ Do not answer the question yourself.`)
 		}
 	})
 }
+
+func TestBuildResultContextUsage(t *testing.T) {
+	t.Run("context_usage", func(t *testing.T) {
+		res := buildResult(&OutputResultMsg{
+			ModelUsage: map[string]ModelUsageEntry{"m": {ContextWindow: 200000}},
+		}, nil, nil, "s", 1234, 10000)
+		if res.Usage.ContextTokens != 1234 || res.Usage.ContextWindow != 10000 {
+			t.Errorf("context usage: got %d/%d, want 1234/10000", res.Usage.ContextTokens, res.Usage.ContextWindow)
+		}
+	})
+	t.Run("model_usage_window", func(t *testing.T) {
+		res := buildResult(&OutputResultMsg{
+			ModelUsage: map[string]ModelUsageEntry{"m": {ContextWindow: 200000}},
+		}, nil, nil, "s", 0, 0)
+		if res.Usage.ContextTokens != 0 || res.Usage.ContextWindow != 200000 {
+			t.Errorf("context usage: got %d/%d, want 0/200000", res.Usage.ContextTokens, res.Usage.ContextWindow)
+		}
+	})
+}
+
+func TestClientContextUsage(t *testing.T) {
+	output := `{"type":"assistant","message":{"content":[{"type":"text","text":"Hello"}]},"context_usage":{"model":"m","total_tokens":1234,"raw_max_tokens":10000}}` + "\n" + `{"type":"result","subtype":"success","is_error":false,"stop_reason":"end_turn","result":"Hello"}`
+	for _, mode := range []string{"GenSync", "GenStream"} {
+		t.Run(mode, func(t *testing.T) {
+			c := newOutputClient(t, output, nil)
+			var res genai.Result
+			var err error
+			if mode == "GenSync" {
+				res, err = c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("say hello")})
+			} else {
+				seq, finish := c.GenStream(t.Context(), genai.Messages{genai.NewTextMessage("say hello")})
+				for range seq {
+				}
+				res, err = finish()
+			}
+			if err != nil {
+				t.Fatalf("%s: %v", mode, err)
+			}
+			if res.Usage.ContextTokens != 1234 || res.Usage.ContextWindow != 10000 {
+				t.Errorf("context usage: got %d/%d, want 1234/10000", res.Usage.ContextTokens, res.Usage.ContextWindow)
+			}
+		})
+	}
+}

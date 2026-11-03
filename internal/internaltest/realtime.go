@@ -50,7 +50,6 @@ type RealtimeRecorder struct {
 
 // ConnectRealtime implements genai.Provider.
 func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
-	r.T.Helper()
 	r.mu.Lock()
 	r.calls++
 	call := r.calls

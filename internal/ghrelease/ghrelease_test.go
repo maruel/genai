@@ -325,7 +325,6 @@ func TestDownloadAndExtract(t *testing.T) {
 // createArchive creates an archive file at path. The format is determined by
 // the file extension (.zip, .tar.gz, .tgz, .tar.zst).
 func createArchive(t *testing.T, path string, files map[string]string) {
-	t.Helper()
 	f, err := os.Create(path)
 	if err != nil {
 		t.Fatal(err)
@@ -355,7 +354,6 @@ func hasSuffix(s string, suffixes ...string) bool {
 }
 
 func writeZip(t *testing.T, w io.Writer, files map[string]string) {
-	t.Helper()
 	zw := zip.NewWriter(w)
 	for name, content := range files {
 		fw, err := zw.Create(name)
@@ -372,7 +370,6 @@ func writeZip(t *testing.T, w io.Writer, files map[string]string) {
 }
 
 func writeTarGz(t *testing.T, w io.Writer, files map[string]string) {
-	t.Helper()
 	gw := gzip.NewWriter(w)
 	writeTar(t, gw, files)
 	if err := gw.Close(); err != nil {
@@ -381,7 +378,6 @@ func writeTarGz(t *testing.T, w io.Writer, files map[string]string) {
 }
 
 func writeTarZst(t *testing.T, w io.Writer, files map[string]string) {
-	t.Helper()
 	zw, err := zstd.NewWriter(w)
 	if err != nil {
 		t.Fatal(err)
@@ -393,7 +389,6 @@ func writeTarZst(t *testing.T, w io.Writer, files map[string]string) {
 }
 
 func writeTar(t *testing.T, w io.Writer, files map[string]string) {
-	t.Helper()
 	tw := tar.NewWriter(w)
 	for name, content := range files {
 		hdr := &tar.Header{
@@ -414,7 +409,6 @@ func writeTar(t *testing.T, w io.Writer, files map[string]string) {
 }
 
 func createTarGzWithSymlink(t *testing.T, path, fileName, fileContent, symlinkName, symlinkTarget string) {
-	t.Helper()
 	f, err := os.Create(path)
 	if err != nil {
 		t.Fatal(err)
@@ -444,7 +438,6 @@ func createTarGzWithSymlink(t *testing.T, path, fileName, fileContent, symlinkNa
 }
 
 func assertFileContent(t *testing.T, path, want string) {
-	t.Helper()
 	got, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("reading %s: %v", path, err)

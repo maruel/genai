@@ -166,7 +166,6 @@ func ValidateWordResponse(t testing.TB, resp *genai.Result, want ...string) {
 	got := resp.String()
 	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
 	if !slices.Contains(want, cleaned) {
-		t.Helper()
 		t.Fatalf("Expected %q, got %q", strings.Join(want, ", "), got)
 	}
 }

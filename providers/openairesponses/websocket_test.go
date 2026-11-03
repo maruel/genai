@@ -359,7 +359,6 @@ func prevIDStr(id string) string {
 // startEchoServer starts a local WebSocket server that echoes received
 // messages with a prefix, simulating a conversation for testing.
 func startEchoServer(t *testing.T) string {
-	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
 		if err != nil {
@@ -382,7 +381,6 @@ func startEchoServer(t *testing.T) string {
 }
 
 func dialProxy(t *testing.T, endpoint string) *websocket.Conn {
-	t.Helper()
 	c, _, err := websocket.Dial(t.Context(), endpoint, &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
 	if err != nil {
 		t.Fatal(err)
@@ -392,7 +390,6 @@ func dialProxy(t *testing.T, endpoint string) *websocket.Conn {
 }
 
 func runEchoTurns(t *testing.T, c *websocket.Conn) {
-	t.Helper()
 	for i := range 3 {
 		req := fmt.Sprintf("turn %d", i+1)
 		if err := c.Write(t.Context(), websocket.MessageText, []byte(req)); err != nil {

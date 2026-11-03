@@ -164,17 +164,13 @@ func TestRecorder(t *testing.T) {
 	})
 }
 
+// newRecorder returns a recorder started towards target. Call Close or Discard
+// once to stop it and write or drop the fixture.
 func newRecorder(t *testing.T, path, target string) *Recorder {
-	t.Helper()
 	rec, err := New(path)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() {
-		if err := rec.Close(); err != nil {
-			t.Error(err)
-		}
-	})
 	if err := rec.Start(target); err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +178,6 @@ func newRecorder(t *testing.T, path, target string) *Recorder {
 }
 
 func recordMessages(t *testing.T, endpoint string) {
-	t.Helper()
 	c, _, err := websocket.Dial(t.Context(), endpoint, &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
 	if err != nil {
 		t.Fatal(err)
@@ -210,7 +205,6 @@ func recordMessages(t *testing.T, endpoint string) {
 }
 
 func replayMessages(t *testing.T, endpoint string) {
-	t.Helper()
 	c, _, err := websocket.Dial(t.Context(), endpoint, &websocket.DialOptions{}) //nolint:bodyclose // coder/websocket owns the response body.
 	if err != nil {
 		t.Fatal(err)
@@ -237,7 +231,6 @@ func replayMessages(t *testing.T, endpoint string) {
 }
 
 func echoServer(t *testing.T) string {
-	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
 		if err != nil {

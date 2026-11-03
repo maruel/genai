@@ -361,6 +361,12 @@ func (r *Recorder) replayConn(ctx context.Context, c *websocket.Conn) {
 			}
 		}
 	}
+	// Close waits up to 5 s for the peer's close handshake, which a client that
+	// reads on demand never completes during a replayed run. The wait is harmless:
+	// httptest stops tracking a connection as soon as the handler hijacks it, so a
+	// replayed test does not wait for the handler to return. CloseNow would end the
+	// wait, but it can drop the close frame and leave the client with an abnormal
+	// close instead of a normal one.
 	_ = c.Close(websocket.StatusNormalClosure, "")
 }
 

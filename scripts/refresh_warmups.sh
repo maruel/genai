@@ -33,6 +33,7 @@ readonly PROVIDERS=(
   codex
   cohere
   deepseek
+  dsh
   gemini
   groq
   huggingface
@@ -76,8 +77,9 @@ require_all() {
   done
 }
 
-# Fail before deleting any recording. The CLI providers authenticate through
-# their own configuration, so only require their executables here.
+# Fail before deleting any recording. CLI providers authenticate through their
+# own configuration or environment, so require the executable and any credential
+# their default profile reads.
 preflight_provider() {
   case $1 in
   alibaba) require_all "$1" DASHSCOPE_API_KEY_INTL DASHSCOPE_API_KEY_US ;;
@@ -96,6 +98,12 @@ preflight_provider() {
   pollinations) require_all "$1" POLLINATIONS_API_KEY ;;
   togetherai) require_all "$1" TOGETHER_API_KEY ;;
   xiaomi) require_all "$1" MIMO_API_KEY ;;
+  dsh)
+    if ! command -v dsh >/dev/null; then
+      MISSING+=("CLI provider: dsh executable")
+    fi
+    require_all "$1" DEEPSEEK_API_KEY
+    ;;
   claudecode | codex | opencode | pi)
     local binary=$1
     if [[ $binary == claudecode ]]; then

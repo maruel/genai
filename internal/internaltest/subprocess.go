@@ -20,7 +20,7 @@ import (
 )
 
 // SubprocessRecorder provides recording and replay of subprocess I/O for
-// testing CLI-based providers (claudecode, codex, opencode).
+// testing CLI-based providers.
 //
 // It wraps subprocessrecord.Recorder with test-specific logic: it checks the
 // RECORD environment variable and ensures the binary is available.

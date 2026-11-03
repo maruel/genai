@@ -24,6 +24,7 @@ import (
 	"github.com/maruel/genai/providers/codex"
 	"github.com/maruel/genai/providers/cohere"
 	"github.com/maruel/genai/providers/deepseek"
+	"github.com/maruel/genai/providers/dsh"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/genai/providers/huggingface"
@@ -48,8 +49,8 @@ type Config struct {
 	APIKeyEnvVar string
 	Alias        string
 	// IsCLI is true for providers that launch a subprocess instead of making
-	// HTTP requests (e.g. claudecode, codex, opencode). CLI providers accept
-	// ProviderOptionStarterWrapper but not ProviderOptionTransportWrapper.
+	// HTTP requests. CLI providers accept ProviderOptionStarterWrapper but not
+	// ProviderOptionTransportWrapper.
 	IsCLI   bool
 	Factory func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error)
 }
@@ -163,6 +164,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "DEEPSEEK_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := deepseek.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"dsh": {
+		IsCLI: true,
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := dsh.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

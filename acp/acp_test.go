@@ -321,6 +321,7 @@ func TestSession(t *testing.T) {
 				input := strings.Join([]string{
 					`{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-1","update":{"sessionUpdate":"agent_thought_chunk","content":{"type":"text","text":"thinking"}}}}`,
 					`{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-1","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Hello"}}}}`,
+					`{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"session-1","update":{"sessionUpdate":"usage_update","used":1234,"size":10000}}}`,
 					`{"jsonrpc":"2.0","id":"permission-1","method":"session/request_permission","params":{"sessionId":"session-1","toolCall":{"toolCallId":"tool-1"},"options":[{"optionId":"once","kind":"allow_once","name":"Allow once"}]}}`,
 					`{"jsonrpc":"2.0","id":3,"result":{"stopReason":"end_turn"}}`,
 				}, "\n")
@@ -339,6 +340,9 @@ func TestSession(t *testing.T) {
 				}
 				if res.Usage.FinishReason != genai.FinishedStop {
 					t.Errorf("FinishReason: %q", res.Usage.FinishReason)
+				}
+				if res.Usage.ContextTokens != 1234 || res.Usage.ContextWindow != 10000 {
+					t.Errorf("context usage: %d/%d", res.Usage.ContextTokens, res.Usage.ContextWindow)
 				}
 				if len(res.Replies) != 3 || res.Replies[0].Reasoning != "thinking" || res.Replies[1].Text != "Hello" || res.Replies[2].Opaque[SessionIDKey] != "session-1" {
 					t.Errorf("replies: %#v", res.Replies)

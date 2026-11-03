@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 // Package subprocessrecord provides recording and replay of subprocess I/O for
-// CLI-based providers (claudecode, codex, opencode).
+// CLI-based providers (claudecode, codex, dsh, opencode).
 //
 // It is the subprocess analog of httprecord: httprecord wraps
 // http.RoundTripper, subprocessrecord wraps genai.Starter.

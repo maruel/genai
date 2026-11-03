@@ -239,6 +239,7 @@ func (s *Session) SendPrompt(msg *genai.Message) (int64, error) {
 // allow approves permission requests; otherwise they are rejected.
 func (s *Session) ReadTurn(promptID int64, allow bool, onDelta func(text, reasoning string) bool) (genai.Result, error) {
 	var textBuf, thinkBuf strings.Builder
+	var contextUsage *UsageUpdateUpdate
 	for s.sc.Scan() {
 		line := s.sc.Bytes()
 		var msg JSONRPCMessage
@@ -255,7 +256,7 @@ func (s *Session) ReadTurn(promptID int64, allow bool, onDelta func(text, reason
 			if id != promptID {
 				return genai.Result{}, fmt.Errorf("unexpected JSON-RPC response id %d, want %d", id, promptID)
 			}
-			return buildPromptResult(line, textBuf.String(), thinkBuf.String(), s.ID)
+			return buildPromptResult(line, textBuf.String(), thinkBuf.String(), s.ID, contextUsage)
 		}
 
 		if msg.IsAgentRequest() {
@@ -269,13 +270,16 @@ func (s *Session) ReadTurn(promptID int64, allow bool, onDelta func(text, reason
 			continue
 		}
 
-		text, reasoning, err := parseSessionUpdateDelta(msg.Params)
+		delta, err := parseSessionUpdateDelta(msg.Params)
 		if err != nil {
 			return genai.Result{}, err
 		}
-		textBuf.WriteString(text)
-		thinkBuf.WriteString(reasoning)
-		if (text != "" || reasoning != "") && !onDelta(text, reasoning) {
+		textBuf.WriteString(delta.text)
+		thinkBuf.WriteString(delta.reasoning)
+		if delta.usage != nil {
+			contextUsage = delta.usage
+		}
+		if (delta.text != "" || delta.reasoning != "") && !onDelta(delta.text, delta.reasoning) {
 			if err := s.cancel(); err != nil {
 				return genai.Result{}, fmt.Errorf("cancel session: %w", err)
 			}
@@ -506,53 +510,64 @@ func (s *Session) readResponse(expectedID int64) (json.RawMessage, error) {
 	return nil, errors.New("exited during handshake")
 }
 
-// parseSessionUpdateDelta extracts text and reasoning deltas from a
+// sessionDelta holds the content of one session/update notification.
+type sessionDelta struct {
+	text      string
+	reasoning string
+	usage     *UsageUpdateUpdate
+}
+
+// parseSessionUpdateDelta extracts text, reasoning, and context usage from a
 // session/update notification's params.
-func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, err error) {
+func parseSessionUpdateDelta(params json.RawMessage) (sessionDelta, error) {
 	var sup SessionUpdateParams
 	if err := internal.UnmarshalJSON(params, &sup); err != nil {
-		return "", "", fmt.Errorf("unmarshal session/update params: %w", err)
+		return sessionDelta{}, fmt.Errorf("unmarshal session/update params: %w", err)
 	}
 	// The probe reads only the discriminator; the matching update type is
 	// decoded strictly below. Unknown fields belong to that type, not the probe.
 	var probe UpdateProbe
 	if err := json.Unmarshal(sup.Update, &probe); err != nil {
-		return "", "", fmt.Errorf("unmarshal session/update discriminator: %w", err)
+		return sessionDelta{}, fmt.Errorf("unmarshal session/update discriminator: %w", err)
 	}
+	var d sessionDelta
 	switch probe.SessionUpdate {
 	case UpdateAgentMessageChunk:
 		var u AgentMessageChunkUpdate
 		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
-			return "", "", fmt.Errorf("unmarshal agent_message_chunk: %w", err)
+			return sessionDelta{}, fmt.Errorf("unmarshal agent_message_chunk: %w", err)
 		}
-		return u.Content.Text, "", nil
+		d.text = u.Content.Text
 	case UpdateAgentThoughtChunk:
 		var u AgentThoughtChunkUpdate
 		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
-			return "", "", fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
+			return sessionDelta{}, fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
 		}
-		return "", u.Content.Text, nil
+		d.reasoning = u.Content.Text
 	case UpdateUserMessageChunk:
-		return "", "", decodeSessionUpdate[UserMessageChunkUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[UserMessageChunkUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateToolCall:
-		return "", "", decodeSessionUpdate[ToolCallUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[ToolCallUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateToolCallUpdate:
-		return "", "", decodeSessionUpdate[ToolCallUpdateUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[ToolCallUpdateUpdate](sup.Update, probe.SessionUpdate)
 	case UpdatePlan:
-		return "", "", decodeSessionUpdate[PlanUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[PlanUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateUsageUpdate:
-		return "", "", decodeSessionUpdate[UsageUpdateUpdate](sup.Update, probe.SessionUpdate)
+		var u UsageUpdateUpdate
+		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
+			return sessionDelta{}, fmt.Errorf("unmarshal %s: %w", probe.SessionUpdate, err)
+		}
+		d.usage = &u
 	case UpdateCurrentModeUpdate:
-		return "", "", decodeSessionUpdate[CurrentModeUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[CurrentModeUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateSessionInfoUpdate:
-		return "", "", decodeSessionUpdate[SessionInfoUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[SessionInfoUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateAvailableCommandsUpdate:
-		return "", "", decodeSessionUpdate[AvailableCommandsUpdate](sup.Update, probe.SessionUpdate)
+		return d, decodeSessionUpdate[AvailableCommandsUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateConfigOptionUpdate:
-		return "", "", decodeSessionUpdate[ConfigOptionUpdate](sup.Update, probe.SessionUpdate)
-	default:
-		return "", "", nil
+		return d, decodeSessionUpdate[ConfigOptionUpdate](sup.Update, probe.SessionUpdate)
 	}
+	return d, nil
 }
 
 func decodeSessionUpdate[T any](data json.RawMessage, updateType UpdateType) error {
@@ -616,7 +631,7 @@ func handleAgentRequest(stdin io.Writer, line []byte, allow bool) error {
 
 // buildPromptResult constructs a genai.Result from the session/prompt response.
 // Returns an error if the JSON-RPC response is an error.
-func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Result, error) {
+func buildPromptResult(line []byte, text, thinking, sessionID string, usage *UsageUpdateUpdate) (genai.Result, error) {
 	r := genai.Result{}
 
 	var msg JSONRPCMessage
@@ -641,6 +656,10 @@ func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Res
 		r.Usage.InputCachedTokens = int64(pr.Usage.CachedReadTokens)
 		// ACP totals include reasoning and both cache token categories.
 		r.Usage.TotalTokens = int64(pr.Usage.TotalTokens)
+	}
+	if usage != nil {
+		r.Usage.ContextTokens = int64(usage.Used)
+		r.Usage.ContextWindow = int64(usage.Size)
 	}
 
 	if thinking != "" {

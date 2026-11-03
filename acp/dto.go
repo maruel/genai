@@ -9,11 +9,15 @@
 //	@agentclientprotocol/sdk 1.4.0 src/schema/types.gen.ts — wire schema
 //	packages/opencode/src/acp/agent.ts — OpenCode session update handling
 //
-// Checked against OpenCode 1.19.4 (148842ef7cb1bc34192b3fff57d0f9721ab9c801),
-// which pins @agentclientprotocol/sdk 0.21.0.
+// Checked against OpenCode 1.19.4 (148842ef7cb1bc34192b3fff57d0f9721ab9c801)
+// and DeepSeek Harness dsh-v0.2.1-rc.5
+// (b830ec950faba0a46dda564be3e2d854afed94f1). The ACP SDK 1.4.0 revision is
+// e6463f444093ed7c5f1cc937c3f32afb5853e906; OpenCode 1.19.4 uses 0.21.0.
 //
-// Source: https://github.com/anomalyco/opencode
-// Spec:   https://agentclientprotocol.com
+// Sources: https://github.com/anomalyco/opencode
+//          https://github.com/deepseek-ai/deepseek-harness
+//          https://github.com/agentclientprotocol/typescript-sdk
+// Spec:    https://agentclientprotocol.com
 
 package acp
 

@@ -1,0 +1,59 @@
+{
+  "country": "CN",
+  "dashboardURL": "https://platform.deepseek.com/usage",
+  "scenarios": [
+    {
+      "models": [
+        "deepseek-official/deepseek-v4-pro"
+      ],
+      "sota": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportFinishReason": "true"
+      },
+      "GenStream": {
+        "reportFinishReason": "true"
+      }
+    },
+    {
+      "models": [
+        "deepseek-official/deepseek-flash"
+      ],
+      "good": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportFinishReason": "true"
+      },
+      "GenStream": {
+        "reportFinishReason": "true"
+      }
+    },
+    {
+      "comments": "Default model, covered by the provider client tests.",
+      "models": [
+        "deepseek-official/deepseek-v4-flash"
+      ],
+      "cheap": true
+    }
+  ]
+}

@@ -230,6 +230,12 @@ type Usage struct {
 	ReasoningTokens   int64
 	OutputTokens      int64
 	TotalTokens       int64
+	// ContextTokens is the number of tokens in the context window after the
+	// request. Zero when the provider does not report it.
+	ContextTokens int64
+	// ContextWindow is the maximum number of tokens the context window holds.
+	// Zero when the provider does not report it.
+	ContextWindow int64
 	// FinishReason indicates why the model stopped generating tokens.
 	FinishReason FinishReason
 	// ServiceTier is the quality of service tier used to process the request,
@@ -244,13 +250,17 @@ func (u *Usage) String() string {
 	var s strings.Builder
 	fmt.Fprintf(&s, "in: %d (cached %d), reasoning: %d, out: %d, total: %d",
 		u.InputTokens, u.InputCachedTokens, u.ReasoningTokens, u.OutputTokens, u.TotalTokens)
+	if u.ContextTokens != 0 || u.ContextWindow != 0 {
+		fmt.Fprintf(&s, ", context: %d/%d", u.ContextTokens, u.ContextWindow)
+	}
 	for _, l := range u.Limits {
 		fmt.Fprintf(&s, ", %s", l.String())
 	}
 	return s.String()
 }
 
-// Add accumulates the usage from another result.
+// Add accumulates the token counts from another result. It does not accumulate
+// the context fields, which are a snapshot of the context window.
 func (u *Usage) Add(r *Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens

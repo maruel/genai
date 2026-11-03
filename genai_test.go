@@ -32,6 +32,8 @@ func TestUsage(t *testing.T) {
 			ReasoningTokens:   15,
 			OutputTokens:      20,
 			TotalTokens:       10 + 5 + 15 + 20,
+			ContextTokens:     100,
+			ContextWindow:     1000,
 			Limits: []RateLimit{
 				{
 					Type:      Requests,
@@ -47,7 +49,7 @@ func TestUsage(t *testing.T) {
 				},
 			},
 		}
-		want := "in: 10 (cached 5), reasoning: 15, out: 20, total: 50, requests (minute): 99/100, tokens (day): 9980/10000"
+		want := "in: 10 (cached 5), reasoning: 15, out: 20, total: 50, context: 100/1000, requests (minute): 99/100, tokens (day): 9980/10000"
 		if got := u.String(); got != want {
 			t.Fatalf("Usage.String()\nwant %q\ngot  %q", want, got)
 		}
@@ -59,6 +61,8 @@ func TestUsage(t *testing.T) {
 			ReasoningTokens:   15,
 			OutputTokens:      20,
 			TotalTokens:       50,
+			ContextTokens:     100,
+			ContextWindow:     1000,
 		}
 		u2 := Usage{
 			InputTokens:       20,
@@ -66,6 +70,8 @@ func TestUsage(t *testing.T) {
 			ReasoningTokens:   30,
 			OutputTokens:      40,
 			TotalTokens:       100,
+			ContextTokens:     200,
+			ContextWindow:     2000,
 		}
 		expected := Usage{
 			InputTokens:       30,
@@ -73,6 +79,8 @@ func TestUsage(t *testing.T) {
 			ReasoningTokens:   45,
 			OutputTokens:      60,
 			TotalTokens:       150,
+			ContextTokens:     100,
+			ContextWindow:     1000,
 		}
 		u1.Add(&u2)
 		if diff := cmp.Diff(expected, u1); diff != "" {

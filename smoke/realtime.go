@@ -7,6 +7,7 @@
 package smoke
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -17,6 +18,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -26,9 +28,11 @@ import (
 // options. probe identifies the probe that will use the session. tools lists the
 // session tools the probe needs; an empty list opens a session without tools.
 // The runner opens the core session with no tools, then opens separate sessions
-// with tools for the tool probes. The factory must select the output modality the
-// probe needs: text for RealtimeProbeTools and audio for
-// RealtimeProbeAudioTool.
+// with tools for the tool probes and a separate session for the image probe.
+// The factory must select the output modality the probe needs: text for
+// RealtimeProbeTools, and for RealtimeProbeImage text output when the model
+// supports it or audio output with output transcription otherwise. The
+// audio-tool probe needs audio output.
 type RealtimeSessionFactory func(ctx context.Context, probe RealtimeProbe, tools []genai.ToolDef) (genai.RealtimeSession, error)
 
 // RealtimeProbe identifies one core realtime probe.
@@ -41,6 +45,7 @@ const (
 	RealtimeProbeReuse        RealtimeProbe = "reuse"
 	RealtimeProbeCancellation RealtimeProbe = "cancellation"
 	RealtimeProbeAudio        RealtimeProbe = "audio"
+	RealtimeProbeImage        RealtimeProbe = "image"
 	RealtimeProbeAudioTool    RealtimeProbe = "audio_tool"
 	RealtimeProbeTools        RealtimeProbe = "tools"
 )
@@ -50,8 +55,8 @@ type RealtimeProbeResult struct {
 	Probe RealtimeProbe
 	// Skipped reports that the session's reported capabilities exclude the probe.
 	Skipped bool
-	// Failed reports that the probe ran and did not pass. The audio-tool probe is
-	// optional and reports failure instead of failing the run.
+	// Failed reports that the probe ran and did not pass. The image and
+	// audio-tool probes are optional and report failure instead of failing the run.
 	Failed bool
 	// Reason explains a skipped or failed probe.
 	Reason string
@@ -64,7 +69,7 @@ type RealtimeReport struct {
 	Info genai.RealtimeSessionInfo
 	// Probes lists the core probes that passed, failed, or were skipped, in
 	// execution order. Most failing probes are reported by the returned error
-	// instead; the optional audio-tool probe reports failure here.
+	// instead; the optional image and audio-tool probes report failure here.
 	Probes []RealtimeProbeResult
 	// OutputAudio reports that a probe observed nonempty audio output.
 	OutputAudio bool
@@ -82,15 +87,17 @@ type RealtimeReport struct {
 // The runner opens one session without tools and qualifies it: setup validates
 // Info, text and reuse qualify two complete turns that produce output,
 // cancellation qualifies that a running response is interrupted, and audio
-// qualifies synthesized speech input. Separate sessions with tools qualify a
-// text tool call and an audio tool call, including the model's answer after the
-// tool results. The text probe requires a text answer; the audio probe requires
-// a spoken answer. Audio probes use recorded speech and are skipped when the
-// session does not accept audio turns. A provider that rejects tools or omits
-// ToolResults skips both tool probes; a provider that rejects one tool output
-// modality skips only that probe. The audio-tool probe is optional: a failed
-// audio-tool probe is reported in Probes instead of failing the run. Probes the
-// reported capabilities exclude are skipped instead of failing.
+// qualifies synthesized speech input. A separate session qualifies image input
+// by asking about a recorded image and requiring its answer, as text or as an
+// output transcript. Separate sessions with tools qualify a text tool call and an
+// audio tool call, including the model's answer after the tool results. The text
+// probe requires a text answer; the audio probe requires a spoken answer. Audio
+// probes use recorded speech and are skipped when the session does not accept
+// audio turns. A provider that rejects tools or omits ToolResults skips both tool
+// probes; a provider that rejects one tool output modality skips only that probe.
+// The image and audio-tool probes are optional: a failed probe is reported in
+// Probes instead of failing the run. Probes the reported capabilities exclude are
+// skipped instead of failing.
 //
 // Every received event is validated with RealtimeContent.Validate. Provider
 // error events, invalid content, a session that ends before the awaited event, a
@@ -150,6 +157,25 @@ func RunRealtime(ctx context.Context, f RealtimeSessionFactory) (report Realtime
 			return report, err
 		}
 		report.Probes = append(report.Probes, RealtimeProbeResult{Probe: RealtimeProbeAudio})
+	}
+
+	if !slices.Contains(info.InputModalities, genai.ModalityImage) {
+		report.Probes = append(report.Probes, RealtimeProbeResult{Probe: RealtimeProbeImage, Skipped: true, Reason: "session does not accept image input"})
+	} else if is, ierr := f(ctx, RealtimeProbeImage, nil); ierr != nil {
+		report.Probes = append(report.Probes, RealtimeProbeResult{Probe: RealtimeProbeImage, Skipped: true, Reason: ierr.Error()})
+	} else {
+		iinfo := is.Info()
+		if ierr := realtimeValidateInfo(&iinfo); ierr != nil {
+			return report, errors.Join(fmt.Errorf("probe %s: %w", RealtimeProbeImage, ierr), is.Close())
+		}
+		iev := newRealtimeEvents(ctx, is, &report)
+		res, ierr := realtimeImage(ctx, iev, is)
+		iev.release()
+		ierr = errors.Join(ierr, is.Close())
+		if ierr != nil {
+			return report, ierr
+		}
+		report.Probes = append(report.Probes, res)
 	}
 
 	ts, _, skip, err := openRealtimeToolSession(ctx, f, RealtimeProbeTools)
@@ -238,6 +264,15 @@ func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (sc
 		}
 		connOpts := []genai.RealtimeOption{genai.RealtimeOptionInstructions(instructions)}
 		switch probe {
+		case RealtimeProbeImage:
+			// Text output is exact and cheap. A model that outputs audio only reports
+			// its answer in an output transcript instead.
+			if s, err := c.ConnectRealtime(ctx, slices.Concat(connOpts, []genai.RealtimeOption{genai.Modalities{genai.ModalityText}})...); err == nil {
+				return s, nil
+			} else if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+				return nil, err
+			}
+			connOpts = append(connOpts, genai.Modalities{genai.ModalityAudio}, &genai.RealtimeOptionAudio{OutputTranscription: true})
 		case RealtimeProbeTools:
 			connOpts = append(connOpts, genai.Modalities{genai.ModalityText})
 		case RealtimeProbeAudioTool:
@@ -283,6 +318,16 @@ func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (sc
 	if realtimeProbePassed(&report, RealtimeProbeAudio) {
 		sc.In[genai.ModalityAudio] = scoreboard.ModalCapability{Inline: true}
 	}
+	if realtimeProbePassed(&report, RealtimeProbeImage) {
+		sc.In[genai.ModalityImage] = scoreboard.ModalCapability{Inline: true}
+	} else if realtimePreviousImage(c, model, reason) {
+		for i := range report.Probes {
+			if report.Probes[i].Probe == RealtimeProbeImage {
+				return sc, usage, fmt.Errorf("image input regressed: %s", report.Probes[i].Reason)
+			}
+		}
+		return sc, usage, errors.New("image input regressed")
+	}
 	sc.Out = map[genai.Modality]scoreboard.ModalCapability{}
 	if report.OutputAudio {
 		sc.Out[genai.ModalityAudio] = scoreboard.ModalCapability{Inline: true}
@@ -298,6 +343,19 @@ func realtimeProbePassed(report *RealtimeReport, probe RealtimeProbe) bool {
 	for i := range report.Probes {
 		if report.Probes[i].Probe == probe {
 			return !report.Probes[i].Skipped && !report.Probes[i].Failed
+		}
+	}
+	return false
+}
+
+// realtimePreviousImage reports whether a scoreboard already records inline
+// image input for the model in the reasoning mode reason selects.
+func realtimePreviousImage(c genai.Provider, model string, reason bool) bool {
+	score := c.Scoreboard()
+	for i := range score.Scenarios {
+		s := &score.Scenarios[i]
+		if s.Realtime != nil && s.Reason == reason && slices.Contains(s.Models, model) {
+			return s.In[genai.ModalityImage].Inline
 		}
 	}
 	return false
@@ -328,6 +386,8 @@ const (
 	realtimeToolResult   = `{"code":"violet seven"}`
 	realtimeToolCode     = "violet seven"
 	realtimeCancelPrompt = "Count slowly from one to one hundred. Say each number as a separate word."
+	realtimeImagePrompt  = "What fruit is it? Reply with only one word."
+	realtimeImageAnswer  = "banana"
 )
 
 // realtimeToolDefs returns the session tools the tool probe expects.
@@ -339,13 +399,29 @@ func realtimeToolDefs() []genai.ToolDef {
 	}}
 }
 
-// realtimeValidateInfo checks the formats and the turn mode the session accepted.
+// realtimeValidateInfo checks the formats, the input kinds, and the turn mode the
+// session accepted.
 func realtimeValidateInfo(info *genai.RealtimeSessionInfo) error {
 	if err := info.InputFormat.Validate(); err != nil {
 		return fmt.Errorf("input format: %w", err)
 	}
 	if err := info.OutputFormat.Validate(); err != nil {
 		return fmt.Errorf("output format: %w", err)
+	}
+	if len(info.InputModalities) == 0 {
+		return errors.New("input modalities: session states no accepted input")
+	}
+	for i, m := range info.InputModalities {
+		switch m {
+		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText:
+		default:
+			return fmt.Errorf("input modalities: unsupported %q", m)
+		}
+		for _, p := range info.InputModalities[:i] {
+			if p == m {
+				return fmt.Errorf("input modalities: duplicate %q", m)
+			}
+		}
 	}
 	switch info.TurnDetection {
 	case genai.RealtimeTurnManual, genai.RealtimeTurnServer:
@@ -429,6 +505,73 @@ func realtimeAudioTurn(ctx context.Context, ev *realtimeEvents, s genai.Realtime
 	}
 	_, err = ev.await(probe, realtimeTurnDone, nil)
 	return err
+}
+
+// realtimeImage qualifies that the session accepts an inline image and answers a
+// question about it, using text output or an output transcript. A provider error
+// during the turn records a failed probe and leaves the run going.
+func realtimeImage(ctx context.Context, ev *realtimeEvents, s genai.RealtimeSession) (RealtimeProbeResult, error) {
+	res := RealtimeProbeResult{Probe: RealtimeProbeImage}
+	data, err := scoreboard.TestdataFiles.ReadFile("testdata/image.jpg")
+	if err != nil {
+		return res, fmt.Errorf("probe %s: read image: %w", RealtimeProbeImage, err)
+	}
+	in := genai.RealtimeInputContent{
+		Doc:      genai.Doc{Src: bytes.NewReader(data), Filename: "image.jpg"},
+		Text:     realtimeImagePrompt,
+		Generate: true,
+	}
+	if err := s.Send(ctx, in); err != nil {
+		if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
+			res.Skipped = true
+			res.Reason = err.Error()
+			return res, nil
+		}
+		return res, fmt.Errorf("probe %s: %w", RealtimeProbeImage, err)
+	}
+	var text, transcript strings.Builder
+	answered := false
+	_, err = ev.await(RealtimeProbeImage, func(e *genai.RealtimeEvent) bool {
+		switch e.Kind {
+		case genai.RealtimeEventContentText, genai.RealtimeEventTranscriptOutput:
+			if e.Content.Text == "" {
+				return false
+			}
+			sink := &text
+			if e.Kind == genai.RealtimeEventTranscriptOutput {
+				sink = &transcript
+			}
+			if e.Content.Final {
+				sink.Reset()
+			}
+			sink.WriteString(e.Content.Text)
+			answered = true
+		default:
+		}
+		return realtimeTurnDone(e)
+	}, realtimeAbort("image turn was interrupted", genai.RealtimeEventInterrupted))
+	if err != nil {
+		if perr, ok := errors.AsType[*genai.RealtimeError](err); ok {
+			res.Failed = true
+			res.Reason = "provider rejected image input: " + perr.Error()
+			return res, nil
+		}
+		return res, err
+	}
+	if !answered {
+		res.Failed = true
+		res.Reason = "image turn completed without text or spoken output"
+		return res, nil
+	}
+	answer := text.String()
+	if answer == "" {
+		answer = transcript.String()
+	}
+	if got := realtimeNormalizeAnswer(answer); got != realtimeImageAnswer {
+		res.Failed = true
+		res.Reason = fmt.Sprintf("image answer %q does not name %q", got, realtimeImageAnswer)
+	}
+	return res, nil
 }
 
 // openRealtimeToolSession opens a session with tools for one tool probe. A
@@ -575,9 +718,9 @@ func realtimeToolAnswer(probe RealtimeProbe, ev *realtimeEvents, calls *genai.Re
 	return nil
 }
 
-// realtimeHasToolAnswer reports whether s contains the expected tool answer,
-// ignoring case and punctuation.
-func realtimeHasToolAnswer(s string) bool {
+// realtimeNormalizeAnswer lowercases s and reduces it to single-space separated
+// words, so an answer comparison ignores punctuation and casing.
+func realtimeNormalizeAnswer(s string) string {
 	normalize := func(r rune) rune {
 		switch {
 		case r >= 'a' && r <= 'z', r >= '0' && r <= '9':
@@ -588,7 +731,12 @@ func realtimeHasToolAnswer(s string) bool {
 			return ' '
 		}
 	}
-	return strings.Contains(strings.Join(strings.Fields(strings.Map(normalize, s)), " "), realtimeToolCode)
+	return strings.Join(strings.Fields(strings.Map(normalize, s)), " ")
+}
+
+// realtimeHasToolAnswer reports whether s contains the expected tool answer.
+func realtimeHasToolAnswer(s string) bool {
+	return strings.Contains(realtimeNormalizeAnswer(s), realtimeToolCode)
 }
 
 // realtimeCancel qualifies that a cancel interrupts a generating response.

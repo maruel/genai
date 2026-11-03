@@ -16,6 +16,8 @@ import (
 	"testing/synctest"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/realtimetest"
@@ -25,11 +27,19 @@ import (
 
 // fakeRealtimeInfo is the info of a session that reports every capability.
 var fakeRealtimeInfo = genai.RealtimeSessionInfo{
-	ID:            "fake",
-	InputFormat:   genai.AudioFormat{SampleRate: 16000},
-	OutputFormat:  genai.AudioFormat{SampleRate: 24000},
-	TurnDetection: genai.RealtimeTurnManual,
-	Capabilities:  genai.RealtimeCapabilities{CancelResponse: true, ToolResults: true},
+	ID:              "fake",
+	InputFormat:     genai.AudioFormat{SampleRate: 16000},
+	OutputFormat:    genai.AudioFormat{SampleRate: 24000},
+	InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityImage, genai.ModalityText},
+	TurnDetection:   genai.RealtimeTurnManual,
+	Capabilities:    genai.RealtimeCapabilities{CancelResponse: true, ToolResults: true},
+}
+
+// fakeImageTurn is the answer to the image prompt.
+var fakeImageTurn = []genai.RealtimeEvent{
+	{Kind: genai.RealtimeEventContentText, Content: genai.RealtimeContent{Text: "banana"}},
+	{Kind: genai.RealtimeEventGenerationDone},
+	{Kind: genai.RealtimeEventTurnDone},
 }
 
 // fakeOutputTurn is a complete turn with text and audio output.
@@ -103,6 +113,8 @@ type fakeRealtimeFactory struct {
 	audio []genai.RealtimeEvent
 	// audioTool scripts the reply to an audio turn that calls a tool.
 	audioTool func(tool string) []genai.RealtimeEvent
+	// image scripts the reply to the image turn.
+	image []genai.RealtimeEvent
 	// info is the info of the session. secondInfo overrides the audio-tool
 	// session's info when set.
 	info       genai.RealtimeSessionInfo
@@ -132,6 +144,7 @@ func newFakeRealtimeFactory(t *testing.T) *fakeRealtimeFactory {
 		cancelPrompt:     fakeAudioTurn,
 		cancel:           fakeInterruption,
 		audio:            fakeOutputTurn,
+		image:            fakeImageTurn,
 		info:             fakeRealtimeInfo,
 	}
 }
@@ -178,6 +191,8 @@ func (f *fakeRealtimeFactory) open(ctx context.Context, probe smoke.RealtimeProb
 					return f.audioTool(tool)
 				}
 				return f.audio
+			case !v.Doc.IsZero():
+				return f.image
 			}
 			switch {
 			case strings.Contains(v.Text, "Say hello"):
@@ -238,10 +253,10 @@ func TestRunRealtime(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if report.Info != fakeRealtimeInfo {
+			if !cmp.Equal(report.Info, fakeRealtimeInfo) {
 				t.Fatalf("info=%+v", report.Info)
 			}
-			want := []smoke.RealtimeProbe{smoke.RealtimeProbeSetup, smoke.RealtimeProbeText, smoke.RealtimeProbeReuse, smoke.RealtimeProbeCancellation, smoke.RealtimeProbeAudio, smoke.RealtimeProbeTools, smoke.RealtimeProbeAudioTool}
+			want := []smoke.RealtimeProbe{smoke.RealtimeProbeSetup, smoke.RealtimeProbeText, smoke.RealtimeProbeReuse, smoke.RealtimeProbeCancellation, smoke.RealtimeProbeAudio, smoke.RealtimeProbeImage, smoke.RealtimeProbeTools, smoke.RealtimeProbeAudioTool}
 			if got := ranProbes(&report); !slices.Equal(got, want) {
 				t.Fatalf("probes=%v, want %v", got, want)
 			}
@@ -250,19 +265,25 @@ func TestRunRealtime(t *testing.T) {
 					t.Fatalf("probe %s skipped: %s", p.Probe, p.Reason)
 				}
 			}
-			for _, p := range []smoke.RealtimeProbeResult{report.Probes[4], report.Probes[6]} {
+			for _, p := range []smoke.RealtimeProbeResult{report.Probes[4], report.Probes[7]} {
 				if !p.Skipped {
 					t.Fatalf("probe %s did not skip", p.Probe)
 				}
 			}
-			// The core probes open without tools; each tool probe opens a session with tools.
-			if len(f.opens) != 3 || len(f.opens[0]) != 0 || len(f.opens[1]) != 1 || len(f.opens[2]) != 1 {
+			for _, p := range report.Probes[5:7] {
+				if p.Skipped || p.Failed {
+					t.Fatalf("probe %s did not pass: %s", p.Probe, p.Reason)
+				}
+			}
+			// The core and image probes open without tools; each tool probe opens a
+			// session with tools.
+			if len(f.opens) != 4 || len(f.opens[0]) != 0 || len(f.opens[1]) != 0 || len(f.opens[2]) != 1 || len(f.opens[3]) != 1 {
 				t.Fatalf("opens=%v", f.opens)
 			}
-			if tool := f.opens[1][0]; tool.Name == "" || tool.Validate() != nil {
+			if tool := f.opens[2][0]; tool.Name == "" || tool.Validate() != nil {
 				t.Fatalf("tool=%+v", tool)
 			}
-			if len(f.sessions) != 3 {
+			if len(f.sessions) != 4 {
 				t.Fatalf("sessions=%d", len(f.sessions))
 			}
 			sent := f.sessions[0].Sent
@@ -280,7 +301,7 @@ func TestRunRealtime(t *testing.T) {
 			if v, ok := sent[3].(genai.RealtimeCancel); !ok || v.ResponseID != "" {
 				t.Fatalf("cancel=%v", sent[3])
 			}
-			toolSent := f.sessions[1].Sent
+			toolSent := f.sessions[2].Sent
 			text, ok := toolSent[0].(genai.RealtimeInputContent)
 			if len(toolSent) != 2 || !ok || !text.Generate {
 				t.Fatalf("tool sent=%v", toolSent)
@@ -289,8 +310,12 @@ func TestRunRealtime(t *testing.T) {
 			if !ok || !results.Generate {
 				t.Fatalf("tool sent=%v", toolSent)
 			}
-			if want := []genai.ToolCallResult{{ID: "call_1", Name: f.opens[1][0].Name, Result: `{"code":"violet seven"}`}}; !slices.Equal(results.ToolResults, want) {
+			if want := []genai.ToolCallResult{{ID: "call_1", Name: f.opens[2][0].Name, Result: `{"code":"violet seven"}`}}; !slices.Equal(results.ToolResults, want) {
 				t.Fatalf("results=%v, want %v", results.ToolResults, want)
+			}
+			imageSent, ok := f.sessions[1].Sent[0].(genai.RealtimeInputContent)
+			if len(f.sessions[1].Sent) != 1 || !ok || imageSent.Doc.GetFilename() != "image.jpg" || !imageSent.Generate {
+				t.Fatalf("image sent=%v", f.sessions[1].Sent)
 			}
 		})
 
@@ -323,11 +348,11 @@ func TestRunRealtime(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			want := []smoke.RealtimeProbe{smoke.RealtimeProbeSetup, smoke.RealtimeProbeText, smoke.RealtimeProbeReuse, smoke.RealtimeProbeCancellation, smoke.RealtimeProbeAudio, smoke.RealtimeProbeTools, smoke.RealtimeProbeAudioTool}
+			want := []smoke.RealtimeProbe{smoke.RealtimeProbeSetup, smoke.RealtimeProbeText, smoke.RealtimeProbeReuse, smoke.RealtimeProbeCancellation, smoke.RealtimeProbeAudio, smoke.RealtimeProbeImage, smoke.RealtimeProbeTools, smoke.RealtimeProbeAudioTool}
 			if got := ranProbes(&report); !slices.Equal(got, want) {
 				t.Fatalf("probes=%v, want %v", got, want)
 			}
-			if len(f.sessions) != 3 {
+			if len(f.sessions) != 4 {
 				t.Fatalf("sessions=%d", len(f.sessions))
 			}
 			sent := f.sessions[0].Sent
@@ -335,7 +360,7 @@ func TestRunRealtime(t *testing.T) {
 			if len(sent) < 4 || len(audioChunks(sent)) == 0 || !ok || !lastAudio.Commit || !lastAudio.Generate {
 				t.Fatalf("audio inputs=%v", sent)
 			}
-			toolSent := f.sessions[1].Sent
+			toolSent := f.sessions[2].Sent
 			if len(toolSent) != 2 {
 				t.Fatalf("text tool inputs=%v", toolSent)
 			}
@@ -345,7 +370,7 @@ func TestRunRealtime(t *testing.T) {
 			if _, ok := toolSent[1].(genai.RealtimeInputContent); !ok {
 				t.Fatalf("text tool inputs=%v", toolSent)
 			}
-			audioToolSent := f.sessions[2].Sent
+			audioToolSent := f.sessions[3].Sent
 			if len(audioToolSent) < 4 || len(audioChunks(audioToolSent)) == 0 {
 				t.Fatalf("audio tool inputs=%v", audioToolSent)
 			}
@@ -442,7 +467,7 @@ func TestRunRealtime(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if len(f.sessions) != 1 {
+			if len(f.sessions) != 2 {
 				t.Fatalf("sessions=%d", len(f.sessions))
 			}
 			for _, p := range report.Probes {
@@ -462,7 +487,7 @@ func TestRunRealtime(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if len(f.sessions) != 3 {
+			if len(f.sessions) != 4 {
 				t.Fatalf("sessions=%d", len(f.sessions))
 			}
 			if got := ranProbes(&report); !slices.Contains(got, smoke.RealtimeProbeTools) || !slices.Contains(got, smoke.RealtimeProbeAudioTool) {
@@ -502,10 +527,10 @@ func TestRunRealtime(t *testing.T) {
 			if _, err := smoke.RunRealtime(t.Context(), f.open); err != nil {
 				t.Fatal(err)
 			}
-			results := f.sessions[1].Sent[1].(genai.RealtimeInputContent)
+			results := f.sessions[2].Sent[1].(genai.RealtimeInputContent)
 			want := []genai.ToolCallResult{
-				{ID: "call_2", Name: f.opens[1][0].Name, Result: `{"code":"violet seven"}`},
-				{ID: "call_1", Name: f.opens[1][0].Name, Result: `{"code":"violet seven"}`},
+				{ID: "call_2", Name: f.opens[2][0].Name, Result: `{"code":"violet seven"}`},
+				{ID: "call_1", Name: f.opens[2][0].Name, Result: `{"code":"violet seven"}`},
 			}
 			if !slices.Equal(results.ToolResults, want) {
 				t.Fatalf("results=%v, want %v", results.ToolResults, want)
@@ -547,14 +572,34 @@ func TestRunRealtime(t *testing.T) {
 			}
 		})
 
+		t.Run("image refusal", func(t *testing.T) {
+			for name, turn := range map[string][]genai.RealtimeEvent{
+				"provider error": {{Kind: genai.RealtimeEventError, Error: &genai.RealtimeError{Code: "invalid_request", Message: "image input is not supported"}}},
+				"wrong answer":   {{Kind: genai.RealtimeEventContentText, Content: genai.RealtimeContent{Text: "apple"}}, {Kind: genai.RealtimeEventGenerationDone}, {Kind: genai.RealtimeEventTurnDone}},
+			} {
+				t.Run(name, func(t *testing.T) {
+					f := newFakeRealtimeFactory(t)
+					f.image = turn
+					report, err := smoke.RunRealtime(t.Context(), f.open)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if r := probeResult(t, &report, smoke.RealtimeProbeImage); !r.Failed || r.Reason == "" {
+						t.Fatalf("probe image=%+v", r)
+					}
+				})
+			}
+		})
+
 		t.Run("skipped capabilities", func(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
 			f.info.Capabilities = genai.RealtimeCapabilities{}
+			f.info.InputModalities = []genai.Modality{genai.ModalityAudio}
 			report, err := smoke.RunRealtime(t.Context(), f.open)
 			if err != nil {
 				t.Fatal(err)
 			}
-			for _, p := range []smoke.RealtimeProbe{smoke.RealtimeProbeTools, smoke.RealtimeProbeCancellation} {
+			for _, p := range []smoke.RealtimeProbe{smoke.RealtimeProbeTools, smoke.RealtimeProbeCancellation, smoke.RealtimeProbeImage} {
 				if r := probeResult(t, &report, p); !r.Skipped || r.Reason == "" {
 					t.Fatalf("probe %s=%+v", p, report.Probes)
 				}
@@ -577,10 +622,10 @@ func TestRunRealtime(t *testing.T) {
 			if r := probeResult(t, &report, smoke.RealtimeProbeTools); !r.Skipped || r.Reason == "" {
 				t.Fatalf("probe tools=%+v", report.Probes)
 			}
-			if len(f.opens) != 3 || len(f.opens[0]) != 0 || len(f.opens[1]) != 1 || len(f.opens[2]) != 1 {
+			if len(f.opens) != 4 || len(f.opens[0]) != 0 || len(f.opens[1]) != 0 || len(f.opens[2]) != 1 || len(f.opens[3]) != 1 {
 				t.Fatalf("opens=%v", f.opens)
 			}
-			if len(f.sessions) != 1 {
+			if len(f.sessions) != 2 {
 				t.Fatalf("sessions=%d", len(f.sessions))
 			}
 			sent := f.sessions[0].Sent
@@ -614,6 +659,22 @@ func TestRunRealtime(t *testing.T) {
 			f.info.OutputFormat = genai.AudioFormat{}
 			if _, err := smoke.RunRealtime(t.Context(), f.open); err == nil || !strings.Contains(err.Error(), "probe setup") {
 				t.Fatalf("err=%v", err)
+			}
+		})
+
+		t.Run("input modalities", func(t *testing.T) {
+			for name, mods := range map[string][]genai.Modality{
+				"empty":       nil,
+				"unsupported": {genai.ModalityAudio, genai.ModalityVideo},
+				"duplicate":   {genai.ModalityAudio, genai.ModalityAudio},
+			} {
+				t.Run(name, func(t *testing.T) {
+					f := newFakeRealtimeFactory(t)
+					f.info.InputModalities = mods
+					if _, err := smoke.RunRealtime(t.Context(), f.open); err == nil || !strings.Contains(err.Error(), "input modalities") {
+						t.Fatalf("err=%v", err)
+					}
+				})
 			}
 		})
 
@@ -882,7 +943,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			if !slices.Equal(sc.Models, []string{"model"}) {
 				t.Fatalf("models=%v", sc.Models)
 			}
-			if !sc.In[genai.ModalityText].Inline || sc.In[genai.ModalityAudio].Inline {
+			if !sc.In[genai.ModalityText].Inline || !sc.In[genai.ModalityImage].Inline || sc.In[genai.ModalityAudio].Inline {
 				t.Fatalf("input modalities: %+v", sc.In)
 			}
 			for _, m := range []genai.Modality{genai.ModalityAudio, genai.ModalityText} {
@@ -894,22 +955,26 @@ func TestRunRealtimeScenario(t *testing.T) {
 			if sc.Realtime == nil || *sc.Realtime != want {
 				t.Fatalf("realtime=%+v, want %+v", sc.Realtime, want)
 			}
-			// The core session opens without tools. Each tool probe opens a session
-			// with its own output modality and text-only function-calling instructions.
-			if len(p.opens) != 3 || len(p.opens[0]) != 1 || len(p.opens[1]) != 3 || len(p.opens[2]) != 3 {
+			// The core session opens without tools. The image probe opens a text session
+			// without tools; each tool probe opens a session with its own output modality
+			// and text-only function-calling instructions.
+			if len(p.opens) != 4 || len(p.opens[0]) != 1 || len(p.opens[1]) != 2 || len(p.opens[2]) != 3 || len(p.opens[3]) != 3 {
 				t.Fatalf("opens=%v", p.opens)
 			}
-			if in, ok := p.opens[1][0].(genai.RealtimeOptionInstructions); !ok || in != "List of tools:" {
-				t.Fatalf("instructions=%q", p.opens[1][0])
+			if in, ok := p.opens[2][0].(genai.RealtimeOptionInstructions); !ok || in != "List of tools:" {
+				t.Fatalf("instructions=%q", p.opens[2][0])
 			}
 			if m, ok := p.opens[1][1].(genai.Modalities); !ok || !slices.Equal(m, genai.Modalities{genai.ModalityText}) {
-				t.Fatalf("modalities=%v", p.opens[1][1])
+				t.Fatalf("image modalities=%v", p.opens[1][1])
 			}
-			if _, ok := p.opens[1][2].(*genai.RealtimeOptionTools); !ok {
-				t.Fatalf("options=%v", p.opens[1])
+			if m, ok := p.opens[2][1].(genai.Modalities); !ok || !slices.Equal(m, genai.Modalities{genai.ModalityText}) {
+				t.Fatalf("modalities=%v", p.opens[2][1])
 			}
-			if m, ok := p.opens[2][1].(genai.Modalities); !ok || !slices.Equal(m, genai.Modalities{genai.ModalityAudio}) {
-				t.Fatalf("audio modalities=%v", p.opens[2][1])
+			if _, ok := p.opens[2][2].(*genai.RealtimeOptionTools); !ok {
+				t.Fatalf("options=%v", p.opens[2])
+			}
+			if m, ok := p.opens[3][1].(genai.Modalities); !ok || !slices.Equal(m, genai.Modalities{genai.ModalityAudio}) {
+				t.Fatalf("audio modalities=%v", p.opens[3][1])
 			}
 
 			// Run routes a scoreboard realtime scenario before GenSync.
@@ -1040,6 +1105,35 @@ func TestRunRealtimeScenario(t *testing.T) {
 						t.Fatalf("scenario=%+v", sc)
 					}
 				})
+			}
+		})
+
+		t.Run("image regression", func(t *testing.T) {
+			f := newFakeRealtimeFactory(t)
+			f.info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityText}
+			score := realtimeScoreboard()
+			score.Scenarios[0].In[genai.ModalityImage] = scoreboard.ModalCapability{Inline: true}
+			p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
+			if _, _, err := smoke.RunRealtimeScenario(t.Context(), p, false); err == nil || !strings.Contains(err.Error(), "image input regressed") {
+				t.Fatalf("err=%v", err)
+			}
+		})
+
+		t.Run("image regression reason", func(t *testing.T) {
+			// Each reasoning mode has its own scoreboard entry; a recorded image in
+			// one mode applies to that mode only.
+			f := newFakeRealtimeFactory(t)
+			f.info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityText}
+			score := scoreboard.Score{Scenarios: []scoreboard.Scenario{
+				{Models: []string{"model"}, Reason: true, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityImage: {Inline: true}}, Realtime: &scoreboard.RealtimeFunctionality{}},
+				{Models: []string{"model"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{}, Realtime: &scoreboard.RealtimeFunctionality{}},
+			}}
+			p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
+			if _, _, err := smoke.RunRealtimeScenario(t.Context(), p, false); err != nil {
+				t.Fatalf("non-thinking mode inherited the thinking result: %v", err)
+			}
+			if _, _, err := smoke.RunRealtimeScenario(t.Context(), p, true); err == nil || !strings.Contains(err.Error(), "image input regressed") {
+				t.Fatalf("thinking mode err=%v", err)
 			}
 		})
 

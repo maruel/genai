@@ -37,6 +37,10 @@ import (
 const maxTools = 1024
 const maxToolHistory = 4096
 
+// maxDocBytes bounds one inline document; base64 inflates the bound by one third
+// on the wire.
+const maxDocBytes = 16 << 20
+
 // maxMessageBytes bounds one inbound OpenAI realtime wire message.
 const maxMessageBytes = 16 << 20
 
@@ -55,6 +59,8 @@ const maxMessageBytes = 16 << 20
 //   - Truncate is available only while the output modality is audio. Playback
 //     remains application-owned.
 //   - Input and output are mono PCM16 at 24 kHz.
+//   - Document input is one user message carrying the base64 data URL of the
+//     document and the text that follows it, bounded to 16 MiB.
 //   - A completed response authorizes one complete tool-call batch. Sessions
 //     retain at most 1024 pending calls and 4096 historical call IDs.
 //   - Cancellation suppresses late audio and transcripts for the cancelled
@@ -183,6 +189,15 @@ func (s *Session) Send(ctx context.Context, in genai.RealtimeInput) error {
 	if err := s.ws.Err(); err != nil {
 		return err
 	}
+	// Document encoding reads and base64-encodes caller data before taking the
+	// state lock that event translation shares.
+	var content []Content
+	if v, ok := in.(genai.RealtimeInputContent); ok && !v.Doc.IsZero() {
+		var err error
+		if content, err = docContent(&v.Doc, v.Text); err != nil {
+			return err
+		}
+	}
 	// Serialize state changes with event translation so cancellation and tool
 	// consumption become visible before a concurrently received frame is handled.
 	s.mu.Lock()
@@ -267,6 +282,8 @@ func (s *Session) Send(ctx context.Context, in genai.RealtimeInput) error {
 				msgs[s.tools[r.ID].index] = ClientMessage{Type: EventItemCreate, Item: &Item{Type: ItemFunctionOutput, CallID: r.ID, Output: r.Result}}
 			}
 			results = v.ToolResults
+		case !v.Doc.IsZero():
+			msgs = append(msgs, ClientMessage{Type: EventItemCreate, Item: &Item{Type: ItemMessage, Role: RoleUser, Content: content}})
 		default:
 			if v.Text != "" {
 				msgs = append(msgs, ClientMessage{Type: EventItemCreate, Item: &Item{Type: ItemMessage, Role: RoleUser, Content: []Content{{Type: ContentInputText, Text: v.Text}}}})
@@ -330,6 +347,24 @@ func (s *Session) Send(ctx context.Context, in genai.RealtimeInput) error {
 		}
 	}
 	return nil
+}
+
+// docContent renders one user message carrying the document and the text that
+// follows it.
+func docContent(d *genai.Doc, text string) ([]Content, error) {
+	if d.URL != "" {
+		return nil, &base.ErrNotSupported{Options: []string{"remote documents"}}
+	}
+	mimeType, data, err := d.Read(maxDocBytes)
+	if err != nil {
+		return nil, fmt.Errorf("read document: %w", err)
+	}
+	content := make([]Content, 1, 2)
+	content[0] = Content{Type: ContentInputImage, ImageURL: "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)}
+	if text != "" {
+		content = append(content, Content{Type: ContentInputText, Text: text})
+	}
+	return content, nil
 }
 
 func (s *Session) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateMessage, map[string]struct{}, error) {
@@ -761,6 +796,7 @@ func acceptSetup(want, got *SessionConfig, info *genai.RealtimeSessionInfo) erro
 	f := genai.AudioFormat{SampleRate: 24000}
 	info.InputFormat = f
 	info.OutputFormat = f
+	info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityImage, genai.ModalityText}
 	info.Capabilities = genai.RealtimeCapabilities{
 		AudioCommit:    info.TurnDetection == genai.RealtimeTurnManual,
 		CancelResponse: true,

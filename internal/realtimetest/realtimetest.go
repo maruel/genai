@@ -125,7 +125,7 @@ type FakeSession struct {
 }
 
 // NewFakeSession returns a FakeSession that reports info and queues no event.
-func NewFakeSession(info genai.RealtimeSessionInfo) *FakeSession {
+func NewFakeSession(info genai.RealtimeSessionInfo) *FakeSession { //nolint:gocritic // hugeParam: callers build the info value they assert on.
 	return &FakeSession{
 		SessionInfo: info,
 		notify:      make(chan struct{}, 1),

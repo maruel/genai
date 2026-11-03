@@ -28,6 +28,9 @@ import (
 // Gemini does not document a WebSocket message limit.
 const maxMessageBytes = 16 << 20
 
+// maxDocBytes bounds one inline document.
+const maxDocBytes = 16 << 20
+
 // RealtimeOption configures Gemini Live features beyond the portable contract.
 // Affective dialogue and proactivity fields are deliberately omitted.
 type RealtimeOption struct {
@@ -107,6 +110,8 @@ type RealtimeCompression struct {
 //   - Usage snapshots cover one response. Interaction status, resumption and
 //     go-away are provider events.
 //   - Input is PCM16 at 16 kHz. Output is PCM16 at 24 kHz.
+//   - Document input is a user turn whose parts carry the inline document followed
+//     by the text, bounded to 16 MiB.
 //   - SendRaw bypasses portable validation and state tracking.
 //
 // See [Client.ConnectRealtime] for setup options and the protocol source.
@@ -254,6 +259,17 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 			}
 			msgs = append(msgs, LiveClientMessage{ToolResponse: &LiveToolResponse{FunctionResponses: responses}})
 			results = v.ToolResults
+		case !v.Doc.IsZero():
+			blob, err := inlineDoc(&v.Doc, maxDocBytes)
+			if err != nil {
+				return err
+			}
+			parts := make([]LivePart, 1, 2)
+			parts[0] = LivePart{InlineData: blob}
+			if v.Text != "" {
+				parts = append(parts, LivePart{Text: v.Text})
+			}
+			msgs = append(msgs, LiveClientMessage{ClientContent: &LiveClientContent{Turns: []LiveContent{{Role: "user", Parts: parts}}, TurnComplete: v.Generate}})
 		default:
 			if v.Text == "" {
 				// Gemini has no explicit generation command. It responds automatically.
@@ -287,6 +303,20 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 		delete(s.tools, results[i].ID)
 	}
 	return nil
+}
+
+// inlineDoc renders one inline document as a content part payload. Gemini Live
+// reads still images from a client turn; realtimeInput.video carries streamed
+// video.
+func inlineDoc(d *genai.Doc, limit int64) (*LiveBlob, error) {
+	if d.URL != "" {
+		return nil, &base.ErrNotSupported{Options: []string{"remote documents"}}
+	}
+	mimeType, data, err := d.Read(limit)
+	if err != nil {
+		return nil, fmt.Errorf("read document: %w", err)
+	}
+	return &LiveBlob{MIMEType: mimeType, Data: data}, nil
 }
 
 func (s *RealtimeSession) updateMessage(u *genai.RealtimeUpdate) (LiveContextUpdate, LiveTools, genai.ToolCallRequest, error) {

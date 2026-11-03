@@ -237,8 +237,6 @@ func testSystemOneDocs(t *testing.T) {
 				{name: "oversized", doc: genai.Doc{Filename: "image.png", Src: bytes.NewReader(make([]byte, limit+1))}},
 			}
 			if name == "typesafe" {
-				// Cloudflare accepts any image type and forwards it, so only TypeSafe
-				// rejects a GIF before reading it.
 				invalid = append(invalid, decisionDocCase{name: "GIF", doc: genai.Doc{Filename: "image.gif", Src: strings.NewReader("GIF87a")}})
 			}
 			for _, tc := range invalid {

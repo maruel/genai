@@ -121,7 +121,7 @@ func TestClient(t *testing.T) {
 			}
 			t.Cleanup(func() { _ = s.Close() })
 			info := s.Info()
-			if info.ID != "live-test" || info.InputFormat != (genai.AudioFormat{SampleRate: 16000}) || info.OutputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.TurnDetection != genai.RealtimeTurnServer || info.Capabilities.CancelResponse {
+			if info.ID != "live-test" || info.InputFormat != (genai.AudioFormat{SampleRate: 16000}) || info.OutputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.TurnDetection != genai.RealtimeTurnServer || info.Capabilities.CancelResponse || !slices.Contains(info.InputModalities, genai.ModalityImage) {
 				t.Fatalf("info: %+v", info)
 			}
 			inputs := []genai.RealtimeInput{genai.RealtimeInputContent{Text: "context"}, genai.RealtimeInputContent{Text: "question", Generate: true}, genai.RealtimeInputContent{Audio: []byte{1, 0}}, genai.RealtimeInputContent{Commit: true}}
@@ -474,7 +474,7 @@ func TestClient(t *testing.T) {
 			if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{0, 0}, Generate: true}); err != nil {
 				t.Fatal(err)
 			}
-			for _, in := range []genai.RealtimeInput{genai.RealtimeTruncate{ItemID: "item_1"}, genai.RealtimeCancel{}} {
+			for _, in := range []genai.RealtimeInput{genai.RealtimeTruncate{ItemID: "item_1"}, genai.RealtimeCancel{}, genai.RealtimeInputContent{Doc: genai.Doc{URL: "https://example.com/image.jpg"}, Generate: true}} {
 				err := s.Send(t.Context(), in)
 				if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 					t.Errorf("%T: %v", in, err)

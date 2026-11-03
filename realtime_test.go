@@ -7,6 +7,7 @@
 package genai_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -94,6 +95,9 @@ func TestRealtimeContent(t *testing.T) {
 
 func TestRealtimeInput(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
+		img := func(filename string) genai.Doc {
+			return genai.Doc{Src: bytes.NewReader([]byte{0xff, 0xd8}), Filename: filename}
+		}
 		t.Run("valid", func(t *testing.T) {
 			for name, in := range map[string]genai.RealtimeInput{
 				"audio":                 genai.RealtimeInputContent{Audio: []byte{0, 0}},
@@ -105,6 +109,10 @@ func TestRealtimeInput(t *testing.T) {
 				"context":               genai.RealtimeInputContent{Text: "Current room: kitchen."},
 				"text":                  genai.RealtimeInputContent{Text: "What time is it?", Generate: true},
 				"generate":              genai.RealtimeInputContent{Generate: true},
+				"doc":                   genai.RealtimeInputContent{Doc: img("image.jpg"), Generate: true},
+				"doc text":              genai.RealtimeInputContent{Doc: img("image.jpg"), Text: "What fruit is it?", Generate: true},
+				"doc url":               genai.RealtimeInputContent{Doc: genai.Doc{URL: "https://example.com/report.pdf"}, Generate: true},
+				"doc pdf":               genai.RealtimeInputContent{Doc: genai.Doc{Src: bytes.NewReader([]byte{0x25, 0x50}), Filename: "report.pdf"}, Generate: true},
 				"tool results":          genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "call_1", Name: "clock", Result: `{"time":"12:00"}`}}, Generate: true},
 				"cancel":                genai.RealtimeCancel{},
 				"cancel response":       genai.RealtimeCancel{ResponseID: "response_1"},
@@ -125,6 +133,11 @@ func TestRealtimeInput(t *testing.T) {
 				"empty audio generate":     genai.RealtimeInputContent{Audio: []byte{}, Generate: true},
 				"partial sample":           genai.RealtimeInputContent{Audio: []byte{1}},
 				"mixed audio text":         genai.RealtimeInputContent{Audio: []byte{0, 0}, Text: "x"},
+				"mixed audio doc":          genai.RealtimeInputContent{Audio: []byte{0, 0}, Doc: img("image.jpg")},
+				"mixed doc tools":          genai.RealtimeInputContent{Doc: img("image.jpg"), ToolResults: []genai.ToolCallResult{{ID: "call_1", Name: "clock", Result: "ok"}}},
+				"doc without source":       genai.RealtimeInputContent{Doc: genai.Doc{Filename: "image.jpg"}, Generate: true},
+				"doc with both sources":    genai.RealtimeInputContent{Doc: genai.Doc{Filename: "image.jpg", Src: bytes.NewReader([]byte{0xff}), URL: "https://example.com/image.jpg"}, Generate: true},
+				"doc without filename":     genai.RealtimeInputContent{Doc: genai.Doc{Src: bytes.NewReader([]byte{0xff, 0xd8})}},
 				"empty tool results":       genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{}},
 				"missing tool name":        genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "call_1", Result: "ok"}}},
 				"missing tool id":          genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{Name: "clock", Result: "ok"}}},

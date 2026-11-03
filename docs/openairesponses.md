@@ -12,9 +12,9 @@
 | gpt-image-1-mini🥉                       | Sync      | 💬     | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ❌     |
 | gpt-6.1-sol                             | Sync🧠     | 💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
 | gpt-6.1-sol                             | Stream🧠   | 💬📄📸 | 💬     | ✅🪨🕸️ | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
-| gpt-realtime-2.1                        | Realtime🧠 | 🎤💬   | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ❌     |
-| gpt-realtime-2.1                        | Realtime  | 🎤💬   | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ❌     |
-| gpt-realtime-2.1-mini                   | Realtime  | 🎤💬   | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ❌     |
+| gpt-realtime-2.1                        | Realtime🧠 | 🎤💬📸 | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ❌     |
+| gpt-realtime-2.1                        | Realtime  | 🎤💬📸 | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ❌     |
+| gpt-realtime-2.1-mini                   | Realtime  | 🎤💬📸 | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ❌     |
 | text-embedding-3-small                  | Embed     | 💬     | 🧬      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | gpt-5.4-mini                            | ?         | ?      | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-5.4-nano                            | ?         | ?      | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

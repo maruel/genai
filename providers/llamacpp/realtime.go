@@ -503,6 +503,8 @@ func (s *RealtimeSession) validateLocked(in genai.RealtimeInput) error {
 			if s.turn {
 				return errors.New("llama.cpp tool results cannot follow a new user turn")
 			}
+		case !v.Doc.IsZero():
+			return &base.ErrNotSupported{Options: []string{"document input"}}
 		default:
 			generate = v.Generate
 			if v.Text == "" && !s.turn && !s.results {

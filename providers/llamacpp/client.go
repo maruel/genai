@@ -559,7 +559,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			if err != nil {
 				return nil, errors.Join(err, ws.Close())
 			}
-			info = genai.RealtimeSessionInfo{ID: got.ID, InputFormat: in, OutputFormat: out, TurnDetection: genai.RealtimeTurnManual}
+			info = genai.RealtimeSessionInfo{ID: got.ID, InputFormat: in, OutputFormat: out, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual}
 			want = &setup
 			want.Audio = AudioConfig{Input: AudioInput{Format: got.Audio.Input.Format}, Output: AudioOutput{Format: got.Audio.Output.Format}}
 			data, err := json.Marshal(ClientMessage{Type: EventSessionUpdate, Session: want})

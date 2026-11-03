@@ -30,8 +30,8 @@ import (
 // or resample.
 type RealtimeSession interface {
 	io.Closer
-	// Info returns immutable native formats, configured features, and accepted
-	// operations after setup.
+	// Info returns immutable native formats, accepted input kinds, configured
+	// features, and accepted operations after setup.
 	Info() RealtimeSessionInfo
 	// Send applies one complete command to the session and writes it to the
 	// provider. It rejects invalid, unsupported, and out-of-order commands before
@@ -57,7 +57,7 @@ type RealtimeSession interface {
 // Portable options are RealtimeOptionInstructions, RealtimeOptionAudio,
 // RealtimeOptionTools, RealtimeTurnDetection, and Modalities. Modalities selects
 // output modalities and accepts only ModalityAudio and ModalityText; empty
-// selects audio. Input is per command: audio, text, or tool results.
+// selects audio. Input is per command: audio, a document, text, or tool results.
 //
 // A provider may define its own option type for settings that have no portable
 // meaning. A provider rejects options it cannot honor rather than ignoring them.
@@ -156,6 +156,7 @@ func validateRealtimeTools(tools []ToolDef) error {
 // not here.
 //
 // AudioCommit reports that RealtimeInputContent.Commit commits manual-turn audio.
+// ToolResults reports that the session accepts tool result batches.
 type RealtimeCapabilities struct {
 	AudioCommit    bool
 	CancelResponse bool
@@ -180,12 +181,15 @@ type RealtimeUpdateCapabilities struct {
 }
 
 // RealtimeSessionInfo contains the accepted session identity, native formats,
-// turn mode, and capabilities. IDs are provider-supplied when available; an
-// empty ID means none was supplied.
+// accepted input kinds, turn mode, and capabilities. IDs are provider-supplied
+// when available; an empty ID means none was supplied.
 type RealtimeSessionInfo struct {
 	ID           string
 	InputFormat  AudioFormat
 	OutputFormat AudioFormat
+	// InputModalities lists the payload kinds the session encodes: ModalityAudio,
+	// ModalityImage, and ModalityText. It states what the transport accepts.
+	InputModalities []Modality
 	// TurnDetection is the accepted server or manual turn mode.
 	TurnDetection RealtimeTurnDetection
 	Capabilities  RealtimeCapabilities
@@ -212,8 +216,8 @@ func (e *RealtimeToolCallCancelledError) Error() string {
 }
 
 // RealtimeInputContent sends one content command. Audio is selected by Audio or
-// Commit; otherwise exactly one of Text or ToolResults is set. The zero value
-// is invalid.
+// Commit; otherwise one of Doc or ToolResults is set, and Text may accompany Doc
+// as one turn. The zero value is invalid.
 //
 // Audio appends PCM at Info().InputFormat to the buffered user audio. Commit
 // commits the buffer and may close the provider audio stream; an empty Commit
@@ -222,10 +226,16 @@ func (e *RealtimeToolCallCancelledError) Error() string {
 // finalizes buffered audio, then Generate requests the response. With server
 // turn detection, the provider may ignore Generate and reply on its own.
 //
-// Text adds a user text turn. Generate=false adds passive context; Generate=true
-// submits the turn and requests a response. An empty Text with Generate=true
-// requests a response from the current context. Providers without an explicit
-// generation command may ignore it.
+// Doc adds a user turn carrying the document. Text, when set, follows it in the
+// same turn and Generate requests the response. Each provider bounds the document
+// size. A model that turns the document down reports a RealtimeEventError for the
+// command.
+//
+// Text adds a user text turn, or follows the document when Doc is set.
+// Generate=false adds passive context; Generate=true submits the turn and
+// requests a response. An empty Text with Generate=true requests a response
+// from the current context. Providers without an explicit generation command may
+// ignore it.
 //
 // ToolResults answers completed calls. Send complete batches to preserve
 // parallel call order. Tool results always request a response; Generate is
@@ -233,6 +243,8 @@ func (e *RealtimeToolCallCancelledError) Error() string {
 type RealtimeInputContent struct {
 	// Audio appends PCM at Info().InputFormat. It may be empty only with Commit.
 	Audio []byte
+	// Doc adds a user turn carrying the document. Text may follow it.
+	Doc Doc
 	// Text adds a user text turn. It may be empty only with Generate.
 	Text string
 	// ToolResults answers completed calls. It always requests a response.
@@ -246,11 +258,11 @@ type RealtimeInputContent struct {
 
 func (RealtimeInputContent) realtimeInput() {}
 
-// Validate checks that exactly one payload is set and that its flags are valid.
-func (i RealtimeInputContent) Validate() error {
+// Validate checks that one payload is set and that its flags are valid.
+func (i RealtimeInputContent) Validate() error { //nolint:gocritic // hugeParam: value receiver keeps the command a valid RealtimeInput, including non-addressable literals.
 	switch {
 	case i.Audio != nil || i.Commit:
-		if i.Text != "" || i.ToolResults != nil {
+		if i.Text != "" || !i.Doc.IsZero() || i.ToolResults != nil {
 			return errors.New("realtime input content sets more than one payload")
 		}
 		if len(i.Audio)%2 != 0 {
@@ -260,7 +272,7 @@ func (i RealtimeInputContent) Validate() error {
 			return errors.New("audio requires samples unless Commit")
 		}
 	case i.ToolResults != nil:
-		if i.Text != "" {
+		if i.Text != "" || !i.Doc.IsZero() {
 			return errors.New("realtime input content sets more than one payload")
 		}
 		if len(i.ToolResults) == 0 {
@@ -280,9 +292,13 @@ func (i RealtimeInputContent) Validate() error {
 				}
 			}
 		}
+	case !i.Doc.IsZero():
+		if err := i.Doc.Validate(); err != nil {
+			return fmt.Errorf("doc: %w", err)
+		}
 	default:
 		if i.Text == "" && !i.Generate {
-			return errors.New("realtime input content requires audio, text, or tool results")
+			return errors.New("realtime input content requires audio, a document, text, or tool results")
 		}
 	}
 	return nil

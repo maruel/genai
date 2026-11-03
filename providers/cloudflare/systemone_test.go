@@ -30,7 +30,8 @@ func clefPNG(t *testing.T) []byte {
 
 func TestDecisionImage(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		// The bytes are forwarded untouched, so validation never parses the image.
+		// The bytes are forwarded untouched, so the test payload need not be a real
+		// image.
 		data := []byte("not an image payload")
 		t.Run("valid", func(t *testing.T) {
 			for name, i := range map[string]cloudflare.DecisionImage{

@@ -639,6 +639,10 @@ func TestClient(t *testing.T) {
 						t.Fatalf("unsupported input accepted: %T", in)
 					}
 				}
+				err = s.Send(t.Context(), genai.RealtimeInputContent{Doc: genai.Doc{URL: "https://example.com/image.jpg"}, Text: "what is it", Generate: true})
+				if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+					t.Fatalf("remote document: %v", err)
+				}
 				if err := s.Send(t.Context(), genai.RealtimeInputContent{Text: "sentinel"}); err != nil {
 					t.Fatal(err)
 				}

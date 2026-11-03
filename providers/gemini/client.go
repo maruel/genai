@@ -711,6 +711,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	if setup.RealtimeInputConfig.AutomaticActivityDetection != nil {
 		info.TurnDetection = genai.RealtimeTurnManual
 	}
+	info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityImage, genai.ModalityText}
 	info.Capabilities.AudioCommit = true
 	info.Capabilities.ToolResults = len(setup.Tools) > 0
 	// contextUpdate is preview. It updates instructions and tools only; output

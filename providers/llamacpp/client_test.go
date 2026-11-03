@@ -92,8 +92,8 @@ func TestClient(t *testing.T) {
 				}
 				realtimetest.Close(t, s)
 				info := s.Info()
-				want := genai.RealtimeSessionInfo{ID: "local", InputFormat: genai.AudioFormat{SampleRate: 16000}, OutputFormat: genai.AudioFormat{SampleRate: 24000}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true, CancelResponse: true, ToolResults: true, Update: genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true, ToolChoiceRequired: true, MaxOutputTokens: true, OutputModalities: true}}}
-				if info != want {
+				want := genai.RealtimeSessionInfo{ID: "local", InputFormat: genai.AudioFormat{SampleRate: 16000}, OutputFormat: genai.AudioFormat{SampleRate: 24000}, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true, CancelResponse: true, ToolResults: true, Update: genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true, ToolChoiceRequired: true, MaxOutputTokens: true, OutputModalities: true}}}
+				if !reflect.DeepEqual(info, want) {
 					t.Fatalf("info %+v, want %+v", info, want)
 				}
 				for _, in := range []genai.RealtimeInput{genai.RealtimeInputContent{Text: "context"}, genai.RealtimeInputContent{Audio: []byte{1, 0}}, genai.RealtimeInputContent{Audio: []byte{2, 0}}, genai.RealtimeInputContent{Commit: true, Generate: true}} {
@@ -317,6 +317,11 @@ func TestClient(t *testing.T) {
 				err = s.Send(t.Context(), genai.RealtimeTruncate{ItemID: "a"})
 				if _, unsupported := errors.AsType[*base.ErrNotSupported](err); !unsupported || errors.Is(err, llamacpp.ErrNoActiveResponse) {
 					t.Fatalf("unsupported command: %v", err)
+				}
+				if err := s.Send(t.Context(), genai.RealtimeInputContent{Doc: genai.Doc{Src: bytes.NewReader([]byte{0xff}), Filename: "a.png"}, Generate: true}); err == nil {
+					t.Fatal("image input accepted")
+				} else if _, unsupported := errors.AsType[*base.ErrNotSupported](err); !unsupported {
+					t.Fatalf("unsupported image input: %v", err)
 				}
 				if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{1, 0}, Commit: true, Generate: true}); err != nil {
 					t.Fatal(err)

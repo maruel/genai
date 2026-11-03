@@ -13,7 +13,6 @@ import (
 	"io"
 	"maps"
 	"net/http"
-	"path/filepath"
 	"regexp"
 	"slices"
 	"sort"
@@ -1004,7 +1003,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
-		v.SupportedFormats = append(v.SupportedFormats, base.MimeByExt(filepath.Ext(fn)))
+		v.SupportedFormats = append(v.SupportedFormats, r.Doc.MIMEType())
 		out.Out[genai.ModalityImage] = v
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
@@ -1093,7 +1092,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 			}
 			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body))
 		}
-		v.SupportedFormats = append(v.SupportedFormats, base.MimeByExt(filepath.Ext(fn)))
+		v.SupportedFormats = append(v.SupportedFormats, r.Doc.MIMEType())
 		out.Out[genai.ModalityAudio] = v
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")

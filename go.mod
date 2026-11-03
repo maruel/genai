@@ -10,7 +10,6 @@ require (
 	github.com/maruel/httpjson v0.5.3
 	github.com/maruel/roundtrippers v0.5.1
 	github.com/tphakala/go-flac v1.4.0
-	golang.org/x/image v0.43.0
 	golang.org/x/sync v0.23.0
 	gopkg.in/dnaeon/go-vcr.v4 v4.0.7
 )

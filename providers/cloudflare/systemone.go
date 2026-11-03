@@ -12,18 +12,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"image/png"
 	"io"
 	"maps"
 	"math"
-	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
-
-	"golang.org/x/image/webp"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
@@ -49,7 +43,7 @@ func (i *DecisionImage) MarshalJSON() ([]byte, error) {
 	return json.Marshal((*plain)(i))
 }
 
-// Validate checks the hosted image format, decoded size and dimensions without decoding pixels.
+// Validate checks the image representation, its base64 encoding and its size.
 func (i *DecisionImage) Validate() error {
 	_, err := i.decodedSize()
 	return err
@@ -67,48 +61,18 @@ func (i *DecisionImage) decodedSize() (int, error) {
 		}
 		mt, b = strings.TrimSuffix(hdr[5:], ";base64"), data
 	}
-	var decode func(io.Reader) (image.Config, error)
-	switch mt {
-	case "image/png":
-		decode = png.DecodeConfig
-	case "image/jpeg":
-		decode = jpeg.DecodeConfig
-	case "image/webp":
-		decode = webp.DecodeConfig
-	default:
+	if !strings.HasPrefix(mt, "image/") {
 		return 0, fmt.Errorf("unsupported image content type %q", mt)
 	}
 	const maxSize = 4 * 1024 * 1024
 	if b == "" || len(b) > base64.StdEncoding.EncodedLen(maxSize) {
 		return 0, errors.New("image must contain at most 4 MiB decoded")
 	}
-	r := imageSizeReader{Reader: io.LimitReader(base64.NewDecoder(base64.StdEncoding, strings.NewReader(b)), maxSize+1)}
-	cfg, err := decode(&r)
+	n, err := io.Copy(io.Discard, base64.NewDecoder(base64.StdEncoding, strings.NewReader(b)))
 	if err != nil {
-		return 0, fmt.Errorf("invalid image: %w", err)
-	}
-	if cfg.Width <= 0 || cfg.Height <= 0 || int64(cfg.Width)*int64(cfg.Height) > 16_000_000 {
-		return 0, errors.New("image exceeds 16 megapixels")
-	}
-	if _, err := io.Copy(io.Discard, &r); err != nil {
 		return 0, fmt.Errorf("invalid image base64: %w", err)
 	}
-	if r.size > maxSize {
-		return 0, errors.New("image exceeds 4 MiB decoded")
-	}
-	return r.size, nil
-}
-
-// imageSizeReader counts decoded bytes, including any read-ahead by DecodeConfig.
-type imageSizeReader struct {
-	io.Reader
-	size int
-}
-
-func (r *imageSizeReader) Read(b []byte) (int, error) {
-	n, err := r.Reader.Read(b)
-	r.size += n
-	return n, err
+	return int(n), nil
 }
 
 // SystemOneRequest is a hosted decision request using the CLEF-compatible schema.
@@ -158,10 +122,7 @@ func imagesFromDocs(docs []genai.Doc) ([]DecisionImage, error) {
 		if d.URL != "" || d.Src == nil {
 			return nil, fmt.Errorf("document #%d: must be an inline document", j)
 		}
-		mt := internal.MimeByExt(filepath.Ext(d.GetFilename()))
-		switch mt {
-		case "image/jpeg", "image/png", "image/webp":
-		default:
+		if mt := d.MIMEType(); !strings.HasPrefix(mt, "image/") {
 			return nil, fmt.Errorf("document #%d: unsupported document type %q", j, mt)
 		}
 	}
@@ -178,7 +139,8 @@ func imagesFromDocs(docs []genai.Doc) ([]DecisionImage, error) {
 
 // Validate currently enforces CLEF question and image limits for every model ID:
 // 1–64 questions, 2–255 choices, 2–10 described score levels, and at most 4 inline
-// PNG/JPEG/WebP images (4 MiB and 16 megapixels each, 8 MiB total decoded).
+// images (4 MiB each, 8 MiB total decoded). The provider validates the image
+// format and dimensions.
 // Accepting a model selector does not establish that model's capabilities.
 // The server enforces the 13 MiB encoded request limit; validation does not encode
 // the whole request a second time merely to measure its size.

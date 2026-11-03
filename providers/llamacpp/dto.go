@@ -19,7 +19,6 @@ import (
 	"errors"
 	"fmt"
 	"maps"
-	"path/filepath"
 	"slices"
 	"strings"
 
@@ -1239,7 +1238,7 @@ func (r *SystemOneRequest) From(in *genai.SystemOneRequest) error {
 		if d.URL != "" || d.Src == nil {
 			return fmt.Errorf("document #%d: must be an inline document", j)
 		}
-		mt := internal.MimeByExt(filepath.Ext(d.GetFilename()))
+		mt := d.MIMEType()
 		if !strings.HasPrefix(mt, "image/") {
 			return fmt.Errorf("document #%d: unsupported document type %q", j, mt)
 		}

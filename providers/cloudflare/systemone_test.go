@@ -9,11 +9,8 @@ package cloudflare_test
 import (
 	"bytes"
 	"encoding/base64"
-	"encoding/binary"
 	"errors"
-	"hash/crc32"
 	"image"
-	"image/jpeg"
 	"image/png"
 	"reflect"
 	"strings"
@@ -33,24 +30,28 @@ func clefPNG(t *testing.T) []byte {
 
 func TestDecisionImage(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		pngData := clefPNG(t)
-		var jpg bytes.Buffer
-		if err := jpeg.Encode(&jpg, image.NewRGBA(image.Rect(0, 0, 1, 1)), nil); err != nil {
-			t.Fatal(err)
-		}
-		largeDimensions := bytes.Clone(pngData)
-		binary.BigEndian.PutUint32(largeDimensions[16:20], 4001)
-		binary.BigEndian.PutUint32(largeDimensions[20:24], 4000)
-		binary.BigEndian.PutUint32(largeDimensions[29:33], crc32.ChecksumIEEE(largeDimensions[12:29]))
+		// The bytes are forwarded untouched, so validation never parses the image.
+		data := []byte("not an image payload")
+		t.Run("valid", func(t *testing.T) {
+			for name, i := range map[string]cloudflare.DecisionImage{
+				"content type": {ContentType: "image/png", Base64: base64.StdEncoding.EncodeToString(data)},
+				"new type":     {ContentType: "image/avif", Base64: base64.StdEncoding.EncodeToString(data)},
+				"data URL":     {DataURL: "data:image/webp;base64," + base64.StdEncoding.EncodeToString(data)},
+			} {
+				t.Run(name, func(t *testing.T) {
+					if err := i.Validate(); err != nil {
+						t.Fatal(err)
+					}
+				})
+			}
+		})
 		t.Run("error", func(t *testing.T) {
 			for name, i := range map[string]cloudflare.DecisionImage{
 				"remote":          {DataURL: "https://example.com/a.png"},
-				"unsupported":     {ContentType: "image/gif", Base64: base64.StdEncoding.EncodeToString(pngData)},
-				"bad base64 tail": {ContentType: "image/png", Base64: base64.StdEncoding.EncodeToString(append(bytes.Clone(pngData), make([]byte, 4096)...)) + "!"},
-				"bad bytes":       {ContentType: "image/png", Base64: base64.StdEncoding.EncodeToString([]byte("bad"))},
+				"not an image":    {ContentType: "text/plain", Base64: base64.StdEncoding.EncodeToString(data)},
+				"bad base64 tail": {ContentType: "image/png", Base64: base64.StdEncoding.EncodeToString(data) + "!"},
 				"empty":           {ContentType: "image/png"},
-				"too many pixels": {ContentType: "image/png", Base64: base64.StdEncoding.EncodeToString(largeDimensions)},
-				"both forms":      {DataURL: "data:image/png;base64," + base64.StdEncoding.EncodeToString(pngData), ContentType: "image/png"},
+				"both forms":      {DataURL: "data:image/png;base64," + base64.StdEncoding.EncodeToString(data), ContentType: "image/png"},
 			} {
 				t.Run(name, func(t *testing.T) {
 					if err := i.Validate(); err == nil {
@@ -101,7 +102,7 @@ func TestSystemOneRequest(t *testing.T) {
 			})
 		}
 		t.Run("image total and boundary", func(t *testing.T) {
-			data := append(clefPNG(t), make([]byte, 4*1024*1024-len(clefPNG(t)))...)
+			data := make([]byte, 4*1024*1024)
 			i := cloudflare.DecisionImage{ContentType: "image/png", Base64: base64.StdEncoding.EncodeToString(data)}
 			r := cloudflare.SystemOneRequest{Model: "clef-flash", State: genai.Text(""), Questions: clefQuestions(), Images: []cloudflare.DecisionImage{i, i}}
 			if err := r.Validate(); err != nil {

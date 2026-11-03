@@ -1072,6 +1072,25 @@ func TestDoc(t *testing.T) {
 		})
 	})
 
+	t.Run("MIMEType", func(t *testing.T) {
+		for name, tc := range map[string]struct {
+			doc  Doc
+			want string
+		}{
+			"filename":  {Doc{Filename: "image.jpeg"}, "image/jpeg"},
+			"url":       {Doc{URL: "https://example.com/dir/image.png"}, "image/png"},
+			"unknown":   {Doc{Filename: "state"}, ""},
+			"empty":     {Doc{}, ""},
+			"file wins": {Doc{Filename: "image.png", URL: "https://example.com/image.jpeg"}, "image/png"},
+		} {
+			t.Run(name, func(t *testing.T) {
+				if got := tc.doc.MIMEType(); got != tc.want {
+					t.Fatalf("MIMEType=%q, want %q", got, tc.want)
+				}
+			})
+		}
+	})
+
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {

@@ -16,7 +16,6 @@ import (
 	"errors"
 	"fmt"
 	"mime"
-	"path"
 	"reflect"
 	"slices"
 	"strconv"
@@ -803,7 +802,7 @@ func (p *Part) FromRequest(in *genai.Request) error {
 				p.InlineData.Data = data
 			}
 		} else {
-			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+			if mimeType = in.Doc.MIMEType(); mimeType == "" {
 				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
 			}
 			p.FileData.MimeType = mimeType
@@ -866,7 +865,7 @@ func (p *Part) FromReply(in *genai.Reply) error {
 				p.InlineData.Data = data
 			}
 		} else {
-			if mimeType = base.MimeByExt(path.Ext(in.Doc.URL)); mimeType == "" {
+			if mimeType = in.Doc.MIMEType(); mimeType == "" {
 				return fmt.Errorf("could not determine mime type for URL %q", in.Doc.URL)
 			}
 			p.FileData.MimeType = mimeType

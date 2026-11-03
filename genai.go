@@ -876,6 +876,19 @@ func (d *Doc) Validate() error {
 	return nil
 }
 
+// MIMEType returns the mime type the filename or URL declares, or an empty string
+// when the extension is unknown.
+func (d *Doc) MIMEType() string {
+	// genai cannot depend on base as it would cause a circular import.
+	if m := internal.MimeByExt(filepath.Ext(d.GetFilename())); m != "" {
+		return m
+	}
+	if d.URL != "" {
+		return internal.MimeByExt(filepath.Ext(path.Base(d.URL)))
+	}
+	return ""
+}
+
 // GetFilename returns the filename to use for the document, querying the
 // Document's name if available.
 func (d *Doc) GetFilename() string {
@@ -941,13 +954,9 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	if maxSize <= 0 {
 		return "", nil, errors.New("document byte limit must be positive")
 	}
-	// genai cannot depend on base as it would cause a circular import.
-	mimeType := internal.MimeByExt(filepath.Ext(d.GetFilename()))
+	mimeType := d.MIMEType()
 	if d.URL != "" {
 		// Not all provider require a mime-type so do not error out.
-		if mimeType == "" {
-			mimeType = internal.MimeByExt(filepath.Ext(path.Base(d.URL)))
-		}
 		return mimeType, nil, nil
 	}
 	if mimeType == "" {

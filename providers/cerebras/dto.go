@@ -14,7 +14,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"path/filepath"
 	"slices"
 	"strings"
 
@@ -441,7 +440,7 @@ func hasImageRequest(rs []genai.Request) bool {
 		if rs[i].Doc.IsZero() {
 			continue
 		}
-		mimeType := internal.MimeByExt(filepath.Ext(rs[i].Doc.GetFilename()))
+		mimeType := rs[i].Doc.MIMEType()
 		if strings.HasPrefix(mimeType, "image/") {
 			return true
 		}
@@ -565,17 +564,15 @@ func (c *Content) FromRequest(in *genai.Request) error {
 			c.Text = string(data)
 			return nil
 		// https://inference-docs.cerebras.ai/capabilities/image-inputs
-		case mimeType == "image/jpeg" || mimeType == "image/png":
+		case strings.HasPrefix(mimeType, "image/"):
 			if in.Doc.URL != "" {
 				return errors.New("cerebras requires image documents to be provided inline, not as a URL")
 			}
 			c.Type = ContentImageURL
 			c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			return nil
-		case strings.HasPrefix(mimeType, "image/"):
-			return fmt.Errorf("unsupported image MIME type %q; Cerebras supports image/jpeg and image/png", mimeType)
 		default:
-			return fmt.Errorf("cerebras only supports text documents and PNG or JPEG images, got %s", mimeType)
+			return fmt.Errorf("cerebras only supports text and image documents, got %s", mimeType)
 		}
 	}
 	return errors.New("unknown Request type")

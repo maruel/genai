@@ -12,7 +12,6 @@ import (
 	"errors"
 	"fmt"
 	"maps"
-	"path/filepath"
 	"slices"
 
 	"github.com/maruel/genai/internal"
@@ -449,7 +448,7 @@ type SystemOneRequest struct {
 // Providers validate document types.
 func (r *SystemOneRequest) Validate() error {
 	if r.State == nil {
-		if len(r.Docs) != 1 || internal.MimeByExt(filepath.Ext(r.Docs[0].GetFilename())) != "application/json" {
+		if len(r.Docs) != 1 || r.Docs[0].MIMEType() != "application/json" {
 			return errors.New("state or one application/json document is required")
 		}
 	} else if err := r.State.Validate(); err != nil {

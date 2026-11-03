@@ -32,7 +32,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -234,7 +233,7 @@ func HasInputWithMimePrefix(msgs genai.Messages, prefix string) bool {
 			if msgs[i].Requests[j].Doc.IsZero() {
 				continue
 			}
-			if strings.HasPrefix(internal.MimeByExt(filepath.Ext(msgs[i].Requests[j].Doc.GetFilename())), prefix) {
+			if strings.HasPrefix(msgs[i].Requests[j].Doc.MIMEType(), prefix) {
 				return true
 			}
 		}

@@ -83,7 +83,7 @@ type Session struct {
 	// ID is the server-assigned session ID.
 	ID string
 	// InputModalities lists the prompt kinds SendPrompt accepts. Text is always
-	// present; Image is added when the agent advertises prompt image support.
+	// present; Image and Audio are added when the agent advertises support.
 	InputModalities []genai.Modality
 
 	o         Options
@@ -131,6 +131,9 @@ func Handshake(stdin io.Writer, stdout io.Reader, o *Options, req SessionRequest
 	s.InputModalities = []genai.Modality{genai.ModalityText}
 	if initResult.AgentCapabilities.PromptCapabilities.Image {
 		s.InputModalities = append(s.InputModalities, genai.ModalityImage)
+	}
+	if initResult.AgentCapabilities.PromptCapabilities.Audio {
+		s.InputModalities = append(s.InputModalities, genai.ModalityAudio)
 	}
 
 	s.nextID++
@@ -440,6 +443,9 @@ func docToPromptContent(doc genai.Doc, modalities []genai.Modality) (PromptConte
 		if err != nil {
 			return PromptContent{}, fmt.Errorf("read URL document: %w", err)
 		}
+		if strings.HasPrefix(mimeType, "audio/") {
+			return PromptContent{}, errors.New("audio URL documents are not supported; inline the data")
+		}
 		if !slices.Contains(modalities, genai.ModalityImage) {
 			return PromptContent{}, errors.New("agent does not support image input")
 		}
@@ -462,11 +468,17 @@ func docToPromptContent(doc genai.Doc, modalities []genai.Modality) (PromptConte
 	if strings.HasPrefix(mimeType, "text/") {
 		return PromptContent{Type: ContentText, Text: string(data)}, nil
 	}
+	if strings.HasPrefix(mimeType, "audio/") {
+		if !slices.Contains(modalities, genai.ModalityAudio) {
+			return PromptContent{}, errors.New("agent does not support audio input")
+		}
+		return PromptContent{Type: ContentAudio, Data: base64.StdEncoding.EncodeToString(data), MimeType: mimeType}, nil
+	}
 	if !slices.Contains(modalities, genai.ModalityImage) {
 		return PromptContent{}, errors.New("agent does not support image input")
 	}
 	if !strings.HasPrefix(mimeType, "image/") {
-		return PromptContent{}, fmt.Errorf("unsupported doc MIME type %q (text and images only)", mimeType)
+		return PromptContent{}, fmt.Errorf("unsupported doc MIME type %q (text, audio, and images only)", mimeType)
 	}
 	return PromptContent{Type: ContentImage, Data: base64.StdEncoding.EncodeToString(data), MimeType: mimeType}, nil
 }

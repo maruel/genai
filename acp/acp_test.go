@@ -8,6 +8,7 @@ package acp
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"slices"
@@ -97,6 +98,8 @@ func TestSession(t *testing.T) {
 				}{
 					{"text", `{"jsonrpc":"2.0","id":1,"result":{}}`, []genai.Modality{genai.ModalityText}},
 					{"image", `{"jsonrpc":"2.0","id":1,"result":{"agentCapabilities":{"promptCapabilities":{"image":true}}}}`, []genai.Modality{genai.ModalityText, genai.ModalityImage}},
+					{"audio", `{"jsonrpc":"2.0","id":1,"result":{"agentCapabilities":{"promptCapabilities":{"audio":true}}}}`, []genai.Modality{genai.ModalityText, genai.ModalityAudio}},
+					{"image_audio", `{"jsonrpc":"2.0","id":1,"result":{"agentCapabilities":{"promptCapabilities":{"image":true,"audio":true}}}}`, []genai.Modality{genai.ModalityText, genai.ModalityImage, genai.ModalityAudio}},
 				} {
 					t.Run(tc.name, func(t *testing.T) {
 						s, _ := newSession(t, tc.init+"\n"+sessionResponse, newOptions(), SessionRequest{})
@@ -284,6 +287,30 @@ func TestSession(t *testing.T) {
 				t.Errorf("prompt (-want +got):\n%s", diff)
 			}
 		})
+		t.Run("audio", func(t *testing.T) {
+			s, written := newSession(t, `{"jsonrpc":"2.0","id":1,"result":{"agentCapabilities":{"promptCapabilities":{"audio":true}}}}`+"\n"+sessionResponse, newOptions(), SessionRequest{})
+			msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{Filename: "a.mp3", Src: bytes.NewReader([]byte("audio"))}}}}
+			id, err := s.SendPrompt(&msg)
+			if err != nil {
+				t.Fatalf("SendPrompt: %v", err)
+			}
+			lines := strings.Split(strings.TrimSpace(written.String()), "\n")
+			var req JSONRPCRequest
+			if err := json.Unmarshal([]byte(lines[len(lines)-1]), &req); err != nil {
+				t.Fatalf("unmarshal request: %v", err)
+			}
+			var params SessionPromptParams
+			if err := json.Unmarshal(req.Params, &params); err != nil {
+				t.Fatalf("unmarshal session/prompt params: %v", err)
+			}
+			if req.Method != MethodSessionPrompt || req.ID != id {
+				t.Errorf("unexpected request: %#v", req)
+			}
+			want := []PromptContent{{Type: ContentAudio, Data: base64.StdEncoding.EncodeToString([]byte("audio")), MimeType: "audio/mpeg"}}
+			if diff := cmp.Diff(want, params.Prompt); diff != "" {
+				t.Errorf("prompt (-want +got):\n%s", diff)
+			}
+		})
 		t.Run("error", func(t *testing.T) {
 			s, _ := newSession(t, `{"jsonrpc":"2.0","id":1,"result":{}}`+"\n"+sessionResponse, newOptions(), SessionRequest{})
 			t.Run("empty_message", func(t *testing.T) {
@@ -295,6 +322,19 @@ func TestSession(t *testing.T) {
 				msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{URL: "https://example.com/image.png"}}}}
 				if _, err := s.SendPrompt(&msg); err == nil || !strings.Contains(err.Error(), "does not support image input") {
 					t.Fatalf("expected image error, got %v", err)
+				}
+			})
+			t.Run("audio_not_supported", func(t *testing.T) {
+				msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{Filename: "a.mp3", Src: bytes.NewReader([]byte("audio"))}}}}
+				if _, err := s.SendPrompt(&msg); err == nil || !strings.Contains(err.Error(), "does not support audio input") {
+					t.Fatalf("expected audio error, got %v", err)
+				}
+			})
+			t.Run("audio_url", func(t *testing.T) {
+				audioSession, _ := newSession(t, `{"jsonrpc":"2.0","id":1,"result":{"agentCapabilities":{"promptCapabilities":{"audio":true}}}}`+"\n"+sessionResponse, newOptions(), SessionRequest{})
+				msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{URL: "https://example.com/a.mp3"}}}}
+				if _, err := audioSession.SendPrompt(&msg); err == nil || !strings.Contains(err.Error(), "audio URL documents are not supported") {
+					t.Fatalf("expected audio URL error, got %v", err)
 				}
 			})
 			t.Run("url_scheme", func(t *testing.T) {

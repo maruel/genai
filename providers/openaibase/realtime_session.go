@@ -29,7 +29,7 @@ type RealtimeOption struct {
 	// InputTranscriptionModel is required when InputTranscription is requested.
 	// It is explicit because transcription model availability changes separately
 	// from realtime models. InputLanguage is an optional language hint. A full
-	// locale with '-' or '_' is accepted and reduced to its ISO-639-1 primary
+	// BCP 47 locale such as fr-CA is accepted and reduced to its ISO-639-1 primary
 	// language.
 	InputTranscriptionModel string
 	InputLanguage           string
@@ -233,7 +233,7 @@ func normalizeInputLanguage(value string) (string, error) {
 	if value == "" {
 		return "", nil
 	}
-	parts := strings.Split(strings.ReplaceAll(value, "_", "-"), "-")
+	parts := strings.Split(value, "-")
 	if len(parts[0]) != 2 {
 		return "", errors.New("OpenAI realtime input language must start with an ISO-639-1 code")
 	}

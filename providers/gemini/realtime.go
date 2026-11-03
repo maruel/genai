@@ -28,9 +28,6 @@ import (
 // Gemini does not document a WebSocket message limit.
 const maxMessageBytes = 16 << 20
 
-// ToolCallCancelledError is the portable realtime tool cancellation error.
-type ToolCallCancelledError = genai.RealtimeToolCallCancelledError
-
 // RealtimeOption configures Gemini Live features beyond the portable contract.
 // Affective dialogue and proactivity fields are deliberately omitted.
 type RealtimeOption struct {
@@ -104,7 +101,7 @@ type RealtimeCompression struct {
 //     are unsupported.
 //   - Tool results resume the provider automatically. Cancelled calls are
 //     reported as provider events, and a batch containing one fails with
-//     [ToolCallCancelledError].
+//     [genai.RealtimeToolCallCancelledError].
 //   - Extended-thinking models require non-blocking calls and may emit filler
 //     turns before the tool call.
 //   - Usage snapshots cover one response. Interaction status, resumption and
@@ -237,7 +234,7 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 				}
 			}
 			if len(cancelled) != 0 {
-				return &ToolCallCancelledError{ToolCallIDs: cancelled}
+				return &genai.RealtimeToolCallCancelledError{ToolCallIDs: cancelled}
 			}
 			responses := make([]LiveFunctionResponse, len(v.ToolResults))
 			for i := range v.ToolResults {

@@ -223,7 +223,6 @@ func TestNormalizeInputLanguage(t *testing.T) {
 		{in: "fr", want: "fr"},
 		{in: "FR", want: "fr"},
 		{in: "fr-CA", want: "fr"},
-		{in: "fr_CA", want: "fr"},
 		{in: "zh-Hant-TW", want: "zh"},
 	} {
 		got, err := normalizeInputLanguage(tc.in)
@@ -231,7 +230,7 @@ func TestNormalizeInputLanguage(t *testing.T) {
 			t.Errorf("normalizeInputLanguage(%q) = %q, %v; want %q", tc.in, got, err, tc.want)
 		}
 	}
-	for _, in := range []string{"e", "english", "fr--CA", "fr_", "_CA", "fr-CA!"} {
+	for _, in := range []string{"e", "english", "fr_CA", "fr--CA", "fr_", "_CA", "fr-CA!"} {
 		if _, err := normalizeInputLanguage(in); err == nil {
 			t.Errorf("normalizeInputLanguage(%q) accepted invalid input", in)
 		}

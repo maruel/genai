@@ -305,7 +305,7 @@ func TestClient(t *testing.T) {
 			valid := genai.ToolCallResult{ID: "still-pending", Name: "lookup", Result: "ok"}
 			for _, batch := range [][]genai.ToolCallResult{{late}, {valid, late}, {late, valid}} {
 				err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: batch})
-				cancelErr, ok := errors.AsType[*gemini.ToolCallCancelledError](err)
+				cancelErr, ok := errors.AsType[*genai.RealtimeToolCallCancelledError](err)
 				if !ok || !reflect.DeepEqual(cancelErr.ToolCallIDs, []string{"cancel-me"}) {
 					t.Fatalf("cancelled batch error = %v", err)
 				}
@@ -313,7 +313,7 @@ func TestClient(t *testing.T) {
 			for _, bad := range []genai.ToolCallResult{{ID: "unknown", Name: "lookup", Result: "ok"}, {ID: "cancel-me", Name: "wrong", Result: "ok"}} {
 				for _, batch := range [][]genai.ToolCallResult{{bad}, {late, bad}, {bad, late}} {
 					err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: batch})
-					if _, ok := errors.AsType[*gemini.ToolCallCancelledError](err); err == nil || ok {
+					if _, ok := errors.AsType[*genai.RealtimeToolCallCancelledError](err); err == nil || ok {
 						t.Fatalf("unmatched batch error = %v", err)
 					}
 				}
@@ -331,7 +331,7 @@ func TestClient(t *testing.T) {
 				t.Fatalf("cancellation: %+v %+v", call, cancelled)
 			}
 			err = s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{late}})
-			cancelErr, ok := errors.AsType[*gemini.ToolCallCancelledError](err)
+			cancelErr, ok := errors.AsType[*genai.RealtimeToolCallCancelledError](err)
 			if !ok || !reflect.DeepEqual(cancelErr.ToolCallIDs, []string{"cancel-me"}) {
 				t.Fatalf("late cancelled result: %v", err)
 			}
@@ -342,7 +342,7 @@ func TestClient(t *testing.T) {
 			}
 			if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{late}}); err == nil {
 				t.Fatalf("closed transport misclassified as cancellation: %v", err)
-			} else if _, ok := errors.AsType[*gemini.ToolCallCancelledError](err); ok {
+			} else if _, ok := errors.AsType[*genai.RealtimeToolCallCancelledError](err); ok {
 				t.Fatalf("closed transport misclassified as cancellation: %v", err)
 			}
 		})
@@ -377,7 +377,7 @@ func TestClient(t *testing.T) {
 					realtimetest.Receive(t, s, genai.RealtimeEventProvider)
 					for _, id := range []string{"answered", "unknown"} {
 						err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: id, Name: "lookup", Result: "late"}}})
-						if _, ok := errors.AsType[*gemini.ToolCallCancelledError](err); err == nil || ok {
+						if _, ok := errors.AsType[*genai.RealtimeToolCallCancelledError](err); err == nil || ok {
 							t.Fatalf("unknown cancellation provenance misclassified: %v", err)
 						}
 					}
@@ -443,7 +443,7 @@ func TestClient(t *testing.T) {
 					if !ok {
 						t.Fatal("realtime session ended")
 					}
-					_, cancelled := errors.AsType[*gemini.ToolCallCancelledError](err)
+					_, cancelled := errors.AsType[*genai.RealtimeToolCallCancelledError](err)
 					if err == nil || cancelled || event.Kind == genai.RealtimeEventContentToolCalls {
 						t.Fatalf("ambiguous history admitted: %+v, %v", event, err)
 					}

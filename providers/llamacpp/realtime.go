@@ -292,6 +292,9 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 			}
 		}
 		generate = v.Generate
+		if v.ToolResults != nil {
+			generate = true
+		}
 	case genai.RealtimeCancel:
 		if v.ResponseID != "" && v.ResponseID != s.current {
 			return errors.New("realtime cancel target must be the current observed response")

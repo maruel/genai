@@ -233,6 +233,7 @@ func TestRealtimeSessionToolErrors(t *testing.T) {
 						t.Errorf("call order %#v, want %s", m, want)
 					}
 				}
+				expectRealtimeFrame(t, ctx, ws, "response.create")
 				close(sent)
 				<-ctx.Done()
 			})

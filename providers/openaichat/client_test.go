@@ -152,7 +152,7 @@ func TestClient(t *testing.T) {
 						realtimetest.Write(t, ctx, ws, b)
 					}
 				})
-				s, err := realtimeClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup a value", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "gpt-realtime-whisper", InputLanguage: "fr_CA"})
+				s, err := realtimeClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup a value", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "gpt-realtime-whisper", InputLanguage: "fr-CA"})
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -486,7 +486,7 @@ func TestClient(t *testing.T) {
 						t.Fatal("accepted invalid setup")
 					}
 				}
-				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr--CA"}, {ReasoningEffort: openaichat.ReasoningEffortNone}, {ReasoningEffort: "extreme"}} {
+				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr_CA"}, {InputLanguage: "fr--CA"}, {ReasoningEffort: openaichat.ReasoningEffortNone}, {ReasoningEffort: "extreme"}} {
 					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
 						t.Fatal("accepted invalid option")
 					}

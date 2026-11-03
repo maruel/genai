@@ -66,7 +66,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ✅     | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ☁️     | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| [dsh](docs/dsh.md)                         | 🇨🇳   | Sync, Stream🧠                             | 💬         | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
+| [dsh](docs/dsh.md)                         | 🇨🇳   | Sync, Stream🧠                             | 💬📄       | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
 | [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤🎥💬📄📸 | 🎤💬🧬   | ✅🪨🕸️🔀 | ✅[]   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
 | [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️     | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ✅[]   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |

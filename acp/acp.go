@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"path"
 	"slices"
 	"strings"
 
@@ -82,8 +83,8 @@ type ModelChoice struct {
 type Session struct {
 	// ID is the server-assigned session ID.
 	ID string
-	// InputModalities lists the prompt kinds SendPrompt accepts. Text is always
-	// present; Image and Audio are added when the agent advertises support.
+	// InputModalities lists the prompt kinds the agent reports. SendPrompt
+	// rejects inline images and audio when the agent does not advertise them.
 	InputModalities []genai.Modality
 
 	o         Options
@@ -128,7 +129,7 @@ func Handshake(stdin io.Writer, stdout io.Reader, o *Options, req SessionRequest
 	if err := internal.UnmarshalJSON(initData, &initResult); err != nil {
 		return nil, fmt.Errorf("parse initialize response: %w", err)
 	}
-	s.InputModalities = []genai.Modality{genai.ModalityText}
+	s.InputModalities = []genai.Modality{genai.ModalityText, genai.ModalityDocument}
 	if initResult.AgentCapabilities.PromptCapabilities.Image {
 		s.InputModalities = append(s.InputModalities, genai.ModalityImage)
 	}
@@ -217,7 +218,9 @@ func (s *Session) ModelChoices() []ModelChoice {
 // SendPrompt sends a session/prompt request with the user message and returns
 // its JSON-RPC request ID.
 func (s *Session) SendPrompt(msg *genai.Message) (int64, error) {
-	content, err := msgToPromptContent(msg, s.InputModalities)
+	content, err := msgToPromptContent(msg,
+		slices.Contains(s.InputModalities, genai.ModalityImage),
+		slices.Contains(s.InputModalities, genai.ModalityAudio))
 	if err != nil {
 		return 0, err
 	}
@@ -415,7 +418,7 @@ func (s *Session) cancel() error {
 }
 
 // msgToPromptContent converts a genai.Message to ACP prompt content blocks.
-func msgToPromptContent(msg *genai.Message, modalities []genai.Modality) ([]PromptContent, error) {
+func msgToPromptContent(msg *genai.Message, supportsImage, supportsAudio bool) ([]PromptContent, error) {
 	var items []PromptContent
 	for i := range msg.Requests {
 		req := &msg.Requests[i]
@@ -423,7 +426,7 @@ func msgToPromptContent(msg *genai.Message, modalities []genai.Modality) ([]Prom
 			items = append(items, PromptContent{Type: ContentText, Text: req.Text})
 		}
 		if !req.Doc.IsZero() {
-			blk, err := docToPromptContent(req.Doc, modalities)
+			blk, err := docToPromptContent(req.Doc, supportsImage, supportsAudio)
 			if err != nil {
 				return nil, err
 			}
@@ -437,29 +440,24 @@ func msgToPromptContent(msg *genai.Message, modalities []genai.Modality) ([]Prom
 }
 
 // docToPromptContent converts a genai.Doc to a promptContent block.
-func docToPromptContent(doc genai.Doc, modalities []genai.Modality) (PromptContent, error) {
+func docToPromptContent(doc genai.Doc, supportsImage, supportsAudio bool) (PromptContent, error) {
 	if doc.URL != "" {
 		mimeType, _, err := doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return PromptContent{}, fmt.Errorf("read URL document: %w", err)
 		}
-		if strings.HasPrefix(mimeType, "audio/") {
-			return PromptContent{}, errors.New("audio URL documents are not supported; inline the data")
-		}
-		if !slices.Contains(modalities, genai.ModalityImage) {
-			return PromptContent{}, errors.New("agent does not support image input")
-		}
-		if !strings.HasPrefix(mimeType, "image/") {
-			return PromptContent{}, fmt.Errorf("unsupported URL document MIME type %q (images only)", mimeType)
-		}
 		u, err := url.ParseRequestURI(doc.URL)
 		if err != nil {
-			return PromptContent{}, fmt.Errorf("parse image URL: %w", err)
+			return PromptContent{}, fmt.Errorf("parse resource URL: %w", err)
 		}
-		if u.Scheme != "http" && u.Scheme != "https" {
-			return PromptContent{}, fmt.Errorf("unsupported image URL scheme %q", u.Scheme)
+		name := doc.Filename
+		if name == "" {
+			name = path.Base(u.Path)
+			if name == "." || name == "/" {
+				name = doc.URL
+			}
 		}
-		return PromptContent{Type: ContentImage, URI: doc.URL, MimeType: mimeType}, nil
+		return PromptContent{Type: ContentResourceLink, URI: doc.URL, Name: name, MimeType: mimeType}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
@@ -469,16 +467,16 @@ func docToPromptContent(doc genai.Doc, modalities []genai.Modality) (PromptConte
 		return PromptContent{Type: ContentText, Text: string(data)}, nil
 	}
 	if strings.HasPrefix(mimeType, "audio/") {
-		if !slices.Contains(modalities, genai.ModalityAudio) {
-			return PromptContent{}, errors.New("agent does not support audio input")
+		if !supportsAudio {
+			return PromptContent{}, errors.New("agent does not support inline audio input")
 		}
 		return PromptContent{Type: ContentAudio, Data: base64.StdEncoding.EncodeToString(data), MimeType: mimeType}, nil
 	}
-	if !slices.Contains(modalities, genai.ModalityImage) {
-		return PromptContent{}, errors.New("agent does not support image input")
-	}
 	if !strings.HasPrefix(mimeType, "image/") {
 		return PromptContent{}, fmt.Errorf("unsupported doc MIME type %q (text, audio, and images only)", mimeType)
+	}
+	if !supportsImage {
+		return PromptContent{}, errors.New("agent does not support inline image input")
 	}
 	return PromptContent{Type: ContentImage, Data: base64.StdEncoding.EncodeToString(data), MimeType: mimeType}, nil
 }

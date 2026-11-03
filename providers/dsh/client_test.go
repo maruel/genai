@@ -407,14 +407,6 @@ func TestClient(t *testing.T) {
 					t.Fatalf("expected initialize decode error, got %v", err)
 				}
 			})
-			t.Run("image_not_supported", func(t *testing.T) {
-				c := newOutputClient(t, `{"jsonrpc":"2.0","id":1,"result":{}}`+"\n"+`{"jsonrpc":"2.0","id":2,"result":{"sessionId":"session-1"}}`)
-				msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{URL: "https://example.com/image.png"}}}}
-				_, err := c.GenSync(t.Context(), genai.Messages{msg})
-				if err == nil || !strings.Contains(err.Error(), "dsh: agent does not support image input") {
-					t.Fatalf("expected image unsupported error, got %v", err)
-				}
-			})
 		})
 	})
 

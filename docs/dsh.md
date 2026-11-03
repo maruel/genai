@@ -2,10 +2,10 @@
 
 | Model                                | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| deepseek-official/deepseek-v4-pro🥇   | Sync🧠   | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
-| deepseek-official/deepseek-v4-pro🥇   | Stream🧠 | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
-| deepseek-official/deepseek-flash🥈    | Sync🧠   | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
-| deepseek-official/deepseek-flash🥈    | Stream🧠 | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
+| deepseek-official/deepseek-v4-pro🥇   | Sync🧠   | 💬📄  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
+| deepseek-official/deepseek-v4-pro🥇   | Stream🧠 | 💬📄  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
+| deepseek-official/deepseek-flash🥈    | Sync🧠   | 💬📄  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
+| deepseek-official/deepseek-flash🥈    | Stream🧠 | 💬📄  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
 | deepseek-official/deepseek-v4-flash🥉 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>

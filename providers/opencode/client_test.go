@@ -8,6 +8,7 @@ package opencode
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -15,9 +16,11 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/acp"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
@@ -393,6 +396,40 @@ func TestGenOption(t *testing.T) {
 		}
 		if err := (&GenOption{Mode: "   "}).Validate(); err == nil {
 			t.Fatal("expected error for whitespace mode")
+		}
+	})
+	t.Run("unsupported", func(t *testing.T) {
+		_, err := parseOpts(&ProviderOption{}, []genai.GenOption{
+			genai.GenOptionSeed(1),
+			&genai.GenOptionText{
+				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
+				TopK: 2, Stop: []string{"stop"}, ReplyAsJSON: true, DecodeAs: &struct{}{},
+			},
+			&genai.GenOptionTools{},
+			&genai.GenOptionWeb{},
+			genai.GenOptionPollInterval(time.Millisecond),
+			&genai.GenOptionAudio{},
+			&genai.GenOptionImage{},
+			&genai.GenOptionVideo{},
+		})
+		uerr, ok := errors.AsType[*base.ErrNotSupported](err)
+		if !ok {
+			t.Fatalf("expected ErrNotSupported, got %v", err)
+		}
+		want := []string{
+			"GenOptionSeed",
+			"GenOptionText.Temperature", "GenOptionText.TopP", "GenOptionText.MaxTokens", "GenOptionText.TopLogprobs",
+			"GenOptionText.SystemPrompt", "GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
+			"GenOptionText.DecodeAs",
+			"GenOptionTools", "GenOptionWeb", "GenOptionPollInterval", "GenOptionAudio", "GenOptionImage", "GenOptionVideo",
+		}
+		if !slices.Equal(uerr.Options, want) {
+			t.Errorf("options: got %v, want %v", uerr.Options, want)
+		}
+	})
+	t.Run("empty_text", func(t *testing.T) {
+		if _, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionText{}}); err != nil {
+			t.Fatalf("empty GenOptionText: %v", err)
 		}
 	})
 }

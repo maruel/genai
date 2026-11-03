@@ -44,6 +44,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/acp"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/cli"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
@@ -411,8 +412,36 @@ func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
 		case *GenOption:
 			co.effort = cmp.Or(v.Effort, co.effort)
 			co.mode = v.Mode
+		case *genai.GenOptionText:
+			if v.Temperature != 0 {
+				unsupported = append(unsupported, "GenOptionText.Temperature")
+			}
+			if v.TopP != 0 {
+				unsupported = append(unsupported, "GenOptionText.TopP")
+			}
+			if v.MaxTokens != 0 {
+				unsupported = append(unsupported, "GenOptionText.MaxTokens")
+			}
+			if v.TopLogprobs != 0 {
+				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
+			}
+			if v.SystemPrompt != "" {
+				unsupported = append(unsupported, "GenOptionText.SystemPrompt")
+			}
+			if v.TopK != 0 {
+				unsupported = append(unsupported, "GenOptionText.TopK")
+			}
+			if len(v.Stop) != 0 {
+				unsupported = append(unsupported, "GenOptionText.Stop")
+			}
+			if v.ReplyAsJSON {
+				unsupported = append(unsupported, "GenOptionText.ReplyAsJSON")
+			}
+			if v.DecodeAs != nil {
+				unsupported = append(unsupported, "GenOptionText.DecodeAs")
+			}
 		default:
-			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 	if len(unsupported) != 0 {

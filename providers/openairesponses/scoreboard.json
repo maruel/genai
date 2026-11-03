@@ -354,6 +354,36 @@
       }
     },
     {
+      "comments": "Realtime non-thinking mode: ReasoningEffortMinimal.",
+      "models": [
+        "gpt-realtime-2.1-mini"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "true",
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
       "models": [
         "text-embedding-3-small"
       ],
@@ -481,7 +511,6 @@
         "gpt-live-1",
         "gpt-live-transcribe",
         "gpt-realtime",
-        "gpt-realtime-2.1-mini",
         "gpt-realtime-2025-08-28",
         "gpt-transcribe",
         "o1",

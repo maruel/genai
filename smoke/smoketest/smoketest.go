@@ -23,7 +23,8 @@
 //
 // When a model is no longer being tested (e.g., the provider stopped supporting it), the
 // corresponding HTTP recordings in testdata/TestClient/Scoreboard/<model>/ are automatically
-// deleted to keep the repository clean and remove stale test data.
+// deleted to keep the repository clean and remove stale test data. Subprocess recordings that no
+// probe consumed are reported at the end of a full run; remove them or restore the probe.
 package smoketest
 
 import (
@@ -84,6 +85,7 @@ func UpdatingScoreboard() bool {
 //
 // If the -update-scoreboard flag is set, it will update the scoreboard files
 // and automatically delete stale recordings for models that are no longer available.
+// After a full run, it reports subprocess recordings that no probe consumed.
 func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records, opts *RunOptions) {
 	if opts == nil {
 		opts = &RunOptions{}
@@ -92,17 +94,13 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	if scoreboardFile == "" {
 		scoreboardFile = "scoreboard.json"
 	}
+	runName := t.Name()
 
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
 
-	filtered := false
-	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.run" {
-			filtered = true
-		}
-	})
+	filtered := internaltest.IsTestFiltered()
 	seen := map[scoreboard.Model]struct{}{}
 	for _, m := range models {
 		if _, ok := seen[m]; ok {
@@ -267,6 +265,17 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		} else {
 			t.Logf("No changes to %s", scoreboardPath)
 		}
+	}
+	if !filtered {
+		t.Run("Unexpected Recordings", func(t *testing.T) {
+			extra, err := unexpectedRecordings(recordingsDir, internaltest.TakeSubprocessRecordings(runName))
+			if err != nil {
+				t.Fatalf("failed to find unexpected recordings: %v", err)
+			}
+			if len(extra) != 0 {
+				t.Errorf("unexpected recordings:\n  %s", strings.Join(extra, "\n  "))
+			}
+		})
 	}
 }
 
@@ -689,4 +698,36 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 	}
 	rawNew = append(rawNew, '\n')
 	return rawOld, rawNew
+}
+
+// unexpectedRecordings returns recordings that the run did not consume.
+//
+// Realtime fixtures are recorded by a different mechanism and are ignored.
+func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error) {
+	if _, err := os.Stat(dir); errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	var extra []string
+	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() || !strings.HasSuffix(path, ".ndjson") || strings.HasPrefix(d.Name(), "Realtime-") {
+			return nil
+		}
+		abs, err := filepath.Abs(path)
+		if err != nil {
+			return err
+		}
+		if _, ok := used[abs]; !ok {
+			rel, err := filepath.Rel(dir, path)
+			if err != nil {
+				return err
+			}
+			extra = append(extra, filepath.ToSlash(rel))
+		}
+		return nil
+	})
+	slices.Sort(extra)
+	return extra, err
 }

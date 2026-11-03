@@ -473,3 +473,32 @@ type qualificationNotesCase struct {
 	qualify bool
 	tested  bool
 }
+
+func TestUnexpectedRecordings(t *testing.T) {
+	dir := t.TempDir()
+	for _, name := range []string{"used.ndjson", "extra.ndjson", "Realtime-1.ndjson", "ignored.yaml", "sub/extra.ndjson"} {
+		path := filepath.Join(dir, filepath.FromSlash(name))
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, []byte("{}\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	usedPath := filepath.Join(dir, "used.ndjson")
+	used, err := filepath.Abs(usedPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := unexpectedRecordings(dir, map[string]struct{}{used: {}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"extra.ndjson", "sub/extra.ndjson"}
+	if !slices.Equal(got, want) {
+		t.Fatalf("unexpected recordings: got %v, want %v", got, want)
+	}
+	if got, err := unexpectedRecordings(filepath.Join(dir, "missing"), nil); err != nil || got != nil {
+		t.Fatalf("missing directory: got %v, %v", got, err)
+	}
+}

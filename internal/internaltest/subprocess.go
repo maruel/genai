@@ -13,8 +13,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
-	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -51,7 +49,7 @@ type SubprocessRecorder struct {
 // stream for the client.
 func NewSubprocessRecorder(t testing.TB, name, binaryName string, sanitize subprocessrecord.LineSanitizer) *SubprocessRecorder {
 	fixture := filepath.Join("testdata", name)
-	markSubprocessRecording(t, fixture+".ndjson")
+	markRecording(t, fixture+".ndjson")
 	st, err := os.Stat(fixture + ".ndjson")
 	exists := err == nil && st.Size() != 0
 	switch rec := os.Getenv("RECORD"); rec {
@@ -90,40 +88,4 @@ func (s *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
 		}
 	}
 	return s.rec.Wrap(inner)
-}
-
-var subprocessRecordings = struct {
-	sync.Mutex
-	used map[string]map[string]struct{}
-}{used: map[string]map[string]struct{}{}}
-
-// TakeSubprocessRecordings returns the fixture paths used by tests named prefix
-// or one of its subtests, then clears those entries.
-func TakeSubprocessRecordings(prefix string) map[string]struct{} {
-	subprocessRecordings.Lock()
-	defer subprocessRecordings.Unlock()
-	out := map[string]struct{}{}
-	for name, paths := range subprocessRecordings.used {
-		if name == prefix || strings.HasPrefix(name, prefix+"/") {
-			for path := range paths {
-				out[path] = struct{}{}
-			}
-			delete(subprocessRecordings.used, name)
-		}
-	}
-	return out
-}
-
-func markSubprocessRecording(t testing.TB, fixture string) {
-	abs, err := filepath.Abs(fixture)
-	if err != nil {
-		t.Fatalf("resolve fixture path: %v", err)
-	}
-	name := t.Name()
-	subprocessRecordings.Lock()
-	defer subprocessRecordings.Unlock()
-	if subprocessRecordings.used[name] == nil {
-		subprocessRecordings.used[name] = map[string]struct{}{}
-	}
-	subprocessRecordings.used[name][abs] = struct{}{}
 }

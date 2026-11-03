@@ -23,7 +23,7 @@
 //
 // When a model is no longer being tested (e.g., the provider stopped supporting it), the
 // corresponding HTTP recordings in testdata/TestClient/Scoreboard/<model>/ are automatically
-// deleted to keep the repository clean and remove stale test data. Subprocess recordings that no
+// deleted to keep the repository clean and remove stale test data. Recordings (.ndjson) that no
 // probe consumed are reported at the end of a full run; remove them or restore the probe.
 package smoketest
 
@@ -85,7 +85,7 @@ func UpdatingScoreboard() bool {
 //
 // If the -update-scoreboard flag is set, it will update the scoreboard files
 // and automatically delete stale recordings for models that are no longer available.
-// After a full run, it reports subprocess recordings that no probe consumed.
+// After a full run, it reports recordings that no probe consumed.
 func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records, opts *RunOptions) {
 	if opts == nil {
 		opts = &RunOptions{}
@@ -268,7 +268,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 	if !filtered {
 		t.Run("Unexpected Recordings", func(t *testing.T) {
-			extra, err := unexpectedRecordings(recordingsDir, internaltest.TakeSubprocessRecordings(runName))
+			extra, err := unexpectedRecordings(recordingsDir, internaltest.TakeRecordings(runName))
 			if err != nil {
 				t.Fatalf("failed to find unexpected recordings: %v", err)
 			}
@@ -701,8 +701,6 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 }
 
 // unexpectedRecordings returns recordings that the run did not consume.
-//
-// Realtime fixtures are recorded by a different mechanism and are ignored.
 func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error) {
 	if _, err := os.Stat(dir); errors.Is(err, fs.ErrNotExist) {
 		return nil, nil
@@ -712,7 +710,7 @@ func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error
 		if err != nil {
 			return err
 		}
-		if d.IsDir() || !strings.HasSuffix(path, ".ndjson") || strings.HasPrefix(d.Name(), "Realtime-") {
+		if d.IsDir() || !strings.HasSuffix(path, ".ndjson") {
 			return nil
 		}
 		abs, err := filepath.Abs(path)

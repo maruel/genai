@@ -64,6 +64,7 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 	} else if err != nil {
 		return nil, fmt.Errorf("stat realtime recording: %w", err)
 	}
+	markRecording(r.T, path+".ndjson")
 	rec, err := websocketrecord.New(path)
 	if err != nil {
 		return nil, err

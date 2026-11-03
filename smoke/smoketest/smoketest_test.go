@@ -494,7 +494,7 @@ func TestUnexpectedRecordings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"extra.ndjson", "sub/extra.ndjson"}
+	want := []string{"Realtime-1.ndjson", "extra.ndjson", "sub/extra.ndjson"}
 	if !slices.Equal(got, want) {
 		t.Fatalf("unexpected recordings: got %v, want %v", got, want)
 	}

@@ -77,10 +77,21 @@ func TestClient(t *testing.T) {
 			t.Run("incremental audio tools and native rates", func(t *testing.T) {
 				commands := make(chan []map[string]any, 1)
 				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
-					setup := realtimeSetup(t, ctx, ws)
-					if !reflect.DeepEqual(setup["output_modalities"], []any{"text", "audio"}) || setup["max_output_tokens"] != float64(128) {
+					realtimetest.Write(t, ctx, ws, nativeSession)
+					setup := realtimetest.Read(t, ctx, ws)["session"].(map[string]any)
+					if !reflect.DeepEqual(setup["output_modalities"], []any{"audio", "text"}) || setup["max_output_tokens"] != float64(128) {
 						t.Errorf("setup %#v", setup)
 					}
+					// The runtime acknowledges its canonical order, regardless of
+					// the order in the client's request.
+					setup["id"] = "local"
+					setup["output_modalities"] = []any{"text", "audio"}
+					ack, err := json.Marshal(map[string]any{"type": "session.updated", "session": setup})
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					realtimetest.Write(t, ctx, ws, string(ack))
 					got := make([]map[string]any, 0, 8)
 					for range 5 {
 						got = append(got, realtimetest.Read(t, ctx, ws))
@@ -103,11 +114,15 @@ func TestClient(t *testing.T) {
 						realtimetest.Write(t, ctx, ws, b)
 					}
 				})
-				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), genai.Modalities{genai.ModalityAudio, genai.ModalityText}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &llamacpp.RealtimeOption{MaxOutputTokens: 128, RequireToolCall: true})
+				modalities := genai.Modalities{genai.ModalityAudio, genai.ModalityText}
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), modalities, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &llamacpp.RealtimeOption{MaxOutputTokens: 128, RequireToolCall: true})
 				if err != nil {
 					t.Fatal(err)
 				}
 				realtimetest.Close(t, s)
+				if !slices.Equal(modalities, genai.Modalities{genai.ModalityAudio, genai.ModalityText}) {
+					t.Fatalf("setup changed the caller's modalities: %v", modalities)
+				}
 				info := s.Info()
 				want := genai.RealtimeSessionInfo{ID: "local", InputFormat: genai.AudioFormat{SampleRate: 16000}, OutputFormat: genai.AudioFormat{SampleRate: 24000}, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true, CancelResponse: true, ToolResults: true, Update: genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true, ToolChoiceRequired: true, MaxOutputTokens: true, OutputModalities: true}}}
 				if !reflect.DeepEqual(info, want) {
@@ -174,6 +189,9 @@ func TestClient(t *testing.T) {
 					realtimetest.Write(t, ctx, ws, frame)
 					m := realtimetest.Read(t, ctx, ws)
 					settings := m["session"].(map[string]any)
+					if mode, ok := settings["output_modalities"]; !ok || mode != nil {
+						t.Errorf("default output mode must be automatic (null), got %#v", settings)
+					}
 					settings["id"] = "local"
 					b, err := json.Marshal(map[string]any{"type": "session.updated", "session": settings})
 					if err != nil {
@@ -183,7 +201,7 @@ func TestClient(t *testing.T) {
 					realtimetest.Write(t, ctx, ws, string(b))
 					_, _, _ = ws.Read(ctx)
 				})
-				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context())
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{}, genai.Modalities{})
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -359,20 +377,22 @@ func TestClient(t *testing.T) {
 					t.Fatal("nil option accepted")
 				}
 				for _, tc := range []struct {
-					name string
-					opt  genai.RealtimeOption
+					name    string
+					opt     genai.RealtimeOption
+					options []string
 				}{
-					{"audio", &genai.RealtimeOptionAudio{}},
-					{"voice", &genai.RealtimeOptionAudio{Voice: "voice"}},
-					{"input transcription", &genai.RealtimeOptionAudio{InputTranscription: true}},
-					{"output transcription", &genai.RealtimeOptionAudio{OutputTranscription: true}},
-					{"server turns", genai.RealtimeTurnServer},
-					{"output modality", genai.Modalities{genai.ModalityImage}},
+					{"voice", &genai.RealtimeOptionAudio{Voice: "voice"}, []string{"voice selection"}},
+					{"input transcription", &genai.RealtimeOptionAudio{InputTranscription: true}, []string{"input transcription"}},
+					{"output transcription", &genai.RealtimeOptionAudio{OutputTranscription: true}, []string{"output transcription"}},
+					{"server turns", genai.RealtimeTurnServer, nil},
+					{"output modality", genai.Modalities{genai.ModalityImage}, nil},
 				} {
 					t.Run(tc.name, func(t *testing.T) {
 						_, err := c.ConnectRealtime(t.Context(), tc.opt)
-						if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+						if e, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 							t.Fatalf("error = %v, want ErrNotSupported", err)
+						} else if tc.options != nil && !slices.Equal(e.Options, tc.options) {
+							t.Fatalf("unsupported options = %v, want %v", e.Options, tc.options)
 						}
 					})
 				}

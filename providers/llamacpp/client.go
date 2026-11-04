@@ -401,22 +401,22 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // llama.cpp server. It negotiates the loaded model's PCM formats from
 // session.created and waits for session.updated to acknowledge them. The loaded
 // model owns selection; no model-list request occurs. LFM3 uses mono PCM16LE at
-// 16 kHz input and 24 kHz output. Empty output modalities select audio; request
-// text and audio for interleaved output. The caller owns tools, microphone
-// segmentation, playback and slot admission.
+// 16 kHz input and 24 kHz output. Empty output modalities let the model choose
+// between tool calls, text and speech. Explicit audio or text-and-audio output
+// prefills the corresponding speech token; omit modalities for tool calling.
+// The caller owns tools, microphone segmentation, playback and slot admission.
 //
 // The runtime supports manual turns, explicit generation, tools and response
-// cancellation. It supports neither server VAD, voice selection, transcription,
-// microphone stream-end/activity messages nor playback truncation. It rejects
-// RealtimeOptionAudio. Unsupported commands fail locally. Stream microphone
+// cancellation. Conversation sessions support neither server VAD, voice
+// selection, separate transcription streams, microphone stream-end/activity
+// messages nor playback truncation. RealtimeOptionAudio is accepted when all
+// fields are unset. Unsupported settings fail locally. Stream microphone
 // chunks, then set Commit to commit without generating or Generate to commit
 // pending audio and request generation. Empty commits and overlapping generation
 // are rejected before wire effects. LFM3 prefetches audio while the user speaks
 // and answers after the turn ends; input and output are not simultaneous. LFM3
 // conversation instructions should request its function-call and interleaved
-// text-and-audio format. Set RealtimeOption.RequireToolCall when
-// a model answers instead of calling a tool; LFM3-Audio does this with audio
-// output.
+// text-and-audio format without forcing an output modality.
 //
 // Cancel before sending a new user turn while a response is active. Cancel can
 // arrive before response.created; the adapter reserves locally requested
@@ -445,7 +445,10 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // Protocol source:
 // https://github.com/ggml-org/llama.cpp/blob/8642541b255bfb5dc39cd351a178be09013a55d6/tools/server/README.md#realtime-conversation
 func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
-	setup := SessionConfig{Type: SessionRealtime, OutputModalities: Modalities{genai.ModalityAudio}, Tools: ToolList{}}
+	// null preserves the runtime's automatic mode. Forcing speech prefills
+	// <|audio_start|> or <|mixed_start|>, competing with <tool_call>:
+	// https://huggingface.co/LiquidAI/LFM3-Audio-2B#tool-calling-from-spoken-requests
+	setup := SessionConfig{Type: SessionRealtime, Tools: ToolList{}}
 	var providerOpts []genai.RealtimeOption
 	seen := make(map[reflect.Type]struct{}, len(opts))
 	for _, opt := range opts {
@@ -465,7 +468,19 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 				return nil, err
 			}
 		case *genai.RealtimeOptionAudio:
-			return nil, fmt.Errorf("llama.cpp realtime does not support voice or transcription: %w", &base.ErrNotSupported{Options: []string{internal.TypeName(o)}})
+			var unsupported []string
+			if o.InputTranscription {
+				unsupported = append(unsupported, "input transcription")
+			}
+			if o.OutputTranscription {
+				unsupported = append(unsupported, "output transcription")
+			}
+			if o.Voice != "" {
+				unsupported = append(unsupported, "voice selection")
+			}
+			if len(unsupported) != 0 {
+				return nil, fmt.Errorf("llama.cpp realtime conversation settings: %w", &base.ErrNotSupported{Options: unsupported})
+			}
 		case genai.Modalities:
 			for i, m := range o {
 				if m != genai.ModalityAudio && m != genai.ModalityText {
@@ -477,12 +492,8 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 					}
 				}
 			}
-			switch len(o) {
-			case 0:
-			case 1:
-				setup.OutputModalities = Modalities{o[0]}
-			case 2:
-				setup.OutputModalities = Modalities{genai.ModalityText, genai.ModalityAudio}
+			if len(o) != 0 {
+				setup.OutputModalities = Modalities(slices.Clone(o))
 			}
 		case genai.RealtimeTurnDetection:
 			if o == genai.RealtimeTurnServer {
@@ -580,6 +591,10 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 				return nil, errors.Join(errors.New("llama.cpp setup acknowledgement missing"), ws.Close())
 			}
 			got := m.Session
+			// The runtime canonicalizes modality order. Both slices are owned by
+			// setup, so normalize them after sending the caller's requested order.
+			slices.Sort(got.OutputModalities)
+			slices.Sort(want.OutputModalities)
 			if got.ID != info.ID || got.Type != SessionRealtime || got.Instructions != want.Instructions || !slices.Equal(got.OutputModalities, want.OutputModalities) || got.Audio.Input.Format != want.Audio.Input.Format || got.Audio.Output.Format != want.Audio.Output.Format || got.Audio.Input.TurnDetection != nil || got.Audio.Input.Transcription != nil || got.Audio.Output.Voice != "" {
 				return nil, errors.Join(errors.New("llama.cpp did not accept realtime configuration"), ws.Close())
 			}

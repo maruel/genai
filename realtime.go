@@ -57,7 +57,8 @@ type RealtimeSession interface {
 // Portable options are RealtimeOptionInstructions, RealtimeOptionAudio,
 // RealtimeOptionTools, RealtimeTurnDetection, and Modalities. Modalities selects
 // output modalities and accepts only ModalityAudio and ModalityText; empty
-// selects audio. Input is per command: audio, a document, text, or tool results.
+// uses the provider's default output mode. Input is per command: audio, a
+// document, text, or tool results.
 //
 // A provider may define its own option type for settings that have no portable
 // meaning. A provider rejects options it cannot honor rather than ignoring them.

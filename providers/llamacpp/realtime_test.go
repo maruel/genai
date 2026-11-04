@@ -37,20 +37,19 @@ func realtimePeer(t *testing.T, script func(context.Context, *websocket.Conn)) s
 
 const nativeSession = `{"type":"session.created","session":{"id":"local","type":"realtime","instructions":"","output_modalities":null,"tools":[],"max_output_tokens":"inf","audio":{"input":{"format":{"type":"audio/pcm","rate":16000},"turn_detection":null},"output":{"format":{"type":"audio/pcm","rate":24000}}}}}`
 
-func realtimeSetup(t *testing.T, ctx context.Context, ws *websocket.Conn) map[string]any {
+func realtimeSetup(t *testing.T, ctx context.Context, ws *websocket.Conn) {
 	realtimetest.Write(t, ctx, ws, nativeSession)
 	m := realtimetest.Read(t, ctx, ws)
 	v, ok := m["session"].(map[string]any)
 	if !ok || m["type"] != "session.update" {
 		t.Error("missing setup update")
-		return nil
+		return
 	}
 	v["id"] = "local"
 	b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
 	if err != nil {
 		t.Error(err)
-		return nil
+		return
 	}
 	realtimetest.Write(t, ctx, ws, string(b))
-	return v
 }

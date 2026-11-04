@@ -390,12 +390,6 @@ type ErrorResponse struct {
 	Status int `json:"status,omitzero"`
 }
 
-// HTTPStatus returns the status of a WebSocket error frame, which carries no
-// response status of its own.
-func (er *ErrorResponse) HTTPStatus() int {
-	return er.Status
-}
-
 func (er *ErrorResponse) Error() string {
 	out := ""
 	if er.ErrorVal.Type != "" {

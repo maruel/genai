@@ -115,7 +115,7 @@ func Run(t *testing.T, rf smoke.RecorderFactory, models []scoreboard.Model, opts
 	// Read the scoreboard through the first wire the recorder serves: a command line
 	// provider has no HTTP surface to ask.
 	first := rf(t, scoreboard.Model{})
-	sb := first.Provider(first.Wires()[0], "").Scoreboard()
+	sb := first.Score()
 	if err := sb.Validate(); err != nil {
 		t.Fatal(err)
 	}
@@ -439,8 +439,9 @@ func runSection[T any, PT interface {
 		}
 		return out
 	}
-	c := r.Provider(wire, "")
-	if !fam.Fits(c, sb, m.Model) {
+	// The family decides on the model as the provider describes it, not on a probe:
+	// asking here keeps a placeholder row from constructing a client it cannot build.
+	if !fam.Fits(r.Spec(m), sb, m.Model) {
 		return out
 	}
 	var empty T

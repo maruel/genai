@@ -575,12 +575,6 @@ func exerciseGenConversation(ctx context.Context, cs *callState, f *scoreboard.F
 	return scoreboard.False, nil
 }
 
-// statusError is an error that reports the status of the exchange that failed.
-type statusError interface {
-	error
-	HTTPStatus() int
-}
-
 // After a successful tool-call response, HTTP 400/422 means the provider rejects
 // the continuation. This does not identify the cause: recorded requests and
 // converter tests must distinguish provider limits from malformed wire history.
@@ -597,10 +591,6 @@ func conversationContinuationRejected(err error) bool {
 	}
 	if e, ok := errors.AsType[*base.ErrNotSupported](err); ok {
 		return slices.Contains(e.Options, "GenOptionTools") || slices.Contains(e.Options, "GenOptionTools.Tools")
-	}
-	if e, ok := errors.AsType[statusError](err); ok && e.HTTPStatus() != 0 {
-		// A WebSocket error frame reports its status instead of a response status.
-		return e.HTTPStatus() == http.StatusBadRequest || e.HTTPStatus() == http.StatusUnprocessableEntity
 	}
 	e, ok := errors.AsType[*httpjson.Error](err)
 	return ok && (e.StatusCode == http.StatusBadRequest || e.StatusCode == http.StatusUnprocessableEntity)

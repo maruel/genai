@@ -23,8 +23,8 @@ import (
 // recorded. Otherwise the fixture is replayed, and a missing fixture fails the test:
 // an empty frame stream would read as a refusal instead of a gap.
 //
-// The returned recorder serves the proxy the client dials; target is the endpoint the
-// proxy forwards to while recording.
+// The returned recorder serves the proxy the client dials; target is the base URL the
+// client is configured with, and the proxy forwards each dial under it.
 func NewWebSocketProxy(t testing.TB, name, target string) *websocketrecord.Recorder {
 	fixture := filepath.Join("testdata", name)
 	markRecording(t, fixture+".ndjson")

@@ -153,8 +153,11 @@ func New(path string) (*Recorder, error) {
 	return r, nil
 }
 
-// Start starts the local proxy. target is the full upstream WebSocket URL and
-// is required in record mode. In replay mode target is ignored.
+// Start starts the local proxy.
+//
+// target is the base URL the client is configured with, in http, https, ws or wss: the
+// proxy forwards each dial to it, keeping the dialed path. It is required in record
+// mode and ignored in replay mode.
 func (r *Recorder) Start(target string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -166,8 +169,13 @@ func (r *Recorder) Start(target string) error {
 	}
 	if !r.replay {
 		u, err := url.Parse(target)
-		if err != nil || (u.Scheme != "ws" && u.Scheme != "wss") || u.Host == "" {
-			return errors.New("websocketrecord: target must be an absolute ws or wss URL")
+		if err != nil || u.Host == "" {
+			return errors.New("websocketrecord: target must be an absolute URL")
+		}
+		switch u.Scheme {
+		case "http", "https", "ws", "wss":
+		default:
+			return errors.New("websocketrecord: target must be an http, https, ws or wss URL")
 		}
 		r.target = target
 		if err := os.MkdirAll(filepath.Dir(r.fixture), 0o755); err != nil {
@@ -450,6 +458,16 @@ func (r *Recorder) upstreamURL(req *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	switch u.Scheme {
+	case "http":
+		u.Scheme = "ws"
+	case "https":
+		u.Scheme = "wss"
+	}
+	// The client derives its socket path from its base URL, which is this proxy, so the
+	// dial carries the endpoint under the target's own path.
+	u.Path = filepath.ToSlash(filepath.Join(u.Path, req.URL.Path))
+	u.RawPath = ""
 	q := u.Query()
 	for k, vs := range req.URL.Query() {
 		for _, v := range vs {

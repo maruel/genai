@@ -281,7 +281,7 @@ func TestClient(t *testing.T) {
 					internaltest.CleanupCloser(t, c)
 					return c
 				}
-				proxy := internaltest.NewWebSocketProxy(t, name, "wss://api.openai.com/v1/responses")
+				proxy := internaltest.NewWebSocketProxy(t, name, "https://api.openai.com/v1")
 				c, err := openairesponses.New(t.Context(), append(opts, genai.ProviderOptionRemote(proxy.URL()))...)
 				if err != nil {
 					t.Fatal(err)

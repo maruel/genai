@@ -45,6 +45,41 @@ func TestNew(t *testing.T) {
 			t.Fatal("discarded fixture replayed")
 		}
 	})
+	t.Run("base URL keeps the dialed path", func(t *testing.T) {
+		// The caller passes the base URL it gives the client, not the endpoint: the
+		// proxy appends what the client dialed.
+		var got []string
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			got = append(got, r.URL.Path)
+			c, err := websocket.Accept(w, r, nil)
+			if err != nil {
+				return
+			}
+			defer func() { _ = c.CloseNow() }()
+			ctx, cancel := context.WithCancel(r.Context())
+			defer cancel()
+			for {
+				typ, data, err := c.Read(ctx)
+				if err != nil {
+					return
+				}
+				if err := c.Write(ctx, typ, data); err != nil {
+					return
+				}
+			}
+		}))
+		t.Cleanup(srv.Close)
+		rec := newRecorder(t, filepath.Join(t.TempDir(), "test"), srv.URL+"/v1")
+		t.Cleanup(func() {
+			if err := rec.Close(); err != nil {
+				t.Error(err)
+			}
+		})
+		recordMessages(t, rec.WSURL()+"/responses")
+		if len(got) != 1 || got[0] != "/v1/responses" {
+			t.Fatalf("upstream paths: %q", got)
+		}
+	})
 	t.Run("handshake headers are replayed", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "test")
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -177,7 +212,7 @@ func TestRecorder(t *testing.T) {
 			if rec.URL() != "" || rec.WSURL() != "" {
 				t.Fatal("URL before Start")
 			}
-			for _, target := range []string{"", "http://example.com", "ws://"} {
+			for _, target := range []string{"", "ftp://example.com", "ws://", "example.com"} {
 				if err := rec.Start(target); err == nil {
 					t.Fatalf("accepted target %q", target)
 				}

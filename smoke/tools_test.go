@@ -75,6 +75,9 @@ func TestExerciseGenConversation(t *testing.T) {
 					{name: "invalid_task", initial: []int{99}, calls: 1},
 					{name: "initial_rejection", err: &httpjson.Error{StatusCode: http.StatusBadRequest}, abort: true, calls: 1},
 					{name: "continuation_rejection", initial: []int{7}, err: &httpjson.Error{StatusCode: http.StatusBadRequest}, calls: 2},
+					// A socket joins the status with the decoded body, and the body must not
+					// hide it.
+					{name: "joined_continuation_rejection", initial: []int{7}, err: errors.Join(&httpjson.Error{StatusCode: http.StatusBadRequest}, errors.New("invalid_request_error")), calls: 2},
 					{name: "unprocessable_continuation", initial: []int{7}, err: &httpjson.Error{StatusCode: http.StatusUnprocessableEntity}, calls: 2},
 					{name: "unsupported_tools", initial: []int{7}, err: &base.ErrNotSupported{Options: []string{"GenOptionTools"}}, calls: 2},
 					{name: "unsupported_option", initial: []int{7}, err: &base.ErrNotSupported{Options: []string{"GenOptionText.Seed"}}, abort: true, calls: 2},

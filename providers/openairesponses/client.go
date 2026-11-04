@@ -29,6 +29,8 @@ import (
 	"github.com/coder/websocket"
 	"github.com/maruel/roundtrippers"
 
+	"github.com/maruel/httpjson"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
@@ -625,6 +627,11 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					// This happens fairly consistently with gpt-5-nano_thinking/GenStream-Tools-ToolBias-Canada.yaml.
 					// Normally this should be a BadError but that would break the smoke test.
 					finalErr = &pkt.ErrorResponse
+					if pkt.Status != 0 {
+						// The frame reports the status the HTTP path would have carried, so
+						// a caller reads a rejected request the same way over both wires.
+						finalErr = errors.Join(&httpjson.Error{StatusCode: pkt.Status}, finalErr)
+					}
 					return
 				case ResponseIncomplete:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/incomplete

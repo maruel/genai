@@ -34,10 +34,10 @@ import (
 type Family[T any] interface {
 	// Wires reports the wires that can carry this family.
 	Wires() []scoreboard.Wire
-	// Fits reports whether the model can serve this family. The section it fills
-	// tells whether the model was already measured; the rest of the scoreboard
-	// tells what the model supports.
-	Fits(c genai.Provider, sb *scoreboard.Score, model string) bool
+	// Fits reports whether the model can serve this family. spec tells what the model
+	// offers; the section it fills tells whether the model was already measured, and
+	// the rest of the scoreboard tells what it supports.
+	Fits(spec Spec, sb *scoreboard.Score, model string) bool
 	// Run measures one row over wire. An empty want asks the family to discover
 	// whether the model serves it.
 	Run(ctx context.Context, rec Recorder, m scoreboard.Model, wire scoreboard.Wire, want *T) (T, genai.Usage, error)
@@ -61,14 +61,13 @@ func (Chat) Wires() []scoreboard.Wire {
 //
 // A model whose section holds a row has an HTTP surface. A model without one is
 // asked: an embedding or decision model answers no text prompt.
-func (Chat) Fits(c genai.Provider, sb *scoreboard.Score, model string) bool {
+func (Chat) Fits(spec Spec, sb *scoreboard.Score, model string) bool {
 	for i := range sb.Chat {
 		if slices.Contains(sb.Chat[i].Models, model) {
 			return true
 		}
 	}
-	mods := c.OutputModalities()
-	return !slices.Contains(mods, genai.ModalityEmbedding) && !slices.Contains(mods, genai.ModalityDecision)
+	return !slices.Contains(spec.Modalities, genai.ModalityEmbedding) && !slices.Contains(spec.Modalities, genai.ModalityDecision)
 }
 
 // Run implements [Family].
@@ -88,13 +87,13 @@ func (Embed) Wires() []scoreboard.Wire {
 //
 // A model reports embeddings alone, or its section holds a row that measured
 // them.
-func (Embed) Fits(c genai.Provider, sb *scoreboard.Score, model string) bool {
+func (Embed) Fits(spec Spec, sb *scoreboard.Score, model string) bool {
 	for i := range sb.Embed {
 		if slices.Contains(sb.Embed[i].Models, model) {
 			return true
 		}
 	}
-	return slices.Equal(c.OutputModalities(), genai.Modalities{genai.ModalityEmbedding})
+	return slices.Equal(spec.Modalities, genai.Modalities{genai.ModalityEmbedding})
 }
 
 // Run implements [Family].
@@ -116,14 +115,13 @@ func (SystemOne) Wires() []scoreboard.Wire {
 }
 
 // Fits implements [Family].
-func (SystemOne) Fits(c genai.Provider, sb *scoreboard.Score, model string) bool {
+func (SystemOne) Fits(spec Spec, sb *scoreboard.Score, model string) bool {
 	for i := range sb.SystemOne {
 		if slices.Contains(sb.SystemOne[i].Models, model) {
 			return true
 		}
 	}
-	mods := c.OutputModalities()
-	return c.Capabilities().SystemOne && (len(mods) == 0 || slices.Contains(mods, genai.ModalityDecision))
+	return spec.Caps.SystemOne && (len(spec.Modalities) == 0 || slices.Contains(spec.Modalities, genai.ModalityDecision))
 }
 
 // Run implements [Family].
@@ -149,8 +147,8 @@ func (Realtime) Wires() []scoreboard.Wire {
 // A realtime session returns speech or text, so an image or embedding model is
 // out of scope even when the provider serves sessions. A model that already has
 // a realtime row is measured, not discovered.
-func (Realtime) Fits(c genai.Provider, sb *scoreboard.Score, model string) bool {
-	if !c.Capabilities().Realtime {
+func (Realtime) Fits(spec Spec, sb *scoreboard.Score, model string) bool {
+	if !spec.Caps.Realtime {
 		// A provider that serves no session is not asked; asking would record a
 		// refusal for every chat model it has.
 		return false

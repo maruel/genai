@@ -50,6 +50,22 @@ import (
 const embeddingModel = "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
 
 func TestClient(t *testing.T) {
+	t.Run("SpeechRaw errors", func(t *testing.T) {
+		c := realtimeClient(t, "http://127.0.0.1:1")
+		var out bytes.Buffer
+		for _, in := range []*llamacpp.SpeechRequest{nil, {}} {
+			if _, err := c.SpeechRaw(t.Context(), in, &out); err == nil {
+				t.Fatal("accepted invalid request")
+			}
+		}
+		if _, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "hi"}, nil); err == nil {
+			t.Fatal("accepted nil writer")
+		}
+		if _, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "hi"}, &out); err == nil {
+			t.Fatal("expected connection error")
+		}
+	})
+
 	t.Run("ConnectRealtime", func(t *testing.T) {
 		t.Run("unsupported option type", func(t *testing.T) {
 			s, err := realtimeClient(t, "http://127.0.0.1:1").ConnectRealtime(t.Context(), genai.GenOptionSeed(1))
@@ -742,6 +758,69 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("SpeechRaw", func(t *testing.T) {
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: h})
+		}), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf"})), genai.ProviderOptionModel("tts"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		props, err := c.GetPropsRaw(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(props.Voices) == 0 {
+			t.Fatal("no predefined voices")
+		}
+		var reference []byte
+		for _, format := range []llamacpp.SpeechFormat{llamacpp.SpeechWAV, llamacpp.SpeechPCM} {
+			t.Run(string(format), func(t *testing.T) {
+				var out bytes.Buffer
+				headers, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "Hello.", Lang: "en", Voice: props.Voices[0], ResponseFormat: format, Stream: format == llamacpp.SpeechPCM, NPredict: 32, Seed: new(int64(1))}, &out)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if out.Len() == 0 {
+					t.Fatal("empty audio")
+				}
+				if format == llamacpp.SpeechWAV && (out.Len() < 44 || !bytes.HasPrefix(out.Bytes(), []byte("RIFF")) || string(out.Bytes()[8:12]) != "WAVE") {
+					t.Fatal("invalid WAV")
+				}
+				if format == llamacpp.SpeechWAV {
+					reference = bytes.Clone(out.Bytes())
+				}
+				if format == llamacpp.SpeechPCM && !strings.Contains(headers.Get("Content-Type"), "rate=24000") {
+					t.Fatalf("PCM content type: %q", headers.Get("Content-Type"))
+				}
+				if format == llamacpp.SpeechPCM && out.Len()%4 != 0 {
+					t.Fatal("unaligned PCM")
+				}
+			})
+		}
+		t.Run("reference audio", func(t *testing.T) {
+			var out bytes.Buffer
+			if _, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "Hello.", SpeakerRef: reference, NPredict: 32, Seed: new(int64(1))}, &out); err != nil {
+				t.Fatal(err)
+			}
+			if out.Len() <= 44 {
+				t.Fatal("missing audio")
+			}
+		})
+		t.Run("writer failure", func(t *testing.T) {
+			_, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "Hello.", NPredict: 1}, speechErrorWriter{})
+			if !errors.Is(err, io.ErrClosedPipe) {
+				t.Fatalf("writer error: %v", err)
+			}
+		})
+		t.Run("unknown voice", func(t *testing.T) {
+			var out bytes.Buffer
+			if _, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "Hello.", Voice: "invalid-voice"}, &out); err == nil || out.Len() != 0 {
+				t.Fatalf("audio %d bytes, error %v", out.Len(), err)
+			}
+		})
+	})
+
 	t.Run("Capabilities", func(t *testing.T) {
 		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, &roundtrippers.Header{
@@ -1235,3 +1314,8 @@ func (e embeddingDocumentTransport) RoundTrip(r *http.Request) (*http.Response, 
 }
 
 type embeddingIndexErrorCase struct{ name, body string }
+
+// speechErrorWriter exercises partial output failure.
+type speechErrorWriter struct{}
+
+func (speechErrorWriter) Write([]byte) (int, error) { return 0, io.ErrClosedPipe }

@@ -7,6 +7,7 @@
 package llamacpp_test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"log"
@@ -121,4 +122,34 @@ func ExampleClient_EmbedRaw() {
 		return
 	}
 	fmt.Printf("Returned %d dimensions using %d input tokens\n", len(out.Data[0].Embedding), out.Usage.PromptTokens)
+}
+
+// Generate WAV speech using an audio generation model loaded in llama-server.
+func ExampleClient_SpeechRaw() {
+	ctx := context.Background()
+	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote("http://localhost:8080"), genai.ProviderOptionModel("tts"))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Print(err)
+		}
+	}()
+	props, err := c.GetPropsRaw(ctx)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	req := llamacpp.SpeechRequest{Input: "Hello.", Lang: "en", ResponseFormat: llamacpp.SpeechWAV}
+	if len(props.Voices) != 0 {
+		req.Voice = props.Voices[0]
+	}
+	var audio bytes.Buffer
+	if _, err := c.SpeechRaw(ctx, &req, &audio); err != nil {
+		log.Print(err)
+		return
+	}
+	log.Printf("Generated %d WAV bytes", audio.Len())
 }

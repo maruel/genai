@@ -4,8 +4,8 @@
 
 // llama.cpp realtime wire types for the OpenAI-compatible conversation protocol.
 //
-// Modeled from llama.cpp v0.8.0 tools/server/server-realtime.cpp at commit
-// 8642541b. The types cover server events and the client commands the session
+// Modeled from llama.cpp v0.9.0 tools/server/server-realtime.cpp at commit
+// cd959bae99ff4bed22bef2604f45241c09bbb8c8. The types cover server events and the client commands the session
 // runtime uses.
 
 package llamacpp

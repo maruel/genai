@@ -27,6 +27,12 @@
 // (default L2).
 // Normalization can be overridden by raw requests.
 //
+// # Speech generation
+//
+// [Client.SpeechRaw] writes WAV or float32 PCM audio from /tts to an io.Writer.
+// Load an audio generation model and projector in llama-server. Discover predefined
+// voices with [Client.GetPropsRaw]; voice cloning requires a compatible voice encoder.
+//
 // # Decision inference
 //
 // Decision models such as Kev and OpenJev use [Client.SystemOne] through /v1/systemone. Requests
@@ -828,6 +834,43 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest)
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	msg, err := c.GetHealthRaw(ctx)
 	return msg.Status, err
+}
+
+// SpeechRaw writes WAV or PCM audio incrementally to out using /tts.
+// The loaded model must support audio generation. A failed call may have
+// already written partial audio. Returned headers include Content-Type, which
+// carries the native sample rate for PCM (for example audio/pcm;rate=24000).
+// Use GetPropsRaw to discover predefined voices.
+func (c *Client) SpeechRaw(ctx context.Context, in *SpeechRequest, out io.Writer) (http.Header, error) {
+	if in == nil || out == nil {
+		return nil, errors.New("request and output are required")
+	}
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+	u := c.baseURL + "/tts"
+	resp, err := c.impl.JSONRequest(ctx, http.MethodPost, u, in)
+	if err != nil {
+		if resp != nil {
+			return nil, errors.Join(err, resp.Body.Close())
+		}
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return resp.Header, c.impl.DecodeError(u, resp)
+	}
+	_, err = io.Copy(out, resp.Body)
+	if err = errors.Join(err, resp.Body.Close()); err != nil {
+		return resp.Header, fmt.Errorf("speech response: %w", err)
+	}
+	return resp.Header, nil
+}
+
+// GetPropsRaw returns server properties, including predefined TTS voices.
+func (c *Client) GetPropsRaw(ctx context.Context) (PropsResponse, error) {
+	var out PropsResponse
+	err := c.impl.DoRequest(ctx, http.MethodGet, c.baseURL+"/props", nil, &out)
+	return out, err
 }
 
 // GetHealthRaw returns the raw health response from the server.

@@ -4,11 +4,14 @@
 
 // Wire types for the llama-server native API.
 //
+// Modeled from https://github.com/ggml-org/llama.cpp at v0.9.0, commit
+// cd959bae99ff4bed22bef2604f45241c09bbb8c8.
+//
 // Endpoint documentation:
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#api-endpoints
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/README.md#api-endpoints
 //
 // Implementation:
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/server-context.cpp
 
 package llamacpp
 
@@ -135,7 +138,7 @@ type Embedding struct {
 // ChatRequest is not documented.
 //
 // Better take a look at oaicompat_chat_params_parse() in
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/server-common.cpp
 type ChatRequest struct {
 	Stream         bool      `json:"stream,omitzero"`
 	Model          string    `json:"model,omitzero"`
@@ -449,7 +452,7 @@ const (
 
 // ReasoningFormat defines the reasoning format supported by llama.cpp.
 //
-// See https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+// See https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/README.md
 type ReasoningFormat string
 
 // Valid ReasoningFormat values.
@@ -484,7 +487,7 @@ type ChatStreamChunkResponse struct {
 }
 
 // HealthResponse is documented at
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#get-health-returns-heath-check-result
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/README.md#get-health-returns-heath-check-result
 type HealthResponse struct {
 	Status          string `json:"status"`
 	SlotsIdle       int64  `json:"slots_idle"`
@@ -492,7 +495,7 @@ type HealthResponse struct {
 }
 
 // CompletionRequest is documented at
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 type CompletionRequest struct {
 	// TODO: Prompt can be a string, a list of tokens or a mix.
 	Prompt              string            `json:"prompt"`
@@ -808,7 +811,7 @@ func (a *applyTemplateRequest) Init(msgs genai.Messages, opts ...genai.GenOption
 // Message is not documented.
 //
 // You can look at how it's used in oaicompat_chat_params_parse() in
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/server-common.cpp
 // and common_chat_msgs_parse_oaicompat() in
 // https://github.com/ggml-org/llama.cpp/blob/master/common/chat.cpp
 type Message struct {
@@ -923,7 +926,7 @@ const maxDocBytes = 128 << 20
 // Content is not documented.
 //
 // You can look at how it's used in oaicompat_chat_params_parse() in
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/utils.hpp
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/server-common.cpp
 type Content struct {
 	Type string `json:"type"` // "text", "image_url", "input_audio", "input_video", "video_url"
 
@@ -1163,7 +1166,7 @@ type ModelOpenAI struct {
 // ModelsResponse is not documented.
 //
 // See handle_models() in
-// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
+// https://github.com/ggml-org/llama.cpp/blob/v0.9.0/tools/server/server-context.cpp
 type ModelsResponse struct {
 	Models []ModelHF     `json:"models"`
 	Object string        `json:"object"` // "list"

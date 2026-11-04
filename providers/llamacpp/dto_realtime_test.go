@@ -22,7 +22,7 @@ func decodeRealtimeStrict(data string, out any) error {
 
 func TestServerMessage(t *testing.T) {
 	t.Parallel()
-	// Shapes emitted by server-realtime.cpp in llama.cpp v0.8.0.
+	// Shapes emitted by server-realtime.cpp in llama.cpp v0.9.0.
 	for _, data := range []string{
 		`{"type":"input_audio_buffer.committed","previous_item_id":null,"item_id":"item_1","event_id":"event_1"}`,
 		`{"type":"conversation.item.added","previous_item_id":null,"item":{"id":"item_1","object":"realtime.item","type":"message","role":"user","status":"completed","content":[{"type":"input_audio"}]},"event_id":"event_1"}`,

@@ -9,6 +9,7 @@ package mistral_test
 import (
 	"bytes"
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -133,4 +134,43 @@ func testMessageContentRoundTrip[T any](t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestProcessStream(t *testing.T) {
+	chunks := make([]mistral.ChatStreamChunkResponse, 0, 5)
+	for _, body := range []string{
+		`{"choices":[{"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"first "}],"closed":false}]}}]}`,
+		`{"choices":[{"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"block"}],"signature":"one","closed":true}]}}]}`,
+		`{"choices":[{"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"second "}],"closed":false}]}}]}`,
+		`{"choices":[{"delta":{"content":[{"type":"thinking","thinking":[{"type":"text","text":"block"}],"signature":"two","closed":true}]}}]}`,
+		`{"choices":[{"delta":{"content":"answer"}}]}`,
+	} {
+		var c mistral.ChatStreamChunkResponse
+		if err := json.Unmarshal([]byte(body), &c); err != nil {
+			t.Fatal(err)
+		}
+		chunks = append(chunks, c)
+	}
+	seq, finish := mistral.ProcessStream(slices.Values(chunks))
+	var msg genai.Message
+	for f := range seq {
+		if err := msg.Accumulate(&f); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, _, err := finish(); err != nil {
+		t.Fatal(err)
+	}
+	var got mistral.Message
+	if err := got.From(&msg); err != nil {
+		t.Fatal(err)
+	}
+	want := []mistral.Content{
+		{Type: mistral.ContentThinking, Thinking: []mistral.ThinkingContent{{Type: mistral.ContentText, Text: "first block"}}, Signature: "one", Closed: new(true)},
+		{Type: mistral.ContentThinking, Thinking: []mistral.ThinkingContent{{Type: mistral.ContentText, Text: "second block"}}, Signature: "two", Closed: new(true)},
+		{Type: mistral.ContentText, Text: "answer"},
+	}
+	if diff := cmp.Diff(want, got.Content); diff != "" {
+		t.Fatal(diff)
+	}
 }

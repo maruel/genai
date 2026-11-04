@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"iter"
+	"maps"
 	"net/http"
 	"os"
 	"slices"
@@ -272,6 +273,15 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 	u := genai.Usage{}
 
 	return func(yield func(genai.Reply) bool) {
+			var pending map[string]any
+			flushThinking := func() bool {
+				if len(pending) == 0 {
+					return true
+				}
+				f := genai.Reply{Opaque: pending}
+				pending = nil
+				return yield(f)
+			}
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
@@ -300,14 +310,28 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					if r.Reasoning != "" && !yield(genai.Reply{Reasoning: r.Reasoning}) {
 						return
 					}
-					if len(r.Opaque) != 0 && !yield(genai.Reply{Opaque: r.Opaque}) {
+					if len(r.Opaque) != 0 {
+						if pending == nil {
+							pending = r.Opaque
+						} else {
+							maps.Copy(pending, r.Opaque)
+						}
+					}
+					if _, signed := r.Opaque["mistral_signature"]; signed && !flushThinking() {
 						return
 					}
-					if r.Text != "" && !yield(genai.Reply{Text: r.Text}) {
+					if r.Text != "" {
+						if !flushThinking() || !yield(genai.Reply{Text: r.Text}) {
+							return
+						}
+					}
+				}
+				if text := pkt.Choices[0].Delta.Content; text != "" {
+					if !flushThinking() || !yield(genai.Reply{Text: text}) {
 						return
 					}
 				}
-				if text := pkt.Choices[0].Delta.Content; text != "" && !yield(genai.Reply{Text: text}) {
+				if len(pkt.Choices[0].Delta.ToolCalls) != 0 && !flushThinking() {
 					return
 				}
 				// Mistral is one of the rare provider that can stream multiple tool calls all at once. It's probably
@@ -320,6 +344,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 				}
 			}
+			flushThinking()
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, nil, finalErr
 		}

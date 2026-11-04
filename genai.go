@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"io"
 	"iter"
-	"maps"
 	"math"
 	"net/http"
 	"path"
@@ -579,11 +578,8 @@ func (m *Message) Accumulate(mf *Reply) error {
 	// Generally the first message fragment.
 	if mf.Reasoning != "" {
 		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" && len(lastBlock.Opaque) == 0 && len(mf.Opaque) == 0 {
 				lastBlock.Reasoning += mf.Reasoning
-				if len(mf.Opaque) != 0 {
-					return &internal.BadError{Err: errors.New("cannot add Opaque to a Reasoning block")}
-				}
 				return nil
 			}
 		}
@@ -594,17 +590,17 @@ func (m *Message) Accumulate(mf *Reply) error {
 	// Content.
 	if mf.Text != "" {
 		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Text != "" {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Text != "" && len(lastBlock.Opaque) == 0 && len(mf.Opaque) == 0 {
 				lastBlock.Text += mf.Text
 				return nil
 			}
 		}
-		m.Replies = append(m.Replies, Reply{Text: mf.Text})
+		m.Replies = append(m.Replies, Reply{Text: mf.Text, Opaque: mf.Opaque})
 		return nil
 	}
 
 	if mf.Doc.URL != "" {
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename, URL: mf.Doc.URL}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename, URL: mf.Doc.URL}, Opaque: mf.Opaque})
 		return nil
 	}
 	if mf.Doc.Src != nil {
@@ -617,7 +613,7 @@ func (m *Message) Accumulate(mf *Reply) error {
 			src = &bb.BytesBuffer{D: raw}
 		}
 		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; (lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil) && len(lastBlock.Opaque) == 0 && len(mf.Opaque) == 0 {
 				if lastBlock.Doc.Src == nil {
 					lastBlock.Doc.Src = &bb.BytesBuffer{}
 				}
@@ -635,32 +631,29 @@ func (m *Message) Accumulate(mf *Reply) error {
 				return nil
 			}
 		}
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename, Src: src}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename, Src: src}, Opaque: mf.Opaque})
 		return nil
 	}
 	if mf.Doc.Filename != "" {
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename}, Opaque: mf.Opaque})
 		return nil
 	}
 
 	if mf.ToolCall.Name != "" {
-		m.Replies = append(m.Replies, Reply{ToolCall: mf.ToolCall})
+		m.Replies = append(m.Replies, Reply{ToolCall: mf.ToolCall, Opaque: mf.Opaque})
 		return nil
 	}
 
 	if !mf.Citation.IsZero() {
 		// For now always add a new block.
-		m.Replies = append(m.Replies, Reply{Citation: mf.Citation})
+		m.Replies = append(m.Replies, Reply{Citation: mf.Citation, Opaque: mf.Opaque})
 		return nil
 	}
 	if len(mf.Opaque) != 0 {
 		if len(m.Replies) != 0 {
-			// Only add Opaque to Reasoning block.
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
-				if lastBlock.Opaque == nil {
-					lastBlock.Opaque = map[string]any{}
-				}
-				maps.Copy(lastBlock.Opaque, mf.Opaque)
+			// Attach metadata to unfinished reasoning; completed blocks stay separate.
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" && len(lastBlock.Opaque) == 0 {
+				lastBlock.Opaque = mf.Opaque
 				return nil
 			}
 		}
@@ -732,7 +725,8 @@ type Reply struct {
 	// Citation contains references to source material that support the content.
 	Citation Citation `json:"citation,omitzero"`
 
-	// Reasoning is the reasoning done by the LLM.
+	// Reasoning is the reasoning done by the LLM. Keep it in conversation history;
+	// some models require it when continuing a turn after tool calls.
 	Reasoning string `json:"reasoning,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.

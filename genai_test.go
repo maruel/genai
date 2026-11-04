@@ -321,6 +321,24 @@ func TestMessage(t *testing.T) {
 			want     Message
 		}{
 			{
+				name:     "Signed reasoning boundaries",
+				message:  Message{Replies: []Reply{{Reasoning: "first", Opaque: map[string]any{"signature": "first"}}}},
+				fragment: Reply{Reasoning: "second", Opaque: map[string]any{"signature": "second"}},
+				want:     Message{Replies: []Reply{{Reasoning: "first", Opaque: map[string]any{"signature": "first"}}, {Reasoning: "second", Opaque: map[string]any{"signature": "second"}}}},
+			},
+			{
+				name:     "Signed text after text",
+				message:  Message{Replies: []Reply{{Text: "first"}}},
+				fragment: Reply{Text: "second", Opaque: map[string]any{"signature": "signed"}},
+				want:     Message{Replies: []Reply{{Text: "first"}, {Text: "second", Opaque: map[string]any{"signature": "signed"}}}},
+			},
+			{
+				name:     "Text after signed text",
+				message:  Message{Replies: []Reply{{Text: "first", Opaque: map[string]any{"signature": "signed"}}}},
+				fragment: Reply{Text: "second"},
+				want:     Message{Replies: []Reply{{Text: "first", Opaque: map[string]any{"signature": "signed"}}, {Text: "second"}}},
+			},
+			{
 				name: "Document",
 				fragment: Reply{
 					Doc: Doc{

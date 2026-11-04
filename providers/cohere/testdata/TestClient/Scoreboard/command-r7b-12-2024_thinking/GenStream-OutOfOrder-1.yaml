@@ -1,0 +1,227 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 788
+        host: api.cohere.com
+        body: |
+            {"stream":true,"model":"command-r7b-12-2024","messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]}],"tools":[{"type":"function","function":{"name":"task_status","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]},"description":"Read a task's current status and reference; does not change anything."}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cohere.com/v2/chat
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message-start
+            data: {"id":"841e1ecf-c62b-4eb7-ba2b-ab81e4b4f942","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"I"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" will"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" use"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" task"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"_"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"status"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" tool"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" to"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" check"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" the"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" status"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" and"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" reference"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" of"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" tasks"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" 3"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":","}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" 7"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" and"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":" 1"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"1"}}}
+
+            event: tool-plan-delta
+            data: {"type":"tool-plan-delta","delta":{"message":{"tool_plan":"."}}}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":0,"delta":{"message":{"tool_calls":{"id":"task_status_ne78vbg1vaan","type":"function","function":{"name":"task_status","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"task"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"_"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"id"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":" "}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"3"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":0,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":0}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":1,"delta":{"message":{"tool_calls":{"id":"task_status_ndshr1h4d27w","type":"function","function":{"name":"task_status","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"task"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"_"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"id"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":" "}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"7"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":1,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":1}
+
+            event: tool-call-start
+            data: {"type":"tool-call-start","index":2,"delta":{"message":{"tool_calls":{"id":"task_status_hajwy6wzexfq","type":"function","function":{"name":"task_status","arguments":""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"{\""}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"task"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"_"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"id"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"\":"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":" "}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"1"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"1"}}}}}
+
+            event: tool-call-delta
+            data: {"type":"tool-call-delta","index":2,"delta":{"message":{"tool_calls":{"function":{"arguments":"}"}}}}}
+
+            event: tool-call-end
+            data: {"type":"tool-call-end","index":2}
+
+            event: message-end
+            data: {"type":"message-end","delta":{"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":120,"output_tokens":57},"tokens":{"input_tokens":1558,"output_tokens":131},"cached_tokens":1024}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Debug-Trace-ID
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+            Content-Type:
+                - text/event-stream
+            Expires:
+                - Thu, 01 Jan 1970 00:00:00 GMT
+            Pragma:
+                - no-cache
+            Server:
+                - envoy
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Accel-Expires:
+                - "0"
+            X-Debug-Trace-Id:
+                - 85d9d490d7557d2b07ed53b4e2baec89
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
+            X-Envoy-Upstream-Service-Time:
+                - "110"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "17"
+        status: 200 OK
+        code: 200
+        duration: 152ms

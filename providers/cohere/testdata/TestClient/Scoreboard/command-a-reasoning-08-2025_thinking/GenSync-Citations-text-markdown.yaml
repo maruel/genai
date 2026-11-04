@@ -19,17 +19,16 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 937
-        body: '{"id":"e0f941a1-3320-4b61-8008-7d020e16c52c","message":{"role":"assistant","content":[{"type":"thinking","thinking":"After retrieving the document using the direct-injected-document tool, I found that the capital of Quackiland is explicitly stated as Quack in the provided snippet. The Big Canard Statue is also mentioned as being located there, which confirms the capital''s name. No further tool calls are needed."},{"type":"text","text":"The capital of Quackiland is Quack."}],"citations":[{"start":29,"end":35,"text":"Quack.","sources":[{"type":"document","id":"capital_info.md","document":{"id":"capital_info.md","snippet":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"capital_info.md"}}],"type":"TEXT_CONTENT","content_index":1}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":46,"output_tokens":10},"tokens":{"input_tokens":1700,"output_tokens":85}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"f9b06182-ae8c-4d8a-b8e1-41129e4defc6","message":{"role":"assistant","content":[{"type":"thinking","thinking":"After retrieving the document using the direct-injected-document tool, I found that the capital of Quackiland is clearly stated as Quack. The document also mentions the Big Canard Statue located there, which confirms the capital''s name. No further tool calls are needed."},{"type":"text","text":"The capital of Quackiland is Quack."}],"citations":[{"start":29,"end":35,"text":"Quack.","sources":[{"type":"document","id":"capital_info.md","document":{"id":"capital_info.md","snippet":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"capital_info.md"}}],"type":"TEXT_CONTENT","content_index":1}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":46,"output_tokens":66},"tokens":{"input_tokens":1700,"output_tokens":81,"reasoning_tokens":56},"cached_tokens":1600}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
             Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+                - h3=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "937"
             Content-Type:
                 - application/json
             Expires:
@@ -37,21 +36,27 @@ interactions:
             Num_chars:
                 - "7966"
             Num_tokens:
-                - "56"
+                - "112"
             Pragma:
                 - no-cache
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 975c9c9b3a73e0b5b42b463815bda5cf
+                - c2784e7d1c0596d5afbca48988d53f39
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "815"
+                - "692"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "13"
         status: 200 OK
         code: 200
-        duration: 855ms
+        duration: 733ms

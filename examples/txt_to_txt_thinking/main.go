@@ -29,7 +29,7 @@ func mainImpl() (err error) {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
-	fragments, finish := c.GenStream(ctx, msgs)
+	fragments, finish := c.GenStream(ctx, msgs, genai.EffortHigh, genai.IncludeReasoning)
 	reasoning := false
 	for f := range fragments {
 		if f.Reasoning != "" {

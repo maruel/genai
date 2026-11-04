@@ -57,3 +57,59 @@ interactions:
         status: 200 OK
         code: 200
         duration: 234ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2388
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning":"We need to get status and reference for tasks 3,7,11. Use tool function task_status for each. Probably can call multiple times. The request: \"Start the checks together if possible.\" We can call function sequentially or parallel? We'll just call three times. Need to output results after fetching. Use tool calls.","tool_calls":[{"type":"function","id":"fc_874fd248-7888-4afe-abc9-fa14e9e75a3a","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","reasoning":"We already called task_status for task 3. Need to call for task 7 and 11 maybe. The user now only cares about task 7 reference, wants to know if we have it yet. We can call task_status for 7. If response not immediate, we need to wait for tool result. We'll call.","tool_calls":[{"type":"function","id":"fc_a4990bcb-87ab-4722-a7f0-55b9e8846c73","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"fc_a4990bcb-87ab-4722-a7f0-55b9e8846c73"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"fc_874fd248-7888-4afe-abc9-fa14e9e75a3a"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-oss-120b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-46e4af1d-366c-40ea-b008-edb476184037","object":"chat.completion","created":1793828779,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"Task 7’s reference is **violet**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.032273722,"prompt_tokens":509,"prompt_time":0.020534373,"completion_tokens":15,"completion_time":0.032336419,"total_tokens":524,"total_time":0.052870792},"usage_breakdown":null,"system_fingerprint":"fp_0708ac49a5","x_groq":{"id":"req_01m6m8dx2wee2v24dbb8vx37mp","seed":1896863327},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf8d5c8446f9-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499993"
+            X-Ratelimit-Remaining-Tokens:
+                - "248612"
+            X-Ratelimit-Reset-Requests:
+                - 1.209s
+            X-Ratelimit-Reset-Tokens:
+                - 333ms
+        status: 200 OK
+        code: 200
+        duration: 107ms

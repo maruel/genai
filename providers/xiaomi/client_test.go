@@ -215,9 +215,13 @@ func TestClient(t *testing.T) {
 			if strings.Contains(model.Model, "tts") {
 				p = &ttsAdapter{Provider: p}
 			}
+			thinking := genai.EffortOff
+			if model.Reason {
+				thinking = ""
+			}
 			return &internaltest.InjectOptions{
 				Provider: p,
-				Opts:     []genai.GenOption{&xiaomi.GenOption{Thinking: model.Reason}},
+				Opts:     []genai.GenOption{thinking},
 			}
 		}
 		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)

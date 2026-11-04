@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.833s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-cc954046-694a-4c40-9967-fa8ff9d51673","object":"chat.completion","created":1793826957,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user is asking a straightforward question based on the information they provided. They stated that \"The capital of Quackiland is Quack.\" Then they ask \"What is the capital of Quackiland?\" The answer is directly given in the prompt.","content":"The capital of Quackiland is **Quack**."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":78,"total_tokens":142,"completion_tokens":64,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":78},"completion_tokens_details":{"reasoning_tokens":50,"text_tokens":64}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826957375"
+            Req-Cost-Time:
+                - "1293"
+            Resp-Start-Time:
+                - "1793826958669"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1293"
+        status: 200 OK
+        code: 200
+        duration: 1.318s

@@ -4,6 +4,9 @@
 
 // Wire types for the Ollama chat API.
 //
+// Source: https://github.com/ollama/ollama, commit
+// 2e7b870fbcec32da4b8864a1f715d7809c801490, api/types.go (message thinking).
+//
 // Types map to the Ollama Go SDK definitions:
 //
 //	https://pkg.go.dev/github.com/ollama/ollama/api
@@ -74,6 +77,24 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case genai.EffortOff:
+				c.Think = ReasoningEffortOff
+			case genai.EffortLow:
+				c.Think = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.Think = ReasoningEffortMedium
+			case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+				c.Think = ReasoningEffortHigh
+			case "":
+			default:
+				return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+			if v != "" && v != genai.EffortOff && !strings.Contains(model, "gpt-oss") {
+				c.Think = ReasoningEffortOn
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.Options.NumPredict = v.MaxTokens
 			c.Options.Temperature = v.Temperature
@@ -114,10 +135,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					}
 					c.Tools[i].Function.Parameters = s
 				}
-			}
-		case *GenOptionText:
-			if v.ReasoningEffort != "" {
-				c.Think = v.ReasoningEffort
 			}
 		case genai.GenOptionSeed:
 			c.Options.Seed = int64(v)
@@ -205,6 +222,9 @@ type ReasoningEffort string
 //
 // "off" is serialized as boolean false to match the Ollama API.
 func (r ReasoningEffort) MarshalJSON() ([]byte, error) {
+	if r == ReasoningEffortOn {
+		return []byte("true"), nil
+	}
 	if r == ReasoningEffortOff {
 		return []byte("false"), nil
 	}
@@ -218,8 +238,7 @@ func (r *ReasoningEffort) UnmarshalJSON(b []byte) error {
 		return nil
 	}
 	if string(b) == "true" {
-		// Boolean true means default thinking; map to empty (server default).
-		*r = ""
+		*r = ReasoningEffortOn
 		return nil
 	}
 	var s string
@@ -233,7 +252,7 @@ func (r *ReasoningEffort) UnmarshalJSON(b []byte) error {
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
 	switch r {
-	case "", ReasoningEffortOff, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+	case "", ReasoningEffortOn, ReasoningEffortOff, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
 		return nil
 	default:
 		return fmt.Errorf("invalid reasoning effort %q", r)
@@ -242,23 +261,14 @@ func (r ReasoningEffort) Validate() error {
 
 // Reasoning effort values.
 const (
+	// ReasoningEffortOn enables thinking. Serialized as JSON true.
+	ReasoningEffortOn ReasoningEffort = "on"
 	// ReasoningEffortOff disables thinking. Serialized as JSON false.
 	ReasoningEffortOff    ReasoningEffort = "off"
 	ReasoningEffortLow    ReasoningEffort = "low"
 	ReasoningEffortMedium ReasoningEffort = "medium"
 	ReasoningEffortHigh   ReasoningEffort = "high"
 )
-
-// GenOptionText defines Ollama specific options.
-type GenOptionText struct {
-	// ReasoningEffort controls the thinking effort level ("off", "low", "medium", "high").
-	ReasoningEffort ReasoningEffort
-}
-
-// Validate implements genai.Validatable.
-func (o *GenOptionText) Validate() error {
-	return o.ReasoningEffort.Validate()
-}
 
 // ChatRequestOptions is named Options in ollama.
 //
@@ -387,7 +397,7 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		case in.Replies[i].Reasoning != "":
-			// Don't send reasoning back.
+			m.Thinking += in.Replies[i].Reasoning
 		default:
 			return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type: %v", i, in.Replies)}
 		}

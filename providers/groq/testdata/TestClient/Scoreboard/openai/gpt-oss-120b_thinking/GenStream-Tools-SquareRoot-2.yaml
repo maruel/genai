@@ -67,3 +67,69 @@ interactions:
         status: 200 OK
         code: 200
         duration: 109ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1019
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning":"The user wants to use the square_root tool to calculate sqrt(132413) and reply only with the result, no explanation.\n\nWe need to call the function square_root with number 132413.\n\nLet's do that.","tool_calls":[{"type":"function","id":"fc_973e3aff-338d-4492-a209-6f8cb85d9206","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"fc_973e3aff-338d-4492-a209-6f8cb85d9206"}],"model":"openai/gpt-oss-120b","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-7df54bb2-6a7e-4f2c-aeab-647bf809ff2f","object":"chat.completion.chunk","created":1793828778,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_47082602e2","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m6m8dwr2ejw9cahpfqxbw6b6","seed":1125865800}}
+
+            data: {"id":"chatcmpl-7df54bb2-6a7e-4f2c-aeab-647bf809ff2f","object":"chat.completion.chunk","created":1793828778,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_47082602e2","choices":[{"index":0,"delta":{"content":"363"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-7df54bb2-6a7e-4f2c-aeab-647bf809ff2f","object":"chat.completion.chunk","created":1793828778,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_47082602e2","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-7df54bb2-6a7e-4f2c-aeab-647bf809ff2f","object":"chat.completion.chunk","created":1793828778,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_47082602e2","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-7df54bb2-6a7e-4f2c-aeab-647bf809ff2f","object":"chat.completion.chunk","created":1793828778,"model":"openai/gpt-oss-120b","system_fingerprint":"fp_47082602e2","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m6m8dwr2ejw9cahpfqxbw6b6","usage":{"queue_time":0.065004535,"prompt_tokens":235,"prompt_time":0.011608478,"completion_tokens":7,"completion_time":0.014642566,"total_tokens":242,"total_time":0.026251044}},"usage":{"queue_time":0.065004535,"prompt_tokens":235,"prompt_time":0.011608478,"completion_tokens":7,"completion_time":0.014642566,"total_tokens":242,"total_time":0.026251044}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf8b2d5c46f9-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249448"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 132ms
+        status: 200 OK
+        code: 200
+        duration: 149ms

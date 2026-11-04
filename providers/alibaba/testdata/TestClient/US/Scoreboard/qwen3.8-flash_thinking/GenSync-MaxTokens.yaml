@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 42.417s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 195
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-19232bcc-0bd0-4055-a3dc-f0e1da56ab2b","object":"chat.completion","created":1793826937,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants a detailed explanation of the theory of relativity. This is a broad topic that encompasses both Special Relativity (1905) and General Relativity (1915). I need to cover:\n\n1. Historical context and motivation\n2. Special Relativity: postulates, consequences (time dilation, length contraction, relativity of simultaneity, mass-energy equivalence, velocity addition)\n3. General Relativity: equivalence principle, curved spacetime, Einstein field equations, predictions and confirmations\n4. Mathematical framework at an appropriate level\n5. Philosophical implications\n\nI should make this thorough, well-structured, and accessible while not oversimplifying the physics. Let me organize this into a comprehensive essay-style explanation with clear sections.","content":"# The Theory of Relativity: A Comprehensive Explanation\n\n---\n\n## Part"},"finish_reason":"length","logprobs":null}],"usage":{"prompt_tokens":60,"total_tokens":234,"completion_tokens":174,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":60},"completion_tokens_details":{"reasoning_tokens":156,"text_tokens":174}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826937578"
+            Req-Cost-Time:
+                - "2861"
+            Resp-Start-Time:
+                - "1793826940440"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "2861"
+        status: 200 OK
+        code: 200
+        duration: 2.886s

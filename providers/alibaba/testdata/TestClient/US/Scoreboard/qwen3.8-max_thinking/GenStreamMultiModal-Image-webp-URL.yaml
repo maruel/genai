@@ -95,3 +95,69 @@ interactions:
         status: 200 OK
         code: 200
         duration: 10.345s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 371
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","created":1793827083,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","reasoning_content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827083,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"reasoning_content":"The","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"reasoning_content":" image shows a banana","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"reasoning_content":". The","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"reasoning_content":" question asks for a","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"reasoning_content":" one-word answer","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"reasoning_content":".","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"delta":{"content":"Banana","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-25a8acc4-3737-4986-bf27-6a83226d2da4","object":"chat.completion.chunk","created":1793827084,"model":"qwen3.8-max","choices":[],"usage":{"prompt_tokens":126,"total_tokens":147,"completion_tokens":21,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":34},"completion_tokens_details":{"reasoning_tokens":15,"text_tokens":5}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827082474"
+            Req-Cost-Time:
+                - "1546"
+            Resp-Start-Time:
+                - "1793827084021"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1546"
+        status: 200 OK
+        code: 200
+        duration: 1.571s

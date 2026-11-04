@@ -6,6 +6,8 @@
 //
 // These map to the OpenAI-compatible JSON structures documented at
 // https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
+// Source: https://github.com/OpenRouterTeam/typescript-sdk, commit
+// e9bcbede15c7ba35a44746f175a00c0ab25230c0, src/models (reasoning controls).
 
 package openrouter
 
@@ -47,10 +49,23 @@ type ProviderPreferences struct {
 	EnforceDistillableText bool `json:"enforce_distillable_text,omitzero"`
 }
 
+// ReasoningEffort is OpenRouter's native reasoning effort.
+type ReasoningEffort string
+
+// Native reasoning effort levels.
+const (
+	ReasoningEffortNone   ReasoningEffort = "none"
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+	ReasoningEffortXHigh  ReasoningEffort = "xhigh"
+	ReasoningEffortMax    ReasoningEffort = "max"
+)
+
 // Reasoning configures reasoning/thinking behavior for supported models.
 type Reasoning struct {
 	// Effort controls how much effort the model spends on reasoning ("low", "medium", "high").
-	Effort string `json:"effort,omitzero"`
+	Effort ReasoningEffort `json:"effort,omitzero"`
 	// Summary controls whether to include a summary of reasoning ("auto", "concise", "detailed").
 	Summary string `json:"summary,omitzero"`
 }
@@ -101,6 +116,30 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			if v != "" {
+				if c.Reasoning == nil {
+					c.Reasoning = &Reasoning{}
+				}
+			}
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.Reasoning.Effort = ReasoningEffortNone
+			case genai.EffortLow:
+				c.Reasoning.Effort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.Reasoning.Effort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				c.Reasoning.Effort = ReasoningEffortHigh
+			case genai.EffortXHigh:
+				c.Reasoning.Effort = ReasoningEffortXHigh
+			case genai.EffortMax:
+				c.Reasoning.Effort = ReasoningEffortMax
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+		case genai.ReasoningOutput:
 		case *GenOption:
 			c.Models = v.Models
 			c.Route = v.Route
@@ -232,11 +271,15 @@ type JSONSchemaFormat struct {
 // Different upstream models use different schemas: OpenAI uses Type+Content,
 // Qwen uses Format+Index+Text.
 type ReasoningDetail struct {
-	Type    string `json:"type,omitzero"`    // "text", "summary", etc. (OpenAI format)
-	Content string `json:"content,omitzero"` // The reasoning text (OpenAI format).
-	Format  string `json:"format,omitzero"`  // "unknown", etc. (Qwen format)
-	Index   int64  `json:"index,omitzero"`   // Segment index (Qwen format).
-	Text    string `json:"text,omitzero"`    // The reasoning text (Qwen format).
+	ID        *string `json:"id,omitzero"`
+	Data      string  `json:"data,omitzero"`
+	Summary   string  `json:"summary,omitzero"`
+	Signature *string `json:"signature,omitzero"`
+	Type      string  `json:"type,omitzero"`    // "text", "summary", etc. (OpenAI format)
+	Content   string  `json:"content,omitzero"` // The reasoning text (OpenAI format).
+	Format    string  `json:"format,omitzero"`  // "unknown", etc. (Qwen format)
+	Index     *int64  `json:"index,omitzero"`   // Segment index (Qwen format).
+	Text      string  `json:"text,omitzero"`    // The reasoning text (Qwen format).
 }
 
 // Annotation is a provider-specific annotation attached to a message.
@@ -289,7 +332,32 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Replies) != 0 {
 		m.Content = make(Contents, 0, len(in.Replies))
 		for i := range in.Replies {
-			if in.Replies[i].Reasoning != "" {
+			r := &in.Replies[i]
+			if len(r.Opaque) != 0 {
+				v, ok := r.Opaque["reasoning_details"]
+				if !ok || len(r.Opaque) != 1 {
+					return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+				}
+				b, err := json.Marshal(v)
+				if err != nil {
+					return fmt.Errorf("reply #%d: reasoning_details: %w", i, err)
+				}
+				var details []ReasoningDetail
+				d := json.NewDecoder(bytes.NewReader(b))
+				d.DisallowUnknownFields()
+				if err := d.Decode(&details); err != nil {
+					return fmt.Errorf("reply #%d: reasoning_details: %w", i, err)
+				}
+				m.ReasoningDetails = append(m.ReasoningDetails, details...)
+			}
+			if r.Reasoning != "" {
+				if m.Reasoning == nil {
+					m.Reasoning = new(string)
+				}
+				*m.Reasoning += r.Reasoning
+				continue
+			}
+			if r.Text == "" && r.Doc.IsZero() && r.ToolCall.IsZero() && len(r.Opaque) != 0 {
 				continue
 			}
 			if !in.Replies[i].ToolCall.IsZero() {
@@ -300,7 +368,7 @@ func (m *Message) From(in *genai.Message) error {
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&genai.Reply{Text: r.Text, Doc: r.Doc}); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
@@ -314,6 +382,9 @@ func (m *Message) From(in *genai.Message) error {
 
 // To converts the OpenRouter message to a genai.Message.
 func (m *Message) To(out *genai.Message) error {
+	if len(m.ReasoningDetails) != 0 {
+		out.Replies = append(out.Replies, genai.Reply{Opaque: map[string]any{"reasoning_details": m.ReasoningDetails}})
+	}
 	if m.Reasoning != nil && *m.Reasoning != "" {
 		out.Replies = append(out.Replies, genai.Reply{Reasoning: *m.Reasoning})
 	}

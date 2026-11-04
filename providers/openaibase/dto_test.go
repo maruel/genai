@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/openaibase"
 )
 
@@ -101,4 +102,35 @@ type embeddingInputErrorCase struct {
 type embeddingRequestErrorCase struct {
 	name string
 	in   openaibase.EmbeddingRequest
+}
+
+func TestThinkingEffort(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, tc := range []struct {
+			model string
+			level genai.EffortLevel
+			want  openaibase.ReasoningEffort
+		}{
+			{"gpt-5", genai.EffortOff, openaibase.ReasoningEffortMinimal},
+			{"gpt-6.1-sol", genai.EffortOff, openaibase.ReasoningEffortLow},
+			{"o4-mini", genai.EffortMax, openaibase.ReasoningEffortHigh},
+			{"gpt-5.1", genai.EffortXHigh, openaibase.ReasoningEffortHigh},
+			{"gpt-6-astra", genai.EffortMax, openaibase.ReasoningEffortMax},
+		} {
+			t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+				got, err := openaibase.ThinkingEffort(tc.level, tc.model)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got != tc.want {
+					t.Fatalf("got %q want %q", got, tc.want)
+				}
+			})
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		if _, err := openaibase.ThinkingEffort("invalid", "gpt-6-astra"); err == nil {
+			t.Fatal("accepted invalid level")
+		}
+	})
 }

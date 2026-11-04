@@ -78,18 +78,6 @@ func Scoreboard() scoreboard.Score {
 // fills them from the control request before writing the response to stdin.
 type ControlHandler func(context.Context, OutputControlRequestMsg) (InputControlResponseMsg, error)
 
-// Effort is a reasoning effort level, as accepted by `claude --effort`.
-type Effort string
-
-// Effort levels.
-const (
-	EffortLow    Effort = "low"
-	EffortMedium Effort = "medium"
-	EffortHigh   Effort = "high"
-	EffortXHigh  Effort = "xhigh"
-	EffortMax    Effort = "max"
-)
-
 // ProviderOption configures the claude process. It implements
 // genai.ProviderOption.
 //
@@ -119,8 +107,6 @@ type ProviderOption struct {
 	// provider enables the stdio permission prompt tool and sends the returned
 	// control response back to Claude on stdin.
 	ControlHandler ControlHandler
-	// Effort sets the reasoning effort level (--effort).
-	Effort Effort
 	// SessionPersistence saves a new session so its opaque session ID can be
 	// resumed in a later call. It is disabled by default for independent calls.
 	SessionPersistence bool
@@ -156,11 +142,6 @@ func (p *ProviderOption) Validate() error {
 	if p.DangerouslySkipPermissions && p.PermissionMode != "" && p.PermissionMode != "bypassPermissions" {
 		return fmt.Errorf("ProviderOption.DangerouslySkipPermissions conflicts with PermissionMode %q", p.PermissionMode)
 	}
-	switch p.Effort {
-	case "", EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
-	default:
-		return fmt.Errorf("ProviderOption.Effort: invalid level %q; must be one of low, medium, high, xhigh, max", p.Effort)
-	}
 	return msgutil.CheckExtraArgs(p.ExtraArgs, "input-format", "output-format", "p", "print")
 }
 
@@ -189,9 +170,7 @@ func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
 		maxBudgetUSD:       p.MaxBudgetUSD,
 		permissionMode:     p.PermissionMode,
 		controlHandler:     p.ControlHandler,
-		effort:             p.Effort,
 		sessionPersistence: p.SessionPersistence,
-		progressSummaries:  p.Effort != "",
 		extraArgs:          p.ExtraArgs,
 	}
 	if p.DangerouslySkipPermissions {
@@ -204,6 +183,24 @@ func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff, genai.EffortLow:
+				co.effort = EffortLow
+			case genai.EffortMedium:
+				co.effort = EffortMedium
+			case genai.EffortHigh:
+				co.effort = EffortHigh
+			case genai.EffortXHigh:
+				co.effort = EffortXHigh
+			case genai.EffortMax:
+				co.effort = EffortMax
+			default:
+				return callOpts{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+		case genai.ReasoningOutput:
+			co.progressSummaries = true
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {

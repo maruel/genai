@@ -80,7 +80,7 @@ type ReasoningEffort string
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
 	switch r {
-	case "", ReasoningEffortDefault, ReasoningEffortHigh, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortNone:
+	case "", ReasoningEffortDefault, ReasoningEffortHigh, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortNone, ReasoningEffortXHigh:
 		return nil
 	default:
 		return fmt.Errorf("invalid reasoning effort %q", r)
@@ -94,6 +94,7 @@ const (
 	ReasoningEffortLow     ReasoningEffort = "low"
 	ReasoningEffortMedium  ReasoningEffort = "medium"
 	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
 )
 
 // ChatRequest is documented at https://console.groq.com/docs/api-reference#chat-create
@@ -160,8 +161,45 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		switch v := opt.(type) {
 		case *GenOption:
 			c.ServiceTier = v.ServiceTier
-			c.ReasoningFormat = v.ReasoningFormat
-			c.ReasoningEffort = v.ReasoningEffort
+		case genai.EffortLevel:
+			if v != "" && strings.HasPrefix(model, "qwen/") {
+				c.ReasoningFormat = ReasoningFormatParsed
+			}
+			switch v {
+			case genai.EffortOff:
+				c.ReasoningEffort = ReasoningEffortLow
+				if strings.HasPrefix(model, "qwen/") {
+					c.ReasoningEffort = ReasoningEffortNone
+				}
+			case genai.EffortLow:
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.ReasoningEffort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortXHigh, genai.EffortMax:
+				c.ReasoningEffort = ReasoningEffortHigh
+				if strings.Contains(model, "muse-spark") {
+					c.ReasoningEffort = ReasoningEffortXHigh
+				}
+			case "":
+			default:
+				return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+			if strings.HasPrefix(model, "qwen/qwen3-") || strings.HasPrefix(model, "qwen/qwen3.6-") {
+				switch v {
+				case "":
+				case genai.EffortOff:
+					c.ReasoningEffort = ReasoningEffortNone
+				case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+					c.ReasoningEffort = ReasoningEffortDefault
+				default:
+					return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+				}
+			}
+
+		case genai.ReasoningOutput:
+			c.ReasoningFormat = ReasoningFormatParsed
 		case *genai.GenOptionText:
 			u, err := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
@@ -341,7 +379,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make(Contents, 0, len(in.Replies))
 		for i := range in.Replies {
 			if in.Replies[i].Reasoning != "" {
-				// DeepSeek and Qwen recommend against passing reasoning back.
+				m.Reasoning += in.Replies[i].Reasoning
 				continue
 			}
 			if !in.Replies[i].ToolCall.IsZero() {

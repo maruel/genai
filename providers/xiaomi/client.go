@@ -250,7 +250,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (res genai.Result, err error) {
 	// Build the request ourselves so GenSyncRaw can set audioFormat on the response.
 	in := &ChatRequest{}
 	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {

@@ -365,19 +365,6 @@ const (
 	BackendCN ProviderOptionBackend = "dashscope"
 )
 
-// GenOption defines Alibaba DashScope specific generation options.
-type GenOption struct {
-	// Thinking controls the thinking mode. Qwen3.5 models default to thinking enabled.
-	Thinking bool
-	// ThinkingBudget limits the maximum number of reasoning tokens. 0 means no limit.
-	ThinkingBudget int64
-}
-
-// Validate implements genai.Validatable.
-func (o *GenOption) Validate() error {
-	return nil
-}
-
 // ProcessStream converts raw stream chunks to genai.Reply fragments.
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error

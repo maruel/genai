@@ -23,19 +23,6 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
-// GenOption controls Baseten-specific generation options.
-type GenOption struct {
-	// Thinking controls Baseten extended thinking for opt-in models like GLM, Kimi, and Nemotron.
-	//
-	// These models default to thinking enabled. Set Thinking to false to disable it.
-	Thinking bool
-}
-
-// Validate implements genai.Validatable.
-func (g *GenOption) Validate() error {
-	return nil
-}
-
 // ChatRequest is documented at https://docs.baseten.co/api-reference/openai-compatible
 type ChatRequest struct {
 	Model               string    `json:"model"`
@@ -66,7 +53,7 @@ type ChatRequest struct {
 	Tools             []Tool  `json:"tools,omitzero"`
 	ParallelToolCalls bool    `json:"parallel_tool_calls,omitzero"`
 	ChatTemplateArgs  struct {
-		EnableThinking bool `json:"enable_thinking,omitzero"`
+		EnableThinking *bool `json:"enable_thinking,omitzero"`
 	} `json:"chat_template_args,omitzero"`
 }
 
@@ -76,7 +63,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
-	c.ChatTemplateArgs.EnableThinking = enableThinkingByDefault(model)
+	if enableThinkingByDefault(model) {
+		c.ChatTemplateArgs.EnableThinking = new(true)
+	}
 	var errs []error
 	var unsupported []string
 	sp := ""
@@ -85,8 +74,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			c.ChatTemplateArgs.EnableThinking = v.Thinking
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.ChatTemplateArgs.EnableThinking = new(false)
+			case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+				c.ChatTemplateArgs.EnableThinking = new(true)
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Temperature = v.Temperature

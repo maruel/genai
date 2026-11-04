@@ -238,6 +238,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
+			var details []ReasoningDetail
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
@@ -263,6 +264,38 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				default:
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
+				}
+				for _, d := range pkt.Choices[0].Delta.ReasoningDetails {
+					merged := false
+					for i := range details {
+						p := &details[i]
+						if d.Index == nil || p.Index == nil || *p.Index != *d.Index || p.Type != d.Type {
+							continue
+						}
+						p.Text += d.Text
+						p.Content += d.Content
+						p.Summary += d.Summary
+						p.Data += d.Data
+						if d.ID != nil {
+							p.ID = d.ID
+						}
+						if d.Signature != nil {
+							p.Signature = d.Signature
+						}
+						if d.Format != "" {
+							p.Format = d.Format
+						}
+						merged = true
+						break
+					}
+					if !merged {
+						details = append(details, d)
+					}
+				}
+				if v := pkt.Choices[0].Delta.Reasoning; v != nil && *v != "" {
+					if !yield(genai.Reply{Reasoning: *v}) {
+						return
+					}
 				}
 				f := genai.Reply{}
 				for _, c := range pkt.Choices[0].Delta.Content {
@@ -315,6 +348,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 				}
+			}
+			if len(details) != 0 {
+				yield(genai.Reply{Opaque: map[string]any{"reasoning_details": details}})
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, logprobs, finalErr

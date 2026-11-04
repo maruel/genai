@@ -35,3 +35,37 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1m13.502s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2145
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"system","content":[{"type":"text","text":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."}]},{"role":"user","content":[{"type":"text","text":"Check the status and reference of tasks 3, 7 and 11."}]},{"role":"user","content":[{"type":"text","text":"Start the checks together if possible."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"HIMWNc8ViyuFZmEvIJURaRKTMGzeKPjf","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","index":0,"id":"9MNiaOtxuGgcQSPkFw3J8i1qXblZcUyN","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","index":0,"id":"LXxg0hSWSfA8Pc0pDAEqYaoE0piHFOcv","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}],"reasoning_content":"The user wants to check the status and reference for tasks 3, 7, and 11.\nI have a tool `task_status` that can read a task's current status and reference given a `task_id`.\nSince the user asked to \"Start the checks together if possible,\" I should call the tool for each requested task ID.\n\nI need to call `task_status` three times:\n1. `task_status(task_id=3)`\n2. `task_status(task_id=7)`\n3. `task_status(task_id=11)`\n\nI will generate the tool calls sequentially."},{"role":"user","content":[{"type":"text","text":"Actually, I only need task 7's reference. The other checks can finish in the background."}]},{"role":"user","content":[{"type":"text","text":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}]}],"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2294
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Waiting for task 7''s status.","reasoning_content":"The user is asking specifically for the reference of task 7.\nI need to check the result of the previous tool calls to see if I have the information for task 7.\nSince I don''t have the results yet (the tool calls were just executed), I should assume I am waiting for the results, but I must first check if I have a way to access that information or if I need to wait for the tool output.\n\nSince I am an assistant and the previous turn was a series of calls, I must wait for the output of those calls before I can answer. However, in this turn, the user is prompting me based on the *state* of the check.\n\nIf the system provides the results after the calls, I will use them. If not, I must state that I am waiting or that I don''t have the information.\n\nGiven the current prompt, I have just initiated the checks. I should respond based on the expected flow. Since I cannot *know* the result without the tool output, I''ll acknowledge the request and state my current status regarding that specific task.\n\n*Self-Correction/Refinement*: The user is asking *me* if I have it. I don''t have it yet because the previous calls are pending execution/result retrieval. I should acknowledge the request and indicate the dependency.\n\nHowever, if this is a simulation where the tool calls are assumed to have executed and I need to process the *hypothetical* results, I cannot proceed without them. Given the instruction \"Don''t give me the other tasks'' references,\" I will focus only on task 7.\n\nSince I cannot proceed without the tool output, I will state that I am waiting for the results."}}],"created":1793829729,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":372,"prompt_tokens":389,"total_tokens":761,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-YsnBfneiPR60tGmSYQT5opxZzAi0I9KF","timings":{"cache_n":0,"prompt_n":389,"prompt_ms":1624.902,"prompt_per_token_ms":4.1771259640102825,"prompt_per_second":239.3990529890418,"predicted_n":372,"predicted_ms":19493.653,"predicted_per_token_ms":52.543539083557945,"predicted_per_second":19.031835644145303}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2294"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 21.16s

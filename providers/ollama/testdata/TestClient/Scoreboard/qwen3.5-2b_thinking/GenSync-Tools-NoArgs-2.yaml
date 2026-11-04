@@ -29,3 +29,31 @@ interactions:
         status: 200 OK
         code: 200
         duration: 3.843s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 954
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","thinking":"The user wants me to use the get_hostname tool to get the machine's hostname and only reply with the hostname, without any explanation. I need to call the get_hostname function first.\n\nThe get_hostname tool has one optional parameter with no required parameters. So I can call it directly.","tool_calls":[{"id":"call_x9db9jvb","function":{"name":"get_hostname","arguments":{}}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_x9db9jvb","tool_name":"get_hostname"}],"stream":false,"tools":[{"type":"function","function":{"description":"Returns the machine's hostname","name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 466
+        body: '{"model":"qwen3.5:2b","created_at":"2026-11-04T22:05:46.163534168Z","message":{"role":"assistant","content":"genai-smoke","thinking":"The tool returned \"genai-smoke\" as the hostname. I need to reply with only this hostname without any explanation."},"done":true,"done_reason":"stop","total_duration":5847323447,"load_duration":866792,"prompt_eval_count":371,"prompt_eval_cached_count":0,"prompt_eval_duration":1486146000,"eval_count":33,"eval_duration":1295156000}'
+        headers:
+            Content-Length:
+                - "466"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 5.848s

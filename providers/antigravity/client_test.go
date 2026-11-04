@@ -231,7 +231,6 @@ func TestProviderOption(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for _, p := range []ProviderOption{
-				{Effort: "xhigh"},
 				{Mode: "auto"},
 				{ExtraArgs: []string{"--output-format=json"}},
 				{ExtraArgs: []string{"-input-format", "text"}},
@@ -265,11 +264,11 @@ func TestGenSync(t *testing.T) {
 					name: "options",
 					msgs: resumed,
 					opt: ProviderOption{
-						Effort: EffortHigh, Mode: ModePlan, DangerouslySkipPermissions: true, Sandbox: true, Skills: true,
+						Mode: ModePlan, DangerouslySkipPermissions: true, Sandbox: true, Skills: true,
 						ExtraArgs: []string{"--add-dir", "/tmp/x"},
 					},
 					want: []string{
-						"--conversation prev", "--dangerously-skip-permissions", "--effort " + string(EffortHigh),
+						"--conversation prev", "--dangerously-skip-permissions", "--effort high",
 						"--mode " + string(ModePlan), "--sandbox", "--add-dir /tmp/x",
 					},
 					notWant: []string{"--disable-slash-commands"},
@@ -277,7 +276,7 @@ func TestGenSync(t *testing.T) {
 			} {
 				t.Run(tc.name, func(t *testing.T) {
 					var args []string
-					if _, err := newOutputClient(t, out, &args, &tc.opt).GenSync(t.Context(), tc.msgs); err != nil {
+					if _, err := newOutputClient(t, out, &args, &tc.opt).GenSync(t.Context(), tc.msgs, genai.EffortHigh); err != nil {
 						t.Fatal(err)
 					}
 					joined := " " + strings.Join(args, " ") + " "
@@ -447,6 +446,29 @@ func TestAgentErrorWriter(t *testing.T) {
 					}
 				} else if err == nil || !strings.Contains(err.Error(), tc.want) {
 					t.Errorf("error = %v, want %q", err, tc.want)
+				}
+			})
+		}
+	})
+}
+
+func TestParseOpts(t *testing.T) {
+	t.Run("thinking", func(t *testing.T) {
+		for _, tc := range []struct {
+			level genai.EffortLevel
+			want  string
+		}{
+			{genai.EffortOff, "low"},
+			{genai.EffortMedium, "medium"},
+			{genai.EffortXHigh, "max"},
+		} {
+			t.Run(string(tc.level), func(t *testing.T) {
+				got, err := parseOpts([]genai.GenOption{tc.level})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got.effort) != tc.want {
+					t.Errorf("native effort = %q, want %q", string(got.effort), tc.want)
 				}
 			})
 		}

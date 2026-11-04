@@ -22,16 +22,13 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"75cf7091-11c6-43b3-b7a3-97b0473b15f4","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"12514142-835a-4a9f-b07a-20b203e43449","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"{"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"\n    \""}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"{\""}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"is"}}}}
@@ -49,13 +46,13 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" true"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"\n}"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"}"}}}}
 
             event: content-end
             data: {"type":"content-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":17,"output_tokens":10},"tokens":{"input_tokens":512,"output_tokens":12}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":17,"output_tokens":7},"tokens":{"input_tokens":638,"output_tokens":10},"cached_tokens":512}}}
 
             data: [DONE]
 
@@ -63,7 +60,7 @@ interactions:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
             Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+                - h3=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Type:
@@ -81,9 +78,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - d85057851c5d64e77b9bb116e0e3d798
+                - 5f48622a32ad943d9265c9da955663cb
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "95"
+                - "211"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "25"
         status: 200 OK
         code: 200
-        duration: 137ms
+        duration: 259ms

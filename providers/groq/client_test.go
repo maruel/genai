@@ -61,16 +61,6 @@ func TestNew(t *testing.T) {
 func TestGenOption(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			t.Run("ReasoningFormat", func(t *testing.T) {
-				for _, v := range []groq.ReasoningFormat{"", "hidden", "parsed", "raw"} {
-					t.Run(string(v), func(t *testing.T) {
-						o := groq.GenOption{ReasoningFormat: v}
-						if err := o.Validate(); err != nil {
-							t.Fatal(err)
-						}
-					})
-				}
-			})
 			t.Run("ServiceTier", func(t *testing.T) {
 				for _, v := range []groq.ServiceTier{"", "auto", "flex", "on_demand", "performance"} {
 					t.Run(string(v), func(t *testing.T) {
@@ -88,8 +78,6 @@ func TestGenOption(t *testing.T) {
 				opt  groq.GenOption
 				want string
 			}{
-				{name: "ReasoningEffort", opt: groq.GenOption{ReasoningEffort: "invalid"}, want: "invalid reasoning effort"},
-				{name: "ReasoningFormat", opt: groq.GenOption{ReasoningFormat: "invalid"}, want: "invalid reasoning format"},
 				{name: "ServiceTier", opt: groq.GenOption{ServiceTier: "invalid"}, want: "invalid service tier"},
 			} {
 				t.Run(tc.name, func(t *testing.T) {
@@ -180,10 +168,9 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if strings.HasPrefix(model.Model, "qwen/") {
-				o := groq.GenOption{}
+				var o genai.EffortLevel
 				if model.Reason {
-					o.ReasoningEffort = groq.ReasoningEffortMedium
-					o.ReasoningFormat = groq.ReasoningFormatParsed
+					o = genai.EffortMedium
 				}
 				return &handleGroqReasoning{Provider: cl, opt: o}
 			}
@@ -246,16 +233,16 @@ func TestClient(t *testing.T) {
 
 type handleGroqReasoning struct {
 	genai.Provider
-	opt groq.GenOption
+	opt genai.EffortLevel
 }
 
 func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	opts = append(opts, &h.opt)
+	opts = append(opts, h.opt)
 	return h.Provider.GenSync(ctx, msgs, opts...)
 }
 
 func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	opts = append(opts, &h.opt)
+	opts = append(opts, h.opt)
 	return h.Provider.GenStream(ctx, msgs, opts...)
 }
 
@@ -265,4 +252,28 @@ func (h *handleGroqReasoning) Unwrap() genai.Provider {
 
 func init() {
 	internal.BeLenient = false
+}
+
+func TestChatRequest(t *testing.T) {
+	t.Run("Init", func(t *testing.T) {
+		for _, tc := range []struct {
+			model string
+			level genai.EffortLevel
+			want  groq.ReasoningEffort
+		}{
+			{"qwen/qwen3.8-27b", genai.EffortOff, groq.ReasoningEffortNone},
+			{"meta-llama/muse-spark-open", genai.EffortMax, groq.ReasoningEffortXHigh},
+			{"qwen/qwen3-32b", genai.EffortHigh, groq.ReasoningEffortDefault},
+		} {
+			t.Run(tc.model, func(t *testing.T) {
+				var r groq.ChatRequest
+				if err := r.Init(genai.Messages{genai.NewTextMessage("hello")}, tc.model, tc.level, genai.IncludeReasoning); err != nil {
+					t.Fatal(err)
+				}
+				if r.ReasoningEffort != tc.want || r.ReasoningFormat != groq.ReasoningFormatParsed {
+					t.Fatalf("thinking: %q, %q", r.ReasoningEffort, r.ReasoningFormat)
+				}
+			})
+		}
+	})
 }

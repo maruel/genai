@@ -57,3 +57,59 @@ interactions:
         status: 200 OK
         code: 200
         duration: 411ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1502
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning":"We need to get status and reference for tasks 3,7,11. Use tool function task_status for each. Probably can call multiple times. The request: \"Start the checks together if possible.\" We can call function sequentially or parallel? We'll just call three times. Need to output results after fetching. Use tool calls.","tool_calls":[{"type":"function","id":"fc_874fd248-7888-4afe-abc9-fa14e9e75a3a","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-oss-120b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-ad25efda-07c7-4071-90fd-a0681c665d69","object":"chat.completion","created":1793828779,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"We already called task_status for task 3. Need to call for task 7 and 11 maybe. The user now only cares about task 7 reference, wants to know if we have it yet. We can call task_status for 7. If response not immediate, we need to wait for tool result. We'll call.","tool_calls":[{"id":"fc_a4990bcb-87ab-4722-a7f0-55b9e8846c73","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.005489742,"prompt_tokens":340,"prompt_time":0.015915938,"completion_tokens":92,"completion_time":0.198766934,"total_tokens":432,"total_time":0.214682872,"completion_tokens_details":{"reasoning_tokens":68}},"usage_breakdown":null,"system_fingerprint":"fp_6fb4303df4","x_groq":{"id":"req_01m6m8dwvbe4ftyms78m3zpe6y","seed":2144063707},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf8bdf5d46f9-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "249122"
+            X-Ratelimit-Reset-Requests:
+                - 691ms
+            X-Ratelimit-Reset-Tokens:
+                - 210ms
+        status: 200 OK
+        code: 200
+        duration: 239ms

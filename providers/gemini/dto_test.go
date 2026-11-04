@@ -120,6 +120,29 @@ func TestSchema(t *testing.T) {
 
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
+		t.Run("thinking", func(t *testing.T) {
+			for _, tc := range []struct {
+				name, model string
+				opts        []genai.GenOption
+				want        ThinkingConfig
+			}{
+				{"flash_budget", "gemini-2.5-flash", []genai.GenOption{genai.EffortOff}, ThinkingConfig{ThinkingBudget: new(int64(0))}},
+				{"pro_budget", "gemini-2.5-pro", []genai.GenOption{genai.EffortMax}, ThinkingConfig{ThinkingBudget: new(int64(32768))}},
+				{"pro_minimum", "gemini-3.8-pro", []genai.GenOption{genai.EffortOff}, ThinkingConfig{ThinkingLevel: ThinkingLevelLow}},
+				{"summaries_before_level", "gemini-3.8-flash", []genai.GenOption{genai.IncludeReasoning, genai.EffortMedium}, ThinkingConfig{ThinkingLevel: ThinkingLevelMedium, IncludeThoughts: true}},
+				{"level_before_summaries", "gemini-3.8-flash", []genai.GenOption{genai.EffortLow, genai.IncludeReasoning}, ThinkingConfig{ThinkingLevel: ThinkingLevelLow, IncludeThoughts: true}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					var r ChatRequest
+					if err := r.Init(genai.Messages{genai.NewTextMessage("hello")}, tc.model, tc.opts...); err != nil {
+						t.Fatal(err)
+					}
+					if diff := cmp.Diff(&tc.want, r.GenerationConfig.ThinkingConfig); diff != "" {
+						t.Fatal(diff)
+					}
+				})
+			}
+		})
 		t.Run("error", func(t *testing.T) {
 			t.Run("options", func(t *testing.T) {
 				var in ChatRequest
@@ -167,6 +190,9 @@ func TestSignatureOnlyStreamReplay(t *testing.T) {
 	if len(m.Replies) != 2 || m.Replies[0].Text != "Task 7 is waiting." || len(m.Replies[0].Opaque) != 0 || m.Replies[1].Text != "" {
 		t.Fatalf("assembled replies lost part boundaries: %#v", m)
 	}
+	if err := json.Unmarshal(before, &m); err != nil {
+		t.Fatal(err)
+	}
 	req := ChatRequest{}
 	if err := req.Init(genai.Messages{genai.NewTextMessage("Check task 7."), m}, "gemini-flash-lite-latest"); err != nil {
 		t.Fatal(err)
@@ -186,8 +212,16 @@ func TestSignatureOnlyStreamReplay(t *testing.T) {
 	if err := chunks[1].Candidates[0].Content.To(&syncMsg); err != nil {
 		t.Fatal(err)
 	}
-	if diff := cmp.Diff(m.Replies[1:], syncMsg.Replies); diff != "" {
-		t.Fatal(diff)
+	syncJSON, err := json.Marshal(syncMsg.Replies)
+	if err != nil {
+		t.Fatal(err)
+	}
+	streamJSON, err := json.Marshal(m.Replies[1:])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(syncJSON, streamJSON) {
+		t.Fatalf("sync %s != stream %s", syncJSON, streamJSON)
 	}
 }
 
@@ -205,11 +239,20 @@ func TestPart(t *testing.T) {
 			})
 		})
 		t.Run("error", func(t *testing.T) {
+			t.Run("conflicting_signatures", func(t *testing.T) {
+				var p Part
+				if err := p.FromReply(&genai.Reply{Opaque: map[string]any{"signature": []byte("signed")}, ToolCall: genai.ToolCall{ID: "call", Name: "status", Arguments: `{}`, Opaque: map[string]any{"signature": []byte("signed")}}}); err == nil {
+					t.Fatal("accepted duplicate thought signatures")
+				}
+			})
 			for _, tc := range []struct {
 				name   string
 				opaque map[string]any
 			}{
 				{"extra", map[string]any{"signature": []byte("signature"), "extra": true}},
+				{"invalid_base64", map[string]any{"signature": "%%%"}},
+				{"wrong_type", map[string]any{"signature": true}},
+				{"empty", map[string]any{"signature": ""}},
 				{"absent", nil},
 			} {
 				t.Run(tc.name, func(t *testing.T) {

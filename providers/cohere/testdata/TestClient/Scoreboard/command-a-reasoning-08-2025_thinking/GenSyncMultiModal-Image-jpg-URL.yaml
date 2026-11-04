@@ -19,8 +19,9 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 120
-        body: '{"id":"05c52733-2c93-4cfe-a218-b227d76af574","message":"invalid request: image content is not supported for this model"}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5600a6df-3085-4287-8627-3e6969d95a06","message":"invalid request: image content is not supported for this model"}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -28,8 +29,6 @@ interactions:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "120"
             Content-Type:
                 - application/json
             Expires:
@@ -39,15 +38,21 @@ interactions:
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - bf6d111a874620ba01851d3c77f09fd4
+                - 53d83c98da3735af02106bd0ff9fa4d2
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "10"
+                - "8"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "9"
         status: 400 Bad Request
         code: 400
-        duration: 54ms
+        duration: 47ms

@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"63052a60-127c-4305-885d-8db7f97484e0","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"5e3bf3e4-b563-4ad6-b4dc-46882083d410","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"thinking","thinking":""}}}}
@@ -94,16 +94,16 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" way"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
-
-            event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" to"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" just"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" greet"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" say"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" someone"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" \""}}}}
@@ -112,40 +112,28 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"Hello"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"\"."}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":".\""}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" But"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" wait"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" maybe"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":","}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" they"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" are"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" want"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" there"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" something"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" any"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" more"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" other"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" single"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"-"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"word"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" greetings"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" casual"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"?"}}}}
@@ -175,58 +163,10 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"\"?"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" But"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Wait"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" user"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" specified"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" \""}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"hello"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"\","}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" so"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" maybe"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" they"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" want"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" exact"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" word"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Let"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" me"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" check"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":","}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
@@ -235,31 +175,13 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" instruction"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" again"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" It"}}}}
-
-            event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" says"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" \""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"Say"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" hello"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Use"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"use"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" only"}}}}
@@ -271,58 +193,139 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" word"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":".\""}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":",\""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" So"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" so"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" any"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" task"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" of"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" those"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" to"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" would"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" respond"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" work"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" with"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" word"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" But"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" \""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"hello"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"Hello"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"\""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" as"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" a"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" single"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" standard"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" word"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" greeting"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Let"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" me"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" double"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"-"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"check"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" if"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" there"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"'s"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" any"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" trick"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" here"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" The"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" user"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" might"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" be"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" testing"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" if"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" I"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" can"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" follow"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" one"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"-"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"word"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" constraint"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" So"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" I"}}}}
@@ -331,61 +334,46 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" should"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" make"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" just"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" sure"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" pick"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" not"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" one"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" to"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" add"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" any"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" other"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" words"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" or"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" punctuation"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" word"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Just"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" \""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"hello"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"Hello"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"\""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" by"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" itself"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" safe"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" and"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" direct"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Alright"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Yeah"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":","}}}}
@@ -394,13 +382,13 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" that"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"'s"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" should"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" simple"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" do"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" enough"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" it"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
@@ -409,16 +397,19 @@ interactions:
             data: {"type":"content-end","index":0}
 
             event: content-start
-            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
+            data: {"type":"content-start","index":1,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Hello"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"Hello"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"."}}}}
 
             event: content-end
-            data: {"type":"content-end","index":0}
+            data: {"type":"content-end","index":1}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":1},"tokens":{"input_tokens":1393,"output_tokens":131}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":124},"tokens":{"input_tokens":1394,"output_tokens":129,"reasoning_tokens":122},"cached_tokens":1360}}}
 
             data: [DONE]
 
@@ -444,9 +435,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - ad9efa6cfb80ed33236700f49bbc40bf
+                - c53d5db6d071cc41c0e2da4266726662
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "122"
+                - "119"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "32"
         status: 200 OK
         code: 200
-        duration: 165ms
+        duration: 166ms

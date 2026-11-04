@@ -5,6 +5,9 @@
 // Wire types for the Together.ai chat completions, image generation, and models REST API.
 //
 // Reference: https://docs.together.ai/reference/chat-completions-1
+// Source: https://github.com/togethercomputer/together-typescript,
+// commit 488006d90b67d589034d8323a11cfab9b588abca (reasoning controls).
+// DeepSeek max effort and template fields: https://docs.together.ai/docs/inference/chat/reasoning.
 
 package togetherai
 
@@ -48,9 +51,70 @@ type ChatRequest struct {
 		Type   string           `json:"type,omitzero"` // "json_object", "json_schema" according to python library.
 		Schema genai.JSONSchema `json:"schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	Tools       []Tool `json:"tools,omitzero"`
-	ToolChoice  string `json:"tool_choice,omitzero"`  // "auto" or a []Tool
-	SafetyModel string `json:"safety_model,omitzero"` // https://docs.together.ai/docs/inference-models#moderation-models
+	Tools              []Tool              `json:"tools,omitzero"`
+	ToolChoice         string              `json:"tool_choice,omitzero"` // "auto" or a []Tool
+	Reasoning          *Reasoning          `json:"reasoning,omitzero"`
+	ReasoningEffort    ReasoningEffort     `json:"reasoning_effort,omitzero"`
+	ChatTemplateKwargs *ChatTemplateKwargs `json:"chat_template_kwargs,omitzero"`
+	SafetyModel        string              `json:"safety_model,omitzero"` // https://docs.together.ai/docs/inference-models#moderation-models
+}
+
+func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
+	if level == "" {
+		return nil
+	}
+	id := strings.ToLower(c.Model)
+	switch {
+	case strings.Contains(id, "gpt-oss"):
+		switch level {
+		case "":
+		case genai.EffortOff, genai.EffortLow:
+			c.ReasoningEffort = ReasoningEffortLow
+		case genai.EffortMedium:
+			c.ReasoningEffort = ReasoningEffortMedium
+		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.ReasoningEffort = ReasoningEffortHigh
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	case strings.Contains(id, "deepseek-v4"):
+		switch level {
+		case "":
+		case genai.EffortOff:
+			c.Reasoning = &Reasoning{Enabled: false}
+		case genai.EffortLow, genai.EffortMedium:
+			c.Reasoning = &Reasoning{Enabled: true}
+			c.ReasoningEffort = ReasoningEffortHigh
+		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.Reasoning = &Reasoning{Enabled: true}
+			c.ReasoningEffort = ReasoningEffortMax
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	case strings.Contains(id, "qwen3") && !strings.Contains(id, "thinking") && !strings.Contains(id, "instruct") && !strings.Contains(id, "coder"):
+		switch level {
+		case "":
+		case genai.EffortOff:
+			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(false)}
+		case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(true)}
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	case strings.Contains(id, "deepseek-v3.1"), strings.Contains(id, "deepseek-v3.2"), strings.Contains(id, "glm-4.5"), strings.Contains(id, "glm-4.6"), strings.Contains(id, "glm-4.7"), strings.Contains(id, "glm-5"), strings.Contains(id, "kimi-k2.5"), strings.Contains(id, "kimi-k2.6"), strings.Contains(id, "kimi-k3"), strings.Contains(id, "minimax-m3"):
+		switch level {
+		case "":
+		case genai.EffortOff:
+			c.Reasoning = &Reasoning{Enabled: false}
+		case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.Reasoning = &Reasoning{Enabled: true}
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	default:
+		return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+	}
+	return nil
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -68,6 +132,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			if err := c.initThinking(v); err != nil {
+				return err
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -163,35 +232,40 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
+// Reasoning controls reasoning on Together hybrid models.
+type Reasoning struct {
+	Enabled bool `json:"enabled"`
+}
+
+// ReasoningEffort controls the depth of Together's adjustable-effort models.
+type ReasoningEffort string
+
+// Native reasoning effort values. Max is supported by DeepSeek V4.
+const (
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+	ReasoningEffortMax    ReasoningEffort = "max"
+)
+
+// ChatTemplateKwargs configures Together's model chat template.
+type ChatTemplateKwargs struct {
+	Thinking       *bool `json:"thinking,omitzero"`
+	EnableThinking *bool `json:"enable_thinking,omitzero"`
+	ClearThinking  *bool `json:"clear_thinking,omitzero"`
+}
+
 // Message is documented at https://docs.together.ai/reference/chat-completions-1
 type Message struct {
-	Role        string         `json:"role,omitzero"` // "system", "assistant", "user"
-	Content     Contents       `json:"content,omitzero"`
-	Reasoning   string         `json:"reasoning,omitzero"`
-	Refusal     string         `json:"refusal,omitzero"`
-	Annotations []base.Unknown `json:"annotations,omitzero"`
+	Role             string         `json:"role,omitzero"` // "system", "assistant", "user"
+	Content          Contents       `json:"content,omitzero"`
+	Reasoning        string         `json:"reasoning,omitzero"`
+	ReasoningContent string         `json:"reasoning_content,omitzero"`
+	Refusal          string         `json:"refusal,omitzero"`
+	Annotations      []base.Unknown `json:"annotations,omitzero"`
 	// Warning: using a small model may fail.
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-//
-// Together AI returns reasoning in either reasoning or reasoning_content,
-// depending on the model. The latter takes precedence when both are present.
-func (m *Message) UnmarshalJSON(b []byte) error {
-	v := messageJSON{messageAlias: (*messageAlias)(m)}
-	d := json.NewDecoder(bytes.NewReader(b))
-	if !internal.BeLenient {
-		d.DisallowUnknownFields()
-	}
-	if err := d.Decode(&v); err != nil {
-		return err
-	}
-	if v.ReasoningContent != "" {
-		m.Reasoning = v.ReasoningContent
-	}
-	return nil
 }
 
 // From must be called with at most one ToolCallResults.
@@ -216,11 +290,30 @@ func (m *Message) From(in *genai.Message) error {
 			}
 		}
 	}
+	var nativeReasoning bool
+	for i := range in.Replies {
+		if v, ok := in.Replies[i].Opaque["reasoning"].(string); ok {
+			m.Reasoning += v
+			nativeReasoning = true
+		}
+		if v, ok := in.Replies[i].Opaque["reasoning_content"].(string); ok {
+			m.ReasoningContent += v
+			nativeReasoning = true
+		}
+	}
 	if len(in.Replies) != 0 {
 		for i := range in.Replies {
-			if in.Replies[i].Reasoning != "" {
+			r := &in.Replies[i]
+			if r.Reasoning != "" {
+				if !nativeReasoning {
+					m.Reasoning += r.Reasoning
+				}
 				continue
 			}
+			if r.Text == "" && r.Doc.IsZero() && r.ToolCall.IsZero() && nativeReasoning && len(r.Opaque) != 0 {
+				continue
+			}
+
 			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
 				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
@@ -253,8 +346,16 @@ func (m *Message) To(out *genai.Message) error {
 			}
 		}
 	}
-	if m.Reasoning != "" {
-		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
+	if m.Reasoning != "" || m.ReasoningContent != "" {
+		r := genai.Reply{Reasoning: m.Reasoning, Opaque: map[string]any{}}
+		if m.Reasoning != "" {
+			r.Opaque["reasoning"] = m.Reasoning
+		}
+		if m.ReasoningContent != "" {
+			r.Reasoning = m.ReasoningContent
+			r.Opaque["reasoning_content"] = m.ReasoningContent
+		}
+		out.Replies = append(out.Replies, r)
 	}
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
@@ -280,13 +381,6 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = []genai.Reply{{Opaque: map[string]any{"empty": true}}}
 	}
 	return nil
-}
-
-type messageAlias Message
-
-type messageJSON struct {
-	*messageAlias
-	ReasoningContent string `json:"reasoning_content"`
 }
 
 // Contents is a collection of content blocks.

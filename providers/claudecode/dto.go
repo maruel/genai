@@ -2619,3 +2619,15 @@ func (t ToolResultPayload) TextBlocks() []anthropic.Content {
 	}
 	return t.Blocks
 }
+
+// Effort is a reasoning effort level, as accepted by `claude --effort`.
+type Effort string
+
+// Effort levels.
+const (
+	EffortLow    Effort = "low"
+	EffortMedium Effort = "medium"
+	EffortHigh   Effort = "high"
+	EffortXHigh  Effort = "xhigh"
+	EffortMax    Effort = "max"
+)

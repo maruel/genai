@@ -57,3 +57,59 @@ interactions:
         status: 200 OK
         code: 200
         duration: 424ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1533
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning":"Checking status and references for tasks 3, 7, and 11 - independent calls, batch them all together in the same block.\n","tool_calls":[{"type":"function","id":"kchbdbqaa","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","id":"79f9hheng","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","id":"0x2nnwzwx","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-baabc317-d2f2-4f0b-a750-72735a46b147","object":"chat.completion","created":1793828782,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"I'm still waiting on the result for task 7. It hasn't come back yet. I'll let you know as soon as I have it.","reasoning":"Let me check the results. The task_status calls for tasks 3, 7, and 11 were made, but I haven't received any tool results yet. Wait, let me re-read the conversation.\n\nActually, looking back at the conversation, the tool calls were made in the previous turn, but I don't see any tool results returned. The user is now asking if I have task 7's reference. Since I don't actually have the tool results yet (they weren't returned in the conversation), I should let the user know I'm still waiting.\n\nWait, let me reconsider. The conversation shows the tool calls were made but no results came back. The user is asking if I have the reference. I should be honest and say I'm still waiting on the result.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.137487656,"prompt_tokens":572,"prompt_time":0.057526439,"completion_tokens":197,"completion_time":0.489696022,"total_tokens":769,"total_time":0.547222461,"completion_tokens_details":{"reasoning_tokens":163}},"usage_breakdown":null,"system_fingerprint":"fp_c7e30c203c","x_groq":{"id":"req_01m6m8e03aewm8v9j905afrd48","seed":1747048087},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cfa09a0c46f9-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "249239"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 182ms
+        status: 200 OK
+        code: 200
+        duration: 704ms

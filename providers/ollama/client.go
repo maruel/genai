@@ -302,8 +302,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	res := genai.Result{}
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (res genai.Result, err error) {
 	in := ChatRequest{}
 	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
 		return res, err
@@ -312,7 +311,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.GenSyncRaw(ctx, &in, &out); err != nil {
 		return res, err
 	}
-	res, err := out.ToResult()
+	res, err = out.ToResult()
 	if err != nil {
 		return res, err
 	}

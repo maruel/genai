@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"dfa6bcec-e74c-4f54-9044-a6b696657832","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"dd0d3eff-9033-48c5-b843-9880aa7e7670","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
@@ -76,7 +76,7 @@ interactions:
             data: {"type":"content-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":504,"output_tokens":16}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":504,"output_tokens":16},"cached_tokens":480}}}
 
             data: [DONE]
 
@@ -84,7 +84,7 @@ interactions:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
             Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+                - h3=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Type:
@@ -102,9 +102,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - a262bac6d4c45942e8a980a39a25cee4
+                - 6ca20114a4163d0f88fcc74344286999
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "100"
+                - "148"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "13"
         status: 200 OK
         code: 200
-        duration: 144ms
+        duration: 47.709s

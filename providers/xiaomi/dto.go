@@ -22,20 +22,6 @@ import (
 	"github.com/maruel/genai/internal/bb"
 )
 
-// GenOption controls thinking mode.
-//
-// MiMo v2.5 models default to thinking enabled. Set Thinking to false to
-// switch to non-thinking mode.
-type GenOption struct {
-	// Thinking controls the thinking mode. When false, thinking is disabled.
-	Thinking bool
-}
-
-// Validate implements genai.Validatable.
-func (g *GenOption) Validate() error {
-	return nil
-}
-
 // GenOptionAudio specifies audio generation options for TTS models.
 //
 // See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5
@@ -115,10 +101,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			if !v.Thinking {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
 				c.Thinking.Type = "disabled"
+			case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+				c.Thinking.Type = "enabled"
+			default:
+				unsupported = append(unsupported, "EffortLevel")
 			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature

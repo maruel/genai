@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"iter"
 	"os"
 	"path/filepath"
 	"slices"
@@ -119,15 +120,15 @@ func TestClient(t *testing.T) {
 				r := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
 				opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 			}
-			if model.Reason {
-				opts = append(opts, &ProviderOption{Effort: EffortMedium})
-			}
 			c, err := New(t.Context(), opts...)
 			if c != nil {
 				internaltest.CleanupCloser(t, c)
 			}
 			if err != nil {
 				t.Fatal(err)
+			}
+			if model.Reason {
+				return &thinkingClient{Provider: c}
 			}
 			return c
 		}
@@ -508,9 +509,9 @@ Do not answer the question yourself.`)
 {"type":"system","subtype":"post_turn_summary","summarizes_uuid":"assistant-1","status_category":"completed","status_detail":"thinking summary: greeted the user.","needs_action":"","uuid":"summary-1","session_id":"session"}
 {"type":"result","subtype":"success","is_error":false,"duration_ms":1,"num_turns":1,"result":"Hello","stop_reason":"end_turn","usage":{"input_tokens":1,"output_tokens":1},"session_id":"session"}
 `
-			c := newOutputClient(t, output, nil, genai.ProviderOptionModel("claude-opus-4-6"), &ProviderOption{Effort: EffortMedium})
+			c := newOutputClient(t, output, nil, genai.ProviderOptionModel("claude-opus-4-6"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
-			seq, finish := c.GenStream(t.Context(), msgs)
+			seq, finish := c.GenStream(t.Context(), msgs, genai.EffortMedium, genai.IncludeReasoning)
 
 			var text, reasoning strings.Builder
 			for r := range seq {
@@ -628,4 +629,15 @@ func TestClientContextUsage(t *testing.T) {
 			}
 		})
 	}
+}
+
+// thinkingClient enables the model's reasoning scoreboard scenario.
+type thinkingClient struct{ genai.Provider }
+
+func (c *thinkingClient) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	return c.Provider.GenSync(ctx, msgs, append(opts, genai.EffortMedium, genai.IncludeReasoning)...)
+}
+
+func (c *thinkingClient) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	return c.Provider.GenStream(ctx, msgs, append(opts, genai.EffortMedium, genai.IncludeReasoning)...)
 }

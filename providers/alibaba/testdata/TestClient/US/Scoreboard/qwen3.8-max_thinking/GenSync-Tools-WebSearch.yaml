@@ -48,3 +48,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 4.078s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-722df17f-1ee3-456d-972e-91f8e460a725","object":"chat.completion","created":1793827040,"model":"qwen3.8-max","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants to know who is currently the Prime Minister of Canada. Let me search for this information.","content":"Mark Carney"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":77,"total_tokens":104,"completion_tokens":27,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":77},"completion_tokens_details":{"reasoning_tokens":21,"text_tokens":27}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827040213"
+            Req-Cost-Time:
+                - "2486"
+            Resp-Start-Time:
+                - "1793827042699"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "2486"
+        status: 200 OK
+        code: 200
+        duration: 2.511s

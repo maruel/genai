@@ -40,9 +40,6 @@ type RealtimeOption struct {
 	// InputLanguages supplies BCP-47 transcription hints; output language belongs
 	// in the caller's system instruction, not speechConfig.languageCode.
 	InputLanguages []string
-	// ThinkingLevel sets the session reasoning depth. Empty selects LOW for
-	// extended-thinking models and omits thinking configuration for other models.
-	ThinkingLevel ThinkingLevel
 	// SessionResumption requests resumable-state events. ResumeHandle restores a
 	// previous session and implies SessionResumption. Pass the latest nonempty
 	// Handle from a *Resumption provider event. No replay is automatic.
@@ -74,9 +71,6 @@ func (o *RealtimeOption) Validate() error {
 	}
 	if o.Compression != nil && (o.Compression.TriggerTokens <= 0 || o.Compression.TargetTokens <= 0 || o.Compression.TargetTokens >= o.Compression.TriggerTokens) {
 		return errors.New("gemini live compression requires positive target tokens below trigger tokens")
-	}
-	if err := o.ThinkingLevel.Validate(); err != nil {
-		return err
 	}
 	return nil
 }

@@ -156,9 +156,9 @@ func TestClient(t *testing.T) {
 					genai.ProviderOptionAPIKey("bad apiKey"),
 					genai.ProviderOptionModel("command-r7b-12-2024"),
 				},
-				ErrGenSync:   "http 401\ninvalid api token\nget a new API key at https://dashboard.cohere.com/api-keys",
-				ErrGenStream: "http 401\ninvalid api token\nget a new API key at https://dashboard.cohere.com/api-keys",
-				ErrListModel: "http 401\ninvalid api token\nget a new API key at https://dashboard.cohere.com/api-keys",
+				ErrGenSync:   "http 401\nIncorrect API key provided: ***. You can find your API key at https://dashboard.cohere.com/api-keys.",
+				ErrGenStream: "http 401\nIncorrect API key provided: ***. You can find your API key at https://dashboard.cohere.com/api-keys.",
+				ErrListModel: "http 401\nIncorrect API key provided: ***. You can find your API key at https://dashboard.cohere.com/api-keys.",
 			},
 			{
 				Name: "bad model",

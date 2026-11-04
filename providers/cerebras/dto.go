@@ -32,7 +32,7 @@ type ReasoningEffort string
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
 	switch r {
-	case "", ReasoningEffortNone, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+	case "", ReasoningEffortNone, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortMax:
 		return nil
 	default:
 		return fmt.Errorf("invalid ReasoningEffort %q", r)
@@ -49,6 +49,8 @@ const (
 	ReasoningEffortMedium ReasoningEffort = "medium"
 	// ReasoningEffortHigh requests high reasoning effort.
 	ReasoningEffortHigh ReasoningEffort = "high"
+	// ReasoningEffortMax requests the highest native reasoning effort.
+	ReasoningEffortMax ReasoningEffort = "max"
 )
 
 // ReasoningFormat controls how reasoning content appears in a response.
@@ -295,18 +297,39 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.PromptCacheKey != "" {
 				c.PromptCacheKey = v.PromptCacheKey
 			}
-			if v.ReasoningEffort != "" {
-				c.ReasoningEffort = v.ReasoningEffort
-			}
-			if v.ReasoningFormat != "" {
-				c.ReasoningFormat = v.ReasoningFormat
-			}
 			if v.ServiceTier != "" {
 				c.ServiceTier = v.ServiceTier
 			}
 			if !v.ToolChoice.IsZero() {
 				c.ToolChoice = v.ToolChoice
 			}
+		case genai.EffortLevel:
+			switch v {
+			case genai.EffortOff:
+				c.ReasoningEffort = ReasoningEffortLow
+				if strings.Contains(model, "qwen") || strings.Contains(model, "gemma") {
+					c.ReasoningEffort = ReasoningEffortNone
+				}
+			case genai.EffortLow:
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.ReasoningEffort = ReasoningEffortMedium
+				if strings.Contains(model, "kimi") || strings.Contains(model, "glm") {
+					c.ReasoningEffort = ReasoningEffortHigh
+				}
+			case genai.EffortHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortXHigh, genai.EffortMax:
+				c.ReasoningEffort = ReasoningEffortHigh
+				if strings.Contains(model, "kimi") || strings.Contains(model, "glm") {
+					c.ReasoningEffort = ReasoningEffortMax
+				}
+			case "":
+			default:
+				return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+		case genai.ReasoningOutput:
+			c.ReasoningFormat = ReasoningFormatParsed
 		case *genai.GenOptionText:
 			c.MaxCompletionTokens = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -490,8 +513,8 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			continue
 		}
-		// Do not include thinking in the message.
 		if in.Replies[i].Reasoning != "" {
+			m.Reasoning += in.Replies[i].Reasoning
 			continue
 		}
 		m.Content = append(m.Content, Content{})

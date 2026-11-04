@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 5.453s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 287
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-6e165649-491b-9703-8b30-c3183d1e03ff","object":"chat.completion","created":1793827113,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to search the web to find who is currently the Prime Minister of Canada. However, I don''t have the ability to search the web. I can only provide information based on my training data. As of my knowledge, Mark Carney became the Prime Minister of Canada in March 2025. The user wants only the name with no explanation.","content":"Mark Carney"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":77,"total_tokens":158,"completion_tokens":81,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":77},"completion_tokens_details":{"reasoning_tokens":75,"text_tokens":81}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827113605"
+            Req-Cost-Time:
+                - "2227"
+            Resp-Start-Time:
+                - "1793827115833"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "2227"
+        status: 200 OK
+        code: 200
+        duration: 2.477s

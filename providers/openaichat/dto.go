@@ -59,6 +59,8 @@ const (
 	ReasoningEffortHigh = openaibase.ReasoningEffortHigh
 	// ReasoningEffortXHigh requests extra-high reasoning effort.
 	ReasoningEffortXHigh = openaibase.ReasoningEffortXHigh
+	// ReasoningEffortMax requests maximum reasoning effort.
+	ReasoningEffortMax = openaibase.ReasoningEffortMax
 )
 
 // Background is only supported on gpt-image-1.
@@ -187,10 +189,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		switch v := opt.(type) {
 		case *GenOptionText:
-			if v.ReasoningEffort != "" {
-				c.ReasoningEffort = v.ReasoningEffort
-			}
 			c.ServiceTier = v.ServiceTier
+		case genai.EffortLevel:
+			e, err := openaibase.ThinkingEffort(v, model)
+			if err != nil {
+				return err
+			}
+			c.ReasoningEffort = e
+		case genai.ReasoningOutput:
+			unsupported = append(unsupported, "IncludeReasoning")
 		case *genai.GenOptionText:
 			u, err := c.initOptionsText(v, model)
 			unsupported = append(unsupported, u...)
@@ -259,7 +266,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if c.ReasoningEffort == "" {
 				c.ReasoningEffort = ReasoningEffortNone
 			} else if c.ReasoningEffort != ReasoningEffortNone {
-				unsupported = append(unsupported, "GenOptionText.ReasoningEffort")
+				unsupported = append(unsupported, "EffortLevel")
 			}
 		}
 	}

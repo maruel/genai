@@ -163,3 +163,71 @@ interactions:
         status: 200 OK
         code: 200
         duration: 135ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 871
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning":"The user asks to use the get_hostname tool to get the hostname and reply with only the hostname. So I need to call the tool.","tool_calls":[{"type":"function","id":"fc_0b05f4d8-ab91-4bf1-a50f-cb72c89092d2","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"fc_0b05f4d8-ab91-4bf1-a50f-cb72c89092d2"}],"model":"openai/gpt-oss-safeguard-20b","stream":true,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-d3ea5c29-bce6-4254-9120-9b0e7496a0c2","object":"chat.completion.chunk","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","system_fingerprint":"fp_a2cda27c02","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m6m8dxh9etash70h9qgfm9wp","seed":1230300671}}
+
+            data: {"id":"chatcmpl-d3ea5c29-bce6-4254-9120-9b0e7496a0c2","object":"chat.completion.chunk","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","system_fingerprint":"fp_a2cda27c02","choices":[{"index":0,"delta":{"content":"gen"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-d3ea5c29-bce6-4254-9120-9b0e7496a0c2","object":"chat.completion.chunk","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","system_fingerprint":"fp_a2cda27c02","choices":[{"index":0,"delta":{"content":"ai"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-d3ea5c29-bce6-4254-9120-9b0e7496a0c2","object":"chat.completion.chunk","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","system_fingerprint":"fp_a2cda27c02","choices":[{"index":0,"delta":{"content":"-sm"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-d3ea5c29-bce6-4254-9120-9b0e7496a0c2","object":"chat.completion.chunk","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","system_fingerprint":"fp_a2cda27c02","choices":[{"index":0,"delta":{"content":"oke"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-d3ea5c29-bce6-4254-9120-9b0e7496a0c2","object":"chat.completion.chunk","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","system_fingerprint":"fp_a2cda27c02","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m6m8dxh9etash70h9qgfm9wp","usage":{"queue_time":0.083591896,"prompt_tokens":203,"prompt_time":0.013819718,"completion_tokens":8,"completion_time":0.010490605,"total_tokens":211,"total_time":0.024310323}},"usage":{"queue_time":0.083591896,"prompt_tokens":203,"prompt_time":0.013819718,"completion_tokens":8,"completion_time":0.010490605,"total_tokens":211,"total_time":0.024310323}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf902e3346f9-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "150000"
+            X-Ratelimit-Remaining-Requests:
+                - "499996"
+            X-Ratelimit-Remaining-Tokens:
+                - "149083"
+            X-Ratelimit-Reset-Requests:
+                - 691ms
+            X-Ratelimit-Reset-Tokens:
+                - 366ms
+        status: 200 OK
+        code: 200
+        duration: 108ms

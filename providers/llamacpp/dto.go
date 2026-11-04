@@ -271,18 +271,21 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
-		case *GenOption:
-			c.ReasoningFormat = v.ReasoningFormat
-			if c.ChatTemplateKWArgs == nil {
+		case genai.EffortLevel:
+			if v != "" && c.ChatTemplateKWArgs == nil {
 				c.ChatTemplateKWArgs = map[string]json.RawMessage{}
 			}
-			// llama-server defaults enable_thinking to true, so we must
-			// explicitly disable it when not requested.
-			if v.Thinking {
-				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("true")
-			} else {
+			switch v {
+			case "":
+			case genai.EffortOff:
 				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("false")
+			case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("true")
+			default:
+				unsupported = append(unsupported, "EffortLevel")
 			}
+		case genai.ReasoningOutput:
+			c.ReasoningFormat = ReasoningFormatDeepSeek
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
@@ -558,6 +561,11 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			if v != "" {
+				unsupported = append(unsupported, "EffortLevel")
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.NPredict = v.MaxTokens
 			if v.TopLogprobs > 0 {
@@ -848,6 +856,13 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	if len(in.Replies) != 0 {
 		for i := range in.Replies {
+			if in.Replies[i].Reasoning != "" {
+				if len(in.Replies[i].Opaque) != 0 {
+					return fmt.Errorf("reply %d: field Reply.Opaque not supported", i)
+				}
+				m.ReasoningContent += in.Replies[i].Reasoning
+				continue
+			}
 			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
 				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
@@ -856,11 +871,10 @@ func (m *Message) From(in *genai.Message) error {
 				continue
 			}
 			c := Content{}
-			if skip, err := c.FromReply(&in.Replies[i]); err != nil {
+			if err := c.FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
-			} else if !skip {
-				m.Content = append(m.Content, c)
 			}
+			m.Content = append(m.Content, c)
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
@@ -1004,45 +1018,42 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 }
 
 // FromReply populates a Content from a genai.Reply.
-func (c *Content) FromReply(in *genai.Reply) (bool, error) {
+func (c *Content) FromReply(in *genai.Reply) error {
 	if !in.Citation.IsZero() {
-		return false, &internal.BadError{Err: errors.New("field Reply.Citation not supported")}
+		return &internal.BadError{Err: errors.New("field Reply.Citation not supported")}
 	}
 	if len(in.Opaque) != 0 {
-		return false, &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
-	}
-	if in.Reasoning != "" {
-		return true, nil
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Text != "" {
 		c.Type = "text"
 		c.Text = in.Text
-		return false, nil
+		return nil
 	}
 	if !in.Doc.IsZero() {
 		mimeType, data, err := in.Doc.Read(maxDocBytes)
 		if err != nil {
-			return false, fmt.Errorf("failed to read document: %w", err)
+			return fmt.Errorf("failed to read document: %w", err)
 		}
 		switch {
 		// text/plain, text/markdown
 		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return false, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Type = "text"
 			c.Text = string(data)
 		case mimeType == "audio/mpeg":
 			c.Type = "input_audio"
 			if in.Doc.URL != "" {
-				return false, errors.New("audio doesn't support URLs")
+				return errors.New("audio doesn't support URLs")
 			}
 			c.InputAudio.Data = data
 			c.InputAudio.Format = "mp3"
 		case mimeType == "audio/wav":
 			c.Type = "input_audio"
 			if in.Doc.URL != "" {
-				return false, errors.New("audio doesn't support URLs")
+				return errors.New("audio doesn't support URLs")
 			}
 			c.InputAudio.Data = data
 			c.InputAudio.Format = "wav"
@@ -1054,11 +1065,11 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
 		default:
-			return false, &internal.BadError{Err: fmt.Errorf("mime type %s is unsupported", mimeType)}
+			return &internal.BadError{Err: fmt.Errorf("mime type %s is unsupported", mimeType)}
 		}
-		return false, nil
+		return nil
 	}
-	return false, &internal.BadError{Err: errors.New("unknown Reply type")}
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 // To converts a Content to a genai.Reply.

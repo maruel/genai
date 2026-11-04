@@ -95,19 +95,6 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// GenOption is the llama.cpp-specific options.
-type GenOption struct {
-	// ReasoningFormat sets the reasoning format for the model.
-	ReasoningFormat ReasoningFormat
-	// Thinking enables thinking mode via chat_template_kwargs.
-	Thinking bool
-}
-
-// Validate implements genai.Validatable.
-func (o *GenOption) Validate() error {
-	return nil
-}
-
 // Model is a synthetic struct combining the information from both ModelHF and ModelOpenAI.
 type Model struct {
 	HF     ModelHF

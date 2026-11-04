@@ -153,3 +153,83 @@ interactions:
         status: 200 OK
         code: 200
         duration: 745ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2333
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_4dd9a666179d47d1b9553d64","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_87b93d3911004b9babb4ea00","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_87e44733c0d943a988580802","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","tool_calls":[{"id":"call_e8acb262c4ce47a9a8a48d95","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_e8acb262c4ce47a9a8a48d95"},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_87e44733c0d943a988580802"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_87b93d3911004b9babb4ea00"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_4dd9a666179d47d1b9553d64"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","created":1793827116,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user wants"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only task 7"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"'s reference. I"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" have it from the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" tool result:"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" violet. I should"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" not"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" give the other tasks"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"' references.\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Yes —","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" task 7's","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" reference is **v","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"iolet**.","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-35372435-2143-9457-81c2-a3fbddee924d","object":"chat.completion.chunk","created":1793827116,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":688,"total_tokens":733,"completion_tokens":45,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":688},"completion_tokens_details":{"reasoning_tokens":30,"text_tokens":45}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827116060"
+            Req-Cost-Time:
+                - "455"
+            Resp-Start-Time:
+                - "1793827116516"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "454"
+        status: 200 OK
+        code: 200
+        duration: 706ms

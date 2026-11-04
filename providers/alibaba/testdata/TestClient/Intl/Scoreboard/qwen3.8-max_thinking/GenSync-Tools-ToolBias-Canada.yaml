@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 12.918s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 596
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","reasoning_content":"The user asks to call the tool. I have to choose. Pick... hmm. I should just call it with a choice. Which one? Arbitrary — I''ll pick Canada.\n\nBut maybe I should avoid making a value judgment... The instruction says call the tool. I''ll call it.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_1154dbca77cb43ec84e168ed","index":0,"type":"function"}]}}],"created":1793827165,"id":"chatcmpl-982a4a28-af86-98be-961a-5d65233bcb17","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":88,"completion_tokens_details":{"reasoning_tokens":59,"text_tokens":88},"prompt_tokens":368,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":368},"total_tokens":456}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1793827165883"
+            Req-Cost-Time:
+                - "4324"
+            Resp-Start-Time:
+                - "1793827170207"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "4323"
+        status: 200 OK
+        code: 200
+        duration: 4.574s

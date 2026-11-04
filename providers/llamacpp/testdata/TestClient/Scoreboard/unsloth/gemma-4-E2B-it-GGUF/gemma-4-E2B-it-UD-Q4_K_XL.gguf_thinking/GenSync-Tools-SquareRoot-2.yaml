@@ -35,3 +35,37 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.04s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1454
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"yCIbzND15k2RHuWTthO2WveYaV3zT9tM","function":{"name":"square_root","arguments":"{\"number\":132413}"}}],"reasoning_content":"The user wants me to calculate the square root of 132413 using the `square_root` tool and return only the result.\n\n1.  **Identify the goal:** Calculate $\\sqrt{132413}$.\n2.  **Identify the tool:** The available tool is `square_root(number)`.\n3.  **Determine the input:** The number is 132413.\n4.  **Formulate the tool call:** `square_root(number=132413)`.\n5.  **Execute the tool call and wait for the result.**\n6.  **Format the output:** Reply with *only* the result.\n\nLet's call the tool."},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"yCIbzND15k2RHuWTthO2WveYaV3zT9tM"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 858
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89","reasoning_content":"The user asked me to use the `square_root` tool to calculate the square root of 132413 and reply with only the result.\nThe tool returned `363.89`.\nI need to output only this result."}}],"created":1793829704,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":62,"prompt_tokens":297,"total_tokens":359,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-AfBFA7u7Je7Sp8RETFcfxOrP69p8VYJm","timings":{"cache_n":0,"prompt_n":297,"prompt_ms":1989.84,"prompt_per_token_ms":6.69979797979798,"prompt_per_second":149.25823181763357,"predicted_n":62,"predicted_ms":3422.767,"predicted_per_token_ms":56.110934426229505,"predicted_per_second":17.82183829632575}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "858"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 5.417s

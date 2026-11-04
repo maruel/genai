@@ -26,7 +26,6 @@ func TestProviderOption(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			for _, p := range []ProviderOption{
 				{},
-				{Effort: ReasoningEffortHigh},
 				{DangerouslySkipPermissions: true, ExtraArgs: []string{"-c", "model_verbosity=\"low\""}},
 			} {
 				if err := p.Validate(); err != nil {
@@ -36,7 +35,6 @@ func TestProviderOption(t *testing.T) {
 		})
 		t.Run("error", func(t *testing.T) {
 			for _, p := range []ProviderOption{
-				{Effort: "turbo"},
 				{ExtraArgs: []string{"--listen", "ws://127.0.0.1:1"}},
 			} {
 				if err := p.Validate(); err == nil {
@@ -47,18 +45,30 @@ func TestProviderOption(t *testing.T) {
 	})
 }
 
-func TestGenOption(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		if err := (&GenOption{Effort: ReasoningEffortHigh}).Validate(); err != nil {
-			t.Error(err)
-		}
-		if err := (&GenOption{Effort: "turbo"}).Validate(); err == nil {
-			t.Error("expected error")
+func TestParseOpts(t *testing.T) {
+	t.Run("thinking", func(t *testing.T) {
+		for _, tc := range []struct {
+			level genai.EffortLevel
+			want  string
+		}{
+			{genai.EffortOff, "none"},
+			{genai.EffortLow, "low"},
+			{genai.EffortMedium, "medium"},
+			{genai.EffortXHigh, "xhigh"},
+			{genai.EffortMax, "max"},
+		} {
+			t.Run(string(tc.level), func(t *testing.T) {
+				got, err := parseOpts(&ProviderOption{}, []genai.GenOption{tc.level})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got.effort) != tc.want {
+					t.Errorf("native effort = %q, want %q", string(got.effort), tc.want)
+				}
+			})
 		}
 	})
-}
 
-func TestParseOpts(t *testing.T) {
 	t.Run("default_effort", func(t *testing.T) {
 		for _, tc := range []struct {
 			name string
@@ -67,8 +77,7 @@ func TestParseOpts(t *testing.T) {
 			want ReasoningEffort
 		}{
 			{"default", ProviderOption{}, nil, ReasoningEffortMedium},
-			{"provider", ProviderOption{Effort: ReasoningEffortLow}, nil, ReasoningEffortLow},
-			{"turn", ProviderOption{Effort: ReasoningEffortLow}, []genai.GenOption{&GenOption{Effort: ReasoningEffortHigh}}, ReasoningEffortHigh},
+			{"turn", ProviderOption{}, []genai.GenOption{genai.EffortHigh}, ReasoningEffortHigh},
 		} {
 			co, err := parseOpts(&tc.p, tc.opts)
 			if err != nil {

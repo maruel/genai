@@ -22,7 +22,7 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"a50c47ea-fc13-46aa-bd52-ba1b667d9e01","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"f0d3b85d-aec7-43df-8a0b-578bd3b0f4e8","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"thinking","thinking":""}}}}
@@ -76,7 +76,7 @@ interactions:
             data: {"type":"content-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":1394,"output_tokens":16}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":1395,"output_tokens":16,"reasoning_tokens":15},"cached_tokens":1344}}}
 
             data: [DONE]
 
@@ -102,9 +102,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 421d39a162cec8816cc7f4382972d590
+                - c81d56a223f4575dc676d77d66b4d375
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "114"
+                - "119"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "27"
         status: 200 OK
         code: 200
-        duration: 158ms
+        duration: 160ms

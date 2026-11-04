@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 25.763s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 193
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"content":"# The Theory of Relativity: A Comprehensive Explanation\n\nThe theory of rel","reasoning_content":"The user is asking me to explain the theory of relativity in great detail. This is a broad physics topic that encompasses both Special Relativity (1905) and General Relativity (1915), both developed by Albert Einstein. I need to cover the historical context, the postulates, the key consequences, the mathematics (at a conceptual level), and the experimental evidence. Let me organize this comprehensively, covering:\n\n1. Historical context and motivation\n2. Special Relativity - postulates, consequences (time dilation, length contraction, relativity of simultaneity, mass-energy equivalence)\n3. General Relativity - equivalence principle, spacetime curvature, Einstein field equations, predictions (gravitational time dilation, light bending, gravitational waves, black holes)\n4. Experimental confirmations\n5. Modern applications\n\nI''ll write this in a detailed, structured manner that is accessible but thorough.","role":"assistant"}}],"created":1793827141,"id":"chatcmpl-6ce71a74-dd67-9117-9507-43075673a927","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":204,"completion_tokens_details":{"reasoning_tokens":186,"text_tokens":204},"prompt_tokens":60,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":60},"total_tokens":264}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1793827141548"
+            Req-Cost-Time:
+                - "4462"
+            Resp-Start-Time:
+                - "1793827146011"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "4462"
+        status: 200 OK
+        code: 200
+        duration: 4.713s

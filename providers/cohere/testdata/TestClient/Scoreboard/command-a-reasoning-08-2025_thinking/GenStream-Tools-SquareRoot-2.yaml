@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 837
+        content_length: 1516
         host: api.cohere.com
         body: |
-            {"stream":true,"model":"command-a-reasoning-08-2025","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"square_root_dem3a62ahjjz","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413.0}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"square_root_dem3a62ahjjz"}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"none"}
+            {"stream":true,"model":"command-a-reasoning-08-2025","messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"thinking","thinking":"Okay, the user wants me to calculate the square root of 132413 using the square_root tool and provide only the result without any explanation. Let me start by checking the available tools. The square_root tool is listed, and it requires a number parameter. The user provided the number 132413, so I need to call the tool with that input. I should generate a unique tool_call_id, maybe \"call_123\" for simplicity. Once I execute the tool, I'll receive the result. After getting the output, I'll extract the square root value from the response and present it to the user as specified, ensuring no additional explanations are included."}],"tool_calls":[{"id":"square_root_7k6mgxkq3txt","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413.0}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"square_root_7k6mgxkq3txt"}],"tools":[{"type":"function","function":{"name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"description":"Calculates and return the square root of a number"}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,45 +20,8 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: |+
-            event: message-start
-            data: {"id":"bfc704f3-4dcb-4111-a056-6fa2a24bd03e","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
-
-            event: content-start
-            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"3"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"6"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"3"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"8"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"9"}}}}
-
-            event: citation-start
-            data: {"type":"citation-start","index":0,"delta":{"message":{"citations":{"start":0,"end":6,"text":"363.89","sources":[{"type":"tool","id":"square_root_dem3a62ahjjz:0","tool_output":{"content":"363.89"}}],"type":"TEXT_CONTENT","content_index":0}}}}
-
-            event: citation-end
-            data: {"type":"citation-end","index":0}
-
-            event: content-end
-            data: {"type":"content-end","index":0}
-
-            event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":55,"output_tokens":6},"tokens":{"input_tokens":1601,"output_tokens":18}}}}
-
-            data: [DONE]
-
+        uncompressed: true
+        body: '{"id":"31603467-509b-4234-b833-6adfb9594730","message":"invalid request: tool_choice is not supported for this model"}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -67,7 +30,7 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Type:
-                - text/event-stream
+                - application/json
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 GMT
             Pragma:
@@ -75,15 +38,21 @@ interactions:
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - a73ea159fcf2070c5ffc0099bfc7f61f
+                - db89c686f88b8079243eb95401dba84f
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "35"
-        status: 200 OK
-        code: 200
-        duration: 79ms
+                - "3"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "12"
+        status: 400 Bad Request
+        code: 400
+        duration: 50ms

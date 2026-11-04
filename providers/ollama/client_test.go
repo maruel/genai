@@ -393,18 +393,18 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	return l.url
 }
 
-// ollamaThinkOff wraps a provider to inject ReasoningEffortOff on every call,
+// ollamaThinkOff wraps a provider to inject EffortOff on every call,
 // disabling thinking for models that default to it.
 type ollamaThinkOff struct {
 	genai.Provider
 }
 
 func (o *ollamaThinkOff) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return o.Provider.GenSync(ctx, msgs, append(opts, &ollama.GenOptionText{ReasoningEffort: ollama.ReasoningEffortOff})...)
+	return o.Provider.GenSync(ctx, msgs, append(opts, genai.EffortOff)...)
 }
 
 func (o *ollamaThinkOff) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return o.Provider.GenStream(ctx, msgs, append(opts, &ollama.GenOptionText{ReasoningEffort: ollama.ReasoningEffortOff})...)
+	return o.Provider.GenStream(ctx, msgs, append(opts, genai.EffortOff)...)
 }
 
 func (o *ollamaThinkOff) Unwrap() genai.Provider {

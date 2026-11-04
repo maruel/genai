@@ -2,10 +2,10 @@
 
 | Model                         | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ----------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| command-a-reasoning-08-2025🥇🥈 | Sync🧠   | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| command-a-reasoning-08-2025🥇🥈 | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ✅   | 🌱   | ❌    | ❌     | ✅    | ✅     |
+| command-a-reasoning-08-2025🥇🥈 | Sync🧠   | 💬    | 💬     | 💨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| command-a-reasoning-08-2025🥇🥈 | Stream🧠 | 💬    | 💬     | 💨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | command-r7b-12-2024🥉          | Sync🧠   | 💬    | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| command-r7b-12-2024🥉          | Stream🧠 | 💬    | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| command-r7b-12-2024🥉          | Stream🧠 | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | c4ai-aya-expanse-32b          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | c4ai-aya-expanse-8b           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | c4ai-aya-vision-32b           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

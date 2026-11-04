@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1911
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_F162CD7D2330432E86B7079A","function":{"name":"task_status","arguments":"{\"task_id\":3}"}},{"type":"function","id":"call_C05B19759444497381377706","function":{"name":"task_status","arguments":"{\"task_id\":7}"}},{"type":"function","id":"call_AB21760B56B741C3B5C90119","function":{"name":"task_status","arguments":"{\"task_id\":11}"}}],"reasoning":"The user wants me to check the status and reference of tasks 3, 7, and 11. They also want me to start the checks together if possible. I'll use the task_status function for each of these three tasks.\n","reasoning_details":[{"type":"reasoning.text","format":"unknown","index":0,"text":"The user wants me to check the status and reference of tasks 3, 7, and 11. They also want me to start the checks together if possible. I'll use the task_status function for each of these three tasks.\n"}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"qwen/qwen3.5-35b-a3b","stream":false,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n{\"id\":\"gen-1793828782-PLVasmlOYG79k2hvk1gt\",\"object\":\"chat.completion\",\"created\":1793828782,\"model\":\"qwen/qwen3.5-35b-a3b\",\"provider\":\"Parasail\",\"system_fingerprint\":null,\"service_tier\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\nI made the call for task 7, but I'm not seeing the result in my context right now. I should have it once the tool completes. Let me know if you'd like me to wait for it or try again.\",\"refusal\":null,\"reasoning\":\"The user is asking if I have task 7's reference from the previous tool calls. I did call task_status for task 7 along with tasks 3 and 11. The tool results would have been returned to me, but I need to check what information I have.\\n\\nLooking at my previous tool calls, I called task_status for tasks 3, 7, and 11. The tool results should have come back with the status and reference for each task. However, I don't actually see the tool results in my context - they would have been returned by the system after I made the calls.\\n\\nSince I made the tool calls for all three tasks, I should have received the results for all of them, including task 7's reference. But I need to be careful - I should only provide information that I actually received from the tool results, which I should have access to.\\n\\nWait, I need to think about this more carefully. The tool responses would have been provided to me as part of the system interaction. I should have received the results from the three tool calls. Let me assume I did receive them and I can provide task 7's reference if it was in the results.\\n\\nActually, looking at this more carefully - I made the tool calls, but I don't see the actual tool results displayed to me in my context. This suggests that either:\\n1. The results weren't captured in my context\\n2. I need to wait for results\\n3. The system handles this differently\\n\\nGiven that the user is asking \\\"Do you have task 7's reference yet?\\\" this suggests they want me to know if I received the result from the tool call. Since I did make the call, I should have the result, but I'm not seeing it in my context.\\n\\nI should be honest - I made the tool call for task 7, but I don't see the result in my context. This could mean I need to wait or there's a system issue. Let me be straightforward about this.\\n\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user is asking if I have task 7's reference from the previous tool calls. I did call task_status for task 7 along with tasks 3 and 11. The tool results would have been returned to me, but I need to check what information I have.\\n\\nLooking at my previous tool calls, I called task_status for tasks 3, 7, and 11. The tool results should have come back with the status and reference for each task. However, I don't actually see the tool results in my context - they would have been returned by the system after I made the calls.\\n\\nSince I made the tool calls for all three tasks, I should have received the results for all of them, including task 7's reference. But I need to be careful - I should only provide information that I actually received from the tool results, which I should have access to.\\n\\nWait, I need to think about this more carefully. The tool responses would have been provided to me as part of the system interaction. I should have received the results from the three tool calls. Let me assume I did receive them and I can provide task 7's reference if it was in the results.\\n\\nActually, looking at this more carefully - I made the tool calls, but I don't see the actual tool results displayed to me in my context. This suggests that either:\\n1. The results weren't captured in my context\\n2. I need to wait for results\\n3. The system handles this differently\\n\\nGiven that the user is asking \\\"Do you have task 7's reference yet?\\\" this suggests they want me to know if I received the result from the tool call. Since I did make the call, I should have the result, but I'm not seeing it in my context.\\n\\nI should be honest - I made the tool call for task 7, but I don't see the result in my context. This could mean I need to wait or there's a system issue. Let me be straightforward about this.\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":514,\"completion_tokens\":468,\"total_tokens\":982,\"cost\":0.0005451,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.0005451,\"upstream_inference_prompt_cost\":0.0000771,\"upstream_inference_completions_cost\":0.000468},\"completion_tokens_details\":{\"reasoning_tokens\":418,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,cf-ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Ray:
+                - a556cfa57fe7aab3-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=8,cfOrigin;dur=0,cfWorker;dur=343
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1793828782-PLVasmlOYG79k2hvk1gt
+            X-Openrouter-Release:
+                - api;919a4b68-81aa-445e-9299-99636b1cf2c1
+        status: 200 OK
+        code: 200
+        duration: 372ms

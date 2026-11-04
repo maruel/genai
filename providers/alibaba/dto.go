@@ -43,9 +43,8 @@ type ChatRequest struct {
 	Seed       int64  `json:"seed,omitzero"`
 	// DashScope extension: enable web search.
 	EnableSearch bool `json:"enable_search,omitzero"`
-	// DashScope extension: enable thinking mode. Not omitzero so false is sent explicitly,
-	// overriding the default (enabled) on qwen3.5 models.
-	EnableThinking bool `json:"enable_thinking"`
+	// DashScope extension: enable thinking mode. Nil leaves the API default.
+	EnableThinking *bool `json:"enable_thinking,omitzero"`
 	// DashScope extension: maximum number of reasoning tokens. 0 means no limit.
 	ThinkingBudget int64 `json:"thinking_budget,omitzero"`
 }
@@ -53,6 +52,7 @@ type ChatRequest struct {
 // Init initializes the request from genai types.
 func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
+	c.EnableThinking = new(false)
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
@@ -64,9 +64,29 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			c.EnableThinking = v.Thinking
-			c.ThinkingBudget = v.ThinkingBudget
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.EnableThinking = new(false)
+			case genai.EffortLow:
+				c.EnableThinking = new(true)
+				c.ThinkingBudget = 1024
+			case genai.EffortMedium:
+				c.EnableThinking = new(true)
+				c.ThinkingBudget = 8192
+			case genai.EffortHigh:
+				c.EnableThinking = new(true)
+				c.ThinkingBudget = 16384
+			case genai.EffortXHigh:
+				c.EnableThinking = new(true)
+				c.ThinkingBudget = 32768
+			case genai.EffortMax:
+				c.EnableThinking = new(true)
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature

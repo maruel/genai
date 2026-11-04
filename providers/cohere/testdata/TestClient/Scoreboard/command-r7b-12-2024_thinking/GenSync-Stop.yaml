@@ -19,17 +19,16 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 265
-        body: '{"id":"61ee2a70-6cb5-4d86-a60f-ee71ad04e27c","message":{"role":"assistant","content":[{"type":"text","text":"Canada"}]},"finish_reason":"STOP_SEQUENCE","usage":{"billed_units":{"input_tokens":12,"output_tokens":1},"tokens":{"input_tokens":507,"output_tokens":736}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5401d02a-6aec-4014-bf0a-64f88b04014b","message":{"role":"assistant","content":[{"type":"text","text":"Canada"}]},"finish_reason":"STOP_SEQUENCE","usage":{"billed_units":{"input_tokens":12,"output_tokens":1},"tokens":{"input_tokens":507,"output_tokens":804},"cached_tokens":480}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
             Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+                - h3=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "265"
             Content-Type:
                 - application/json
             Expires:
@@ -43,15 +42,21 @@ interactions:
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - dc7029a3a690b49fd772215ce7252cc3
+                - 36cffc780f548fe8c0de5d9c7b58380c
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "4526"
+                - "10582"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "10"
         status: 200 OK
         code: 200
-        duration: 4.57s
+        duration: 10.634s

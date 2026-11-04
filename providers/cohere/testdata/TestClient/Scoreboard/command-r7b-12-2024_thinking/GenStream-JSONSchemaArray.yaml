@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"9a260781-8617-45cd-88f0-2c02d788db5e","message":"invalid request: response_format validation: invalid ''json_schema'' provided: ''type'' field must be ''object''"}'
+        body: '{"id":"ab299430-031a-416d-892c-0a10867df834","message":"invalid request: response_format validation: invalid ''json_schema'' provided: ''type'' field must be ''object''"}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -44,9 +44,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 4d9c6503fee421778df1bdfd86eb81f8
+                - 91d1883ae3c6ac741637b8cc6c96693b
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
                 - "11"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "26"
         status: 400 Bad Request
         code: 400
-        duration: 52ms
+        duration: 58ms

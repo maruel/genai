@@ -328,8 +328,8 @@ func TestClient(t *testing.T) {
 				responses.WriteByte('\n')
 				write(5, acp.PromptResult{StopReason: acp.StopReasonEndTurn})
 
-				c, written := newCaptureClient(t, responses.String(), genai.ProviderOptionModel("deepseek-official/deepseek-v4-flash"), &ProviderOption{Effort: EffortLow})
-				if _, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("say hello")}, &GenOption{Effort: EffortHigh}); err != nil {
+				c, written := newCaptureClient(t, responses.String(), genai.ProviderOptionModel("deepseek-official/deepseek-v4-flash"), &ProviderOption{})
+				if _, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("say hello")}, genai.EffortHigh); err != nil {
 					t.Fatalf("GenSync: %v", err)
 				}
 				var got []acp.SetSessionConfigOptionParams
@@ -524,12 +524,12 @@ func TestClient(t *testing.T) {
 func TestProviderOption(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			if err := (&ProviderOption{Effort: EffortLow, DangerouslySkipPermissions: true, ExtraArgs: []string{"--patch", "/tmp/acp.patch.yml"}}).Validate(); err != nil {
+			if err := (&ProviderOption{DangerouslySkipPermissions: true, ExtraArgs: []string{"--patch", "/tmp/acp.patch.yml"}}).Validate(); err != nil {
 				t.Error(err)
 			}
 		})
 		t.Run("error", func(t *testing.T) {
-			for _, p := range []ProviderOption{{Effort: "   "}, {ExtraArgs: []string{""}}, {ExtraArgs: []string{"--profile", "other"}}} {
+			for _, p := range []ProviderOption{{ExtraArgs: []string{""}}, {ExtraArgs: []string{"--profile", "other"}}} {
 				if err := p.Validate(); err == nil {
 					t.Errorf("%+v: expected error", p)
 				}
@@ -539,15 +539,8 @@ func TestProviderOption(t *testing.T) {
 }
 
 func TestGenOption(t *testing.T) {
-	t.Run("Validate", func(t *testing.T) {
-		t.Run("error", func(t *testing.T) {
-			if err := (&GenOption{Effort: "   "}).Validate(); err == nil {
-				t.Fatal("expected error for whitespace effort")
-			}
-		})
-	})
 	t.Run("unsupported", func(t *testing.T) {
-		_, err := parseOpts(&ProviderOption{}, []genai.GenOption{
+		_, err := parseOpts([]genai.GenOption{
 			genai.GenOptionSeed(1),
 			&genai.GenOptionText{
 				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
@@ -576,7 +569,7 @@ func TestGenOption(t *testing.T) {
 		}
 	})
 	t.Run("empty_text", func(t *testing.T) {
-		if _, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionText{}}); err != nil {
+		if _, err := parseOpts([]genai.GenOption{&genai.GenOptionText{}}); err != nil {
 			t.Fatalf("empty GenOptionText: %v", err)
 		}
 	})
@@ -607,4 +600,27 @@ func (nopWriteCloser) Close() error { return nil }
 
 func init() {
 	internal.BeLenient = false
+}
+
+func TestParseOpts(t *testing.T) {
+	t.Run("thinking", func(t *testing.T) {
+		for _, tc := range []struct {
+			level genai.EffortLevel
+			want  string
+		}{
+			{genai.EffortOff, "off"},
+			{genai.EffortLow, "low"},
+			{genai.EffortXHigh, "max"},
+		} {
+			t.Run(string(tc.level), func(t *testing.T) {
+				got, err := parseOpts([]genai.GenOption{tc.level})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got.effort) != tc.want {
+					t.Errorf("native effort = %q, want %q", string(got.effort), tc.want)
+				}
+			})
+		}
+	})
 }

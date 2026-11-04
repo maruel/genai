@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.796s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 296
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-4101b135-9c84-968d-93c1-5ae3c3c9ec09","object":"chat.completion","created":1793827095,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to answer whether a banana is a fruit, without explanation, and only respond with a JSON object following the schema {\"is_fruit\": bool}.\n\nYes, a banana is a fruit.","content":"{\"is_fruit\": true}"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":80,"total_tokens":132,"completion_tokens":52,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":80},"completion_tokens_details":{"reasoning_tokens":42,"text_tokens":52}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827095169"
+            Req-Cost-Time:
+                - "1553"
+            Resp-Start-Time:
+                - "1793827096723"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1552"
+        status: 200 OK
+        code: 200
+        duration: 1.803s

@@ -329,8 +329,8 @@ func TestProviderOption(t *testing.T) {
 		}{
 			{
 				"options",
-				ProviderOption{Effort: ThinkingHigh, Skills: true, ExtraArgs: []string{"--no-tools"}},
-				[]string{"--mode", "rpc", "--no-session", "--thinking", "high", "--no-tools"},
+				ProviderOption{Skills: true, ExtraArgs: []string{"--no-tools"}},
+				[]string{"--mode", "rpc", "--no-session", "--no-tools"},
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
@@ -341,7 +341,7 @@ func TestProviderOption(t *testing.T) {
 		}
 	})
 	t.Run("Validate", func(t *testing.T) {
-		for _, p := range []ProviderOption{{Effort: "turbo"}, {ExtraArgs: []string{"--mode", "json"}}} {
+		for _, p := range []ProviderOption{{ExtraArgs: []string{"--mode", "json"}}} {
 			if err := p.Validate(); err == nil {
 				t.Errorf("%+v: expected error", p)
 			}
@@ -372,14 +372,37 @@ func TestNew(t *testing.T) {
 }
 
 func TestParseOpts(t *testing.T) {
+	t.Run("thinking", func(t *testing.T) {
+		for _, tc := range []struct {
+			level genai.EffortLevel
+			want  string
+		}{
+			{genai.EffortOff, "off"},
+			{genai.EffortMedium, "medium"},
+			{genai.EffortHigh, "high"},
+			{genai.EffortXHigh, "xhigh"},
+			{genai.EffortMax, "max"},
+		} {
+			t.Run(string(tc.level), func(t *testing.T) {
+				got, err := parseOpts([]genai.GenOption{tc.level})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got) != tc.want {
+					t.Errorf("native effort = %q, want %q", string(got), tc.want)
+				}
+			})
+		}
+	})
+
 	t.Run("valid", func(t *testing.T) {
-		got, err := parseOpts([]genai.GenOption{&GenOption{Effort: ThinkingLow}})
+		got, err := parseOpts([]genai.GenOption{genai.EffortLow})
 		if err != nil || got != ThinkingLow {
 			t.Errorf("effort = %q, err = %v, want low", got, err)
 		}
 	})
 	t.Run("error", func(t *testing.T) {
-		if _, err := parseOpts([]genai.GenOption{&GenOption{Effort: "turbo"}}); err == nil {
+		if _, err := parseOpts([]genai.GenOption{genai.EffortLevel("turbo")}); err == nil {
 			t.Error("expected error")
 		}
 		if _, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "x"}}); err == nil {

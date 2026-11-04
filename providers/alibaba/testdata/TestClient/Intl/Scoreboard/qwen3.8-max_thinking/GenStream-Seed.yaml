@@ -75,3 +75,77 @@ interactions:
         status: 200 OK
         code: 200
         duration: 860ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 205
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"seed":42,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","created":1793827139,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":"The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" user wants me to"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" say hello using"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" only one word."},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" The most obvious choice"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" is \"Hello.\""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" That's one word"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" and"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":" it's a greeting"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":".\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"Hello.","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1793827139,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1793827139,"id":"chatcmpl-b9353c14-f2a6-9a55-a01e-3982244075b2","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":35,"completion_tokens_details":{"reasoning_tokens":30,"text_tokens":35},"prompt_tokens":57,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":57},"total_tokens":92}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1793827139372"
+            Req-Cost-Time:
+                - "965"
+            Resp-Start-Time:
+                - "1793827140338"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "965"
+        status: 200 OK
+        code: 200
+        duration: 1.216s

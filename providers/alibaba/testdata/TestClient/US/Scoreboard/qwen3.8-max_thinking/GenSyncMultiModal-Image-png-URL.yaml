@@ -48,3 +48,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 3.303s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 331
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":false,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-bd794ed2-e624-40a8-8404-6b0b2984c6c9","object":"chat.completion","created":1793827074,"model":"qwen3.8-max","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The image shows a banana. The question asks for a one-word answer.","content":"Banana"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":126,"total_tokens":147,"completion_tokens":21,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":34},"completion_tokens_details":{"reasoning_tokens":15,"text_tokens":5}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827074299"
+            Req-Cost-Time:
+                - "1934"
+            Resp-Start-Time:
+                - "1793827076233"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1934"
+        status: 200 OK
+        code: 200
+        duration: 1.958s

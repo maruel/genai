@@ -183,16 +183,35 @@ func TestReasoningEffort(t *testing.T) {
 
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
+		t.Run("thinking", func(t *testing.T) {
+			for _, tc := range []struct {
+				model string
+				level genai.EffortLevel
+				want  cerebras.ReasoningEffort
+			}{
+				{"gemma-4-31b", genai.EffortOff, cerebras.ReasoningEffortNone},
+				{"kimi-k3", genai.EffortMax, cerebras.ReasoningEffortMax},
+			} {
+				t.Run(tc.model, func(t *testing.T) {
+					var r cerebras.ChatRequest
+					if err := r.Init(genai.Messages{genai.NewTextMessage("hello")}, tc.model, tc.level); err != nil {
+						t.Fatal(err)
+					}
+					if r.ReasoningEffort != tc.want || r.ReasoningFormat != "" {
+						t.Fatalf("thinking: %q, %q", r.ReasoningEffort, r.ReasoningFormat)
+					}
+				})
+			}
+		})
 		t.Run("valid", func(t *testing.T) {
 			t.Run("providerOptions", func(t *testing.T) {
 				var got cerebras.ChatRequest
 				err := got.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gpt-oss-120b", &cerebras.GenOption{
-					Prediction:      cerebras.Prediction{Text: "known output"},
-					PromptCacheKey:  "conversation-1",
-					ReasoningFormat: cerebras.ReasoningFormatParsed,
-					ServiceTier:     cerebras.ServiceTierFlex,
-					ToolChoice:      cerebras.ToolChoice{Function: "lookup"},
-				})
+					Prediction:     cerebras.Prediction{Text: "known output"},
+					PromptCacheKey: "conversation-1",
+					ServiceTier:    cerebras.ServiceTierFlex,
+					ToolChoice:     cerebras.ToolChoice{Function: "lookup"},
+				}, genai.IncludeReasoning)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -214,9 +233,7 @@ func TestChatRequest(t *testing.T) {
 			})
 			t.Run("reasoningEffort", func(t *testing.T) {
 				var got cerebras.ChatRequest
-				err := got.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gemma-4-31b", &cerebras.GenOption{
-					ReasoningEffort: cerebras.ReasoningEffortHigh,
-				})
+				err := got.Init(genai.Messages{{Requests: []genai.Request{{Text: "hello"}}}}, "gemma-4-31b", genai.EffortHigh)
 				if err != nil {
 					t.Fatal(err)
 				}

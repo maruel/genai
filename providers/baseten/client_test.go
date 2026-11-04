@@ -9,7 +9,6 @@ package baseten_test
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -180,22 +179,40 @@ func TestClient(t *testing.T) {
 	})
 }
 
-func TestGenOption(t *testing.T) {
+func TestEffortLevel(t *testing.T) {
+	t.Run("enabled", func(t *testing.T) {
+		var req baseten.ChatRequest
+		if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, "zai-org/GLM-5.1", genai.EffortHigh); err != nil {
+			t.Fatal(err)
+		}
+		if req.ChatTemplateArgs.EnableThinking == nil || !*req.ChatTemplateArgs.EnableThinking {
+			t.Fatal("thinking must be enabled")
+		}
+	})
+
 	msgs := genai.Messages{genai.NewTextMessage("test")}
 	t.Run("thinking disabled", func(t *testing.T) {
 		var req baseten.ChatRequest
-		if err := req.Init(msgs, "zai-org/GLM-5.1", &baseten.GenOption{}); err != nil {
+		if err := req.Init(msgs, "zai-org/GLM-5.1", genai.EffortOff); err != nil {
 			t.Fatal(err)
 		}
-		if req.ChatTemplateArgs.EnableThinking {
+		if req.ChatTemplateArgs.EnableThinking == nil || *req.ChatTemplateArgs.EnableThinking {
 			t.Error("EnableThinking = true, want false")
 		}
 		b, err := json.Marshal(&req)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if strings.Contains(string(b), "chat_template_args") {
-			t.Errorf("expected no chat_template_args in JSON, got: %s", b)
+		var got struct {
+			ChatTemplateArgs struct {
+				EnableThinking *bool `json:"enable_thinking"`
+			} `json:"chat_template_args"`
+		}
+		if err := json.Unmarshal(b, &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.ChatTemplateArgs.EnableThinking == nil || *got.ChatTemplateArgs.EnableThinking {
+			t.Fatalf("thinking not explicitly disabled: %s", b)
 		}
 	})
 }

@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"8c7305b6-337d-4545-92b6-5728386576ef","message":{"role":"assistant","content":[{"type":"text","text":"The hostname is: hostname"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":72,"output_tokens":5},"tokens":{"input_tokens":1471,"output_tokens":19},"cached_tokens":1456}}'
+        body: '{"id":"e999fa88-5b15-4777-bc34-546829d6574c","message":{"role":"assistant","content":[{"type":"text","text":"The machine''s hostname is: f6773b19b6b7"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":72,"output_tokens":18},"tokens":{"input_tokens":1471,"output_tokens":32},"cached_tokens":1024}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -36,7 +36,7 @@ interactions:
             Num_chars:
                 - "6895"
             Num_tokens:
-                - "77"
+                - "90"
             Pragma:
                 - no-cache
             Server:
@@ -48,9 +48,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - a2fa9f48851f2d59bbbc465c2d6d6422
+                - f1b7a579c1acdce3d10ed9a0a0b5abd3
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "336"
+                - "495"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "24"
         status: 200 OK
         code: 200
-        duration: 377ms
+        duration: 544ms

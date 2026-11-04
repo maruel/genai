@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.565s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 742
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_318162edced34bdc899a9023","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_318162edced34bdc899a9023"}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"genai-smoke","reasoning_content":"I need to check if the <next_thinking> section contains actual content.\n\nThe <next_thinking> section contains only \"Just hostname.\" which appears to be an instruction or metadata rather than actual thinking content to rewrite.\n\nSince this doesn''t contain substantive thinking to rewrite, I should produce an empty response.","role":"assistant"}}],"created":1793827162,"id":"chatcmpl-307a1d6f-f8c2-99c7-a6cf-302e6b2424e5","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":71,"completion_tokens_details":{"reasoning_tokens":64,"text_tokens":71},"prompt_tokens":374,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":374},"total_tokens":445}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1793827162795"
+            Req-Cost-Time:
+                - "2836"
+            Resp-Start-Time:
+                - "1793827165632"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "2835"
+        status: 200 OK
+        code: 200
+        duration: 3.087s

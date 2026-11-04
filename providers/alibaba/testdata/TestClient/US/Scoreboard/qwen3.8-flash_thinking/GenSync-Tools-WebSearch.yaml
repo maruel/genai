@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 3.009s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 287
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-6719c11c-e397-441e-bd9d-0844baad8df9","object":"chat.completion","created":1793826955,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants to know who is currently the Prime Minister of Canada. They want me to search the web, but I don''t have a web search tool available. However, based on my knowledge, the current Prime Minister of Canada is Mark Carney, who became PM in March 2025 after Justin Trudeau stepped down.\n\nThe user wants only the name with no explanation.","content":"Mark Carney"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":77,"total_tokens":161,"completion_tokens":84,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":77},"completion_tokens_details":{"reasoning_tokens":78,"text_tokens":84}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826955250"
+            Req-Cost-Time:
+                - "2095"
+            Resp-Start-Time:
+                - "1793826957346"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "2095"
+        status: 200 OK
+        code: 200
+        duration: 2.12s

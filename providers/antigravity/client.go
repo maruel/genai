@@ -73,17 +73,6 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// Effort is a reasoning effort level, as accepted by `agy --effort`.
-type Effort string
-
-// Effort levels.
-const (
-	EffortLow    Effort = "low"
-	EffortMedium Effort = "medium"
-	EffortHigh   Effort = "high"
-	EffortMax    Effort = "max"
-)
-
 // Mode is an agent execution mode, as accepted by `agy --mode`.
 type Mode string
 
@@ -100,9 +89,6 @@ const (
 // permissions, no terminal sandbox, and skills disabled. agy accepts no
 // settings once running, so the provider has no GenOption type.
 type ProviderOption struct {
-	// Effort sets the reasoning effort (--effort). Model IDs already encode a
-	// default effort, e.g. "gemini-3.8-flash-low".
-	Effort Effort
 	// DangerouslySkipPermissions auto-approves every tool permission request
 	// (--dangerously-skip-permissions), including shell commands and file
 	// access outside the temporary workspace.
@@ -126,11 +112,6 @@ type ProviderOption struct {
 
 // Validate implements genai.ProviderOption.
 func (p *ProviderOption) Validate() error {
-	switch p.Effort {
-	case "", EffortLow, EffortMedium, EffortHigh, EffortMax:
-	default:
-		return fmt.Errorf("ProviderOption.Effort: invalid level %q; must be one of low, medium, high, max", p.Effort)
-	}
 	switch p.Mode {
 	case "", ModeAcceptEdits, ModePlan:
 	default:
@@ -290,6 +271,7 @@ const conversationIDKey = "conversation_id"
 // callOpts holds per-call options parsed from the GenOption slice.
 type callOpts struct {
 	jsonSchema genai.JSONSchema
+	effort     Effort
 }
 
 type unsupportedCheck struct {
@@ -312,6 +294,21 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff, genai.EffortLow:
+				co.effort = EffortLow
+			case genai.EffortMedium:
+				co.effort = EffortMedium
+			case genai.EffortHigh:
+				co.effort = EffortHigh
+			case genai.EffortXHigh, genai.EffortMax:
+				co.effort = EffortMax
+			default:
+				return callOpts{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			if v.DecodeAs != nil {
 				s, err := v.DecodeSchema()
@@ -496,8 +493,8 @@ func (c *Client) buildArgs(co *callOpts, conversationID string) []string {
 	if c.model != "" {
 		args = append(args, "--model", c.model)
 	}
-	if c.opts.Effort != "" {
-		args = append(args, "--effort", string(c.opts.Effort))
+	if co.effort != "" {
+		args = append(args, "--effort", string(co.effort))
 	}
 	if c.opts.Mode != "" {
 		args = append(args, "--mode", string(c.opts.Mode))

@@ -78,3 +78,80 @@ interactions:
         status: 200 OK
         code: 200
         duration: 101ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 806
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning":"We need to call get_hostname function and output only the hostname. Use function call.","tool_calls":[{"type":"function","id":"7f4826e3d","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"7f4826e3d","name":"get_hostname"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-08b7bab4-8865-4296-9544-8ecc4a745f90","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1793832716,"model":"gpt-oss-120b","system_fingerprint":"fp_4e63ac9396838fe79c69","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-08b7bab4-8865-4296-9544-8ecc4a745f90","choices":[{"delta":{"content":"gen"},"index":0}],"created":1793832716,"model":"gpt-oss-120b","system_fingerprint":"fp_4e63ac9396838fe79c69","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-08b7bab4-8865-4296-9544-8ecc4a745f90","choices":[{"delta":{"content":"ai-smoke"},"index":0}],"created":1793832716,"model":"gpt-oss-120b","system_fingerprint":"fp_4e63ac9396838fe79c69","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-08b7bab4-8865-4296-9544-8ecc4a745f90","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1793832716,"model":"gpt-oss-120b","system_fingerprint":"fp_4e63ac9396838fe79c69","object":"chat.completion.chunk","usage":{"total_tokens":179,"completion_tokens":8,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":171,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"created":1793832716.5048351,"queue_time":0.0020835149999999998,"prompt_time":0.002338499,"completion_time":0.002558728,"total_time":0.011713743209838867}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a5572fadbfefa2bd-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=28,cfOrigin;dur=68
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439997"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59998"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "997"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719983310"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "89983584"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "483310"
+        status: 200 OK
+        code: 200
+        duration: 106ms

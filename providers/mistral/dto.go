@@ -21,17 +21,33 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
+// ReasoningEffort controls native Mistral reasoning effort.
+// Source: mistralai/client-python models/reasoningeffort.py, d3da3bd.
+type ReasoningEffort string
+
+// Native reasoning effort values.
+const (
+	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortMinimal ReasoningEffort = "minimal"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortHigh    ReasoningEffort = "high"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+	ReasoningEffortMax     ReasoningEffort = "max"
+)
+
 // ChatRequest is documented at https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
 type ChatRequest struct {
-	Model          string    `json:"model"`
-	Temperature    float64   `json:"temperature,omitzero"` // [0, 2]
-	TopP           float64   `json:"top_p,omitzero"`       // [0, 1]
-	MaxTokens      int64     `json:"max_tokens,omitzero"`
-	Stream         bool      `json:"stream"`
-	Stop           []string  `json:"stop,omitzero"` // keywords to stop completion
-	RandomSeed     int64     `json:"random_seed,omitzero"`
-	Messages       []Message `json:"messages"`
-	ResponseFormat struct {
+	Model           string          `json:"model"`
+	ReasoningEffort ReasoningEffort `json:"reasoning_effort,omitzero"`
+	Temperature     float64         `json:"temperature,omitzero"` // [0, 2]
+	TopP            float64         `json:"top_p,omitzero"`       // [0, 1]
+	MaxTokens       int64           `json:"max_tokens,omitzero"`
+	Stream          bool            `json:"stream"`
+	Stop            []string        `json:"stop,omitzero"` // keywords to stop completion
+	RandomSeed      int64           `json:"random_seed,omitzero"`
+	Messages        []Message       `json:"messages"`
+	ResponseFormat  struct {
 		Type       string `json:"type,omitzero"` // "text", "json_object", "json_schema"
 		JSONSchema struct {
 			Name        string           `json:"name,omitzero"`
@@ -85,6 +101,51 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.ReasoningEffort = ReasoningEffortNone
+			case genai.EffortLow:
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.ReasoningEffort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortXHigh:
+				c.ReasoningEffort = ReasoningEffortXHigh
+			case genai.EffortMax:
+				c.ReasoningEffort = ReasoningEffortMax
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+			if v != "" {
+				switch {
+				case strings.HasPrefix(model, "mistral-small"), strings.HasPrefix(model, "mistral-medium"):
+					if v != genai.EffortOff {
+						c.ReasoningEffort = ReasoningEffortHigh
+					}
+				case strings.HasPrefix(model, "mistral-large"):
+					switch v {
+					case genai.EffortOff, genai.EffortLow:
+						c.ReasoningEffort = ReasoningEffortLow
+					case genai.EffortMedium:
+						c.ReasoningEffort = ReasoningEffortMedium
+					case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+						c.ReasoningEffort = ReasoningEffortHigh
+					}
+				case strings.Contains(model, "glm-5-3"), strings.Contains(model, "glm-5.3"):
+					switch v {
+					case genai.EffortOff, genai.EffortLow:
+						c.ReasoningEffort = ReasoningEffortLow
+					case genai.EffortMedium, genai.EffortHigh:
+						c.ReasoningEffort = ReasoningEffortHigh
+					case genai.EffortXHigh, genai.EffortMax:
+						c.ReasoningEffort = ReasoningEffortMax
+					}
+				}
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature

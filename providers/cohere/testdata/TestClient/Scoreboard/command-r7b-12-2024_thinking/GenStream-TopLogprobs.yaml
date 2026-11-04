@@ -22,22 +22,22 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"248a248a-58b9-454d-a981-1a2abe863a94","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"837af4b7-4253-4c72-a1a0-9cdb5fc47f55","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Hello"}}},"logprobs":{"text":"Hello","token_ids":[28339],"logprobs":[-0.1040524]}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Hello"}}},"logprobs":{"text":"Hello","token_ids":[255021,28339],"logprobs":[-0.0000065564896,-0.081078336]}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"."}}},"logprobs":{"text":".","token_ids":[21],"logprobs":[-0.55914485]}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"."}}},"logprobs":{"text":".","token_ids":[21],"logprobs":[-0.55712277]}}
 
             event: content-end
             data: {"type":"content-end","index":0}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":503,"output_tokens":4}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":8,"output_tokens":2},"tokens":{"input_tokens":503,"output_tokens":5},"cached_tokens":496}}}
 
             data: [DONE]
 
@@ -63,9 +63,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - dc09d4e055fda00591e3d8a2d1644ee1
+                - 99c1aebf43a53261cd7432f7e6caa733
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "141"
+                - "96"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "1"
         status: 200 OK
         code: 200
-        duration: 222ms
+        duration: 141ms

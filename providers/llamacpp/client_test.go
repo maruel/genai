@@ -890,12 +890,12 @@ func TestClient(t *testing.T) {
 			}
 			var p genai.Provider = &internaltest.InjectOptions{
 				Provider: c2,
-				Opts:     []genai.GenOption{&llamacpp.GenOption{}},
+				Opts:     []genai.GenOption{genai.EffortOff},
 			}
 			if model.Reason {
 				p = &internaltest.InjectOptions{
 					Provider: c2,
-					Opts:     []genai.GenOption{&llamacpp.GenOption{ReasoningFormat: llamacpp.ReasoningFormatDeepSeek, Thinking: true}},
+					Opts:     []genai.GenOption{genai.EffortHigh, genai.IncludeReasoning},
 				}
 			}
 			rec := &internaltest.RealtimeRecorder{

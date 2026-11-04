@@ -77,10 +77,51 @@ const (
 // https://platform.openai.com/docs/guides/reasoning
 type ReasoningEffort string
 
+// ThinkingEffort maps portable thinking levels to OpenAI's native effort values.
+// Older reasoning models support only low, medium and high. Realtime requires
+// at least minimal effort, which is selected by its session setup separately.
+func ThinkingEffort(l genai.EffortLevel, model string) (ReasoningEffort, error) {
+	older := strings.HasPrefix(model, "o1") || strings.HasPrefix(model, "o3") || strings.HasPrefix(model, "o4")
+	gpt5 := model == "gpt-5" || strings.HasPrefix(model, "gpt-5-mini") || strings.HasPrefix(model, "gpt-5-nano") || strings.HasPrefix(model, "gpt-5-2025")
+	switch l {
+	case "":
+		return "", nil
+	case genai.EffortOff:
+		if older || strings.HasPrefix(model, "gpt-6-astra") || strings.HasPrefix(model, "gpt-6.1-sol") {
+			return ReasoningEffortLow, nil
+		}
+		if gpt5 {
+			return ReasoningEffortMinimal, nil
+		}
+		return ReasoningEffortNone, nil
+	case genai.EffortLow:
+		return ReasoningEffortLow, nil
+	case genai.EffortMedium:
+		return ReasoningEffortMedium, nil
+	case genai.EffortHigh:
+		return ReasoningEffortHigh, nil
+	case genai.EffortXHigh:
+		if older || gpt5 || model == "gpt-5.1" || strings.HasPrefix(model, "gpt-5.1-2025") {
+			return ReasoningEffortHigh, nil
+		}
+		return ReasoningEffortXHigh, nil
+	case genai.EffortMax:
+		if strings.HasPrefix(model, "gpt-6") {
+			return ReasoningEffortMax, nil
+		}
+		if older || gpt5 || model == "gpt-5.1" || strings.HasPrefix(model, "gpt-5.1-2025") {
+			return ReasoningEffortHigh, nil
+		}
+		return ReasoningEffortXHigh, nil
+	default:
+		return "", fmt.Errorf("unsupported thinking level %q", l)
+	}
+}
+
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
 	switch r {
-	case "", ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh:
+	case "", ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh, ReasoningEffortMax:
 		return nil
 	default:
 		return fmt.Errorf("invalid reasoning effort %q", r)
@@ -95,6 +136,7 @@ const (
 	ReasoningEffortMedium  ReasoningEffort = "medium"
 	ReasoningEffortHigh    ReasoningEffort = "high"
 	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+	ReasoningEffortMax     ReasoningEffort = "max"
 )
 
 // Background is only supported on gpt-image-1.

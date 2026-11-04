@@ -21,7 +21,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"c8a0aec3-7103-492d-9be8-2581116d5838","message":{"role":"assistant","content":[{"type":"text","text":"The capital of Quackiland is Quack."}],"citations":[{"start":29,"end":35,"text":"Quack.","sources":[{"type":"document","id":"quackiland.txt","document":{"id":"quackiland.txt","snippet":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"quackiland.txt"}}],"type":"TEXT_CONTENT"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":40,"output_tokens":10},"tokens":{"input_tokens":1683,"output_tokens":22},"cached_tokens":1024}}'
+        body: '{"id":"eb0af722-762d-4e9a-b736-70537f32049c","message":{"role":"assistant","content":[{"type":"text","text":"The capital of Quackiland is Quack."}],"citations":[{"start":29,"end":35,"text":"Quack.","sources":[{"type":"document","id":"quackiland.txt","document":{"id":"quackiland.txt","snippet":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"quackiland.txt"}}],"type":"TEXT_CONTENT"}]},"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":40,"output_tokens":10},"tokens":{"input_tokens":1683,"output_tokens":23},"cached_tokens":1024}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -48,9 +48,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 41c10dab79588a4f3bfd24acbc88b287
+                - 75483990a833fe6d3dd94563734841a2
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "247"
+                - "372"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "35"
         status: 200 OK
         code: 200
-        duration: 346ms
+        duration: 413ms

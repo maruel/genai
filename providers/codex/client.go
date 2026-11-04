@@ -27,7 +27,6 @@ package codex
 import (
 	"bufio"
 	"bytes"
-	"cmp"
 	"context"
 	_ "embed"
 	"encoding/base64"
@@ -70,9 +69,6 @@ func Scoreboard() scoreboard.Score {
 // All fields are opt-in. By default turns run at ReasoningEffortMedium and
 // Codex fails the call when it requests an approval.
 type ProviderOption struct {
-	// Effort sets the default reasoning effort of every turn. Defaults to
-	// ReasoningEffortMedium. GenOption.Effort overrides it per call.
-	Effort ReasoningEffort
 	// DangerouslySkipPermissions starts or resumes the thread with approval
 	// policy "never" and sandbox "danger-full-access", so shell commands run
 	// unsandboxed without approval requests.
@@ -87,31 +83,7 @@ type ProviderOption struct {
 
 // Validate implements genai.ProviderOption.
 func (p *ProviderOption) Validate() error {
-	if p.Effort != "" {
-		if err := p.Effort.Validate(); err != nil {
-			return fmt.Errorf("ProviderOption.Effort: %w", err)
-		}
-	}
 	return msgutil.CheckExtraArgs(p.ExtraArgs, "listen")
-}
-
-// GenOption configures one turn of a running codex process.
-type GenOption struct {
-	// Effort sets the reasoning effort of the turn, overriding
-	// ProviderOption.Effort.
-	Effort ReasoningEffort
-
-	_ struct{}
-}
-
-// Validate implements genai.GenOption.
-func (g *GenOption) Validate() error {
-	if g.Effort != "" {
-		if err := g.Effort.Validate(); err != nil {
-			return fmt.Errorf("GenOption.Effort: %w", err)
-		}
-	}
-	return nil
 }
 
 // callOpts holds the settings of one call.
@@ -123,7 +95,7 @@ type callOpts struct {
 
 // parseOpts collects the call settings from the process settings p and opts.
 func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
-	co := callOpts{effort: cmp.Or(p.Effort, ReasoningEffortMedium), skipPermissions: p.DangerouslySkipPermissions}
+	co := callOpts{effort: ReasoningEffortMedium, skipPermissions: p.DangerouslySkipPermissions}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return co, err
 	}
@@ -133,8 +105,25 @@ func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			co.effort = cmp.Or(v.Effort, co.effort)
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				co.effort = ReasoningEffortNone
+			case genai.EffortLow:
+				co.effort = ReasoningEffortLow
+			case genai.EffortMedium:
+				co.effort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				co.effort = ReasoningEffortHigh
+			case genai.EffortXHigh:
+				co.effort = ReasoningEffortXHigh
+			case genai.EffortMax:
+				co.effort = ReasoningEffortMax
+			default:
+				return callOpts{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {

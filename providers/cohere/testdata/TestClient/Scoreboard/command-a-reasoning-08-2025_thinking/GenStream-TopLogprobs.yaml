@@ -20,24 +20,8 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: |+
-            event: message-start
-            data: {"id":"e5ddfd20-3e92-4a1e-8a1d-0732622b85c7","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
-
-            event: content-start
-            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"thinking","thinking":""}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"Okay"}}},"logprobs":{"text":"Okay","token_ids":[99420],"logprobs":[0]}}
-
-            event: content-end
-            data: {"type":"content-end","index":0}
-
-            event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"ERROR","usage":{},"error":"No valid response generated. Try updating messages"}}
-
-            data: [DONE]
-
+        uncompressed: true
+        body: '{"id":"f80cdab5-aa81-4d17-beed-898d8bfb4cb4","message":"invalid request: logprobs is not supported with the specified model."}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -46,7 +30,7 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
             Content-Type:
-                - text/event-stream
+                - application/json
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 GMT
             Pragma:
@@ -54,15 +38,21 @@ interactions:
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - dbb53dd8198ac2b09eedd4447d57862d
+                - f460e60ba579481a36c8abb1678cec3c
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "131"
-        status: 200 OK
-        code: 200
-        duration: 175ms
+                - "7"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "28"
+        status: 400 Bad Request
+        code: 400
+        duration: 46ms

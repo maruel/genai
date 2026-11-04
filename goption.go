@@ -112,6 +112,48 @@ func (p GenOptionPollInterval) Validate() error {
 	return nil
 }
 
+// EffortLevel controls how much effort a model spends reasoning about its response.
+// Providers map these levels to their native controls; the token budget and latency
+// of a level depend on the provider and model. Empty preserves the provider's default.
+type EffortLevel string
+
+// Validate ensures the effort level is valid.
+func (l EffortLevel) Validate() error {
+	switch l {
+	case "", EffortOff, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
+		return nil
+	default:
+		return fmt.Errorf("invalid effort level %q", l)
+	}
+}
+
+const (
+	// EffortOff disables thinking where possible, or selects the lowest supported effort.
+	EffortOff EffortLevel = "off"
+	// EffortLow favors lower cost and latency.
+	EffortLow EffortLevel = "low"
+	// EffortMedium balances reasoning quality, cost, and latency.
+	EffortMedium EffortLevel = "medium"
+	// EffortHigh favors reasoning quality over cost and latency.
+	EffortHigh EffortLevel = "high"
+	// EffortXHigh requests extra-high effort, or the highest supported effort.
+	EffortXHigh EffortLevel = "xhigh"
+	// EffortMax selects the highest supported reasoning effort.
+	EffortMax EffortLevel = "max"
+)
+
+// ReasoningOutput requests optional reasoning or summaries for generation and
+// realtime sessions. Omitting it selects the provider's cheapest output mode.
+// Returned reasoning and native continuation state are always preserved.
+type ReasoningOutput struct{}
+
+// Validate implements GenOption and RealtimeOption.
+func (ReasoningOutput) Validate() error { return nil }
+
+// IncludeReasoning requests optional reasoning where available. It does not enable
+// thinking or guarantee that the model returns reasoning.
+var IncludeReasoning ReasoningOutput
+
 // GenOptionText is a list of frequent options supported by most Provider with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
@@ -431,6 +473,10 @@ func isErrorType(t reflect.Type) bool {
 }
 
 var (
+	_ GenOption            = EffortLow
+	_ GenOption            = IncludeReasoning
+	_ RealtimeOption       = EffortLow
+	_ RealtimeOption       = IncludeReasoning
 	_ GenOption            = GenOptionPollInterval(time.Second)
 	_ GenOption            = GenOptionSeed(1)
 	_ GenOption            = (*GenOptionAudio)(nil)

@@ -55,7 +55,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 
 | Provider                                   | 🌐   | Mode                                      | ➛In        | Out➛    | Tool     | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------ | ---- | ----------------------------------------- | ---------- | ------- | -------- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🕸️🔀 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | ✅🕸️     | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
 | [antigravity](docs/antigravity.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬         | 💬      | ❌       | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
@@ -64,7 +64,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | 🕸️       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [cloudflare](docs/cloudflare.md)           | 🇺🇸   | SystemOne, Sync, Stream🧠                  | 💬📸       | 🎯💬     | 💨       | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                             | 💬         | 💬      | 💨🪨     | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 | [dsh](docs/dsh.md)                         | 🇨🇳   | Sync, Stream🧠                             | 💬📄       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
 | [gemini](docs/gemini.md)                   | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤🎥💬📄📸 | 🎤💬🧬   | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
@@ -245,14 +245,13 @@ func main() {
 ### Text Thinking 🧠
 
 [examples/txt\_to\_txt\_thinking/main.go](examples/txt_to_txt_thinking/main.go): genai supports for implicit
-reasoning (e.g. Anthropic) and explicit reasoning (e.g. Deepseek). The package adapters provide logic to
-automatically handle explicit Chain-of-Thoughts models, generally using `<think>` and `</think>` tokens.
+reasoning (e.g. Anthropic) and explicit reasoning (e.g. Deepseek).
 💡 Set [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys).
 
 Snippet:
 
 ```go
-	c, err := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-reasoner"))
+	c, err := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-flash"), genai.EffortHigh, genai.IncludeReasoning)
 	if c != nil {
 		defer func() {
 			if err := c.Close(); err != nil {

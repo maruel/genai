@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 3.356s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 200
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-566a4af7-64b6-9549-8168-43127bf35fc1","object":"chat.completion","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to talk about Canada in great detail, starting with \"Canada is\". I need to provide a comprehensive, well-organized overview covering geography, history, politics, economy, culture, demographics, and other significant aspects of Canada. Let me make this thorough and informative.","content":"Canada "},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":61,"total_tokens":127,"completion_tokens":66,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":61},"completion_tokens_details":{"reasoning_tokens":57,"text_tokens":66}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827093704"
+            Req-Cost-Time:
+                - "1215"
+            Resp-Start-Time:
+                - "1793827094919"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1214"
+        status: 200 OK
+        code: 200
+        duration: 1.465s

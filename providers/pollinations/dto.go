@@ -39,7 +39,7 @@ type ChatRequest struct {
 	Tools           []Tool          `json:"tools,omitzero"`
 	ToolChoice      string          `json:"tool_choice,omitzero"` // "none", "auto", "required", or struct {"type": "function", "function": {"name": "my_function"}}
 	Private         bool            `json:"private,omitzero"`     // Set to true to prevent the response from appearing in the public feed.
-	ReasoningEffort ReasoningEffort `json:"reasoning_format,omitzero"`
+	ReasoningEffort ReasoningEffort `json:"reasoning_effort,omitzero"`
 
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
 	Modalities []string `json:"modalities,omitzero"`
@@ -74,6 +74,25 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.ReasoningEffort = ReasoningEffortNone
+			case genai.EffortLow:
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.ReasoningEffort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortXHigh:
+				c.ReasoningEffort = ReasoningEffortXHigh
+			case genai.EffortMax:
+				c.ReasoningEffort = ReasoningEffortMax
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			u, e := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
@@ -184,9 +203,13 @@ type ReasoningEffort string
 
 // Reasoning effort values.
 const (
-	ReasoningEffortLow    ReasoningEffort = "low"
-	ReasoningEffortMedium ReasoningEffort = "medium"
-	ReasoningEffortHigh   ReasoningEffort = "high"
+	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortMinimal ReasoningEffort = "minimal"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+	ReasoningEffortMax     ReasoningEffort = "max"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortHigh    ReasoningEffort = "high"
 )
 
 // Message is a provider-specific message.

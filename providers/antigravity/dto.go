@@ -336,3 +336,14 @@ func (m *Model) String() string { return m.Label }
 
 // Context implements genai.Model. agy does not report the context window.
 func (m *Model) Context() int64 { return 0 }
+
+// Effort is a reasoning effort level, as accepted by `agy --effort`.
+type Effort string
+
+// Effort levels.
+const (
+	EffortLow    Effort = "low"
+	EffortMedium Effort = "medium"
+	EffortHigh   Effort = "high"
+	EffortMax    Effort = "max"
+)

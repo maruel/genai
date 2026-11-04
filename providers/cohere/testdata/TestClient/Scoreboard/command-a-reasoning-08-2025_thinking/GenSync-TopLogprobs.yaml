@@ -19,8 +19,9 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 108
-        body: '{"id":"88b8603c-4d84-436c-9a38-d7a67b31f945","message":"No valid response generated. Try updating messages"}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"14e23087-fbab-421a-bbc8-fdd3421f8f74","message":"invalid request: logprobs is not supported with the specified model."}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -28,8 +29,6 @@ interactions:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "108"
             Content-Type:
                 - application/json
             Expires:
@@ -39,15 +38,21 @@ interactions:
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - fd79df6c6995c2d94e720b1bda59a44b
+                - 36dbb0336a10eca6de7e7affa3279fdc
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "940"
-        status: 422 Unprocessable Entity
-        code: 422
-        duration: 985ms
+                - "7"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "31"
+        status: 400 Bad Request
+        code: 400
+        duration: 47ms

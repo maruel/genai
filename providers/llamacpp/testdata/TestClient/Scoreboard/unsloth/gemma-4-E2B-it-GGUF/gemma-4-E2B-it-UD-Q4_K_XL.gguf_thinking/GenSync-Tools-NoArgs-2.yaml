@@ -35,3 +35,37 @@ interactions:
         status: 200 OK
         code: 200
         duration: 3.792s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1332
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"stemqbLBld2XBDcV9W1YRLCTrX0Gohn2","function":{"name":"get_hostname","arguments":"{}"}}],"reasoning_content":"The user wants to retrieve the machine's hostname using the `get_hostname` tool and return only the hostname.\nI need to call the `get_hostname` tool.\nThen, I need to output the result of that call directly, without any extra explanation.\n\n1.  **Identify the tool:** `get_hostname`.\n2.  **Call the tool:** `get_hostname()`.\n3.  **Process the output:** The tool will return the hostname.\n4.  **Format the final response:** Reply with *only* the hostname."},{"role":"tool","content":[{"type":"text","text":"genai-smoke"}],"tool_call_id":"stemqbLBld2XBDcV9W1YRLCTrX0Gohn2"}],"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 825
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"genai-smoke","reasoning_content":"The user requested to use the `get_hostname` tool and reply *only* with the hostname.\nThe tool returned: `genai-smoke`.\nI will now output only this value."}}],"created":1793829708,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":47,"prompt_tokens":221,"total_tokens":268,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-hFYETkpXNZM3qVIrgXgxtpPszr95VYJ5","timings":{"cache_n":0,"prompt_n":221,"prompt_ms":889.537,"prompt_per_token_ms":4.025054298642534,"prompt_per_second":248.44385337540763,"predicted_n":47,"predicted_ms":3244.15,"predicted_per_token_ms":70.525,"predicted_per_second":14.179369018078695}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "825"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 4.179s

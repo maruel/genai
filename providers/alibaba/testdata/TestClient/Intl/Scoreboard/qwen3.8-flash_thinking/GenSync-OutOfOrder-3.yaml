@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.44s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2164
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_34c375630b964a1f869d8080","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_42abc9117a3a4dc784726972","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_762c6ac2fbba44fab26418f5","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"I'm still waiting on task 7's reference — the check didn't come back with a usable result yet, so I don't have it to give you."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_762c6ac2fbba44fab26418f5"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_42abc9117a3a4dc784726972"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_34c375630b964a1f869d8080"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-4d00c190-37ed-9233-9a81-793dd23fb5e9","object":"chat.completion","created":1793827112,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The latest tool result for task 7 shows status \"waiting\" and reference \"violet\". The user wants only task 7''s reference. I have it now: violet.","content":"Yes — task 7''s reference is **violet**."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":675,"total_tokens":726,"completion_tokens":51,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":675},"completion_tokens_details":{"reasoning_tokens":36,"text_tokens":51}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827112307"
+            Req-Cost-Time:
+                - "1047"
+            Resp-Start-Time:
+                - "1793827113354"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1046"
+        status: 200 OK
+        code: 200
+        duration: 1.298s

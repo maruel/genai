@@ -69,3 +69,73 @@ interactions:
         status: 200 OK
         code: 200
         duration: 658ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 551
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","created":1793826948,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user wants me to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" use"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the get_hostname tool"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" and reply with only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the hostname.\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"","tool_calls":[{"id":"call_0f2807ea3e5b49e38badec38","type":"function","index":0,"function":{"name":"get_hostname","arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"{}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"delta":{"tool_calls":[{"function":{"arguments":""},"index":0,"type":"function","id":""}],"content":""},"index":0,"finish_reason":null,"logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-563f01d1-f4c3-469a-8e43-16acc1b0a46a","object":"chat.completion.chunk","created":1793826948,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":339,"total_tokens":372,"completion_tokens":33,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":339},"completion_tokens_details":{"reasoning_tokens":17,"text_tokens":33}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826947194"
+            Req-Cost-Time:
+                - "924"
+            Resp-Start-Time:
+                - "1793826948118"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "924"
+        status: 200 OK
+        code: 200
+        duration: 948ms

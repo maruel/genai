@@ -67,6 +67,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	var errs []error
 	var unsupported []string
 	msgToCache := 0
+	var thinking genai.EffortLevel
 	md, hasModelData := getModelData(model)
 	if hasModelData {
 		c.Thinking = md.defaultThinking()
@@ -86,33 +87,10 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			} else if v.MessagesToCache != 0 {
 				unsupported = append(unsupported, "GenOptionText.MessagesToCache")
 			}
-			c.OutputConfig.Effort = v.Effort
-			if hasModelData && !md.supportsEffort(v.Effort) {
-				unsupported = append(unsupported, "GenOptionText.Effort")
-			}
 			c.InferenceGeo = v.InferenceGeo
-			switch v.Thinking {
-			case ThinkingAdaptive:
-				c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
-			case ThinkingDisabled:
-				c.Thinking = Thinking{Type: ThinkingDisabled}
-			case ThinkingEnabled:
-				if c.MaxTokens != 0 && v.ThinkingBudget >= c.MaxTokens {
-					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
-				}
-				c.Thinking = Thinking{BudgetTokens: v.ThinkingBudget, Type: ThinkingEnabled}
-			default:
-			}
-			if v.ThinkingDisplay != "" {
-				if c.Thinking.Type != ThinkingAdaptive {
-					errs = append(errs, errors.New("ThinkingDisplay is only valid with adaptive thinking"))
-				} else {
-					c.Thinking.Display = v.ThinkingDisplay
-				}
-			}
-			if hasModelData && !md.supportsThinking(c.Thinking.Type) {
-				unsupported = append(unsupported, "GenOptionText.Thinking")
-			}
+		case genai.EffortLevel:
+			thinking = v
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			u, err := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
@@ -127,6 +105,12 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			c.initOptionsWeb(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
+		}
+	}
+
+	if thinking != "" {
+		if err := c.initThinking(thinking, &md, hasModelData); err != nil {
+			errs = append(errs, err)
 		}
 	}
 
@@ -243,6 +227,78 @@ func (c *ChatRequest) initOptionsWeb(v *genai.GenOptionWeb) {
 			Name: "web_fetch",
 		})
 	}
+}
+
+func (c *ChatRequest) initThinking(l genai.EffortLevel, md *modelData, known bool) error {
+	if l != "" {
+		switch {
+		case l == genai.EffortOff && (!known || md.Thinking.Disabled):
+			c.Thinking = Thinking{Type: ThinkingDisabled}
+		case !known || md.Thinking.Adaptive:
+			c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
+			var e Effort
+			switch l {
+			case genai.EffortOff, genai.EffortLow:
+				e = EffortLow
+			case genai.EffortMedium:
+				e = EffortMedium
+			case genai.EffortHigh:
+				e = EffortHigh
+			case genai.EffortXHigh:
+				e = EffortXHigh
+			case genai.EffortMax:
+				e = EffortMax
+			default:
+				return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+			if known && !md.supportsEffort(e) {
+				// Clamp effort to the model's supported range.
+				if l == genai.EffortMax || l == genai.EffortXHigh {
+					for _, candidate := range []Effort{EffortMax, EffortXHigh, EffortHigh, EffortMedium, EffortLow} {
+						if md.supportsEffort(candidate) {
+							e = candidate
+							break
+						}
+					}
+				} else {
+					for _, candidate := range []Effort{EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax} {
+						if md.supportsEffort(candidate) {
+							e = candidate
+							break
+						}
+					}
+				}
+			}
+			c.OutputConfig.Effort = e
+		case md.Thinking.Enabled:
+			var n int64
+			switch l {
+			case genai.EffortOff, genai.EffortLow:
+				n = 1024
+			case genai.EffortMedium:
+				n = 8192
+			case genai.EffortHigh:
+				n = 16384
+			case genai.EffortXHigh:
+				n = 24576
+			case genai.EffortMax:
+				n = 32768
+			default:
+				return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+			if c.MaxTokens != 0 {
+				n = min(n, c.MaxTokens-1)
+			}
+			if n < 1024 {
+				return fmt.Errorf("thinking needs MaxTokens greater than 1024, got %d", c.MaxTokens)
+			}
+			c.Thinking = Thinking{Type: ThinkingEnabled, BudgetTokens: n}
+		case l != genai.EffortOff:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		default:
+		}
+	}
+	return nil
 }
 
 // OutputConfig is documented at https://docs.anthropic.com/en/api/messages#body-output-config
@@ -490,8 +546,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentThinking:
-		if c.Thinking == "" {
-			// c.Signature is optional.
+		if c.Thinking == "" && len(c.Signature) == 0 {
+			// Omitted thinking still carries a signature for replay.
 			return &internal.BadError{Err: fmt.Errorf("%s: fields Thinking must be set", c.Type)}
 		}
 		if c.Text != "" || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
@@ -679,12 +735,21 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		c.Text = in.Text
 		return false, nil
 	}
-	if in.Reasoning != "" {
+	_, signed := in.Opaque["signature"]
+	if in.Reasoning != "" || signed {
 		c.Type = ContentThinking
 		c.Thinking = in.Reasoning
-		if in.Opaque != nil {
-			if b, ok := in.Opaque["signature"].([]byte); ok {
-				c.Signature = b
+		if v, ok := in.Opaque["signature"]; ok {
+			switch v := v.(type) {
+			case []byte:
+				c.Signature = v
+			case string:
+				var err error
+				if c.Signature, err = base64.StdEncoding.DecodeString(v); err != nil {
+					return false, fmt.Errorf("invalid thinking signature: %w", err)
+				}
+			default:
+				return false, fmt.Errorf("invalid thinking signature type %T", v)
 			}
 		}
 		return false, nil
@@ -836,7 +901,7 @@ func (c *Content) To() ([]genai.Reply, error) {
 	case ContentThinking:
 		out = append(out, genai.Reply{Reasoning: c.Thinking, Opaque: map[string]any{"signature": c.Signature}})
 	case ContentRedactedThinking:
-		out = append(out, genai.Reply{Opaque: map[string]any{"redacted_thinking": c.Signature}})
+		out = append(out, genai.Reply{Opaque: map[string]any{"redacted_thinking": c.Data}})
 	case ContentToolUse:
 		raw, err := json.Marshal(c.Input)
 		if err != nil {
@@ -1184,12 +1249,12 @@ func (t ThinkingType) Validate() error {
 }
 
 const (
-	// ThinkingEnabled enables extended thinking with an explicit budget set via ThinkingBudget.
+	// ThinkingEnabled enables extended thinking with an explicit budget set via Thinking.BudgetTokens.
 	ThinkingEnabled ThinkingType = "enabled"
 	// ThinkingDisabled disables extended thinking.
 	ThinkingDisabled ThinkingType = "disabled"
 	// ThinkingAdaptive lets the model decide autonomously whether and how much to think.
-	// ThinkingBudget is ignored. Use Effort to control thinking depth.
+	// Thinking.BudgetTokens is ignored. Use OutputConfig.Effort to control thinking depth.
 	ThinkingAdaptive ThinkingType = "adaptive"
 )
 
@@ -1433,6 +1498,9 @@ type StreamMessage struct {
 // StreamContentBlock is the content_block payload in a content_block_start streaming chunk.
 type StreamContentBlock struct {
 	Type ContentType `json:"type"`
+
+	// Type == ContentRedactedThinking
+	Data string `json:"data,omitzero"`
 
 	// Type == ContentText
 	Text string `json:"text"`
@@ -1823,3 +1891,21 @@ func (er *ErrorResponse) Error() string {
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
+
+// Effort controls the amount of effort the model puts into its response.
+//
+// https://platform.claude.com/docs/en/api/messages#body-output-config
+type Effort string
+
+const (
+	// EffortLow minimizes latency at the cost of quality.
+	EffortLow Effort = "low"
+	// EffortMedium balances quality and latency.
+	EffortMedium Effort = "medium"
+	// EffortHigh favors quality over latency.
+	EffortHigh Effort = "high"
+	// EffortXHigh favors coding and agentic work at higher token usage.
+	EffortXHigh Effort = "xhigh"
+	// EffortMax maximizes quality.
+	EffortMax Effort = "max"
+)

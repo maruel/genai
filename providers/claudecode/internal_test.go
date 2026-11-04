@@ -302,9 +302,6 @@ func TestProviderOption(t *testing.T) {
 		if err := (&ProviderOption{PermissionMode: "hack"}).Validate(); err == nil {
 			t.Error("expected error for invalid mode")
 		}
-		if err := (&ProviderOption{Effort: "extreme"}).Validate(); err == nil {
-			t.Error("expected error for invalid effort")
-		}
 		if err := (&ProviderOption{DangerouslySkipPermissions: true, PermissionMode: "plan"}).Validate(); err == nil {
 			t.Error("expected error for conflicting permission mode")
 		}
@@ -360,6 +357,30 @@ func TestUserMessageContent(t *testing.T) {
 			if err := json.Unmarshal([]byte(data), &got); err == nil {
 				t.Errorf("accepted invalid user content %s", data)
 			}
+		}
+	})
+}
+
+func TestParseOpts(t *testing.T) {
+	t.Run("thinking", func(t *testing.T) {
+		for _, tc := range []struct {
+			level genai.EffortLevel
+			want  string
+		}{
+			{genai.EffortOff, "low"},
+			{genai.EffortHigh, "high"},
+			{genai.EffortXHigh, "xhigh"},
+			{genai.EffortMax, "max"},
+		} {
+			t.Run(string(tc.level), func(t *testing.T) {
+				got, err := parseOpts(&ProviderOption{}, []genai.GenOption{tc.level})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got.effort) != tc.want {
+					t.Errorf("native effort = %q, want %q", string(got.effort), tc.want)
+				}
+			})
 		}
 	})
 }

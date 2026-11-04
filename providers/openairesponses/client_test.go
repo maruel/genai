@@ -204,26 +204,25 @@ func TestClient(t *testing.T) {
 						return append(out, &openairesponses.RealtimeOption{Endpoint: endpoint})
 					},
 				}
-				effort := openairesponses.ReasoningEffortMinimal
+				effort := genai.EffortOff
 				if model.Reason {
-					effort = openairesponses.ReasoningEffortHigh
+					effort = genai.EffortHigh
 				}
 				return &internaltest.InjectRealtimeOptions{
 					Provider: rec,
-					Opts:     []genai.RealtimeOption{&openairesponses.RealtimeOption{ReasoningEffort: effort}},
+					Opts:     []genai.RealtimeOption{effort},
 				}
 			}
 			// This will lead to spurious HTTP 500 but it is 25% of the cost.
 			tier := openairesponses.ServiceTierFlex
-			res := openairesponses.ReasoningEffortLow
+			res := genai.EffortLow
 			if model.Reason {
 				var p genai.Provider = &internaltest.InjectOptions{
 					Provider: c,
 					Opts: []genai.GenOption{
 						&openairesponses.GenOptionText{
-							ReasoningEffort: res,
-							ServiceTier:     tier,
-						},
+							ServiceTier: tier,
+						}, res,
 					},
 				}
 				if tier == openairesponses.ServiceTierFlex {

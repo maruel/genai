@@ -4,7 +4,10 @@
 
 // Wire types for the HuggingFace serverless inference chat completion API.
 //
-// Source: https://huggingface.co/docs/api-inference/tasks/chat-completion
+// Reference: https://huggingface.co/docs/api-inference/tasks/chat-completion
+// Source: https://github.com/huggingface/hub-docs, commit
+// 216316ea5b7ed859751d27d106b26401a3c05419,
+// docs/inference-providers/tasks/chat-completion.md (reasoning_effort).
 
 package huggingface
 
@@ -23,16 +26,30 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
+// ReasoningEffort is the provider-native reasoning effort.
+type ReasoningEffort string
+
+// Native reasoning effort levels.
+const (
+	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortMinimal ReasoningEffort = "minimal"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortHigh    ReasoningEffort = "high"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+)
+
 // ChatRequest is underspecified at
 // https://huggingface.co/docs/api-inference/tasks/chat-completion#api-specification
 type ChatRequest struct {
-	Model            string    `json:"model"`
-	Stream           bool      `json:"stream"`
-	Messages         []Message `json:"messages"`
-	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
-	Logprobs         bool      `json:"logprobs,omitzero"`
-	MaxTokens        int64     `json:"max_tokens,omitzero"`
-	PresencePenalty  float64   `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
+	ReasoningEffort  ReasoningEffort `json:"reasoning_effort,omitzero"`
+	Model            string          `json:"model"`
+	Stream           bool            `json:"stream"`
+	Messages         []Message       `json:"messages"`
+	FrequencyPenalty float64         `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
+	Logprobs         bool            `json:"logprobs,omitzero"`
+	MaxTokens        int64           `json:"max_tokens,omitzero"`
+	PresencePenalty  float64         `json:"presence_penalty,omitzero"` // [-2.0, 2.0]
 	ResponseFormat   struct {
 		Type       string           `json:"type,omitzero"` // "text", "json_object" or "json_schema".
 		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
@@ -73,6 +90,36 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.ReasoningEffort = ReasoningEffortNone
+			case genai.EffortLow:
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.ReasoningEffort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortXHigh:
+				c.ReasoningEffort = ReasoningEffortXHigh
+			case genai.EffortMax:
+				c.ReasoningEffort = ReasoningEffortXHigh
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+			if strings.Contains(strings.ToLower(model), "gpt-oss") {
+				switch v {
+				case genai.EffortOff:
+					c.ReasoningEffort = ReasoningEffortLow
+				case genai.EffortXHigh, genai.EffortMax:
+					c.ReasoningEffort = ReasoningEffortHigh
+				case "", genai.EffortLow, genai.EffortMedium, genai.EffortHigh:
+				default:
+					unsupported = append(unsupported, "EffortLevel")
+				}
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature

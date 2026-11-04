@@ -412,6 +412,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
+			var rawReasoning, rawReasoningContent strings.Builder
 			// flushToolCall emits the buffered tool call, if any. It returns false only when the consumer
 			// asked to stop. Incomplete parallel tool calls (a model truncating the trailing call
 			// mid-arguments) are dropped rather than emitted as invalid.
@@ -466,6 +467,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].ToolCalls)}
 					return
 				}
+				rawReasoning.WriteString(pkt.Choices[0].Delta.Reasoning)
+				rawReasoningContent.WriteString(pkt.Choices[0].Delta.ReasoningContent)
 				// TogetherAI streams the arguments of one tool call at a time, switching to the next
 				// parallel call by sending a new ID. Buffer the arguments to send each call as a whole.
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
@@ -503,13 +506,25 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if pkt.Choices[0].Delta.ReasoningContent != "" {
 					reasoning = pkt.Choices[0].Delta.ReasoningContent
 				}
-				f := genai.Reply{Text: pkt.Choices[0].Delta.Content, Reasoning: reasoning}
-				if !yield(f) {
+				if reasoning != "" && !yield(genai.Reply{Reasoning: reasoning}) {
+					return
+				}
+				if text := pkt.Choices[0].Delta.Content; text != "" && !yield(genai.Reply{Text: text}) {
 					return
 				}
 				if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
 					l = append(l, pkt.Choices[0].Logprobs.To()...)
 				}
+			}
+			if rawReasoning.Len() != 0 || rawReasoningContent.Len() != 0 {
+				r := genai.Reply{Opaque: map[string]any{}}
+				if rawReasoning.Len() != 0 {
+					r.Opaque["reasoning"] = rawReasoning.String()
+				}
+				if rawReasoningContent.Len() != 0 {
+					r.Opaque["reasoning_content"] = rawReasoningContent.String()
+				}
+				yield(r)
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			if len(warnings) != 0 {

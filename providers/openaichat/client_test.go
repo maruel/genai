@@ -320,7 +320,7 @@ func TestClient(t *testing.T) {
 						t.Errorf("reasoning: %v", setup["reasoning"])
 					}
 				})
-				s, err := realtimeClient(t).ConnectRealtime(t.Context(), &openaichat.RealtimeOption{Endpoint: endpoint, ReasoningEffort: openaichat.ReasoningEffortHigh})
+				s, err := realtimeClient(t).ConnectRealtime(t.Context(), &openaichat.RealtimeOption{Endpoint: endpoint}, genai.EffortHigh)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -487,7 +487,7 @@ func TestClient(t *testing.T) {
 						t.Fatal("accepted invalid setup")
 					}
 				}
-				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr_CA"}, {InputLanguage: "fr--CA"}, {ReasoningEffort: openaichat.ReasoningEffortNone}, {ReasoningEffort: "extreme"}} {
+				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr_CA"}, {InputLanguage: "fr--CA"}} {
 					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
 						t.Fatal("accepted invalid option")
 					}
@@ -1227,25 +1227,24 @@ func TestClient(t *testing.T) {
 			}
 			var p genai.Provider = rec
 			if strings.Contains(model.Model, "realtime") {
-				effort := openaichat.ReasoningEffortMinimal
+				effort := genai.EffortOff
 				if model.Reason {
-					effort = openaichat.ReasoningEffortHigh
+					effort = genai.EffortHigh
 				}
 				p = &internaltest.InjectRealtimeOptions{
 					Provider: rec,
-					Opts:     []genai.RealtimeOption{&openaichat.RealtimeOption{ReasoningEffort: effort}},
+					Opts:     []genai.RealtimeOption{effort},
 				}
 			} else {
 				// This will lead to spurious HTTP 500 but it is 25% of the cost.
 				tier := openaichat.ServiceTierFlex
-				res := openaichat.ReasoningEffortLow
+				res := genai.EffortLow
 				if model.Reason {
 					txt := &openaichat.GenOptionText{ServiceTier: tier}
-					txt.ReasoningEffort = res
 					p = &injectReasoning{
 						Provider: &internaltest.InjectOptions{
 							Provider: rec,
-							Opts:     []genai.GenOption{txt},
+							Opts:     []genai.GenOption{txt, res},
 						},
 					}
 					if tier == openaichat.ServiceTierFlex {
@@ -1260,12 +1259,13 @@ func TestClient(t *testing.T) {
 					// See https://platform.openai.com/docs/guides/flex-processing
 					if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-6") {
 						txt := &openaichat.GenOptionText{ServiceTier: tier}
+						var thinking genai.EffortLevel
 						if strings.HasPrefix(id, "gpt-6") {
-							txt.ReasoningEffort = openaichat.ReasoningEffortNone
+							thinking = genai.EffortOff
 						}
 						p = &internaltest.InjectOptions{
 							Provider: rec,
-							Opts:     []genai.GenOption{txt},
+							Opts:     []genai.GenOption{txt, thinking},
 						}
 						if tier == openaichat.ServiceTierFlex {
 							p = &internaltest.RetryOnRateLimit{

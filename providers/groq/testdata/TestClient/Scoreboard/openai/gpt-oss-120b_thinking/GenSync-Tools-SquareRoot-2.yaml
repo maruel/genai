@@ -57,3 +57,59 @@ interactions:
         status: 200 OK
         code: 200
         duration: 115ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 920
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning":"The user wants to calculate sqrt(132413) and reply with only the result, no explanation. Use tool.","tool_calls":[{"type":"function","id":"fc_41c28f5d-ca9d-4762-802d-bf39476b6aa8","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"fc_41c28f5d-ca9d-4762-802d-bf39476b6aa8"}],"model":"openai/gpt-oss-120b","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-94430b73-6245-4ca4-b4f5-c5b963be3a25","object":"chat.completion","created":1793828778,"model":"openai/gpt-oss-120b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.005150748,"prompt_tokens":214,"prompt_time":0.009935632,"completion_tokens":7,"completion_time":0.014735485,"total_tokens":221,"total_time":0.024671117},"usage_breakdown":null,"system_fingerprint":"fp_6fb4303df4","x_groq":{"id":"req_01m6m8dwr3e9nb0tmks5pzfecr","seed":337296174},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf8b2d5846f9-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499998"
+            X-Ratelimit-Remaining-Tokens:
+                - "248952"
+            X-Ratelimit-Reset-Requests:
+                - 345ms
+            X-Ratelimit-Reset-Tokens:
+                - 251ms
+        status: 200 OK
+        code: 200
+        duration: 120ms

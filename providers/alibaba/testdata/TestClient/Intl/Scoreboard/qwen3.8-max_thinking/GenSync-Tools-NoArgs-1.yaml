@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 2.129s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 510
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","reasoning_content":"Just call the tool.","role":"assistant","tool_calls":[{"function":{"arguments":"{}","name":"get_hostname"},"id":"call_318162edced34bdc899a9023","index":0,"type":"function"}]}}],"created":1793827160,"id":"chatcmpl-dac5b1be-5c24-9e95-aae7-fd9417993ee3","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":21,"completion_tokens_details":{"reasoning_tokens":5,"text_tokens":21},"prompt_tokens":339,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":339},"total_tokens":360}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1793827160769"
+            Req-Cost-Time:
+                - "1774"
+            Resp-Start-Time:
+                - "1793827162544"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1773"
+        status: 200 OK
+        code: 200
+        duration: 2.024s

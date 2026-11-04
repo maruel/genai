@@ -381,3 +381,83 @@ interactions:
         status: 200 OK
         code: 200
         duration: 971ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1276
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_6558d8e8e4df4b608003c1c0","function":{"name":"get_hostname","arguments":"{}"}}],"reasoning":"The user wants me to use the get_hostname tool to get the machine's hostname and reply with only the hostname, without any explanation. I need to call the get_hostname function which doesn't require any parameters.","reasoning_details":[{"type":"reasoning.text","format":"unknown","index":0,"text":"The user wants me to use the get_hostname tool to get the machine's hostname and reply with only the hostname, without any explanation. I need to call the get_hostname function which doesn't require any parameters."}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_6558d8e8e4df4b608003c1c0"}],"model":"qwen/qwen3.5-397b-a17b","stream":true,"stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":"The","reasoning_details":[{"type":"reasoning.text","text":"The","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":" tool returned the","reasoning_details":[{"type":"reasoning.text","text":" tool returned the","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":" hostname \"genai","reasoning_details":[{"type":"reasoning.text","text":" hostname \"genai","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":"-smoke\". The","reasoning_details":[{"type":"reasoning.text","text":"-smoke\". The","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":" user asked me to","reasoning_details":[{"type":"reasoning.text","text":" user asked me to","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":" reply with only the","reasoning_details":[{"type":"reasoning.text","text":" reply with only the","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":" hostname and no explanation","reasoning_details":[{"type":"reasoning.text","text":" hostname and no explanation","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":", so I should","reasoning_details":[{"type":"reasoning.text","text":", so I should","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":" just output \"gen","reasoning_details":[{"type":"reasoning.text","text":" just output \"gen","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":"ai-smoke","reasoning_details":[{"type":"reasoning.text","text":"ai-smoke","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":"\".","reasoning_details":[{"type":"reasoning.text","text":"\".","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"genai-smoke","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning":null},"finish_reason":"stop","native_finish_reason":"stop"}]}
+
+            data: {"id":"gen-1793828793-oTN00yusbTbZkWdPPo2B","object":"chat.completion.chunk","created":1793828793,"model":"qwen/qwen3.5-397b-a17b","provider":"Alibaba","service_tier":null,"choices":[{"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":"stop","native_finish_reason":"stop"}],"usage":{"prompt_tokens":382,"completion_tokens":45,"total_tokens":427,"cost":0.00025428,"is_byok":false,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"video_tokens":0},"cost_details":{"upstream_inference_cost":0.00025428,"upstream_inference_prompt_cost":0.00014898,"upstream_inference_completions_cost":0.0001053},"completion_tokens_details":{"reasoning_tokens":36,"image_tokens":0,"audio_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,x-openrouter-error-origin,x-openrouter-error-tool,X-Provider-Name,request-id,cf-ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Ray:
+                - a556cfe70e25aab3-YYZ
+            Content-Type:
+                - text/event-stream
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=809
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1793828793-oTN00yusbTbZkWdPPo2B
+            X-Openrouter-Release:
+                - api;919a4b68-81aa-445e-9299-99636b1cf2c1
+        status: 200 OK
+        code: 200
+        duration: 841ms

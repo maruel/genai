@@ -79,3 +79,71 @@ interactions:
         status: 200 OK
         code: 200
         duration: 910ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 205
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"seed":42,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","created":1793826998,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user wants me to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" say hello using"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only one word."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" The simplest and most"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" direct answer is \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Hello.\""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826998,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"Hello.","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826999,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-cdd699d2-af35-405a-88a3-ec5ae09b16c9","object":"chat.completion.chunk","created":1793826999,"model":"qwen3.8-max","choices":[],"usage":{"prompt_tokens":57,"total_tokens":83,"completion_tokens":26,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":57},"completion_tokens_details":{"reasoning_tokens":22,"text_tokens":26}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826997469"
+            Req-Cost-Time:
+                - "1174"
+            Resp-Start-Time:
+                - "1793826998644"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1174"
+        status: 200 OK
+        code: 200
+        duration: 1.199s

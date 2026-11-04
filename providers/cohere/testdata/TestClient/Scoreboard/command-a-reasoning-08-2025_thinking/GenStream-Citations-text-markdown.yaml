@@ -22,73 +22,28 @@ interactions:
         content_length: -1
         body: |+
             event: message-start
-            data: {"id":"e9a31793-17b3-4d0c-bc28-13e86f6f8502","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
+            data: {"id":"8a0c39b6-bebc-460a-b1f9-e2445b9b4aff","type":"message-start","delta":{"message":{"role":"assistant","content":[],"tool_plan":"","tool_calls":[],"citations":[]}}}
 
             event: content-start
             data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"thinking","thinking":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"Okay"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"After"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":","}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" user"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" asked"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" for"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" retrieving"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" capital"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" document"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" of"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Qu"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"ack"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"iland"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Let"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" me"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" check"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" using"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" tool"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" results"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" The"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" direct"}}}}
@@ -112,40 +67,16 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" tool"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" provided"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":","}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" a"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" I"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" snippet"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" from"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" capital"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"_"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"info"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"md"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" found"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" that"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" clearly"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" states"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
@@ -154,7 +85,7 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" capital"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" of"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Qu"}}}}
@@ -163,64 +94,118 @@ interactions:
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"ack"}}}}
 
             event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"iland"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" clearly"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" stated"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" as"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Qu"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"ack"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" in"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" provided"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" snippet"}}}}
+
+            event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" The"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Big"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" information"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Can"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" is"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"ard"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" direct"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" Statue"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" and"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" being"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" unambigu"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" there"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"ous"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" confirms"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":","}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" it"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" so"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"'s"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" right"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" answer"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" No"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" need"}}}}
-
-            event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" for"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" no"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" further"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" steps"}}}}
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" tool"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" calls"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" are"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" needed"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" I"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" can"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" now"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" confidently"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" provide"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" answer"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" to"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" the"}}}}
+
+            event: content-delta
+            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":" user"}}}}
 
             event: content-delta
             data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"thinking":"."}}}}
@@ -229,40 +214,40 @@ interactions:
             data: {"type":"content-end","index":0}
 
             event: content-start
-            data: {"type":"content-start","index":0,"delta":{"message":{"content":{"type":"text","text":""}}}}
+            data: {"type":"content-start","index":1,"delta":{"message":{"content":{"type":"text","text":""}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"The"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"The"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" capital"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":" capital"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" of"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":" of"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" Qu"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":" Qu"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"ack"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"ack"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"iland"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"iland"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" is"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":" is"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":" "}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":" "}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"Qu"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"Qu"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"ack"}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"ack"}}}}
 
             event: content-delta
-            data: {"type":"content-delta","index":0,"delta":{"message":{"content":{"text":"."}}}}
+            data: {"type":"content-delta","index":1,"delta":{"message":{"content":{"text":"."}}}}
 
             event: citation-start
             data: {"type":"citation-start","index":0,"delta":{"message":{"citations":{"start":29,"end":35,"text":"Quack.","sources":[{"type":"document","id":"capital_info.md","document":{"id":"capital_info.md","snippet":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.","title":"capital_info.md"}}],"type":"TEXT_CONTENT","content_index":1}}}}
@@ -271,10 +256,10 @@ interactions:
             data: {"type":"citation-end","index":0}
 
             event: content-end
-            data: {"type":"content-end","index":0}
+            data: {"type":"content-end","index":1}
 
             event: message-end
-            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":46,"output_tokens":10},"tokens":{"input_tokens":1700,"output_tokens":90}}}}
+            data: {"type":"message-end","delta":{"finish_reason":"COMPLETE","usage":{"billed_units":{"input_tokens":46,"output_tokens":71},"tokens":{"input_tokens":1700,"output_tokens":86,"reasoning_tokens":61},"cached_tokens":1600}}}
 
             data: [DONE]
 
@@ -300,9 +285,15 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - f7783290ee35ed62c9f2ee9b63b04f91
+                - ee6a0c39c989ab26797bb31b03c36c07
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "41"
+                - "14"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "8"
         status: 200 OK
         code: 200
-        duration: 47.617s
+        duration: 54ms

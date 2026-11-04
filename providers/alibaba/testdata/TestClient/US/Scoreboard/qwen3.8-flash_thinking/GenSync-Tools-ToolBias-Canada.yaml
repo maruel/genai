@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 6.43s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 598
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-5644c4ff-343b-4056-a405-7298e8cb7e67","object":"chat.completion","created":1793826948,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to call the best_country tool. However, this is a subjective question - there is no objective \"best country.\" I should not make a definitive claim that one country is better than another, as this is a matter of personal opinion and depends on the criteria being evaluated. I should not call the tool as it would imply an objective answer to a subjective question. I''ll explain this to the user.","content":"I appreciate the question, but I''m not going to call that tool, because there''s no objective answer to \"which country is better.\" Whether Canada or the USA is \"best\" depends entirely on what criteria you value — healthcare, cost of living, job opportunities, climate, culture, political preferences, and so on. Each country has its strengths and weaknesses, and people''s experiences vary widely.\n\nI''d rather not use a tool that frames a subjective preference as a definitive fact. If you have a specific question comparing the two countries on a particular topic, I''m happy to help with that!"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":368,"total_tokens":576,"completion_tokens":208,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":368},"completion_tokens_details":{"reasoning_tokens":84,"text_tokens":208}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826948346"
+            Req-Cost-Time:
+                - "4312"
+            Resp-Start-Time:
+                - "1793826952659"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "4312"
+        status: 200 OK
+        code: 200
+        duration: 4.336s

@@ -553,3 +553,28 @@ func TestNew(t *testing.T) {
 		}
 	})
 }
+
+func TestEffortLevel(t *testing.T) {
+	tests := []struct {
+		level       genai.EffortLevel
+		model, want string
+	}{
+		{genai.EffortLow, "@cf/qwen/qwen3", "low"},
+		{genai.EffortMedium, "@cf/qwen/qwen3", "medium"},
+		{genai.EffortHigh, "@cf/qwen/qwen3", "high"},
+		{genai.EffortXHigh, "@cf/qwen/qwen3", "high"},
+		{genai.EffortMax, "@cf/qwen/qwen3", "high"},
+		{genai.EffortOff, "@cf/openai/gpt-oss-120b", "low"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+			var req cloudflare.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, tc.model, tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if got := string(req.ReasoningEffort); got != tc.want {
+				t.Fatalf("reasoning_effort=%q, want %q", got, tc.want)
+			}
+		})
+	}
+}

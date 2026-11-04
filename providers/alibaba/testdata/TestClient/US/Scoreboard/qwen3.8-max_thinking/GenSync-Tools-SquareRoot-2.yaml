@@ -48,3 +48,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 2.107s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 826
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_afebc59efe4c4233927e577a","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_afebc59efe4c4233927e577a"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-ecaa0430-e51f-4228-aed2-9fc593acebbf","object":"chat.completion","created":1793827012,"model":"qwen3.8-max","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The tool gave an answer. I''ll reply with just the result.","content":"363.89"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":135,"total_tokens":158,"completion_tokens":23,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":135},"completion_tokens_details":{"reasoning_tokens":14,"text_tokens":23}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827011872"
+            Req-Cost-Time:
+                - "3353"
+            Resp-Start-Time:
+                - "1793827015226"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "3353"
+        status: 200 OK
+        code: 200
+        duration: 3.378s

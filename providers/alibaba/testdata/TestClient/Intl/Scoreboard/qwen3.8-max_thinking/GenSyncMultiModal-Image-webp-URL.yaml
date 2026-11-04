@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 3.446s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Banana","reasoning_content":"The image shows a banana. The question asks for a one-word answer.","role":"assistant"}}],"created":1793827212,"id":"chatcmpl-230c19ea-b978-95ca-9785-58f70b48c754","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":21,"completion_tokens_details":{"reasoning_tokens":15,"text_tokens":5},"prompt_tokens":126,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":34},"total_tokens":147}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1793827212212"
+            Req-Cost-Time:
+                - "9627"
+            Resp-Start-Time:
+                - "1793827221839"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "9626"
+        status: 200 OK
+        code: 200
+        duration: 9.877s

@@ -31,7 +31,7 @@ func Example() {
 	res, err := c.GenSync(
 		context.Background(),
 		genai.Messages{genai.NewTextMessage("Say hello")},
-		&dsh.GenOption{Effort: dsh.EffortLow},
+		genai.EffortLow,
 	)
 	if err != nil {
 		log.Print(err)

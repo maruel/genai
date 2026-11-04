@@ -188,6 +188,21 @@ func TestClient(t *testing.T) {
 				}
 			}
 		})
+
+		t.Run("IncludeReasoningDefaultLevel", func(t *testing.T) {
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+				g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
+				c, ok := g["thinkingConfig"].(map[string]any)
+				if !ok || c["thinkingLevel"] != "low" || c["includeThoughts"] != true {
+					t.Errorf("thinking config: %v", g)
+				}
+			})
+			s, err := liveClientForModel(t, "gemini-3.8-live-extended-thinking").ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint}, genai.IncludeReasoning)
+			if err != nil {
+				t.Fatal(err)
+			}
+			realtimetest.Close(t, s)
+		})
 		t.Run("ThinkingLevel", func(t *testing.T) {
 			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
 				g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
@@ -195,7 +210,7 @@ func TestClient(t *testing.T) {
 					t.Errorf("generation config: %v", g)
 				}
 			})
-			s, err := liveClientForModel(t, "gemini-3.8-live-extended-thinking").ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint, ThinkingLevel: gemini.ThinkingLevelHigh})
+			s, err := liveClientForModel(t, "gemini-3.8-live-extended-thinking").ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint}, genai.EffortHigh)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -593,7 +608,7 @@ func TestClient(t *testing.T) {
 					t.Errorf("accepted config: %+v", cfg)
 				}
 			}
-			for _, opt := range []*gemini.RealtimeOption{nil, {Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingTimeout: -time.Second}, {InputLanguages: []string{"en"}}, {ThinkingLevel: "extreme"}, {Compression: &gemini.RealtimeCompression{TriggerTokens: 1, TargetTokens: 2}}} {
+			for _, opt := range []*gemini.RealtimeOption{nil, {Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingTimeout: -time.Second}, {InputLanguages: []string{"en"}}, {Compression: &gemini.RealtimeCompression{TriggerTokens: 1, TargetTokens: 2}}} {
 				if s, err := c.ConnectRealtime(t.Context(), opt); err == nil || s != nil {
 					t.Errorf("accepted option: %+v", opt)
 				}
@@ -1101,14 +1116,14 @@ func TestClient(t *testing.T) {
 				// The non-thinking live model keeps its fixed latency profile.
 				return &internaltest.InjectRealtimeOptions{
 					Provider: rec,
-					Opts:     []genai.RealtimeOption{&gemini.RealtimeOption{ThinkingLevel: gemini.ThinkingLevelHigh}},
+					Opts:     []genai.RealtimeOption{genai.EffortHigh},
 				}
 			}
 			if model.Reason && slices.Contains(thinkingModels, model.Model) {
 				// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 				return &internaltest.InjectOptions{
 					Provider: rec,
-					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingLevel: gemini.ThinkingLevelHigh}},
+					Opts:     []genai.GenOption{genai.EffortHigh},
 				}
 			}
 			return rec
@@ -1295,8 +1310,8 @@ func TestClient(t *testing.T) {
 					c := getClient(t, id)
 					// TODO: Re-record with ThinkingLevelLow. It is sufficient to verify the
 					// request configuration and costs less than high.
-					opts := gemini.GenOption{ThinkingLevel: gemini.ThinkingLevelHigh}
-					if _, err := c.GenSync(t.Context(), msgs, &opts); err != nil {
+					opts := genai.EffortHigh
+					if _, err := c.GenSync(t.Context(), msgs, opts); err != nil {
 						t.Fatal(err)
 					}
 				})

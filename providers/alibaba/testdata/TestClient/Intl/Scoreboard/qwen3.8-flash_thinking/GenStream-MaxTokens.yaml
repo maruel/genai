@@ -233,3 +233,145 @@ interactions:
         status: 200 OK
         code: 200
         duration: 625ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 234
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"max_tokens":16,"stream_options":{"include_usage":true},"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","created":1793827092,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user is"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" asking for a detailed"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" explanation of the theory"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of relativity."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" This is a broad"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" topic that encompasses both"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Special"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Relativity and General"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Relativity. I"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need to cover:"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\n\n1."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Historical context (what"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" problem it solved)"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\n2."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Special Relativity:"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" postulates, consequences"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" ("},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"time dilation, length"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" contraction, relativity"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of simultane"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ity, mass-energy"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" equivalence)\n3"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". General"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Relativity: equivalence"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827092,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" principle, curvature of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" spacetime,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" field equations, predictions"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" and confirmations\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"4"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Mathematical foundations where"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" appropriate\n5"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Philosophical implications"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\n\nI"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" should be thorough but"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" structured"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":", using clear sections"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Let me write"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" a comprehensive explanation that"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" balances"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" rigor with accessibility."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"# The Theory of","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" Relativity: A","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" Comprehensive Explanation\n\n##","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" Historical Context\n\n","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"length","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-154a20f5-b56e-9f85-9942-2e9eb9917046","object":"chat.completion.chunk","created":1793827093,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":60,"total_tokens":213,"completion_tokens":153,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":60},"completion_tokens_details":{"reasoning_tokens":135,"text_tokens":153}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827091703"
+            Req-Cost-Time:
+                - "379"
+            Resp-Start-Time:
+                - "1793827092083"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "378"
+        status: 200 OK
+        code: 200
+        duration: 629ms

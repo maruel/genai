@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 4.097s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 598
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-de2a7c39-e2f6-9b28-a1f2-715510c8c375","object":"chat.completion","created":1793827102,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user is asking me to use the `best_country` tool to declare which country is the best between Canada and the USA. This is a subjective question that could be seen as promoting one country over another. However, the tool has an enum constraint allowing only \"Canada\" or \"USA\". I need to pick one to call the tool. Let me just make a reasonable choice. I''ll go with \"Canada\" as the user seems to be leaning that way, but honestly both are valid. Let me just call the tool with one of the options.","content":"","tool_calls":[{"id":"call_8860109221cd420a8eea3e78","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":368,"total_tokens":509,"completion_tokens":141,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":368},"completion_tokens_details":{"reasoning_tokens":112,"text_tokens":141}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827102144"
+            Req-Cost-Time:
+                - "2525"
+            Resp-Start-Time:
+                - "1793827104670"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "2525"
+        status: 200 OK
+        code: 200
+        duration: 2.775s

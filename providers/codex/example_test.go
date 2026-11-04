@@ -29,7 +29,7 @@ func Example() {
 		return
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Say hello")}
-	res, err := c.GenSync(context.Background(), msgs, &codex.GenOption{Effort: codex.ReasoningEffortHigh})
+	res, err := c.GenSync(context.Background(), msgs, genai.EffortHigh)
 	if err != nil {
 		log.Print(err)
 		return

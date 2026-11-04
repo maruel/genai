@@ -47,23 +47,12 @@ func Scoreboard() scoreboard.Score {
 
 // GenOption is the Groq-specific options.
 type GenOption struct {
-	// ReasoningEffort controls how much reasoning supported models perform.
-	ReasoningEffort ReasoningEffort
-	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on reasoning
-	// models. It is required for reasoning models to enable JSON structured output or tool calling.
-	ReasoningFormat ReasoningFormat
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier
 }
 
 // Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
-	if err := o.ReasoningEffort.Validate(); err != nil {
-		return err
-	}
-	if err := o.ReasoningFormat.Validate(); err != nil {
-		return err
-	}
 	return o.ServiceTier.Validate()
 }
 
@@ -262,9 +251,6 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	if strings.HasPrefix(c.impl.Model, "qwen/") && !slices.ContainsFunc(opts, func(o genai.GenOption) bool { _, ok := o.(*GenOption); return ok }) {
-		opts = slices.Concat(opts, []genai.GenOption{&GenOption{ReasoningEffort: ReasoningEffortMedium, ReasoningFormat: ReasoningFormatParsed}})
-	}
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -275,9 +261,6 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if strings.HasPrefix(c.impl.Model, "qwen/") && !slices.ContainsFunc(opts, func(o genai.GenOption) bool { _, ok := o.(*GenOption); return ok }) {
-		opts = slices.Concat(opts, []genai.GenOption{&GenOption{ReasoningEffort: ReasoningEffortMedium, ReasoningFormat: ReasoningFormatParsed}})
-	}
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

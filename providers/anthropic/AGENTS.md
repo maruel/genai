@@ -2,6 +2,7 @@
 
 - **Documentation**: https://platform.claude.com/docs/en/home
 - **Go SDK**: https://github.com/anthropics/anthropic-sdk-go
+- **Thinking and Cost**: https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost
 
 ## Scoreboard Recording
 

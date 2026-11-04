@@ -100,3 +100,94 @@ interactions:
         status: 200 OK
         code: 200
         duration: 106ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 920
+        host: api.cerebras.ai
+        body: |
+            {"model":"qwen-3.8-27b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning":"The user wants me to calculate the square root of 132413 using the square_root tool and reply with only the result.\n","tool_calls":[{"type":"function","id":"1c565d158","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"1c565d158","name":"square_root"}],"stream":true,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":"The"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":" tool returned 363"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":".89. The"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":" user asked to reply"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":" with only"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":" the result, no explanation"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"reasoning":".\n"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"content":"\n\n"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{"content":"363.89"},"index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk"}
+
+            data: {"id":"chatcmpl-830239da-48ed-446e-a0e4-821305f8c8ad","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1793832716,"model":"qwen-3.8-27b","system_fingerprint":"fp_c2d1b78aae1607885908","object":"chat.completion.chunk","usage":{"total_tokens":202,"completion_tokens":34,"completion_tokens_details":{"reasoning_tokens":26},"prompt_tokens":168,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":0}},"time_info":{"created":1793832716.8018348,"queue_time":0.0001484209999999958,"prompt_time":0.005438267,"completion_time":0.036926129,"total_time":0.04400300979614258}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a5572faf9b68a2bd-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=27,cfOrigin;dur=74
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "648000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "27000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "450"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "216000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "9000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "150000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "647998"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "26999"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "448"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "215967168"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "44983584"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "117168"
+        status: 200 OK
+        code: 200
+        duration: 110ms

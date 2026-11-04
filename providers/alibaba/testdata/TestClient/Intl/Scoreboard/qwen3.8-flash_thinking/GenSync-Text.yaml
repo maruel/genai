@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 2.5s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-89a6395f-8c33-960d-aaf1-95cd3ac7f4af","object":"chat.completion","created":1793827089,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to say hello using only one word. The simplest response is just \"Hello.\"","content":"Hello."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":57,"total_tokens":82,"completion_tokens":25,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":57},"completion_tokens_details":{"reasoning_tokens":20,"text_tokens":25}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827089514"
+            Req-Cost-Time:
+                - "667"
+            Resp-Start-Time:
+                - "1793827090181"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "666"
+        status: 200 OK
+        code: 200
+        duration: 1.469s

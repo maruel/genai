@@ -278,3 +278,28 @@ func hasModalities(opts []genai.ProviderOption) bool {
 func init() {
 	internal.BeLenient = false
 }
+
+func TestEffortLevel(t *testing.T) {
+	tests := []struct {
+		level       genai.EffortLevel
+		model, want string
+	}{
+		{genai.EffortOff, "openai", "none"},
+		{genai.EffortLow, "openai", "low"},
+		{genai.EffortMedium, "openai", "medium"},
+		{genai.EffortHigh, "openai", "high"},
+		{genai.EffortXHigh, "openai", "xhigh"},
+		{genai.EffortMax, "openai", "max"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+			var req pollinations.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, tc.model, tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if got := string(req.ReasoningEffort); got != tc.want {
+				t.Fatalf("reasoning_effort=%q, want %q", got, tc.want)
+			}
+		})
+	}
+}

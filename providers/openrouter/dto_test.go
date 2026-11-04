@@ -7,8 +7,11 @@
 package openrouter_test
 
 import (
+	"encoding/json"
+	"slices"
 	"testing"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/openrouter"
 )
 
@@ -53,4 +56,43 @@ func TestModel(t *testing.T) {
 			t.Fatalf("String() = %q, want %q", got, want)
 		}
 	})
+}
+
+func TestProcessStream(t *testing.T) {
+	chunks := make([]openrouter.ChatStreamChunkResponse, 0, 3)
+	for _, body := range []string{
+		`{"choices":[{"delta":{"reasoning":"first ","reasoning_details":[{"type":"reasoning.text","index":0,"text":"first "}]}}]}`,
+		`{"choices":[{"delta":{"reasoning":"second","reasoning_details":[{"type":"reasoning.text","index":0,"text":"second","signature":"signed"}]}}]}`,
+		`{"choices":[{"delta":{"content":"answer"}}]}`,
+	} {
+		var c openrouter.ChatStreamChunkResponse
+		if err := json.Unmarshal([]byte(body), &c); err != nil {
+			t.Fatal(err)
+		}
+		chunks = append(chunks, c)
+	}
+	seq, finish := openrouter.ProcessStream(slices.Values(chunks))
+	var msg genai.Message
+	for f := range seq {
+		if err := msg.Accumulate(&f); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, _, err := finish(); err != nil {
+		t.Fatal(err)
+	}
+	b, err := json.Marshal(msg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(b, &msg); err != nil {
+		t.Fatal(err)
+	}
+	var got openrouter.Message
+	if err := got.From(&msg); err != nil {
+		t.Fatal(err)
+	}
+	if got.Reasoning == nil || *got.Reasoning != "first second" || len(got.ReasoningDetails) != 1 || got.ReasoningDetails[0].Text != "first second" || got.ReasoningDetails[0].Signature == nil || *got.ReasoningDetails[0].Signature != "signed" {
+		t.Fatalf("lost streamed reasoning: %+v", got)
+	}
 }

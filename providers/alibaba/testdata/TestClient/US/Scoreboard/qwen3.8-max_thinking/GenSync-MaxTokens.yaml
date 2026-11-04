@@ -48,3 +48,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1m16.514s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 193
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-eb170187-af6c-441d-93b7-fa21fc2d160a","object":"chat.completion","created":1793826999,"model":"qwen3.8-max","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user is asking for a detailed explanation of the theory of relativity. This is a broad topic that encompasses both Special Relativity (1905) and General Relativity (1915), both developed by Albert Einstein. I need to cover the historical context, the postulates, the key consequences, the mathematical framework, and the experimental evidence. Let me organize this comprehensively, covering:\n\n1. Historical context and motivation\n2. Special Relativity - postulates, consequences (time dilation, length contraction, relativity of simultaneity, mass-energy equivalence)\n3. General Relativity - equivalence principle, spacetime curvature, field equations, predictions\n4. Experimental confirmations\n5. Modern applications\n\nI''ll aim for a thorough, well-structured explanation that is accessible but detailed.","content":"# The Theory of Relativity\n\nThe theory of relativity, developed by Albert"},"finish_reason":"length","logprobs":null}],"usage":{"prompt_tokens":60,"total_tokens":244,"completion_tokens":184,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":60},"completion_tokens_details":{"reasoning_tokens":165,"text_tokens":184}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826999158"
+            Req-Cost-Time:
+                - "4665"
+            Resp-Start-Time:
+                - "1793827003823"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "4665"
+        status: 200 OK
+        code: 200
+        duration: 4.69s

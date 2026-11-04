@@ -266,8 +266,15 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 
 	return func(yield func(genai.Reply) bool) {
 			wasThinking := false
+			wasToolPlan := false
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
+				if wasToolPlan && pkt.Type != ChunkToolPlanDelta {
+					if !yield(genai.Reply{Opaque: map[string]any{"tool_plan": true}}) {
+						return
+					}
+					wasToolPlan = false
+				}
 				// These can't happen.
 				if len(pkt.Delta.Message.Content) > 1 {
 					finalErr = &internal.BadError{Err: errors.New("implement multiple content")}
@@ -319,7 +326,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						f.Text = pkt.Delta.Message.Content[0].Text
 						wasThinking = false
 					case ContentThinking:
-						f.Reasoning = pkt.Delta.Message.Content[0].Text
+						f.Reasoning = pkt.Delta.Message.Content[0].Thinking
 						wasThinking = true
 					case ContentDocument, ContentImageURL:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content %q", t)}
@@ -331,6 +338,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					// Sometimes the delta is empty?
 					if len(pkt.Delta.Message.Content) == 1 {
 						t := pkt.Delta.Message.Content[0].Text
+						if wasThinking {
+							t = pkt.Delta.Message.Content[0].Thinking
+						}
 						if t == "" {
 							finalErr = &internal.BadError{Err: fmt.Errorf("empty content %#v", pkt)}
 							return
@@ -349,7 +359,12 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected content %#v", pkt)}
 						return
 					}
+					if wasThinking {
+						f.Opaque = map[string]any{"thinking": true}
+						wasThinking = false
+					}
 				case ChunkToolPlanDelta:
+					wasToolPlan = true
 					f.Reasoning = pkt.Delta.Message.ToolPlan
 				case ChunkToolCallStart:
 					if len(pkt.Delta.Message.ToolCalls) != 1 {
@@ -385,6 +400,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if !yield(f) {
 					return
 				}
+			}
+			if wasToolPlan {
+				yield(genai.Reply{Opaque: map[string]any{"tool_plan": true}})
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr

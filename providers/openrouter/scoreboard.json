@@ -134,7 +134,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
+        "outOfOrder": "true",
+        "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
@@ -154,7 +155,9 @@
         "json": true,
         "jsonSchema": {
           "array": "true"
-        }
+        },
+        "maxTokens": true,
+        "stopSequence": true
       }
     },
     {

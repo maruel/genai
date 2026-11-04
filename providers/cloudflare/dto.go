@@ -5,6 +5,9 @@
 // Wire types for the Cloudflare Workers AI REST API.
 //
 // Documentation: https://developers.cloudflare.com/api/resources/ai/methods/run/
+// Source: https://github.com/cloudflare/ai, commit
+// 34a8f4c00c0871883215a7114e9a7f3e7747ee1b,
+// packages/workers-ai-provider/src/workersai-chat-settings.ts (reasoning controls).
 
 package cloudflare
 
@@ -24,18 +27,35 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
+// ReasoningEffort is the provider-native reasoning effort.
+type ReasoningEffort string
+
+// Native reasoning effort levels.
+const (
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+)
+
+// ChatTemplateKWArgs configures native Workers AI chat-template thinking.
+type ChatTemplateKWArgs struct {
+	EnableThinking *bool `json:"enable_thinking,omitzero"`
+}
+
 // ChatRequest structure depends on the model used.
 //
 // The general description is at https://developers.cloudflare.com/api/resources/ai/methods/run/
 //
 // A specific one is https://developers.cloudflare.com/workers-ai/models/llama-4-scout-17b-16e-instruct/
 type ChatRequest struct {
-	Messages          []Message `json:"messages"`
-	FrequencyPenalty  float64   `json:"frequency_penalty,omitzero"` // [0, 2.0]
-	MaxTokens         int64     `json:"max_tokens,omitzero"`
-	PresencePenalty   float64   `json:"presence_penalty,omitzero"`   // [0, 2.0]
-	RepetitionPenalty float64   `json:"repetition_penalty,omitzero"` // [0, 2.0]
-	ResponseFormat    struct {
+	ReasoningEffort    ReasoningEffort    `json:"reasoning_effort,omitzero"`
+	ChatTemplateKWArgs ChatTemplateKWArgs `json:"chat_template_kwargs,omitzero"`
+	Messages           []Message          `json:"messages"`
+	FrequencyPenalty   float64            `json:"frequency_penalty,omitzero"` // [0, 2.0]
+	MaxTokens          int64              `json:"max_tokens,omitzero"`
+	PresencePenalty    float64            `json:"presence_penalty,omitzero"`   // [0, 2.0]
+	RepetitionPenalty  float64            `json:"repetition_penalty,omitzero"` // [0, 2.0]
+	ResponseFormat     struct {
 		Type       string           `json:"type,omitzero"` // json_object, json_schema
 		JSONSchema genai.JSONSchema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
@@ -61,6 +81,37 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				c.ChatTemplateKWArgs.EnableThinking = new(false)
+			case genai.EffortLow:
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium:
+				c.ReasoningEffort = ReasoningEffortMedium
+			case genai.EffortHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortXHigh:
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortMax:
+				c.ReasoningEffort = ReasoningEffortHigh
+			default:
+				unsupported = append(unsupported, "EffortLevel")
+			}
+			if strings.Contains(strings.ToLower(model), "gpt-oss") {
+				switch v {
+				case genai.EffortOff:
+					c.ReasoningEffort = ReasoningEffortLow
+				case genai.EffortXHigh, genai.EffortMax:
+					c.ReasoningEffort = ReasoningEffortHigh
+				case "", genai.EffortLow, genai.EffortMedium, genai.EffortHigh:
+				default:
+					unsupported = append(unsupported, "EffortLevel")
+				}
+				c.ChatTemplateKWArgs.EnableThinking = nil
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature

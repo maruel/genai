@@ -60,6 +60,8 @@ const (
 	ReasoningEffortHigh = openaibase.ReasoningEffortHigh
 	// ReasoningEffortXHigh requests extra-high reasoning effort.
 	ReasoningEffortXHigh = openaibase.ReasoningEffortXHigh
+	// ReasoningEffortMax requests maximum reasoning effort.
+	ReasoningEffortMax = openaibase.ReasoningEffortMax
 )
 
 // Background is only supported on gpt-image-1.
@@ -200,10 +202,17 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 		}
 		switch v := opt.(type) {
 		case *GenOptionText:
-			r.Reasoning.Effort = v.ReasoningEffort
 			r.ServiceTier = v.ServiceTier
 			r.Truncation = string(v.Truncation)
 			r.PreviousResponseID = v.PreviousResponseID
+		case genai.EffortLevel:
+			e, err := openaibase.ThinkingEffort(v, model)
+			if err != nil {
+				return err
+			}
+			r.Reasoning.Effort = e
+		case genai.ReasoningOutput:
+			r.Reasoning.Summary = "auto"
 		case *genai.GenOptionText:
 			u, e := r.initOptionsText(v)
 			unsupported = append(unsupported, u...)
@@ -234,14 +243,15 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 	}
 
 	for i := range msgs {
+		m := &msgs[i]
 		// Each "Message" in OpenAI responses API is a content.
 		switch {
-		case len(msgs[i].ToolCallResults) > 1:
+		case len(m.ToolCallResults) > 1:
 			// Handle messages with multiple tool call results by creating multiple messages
-			for j := range msgs[i].ToolCallResults {
+			for j := range m.ToolCallResults {
 				// Create a copy of the message with only one tool call result
-				msgCopy := msgs[i]
-				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
+				msgCopy := *m
+				msgCopy.ToolCallResults = []genai.ToolCallResult{m.ToolCallResults[j]}
 				var newMsg Message
 				if skip, err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
@@ -249,17 +259,17 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 					r.Input = append(r.Input, newMsg)
 				}
 			}
-		case len(msgs[i].Replies) > 1:
+		case len(m.Replies) > 1:
 			// Split tool calls into input items without moving them ahead of intervening content.
-			for j := 0; j < len(msgs[i].Replies); {
+			for j := 0; j < len(m.Replies); {
 				end := j + 1
-				if msgs[i].Replies[j].ToolCall.IsZero() {
-					for end < len(msgs[i].Replies) && msgs[i].Replies[end].ToolCall.IsZero() {
+				if m.Replies[j].ToolCall.IsZero() {
+					for end < len(m.Replies) && m.Replies[end].ToolCall.IsZero() {
 						end++
 					}
 				}
-				msgCopy := msgs[i]
-				msgCopy.Replies = msgs[i].Replies[j:end]
+				msgCopy := *m
+				msgCopy.Replies = m.Replies[j:end]
 				var newMsg Message
 				if skip, err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message #%d: reply #%d: %w", i, j, err))
@@ -271,7 +281,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 		default:
 			// It's a Request, send it as-is.
 			var newMsg Message
-			if skip, err := newMsg.From(&msgs[i]); err != nil {
+			if skip, err := newMsg.From(m); err != nil {
 				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 			} else if !skip {
 				r.Input = append(r.Input, newMsg)

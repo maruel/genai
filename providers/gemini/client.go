@@ -73,39 +73,8 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// ThinkingLevel controls the depth of Gemini 3's internal reasoning.
-//
-// See https://ai.google.dev/gemini-api/docs/generate-content/thinking
-type ThinkingLevel string
-
-// Validate implements genai.Validatable.
-func (t ThinkingLevel) Validate() error {
-	switch t {
-	case "", ThinkingLevelHigh, ThinkingLevelLow, ThinkingLevelMedium, ThinkingLevelMinimal:
-		return nil
-	default:
-		return fmt.Errorf("unsupported thinking level %q", t)
-	}
-}
-
-const (
-	// ThinkingLevelHigh enables the deepest available reasoning.
-	ThinkingLevelHigh ThinkingLevel = "high"
-	// ThinkingLevelLow minimizes reasoning latency.
-	ThinkingLevelLow ThinkingLevel = "low"
-	// ThinkingLevelMedium enables the default reasoning depth for many Gemini 3 models.
-	ThinkingLevelMedium ThinkingLevel = "medium"
-	// ThinkingLevelMinimal minimizes reasoning for models that support it.
-	//
-	// It does not guarantee that a model will not reason.
-	ThinkingLevelMinimal ThinkingLevel = "minimal"
-)
-
 // GenOption defines Gemini specific options.
 type GenOption struct {
-	// ThinkingLevel controls Gemini 3 reasoning.
-	ThinkingLevel ThinkingLevel
-
 	// CodeExecution enables the code execution tool, allowing the model to generate and run Python code.
 	//
 	// https://ai.google.dev/gemini-api/docs/code-execution
@@ -124,7 +93,7 @@ type GenOption struct {
 
 // Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
-	return o.ThinkingLevel.Validate()
+	return nil
 }
 
 // functionResponseSchema is the fixed JSON Schema for the tool function response wrapper.
@@ -622,6 +591,23 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		}
 		seen[t] = struct{}{}
 		switch o := opt.(type) {
+		case genai.EffortLevel:
+			if o == "" {
+				continue
+			}
+			cfg, err := thinkingConfig(c.impl.Model, o)
+			if err != nil {
+				return nil, err
+			}
+			if setup.GenerationConfig.ThinkingConfig != nil {
+				cfg.IncludeThoughts = setup.GenerationConfig.ThinkingConfig.IncludeThoughts
+			}
+			setup.GenerationConfig.ThinkingConfig = &cfg
+		case genai.ReasoningOutput:
+			if setup.GenerationConfig.ThinkingConfig == nil {
+				setup.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+			}
+			setup.GenerationConfig.ThinkingConfig.IncludeThoughts = true
 		case genai.RealtimeOptionInstructions:
 			setup.SystemInstruction = &LiveContent{Parts: []LivePart{{Text: string(o)}}}
 		case *genai.RealtimeOptionTools:
@@ -686,12 +672,13 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	if setup.InputAudioTranscription != nil {
 		setup.InputAudioTranscription.LanguageCodes = o.InputLanguages
 	}
-	if o.ThinkingLevel == "" && strings.Contains(c.impl.Model, "extended-thinking") {
-		// Extended-thinking models require a level; LOW favors voice latency.
-		o.ThinkingLevel = ThinkingLevelLow
-	}
-	if o.ThinkingLevel != "" {
-		setup.GenerationConfig.ThinkingConfig = &ThinkingConfig{ThinkingLevel: o.ThinkingLevel}
+	if strings.Contains(c.impl.Model, "extended-thinking") {
+		if setup.GenerationConfig.ThinkingConfig == nil {
+			setup.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+		}
+		if setup.GenerationConfig.ThinkingConfig.ThinkingLevel == "" && setup.GenerationConfig.ThinkingConfig.ThinkingBudget == nil {
+			setup.GenerationConfig.ThinkingConfig.ThinkingLevel = ThinkingLevelLow
+		}
 	}
 	if o.SessionResumption || o.ResumeHandle != "" {
 		setup.SessionResumption = &LiveSessionResumption{Handle: o.ResumeHandle}
@@ -747,7 +734,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (res genai.Result, err error) {
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return genai.Result{}, err
 	}
@@ -758,7 +745,6 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		return c.genDoc(ctx, &msgs[0], opts...)
 	}
 	// GenSync must be inlined because we need to call our GenSyncRaw.
-	res := genai.Result{}
 	in := &ChatRequest{}
 	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
 		return res, err
@@ -767,7 +753,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
 		return res, err
 	}
-	res, err := out.ToResult()
+	res, err = out.ToResult()
 	if err != nil {
 		return res, err
 	}
@@ -1686,6 +1672,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						f.Doc.Src = &bb.BytesBuffer{D: part.InlineData.Data}
 					}
 					if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
+						f.Opaque = nil
 						// https://ai.google.dev/api/caching?hl=en#FunctionCall
 						if len(part.ThoughtSignature) != 0 {
 							f.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
@@ -1731,9 +1718,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						}
 						f = genai.Reply{}
 					}
-				}
-				if !yield(f) {
-					return
+					if !f.IsZero() && !yield(f) {
+						return
+					}
+					f = genai.Reply{}
 				}
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {

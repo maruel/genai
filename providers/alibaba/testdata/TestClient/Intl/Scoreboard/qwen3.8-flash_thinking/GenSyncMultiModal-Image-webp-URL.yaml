@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 2.489s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-65e00ced-7e02-913e-a109-8e8d6c36169c","object":"chat.completion","created":1793827134,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants a single word identifying the fruit in the image. The image clearly shows a yellow, curved fruit with a stem at one end and a blackened tip at the other—a banana. I need to respond with only one word, no extra text.","content":"Banana"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":152,"total_tokens":210,"completion_tokens":58,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":60},"completion_tokens_details":{"reasoning_tokens":52,"text_tokens":5}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827134835"
+            Req-Cost-Time:
+                - "1721"
+            Resp-Start-Time:
+                - "1793827136557"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1720"
+        status: 200 OK
+        code: 200
+        duration: 1.971s

@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/llamacpp"
 )
@@ -46,5 +47,14 @@ func TestEmbeddingInput(t *testing.T) {
 				}
 			}
 		})
+	})
+}
+
+func TestMessage(t *testing.T) {
+	t.Run("error", func(t *testing.T) {
+		var got llamacpp.Message
+		if err := got.From(&genai.Message{Replies: []genai.Reply{{Reasoning: "check", Opaque: map[string]any{"foreign": true}}}}); err == nil {
+			t.Fatal("accepted foreign reasoning state")
+		}
 	})
 }

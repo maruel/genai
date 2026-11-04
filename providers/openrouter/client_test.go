@@ -194,3 +194,28 @@ func TestClient(t *testing.T) {
 func init() {
 	internal.BeLenient = false
 }
+
+func TestEffortLevel(t *testing.T) {
+	tests := []struct {
+		level       genai.EffortLevel
+		model, want string
+	}{
+		{genai.EffortOff, "openai/gpt-6", "none"},
+		{genai.EffortLow, "openai/gpt-6", "low"},
+		{genai.EffortMedium, "openai/gpt-6", "medium"},
+		{genai.EffortHigh, "openai/gpt-6", "high"},
+		{genai.EffortXHigh, "openai/gpt-6", "xhigh"},
+		{genai.EffortMax, "openai/gpt-6", "max"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+			var req openrouter.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, tc.model, tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if got := string(req.Reasoning.Effort); got != tc.want {
+				t.Fatalf("reasoning_effort=%q, want %q", got, tc.want)
+			}
+		})
+	}
+}

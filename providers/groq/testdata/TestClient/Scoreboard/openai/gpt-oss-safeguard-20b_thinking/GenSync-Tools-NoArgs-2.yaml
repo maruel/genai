@@ -57,3 +57,59 @@ interactions:
         status: 200 OK
         code: 200
         duration: 241ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 870
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning":"The user asks to use the get_hostname tool, returning only the hostname. Must not give explanation. We must call function.","tool_calls":[{"type":"function","id":"fc_f0e6e59e-dcb5-4f9d-a1fd-811aa2456466","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"fc_f0e6e59e-dcb5-4f9d-a1fd-811aa2456466"}],"model":"openai/gpt-oss-safeguard-20b","stream":false,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-38793953-112b-4336-ad57-7dac53355229","object":"chat.completion","created":1793828779,"model":"openai/gpt-oss-safeguard-20b","choices":[{"index":0,"message":{"role":"assistant","content":"genai-smoke"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.084078103,"prompt_tokens":200,"prompt_time":0.014824542,"completion_tokens":8,"completion_time":0.007997461,"total_tokens":208,"total_time":0.022822003},"usage_breakdown":null,"system_fingerprint":"fp_a2cda27c02","x_groq":{"id":"req_01m6m8dxfxerntycj7vm458mkq","seed":1775338359},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf8fed3446f9-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "150000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "149191"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 323ms
+        status: 200 OK
+        code: 200
+        duration: 135ms

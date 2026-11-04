@@ -103,3 +103,83 @@ interactions:
         status: 200 OK
         code: 200
         duration: 896ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 345
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","created":1793827050,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user is asking a"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" simple question based on"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the information provided in"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the text. The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" text states: \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The capital of Qu"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ackiland is Qu"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827050,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ack.\" So the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" answer is straightforward."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"The","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":" capital of Quack","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"iland is **Qu","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"ack**.","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8f68b23f-c191-43ee-a567-801073a8b6ac","object":"chat.completion.chunk","created":1793827051,"model":"qwen3.8-max","choices":[],"usage":{"prompt_tokens":83,"total_tokens":134,"completion_tokens":51,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":83},"completion_tokens_details":{"reasoning_tokens":37,"text_tokens":51}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827049003"
+            Req-Cost-Time:
+                - "1536"
+            Resp-Start-Time:
+                - "1793827050540"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1536"
+        status: 200 OK
+        code: 200
+        duration: 1.561s

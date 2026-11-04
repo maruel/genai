@@ -46,3 +46,77 @@ interactions:
         status: 400 Bad Request
         code: 400
         duration: 512ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 625
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","created":1793827151,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"content":"","reasoning_content":"I"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"content":"","reasoning_content":"'m"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"content":"","reasoning_content":" calling the tool"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"content":"","reasoning_content":" now"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"content":"","reasoning_content":"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"tool_calls":[{"index":0,"id":"call_f123fe26fc2b443e977f7437","type":"function","function":{"name":"square_root","arguments":""}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"tool_calls":[{"type":"function","index":0,"function":{"arguments":"{\"number\": 13"}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"tool_calls":[{"type":"function","index":0,"function":{"arguments":"2413"}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"tool_calls":[{"type":"function","index":0,"function":{"arguments":""}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"tool_calls":[{"type":"function","index":0,"function":{"arguments":"}"}}],"content":"","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{"tool_calls":[{"function":{"arguments":""},"index":0,"id":null,"type":"function"}],"content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","choices":[{"delta":{},"index":0,"finish_reason":"tool_calls","logprobs":null}],"created":1793827151,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1793827151,"id":"chatcmpl-ff5412a6-a788-9c30-a44c-1f4b4b0bc0cf","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":41,"completion_tokens_details":{"reasoning_tokens":7,"text_tokens":41},"prompt_tokens":366,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":366},"total_tokens":407}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1793827151500"
+            Req-Cost-Time:
+                - "1135"
+            Resp-Start-Time:
+                - "1793827152635"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1135"
+        status: 200 OK
+        code: 200
+        duration: 1.385s

@@ -44,3 +44,46 @@ interactions:
         status: 200 OK
         code: 200
         duration: 7.299s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 598
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-9688050e-1be5-9812-92a7-64f9c9001a8e","object":"chat.completion","created":1793827104,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to call the best_country tool to determine which country is better between USA and Canada. This is a subjective question, but the user is explicitly asking me to use the tool. I''ll call it with \"USA\" since the user seems to be leaning that way with their question, but I should note this is subjective.","content":"","tool_calls":[{"id":"call_4e328d94c47f4766bb63470f","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":368,"total_tokens":465,"completion_tokens":97,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":368},"completion_tokens_details":{"reasoning_tokens":68,"text_tokens":97}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827104920"
+            Req-Cost-Time:
+                - "2171"
+            Resp-Start-Time:
+                - "1793827107092"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "2171"
+        status: 200 OK
+        code: 200
+        duration: 2.422s

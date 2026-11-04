@@ -170,3 +170,28 @@ func getAPIKeyTest(t testing.TB) string {
 func init() {
 	internal.BeLenient = false
 }
+
+func TestEffortLevel(t *testing.T) {
+	tests := []struct {
+		level       genai.EffortLevel
+		model, want string
+	}{
+		{genai.EffortLow, "Qwen/Qwen3.8", "low"},
+		{genai.EffortMedium, "Qwen/Qwen3.8", "medium"},
+		{genai.EffortHigh, "Qwen/Qwen3.8", "high"},
+		{genai.EffortXHigh, "Qwen/Qwen3.8", "xhigh"},
+		{genai.EffortOff, "openai/gpt-oss-120b", "low"},
+		{genai.EffortMax, "openai/gpt-oss-120b", "high"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+			var req huggingface.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, tc.model, tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if got := string(req.ReasoningEffort); got != tc.want {
+				t.Fatalf("reasoning_effort=%q, want %q", got, tc.want)
+			}
+		})
+	}
+}

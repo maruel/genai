@@ -97,3 +97,87 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.154s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 326
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","created":1793826965,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user wants to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" know who is the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" current Prime Minister of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Canada. They want"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only the name"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":", no explanation."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" The current Prime Minister"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Canada is Mark Car"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ney, who took"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" office in"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" March 20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826965,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"25.\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826966,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Mark Car","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826966,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"ney","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826966,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e456a6f8-5bde-46ea-9d04-2252df9de006","object":"chat.completion.chunk","created":1793826966,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":77,"total_tokens":128,"completion_tokens":51,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":77},"completion_tokens_details":{"reasoning_tokens":45,"text_tokens":51}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826964486"
+            Req-Cost-Time:
+                - "1300"
+            Resp-Start-Time:
+                - "1793826965786"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1300"
+        status: 200 OK
+        code: 200
+        duration: 1.324s

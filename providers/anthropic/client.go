@@ -66,34 +66,12 @@ func (p ProviderOptionMultipartBoundary) Validate() error {
 
 // GenOptionText defines Anthropic specific options.
 type GenOptionText struct {
-	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer. It generally
-	// must be above 1024 and below MaxTokens.
-	//
-	// It is used only with ThinkingEnabled.
-	ThinkingBudget int64
-	// Thinking controls the thinking mode. When empty, the provider selects adaptive thinking for models that
-	// support it, disables thinking for models that only support budgeted thinking, and falls back to adaptive
-	// thinking when model capabilities are unknown.
-	//
-	// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
-	// https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking
-	Thinking ThinkingType
-	// ThinkingDisplay controls whether adaptive thinking text is returned. Valid values are "summarized"
-	// and "omitted". Defaults to "summarized" in adaptive mode since opus-4-8/4-7 default to
-	// "omitted" which hides the thinking text.
-	//
-	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#controlling-thinking-display
-	ThinkingDisplay ThinkingDisplay
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
 	//
 	// https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
 	MessagesToCache int
-	// Effort controls the quality/latency tradeoff. When empty, the API default is used.
-	//
-	// https://platform.claude.com/docs/en/api/messages#body-output-config
-	Effort Effort
 	// InferenceGeo specifies the geographic region for inference processing. If not specified,
 	// the workspace's default_inference_geo is used.
 	//
@@ -103,46 +81,8 @@ type GenOptionText struct {
 
 // Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
-	if err := o.Thinking.Validate(); err != nil {
-		return err
-	}
-	if o.ThinkingBudget > 0 && o.Thinking != ThinkingEnabled {
-		return fmt.Errorf("ThinkingBudget must be set only when Thinking is %q", ThinkingEnabled)
-	}
-	if o.Thinking == ThinkingEnabled && o.ThinkingBudget == 0 {
-		return fmt.Errorf("ThinkingBudget must be set when Thinking is %q", ThinkingEnabled)
-	}
-	if err := o.ThinkingDisplay.Validate(); err != nil {
-		return err
-	}
-	if o.ThinkingDisplay != "" && (o.Thinking == ThinkingEnabled || o.Thinking == ThinkingDisabled) {
-		return errors.New("ThinkingDisplay is only valid with adaptive thinking")
-	}
-	switch o.Effort {
-	case "", EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
-	default:
-		return fmt.Errorf("invalid Effort %q", o.Effort)
-	}
 	return nil
 }
-
-// Effort controls the amount of effort the model puts into its response.
-//
-// https://platform.claude.com/docs/en/api/messages#body-output-config
-type Effort string
-
-const (
-	// EffortLow minimizes latency at the cost of quality.
-	EffortLow Effort = "low"
-	// EffortMedium balances quality and latency.
-	EffortMedium Effort = "medium"
-	// EffortHigh favors quality over latency.
-	EffortHigh Effort = "high"
-	// EffortXHigh favors coding and agentic work at higher token usage.
-	EffortXHigh Effort = "xhigh"
-	// EffortMax maximizes quality.
-	EffortMax Effort = "max"
-)
 
 // Client implements genai.Provider.
 type Client struct {
@@ -736,7 +676,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						pendingToolCall.Arguments = ""
 						// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
 					case ContentRedactedThinking:
-						f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
+						f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Data}
 					case ContentServerToolUse:
 						// Discard the data for now. It may be necessary in the future to keep in Opaque.
 						pendingServerCall = pkt.ContentBlock.Name
@@ -1002,21 +942,6 @@ func (m *modelData) supportsEffort(e Effort) bool {
 		return m.Effort.XHigh
 	case EffortMax:
 		return m.Effort.Max
-	default:
-		return false
-	}
-}
-
-func (m *modelData) supportsThinking(t ThinkingType) bool {
-	switch t {
-	case "":
-		return true
-	case ThinkingDisabled:
-		return m.Thinking.Disabled
-	case ThinkingAdaptive:
-		return m.Thinking.Adaptive
-	case ThinkingEnabled:
-		return m.Thinking.Enabled
 	default:
 		return false
 	}

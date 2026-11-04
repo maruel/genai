@@ -35,3 +35,37 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.042s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1060
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"6OYKKiz9cAQh5xX2Nf6g1YuVx0IAGYBg","function":{"name":"square_root","arguments":"{\"number\":132413}"}}],"reasoning_content":"We need to call the function square_root with number 132413, then output only the result. Let's do that."},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"6OYKKiz9cAQh5xX2Nf6g1YuVx0IAGYBg"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 831
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89","reasoning_content":"The tool returned \"363.89\". The user wants only the result, no explanation. So reply with just 363.89. Probably we should ensure formatting: just the number."}}],"created":1793829825,"model":"LiquidAI/LFM3-VL-2B-GGUF","system_fingerprint":"b11960-8642541b2","object":"chat.completion","usage":{"completion_tokens":42,"prompt_tokens":180,"total_tokens":222,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-YsqtjsQXHEfTYflXQtL4S4rhuxytxd07","timings":{"cache_n":0,"prompt_n":180,"prompt_ms":924.663,"prompt_per_token_ms":5.137016666666667,"prompt_per_second":194.66551597717222,"predicted_n":42,"predicted_ms":1345.89,"predicted_per_token_ms":32.82658536585366,"predicted_per_second":30.463113627413826}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "831"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.279s

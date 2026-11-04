@@ -105,3 +105,85 @@ interactions:
         status: 200 OK
         code: 200
         duration: 60ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1414
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","reasoning":"We need to use function to get task status for each. We can call function once per task. Probably do separate calls. The user wants \"start the checks together if possible\", but we can just call all three. We'll do three calls.","tool_calls":[{"type":"function","id":"fc_fe875ff0-0cad-4e3c-b67b-f9bbb8a3199e","function":{"name":"task_status","arguments":"{\"task_id\":3}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"model":"openai/gpt-oss-20b","stream":true,"tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m6m8dyvxecevmykwmmvhprjz","seed":596668904}}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":"We","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" need","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" to","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" call","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" for","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" task","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" ","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":"7","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":" only","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"reasoning":".","channel":"analysis"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{"tool_calls":[{"id":"fc_4ccf7ccc-7376-4919-85e2-837058aac990","type":"function","function":{"name":"task_status","arguments":"{\"task_id\":7}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-81bbc745-af04-481f-9b64-8ae90e841db6","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_34cb00738d","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01m6m8dyvxecevmykwmmvhprjz","usage":{"queue_time":0.003597794,"prompt_tokens":322,"prompt_time":0.018235219,"completion_tokens":35,"completion_time":0.035968234,"total_tokens":357,"total_time":0.054203453,"completion_tokens_details":{"reasoning_tokens":11}}},"usage":{"queue_time":0.003597794,"prompt_tokens":322,"prompt_time":0.018235219,"completion_tokens":35,"completion_time":0.035968234,"total_tokens":357,"total_time":0.054203453,"completion_tokens_details":{"reasoning_tokens":11}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf98bd0446f9-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499995"
+            X-Ratelimit-Remaining-Tokens:
+                - "248613"
+            X-Ratelimit-Reset-Requests:
+                - 864ms
+            X-Ratelimit-Reset-Tokens:
+                - 332ms
+        status: 200 OK
+        code: 200
+        duration: 28ms

@@ -70,10 +70,6 @@ type GenOption struct {
 	Prediction Prediction
 	// PromptCacheKey groups requests that share a prompt prefix.
 	PromptCacheKey string
-	// ReasoningEffort controls how much reasoning the model performs.
-	ReasoningEffort ReasoningEffort
-	// ReasoningFormat controls how reasoning content appears in a response.
-	ReasoningFormat ReasoningFormat
 	// ServiceTier controls request priority.
 	ServiceTier ServiceTier
 	// ToolChoice controls how the model may call tools.
@@ -89,12 +85,6 @@ func (o *GenOption) Validate() error {
 		return errors.New("prompt cache key exceeds the maximum length of 1024 bytes")
 	}
 	if err := o.Prediction.Validate(); err != nil {
-		return err
-	}
-	if err := o.ReasoningEffort.Validate(); err != nil {
-		return err
-	}
-	if err := o.ReasoningFormat.Validate(); err != nil {
 		return err
 	}
 	if err := o.ServiceTier.Validate(); err != nil {

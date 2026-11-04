@@ -40,7 +40,6 @@ package dsh
 
 import (
 	"bytes"
-	"cmp"
 	"context"
 	_ "embed"
 	"encoding/json"
@@ -82,10 +81,6 @@ func Scoreboard() scoreboard.Score {
 // All fields are opt-in. By default the provider rejects every permission
 // request the agent makes.
 type ProviderOption struct {
-	// Effort selects the default reasoning effort. Use the Effort* constants or
-	// a value returned by the model's reasoning_effort selector.
-	// GenOption.Effort overrides it per call.
-	Effort Effort
 	// DangerouslySkipPermissions approves every permission request the agent
 	// makes, such as file edits and shell commands.
 	DangerouslySkipPermissions bool
@@ -97,43 +92,8 @@ type ProviderOption struct {
 
 // Validate implements genai.ProviderOption.
 func (p *ProviderOption) Validate() error {
-	if p.Effort != "" && strings.TrimSpace(string(p.Effort)) == "" {
-		return errors.New("ProviderOption.Effort: level must not be whitespace")
-	}
 	return msgutil.CheckExtraArgs(p.ExtraArgs, "profile")
 }
-
-// GenOption configures one prompt of a running dsh session.
-type GenOption struct {
-	// Effort selects the reasoning effort, overriding ProviderOption.Effort. An
-	// empty value keeps the session's effort.
-	Effort Effort
-
-	_ struct{}
-}
-
-// Validate implements genai.GenOption.
-func (g *GenOption) Validate() error {
-	if g.Effort != "" && strings.TrimSpace(string(g.Effort)) == "" {
-		return errors.New("GenOption.Effort: level must not be whitespace")
-	}
-	return nil
-}
-
-// Effort is a DeepSeek Harness reasoning-effort value serialized in the ACP
-// reasoning_effort configuration option.
-//
-// Availability is model-specific. The provider validates it against the effort
-// values returned by the ACP session.
-type Effort string
-
-// Reasoning effort levels supported by the shipped DeepSeek models.
-const (
-	EffortOff  Effort = "off"
-	EffortLow  Effort = "low"
-	EffortHigh Effort = "high"
-	EffortMax  Effort = "max"
-)
 
 // Client is a genai provider that delegates to the local `dsh` CLI.
 type Client struct {
@@ -273,7 +233,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.ensureBin(); err != nil {
 		return genai.Result{}, err
 	}
-	co, optsErr := parseOpts(&c.opts, opts)
+	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
@@ -318,7 +278,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if err := c.ensureBin(); err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	co, optsErr := parseOpts(&c.opts, opts)
+	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -431,9 +391,9 @@ type callOpts struct {
 	effort Effort
 }
 
-// parseOpts collects the call settings from the process settings p and opts.
-func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
-	co := callOpts{effort: p.Effort}
+// parseOpts collects per-call generation settings.
+func parseOpts(opts []genai.GenOption) (callOpts, error) {
+	co := callOpts{}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return co, err
 	}
@@ -443,8 +403,21 @@ func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
 			return co, err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			co.effort = cmp.Or(v.Effort, co.effort)
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				co.effort = EffortOff
+			case genai.EffortLow:
+				co.effort = EffortLow
+			case genai.EffortMedium, genai.EffortHigh:
+				co.effort = EffortHigh
+			case genai.EffortXHigh, genai.EffortMax:
+				co.effort = EffortMax
+			default:
+				return callOpts{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			if v.Temperature != 0 {
 				unsupported = append(unsupported, "GenOptionText.Temperature")

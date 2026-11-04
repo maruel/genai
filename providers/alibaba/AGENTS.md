@@ -5,6 +5,7 @@
 - **Chat Completions API**: https://www.alibabacloud.com/help/en/model-studio/qwen-api-via-openai-chat-completions
 - **Function Calling**: https://www.alibabacloud.com/help/en/model-studio/qwen-function-calling
 - **Models**: https://www.alibabacloud.com/help/en/model-studio/models
+- **Thinking and Budgets**: https://help.aliyun.com/en/model-studio/deep-thinking
 
 DashScope exposes an OpenAI-compatible endpoint at:
 

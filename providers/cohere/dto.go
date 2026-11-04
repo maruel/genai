@@ -5,6 +5,8 @@
 // Wire types for the Cohere chat API.
 //
 // Reference: https://docs.cohere.com/reference/chat
+// Source: https://github.com/cohere-ai/cohere-python,
+// commit f2decac2515eab6b21c7e980f63d399df229b670 (Thinking wire types).
 
 package cohere
 
@@ -48,6 +50,7 @@ type ChatRequest struct {
 	Tools            []Tool   `json:"tools,omitzero"`
 	ToolChoice       string   `json:"tool_choice,omitzero"` // "required", "none"
 	StrictTools      bool     `json:"strict_tools,omitzero"`
+	Thinking         Thinking `json:"thinking,omitzero"`
 }
 
 // SetStream sets the streaming mode.
@@ -64,11 +67,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	var errs []error
 	var unsupported []string
 	sp := ""
+	var level genai.EffortLevel
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return err
 		}
 		switch v := opt.(type) {
+		case genai.EffortLevel:
+			level = v
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -119,6 +126,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 	}
 
+	var err error
+	if c.Thinking, err = thinkingForLevel(level, model, c.MaxTokens); err != nil {
+		return err
+	}
+
 	if sp != "" {
 		c.Messages = append(c.Messages, Message{Role: "system", Content: []Content{{Type: "text", Text: sp}}})
 	}
@@ -155,6 +167,69 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
+}
+
+// Thinking controls Cohere reasoning independently of its visibility.
+type Thinking struct {
+	Type ThinkingType `json:"type"`
+	// TokenBudget caps thinking tokens. Zero leaves the model's limit unchanged.
+	TokenBudget int64 `json:"token_budget,omitzero"`
+}
+
+// ThinkingType selects Cohere's native reasoning mode.
+type ThinkingType string
+
+// Native reasoning modes.
+const (
+	ThinkingEnabled  ThinkingType = "enabled"
+	ThinkingDisabled ThinkingType = "disabled"
+)
+
+func thinkingForLevel(level genai.EffortLevel, model string, maxTokens int64) (Thinking, error) {
+	if level == "" {
+		return Thinking{}, nil
+	}
+	if !strings.Contains(model, "reasoning") && !strings.HasPrefix(model, "command-a-plus") {
+		if level == genai.EffortOff {
+			return Thinking{}, nil
+		}
+		return Thinking{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+	}
+	var t Thinking
+	switch level {
+	case "":
+	case genai.EffortOff:
+		t.Type = ThinkingDisabled
+	case genai.EffortLow:
+		t = Thinking{Type: ThinkingEnabled, TokenBudget: 1024}
+	case genai.EffortMedium:
+		t = Thinking{Type: ThinkingEnabled, TokenBudget: 8192}
+	case genai.EffortHigh:
+		t = Thinking{Type: ThinkingEnabled, TokenBudget: 16384}
+	case genai.EffortXHigh:
+		t = Thinking{Type: ThinkingEnabled, TokenBudget: 32768}
+	case genai.EffortMax:
+		t.Type = ThinkingEnabled
+	default:
+		return Thinking{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+	}
+	if maxTokens == 0 {
+		switch {
+		case strings.HasPrefix(model, "command-a-reasoning"):
+			maxTokens = 32000
+		case strings.HasPrefix(model, "command-a-plus"):
+			maxTokens = 64000
+		default:
+		}
+	}
+	if t.TokenBudget != 0 && maxTokens != 0 {
+		// Cohere recommends reserving at least 1K tokens for the final response.
+		if maxTokens <= 1024 {
+			return Thinking{}, errors.New("thinking requires MaxTokens greater than 1024 to leave room for the response")
+		}
+		t.TokenBudget = min(t.TokenBudget, maxTokens-1024)
+	}
+	return t, nil
 }
 
 // Message is documented at https://docs.cohere.com/reference/chat
@@ -198,10 +273,18 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 	if len(in.Replies) != 0 {
 		for i := range in.Replies {
 			if len(in.Replies[i].Opaque) != 0 {
-				return nil, fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
-			}
-			if in.Replies[i].Reasoning != "" {
-				// Silently ignore thinking blocks.
+				r := &in.Replies[i]
+				if len(r.Opaque) != 1 || r.Reasoning == "" {
+					return nil, fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+				}
+				switch {
+				case r.Opaque["tool_plan"] == true:
+					m.ToolPlan += r.Reasoning
+				case r.Opaque["thinking"] == true:
+					m.Content = append(m.Content, Content{Type: ContentThinking, Thinking: r.Reasoning})
+				default:
+					return nil, fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+				}
 				continue
 			}
 			if !in.Replies[i].ToolCall.IsZero() {
@@ -248,7 +331,7 @@ type Content struct {
 
 // IsZero returns true if the content is empty.
 func (c *Content) IsZero() bool {
-	return c.Type == "" && c.Text == "" && c.ImageURL.URL == "" && len(c.Document.Data) == 0 && c.Document.ID == ""
+	return c.Type == "" && c.Text == "" && c.Thinking == "" && c.ImageURL.URL == "" && len(c.Document.Data) == 0 && c.Document.ID == ""
 }
 
 // FromRequest converts a genai.Request to a Content.
@@ -340,7 +423,6 @@ func (c *Content) FromReply(in *genai.Reply, docs *[]Document) error {
 			return &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 	case in.Reasoning != "":
-		// Unclear if we should send it back.
 		c.Type = ContentThinking
 		c.Thinking = in.Reasoning
 	default:
@@ -356,6 +438,7 @@ func (c *Content) To(in *genai.Reply) error {
 		in.Text = c.Text
 	case ContentThinking:
 		in.Reasoning = c.Thinking
+		in.Opaque = map[string]any{"thinking": true}
 	case ContentDocument, ContentImageURL:
 		return &internal.BadError{Err: fmt.Errorf("implement %s", c.Type)}
 	default:
@@ -659,12 +742,12 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		return errors.New("implement tool call id")
 	}
 	if m.ToolPlan != "" {
-		out.Replies = []genai.Reply{{Reasoning: m.ToolPlan}}
+		out.Replies = []genai.Reply{{Reasoning: m.ToolPlan, Opaque: map[string]any{"tool_plan": true}}}
 	}
 	if len(m.Content) != 0 {
 		for i := range m.Content {
 			out.Replies = append(out.Replies, genai.Reply{})
-			if err := m.Content[len(m.Content)-1].To(&out.Replies[len(out.Replies)-1]); err != nil {
+			if err := m.Content[i].To(&out.Replies[len(out.Replies)-1]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}

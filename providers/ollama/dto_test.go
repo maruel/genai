@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers/ollama"
 )
@@ -63,4 +64,20 @@ func TestErrorResponse(t *testing.T) {
 type embeddingRequestErrorCase struct {
 	name string
 	in   ollama.EmbeddingRequest
+}
+
+func TestChatRequest(t *testing.T) {
+	t.Run("Init", func(t *testing.T) {
+		var r ollama.ChatRequest
+		if err := r.Init(genai.Messages{genai.NewTextMessage("hello")}, "qwen3:8b", genai.EffortHigh); err != nil {
+			t.Fatal(err)
+		}
+		b, err := json.Marshal(r.Think)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(b) != "true" {
+			t.Fatalf("think=%s, want true", b)
+		}
+	})
 }

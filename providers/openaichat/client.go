@@ -54,19 +54,12 @@ func Scoreboard() scoreboard.Score {
 
 // GenOptionText defines OpenAI specific options.
 type GenOptionText struct {
-	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
-	//
-	// When unspecified, defaults to medium.
-	ReasoningEffort ReasoningEffort
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier
 }
 
 // Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
-	if err := o.ReasoningEffort.Validate(); err != nil {
-		return err
-	}
 	return o.ServiceTier.Validate()
 }
 

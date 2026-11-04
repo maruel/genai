@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.084s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 512
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-16aacea5-94ee-48a8-ba91-d4a4f844c1ba","object":"chat.completion","created":1793826946,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants me to call get_hostname and reply with only the hostname.","content":"","tool_calls":[{"id":"call_099666965bc34a16aa3d0fc0","type":"function","function":{"name":"get_hostname","arguments":"{}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":339,"total_tokens":370,"completion_tokens":31,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":339},"completion_tokens_details":{"reasoning_tokens":15,"text_tokens":31}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826946144"
+            Req-Cost-Time:
+                - "944"
+            Resp-Start-Time:
+                - "1793826947088"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "944"
+        status: 200 OK
+        code: 200
+        duration: 968ms

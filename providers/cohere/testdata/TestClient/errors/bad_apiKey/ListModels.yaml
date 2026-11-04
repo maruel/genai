@@ -22,7 +22,7 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"id":"a0a5b90f-b5ba-452a-96f6-ddec408d3027","message":"invalid api token"}'
+        body: '{"id":"f01f9640-f413-421c-b414-85859bccbf43","message":"Incorrect API key provided: ***. You can find your API key at https://dashboard.cohere.com/api-keys."}'
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -43,7 +43,7 @@ interactions:
             X-Accel-Expires:
                 - "0"
             X-Envoy-Upstream-Service-Time:
-                - "4"
+                - "1"
         status: 401 Unauthorized
         code: 401
-        duration: 50ms
+        duration: 42ms

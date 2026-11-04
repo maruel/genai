@@ -136,6 +136,24 @@ func testMessageContentRoundTrip[T any](t *testing.T) {
 	})
 }
 
+func TestContent(t *testing.T) {
+	t.Run("signed_thinking", func(t *testing.T) {
+		src := mistral.Content{Type: mistral.ContentThinking, Thinking: []mistral.ThinkingContent{{Type: mistral.ContentText, Text: "verify"}}, Signature: "signed", Closed: new(true)}
+		var reply genai.Reply
+		if err := src.ToReply(&reply); err != nil {
+			t.Fatal(err)
+		}
+		res := genai.Result{Message: genai.Message{Replies: []genai.Reply{reply}}}
+		var dst mistral.Content
+		if err := dst.FromReply(&res.Replies[0]); err != nil {
+			t.Fatal(err)
+		}
+		if diff := cmp.Diff(src, dst); diff != "" {
+			t.Fatal(diff)
+		}
+	})
+}
+
 func TestProcessStream(t *testing.T) {
 	chunks := make([]mistral.ChatStreamChunkResponse, 0, 5)
 	for _, body := range []string{

@@ -18,38 +18,12 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
-// GenOption controls thinking mode and reasoning effort.
-//
-// DeepSeek v4 models default to thinking enabled. Set Thinking to false to
-// switch to non-thinking mode, which enables forced tool calling and avoids
-// "reasoning_content must be passed back" errors across multi-turn
-// conversations.
-//
-// See https://api-docs.deepseek.com/api/create-chat-completion
-type GenOption struct {
-	// Thinking controls the thinking mode. When false, thinking is disabled.
-	Thinking bool
-	// ReasoningEffort controls the reasoning effort of the model.
-	// Ignored when Thinking is false. Default is "high".
-	// For compatibility, "low" and "medium" are mapped to "high" by the API,
-	// and "xhigh" is mapped to "max".
-	ReasoningEffort ReasoningEffort
-}
-
-// Validate implements genai.Validatable.
-func (g *GenOption) Validate() error {
-	switch g.ReasoningEffort {
-	case "", ReasoningEffortHigh, ReasoningEffortMax:
-	default:
-		return fmt.Errorf("invalid ReasoningEffort %q", g.ReasoningEffort)
-	}
-	return nil
-}
-
 // ReasoningEffort controls the amount of effort the model puts into reasoning.
 type ReasoningEffort string
 
 const (
+	// ReasoningEffortLow minimizes reasoning effort.
+	ReasoningEffortLow ReasoningEffort = "low"
 	// ReasoningEffortHigh is the default effort for regular requests.
 	ReasoningEffortHigh ReasoningEffort = "high"
 	// ReasoningEffortMax maximizes reasoning quality.
@@ -63,9 +37,9 @@ type ChatRequest struct {
 	Stream   bool      `json:"stream"`
 	// Thinking controls the switch between thinking and non-thinking mode.
 	// Set type to "disabled" for non-thinking mode. Default is "enabled".
-	Thinking struct {
-		Type            string `json:"type,omitzero"`             // "enabled", "disabled"
-		ReasoningEffort string `json:"reasoning_effort,omitzero"` // "high", "max"
+	ReasoningEffort ReasoningEffort `json:"reasoning_effort,omitzero"`
+	Thinking        struct {
+		Type string `json:"type,omitzero"` // "enabled", "disabled"
 	} `json:"thinking,omitzero"`
 	Temperature    float64 `json:"temperature,omitzero"` // [0, 2]
 	MaxToks        int64   `json:"max_tokens,omitzero"`  // Up to 384K for deepseek-flash
@@ -102,12 +76,24 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 		switch v := opt.(type) {
-		case *GenOption:
-			if !v.Thinking {
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
 				c.Thinking.Type = "disabled"
-			} else if v.ReasoningEffort != "" {
-				c.Thinking.ReasoningEffort = string(v.ReasoningEffort)
+			case genai.EffortLow:
+				c.Thinking.Type = "enabled"
+				c.ReasoningEffort = ReasoningEffortLow
+			case genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh:
+				c.Thinking.Type = "enabled"
+				c.ReasoningEffort = ReasoningEffortHigh
+			case genai.EffortMax:
+				c.Thinking.Type = "enabled"
+				c.ReasoningEffort = ReasoningEffortMax
+			default:
+				unsupported = append(unsupported, "EffortLevel")
 			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature

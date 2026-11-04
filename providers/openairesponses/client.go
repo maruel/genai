@@ -54,10 +54,6 @@ func Scoreboard() scoreboard.Score {
 
 // GenOptionText defines OpenAI Responses specific options.
 type GenOptionText struct {
-	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
-	//
-	// When unspecified, defaults to medium.
-	ReasoningEffort ReasoningEffort
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier
 	// Truncation controls automatic shortening of long conversations.
@@ -68,9 +64,6 @@ type GenOptionText struct {
 
 // Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
-	if err := o.ReasoningEffort.Validate(); err != nil {
-		return err
-	}
 	return o.ServiceTier.Validate()
 }
 
@@ -383,7 +376,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 //
 // It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
 // only new messages are sent. The response ID is captured and emitted as metadata for the next call.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (res genai.Result, err error) {
 	if err := msgs.Validate(); err != nil {
 		return genai.Result{}, err
 	}
@@ -410,7 +403,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		return genai.Result{}, err
 	}
 	lastResp := c.impl.LastResponseHeaders()
-	res, err := out.ToResult()
+	res, err = out.ToResult()
 	if err != nil {
 		return res, err
 	}

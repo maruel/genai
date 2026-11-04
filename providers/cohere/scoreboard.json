@@ -29,10 +29,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
+        "tools": "flaky",
         "json": true,
         "jsonSchema": {
           "object": "true"
@@ -45,15 +42,14 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "outOfOrder": "false",
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
+        "tools": "flaky",
         "json": true,
         "jsonSchema": {
           "object": "true"
         },
-        "citations": true
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
       }
     },
     {
@@ -94,7 +90,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
+        "outOfOrder": "false",
+        "tools": "true",
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,

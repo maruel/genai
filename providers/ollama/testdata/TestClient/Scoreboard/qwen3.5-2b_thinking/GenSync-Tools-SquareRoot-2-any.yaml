@@ -29,3 +29,31 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.639s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 939
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","thinking":"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without any explanation.\n\nLet me call the square_root tool with the number 132413.","tool_calls":[{"id":"call_iqv2uqol","function":{"name":"square_root","arguments":{"number":132413}}}]},{"role":"tool","content":"363.89","tool_call_id":"call_iqv2uqol","tool_name":"square_root"}],"stream":false,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 459
+        body: '{"model":"qwen3.5:2b","created_at":"2026-11-04T22:05:40.315195279Z","message":{"role":"assistant","content":"363.89","thinking":"The tool returned the square root of 132413 as 363.89. I need to reply with only this result, no explanation."},"done":true,"done_reason":"stop","total_duration":9776348066,"load_duration":2297062560,"prompt_eval_count":408,"prompt_eval_cached_count":0,"prompt_eval_duration":1621338000,"eval_count":45,"eval_duration":1838679000}'
+        headers:
+            Content-Length:
+                - "459"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 9.777s

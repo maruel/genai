@@ -180,3 +180,31 @@ func TestClient(t *testing.T) {
 func init() {
 	internal.BeLenient = false
 }
+
+func TestEffortLevel(t *testing.T) {
+	tests := []struct {
+		level       genai.EffortLevel
+		model, want string
+	}{
+		{genai.EffortHigh, "custom", "high"},
+		{genai.EffortXHigh, "custom", "xhigh"},
+		{genai.EffortLow, "mistral-small-latest", "high"},
+		{genai.EffortOff, "mistral-large-4", "low"},
+		{genai.EffortMedium, "mistral-large-4", "medium"},
+		{genai.EffortMax, "mistral-large-4", "high"},
+		{genai.EffortOff, "zai-glm-5-3", "low"},
+		{genai.EffortMedium, "zai-glm-5-3", "high"},
+		{genai.EffortMax, "zai-glm-5-3", "max"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+			var req mistral.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, tc.model, tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if got := string(req.ReasoningEffort); got != tc.want {
+				t.Fatalf("reasoning_effort=%q, want %q", got, tc.want)
+			}
+		})
+	}
+}

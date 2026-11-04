@@ -261,3 +261,71 @@ interactions:
         status: 200 OK
         code: 200
         duration: 74ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 849
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning":"User requests to use get_hostname tool. We need to call the tool. Then output the hostname only, no explanation.","tool_calls":[{"type":"function","id":"fc_fc7c6c60-e72d-4a39-8ab4-12ad1ee97a52","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"fc_fc7c6c60-e72d-4a39-8ab4-12ad1ee97a52"}],"model":"openai/gpt-oss-20b","stream":true,"tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-b4f615be-10ed-4793-8c15-bac32fc8e356","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_63473661d7","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01m6m8dyq8e3ab6t00v23jqmez","seed":2076605799}}
+
+            data: {"id":"chatcmpl-b4f615be-10ed-4793-8c15-bac32fc8e356","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_63473661d7","choices":[{"index":0,"delta":{"content":"gen"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-b4f615be-10ed-4793-8c15-bac32fc8e356","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_63473661d7","choices":[{"index":0,"delta":{"content":"ai"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-b4f615be-10ed-4793-8c15-bac32fc8e356","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_63473661d7","choices":[{"index":0,"delta":{"content":"-sm"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-b4f615be-10ed-4793-8c15-bac32fc8e356","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_63473661d7","choices":[{"index":0,"delta":{"content":"oke"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-b4f615be-10ed-4793-8c15-bac32fc8e356","object":"chat.completion.chunk","created":1793828780,"model":"openai/gpt-oss-20b","system_fingerprint":"fp_63473661d7","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01m6m8dyq8e3ab6t00v23jqmez","usage":{"queue_time":0.085629405,"prompt_tokens":199,"prompt_time":0.01324536,"completion_tokens":8,"completion_time":0.008391785,"total_tokens":207,"total_time":0.021637145}},"usage":{"queue_time":0.085629405,"prompt_tokens":199,"prompt_time":0.01324536,"completion_tokens":8,"completion_time":0.008391785,"total_tokens":207,"total_time":0.021637145}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf97c9d346f9-YUL
+            Content-Type:
+                - text/event-stream
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499997"
+            X-Ratelimit-Remaining-Tokens:
+                - "249010"
+            X-Ratelimit-Reset-Requests:
+                - 518ms
+            X-Ratelimit-Reset-Tokens:
+                - 237ms
+        status: 200 OK
+        code: 200
+        duration: 114ms

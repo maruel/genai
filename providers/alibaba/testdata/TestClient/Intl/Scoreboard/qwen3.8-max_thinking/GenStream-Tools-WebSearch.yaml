@@ -183,3 +183,99 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.627s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 324
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","created":1793827187,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":"The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" user is asking me"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" to search the"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" web for the current"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" Prime Minister of Canada"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":". However, I"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" don't have web"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" search capabilities. I"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" need"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" to rely on my"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" training data.\n\n"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":"Based"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" on my knowledge,"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" Mark Carney became"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" the Prime Minister of"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" Canada in March "},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":"2025"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":", succeeding Justin Trudeau"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":". Let me provide"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":" this answer"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"Mark Carney","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1793827187,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1793827187,"id":"chatcmpl-ae300db2-7bdc-9769-a105-1d67606d366b","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":75,"completion_tokens_details":{"reasoning_tokens":69,"text_tokens":75},"prompt_tokens":77,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":77},"total_tokens":152}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1793827187409"
+            Req-Cost-Time:
+                - "2567"
+            Resp-Start-Time:
+                - "1793827189977"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "2567"
+        status: 200 OK
+        code: 200
+        duration: 2.817s

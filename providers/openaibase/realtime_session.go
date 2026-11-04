@@ -33,10 +33,6 @@ type RealtimeOption struct {
 	// language.
 	InputTranscriptionModel string
 	InputLanguage           string
-	// ReasoningEffort sets the session reasoning effort. Empty leaves the
-	// provider default. The Realtime API accepts minimal, low, medium, high and
-	// xhigh; none is not a valid realtime effort.
-	ReasoningEffort ReasoningEffort
 	// MaxOutputTokens bounds each model response; zero leaves the provider default.
 	MaxOutputTokens int64
 	// PingInterval and PingTimeout default to 30 and 10 seconds respectively.
@@ -62,12 +58,6 @@ func (o *RealtimeOption) Validate() error {
 		if _, err := normalizeInputLanguage(o.InputLanguage); err != nil {
 			return err
 		}
-	}
-	if o.ReasoningEffort == ReasoningEffortNone {
-		return errors.New("OpenAI realtime reasoning effort does not accept none; use minimal, low, medium, high or xhigh")
-	}
-	if err := o.ReasoningEffort.Validate(); err != nil {
-		return err
 	}
 	return nil
 }
@@ -128,6 +118,22 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 		}
 		seen[t] = struct{}{}
 		switch o := opt.(type) {
+		case genai.EffortLevel:
+			if o != "" {
+				e, err := ThinkingEffort(o, model)
+				if err != nil {
+					return nil, err
+				}
+				if o == genai.EffortOff {
+					e = ReasoningEffortMinimal
+				}
+				if e == ReasoningEffortMax {
+					e = ReasoningEffortXHigh
+				}
+				setup.Reasoning = &ReasoningConfig{Effort: e}
+			}
+		case genai.ReasoningOutput:
+			return nil, &base.ErrNotSupported{Options: []string{"IncludeReasoning"}}
 		case genai.RealtimeOptionInstructions:
 			setup.Instructions = string(o)
 		case *genai.RealtimeOptionTools:
@@ -206,9 +212,6 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 	}
 	if o.MaxOutputTokens != 0 {
 		setup.MaxOutputTokens = MaxOutputTokens{Value: o.MaxOutputTokens}
-	}
-	if o.ReasoningEffort != "" {
-		setup.Reasoning = &ReasoningConfig{Effort: o.ReasoningEffort}
 	}
 	if turnDetection != genai.RealtimeTurnManual {
 		setup.Audio.Input.TurnDetection = &TurnDetection{Type: TurnServerVAD, CreateResponse: true, InterruptResponse: true}

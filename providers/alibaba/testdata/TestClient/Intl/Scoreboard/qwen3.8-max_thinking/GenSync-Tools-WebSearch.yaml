@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 6.674s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"content":"Mark Carney","reasoning_content":"The user is asking me to search the web for the current Prime Minister of Canada. However, I don''t have the ability to search the web. I need to rely on my training data. Based on my knowledge, Mark Carney became the Prime Minister of Canada in March 2025, succeeding Justin Trudeau.","role":"assistant"}}],"created":1793827183,"id":"chatcmpl-531f906c-3cb4-9645-8dc5-de2ac89d6304","model":"qwen3.8-max","object":"chat.completion","usage":{"completion_tokens":71,"completion_tokens_details":{"reasoning_tokens":65,"text_tokens":71},"prompt_tokens":77,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":77},"total_tokens":148}}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1793827183722"
+            Req-Cost-Time:
+                - "6191"
+            Resp-Start-Time:
+                - "1793827189914"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "true"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "6191"
+        status: 200 OK
+        code: 200
+        duration: 6.441s

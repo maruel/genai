@@ -206,9 +206,13 @@ func TestClient(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
+					thinking := genai.EffortOff
+					if model.Reason {
+						thinking = genai.EffortLow
+					}
 					return &internaltest.InjectOptions{
 						Provider: c,
-						Opts:     []genai.GenOption{&alibaba.GenOption{Thinking: model.Reason}},
+						Opts:     []genai.GenOption{thinking},
 					}
 				}
 				smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{ScoreboardFile: b.sbFile})
@@ -271,4 +275,23 @@ func TestClient(t *testing.T) {
 
 func init() {
 	internal.BeLenient = false
+}
+
+func TestEffortLevel(t *testing.T) {
+	for _, tc := range []struct {
+		level  genai.EffortLevel
+		budget int64
+	}{
+		{genai.EffortLow, 1024}, {genai.EffortMedium, 8192}, {genai.EffortHigh, 16384}, {genai.EffortXHigh, 32768},
+	} {
+		t.Run(string(tc.level), func(t *testing.T) {
+			var req alibaba.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, "qwen3.8", tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if req.EnableThinking == nil || !*req.EnableThinking || req.ThinkingBudget != tc.budget {
+				t.Fatalf("thinking=%v budget=%d", req.EnableThinking, req.ThinkingBudget)
+			}
+		})
+	}
 }

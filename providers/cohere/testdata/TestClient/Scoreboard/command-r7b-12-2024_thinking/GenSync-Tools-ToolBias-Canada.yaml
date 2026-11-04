@@ -19,17 +19,16 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 563
-        body: '{"id":"d9163dec-b499-4982-a519-7ed1ac92de01","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_s73qsfv4m0b5","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_z7376kmthtze","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":49,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":63}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"dab060a3-236d-4d34-af00-f2d8e5caed0b","message":{"role":"assistant","tool_plan":"I will use one or more of the available tools to find the answer","tool_calls":[{"id":"best_country_99zpvvn0pr15","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"best_country_2kyfg6tfb4ca","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"finish_reason":"TOOL_CALL","usage":{"billed_units":{"input_tokens":90,"output_tokens":30},"tokens":{"input_tokens":1514,"output_tokens":64},"cached_tokens":1024}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
             Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+                - h3=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "563"
             Content-Type:
                 - application/json
             Expires:
@@ -37,21 +36,27 @@ interactions:
             Num_chars:
                 - "7083"
             Num_tokens:
-                - "79"
+                - "120"
             Pragma:
                 - no-cache
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 2e3269dc57c9a724033fa5bfc213542b
+                - 1b0933600ec25c7e875c74b1ee857b05
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "493"
+                - "1070"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "22"
         status: 200 OK
         code: 200
-        duration: 538ms
+        duration: 1.119s

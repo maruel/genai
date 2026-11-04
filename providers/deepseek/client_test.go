@@ -115,9 +115,13 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			thinking := genai.EffortOff
+			if model.Reason {
+				thinking = ""
+			}
 			return &internaltest.InjectOptions{
 				Provider: c,
-				Opts:     []genai.GenOption{&deepseek.GenOption{Thinking: model.Reason}},
+				Opts:     []genai.GenOption{thinking},
 			}
 		}
 		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
@@ -177,4 +181,26 @@ func TestClient(t *testing.T) {
 
 func init() {
 	internal.BeLenient = false
+}
+
+func TestEffortLevel(t *testing.T) {
+	tests := []struct {
+		level       genai.EffortLevel
+		model, want string
+	}{
+		{genai.EffortLow, "deepseek-v4-pro", "low"},
+		{genai.EffortMedium, "deepseek-v4-pro", "high"},
+		{genai.EffortMax, "deepseek-v4-pro", "max"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.model+"/"+string(tc.level), func(t *testing.T) {
+			var req deepseek.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("test")}, tc.model, tc.level); err != nil {
+				t.Fatal(err)
+			}
+			if got := string(req.ReasoningEffort); got != tc.want {
+				t.Fatalf("reasoning_effort=%q, want %q", got, tc.want)
+			}
+		})
+	}
 }

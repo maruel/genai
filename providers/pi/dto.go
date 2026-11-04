@@ -21,7 +21,6 @@ package pi
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/maruel/genai/base"
@@ -152,16 +151,6 @@ const (
 
 // ThinkingLevel controls reasoning depth.
 type ThinkingLevel string
-
-// validate returns an error when l is set to an unknown level.
-func (l ThinkingLevel) validate() error {
-	switch l {
-	case "", ThinkingOff, ThinkingMinimal, ThinkingLow, ThinkingMedium, ThinkingHigh, ThinkingXHigh, ThinkingMax:
-		return nil
-	default:
-		return fmt.Errorf("invalid thinking level %q; must be one of off, minimal, low, medium, high, xhigh, max", l)
-	}
-}
 
 // Thinking level constants.
 const (

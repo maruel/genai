@@ -69,9 +69,6 @@ func Scoreboard() scoreboard.Score {
 // All fields are opt-in. By default pi runs with its default thinking level
 // and skills disabled.
 type ProviderOption struct {
-	// Effort sets the default thinking level (--thinking). GenOption.Effort
-	// overrides it per call.
-	Effort ThinkingLevel
 	// Skills enables skill discovery and loading. By default the provider
 	// passes --no-skills.
 	Skills bool
@@ -84,9 +81,6 @@ type ProviderOption struct {
 
 // Validate implements genai.ProviderOption.
 func (p *ProviderOption) Validate() error {
-	if err := p.Effort.validate(); err != nil {
-		return fmt.Errorf("ProviderOption.Effort: %w", err)
-	}
 	return msgutil.CheckExtraArgs(p.ExtraArgs, "mode")
 }
 
@@ -96,27 +90,7 @@ func (p *ProviderOption) args() []string {
 	if !p.Skills {
 		args = append(args, "--no-skills")
 	}
-	if p.Effort != "" {
-		args = append(args, "--thinking", string(p.Effort))
-	}
 	return append(args, p.ExtraArgs...)
-}
-
-// GenOption configures one prompt of a running pi process.
-type GenOption struct {
-	// Effort sets the thinking level with the set_thinking_level command,
-	// overriding ProviderOption.Effort.
-	Effort ThinkingLevel
-
-	_ struct{}
-}
-
-// Validate implements genai.GenOption.
-func (g *GenOption) Validate() error {
-	if err := g.Effort.validate(); err != nil {
-		return fmt.Errorf("GenOption.Effort: %w", err)
-	}
-	return nil
 }
 
 // parseOpts returns the per-call thinking level.
@@ -134,8 +108,25 @@ func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
 			return "", err
 		}
 		switch v := opt.(type) {
-		case *GenOption:
-			effort = v.Effort
+		case genai.EffortLevel:
+			switch v {
+			case "":
+			case genai.EffortOff:
+				effort = ThinkingOff
+			case genai.EffortLow:
+				effort = ThinkingLow
+			case genai.EffortMedium:
+				effort = ThinkingMedium
+			case genai.EffortHigh:
+				effort = ThinkingHigh
+			case genai.EffortXHigh:
+				effort = ThinkingXHigh
+			case genai.EffortMax:
+				effort = ThinkingMax
+			default:
+				return "", &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+			}
+		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
 			if v.Temperature != 0 {
 				unsupported = append(unsupported, "GenOptionText.Temperature")

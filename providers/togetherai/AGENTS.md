@@ -2,3 +2,4 @@
 
 - **Official Documentation**: https://docs.together.ai/
 - **Go SDK**: https://github.com/togethercomputer/together-go
+- **Reasoning**: https://docs.together.ai/docs/inference/chat/reasoning

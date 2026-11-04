@@ -46,3 +46,48 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1m9.85s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 200
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-c9ccf0bb-64d7-4231-b4b1-86f0deea3ae3","object":"chat.completion","created":1793826940,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants a detailed discussion about Canada, starting with \"Canada is\". I''ll provide a comprehensive overview covering geography, history, politics, economy, culture, demographics, and other notable aspects of the country.","content":"Canada "},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":61,"total_tokens":109,"completion_tokens":48,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":61},"completion_tokens_details":{"reasoning_tokens":42,"text_tokens":48}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793826940468"
+            Req-Cost-Time:
+                - "1180"
+            Resp-Start-Time:
+                - "1793826941648"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1180"
+        status: 200 OK
+        code: 200
+        duration: 1.205s

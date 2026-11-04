@@ -360,12 +360,12 @@ func TestClient(t *testing.T) {
 
 func TestProviderOption(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
-		if err := (&ProviderOption{Effort: EffortHigh, DangerouslySkipPermissions: true, ExtraArgs: []string{"--pure"}}).Validate(); err != nil {
+		if err := (&ProviderOption{DangerouslySkipPermissions: true, ExtraArgs: []string{"--pure"}}).Validate(); err != nil {
 			t.Error(err)
 		}
 	})
 	t.Run("error", func(t *testing.T) {
-		for _, p := range []ProviderOption{{Effort: "   "}, {ExtraArgs: []string{""}}} {
+		for _, p := range []ProviderOption{{ExtraArgs: []string{""}}} {
 			if err := p.Validate(); err == nil {
 				t.Errorf("%+v: expected error", p)
 			}
@@ -374,11 +374,33 @@ func TestProviderOption(t *testing.T) {
 }
 
 func TestParseOpts(t *testing.T) {
-	co, err := parseOpts(&ProviderOption{Effort: EffortLow}, nil)
+	t.Run("thinking", func(t *testing.T) {
+		for _, tc := range []struct {
+			level genai.EffortLevel
+			want  string
+		}{
+			{genai.EffortOff, "none"},
+			{genai.EffortMedium, "medium"},
+			{genai.EffortXHigh, "xhigh"},
+			{genai.EffortMax, "max"},
+		} {
+			t.Run(string(tc.level), func(t *testing.T) {
+				got, err := parseOpts([]genai.GenOption{tc.level})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got.effort) != tc.want {
+					t.Errorf("native effort = %q, want %q", string(got.effort), tc.want)
+				}
+			})
+		}
+	})
+
+	co, err := parseOpts([]genai.GenOption{genai.EffortLow})
 	if err != nil || co.effort != EffortLow {
 		t.Errorf("effort = %q, err = %v, want low", co.effort, err)
 	}
-	co, err = parseOpts(&ProviderOption{Effort: EffortLow}, []genai.GenOption{&GenOption{Effort: EffortHigh, Mode: "plan"}})
+	co, err = parseOpts([]genai.GenOption{genai.EffortHigh, &GenOption{Mode: "plan"}})
 	if err != nil || co.effort != EffortHigh || co.mode != "plan" {
 		t.Errorf("co = %+v, err = %v, want high and plan", co, err)
 	}
@@ -386,15 +408,12 @@ func TestParseOpts(t *testing.T) {
 
 func TestGenOption(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
-		if err := (&GenOption{Effort: "   "}).Validate(); err == nil {
-			t.Fatal("expected error for whitespace effort")
-		}
 		if err := (&GenOption{Mode: "   "}).Validate(); err == nil {
 			t.Fatal("expected error for whitespace mode")
 		}
 	})
 	t.Run("unsupported", func(t *testing.T) {
-		_, err := parseOpts(&ProviderOption{}, []genai.GenOption{
+		_, err := parseOpts([]genai.GenOption{
 			genai.GenOptionSeed(1),
 			&genai.GenOptionText{
 				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
@@ -423,7 +442,7 @@ func TestGenOption(t *testing.T) {
 		}
 	})
 	t.Run("empty_text", func(t *testing.T) {
-		if _, err := parseOpts(&ProviderOption{}, []genai.GenOption{&genai.GenOptionText{}}); err != nil {
+		if _, err := parseOpts([]genai.GenOption{&genai.GenOptionText{}}); err != nil {
 			t.Fatalf("empty GenOptionText: %v", err)
 		}
 	})

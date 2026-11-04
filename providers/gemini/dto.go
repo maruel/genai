@@ -12,6 +12,7 @@ package gemini
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -504,9 +505,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		switch v := opt.(type) {
 		case *GenOption:
-			if v.ThinkingLevel != "" {
-				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{ThinkingLevel: v.ThinkingLevel}
-			}
 			if v.CodeExecution {
 				c.Tools = append(c.Tools, Tool{CodeExecution: &struct{}{}})
 			}
@@ -516,6 +514,23 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.FileSearch != nil {
 				c.Tools = append(c.Tools, Tool{FileSearch: v.FileSearch})
 			}
+		case genai.EffortLevel:
+			if v == "" {
+				continue
+			}
+			cfg, err := thinkingConfig(model, v)
+			if err != nil {
+				return err
+			}
+			if c.GenerationConfig.ThinkingConfig != nil {
+				cfg.IncludeThoughts = c.GenerationConfig.ThinkingConfig.IncludeThoughts
+			}
+			c.GenerationConfig.ThinkingConfig = &cfg
+		case genai.ReasoningOutput:
+			if c.GenerationConfig.ThinkingConfig == nil {
+				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+			}
+			c.GenerationConfig.ThinkingConfig.IncludeThoughts = true
 		case *genai.GenOptionText:
 			errs = append(errs, c.initOptionsText(v)...)
 		case *genai.GenOptionTools:
@@ -815,12 +830,31 @@ func (p *Part) FromRequest(in *genai.Request) error {
 
 // FromReply converts from a genai reply.
 func (p *Part) FromReply(in *genai.Reply) error {
-	if len(in.Opaque) != 0 {
-		b, ok := in.Opaque["signature"].([]byte)
-		if !ok || len(b) == 0 || len(in.Opaque) != 1 {
-			return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+	o := in.Opaque
+	if len(in.ToolCall.Opaque) != 0 {
+		if len(o) != 0 {
+			return errors.New("thought signature set on both reply and tool call")
 		}
-		p.ThoughtSignature = b
+		o = in.ToolCall.Opaque
+	}
+	if len(o) != 0 {
+		if len(o) != 1 {
+			return &internal.BadError{Err: errors.New("unsupported thought signature metadata")}
+		}
+		switch v := o["signature"].(type) {
+		case []byte:
+			p.ThoughtSignature = v
+		case string:
+			var err error
+			if p.ThoughtSignature, err = base64.StdEncoding.DecodeString(v); err != nil {
+				return fmt.Errorf("invalid thought signature: %w", err)
+			}
+		default:
+			return fmt.Errorf("invalid thought signature type %T", v)
+		}
+		if len(p.ThoughtSignature) == 0 {
+			return errors.New("empty thought signature")
+		}
 	}
 	if in.Reasoning != "" {
 		p.Thought = true
@@ -834,10 +868,6 @@ func (p *Part) FromReply(in *genai.Reply) error {
 	if !in.ToolCall.IsZero() {
 		if err := p.FunctionCall.From(&in.ToolCall); err != nil {
 			return err
-		}
-		o := in.ToolCall.Opaque
-		if b, ok := o["signature"].([]byte); ok {
-			p.ThoughtSignature = b
 		}
 		return nil
 	}
@@ -946,7 +976,9 @@ type VideoMetadata struct {
 // ThinkingConfig is documented at https://ai.google.dev/api/generate-content?hl=en#ThinkingConfig
 // See https://ai.google.dev/gemini-api/docs/thinking#rest
 type ThinkingConfig struct {
-	ThinkingLevel ThinkingLevel `json:"thinkingLevel,omitzero"`
+	ThinkingLevel   ThinkingLevel `json:"thinkingLevel,omitzero"`
+	ThinkingBudget  *int64        `json:"thinkingBudget,omitempty"`
+	IncludeThoughts bool          `json:"includeThoughts,omitzero"`
 }
 
 // ChatResponse is documented at https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
@@ -1968,3 +2000,81 @@ type EmbeddingUsageMetadata struct {
 	PromptTokenCount   int64                `json:"promptTokenCount"`
 	PromptTokenDetails []ModalityTokenCount `json:"promptTokenDetails,omitzero"`
 }
+
+func thinkingConfig(model string, l genai.EffortLevel) (ThinkingConfig, error) {
+	c := ThinkingConfig{}
+	if strings.Contains(model, "gemini-2.5") {
+		var n int64
+		switch l {
+		case "":
+			return c, nil
+		case genai.EffortOff:
+			if strings.Contains(model, "pro") {
+				n = 128
+			}
+		case genai.EffortLow:
+			n = 1024
+		case genai.EffortMedium:
+			n = 8192
+		case genai.EffortHigh:
+			n = 16384
+		case genai.EffortXHigh, genai.EffortMax:
+			n = 24576
+			if strings.Contains(model, "pro") {
+				n = 32768
+			}
+		default:
+			return c, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+		c.ThinkingBudget = &n
+	} else {
+		switch l {
+		case "":
+		case genai.EffortOff:
+			c.ThinkingLevel = ThinkingLevelMinimal
+			if strings.Contains(model, "pro") || strings.Contains(model, "live") {
+				c.ThinkingLevel = ThinkingLevelLow
+			}
+		case genai.EffortLow:
+			c.ThinkingLevel = ThinkingLevelLow
+		case genai.EffortMedium:
+			c.ThinkingLevel = ThinkingLevelMedium
+			if strings.Contains(model, "pro") {
+				c.ThinkingLevel = ThinkingLevelLow
+			}
+		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.ThinkingLevel = ThinkingLevelHigh
+		default:
+			return c, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	}
+	return c, nil
+}
+
+// ThinkingLevel controls the depth of Gemini 3's internal reasoning.
+//
+// See https://ai.google.dev/gemini-api/docs/generate-content/thinking
+type ThinkingLevel string
+
+// Validate implements genai.Validatable.
+func (t ThinkingLevel) Validate() error {
+	switch t {
+	case "", ThinkingLevelHigh, ThinkingLevelLow, ThinkingLevelMedium, ThinkingLevelMinimal:
+		return nil
+	default:
+		return fmt.Errorf("unsupported thinking level %q", t)
+	}
+}
+
+const (
+	// ThinkingLevelHigh enables the deepest available reasoning.
+	ThinkingLevelHigh ThinkingLevel = "high"
+	// ThinkingLevelLow minimizes reasoning latency.
+	ThinkingLevelLow ThinkingLevel = "low"
+	// ThinkingLevelMedium enables the default reasoning depth for many Gemini 3 models.
+	ThinkingLevelMedium ThinkingLevel = "medium"
+	// ThinkingLevelMinimal minimizes reasoning for models that support it.
+	//
+	// It does not guarantee that a model will not reason.
+	ThinkingLevelMinimal ThinkingLevel = "minimal"
+)

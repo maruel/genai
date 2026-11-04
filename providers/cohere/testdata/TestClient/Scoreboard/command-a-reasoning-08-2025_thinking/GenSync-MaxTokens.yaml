@@ -19,8 +19,9 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 332
-        body: '{"id":"81156f7d-4acf-4413-9691-33462529cb5d","message":{"role":"assistant","content":[{"type":"thinking","thinking":"Okay, so I need to explain the theory of relativity in great detail."}]},"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":1394,"output_tokens":16}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"000dbbe1-6574-4a95-b604-ca997be29343","message":{"role":"assistant","content":[{"type":"thinking","thinking":"Okay, so I need to explain the theory of relativity in great detail."}]},"finish_reason":"MAX_TOKENS","usage":{"billed_units":{"input_tokens":9,"output_tokens":15},"tokens":{"input_tokens":1395,"output_tokens":16,"reasoning_tokens":15},"cached_tokens":1344}}'
         headers:
             Access-Control-Expose-Headers:
                 - X-Debug-Trace-ID
@@ -28,14 +29,12 @@ interactions:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
             Cache-Control:
                 - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "332"
             Content-Type:
                 - application/json
             Expires:
                 - Thu, 01 Jan 1970 00:00:00 GMT
             Num_chars:
-                - "6636"
+                - "6637"
             Num_tokens:
                 - "24"
             Pragma:
@@ -43,15 +42,21 @@ interactions:
             Server:
                 - envoy
             Vary:
-                - Origin
+                - Origin,Accept-Encoding
             Via:
                 - 1.1 google
             X-Accel-Expires:
                 - "0"
             X-Debug-Trace-Id:
-                - 62aa95c384c1021a7ee2e59ea26766c0
+                - 99e88a93715b0501a5459c56bd5d1d73
+            X-Endpoint-Monthly-Call-Limit:
+                - "1000"
             X-Envoy-Upstream-Service-Time:
-                - "203"
+                - "211"
+            X-Trial-Endpoint-Call-Limit:
+                - "40"
+            X-Trial-Endpoint-Call-Remaining:
+                - "30"
         status: 200 OK
         code: 200
-        duration: 247ms
+        duration: 252ms

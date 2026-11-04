@@ -85,3 +85,73 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.224s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 197
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","created":1793827089,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827089,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827089,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user wants me to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827089,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" say hello using"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827089,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only one word."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827089,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" The simplest greeting that"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827090,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is one word is"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827090,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827090,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Hello\"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827090,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Hello","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827090,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-3ae4899c-03ae-97bd-8af7-7883b587b255","object":"chat.completion.chunk","created":1793827090,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":57,"total_tokens":84,"completion_tokens":27,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":57},"completion_tokens_details":{"reasoning_tokens":23,"text_tokens":27}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827089514"
+            Req-Cost-Time:
+                - "345"
+            Resp-Start-Time:
+                - "1793827089860"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "345"
+        status: 200 OK
+        code: 200
+        duration: 1.147s

@@ -69,3 +69,71 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.665s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 881
+        host: api.cerebras.ai
+        body: |
+            {"model":"gpt-oss-120b","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","reasoning":"The user asks to use the get_hostname tool and reply with only the hostname, no explanation. So we need to call function get_hostname (no parameters). Then output result only.","tool_calls":[{"type":"function","id":"3578d5386","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"3578d5386","name":"get_hostname"}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cerebras.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-730b1c1b-b04f-4993-b870-d92ea5963f19","choices":[{"finish_reason":"stop","index":0,"message":{"content":"genai-smoke","role":"assistant"}}],"created":1793832716,"model":"gpt-oss-120b","system_fingerprint":"fp_4e63ac9396838fe79c69","object":"chat.completion","usage":{"total_tokens":179,"completion_tokens":8,"completion_tokens_details":{"accepted_prediction_tokens":0,"rejected_prediction_tokens":0,"reasoning_tokens":0},"prompt_tokens":171,"prompt_tokens_details":{"cached_tokens":128}},"time_info":{"created":1793832716.512331,"queue_time":0.002220556,"prompt_time":0.002151156,"completion_time":0.002155216,"total_time":0.014855146408081055}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a5572fadcff6a2bd-YUL
+            Content-Type:
+                - application/json
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=24,cfOrigin;dur=92
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests-Day:
+                - "1440000"
+            X-Ratelimit-Limit-Requests-Hour:
+                - "60000"
+            X-Ratelimit-Limit-Requests-Minute:
+                - "1000"
+            X-Ratelimit-Limit-Tokens-Day:
+                - "720000000"
+            X-Ratelimit-Limit-Tokens-Hour:
+                - "30000000"
+            X-Ratelimit-Limit-Tokens-Minute:
+                - "500000"
+            X-Ratelimit-Remaining-Requests-Day:
+                - "1439996"
+            X-Ratelimit-Remaining-Requests-Hour:
+                - "59997"
+            X-Ratelimit-Remaining-Requests-Minute:
+                - "996"
+            X-Ratelimit-Remaining-Tokens-Day:
+                - "719966894"
+            X-Ratelimit-Remaining-Tokens-Hour:
+                - "89967168"
+            X-Ratelimit-Remaining-Tokens-Minute:
+                - "466894"
+        status: 200 OK
+        code: 200
+        duration: 127ms

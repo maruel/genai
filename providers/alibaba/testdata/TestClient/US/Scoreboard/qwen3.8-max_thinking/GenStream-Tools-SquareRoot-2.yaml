@@ -69,3 +69,67 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.031s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 865
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_bce56a81f0864fcfbd713511","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_bce56a81f0864fcfbd713511"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","created":1793827014,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827014,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Reply"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827015,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827015,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with the result."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827016,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"363.","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827016,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"8","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827016,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"9","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827016,"model":"qwen3.8-max","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-e356d136-ea6c-454a-ad26-c016945ad2cd","object":"chat.completion.chunk","created":1793827016,"model":"qwen3.8-max","choices":[],"usage":{"prompt_tokens":135,"total_tokens":150,"completion_tokens":15,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":135},"completion_tokens_details":{"reasoning_tokens":6,"text_tokens":15}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793827013570"
+            Req-Cost-Time:
+                - "1494"
+            Resp-Start-Time:
+                - "1793827015064"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1493"
+        status: 200 OK
+        code: 200
+        duration: 1.518s

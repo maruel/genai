@@ -57,3 +57,59 @@ interactions:
         status: 200 OK
         code: 200
         duration: 168ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 932
+        host: api.groq.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning":"The user wants me to calculate the square root of 132413 using the square_root tool and reply with only the result.\n","tool_calls":[{"type":"function","id":"4dncw6cam","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"4dncw6cam"}],"model":"qwen/qwen3.8-27b","reasoning_format":"parsed","reasoning_effort":"medium","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.groq.com/openai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"chatcmpl-a94d13ce-aab5-4821-ad9a-955971bb4baa","object":"chat.completion","created":1793828781,"model":"qwen/qwen3.8-27b","choices":[{"index":0,"message":{"role":"assistant","content":"363.89","reasoning":"The square root of 132413 is approximately 363.89.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.164983767,"prompt_tokens":128,"prompt_time":0.011343471,"completion_tokens":31,"completion_time":0.061461362,"total_tokens":159,"total_time":0.072804833,"completion_tokens_details":{"reasoning_tokens":22}},"usage_breakdown":null,"system_fingerprint":"fp_57c7e760a9","x_groq":{"id":"req_01m6m8dzn9eq894acews9hhs9p","seed":277648935},"service_tier":"on_demand"}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cache-Control:
+                - private, max-age=0, no-store, no-cache, must-revalidate
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a556cf9dcfed46f9-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000
+            Vary:
+                - Origin
+            X-Groq-Region:
+                - yul
+            X-Ratelimit-Limit-Requests:
+                - "500000"
+            X-Ratelimit-Limit-Tokens:
+                - "250000"
+            X-Ratelimit-Remaining-Requests:
+                - "499999"
+            X-Ratelimit-Remaining-Tokens:
+                - "249814"
+            X-Ratelimit-Reset-Requests:
+                - 172ms
+            X-Ratelimit-Reset-Tokens:
+                - 44ms
+        status: 200 OK
+        code: 200
+        duration: 257ms

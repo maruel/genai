@@ -89,3 +89,85 @@ interactions:
         status: 200 OK
         code: 200
         duration: 1.223s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 333
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-max","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"response_format":{"type":"json_object"},"stream_options":{"include_usage":true},"enable_thinking":true,"thinking_budget":1024}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","created":1793827148,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":"The"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" user asks if"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" a banana is a"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" fruit, and wants"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" a JSON response with"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" a boolean field \""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":"is_fruit\"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" A banana is indeed"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" a fruit. I"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" need to reply with"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":" only the JSON object"},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":"."},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"{\"is_fruit","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"\":","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":" true}","reasoning_content":""},"index":0,"finish_reason":null,"logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"model":"qwen3.8-max","id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","choices":[{"delta":{"content":"","reasoning_content":""},"index":0,"finish_reason":"stop","logprobs":null}],"created":1793827148,"object":"chat.completion.chunk","usage":null}
+
+            data: {"choices":[],"created":1793827148,"id":"chatcmpl-5fdc78c4-f33f-97ca-a5d5-b497e6e61789","model":"qwen3.8-max","object":"chat.completion.chunk","usage":{"completion_tokens":51,"completion_tokens_details":{"reasoning_tokens":41,"text_tokens":51},"prompt_tokens":80,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":80},"total_tokens":131}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=utf-8
+            Req-Arrive-Time:
+                - "1793827148100"
+            Req-Cost-Time:
+                - "1106"
+            Resp-Start-Time:
+                - "1793827149207"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Dashscope-Finished:
+                - "false"
+            X-Dashscope-Timeout:
+                - "3600"
+            X-Envoy-Upstream-Service-Time:
+                - "1106"
+        status: 200 OK
+        code: 200
+        duration: 1.357s

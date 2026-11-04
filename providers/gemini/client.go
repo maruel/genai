@@ -686,6 +686,10 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	if setup.InputAudioTranscription != nil {
 		setup.InputAudioTranscription.LanguageCodes = o.InputLanguages
 	}
+	if o.ThinkingLevel == "" && strings.Contains(c.impl.Model, "extended-thinking") {
+		// Extended-thinking models require a level; LOW favors voice latency.
+		o.ThinkingLevel = ThinkingLevelLow
+	}
 	if o.ThinkingLevel != "" {
 		setup.GenerationConfig.ThinkingConfig = &ThinkingConfig{ThinkingLevel: o.ThinkingLevel}
 	}

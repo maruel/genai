@@ -195,7 +195,7 @@ func TestClient(t *testing.T) {
 					t.Errorf("generation config: %v", g)
 				}
 			})
-			s, err := liveClient(t).ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint, ThinkingLevel: gemini.ThinkingLevelHigh})
+			s, err := liveClientForModel(t, "gemini-3.8-live-extended-thinking").ConnectRealtime(t.Context(), &gemini.RealtimeOption{Endpoint: endpoint, ThinkingLevel: gemini.ThinkingLevelHigh})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -204,6 +204,10 @@ func TestClient(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			t.Run("InteractionStatus", func(t *testing.T) {
 				endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
+					g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
+					if c, ok := g["thinkingConfig"].(map[string]any); !ok || c["thinkingLevel"] != "low" {
+						t.Errorf("default thinking config: %v", g)
+					}
 					declarations := setup["setup"].(map[string]any)["tools"].([]any)[0].(map[string]any)["functionDeclarations"].([]any)
 					if got := declarations[0].(map[string]any)["behavior"]; got != "NON_BLOCKING" {
 						t.Errorf("behavior=%v", got)

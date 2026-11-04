@@ -40,8 +40,8 @@ type RealtimeOption struct {
 	// InputLanguages supplies BCP-47 transcription hints; output language belongs
 	// in the caller's system instruction, not speechConfig.languageCode.
 	InputLanguages []string
-	// ThinkingLevel sets the session reasoning depth. Empty leaves the model
-	// default, which is the fixed latency profile of the non-thinking models.
+	// ThinkingLevel sets the session reasoning depth. Empty selects LOW for
+	// extended-thinking models and omits thinking configuration for other models.
 	ThinkingLevel ThinkingLevel
 	// SessionResumption requests resumable-state events. ResumeHandle restores a
 	// previous session and implies SessionResumption. Pass the latest nonempty

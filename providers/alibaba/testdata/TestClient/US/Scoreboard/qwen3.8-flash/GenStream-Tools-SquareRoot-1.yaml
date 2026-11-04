@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 605
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","created":1793814211,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","tool_calls":[{"index":0,"id":"call_5e9f85132c82422984202e0b","type":"function","function":{"name":"square_root","arguments":""}}]},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814211,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814212,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"{\"number\": 1"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814212,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"3241"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814212,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"3"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814212,"model":"qwen3.8-flash","choices":[{"delta":{"tool_calls":[{"function":{"arguments":"}"},"index":0,"type":"function","id":""}],"content":""},"index":0,"finish_reason":null,"logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814212,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-90b406f6-15fd-4c85-9364-99e0554bffd8","object":"chat.completion.chunk","created":1793814212,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":345,"total_tokens":373,"completion_tokens":28,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":345}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814211246"
+            Req-Cost-Time:
+                - "861"
+            Resp-Start-Time:
+                - "1793814212108"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "861"
+        status: 200 OK
+        code: 200
+        duration: 881ms

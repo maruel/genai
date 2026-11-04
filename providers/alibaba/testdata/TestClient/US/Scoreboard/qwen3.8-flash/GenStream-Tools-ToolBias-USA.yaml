@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 615
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","created":1793814216,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant","tool_calls":[{"index":0,"id":"call_d0ece3ee4bc040b28dbf56d2","type":"function","function":{"name":"best_country","arguments":""}}]},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"{\"country\": "}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"\"USA"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"\""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-a0ef536f-c111-44d9-b3ce-7d3bbb4d592e","object":"chat.completion.chunk","created":1793814216,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":347,"total_tokens":370,"completion_tokens":23,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":347}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814215726"
+            Req-Cost-Time:
+                - "903"
+            Resp-Start-Time:
+                - "1793814216629"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "902"
+        status: 200 OK
+        code: 200
+        duration: 922ms

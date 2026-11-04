@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 212
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"max_tokens":16,"stream_options":{"include_usage":true},"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","created":1793814209,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" Theory"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" of Relativity is"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" arguably"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" the most profound and"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" counter-intuitive framework"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" in"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"length","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-d8848385-667c-4c1d-b0b8-db1fba996b7c","object":"chat.completion.chunk","created":1793814209,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":36,"total_tokens":52,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":36}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814208572"
+            Req-Cost-Time:
+                - "870"
+            Resp-Start-Time:
+                - "1793814209442"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "870"
+        status: 200 OK
+        code: 200
+        duration: 889ms

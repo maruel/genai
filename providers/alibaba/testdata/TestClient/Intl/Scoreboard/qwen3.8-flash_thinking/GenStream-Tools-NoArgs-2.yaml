@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 760
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_b776cbc53bde4259a1430d8e","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_b776cbc53bde4259a1430d8e"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","created":1793814756,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" tool returned \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"genai-smoke"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\" as the hostname"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". I should reply"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with only the hostname"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"genai-smoke","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-4b9a7f1f-5c2d-9dad-9b5a-ffbc70dc63cf","object":"chat.completion.chunk","created":1793814756,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":386,"total_tokens":414,"completion_tokens":28,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":386},"completion_tokens_details":{"reasoning_tokens":21,"text_tokens":28}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814755943"
+            Req-Cost-Time:
+                - "640"
+            Resp-Start-Time:
+                - "1793814756584"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "640"
+        status: 200 OK
+        code: 200
+        duration: 889ms

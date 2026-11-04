@@ -1,0 +1,111 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 349
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","created":1793814632,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"role":"assistant","content":"","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"The","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" user wants a single","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"-word","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" identification of the fruit","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" in the image.","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" The image clearly","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" shows a yellow,","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" curved fruit","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" with a stem","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" and tip","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" characteristic","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" of a banana.","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" The constraint","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" is strict","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":": reply with only","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" one word.","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" No extra","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" text","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":", no punctuation","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" beyond","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" the word itself","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":". The correct","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" answer","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" is \"Ban","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"ana.\"","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Ban","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"ana","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-77a8236d-8bce-46e8-b849-ee76c2dabdb8","object":"chat.completion.chunk","created":1793814632,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":164,"total_tokens":233,"completion_tokens":69,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":72},"completion_tokens_details":{"reasoning_tokens":63,"text_tokens":5}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814632041"
+            Req-Cost-Time:
+                - "4782"
+            Resp-Start-Time:
+                - "1793814636823"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Traceresponse:
+                - 00-7263d280612f6e6b9da797a34556d5cd-6392bea749952305-01
+            X-Envoy-Upstream-Service-Time:
+                - "4782"
+        status: 200 OK
+        code: 200
+        duration: 4.802s

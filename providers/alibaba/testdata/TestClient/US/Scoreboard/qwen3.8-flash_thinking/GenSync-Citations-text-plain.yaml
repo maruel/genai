@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-006da8eb-4146-4c8d-8b61-8cb36fc88a8a","object":"chat.completion","created":1793814716,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need answer user''s simple question. Need final answer concise. Question: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\" It states capital is Quack. Answer: Quack. Need maybe mention.","content":"The capital of Quackiland is **Quack**."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":90,"total_tokens":165,"completion_tokens":75,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":90},"completion_tokens_details":{"reasoning_tokens":61,"text_tokens":75}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814716788"
+            Req-Cost-Time:
+                - "1813"
+            Resp-Start-Time:
+                - "1793814718602"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1813"
+        status: 200 OK
+        code: 200
+        duration: 1.833s

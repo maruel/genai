@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false,"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-573d1278-dc14-9eeb-9bab-42084bddc3fb","object":"chat.completion","created":1793814261,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"","content":"Banana"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":128,"total_tokens":131,"completion_tokens":3,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":36},"completion_tokens_details":{"text_tokens":3}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814261296"
+            Req-Cost-Time:
+                - "839"
+            Resp-Start-Time:
+                - "1793814262135"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "838"
+        status: 200 OK
+        code: 200
+        duration: 1.095s

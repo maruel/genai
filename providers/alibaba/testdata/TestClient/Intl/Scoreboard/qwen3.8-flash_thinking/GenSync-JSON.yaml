@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 273
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-b7e1159d-abc2-92bf-9705-93aa5ccdcd4d","object":"chat.completion","created":1793814853,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need to answer user: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nNeed final only JSON. Ensure valid JSON. {\"is_fruit\": true}","content":"{\"is_fruit\": true}"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":92,"total_tokens":156,"completion_tokens":64,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":92},"completion_tokens_details":{"reasoning_tokens":54,"text_tokens":64}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814853923"
+            Req-Cost-Time:
+                - "1546"
+            Resp-Start-Time:
+                - "1793814855470"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1546"
+        status: 200 OK
+        code: 200
+        duration: 1.796s

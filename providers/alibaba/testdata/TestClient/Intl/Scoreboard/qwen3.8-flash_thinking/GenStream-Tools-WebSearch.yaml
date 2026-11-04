@@ -1,0 +1,383 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 303
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","created":1793814784,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" respond to user:"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" \"Search the web"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" to tell who is"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" currently the Prime Minister"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of Canada."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Only search for one"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" result. Give only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the name with no"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" explanation.\"\n\nNeed"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" satisfy"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":": likely perform web"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" search? We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" have no tool."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" But knowledge cutoff "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"26-0"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"7, current?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Need know current PM"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of Canada."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" As of 2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"026?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Mark Carney became"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814784,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" PM in"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" March 20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"5 after Trudeau resigned"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Canadian election maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"5"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"? Need know as"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of current date "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6? The current"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" PM could be Mark"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Car"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ney or possibly election"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" occurred in 2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"02"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6? Let's"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" analyze"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":".\n\nUser says"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" search web only one"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" result. But"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814785,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" no actual browsing."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Need maybe final only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" name. Need accurate"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" current PM. System"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" says knowledge cutoff "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"26-0"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"7. Current date"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"026-"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"06-2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"2. Canada "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"2025"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" federal election? Snap"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" election called by Mark"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Carney?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" I need infer."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" In real"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" world (as of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" my"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" training cutoff 2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"0"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"24-0"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814786,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"?) no. But"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" system says cutoff "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6-07"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":", can use internal"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" knowledge? Need maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" current PM as of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" June"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6 is Mark Car"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ney?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Let's recall events"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":": Justin Trudeau resigned"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" as Liberal"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" leader and PM;"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Mark Carney won"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Liberal leadership on March"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 9"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"5"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":", sworn in March"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 14 "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"25. He"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" called early federal election"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" for"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" April 28"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"5? I remember"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" news: Carney"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814787,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" called"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" federal election for April"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"28, "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"2025"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":", Liberals won majority"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"? Wait, as"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of 2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"025?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" If"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" election happened April "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"28"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"5, Carney"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" likely continued"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" PM. In "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"026,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" he remains PM unless"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" leadership challenge. No"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" indication.\n\nNeed"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" name with no explanation"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Must not mention"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" search. Could output"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" \"Mark Carney"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\". Ensure only name"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814788,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Final"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" just Mark Carney"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":".\n\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Need maybe \"Mark"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Carney\" not"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" \"the\". User"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" says give only name"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with no"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" explanation. Final only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" name. Ensure no"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" extra punctuation"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" maybe okay. Could"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" include \"Mark Car"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ney\". Need maybe"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" if current PM after"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6 election? There"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is no Canadian federal"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" election in"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 202"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"6 fixed date?"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" If 20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"25"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" election occurred, next"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" election"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" due 20"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"2"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"9. So likely"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Mark Carney."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\n\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814789,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Need final. Also"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" maybe search instruction:"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" we"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" couldn't but answer"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". We can output"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" direct."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Mark Carney","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-560f10b1-25a6-9102-b5d6-ea35d2c494c5","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":89,"total_tokens":632,"completion_tokens":543,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":89},"completion_tokens_details":{"reasoning_tokens":538,"text_tokens":543}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814783383"
+            Req-Cost-Time:
+                - "914"
+            Resp-Start-Time:
+                - "1793814784297"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "913"
+        status: 200 OK
+        code: 200
+        duration: 1.162s

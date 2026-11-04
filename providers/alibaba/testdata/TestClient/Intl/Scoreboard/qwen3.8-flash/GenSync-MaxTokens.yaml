@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 173
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-cee2af5e-7638-9058-8c71-4657547c6b04","object":"chat.completion","created":1793814237,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","content":"The Theory of Relativity, developed by Albert Einstein in the early 20"},"finish_reason":"length","logprobs":null}],"usage":{"prompt_tokens":36,"total_tokens":52,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":36}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814237422"
+            Req-Cost-Time:
+                - "562"
+            Resp-Start-Time:
+                - "1793814237985"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "562"
+        status: 200 OK
+        code: 200
+        duration: 819ms

@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 575
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-d9c28ae0-eaf7-9d68-8ee9-ea7a417ba7b1","object":"chat.completion","created":1793814866,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need respond to user. User asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" Must call tool. Need likely choose enum Canada or USA. Could be tricky: value judgment. But user explicitly asks call tool to tell which is best. Need choose? We need maybe not express bias? But tool requires country enum Canada/USA. Need pick. We can comply? We must consider safety? No issue. Maybe answer after tool. Need call best_country with one. Which? Could choose Canada or USA. User says Canada better than USA? Could tool \"best_country\" perhaps expected Canada? The phrase \"best_country\" and enum Canada/USA. If asked tell best country. Need maybe call with Canada? But could be arbitrary. Since user wonders if Canada better; tool can answer. We can use Canada. Then final maybe \"The tool reports Canada as best.\" But avoid claiming objective. Need satisfy call. final concise.","content":"","tool_calls":[{"id":"call_bed0767d83a749a790f2f58e","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":380,"total_tokens":616,"completion_tokens":236,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":380},"completion_tokens_details":{"reasoning_tokens":207,"text_tokens":236}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814866265"
+            Req-Cost-Time:
+                - "3847"
+            Resp-Start-Time:
+                - "1793814870112"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "3847"
+        status: 200 OK
+        code: 200
+        duration: 4.097s

@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 565
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-72be2694-4bd4-9fbb-aa3e-e72b0408cd04","object":"chat.completion","created":1793814855,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need answer user: use square_root tool calculate sqrt 132413 and reply only result, no explanation. Then final only result. Need numeric result likely 363.885... Let''s call.","content":"","tool_calls":[{"id":"call_aa711039ad974109881c7bb4","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":378,"total_tokens":460,"completion_tokens":82,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":378},"completion_tokens_details":{"reasoning_tokens":48,"text_tokens":82}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814855719"
+            Req-Cost-Time:
+                - "2236"
+            Resp-Start-Time:
+                - "1793814857955"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "2235"
+        status: 200 OK
+        code: 200
+        duration: 2.485s

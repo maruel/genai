@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-af9e64b2-d3f2-92c5-ae16-6f9855c59a9c","object":"chat.completion","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need to respond to user: \"Say hello. Use only one word.\" Final must be one word, probably Hello. Ensure no punctuation? \"Hello\" is one word. User language English. Analysis done.","content":"Hello"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":69,"total_tokens":115,"completion_tokens":46,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":69},"completion_tokens_details":{"reasoning_tokens":43,"text_tokens":46}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814740859"
+            Req-Cost-Time:
+                - "1576"
+            Resp-Start-Time:
+                - "1793814742436"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1576"
+        status: 200 OK
+        code: 200
+        duration: 1.825s

@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 173
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-c822a0fa-b7c3-49d4-8c4d-d00099675089","object":"chat.completion","created":1793814208,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","content":"The Theory of Relativity is arguably the most significant revolution in physics since Newton."},"finish_reason":"length","logprobs":null}],"usage":{"prompt_tokens":36,"total_tokens":52,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":36}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814208592"
+            Req-Cost-Time:
+                - "991"
+            Resp-Start-Time:
+                - "1793814209584"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "991"
+        status: 200 OK
+        code: 200
+        duration: 1.011s

@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 805
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_aa711039ad974109881c7bb4","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_aa711039ad974109881c7bb4"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-154ba181-8dbc-9fd0-a714-f97f0bf92fa0","object":"chat.completion","created":1793814858,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants the result of the square root of 132413. The tool returned 363.89.\n\nHowever, 363.89 squared is 132415.9321, not 132413. Let me double check the tool''s output vs actual value. Actual square root of 132413 is approximately 363.885... (363.8854). Rounded to 363.89. The tool returned 363.89.\n\nThe user asks to reply with only the result. So I should output exactly what the tool gave: 363.89.\n\nWait — is 363.89 accurate? sqrt(132413) = ? Let''s compute: 363^2 = 131769. 364^2 = 132496. Difference 132496 - 131769 = 727. 132413 - 131769 = 644. So sqrt ≈ 363 + 644/727 ≈ 363 + 0.8858 = 363.8858. Rounded to two decimals = 363.89. Good.\n\nSo the tool output is correct. I''ll reply with only the result: 363.89.\n\nI need to ensure final answer is only the result, no explanation.","content":"363.89"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":147,"total_tokens":508,"completion_tokens":361,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":147},"completion_tokens_details":{"reasoning_tokens":352,"text_tokens":361}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814858204"
+            Req-Cost-Time:
+                - "5332"
+            Resp-Start-Time:
+                - "1793814863537"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "5332"
+        status: 200 OK
+        code: 200
+        duration: 5.582s

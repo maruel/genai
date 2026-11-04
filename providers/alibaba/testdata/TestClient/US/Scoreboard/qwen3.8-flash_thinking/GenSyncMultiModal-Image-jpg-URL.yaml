@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 310
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-726a87c5-1583-4323-84a8-41f7e8c0b44b","object":"chat.completion","created":1793814723,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants a single-word identification of the fruit in the image. The image clearly shows a yellow, curved fruit with a stem, characteristic of a banana. The instruction is strict: reply with only one word. Therefore, the response must be exactly \"Banana\" without any additional text or punctuation.","content":"Banana"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":164,"total_tokens":231,"completion_tokens":67,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":72},"completion_tokens_details":{"reasoning_tokens":61,"text_tokens":5}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814723030"
+            Req-Cost-Time:
+                - "2132"
+            Resp-Start-Time:
+                - "1793814725162"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Traceresponse:
+                - 00-4434fa2dd6f2a99f0546db75b0c9c495-8c12879803215017-01
+            X-Envoy-Upstream-Service-Time:
+                - "2132"
+        status: 200 OK
+        code: 200
+        duration: 2.152s

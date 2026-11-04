@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 792
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","created":1793814217,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"I"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"'ll check"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" all three tasks together"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":".\n\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"call_394d4f57892f48c48a7cc757","type":"function","index":0,"function":{"name":"task_status","arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"{\"task_id\": 3"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":0,"function":{"arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"call_a130e6198a5147a7a945ffe5","type":"function","index":1,"function":{"name":"task_status","arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":1,"function":{"arguments":"{\"task_id\": 7"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":1,"function":{"arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":1,"function":{"arguments":"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":1,"function":{"arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"call_1ec26e4e384f43afabd3265d","type":"function","index":2,"function":{"name":"task_status","arguments":""}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814217,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":2,"function":{"arguments":"{\"task_id\": 1"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814218,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":2,"function":{"arguments":"1"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814218,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","tool_calls":[{"id":"","type":"function","index":2,"function":{"arguments":"}"}}]},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814218,"model":"qwen3.8-flash","choices":[{"delta":{"tool_calls":[{"function":{"arguments":""},"index":2,"type":"function","id":""}],"content":""},"index":0,"finish_reason":null,"logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814218,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{},"finish_reason":"tool_calls","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-66240130-6c8b-43ac-b4c6-731bbce8c1e0","object":"chat.completion.chunk","created":1793814218,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":361,"total_tokens":454,"completion_tokens":93,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":361}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814216819"
+            Req-Cost-Time:
+                - "653"
+            Resp-Start-Time:
+                - "1793814217473"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "653"
+        status: 200 OK
+        code: 200
+        duration: 672ms

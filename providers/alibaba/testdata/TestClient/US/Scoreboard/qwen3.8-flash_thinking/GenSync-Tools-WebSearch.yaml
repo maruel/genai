@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 264
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-c768224e-57d7-46bb-8c37-343378069019","object":"chat.completion","created":1793814713,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need answer user''s request: \"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\" Need likely perform web search? We have no tools specified? But we can use knowledge? User explicitly says search web only one result, output only name no explanation. Need comply. Need maybe use available? No tools. Current PM as of 2026? Need likely Mark Carney became PM March 2025. So only name: Mark Carney.","content":"Mark Carney"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":89,"total_tokens":207,"completion_tokens":118,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":89},"completion_tokens_details":{"reasoning_tokens":112,"text_tokens":118}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814713779"
+            Req-Cost-Time:
+                - "2988"
+            Resp-Start-Time:
+                - "1793814716767"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "2988"
+        status: 200 OK
+        code: 200
+        duration: 3.009s

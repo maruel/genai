@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 490
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-4cbe324e-8f49-981a-b430-69acc27f05a4","object":"chat.completion","created":1793814241,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"id":"call_7d43413db5e244b59a599180","type":"function","function":{"name":"get_hostname","arguments":"{}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":315,"total_tokens":328,"completion_tokens":13,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":315}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814241509"
+            Req-Cost-Time:
+                - "522"
+            Resp-Start-Time:
+                - "1793814242032"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "521"
+        status: 200 OK
+        code: 200
+        duration: 778ms

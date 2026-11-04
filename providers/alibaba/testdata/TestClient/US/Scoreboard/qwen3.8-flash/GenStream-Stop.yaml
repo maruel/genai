@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 217
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"stop":["is"],"stream_options":{"include_usage":true},"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-ac2312b3-a40e-4f6b-a194-e78836181d3b","created":1793814210,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ac2312b3-a40e-4f6b-a194-e78836181d3b","object":"chat.completion.chunk","created":1793814210,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ac2312b3-a40e-4f6b-a194-e78836181d3b","object":"chat.completion.chunk","created":1793814210,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ac2312b3-a40e-4f6b-a194-e78836181d3b","object":"chat.completion.chunk","created":1793814210,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ac2312b3-a40e-4f6b-a194-e78836181d3b","object":"chat.completion.chunk","created":1793814210,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":37,"total_tokens":41,"completion_tokens":4,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":37}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814209832"
+            Req-Cost-Time:
+                - "572"
+            Resp-Start-Time:
+                - "1793814210405"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "572"
+        status: 200 OK
+        code: 200
+        duration: 591ms

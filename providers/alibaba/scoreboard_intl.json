@@ -102,6 +102,111 @@
       }
     },
     {
+      "models": [
+        "qwen3.8-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "reason": true,
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "qwen3.8-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
       "comments": "Old models.",
       "models": [
         "ZHIPU/GLM-5.3",
@@ -228,7 +333,6 @@
         "qwen3.7-text-embedding",
         "qwen3.8-2.4t-a95b",
         "qwen3.8-27b",
-        "qwen3.8-flash",
         "qwen3.8-livetranslate-flash-realtime",
         "qwen3.8-max-0902",
         "qwen3.8-omni-flash",

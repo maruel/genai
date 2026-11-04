@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 721
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_d2f9b2b1728b418a9365e7a6","type":"function","function":{"name":"get_hostname","arguments":"{}"}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_d2f9b2b1728b418a9365e7a6"}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"get_hostname","description":"Returns the machine's hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-e900ed91-1870-9906-89a6-f263c22aa7aa","object":"chat.completion","created":1793814864,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user asked me to use the get_hostname tool and reply with only the hostname, without explanation. The hostname is \"genai-smoke\".","content":"genai-smoke"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":386,"total_tokens":422,"completion_tokens":36,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":386},"completion_tokens_details":{"reasoning_tokens":29,"text_tokens":36}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814864879"
+            Req-Cost-Time:
+                - "1136"
+            Resp-Start-Time:
+                - "1793814866015"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1135"
+        status: 200 OK
+        code: 200
+        duration: 1.385s

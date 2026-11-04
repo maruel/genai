@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 264
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-2ded2c1d-f855-9158-aafd-63483ac021ca","object":"chat.completion","created":1793814883,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need respond to user: \"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"\n\n We must maybe call web search? Need know current as of 2026? Knowledge cutoff 2024-06. Canada PM: Justin Trudeau (as of 2024, elected 2015). But current in 2026 might changed? 2025 Canadian federal election? Need web search. But we don''t have actual tool except thinker? We have no web search function listed, only thinker. Need maybe not? User asks search web, only one result. In final only name no explanation. Need answer. If no web available? The system says access to current date. Need maybe rely on knowledge? But user explicitly requires search. But no browsing tool. Could use thinker? However as model can''t actually search. Maybe final should still give name if known. But if after cutoff: Mark Carney became PM in March 2025 after Trudeau resignation. Let''s recall real-world: Justin Trudeau announced resignation Jan 6, 2025; Mark Carney won Liberal leadership Feb 2025, sworn in Mar 14, 2025. Then 2025 federal election? Carney Liberal won minority? Current PM in 2026 should Mark Carney. Need only name. The user says search for one result; maybe if cannot, final no explanation. Ensure no extra text.","content":"Mark Carney"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":89,"total_tokens":420,"completion_tokens":331,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":89},"completion_tokens_details":{"reasoning_tokens":325,"text_tokens":331}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814883232"
+            Req-Cost-Time:
+                - "5204"
+            Resp-Start-Time:
+                - "1793814888436"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "5203"
+        status: 200 OK
+        code: 200
+        duration: 5.453s

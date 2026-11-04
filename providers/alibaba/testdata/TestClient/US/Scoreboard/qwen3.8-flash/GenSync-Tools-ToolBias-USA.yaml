@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 576
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-2849bf4c-3c3a-45ad-94c4-305d62bffaf4","object":"chat.completion","created":1793814214,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","content":"","tool_calls":[{"id":"call_516c8fb54f3a4f7e8cb52cf0","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"},"index":0}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":347,"total_tokens":370,"completion_tokens":23,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":347}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814214616"
+            Req-Cost-Time:
+                - "930"
+            Resp-Start-Time:
+                - "1793814215546"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "929"
+        status: 200 OK
+        code: 200
+        duration: 949ms

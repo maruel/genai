@@ -103,6 +103,109 @@
       }
     },
     {
+      "models": [
+        "qwen3.8-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "reason": true,
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "qwen3.8-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
       "comments": "Translation models.",
       "models": [
         "deepseek-v4-flash",
@@ -157,7 +260,6 @@
         "qwen3.7-plus",
         "qwen3.7-plus-2026-05-26",
         "qwen3.7-plus-us",
-        "qwen3.8-flash",
         "qwen3.8-max-0902",
         "qwen3.8-omni-flash"
       ],

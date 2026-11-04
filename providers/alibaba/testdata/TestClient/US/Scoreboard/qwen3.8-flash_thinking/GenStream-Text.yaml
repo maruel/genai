@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","created":1793814578,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need respond"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" to user: \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"Say hello. Use"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" only one word.\""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Need final one word"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Ensure only one"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" word,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" likely \"Hello\"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" No punctuation? Only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" one word. Final"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":": Hello.\n"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Hello","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-c5f3039b-ef20-46e3-81ca-ca54cfb027e8","object":"chat.completion.chunk","created":1793814578,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":69,"total_tokens":113,"completion_tokens":44,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":69},"completion_tokens_details":{"reasoning_tokens":40,"text_tokens":44}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814577693"
+            Req-Cost-Time:
+                - "539"
+            Resp-Start-Time:
+                - "1793814578233"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "539"
+        status: 200 OK
+        code: 200
+        duration: 659ms

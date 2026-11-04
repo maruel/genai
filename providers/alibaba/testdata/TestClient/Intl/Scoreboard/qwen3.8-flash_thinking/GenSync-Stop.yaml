@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 177
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-b14ee5f9-a5ce-9ae8-8493-de2cf8d5e5bd","object":"chat.completion","created":1793814850,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need to respond to user: \"Talk about Canada in great details. Start with: Canada is\". So final must start with Canada is. Need detailed. Same language as user? English. Need produce comprehensive article. Ensure start exactly \"Canada is\". No need citations. Let''s craft thorough details: geography, provinces/territories, history, government, economy, culture, languages, people, environment, cities, science, health, education, foreign relations, challenges. Need likely not too excessive but great details. Final starts with Canada is. Ensure no headings? Could have paragraphs. Maybe include bullet points? Start with sentence. Let''s draft.","content":"Canada "},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":73,"total_tokens":214,"completion_tokens":141,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":73},"completion_tokens_details":{"reasoning_tokens":131,"text_tokens":141}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814850565"
+            Req-Cost-Time:
+                - "3107"
+            Resp-Start-Time:
+                - "1793814853672"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "3107"
+        status: 200 OK
+        code: 200
+        duration: 3.356s

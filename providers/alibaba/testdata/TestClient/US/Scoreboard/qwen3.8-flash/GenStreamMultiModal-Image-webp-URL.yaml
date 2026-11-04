@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 351
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-93422c9a-bbb6-4513-bbab-f56bb1d6f83f","created":1793814234,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-93422c9a-bbb6-4513-bbab-f56bb1d6f83f","object":"chat.completion.chunk","created":1793814234,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Ban"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-93422c9a-bbb6-4513-bbab-f56bb1d6f83f","object":"chat.completion.chunk","created":1793814234,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"ana"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-93422c9a-bbb6-4513-bbab-f56bb1d6f83f","object":"chat.completion.chunk","created":1793814234,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-93422c9a-bbb6-4513-bbab-f56bb1d6f83f","object":"chat.completion.chunk","created":1793814234,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":128,"total_tokens":131,"completion_tokens":3,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":36},"completion_tokens_details":{"text_tokens":3}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814233980"
+            Req-Cost-Time:
+                - "1160"
+            Resp-Start-Time:
+                - "1793814235141"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Traceresponse:
+                - 00-99768df2c5f2a9721a0a31b897d0123e-7628a115c44bbc54-01
+            X-Envoy-Upstream-Service-Time:
+                - "1160"
+        status: 200 OK
+        code: 200
+        duration: 1.179s

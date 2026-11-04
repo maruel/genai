@@ -1,0 +1,111 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 308
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","created":1793814790,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need answer user's"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" question. Need"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814790,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" think"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" in English same language"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". User: \""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The capital of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Quackiland is"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Quack."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" The Big Canard"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Statue is located in"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Quack.What"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is the capital of"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Quackiland?\""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Simple"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" reading comprehension. Answer"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":": Quack."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Need final"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" concise. Ensure no"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" hidden trick? Capital"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" of Quackiland"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is Quack,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" statue in Quack"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" irrelevant"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Final: Qu"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"ack."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Qu","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"ack","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-8396fed1-8839-9174-b64a-0124fb38bef3","object":"chat.completion.chunk","created":1793814791,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":90,"total_tokens":179,"completion_tokens":89,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":90},"completion_tokens_details":{"reasoning_tokens":84,"text_tokens":89}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814790512"
+            Req-Cost-Time:
+                - "370"
+            Resp-Start-Time:
+                - "1793814790883"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "370"
+        status: 200 OK
+        code: 200
+        duration: 619ms

@@ -1,0 +1,77 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 184
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","created":1793814579,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814579,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814579,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need to respond to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user: \"Say"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" hello. Use only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" one word.\" Must"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" use only one word"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" So output \"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Done."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Hello","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ad85055a-a66e-41df-a076-294faa6580a6","object":"chat.completion.chunk","created":1793814580,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":69,"total_tokens":101,"completion_tokens":32,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":69},"completion_tokens_details":{"reasoning_tokens":29,"text_tokens":32}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814578652"
+            Req-Cost-Time:
+                - "1411"
+            Resp-Start-Time:
+                - "1793814580063"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1411"
+        status: 200 OK
+        code: 200
+        duration: 1.432s

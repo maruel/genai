@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -163,31 +164,26 @@ func TestClient(t *testing.T) {
 			})
 
 			t.Run("Scoreboard", func(t *testing.T) {
-				// Prefer Reason from tested (non-untested) scenarios.
-				// Build the Reason lookup from the existing scoreboard.
-				reasonModels := map[string]bool{}
+				// Preserve every thinking mode listed in the scoreboard.
+				reasonModels := map[string][]bool{}
 				sb := alibaba.ScoreboardForBackend(b.opt)
 				for i := range sb.Chat {
 					sc := &sb.Chat[i]
 					for _, m := range sc.Models {
-						if _, ok := reasonModels[m]; ok && sc.Untested() {
-							continue
+						if !slices.Contains(reasonModels[m], sc.Reason) {
+							reasonModels[m] = append(reasonModels[m], sc.Reason)
 						}
-						reasonModels[m] = sc.Reason
 					}
 				}
 				// Build model list from ListModels so new models are discovered.
-				// Qwen3.5 models support hybrid-thinking: test both with and without thinking.
 				models := make([]scoreboard.Model, 0, len(cachedModels))
 				for _, m := range cachedModels {
 					id := m.GetID()
-					if strings.HasPrefix(id, "qwen3.5-") {
-						models = append(models, scoreboard.Model{Model: id, Reason: false}, scoreboard.Model{Model: id, Reason: true})
-					} else {
-						reason, ok := reasonModels[id]
-						if !ok {
-							reason = strings.Contains(id, "thinking") || strings.Contains(id, "qwq") || strings.Contains(id, "qvq")
-						}
+					modes := reasonModels[id]
+					if len(modes) == 0 {
+						modes = []bool{strings.Contains(id, "thinking") || strings.Contains(id, "qwq") || strings.Contains(id, "qvq")}
+					}
+					for _, reason := range modes {
 						models = append(models, scoreboard.Model{Model: id, Reason: reason})
 					}
 				}

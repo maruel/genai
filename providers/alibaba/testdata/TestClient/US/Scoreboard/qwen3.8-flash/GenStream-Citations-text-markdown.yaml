@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 325
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","created":1793814223,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Based"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" on the text"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" provided,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" the capital of Qu"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"ackiland is **"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Quack"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"**."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-230aa148-81ae-41c6-b45f-f61e880cb9bb","object":"chat.completion.chunk","created":1793814223,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":59,"total_tokens":76,"completion_tokens":17,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":59}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814222858"
+            Req-Cost-Time:
+                - "595"
+            Resp-Start-Time:
+                - "1793814223454"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "595"
+        status: 200 OK
+        code: 200
+        duration: 614ms

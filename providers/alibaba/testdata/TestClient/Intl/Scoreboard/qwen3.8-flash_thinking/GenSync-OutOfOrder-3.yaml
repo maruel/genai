@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2181
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"call_7793f29b4c5b41fa81fc6410","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"call_d600f9720252441da9c5b413","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"call_404e5490943b47fda1748fdb","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"Still waiting on that one — task 7's reference hasn't come back yet. I'll pass it along as soon as it lands. The other two checks are still running in the background."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_404e5490943b47fda1748fdb"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_d600f9720252441da9c5b413"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_7793f29b4c5b41fa81fc6410"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-6cda6a6a-405b-9678-b09a-b48c99275362","object":"chat.completion","created":1793814881,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The results are in now. Task 7''s reference is \"violet\". I should only give task 7''s reference, not the others.","content":"Yes — task 7''s reference is **violet**."},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":693,"total_tokens":738,"completion_tokens":45,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":693},"completion_tokens_details":{"reasoning_tokens":30,"text_tokens":45}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814881792"
+            Req-Cost-Time:
+                - "1191"
+            Resp-Start-Time:
+                - "1793814882983"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1190"
+        status: 200 OK
+        code: 200
+        duration: 1.44s

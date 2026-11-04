@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 752
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-2d417ed3-adc9-9893-8f68-21cba63eab9b","object":"chat.completion","created":1793814877,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"The user wants status and reference for tasks 3, 7, 11. Independent calls — batch them together.","content":"","tool_calls":[{"id":"call_7793f29b4c5b41fa81fc6410","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"},"index":0},{"id":"call_d600f9720252441da9c5b413","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"},"index":1},{"id":"call_404e5490943b47fda1748fdb","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"},"index":2}]},"finish_reason":"tool_calls","logprobs":null}],"usage":{"prompt_tokens":397,"total_tokens":509,"completion_tokens":112,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":397},"completion_tokens_details":{"reasoning_tokens":25,"text_tokens":112}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814877661"
+            Req-Cost-Time:
+                - "1692"
+            Resp-Start-Time:
+                - "1793814879353"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "1691"
+        status: 200 OK
+        code: 200
+        duration: 1.941s

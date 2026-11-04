@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"chatcmpl-bb0f9072-b8b3-4e1e-abf4-b1e1873a24d8","object":"chat.completion","created":1793814578,"model":"qwen3.8-flash","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"We need to respond to user: \"Say hello. Use only one word.\" Final must be one word. Hello? But maybe \"Hello\" satisfies. Ensure only one word, no punctuation? \"Hello\" is one word.","content":"Hello"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":69,"total_tokens":119,"completion_tokens":50,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":69},"completion_tokens_details":{"reasoning_tokens":46,"text_tokens":50}}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814578603"
+            Req-Cost-Time:
+                - "1132"
+            Resp-Start-Time:
+                - "1793814579735"
+            Server:
+                - istio-envoy
+            Vary:
+                - Accept-Encoding
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1132"
+        status: 200 OK
+        code: 200
+        duration: 1.152s

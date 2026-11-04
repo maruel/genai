@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 845
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_0377073d67fd41c4bc459392","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_0377073d67fd41c4bc459392"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-895bfc05-7a52-9df7-a6e5-590a1389277e","created":1793814242,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-895bfc05-7a52-9df7-a6e5-590a1389277e","object":"chat.completion.chunk","created":1793814242,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"3"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-895bfc05-7a52-9df7-a6e5-590a1389277e","object":"chat.completion.chunk","created":1793814242,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"63."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-895bfc05-7a52-9df7-a6e5-590a1389277e","object":"chat.completion.chunk","created":1793814242,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-895bfc05-7a52-9df7-a6e5-590a1389277e","object":"chat.completion.chunk","created":1793814242,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-895bfc05-7a52-9df7-a6e5-590a1389277e","object":"chat.completion.chunk","created":1793814242,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":111,"total_tokens":117,"completion_tokens":6,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":111}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814241888"
+            Req-Cost-Time:
+                - "409"
+            Resp-Start-Time:
+                - "1793814242297"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "408"
+        status: 200 OK
+        code: 200
+        duration: 665ms

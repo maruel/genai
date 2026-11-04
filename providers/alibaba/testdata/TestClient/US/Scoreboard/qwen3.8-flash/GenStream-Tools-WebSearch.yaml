@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 304
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-36553a55-a183-44a7-9564-5f3501d96fe5","created":1793814221,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-36553a55-a183-44a7-9564-5f3501d96fe5","object":"chat.completion.chunk","created":1793814221,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Mark"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-36553a55-a183-44a7-9564-5f3501d96fe5","object":"chat.completion.chunk","created":1793814221,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" Carney"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-36553a55-a183-44a7-9564-5f3501d96fe5","object":"chat.completion.chunk","created":1793814221,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-36553a55-a183-44a7-9564-5f3501d96fe5","object":"chat.completion.chunk","created":1793814221,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":53,"total_tokens":56,"completion_tokens":3,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":53}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814220902"
+            Req-Cost-Time:
+                - "1087"
+            Resp-Start-Time:
+                - "1793814221990"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1087"
+        status: 200 OK
+        code: 200
+        duration: 1.106s

@@ -1,0 +1,85 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 184
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","created":1793814740,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"We"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need to respond to"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user: \"Say"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" hello. Use only"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" one word.\" Final"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814740,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" must be one word"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":", probably Hello."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Ensure no"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" punctuation? \"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is one word."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" User"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" language English. Analysis"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" done."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Hello","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-ef632a21-9fad-99f0-9f9c-20873b1d1abb","object":"chat.completion.chunk","created":1793814741,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":69,"total_tokens":115,"completion_tokens":46,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":69},"completion_tokens_details":{"reasoning_tokens":43,"text_tokens":46}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814740347"
+            Req-Cost-Time:
+                - "401"
+            Resp-Start-Time:
+                - "1793814740749"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "401"
+        status: 200 OK
+        code: 200
+        duration: 650ms

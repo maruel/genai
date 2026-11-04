@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 185
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"seed":42,"enable_thinking":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-0848b50d-a85e-9b90-a87c-a98a41ae6746","created":1793814237,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-0848b50d-a85e-9b90-a87c-a98a41ae6746","object":"chat.completion.chunk","created":1793814237,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-0848b50d-a85e-9b90-a87c-a98a41ae6746","object":"chat.completion.chunk","created":1793814237,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-0848b50d-a85e-9b90-a87c-a98a41ae6746","object":"chat.completion.chunk","created":1793814237,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":33,"total_tokens":34,"completion_tokens":1,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":33}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814236759"
+            Req-Cost-Time:
+                - "471"
+            Resp-Start-Time:
+                - "1793814237230"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "470"
+        status: 200 OK
+        code: 200
+        duration: 727ms

@@ -1,0 +1,99 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 303
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"stream_options":{"include_usage":true},"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","created":1793814621,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"reasoning_content":"","content":"","role":"assistant"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" user asks"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" for the current Prime"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Minister of Canada,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with one web search"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":","},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" and only the name"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" no explanation. I"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need to follow the"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" format"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":": no explanation,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" just the name"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":". But as an"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" AI,"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" I don't actually"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" search the web;"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" I provide the answer"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814621,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":" based on my knowledge"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814622,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814622,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Mark","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814622,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":" Carney","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814622,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-bee10d74-135b-455e-b68e-f90fb0d8f32e","object":"chat.completion.chunk","created":1793814622,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":89,"total_tokens":155,"completion_tokens":66,"prompt_tokens_details":{"cached_tokens":0,"text_tokens":89},"completion_tokens_details":{"reasoning_tokens":60,"text_tokens":66}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814620086"
+            Req-Cost-Time:
+                - "1135"
+            Resp-Start-Time:
+                - "1793814621221"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Envoy-Upstream-Service-Time:
+                - "1135"
+        status: 200 OK
+        code: 200
+        duration: 1.154s

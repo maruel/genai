@@ -1,0 +1,103 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 349
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.8-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"model":"qwen3.8-flash","id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","created":1793814639,"object":"chat.completion.chunk","usage":null,"choices":[{"logprobs":null,"index":0,"delta":{"role":"assistant","content":"","reasoning_content":""},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"The","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" user wants a single","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"-word","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" identification of","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" the fruit in","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" the image. The","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" image clearly","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" shows a yellow,","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" curved fruit","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" with brown","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" tips","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"—a","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" banana. The instruction","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" is strict","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":": reply with only","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" one word.","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" No extra text","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":", no punctuation beyond","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" the word itself","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":". The answer is","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":" \"Ban","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"reasoning_content":"ana.\"","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"Banana","reasoning_content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[{"index":0,"delta":{"content":"","reasoning_content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+            data: {"id":"chatcmpl-131f1989-1a3a-4b97-861c-feb3ceffeaf3","object":"chat.completion.chunk","created":1793814639,"model":"qwen3.8-flash","choices":[],"usage":{"prompt_tokens":164,"total_tokens":228,"completion_tokens":64,"prompt_tokens_details":{"cached_tokens":0,"image_tokens":92,"text_tokens":72},"completion_tokens_details":{"reasoning_tokens":58,"text_tokens":5}}}
+
+            data: [DONE]
+
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Grpc-Accept-Encoding:
+                - gzip
+            Grpc-Encoding:
+                - identity
+            Req-Arrive-Time:
+                - "1793814639212"
+            Req-Cost-Time:
+                - "1569"
+            Resp-Start-Time:
+                - "1793814640781"
+            Server:
+                - istio-envoy
+            X-Accel-Buffering:
+                - 'no'
+            X-Dashscope-Traceresponse:
+                - 00-44b36273e847bb92ca4e38338d1544f5-c2b6c686e06b1627-01
+            X-Envoy-Upstream-Service-Time:
+                - "1568"
+        status: 200 OK
+        code: 200
+        duration: 1.589s

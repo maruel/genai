@@ -264,8 +264,12 @@ func TestClient(t *testing.T) {
 		// thinking row.
 		t.Run("WebSocket", func(t *testing.T) {
 			getClientWS := func(t testing.TB, model scoreboard.Model, name string) genai.Provider {
+				key := internaltest.GetEnv("OPENAI_API_KEY")
+				if key == "" {
+					key = "<insert_api_key_here>"
+				}
 				opts := []genai.ProviderOption{
-					genai.ProviderOptionAPIKey(internaltest.GetEnv("OPENAI_API_KEY")),
+					genai.ProviderOptionAPIKey(key),
 					genai.ProviderOptionPreloadedModels(cachedModels),
 				}
 				if model.Model != "" {

@@ -1,6 +1,6 @@
 // Use a websearch provider.
 //
-// This requires `PERPLEXITY_API_KEY` (https://www.perplexity.ai/settings/api)
+// This requires `GEMINI_API_KEY` (https://aistudio.google.com/apikey)
 // environment variable to authenticate.
 
 package main
@@ -12,18 +12,16 @@ import (
 	"log"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/perplexity"
+	"github.com/maruel/genai/providers/gemini"
 )
 
 func mainImpl() (err error) {
 	ctx := context.Background()
-	// Warning: this is surpringly expensive.
-	// Other options (as of 2025-09):
+	// Other options:
 	// - anthropic
-	// - gemini
 	// - groq
-	// - openai
-	c, err := perplexity.New(ctx, genai.ModelCheap)
+	// - openairesponses
+	c, err := gemini.New(ctx, genai.ModelCheap)
 	if c != nil {
 		defer func() { err = errors.Join(err, c.Close()) }()
 	}
@@ -36,8 +34,6 @@ func mainImpl() (err error) {
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
 		},
 	}}
-	// perplexity has websearch enabled by default so this is a no-op. It is needed to enable websearch for
-	// anthropic, gemini and openai.
 	opts := genai.GenOptionWeb{Search: true}
 	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {

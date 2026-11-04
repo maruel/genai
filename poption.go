@@ -49,8 +49,8 @@ func (p ProviderOptionRemote) Validate() error {
 //
 // For automatic model selection, use the predefined constants ModelCheap, ModelGood, or ModelSOTA
 // directly as provider options. The provider internally calls ListModels() to discover models
-// and select based on its heuristics. Providers that do not support ListModels (e.g. bfl or
-// perplexity) use a hardcoded list.
+// and select based on its heuristics. Providers that do not support ListModels (e.g. bfl) use a
+// hardcoded list.
 //
 // When unspecified, no model is selected. This is useful when only calling ListModels().
 // Generation calls will fail.

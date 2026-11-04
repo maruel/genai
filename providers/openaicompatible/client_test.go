@@ -291,15 +291,6 @@ var providers = map[string]provider{
 		},
 		model: "gpt-4.1-nano",
 	},
-	// "perplexity": {
-	// 	envAPIKey: "PERPLEXITY_API_KEY",
-	// 	chatURL:   "https://api.perplexity.ai/chat/completions",
-	// 	header: func(apiKey string) http.Header {
-	// 		return http.Header{"Authorization": {"Bearer " + apiKey}}
-	// 	},
-	// 	model:         "sonar",
-	// 	thinkingStart: "<think>",
-	// },
 	"togetherai": {
 		envAPIKey: "TOGETHER_API_KEY",
 		chatURL:   "https://api.together.xyz/v1/chat/completions",

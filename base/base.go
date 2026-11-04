@@ -167,7 +167,6 @@ type ErrAPI interface {
 //
 // For example:
 //   - Anthropic doesn't support Seed. In this case, Options will contain "GenOptionText.Seed".
-//   - Perplexity doesn't have an API to lists its supported models (this may change in the future).
 type ErrNotSupported struct {
 	Options []string
 }

@@ -431,16 +431,6 @@ func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functio
 			}
 			slog.DebugContext(ctx, "WebSearch", "citation", r.Citation)
 		}
-		// This happens with perplexity because the prompt is the query.
-		if false {
-			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
-				return slices.ContainsFunc(r.Citation.Sources, func(s genai.CitationSource) bool {
-					return s.Type == genai.CitationWebQuery
-				})
-			}) {
-				return fmt.Errorf("missing query from WebSearch citation: %#v", res)
-			}
-		}
 		// This happens with gemini-2.5-pro, it seems the web results gets eaten by the thought summarization.
 		if false {
 			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {

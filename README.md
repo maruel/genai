@@ -77,7 +77,6 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
 | [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | 🕸️       | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream🧠                             | 💬📄📸     | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
@@ -326,12 +325,12 @@ Darwin_ passed in as a document, this may print:
 
 [examples/txt\_to\_txt\_websearch-sync/main.go](examples/txt_to_txt_websearch-sync/main.go): Searches the web
 to answer your question.
-💡 Set [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api).
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 Snippet:
 
 ```go
-	c, err := perplexity.New(ctx, genai.ModelCheap)
+	c, err := gemini.New(ctx, genai.ModelCheap)
 	if c != nil {
 		defer func() {
 			if err := c.Close(); err != nil {
@@ -349,8 +348,6 @@ Snippet:
 		},
 	}}
 
-	// perplexity has websearch enabled by default so this is a no-op.
-	//  It is needed to enable websearch for anthropic, gemini and openai.
 	opts := genai.GenOptionWeb{Search: true, Fetch: true}
 	res, _ := c.GenSync(ctx, msgs, &opts)
 	for _, r := range res.Replies {
@@ -399,7 +396,7 @@ When asked _Who holds ultimate power of Canada?_, this may print:
 
 [examples/txt\_to\_txt\_websearch-stream/main.go](examples/txt_to_txt_websearch-stream/main.go): Searches the web
 to answer your question and streams the output to the console.
-💡 Set [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api).
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_websearch-stream@latest

@@ -235,8 +235,7 @@ func (o *GenOptionTools) Validate() error {
 
 // GenOptionWeb specifies web access options.
 type GenOptionWeb struct {
-	// Search specifies if websearch should be enabled. It is generally disabled by default except for
-	// perplexity.
+	// Search specifies if websearch should be enabled. It is generally disabled by default.
 	//
 	// # Warning
 	//

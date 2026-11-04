@@ -61,7 +61,6 @@ type Client struct {
 // ProviderOptionAPIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
 //
 // To use multiple models, create multiple clients.
-// Models are listed at https://docs.perplexity.ai/guides/model-cards
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var apiKey, model string
 	var modalities genai.Modalities

@@ -11,8 +11,8 @@
 // Alibaba, Baseten, Cerebras, DeepSeek, Groq, HuggingFace, Mistral, OpenAI Chat,
 // OpenRouter, Pollinations, TogetherAI, and Xiaomi share this function-tool protocol.
 // This client does not translate Anthropic or Cohere tools, Cloudflare's model-specific
-// requests, or provider-specific reasoning modes. Perplexity does not support function
-// tools. Use a dedicated provider when a model requires its specific fields.
+// requests, or provider-specific reasoning modes. Use a dedicated provider when a model
+// requires its specific fields.
 //
 // See https://platform.openai.com/docs/api-reference/chat/create.
 package openaicompatible

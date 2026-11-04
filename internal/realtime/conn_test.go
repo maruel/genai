@@ -75,7 +75,7 @@ func TestConn(t *testing.T) {
 		if _, err := realtime.Dial(t.Context(), url, http.DefaultClient, 0, time.Hour, time.Second); err == nil {
 			t.Fatal("non-positive message limit admitted")
 		}
-		c, err := realtime.Dial(t.Context(), url, http.DefaultClient, limit, time.Hour, time.Second)
+		c, err := realtime.Dial(t.Context(), url, http.DefaultClient, limit, 0, 0)
 		if err != nil {
 			t.Fatal(err)
 		}

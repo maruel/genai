@@ -20,7 +20,7 @@ import (
 	"github.com/coder/websocket"
 )
 
-// Conn owns one connection, its lifetime cancellation, and a keepalive worker.
+// Conn owns one connection, its lifetime cancellation, and an optional keepalive worker.
 // The provider runs one Read loop; writes can run concurrently. Cancelling a
 // per-call I/O context terminates the connection, as does lifetime cancellation.
 type Conn struct {
@@ -33,8 +33,9 @@ type Conn struct {
 }
 
 // Dial opens a connection using the provider's HTTP authentication and transport.
-// maxReadBytes bounds inbound messages. maxReadBytes, pingInterval and
-// pingTimeout must be positive. Call Close once on success.
+// maxReadBytes bounds inbound messages and must be positive. A zero pingInterval
+// disables keepalive; otherwise pingInterval and pingTimeout must be positive.
+// Call Close once on success.
 func Dial(ctx context.Context, url string, hc *http.Client, maxReadBytes int, pingInterval, pingTimeout time.Duration) (*Conn, error) {
 	if maxReadBytes <= 0 {
 		return nil, errors.New("realtime read limit must be positive")
@@ -75,26 +76,28 @@ func Dial(ctx context.Context, url string, hc *http.Client, maxReadBytes int, pi
 		}
 		close(c.closed)
 	})
-	c.wg.Go(func() {
-		ticker := time.NewTicker(pingInterval)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-life.Done():
-				return
-			case <-ticker.C:
-				pingCtx, stop := context.WithTimeout(life, pingTimeout)
-				err := ws.Ping(pingCtx)
-				stop()
-				if err != nil {
-					if life.Err() == nil {
-						cancel(errors.New("realtime WebSocket keepalive failed"))
-					}
+	if pingInterval != 0 {
+		c.wg.Go(func() {
+			ticker := time.NewTicker(pingInterval)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-life.Done():
 					return
+				case <-ticker.C:
+					pingCtx, stop := context.WithTimeout(life, pingTimeout)
+					err := ws.Ping(pingCtx)
+					stop()
+					if err != nil {
+						if life.Err() == nil {
+							cancel(errors.New("realtime WebSocket keepalive failed"))
+						}
+						return
+					}
 				}
 			}
-		}
-	})
+		})
+	}
 	return c, nil
 }
 

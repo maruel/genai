@@ -47,7 +47,10 @@ type RealtimeOption struct {
 	// one. Later responses use automatic tool choice. It helps models that
 	// otherwise answer instead of calling a tool when generating audio.
 	RequireToolCall bool
-	// PingInterval and PingTimeout default to 30 seconds and 10 seconds.
+	// PingInterval enables optional WebSocket keepalive. Zero disables it.
+	// llama.cpp processes input synchronously on its WebSocket reader, so a
+	// healthy server cannot answer pings while prefilling a large tool result.
+	// PingTimeout defaults to 10 seconds when PingInterval is set.
 	PingInterval time.Duration
 	PingTimeout  time.Duration
 }
@@ -65,6 +68,9 @@ func (o *RealtimeOption) Validate() error {
 	}
 	if o.PingInterval < 0 || o.PingTimeout < 0 {
 		return errors.New("llama.cpp realtime keepalive durations must not be negative")
+	}
+	if o.PingInterval == 0 && o.PingTimeout != 0 {
+		return errors.New("llama.cpp realtime PingTimeout requires PingInterval")
 	}
 	return nil
 }

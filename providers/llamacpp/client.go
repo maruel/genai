@@ -534,10 +534,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		}
 		u.Path = strings.TrimRight(u.Path, "/") + "/v1/realtime"
 	}
-	if o.PingInterval == 0 {
-		o.PingInterval = 30 * time.Second
-	}
-	if o.PingTimeout == 0 {
+	if o.PingInterval != 0 && o.PingTimeout == 0 {
 		o.PingTimeout = 10 * time.Second
 	}
 	names := setup.Tools.Names()

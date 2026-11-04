@@ -115,7 +115,7 @@ func TestClient(t *testing.T) {
 					}
 				})
 				modalities := genai.Modalities{genai.ModalityAudio, genai.ModalityText}
-				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), modalities, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &llamacpp.RealtimeOption{MaxOutputTokens: 128, RequireToolCall: true})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), modalities, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &llamacpp.RealtimeOption{MaxOutputTokens: 128, RequireToolCall: true, PingInterval: time.Hour})
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -396,7 +396,7 @@ func TestClient(t *testing.T) {
 						}
 					})
 				}
-				for _, o := range []*llamacpp.RealtimeOption{{MaxOutputTokens: -1}, {MaxOutputTokens: 1 << 32}, {PingInterval: -time.Second}, {Endpoint: "http://127.0.0.1:1"}, {Endpoint: "ws://"}, nil} {
+				for _, o := range []*llamacpp.RealtimeOption{{MaxOutputTokens: -1}, {MaxOutputTokens: 1 << 32}, {PingInterval: -time.Second}, {PingTimeout: time.Second}, {Endpoint: "http://127.0.0.1:1"}, {Endpoint: "ws://"}, nil} {
 					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
 						t.Fatal("invalid option accepted")
 					}

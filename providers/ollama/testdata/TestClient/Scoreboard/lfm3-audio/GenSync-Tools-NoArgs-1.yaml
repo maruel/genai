@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 456
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":false,"tools":[{"type":"function","function":{"description":"Returns the machine's hostname","name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 431
+        body: '{"model":"lfm3-audio","created_at":"2026-11-04T18:51:20.25506493Z","message":{"role":"assistant","content":"get_hostname","tool_calls":[{"id":"call_8pubs4fm","function":{"index":0,"name":"get_hostname","arguments":{}}}]},"done":true,"done_reason":"stop","total_duration":345544125,"load_duration":817959,"prompt_eval_count":80,"prompt_eval_cached_count":0,"prompt_eval_duration":185291000,"eval_count":18,"eval_duration":158295000}'
+        headers:
+            Content-Length:
+                - "431"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 346ms

@@ -1,0 +1,119 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2768
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","content":"I will start the checks for tasks 3, 7, and 11 together. I need to call the `task_status` tool for each task ID to get their status and reference. I can call it in a single batch since the tool doesn't specify a limit on the number of calls. I will call it for task 3, then task 7, and finally task 11.","tool_calls":[{"id":"call_bwy9unr9","function":{"name":"task_status","arguments":{"task_id":3}}},{"id":"call_la9ds7ck","function":{"name":"task_status","arguments":{"task_id":7}}},{"id":"call_rwf70l56","function":{"name":"task_status","arguments":{"task_id":11}}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"The user requested to know if the reference for task 7 is available. I have just called the `task_status` tool for task 7 in the previous turn, and the tool returned the necessary information. I need to analyze the result to determine if the reference is provided or if I should inform the user that I am still waiting.","tool_calls":[{"id":"call_i7fyw6fq","function":{"name":"task_status","arguments":{"task_id":7}}}]},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_i7fyw6fq","tool_name":"task_status"},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","tool_call_id":"call_rwf70l56","tool_name":"task_status"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","tool_call_id":"call_la9ds7ck","tool_name":"task_status"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","tool_call_id":"call_bwy9unr9","tool_name":"task_status"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream":true,"tools":[{"type":"function","function":{"description":"Read a task's current status and reference; does not change anything.","name":"task_status","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}],"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.438607334Z","message":{"role":"assistant","content":"The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.445958667Z","message":{"role":"assistant","content":" tool"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.453043667Z","message":{"role":"assistant","content":" result"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.460455292Z","message":{"role":"assistant","content":" from"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.482129001Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.489242792Z","message":{"role":"assistant","content":" `"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.496385501Z","message":{"role":"assistant","content":"task"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.503974376Z","message":{"role":"assistant","content":"_status"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.511157792Z","message":{"role":"assistant","content":"`"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.518334584Z","message":{"role":"assistant","content":" call"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.525497167Z","message":{"role":"assistant","content":" confirms"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.532461292Z","message":{"role":"assistant","content":" that"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.539458626Z","message":{"role":"assistant","content":" task"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.554403209Z","message":{"role":"assistant","content":" 7"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.561623542Z","message":{"role":"assistant","content":"'s"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.584872792Z","message":{"role":"assistant","content":" reference"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.592083626Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.598898751Z","message":{"role":"assistant","content":" \""},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.605998959Z","message":{"role":"assistant","content":"v"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.612980209Z","message":{"role":"assistant","content":"iolet"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.619941042Z","message":{"role":"assistant","content":"\"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.626793626Z","message":{"role":"assistant","content":" The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.633765751Z","message":{"role":"assistant","content":" user"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.640591084Z","message":{"role":"assistant","content":"'s"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.647540959Z","message":{"role":"assistant","content":" request"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.654546626Z","message":{"role":"assistant","content":" to"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.661526167Z","message":{"role":"assistant","content":" know"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.687321543Z","message":{"role":"assistant","content":" if"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.694319126Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.701752834Z","message":{"role":"assistant","content":" reference"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.708915501Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.715928543Z","message":{"role":"assistant","content":" available"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.722794126Z","message":{"role":"assistant","content":" has"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.729644126Z","message":{"role":"assistant","content":" now"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.737046918Z","message":{"role":"assistant","content":" been"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.743833959Z","message":{"role":"assistant","content":" answered"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.750621043Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.757750543Z","message":{"role":"assistant","content":" and"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.778616168Z","message":{"role":"assistant","content":" they"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.786013001Z","message":{"role":"assistant","content":" specifically"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.793378251Z","message":{"role":"assistant","content":" asked"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.800351834Z","message":{"role":"assistant","content":" to"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.807223543Z","message":{"role":"assistant","content":" ignore"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.814876793Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.821802834Z","message":{"role":"assistant","content":" references"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.828686126Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.835570043Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.842942668Z","message":{"role":"assistant","content":" other"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.849823626Z","message":{"role":"assistant","content":" tasks"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.856926834Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.884900334Z","message":{"role":"assistant","content":" Therefore"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.892094959Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.899147001Z","message":{"role":"assistant","content":" I"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.906172876Z","message":{"role":"assistant","content":" can"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.913026001Z","message":{"role":"assistant","content":" directly"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.919942543Z","message":{"role":"assistant","content":" provide"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.926891126Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.933808168Z","message":{"role":"assistant","content":" answer"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.940538334Z","message":{"role":"assistant","content":" without"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.947499334Z","message":{"role":"assistant","content":" including"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.954364709Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.961055001Z","message":{"role":"assistant","content":" details"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.984246584Z","message":{"role":"assistant","content":" for"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:53.991297709Z","message":{"role":"assistant","content":" tasks"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.004914084Z","message":{"role":"assistant","content":" 3"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.013020376Z","message":{"role":"assistant","content":" or"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.026612251Z","message":{"role":"assistant","content":" 11"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.033597334Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.047221459Z","message":{"role":"assistant","content":"\n\nYes"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.054660126Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.061544293Z","message":{"role":"assistant","content":" I"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.083793709Z","message":{"role":"assistant","content":" have"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.090856959Z","message":{"role":"assistant","content":" task"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.104543959Z","message":{"role":"assistant","content":" 7"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.111336209Z","message":{"role":"assistant","content":"'s"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.118071084Z","message":{"role":"assistant","content":" reference"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.125023834Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.132476834Z","message":{"role":"assistant","content":" The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.139694459Z","message":{"role":"assistant","content":" reference"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.147184209Z","message":{"role":"assistant","content":" for"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.154841293Z","message":{"role":"assistant","content":" task"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.186414043Z","message":{"role":"assistant","content":" 7"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.193286001Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.200091376Z","message":{"role":"assistant","content":" \""},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.206882251Z","message":{"role":"assistant","content":"v"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.213721876Z","message":{"role":"assistant","content":"iolet"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.220532751Z","message":{"role":"assistant","content":"\"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.228780876Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1813059292,"load_duration":1337291,"prompt_eval_count":549,"prompt_eval_cached_count":0,"prompt_eval_duration":1020320000,"eval_count":94,"eval_duration":788807000}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 1.023s

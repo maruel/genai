@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 538
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 537
+        body: '{"model":"lfm3-audio","created_at":"2026-11-04T18:51:22.304236459Z","message":{"role":"assistant","content":"","tool_calls":[{"id":"call_l1azbxlu","function":{"index":0,"name":"best_country","arguments":{"country":"USA"}}},{"id":"call_nuh3ies1","function":{"index":1,"name":"best_country","arguments":{"country":"Canada"}}}]},"done":true,"done_reason":"stop","total_duration":450247250,"load_duration":334792,"prompt_eval_count":104,"prompt_eval_cached_count":0,"prompt_eval_duration":162837000,"eval_count":37,"eval_duration":285863000}'
+        headers:
+            Content-Length:
+                - "537"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 452ms

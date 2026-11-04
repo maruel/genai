@@ -12,6 +12,8 @@
 | clef-flash:latest | SystemOne | 💬📸  | 🎯      | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
 | gemma4:e2b        | Sync🧠     | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | gemma4:e2b        | Stream🧠   | 💬📸  | 💬     | ✅   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| lfm3-audio        | Sync      | 💬    | 💬     | ✅🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| lfm3-audio        | Stream    | 💬    | 💬     | ✅🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

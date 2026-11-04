@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 687
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."},{"role":"assistant","content":"get_hostname","tool_calls":[{"id":"call_o88vusii","function":{"name":"get_hostname","arguments":{}}}]},{"role":"tool","content":"genai-smoke","tool_call_id":"call_o88vusii","tool_name":"get_hostname"}],"stream":true,"tools":[{"type":"function","function":{"description":"Returns the machine's hostname","name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.152874346Z","message":{"role":"assistant","content":"The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.159673763Z","message":{"role":"assistant","content":" tool"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.182545429Z","message":{"role":"assistant","content":" returned"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.189160554Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.195888138Z","message":{"role":"assistant","content":" host"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.202466096Z","message":{"role":"assistant","content":"name"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.208970346Z","message":{"role":"assistant","content":" \""},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.215373804Z","message":{"role":"assistant","content":"genai"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.221875138Z","message":{"role":"assistant","content":"-sm"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.228434596Z","message":{"role":"assistant","content":"oke"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.234857679Z","message":{"role":"assistant","content":"\"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.241448971Z","message":{"role":"assistant","content":" The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.248010471Z","message":{"role":"assistant","content":" user"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.254696346Z","message":{"role":"assistant","content":" requested"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.278615804Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.285438138Z","message":{"role":"assistant","content":" reply"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.292142263Z","message":{"role":"assistant","content":" to"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.298808138Z","message":{"role":"assistant","content":" contain"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.305366054Z","message":{"role":"assistant","content":" only"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.312582929Z","message":{"role":"assistant","content":" the"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.319024929Z","message":{"role":"assistant","content":" host"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.326102638Z","message":{"role":"assistant","content":"name"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.332329804Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.338915304Z","message":{"role":"assistant","content":" so"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.345329971Z","message":{"role":"assistant","content":" I"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.351921304Z","message":{"role":"assistant","content":" will"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.358464804Z","message":{"role":"assistant","content":" now"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.382333179Z","message":{"role":"assistant","content":" provide"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.389068429Z","message":{"role":"assistant","content":" it"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.395612054Z","message":{"role":"assistant","content":" directly"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.402151971Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.415398763Z","message":{"role":"assistant","content":"\n\ngenai"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.421961471Z","message":{"role":"assistant","content":"-sm"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.428541013Z","message":{"role":"assistant","content":"oke"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:48.435279263Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":600778459,"load_duration":3431125,"prompt_eval_count":110,"prompt_eval_cached_count":0,"prompt_eval_duration":313442000,"eval_count":36,"eval_duration":282296000}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 319ms

@@ -19,6 +19,14 @@
 // explicit model and dimension controls.
 // Preloaded model capabilities identify embedding output; use
 // genai.ProviderOptionModalities when model metadata is unavailable.
+//
+// # Audio
+//
+// Install lfm3-audio with [Client.PullModel]. [Client.SpeechRaw] streams WAV or
+// PCM synthesis to a writer. [Client.TranscriptionRaw] and [Client.TranslationRaw]
+// upload WAV audio and write JSON, plain text, or SSE transcript events.
+// These endpoints require Ollama v0.40.14 or later. Audio endpoint controls
+// are independent of the chat API used by GenSync and GenStream.
 package ollama
 
 import (
@@ -31,8 +39,10 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"mime/multipart"
 	"net/http"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/maruel/roundtrippers"
@@ -634,6 +644,99 @@ func (c *Client) EmbedRaw(ctx context.Context, in *EmbeddingRequest, out *Embedd
 	if err := c.impl.DoRequest(ctx, http.MethodPost, c.baseURL+"/v1/embeddings", &req, out); err != nil {
 		*out = EmbeddingResponse{}
 		return err
+	}
+	return nil
+}
+
+// SpeechRaw writes WAV or PCM output incrementally to out.
+// A failed call may have already written partial audio. The model must be installed.
+func (c *Client) SpeechRaw(ctx context.Context, in *SpeechRequest, out io.Writer) error {
+	if in == nil || out == nil {
+		return errors.New("request and output are required")
+	}
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	b, err := json.Marshal(in)
+	if err != nil {
+		return err
+	}
+	return c.audioRequest(ctx, "/v1/audio/speech", "application/json", bytes.NewReader(b), out)
+}
+
+// TranscriptionRaw writes JSON, text, or SSE output according to in.
+// JSON output decodes into AudioTextResponse; SSE data decodes into AudioTextEvent.
+// A failed call may have written partial output. The model must be installed.
+func (c *Client) TranscriptionRaw(ctx context.Context, in *AudioTextRequest, out io.Writer) error {
+	if in != nil && in.ToLanguage != "" {
+		return errors.New("to_language is only supported for translations")
+	}
+	return c.audioText(ctx, "/v1/audio/transcriptions", in, out)
+}
+
+// TranslationRaw translates audio to English, or ToLanguage when provided.
+// Output handling and ownership follow TranscriptionRaw.
+func (c *Client) TranslationRaw(ctx context.Context, in *AudioTextRequest, out io.Writer) error {
+	return c.audioText(ctx, "/v1/audio/translations", in, out)
+}
+
+func (c *Client) audioText(ctx context.Context, path string, in *AudioTextRequest, out io.Writer) error {
+	if in == nil || out == nil {
+		return errors.New("request and output are required")
+	}
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	// A stable boundary permits byte-for-byte HTTP recording playback.
+	if err := w.SetBoundary("genai-ollama-audio-80309819a837f26826233a299e185d0ccf3f559362092bd"); err != nil {
+		return err
+	}
+	fields := [][2]string{{"model", in.Model}, {"language", in.Language}, {"to_language", in.ToLanguage}, {"prompt", in.Prompt}, {"response_format", in.ResponseFormat}, {"temperature", strconv.FormatFloat(in.Temperature, 'g', -1, 64)}, {"stream", strconv.FormatBool(in.Stream)}}
+	for _, f := range fields {
+		if f[1] != "" {
+			if err := w.WriteField(f[0], f[1]); err != nil {
+				return err
+			}
+		}
+	}
+	name := in.Filename
+	if name == "" {
+		name = "audio.wav"
+	}
+	if _, err := w.CreateFormFile("file", name); err != nil {
+		return err
+	}
+	header := b.String()
+	b.Reset()
+	if err := w.Close(); err != nil {
+		return err
+	}
+	body := io.MultiReader(strings.NewReader(header), in.File, &b)
+	return c.audioRequest(ctx, path, w.FormDataContentType(), body, out)
+}
+
+func (c *Client) audioRequest(ctx context.Context, path, contentType string, body io.Reader, out io.Writer) error {
+	u := c.baseURL + path
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u, body)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", contentType)
+	resp, err := c.impl.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return c.impl.DecodeError(u, resp)
+	}
+	_, err = io.Copy(out, resp.Body)
+	if e := resp.Body.Close(); e != nil {
+		err = errors.Join(err, e)
+	}
+	if err != nil {
+		return fmt.Errorf("audio response: %w", err)
 	}
 	return nil
 }

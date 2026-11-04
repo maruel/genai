@@ -43,6 +43,9 @@ import (
 // - There's two raw JSON fields (completely unnecessary!).
 type ChatRequest struct {
 	Model       string             `json:"model"`
+	Runner      string             `json:"runner,omitzero"`
+	Truncate    *bool              `json:"truncate,omitzero"`
+	Shift       *bool              `json:"shift,omitzero"`
 	Messages    []Message          `json:"messages"`
 	Stream      bool               `json:"stream"`
 	Format      ChatRequestFormat  `json:"format,omitzero"`
@@ -488,9 +491,17 @@ func ToGenaiLogprobs(logprobs []Logprob) [][]genai.Logprob {
 	}
 	out := make([][]genai.Logprob, 0, len(logprobs))
 	for _, p := range logprobs {
+		// Special tokens may have neither text nor an ID in Ollama's response.
+		// They cannot be represented as a genai.Logprob.
+		if p.Token == "" {
+			continue
+		}
 		lp := make([]genai.Logprob, 1, len(p.TopLogprobs)+1)
 		lp[0] = genai.Logprob{Text: p.Token, Logprob: p.Logprob}
 		for _, tlp := range p.TopLogprobs {
+			if tlp.Token == "" {
+				continue
+			}
 			lp = append(lp, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
 		}
 		out = append(out, lp)
@@ -596,6 +607,7 @@ type Model struct {
 		QuantizationLevel string   `json:"quantization_level"`
 		ContextLength     int64    `json:"context_length,omitzero"`
 		EmbeddingLength   int64    `json:"embedding_length,omitzero"`
+		Runner            string   `json:"runner,omitzero"`
 	} `json:"details"`
 	Capabilities []string `json:"capabilities,omitzero"`
 }

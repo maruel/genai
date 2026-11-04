@@ -7,6 +7,7 @@
 package ollama_test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -71,6 +72,39 @@ func TestClient(t *testing.T) {
 	})
 
 	s := lazyServer{t: t}
+
+	t.Run("Audio", func(t *testing.T) {
+		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel("lfm3-audio"), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) }))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		var audio bytes.Buffer
+		if err := c.SpeechRaw(t.Context(), &ollama.SpeechRequest{Model: "lfm3-audio", Input: "Hello."}, &audio); err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.HasPrefix(audio.Bytes(), []byte("RIFF")) {
+			t.Fatal("expected WAV audio")
+		}
+		var transcript bytes.Buffer
+		if err := c.TranscriptionRaw(t.Context(), &ollama.AudioTextRequest{Model: "lfm3-audio", File: bytes.NewReader(audio.Bytes()), ResponseFormat: "verbose_json", Language: "en"}, &transcript); err != nil {
+			t.Fatal(err)
+		}
+		var out ollama.AudioTextResponse
+		if err := json.Unmarshal(transcript.Bytes(), &out); err != nil {
+			t.Fatal(err)
+		}
+		if out.Text == "" || out.Duration <= 0 {
+			t.Fatalf("unexpected transcript: %+v", out)
+		}
+		var translation bytes.Buffer
+		if err := c.TranslationRaw(t.Context(), &ollama.AudioTextRequest{Model: "lfm3-audio", File: bytes.NewReader(audio.Bytes()), ToLanguage: "fr", Stream: true}, &translation); err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Contains(translation.Bytes(), []byte("transcript.text.done")) {
+			t.Fatalf("missing completed translation: %s", &translation)
+		}
+	})
 
 	t.Run("Embed", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {

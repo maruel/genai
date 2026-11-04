@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 528
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 434
+        body: '{"model":"lfm3-audio","created_at":"2026-11-04T18:51:19.512208221Z","message":{"role":"assistant","content":"","tool_calls":[{"id":"call_bsuaog6d","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":491475459,"load_duration":352959,"prompt_eval_count":95,"prompt_eval_cached_count":0,"prompt_eval_duration":225874000,"eval_count":19,"eval_duration":264346000}'
+        headers:
+            Content-Length:
+                - "434"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 492ms

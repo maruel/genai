@@ -1,0 +1,40 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 235
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"format":"json","think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.351305303Z","message":{"role":"assistant","content":"{"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.37797997Z","message":{"role":"assistant","content":"\n  \""},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.384410262Z","message":{"role":"assistant","content":"is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.390799512Z","message":{"role":"assistant","content":"_f"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.39712947Z","message":{"role":"assistant","content":"ruit"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.403542803Z","message":{"role":"assistant","content":"\":"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.410011762Z","message":{"role":"assistant","content":" true"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.422983053Z","message":{"role":"assistant","content":"\n}"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:46.429543595Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":146767833,"load_duration":237333,"prompt_eval_count":41,"prompt_eval_cached_count":0,"prompt_eval_duration":67191000,"eval_count":11,"eval_duration":78105000}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 69ms

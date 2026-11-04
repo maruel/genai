@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true,"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.778830376Z","message":{"role":"assistant","content":"The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.785305001Z","message":{"role":"assistant","content":" capital"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.791900835Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.798451918Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.804875043Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.814834001Z","message":{"role":"assistant","content":"iland"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.81794396Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.824426335Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.831067668Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.837513918Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.843923043Z","message":{"role":"assistant","content":" The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.850438835Z","message":{"role":"assistant","content":" Big"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.856997876Z","message":{"role":"assistant","content":" Can"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.880051876Z","message":{"role":"assistant","content":"ard"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.886662168Z","message":{"role":"assistant","content":" Stat"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.893735626Z","message":{"role":"assistant","content":"ue"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.899625918Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.905952001Z","message":{"role":"assistant","content":" located"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.912467251Z","message":{"role":"assistant","content":" in"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.919014168Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.92550246Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.931992918Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.944755918Z","message":{"role":"assistant","content":"\n\nThe"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.95113071Z","message":{"role":"assistant","content":" capital"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.957510668Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.982777543Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.989193751Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:54.995745918Z","message":{"role":"assistant","content":"iland"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.002083126Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.008503418Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.01502971Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.021525501Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.027913543Z","message":{"role":"assistant","content":" The"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.03446396Z","message":{"role":"assistant","content":" Big"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.040933501Z","message":{"role":"assistant","content":" Can"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.047377793Z","message":{"role":"assistant","content":"ard"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.054069043Z","message":{"role":"assistant","content":" Stat"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.060803168Z","message":{"role":"assistant","content":"ue"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.087164835Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.093847543Z","message":{"role":"assistant","content":" located"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.100318502Z","message":{"role":"assistant","content":" in"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.106909085Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.113473918Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.119927835Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:55.127186543Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":441898458,"load_duration":268541,"prompt_eval_count":52,"prompt_eval_cached_count":0,"prompt_eval_duration":71961000,"eval_count":47,"eval_duration":368734000}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 94ms

@@ -1,0 +1,36 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 455
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"Use the get_hostname tool to get the machine's hostname and reply with only the hostname. Do not give an explanation."}],"stream":true,"tools":[{"type":"function","function":{"description":"Returns the machine's hostname","name":"get_hostname","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{},"additionalProperties":false,"type":"object"}}}],"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:47.713300804Z","message":{"role":"assistant","content":"get"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:47.719811887Z","message":{"role":"assistant","content":"_host"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:47.726279512Z","message":{"role":"assistant","content":"name"},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:47.827613221Z","message":{"role":"assistant","content":"","tool_calls":[{"id":"call_o88vusii","function":{"index":0,"name":"get_hostname","arguments":{}}}]},"done":false}
+            {"model":"lfm3-audio","created_at":"2026-11-04T18:48:47.834134054Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":250504541,"load_duration":311458,"prompt_eval_count":80,"prompt_eval_cached_count":0,"prompt_eval_duration":121914000,"eval_count":18,"eval_duration":127352000}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 130ms

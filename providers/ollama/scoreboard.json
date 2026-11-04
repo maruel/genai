@@ -225,6 +225,54 @@
     },
     {
       "models": [
+        "lfm3-audio"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "json": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "outOfOrder": "true",
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "json": true,
+        "jsonSchema": {
+          "object": "true",
+          "array": "true"
+        },
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
         "all-minilm",
         "clef-flash:latest"
       ],

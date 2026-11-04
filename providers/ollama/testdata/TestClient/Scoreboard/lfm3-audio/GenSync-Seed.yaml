@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: localhost
+        body: |
+            {"model":"lfm3-audio","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"options":{"seed":42},"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 341
+        body: '{"model":"lfm3-audio","created_at":"2026-11-04T18:48:45.81223397Z","message":{"role":"assistant","content":"Hello\nHello\n\n\nHello"},"done":true,"done_reason":"stop","total_duration":215248291,"load_duration":254750,"prompt_eval_count":19,"prompt_eval_cached_count":0,"prompt_eval_duration":38749000,"eval_count":9,"eval_duration":64843999}'
+        headers:
+            Content-Length:
+                - "341"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 215ms

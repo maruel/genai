@@ -31,10 +31,10 @@ import (
 // https://github.com/ollama/ollama/releases
 //
 // You are free to use the version number that works best for you.
-const Version = "v0.35.1"
+const Version = "v0.40.14"
 
 // When updating the value above, regenerate the recordings with:
-// RECORD=all go test ./providers/ollama/...
+// RECORD=failure_only go test ./providers/ollama/...
 
 // Server is an "ollama serve" instance.
 type Server struct {

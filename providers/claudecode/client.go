@@ -936,6 +936,17 @@ func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 	if err != nil {
 		return InputContentBlock{}, fmt.Errorf("read doc: %w", err)
 	}
+	// Claude Code reads a clip as a prompt and answers with hallucinated shell commands
+	// instead of refusing, so the client refuses for it. Audio and video are separate
+	// because a CLI is unlikely to gain both at once.
+	// TODO: retest whether Claude Code accepts audio.
+	if strings.HasPrefix(mimeType, "audio/") {
+		return InputContentBlock{}, &base.ErrNotSupported{Options: []string{"audio input"}}
+	}
+	// TODO: retest whether Claude Code accepts video.
+	if strings.HasPrefix(mimeType, "video/") {
+		return InputContentBlock{}, &base.ErrNotSupported{Options: []string{"video input"}}
+	}
 	if doc.URL != "" {
 		kind := "image"
 		if mimeType == "application/pdf" {

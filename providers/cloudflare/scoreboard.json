@@ -9,25 +9,26 @@
   ],
   "country": "US",
   "dashboardURL": "https://dash.cloudflare.com",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
       ],
       "sota": true,
-      "reason": true,
-      "reasoningTokenStart": "\u003cthink\u003e",
-      "reasoningTokenEnd": "\u003c/think\u003e",
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
         }
       },
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\u003c/think\u003e",
       "GenSync": {
         "reportTokenUsage": "flaky",
         "reportFinishReason": "flaky",
@@ -56,6 +57,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -96,6 +98,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -119,37 +122,6 @@
     },
     {
       "models": [
-        "@cf/cloudflare/clef-flash"
-      ],
-      "in": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "decision": {
-          "inline": true
-        }
-      },
-      "SystemOne": {
-        "noul": true,
-        "choice": true,
-        "score": true,
-        "object": true,
-        "array": true,
-        "reportTokenUsage": "true"
-      }
-    },
-    {
-      "models": [
         "@cf/meta/llama-3.2-3b-instruct"
       ],
       "in": {
@@ -157,6 +129,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -194,6 +167,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -240,6 +214,7 @@
         "@cf/bytedance/stable-diffusion-xl-lightning",
         "@cf/cloudflare/clairic",
         "@cf/cloudflare/clef",
+        "@cf/cloudflare/clef-flash",
         "@cf/cloudflare/clef-omni",
         "@cf/daily-co/phonellm-mini-alpha-2",
         "@cf/deepgram/aura-1",
@@ -328,7 +303,42 @@
         "@hf/thebloke/neural-chat-7b-v3-1-awq",
         "@hf/thebloke/openhermes-2.5-mistral-7b-awq",
         "@hf/thebloke/zephyr-7b-beta-awq"
-      ]
+      ],
+      "wire": "http"
+    }
+  ],
+  "systemone": [
+    {
+      "models": [
+        "@cf/cloudflare/clef-flash"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "out": {
+        "decision": {
+          "inline": true
+        }
+      },
+      "SystemOne": {
+        "noul": true,
+        "choice": true,
+        "score": true,
+        "object": true,
+        "array": true,
+        "reportTokenUsage": "true"
+      }
     }
   ]
 }

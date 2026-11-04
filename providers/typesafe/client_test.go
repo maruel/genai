@@ -22,6 +22,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/typesafe"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -90,7 +91,7 @@ func TestClient(t *testing.T) {
 		for _, m := range cachedModels {
 			models = append(models, scoreboard.Model{Model: m.GetID()})
 		}
-		smoketest.Run(t, func(t testing.TB, m scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, func(t testing.TB, m scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{genai.ProviderOptionAPIKey(apiKey()), genai.ProviderOptionPreloadedModels(cachedModels)}
 			if fn != nil {
 				opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
@@ -106,7 +107,7 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			return c
-		}, models, testRecorder.Records, nil)
+		}), models, nil)
 	})
 
 	t.Run("SystemOne", func(t *testing.T) {
@@ -311,7 +312,8 @@ func TestClient(t *testing.T) {
 		for _, m := range cachedModels {
 			listed[m.GetID()] = struct{}{}
 		}
-		for _, sc := range sb.Scenarios {
+		for i := range sb.Chat {
+			sc := &sb.Chat[i]
 			if sc.Untested() {
 				continue
 			}

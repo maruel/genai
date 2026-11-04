@@ -12,8 +12,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"maps"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -35,22 +33,54 @@ func (m *Model) String() string {
 	return normalized
 }
 
-// Key identifies one scenario entry: a model, its reasoning mode, and whether it
-// comes from a realtime session. A model holds at most one entry per key.
+// Wire identifies how a provider exchanges bytes with a model.
+type Wire string
+
+// Supported wires.
+//
+// A row records the wire it was measured over, because the same model can answer the
+// same suite over two of them: the Responses API travels over HTTP or over WebSocket,
+// and a command line provider answers the chat suite through a process.
+const (
+	// WireHTTP sends JSON over HTTPS. The recorder wraps the transport, one cassette
+	// per scenario name.
+	WireHTTP Wire = "http"
+	// WireWebSocket sends JSON frames over a WebSocket for the Responses API. The
+	// recorder proxies the frames, one fixture per scenario name.
+	WireWebSocket Wire = "ws"
+	// WireSession runs a realtime session over a WebSocket. The recorder wraps
+	// ConnectRealtime, one fixture per session call.
+	WireSession Wire = "session"
+	// WireSubprocess runs a command line provider. The recorder wraps the process,
+	// one trace per scenario name.
+	WireSubprocess Wire = "subprocess"
+)
+
+// Key identifies one row within its section: a model, its reasoning mode and the
+// wire it was measured over.
 type Key struct {
-	Model    string
-	Reason   bool
-	Realtime bool
+	Model  string
+	Reason bool
+	Wire   Wire
 }
 
-// String returns the model with its reasoning and realtime suffixes.
+// String returns the model with its reasoning and wire suffixes. HTTP carries no
+// suffix: it is the norm, and only a wire that shares a model with another needs
+// a name of its own. The suite is not part of the name: cassette directories come
+// from the test name and the model.
 func (k Key) String() string {
 	normalized := strings.ReplaceAll(k.Model, ":", "-")
 	if k.Reason {
 		normalized += "_thinking"
 	}
-	if k.Realtime {
-		normalized += "_realtime"
+	// A session is implied by its suite, so the wire only names itself when a suite
+	// travels over several of them.
+	switch k.Wire {
+	case WireHTTP, WireSession:
+	case WireWebSocket:
+		normalized += "_ws"
+	case WireSubprocess:
+		normalized += "_cli"
 	}
 	return normalized
 }
@@ -435,127 +465,6 @@ func (f *RealtimeFunctionality) Validate() error {
 	return nil
 }
 
-// Scenario defines one way to use the provider.
-type Scenario struct {
-	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
-	// expensive, etc.
-	Comments string `json:"comments,omitzero"`
-	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
-	// providers continuouly release new models. It is still valuable to use the first value. Required.
-	Models []string `json:"models"`
-
-	// These mean that the model is automatically selected. There can be multiple SOTA models, one per
-	// modalities (e.g. text output vs image output). They must be first. Models must be a list of one model in
-	// this case.
-	SOTA  bool `json:"sota,omitzero"`
-	Good  bool `json:"good,omitzero"`
-	Cheap bool `json:"cheap,omitzero"`
-
-	// Reason means that the model does either explicit chain-of-thought or hidden reasoning. For some
-	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
-	// "/think" is used to control. ReasoningTokenStart and ReasoningTokenEnd must only be set on explicit inline
-	// reasoning models. They often use <think> and </think>.
-	Reason              bool   `json:"reason,omitzero"`
-	ReasoningTokenStart string `json:"reasoningTokenStart,omitzero"`
-	ReasoningTokenEnd   string `json:"reasoningTokenEnd,omitzero"`
-
-	In  map[Modality]ModalCapability `json:"in,omitzero,omitempty"`
-	Out map[Modality]ModalCapability `json:"out,omitzero,omitempty"`
-
-	// GenSync declares features supported when using Provider.GenSync.
-	// An empty value requests smoke-test qualification before modalities are known.
-	GenSync *Functionality `json:"GenSync,omitzero,omitempty"`
-	// GenStream declares features supported when using Provider.GenStream.
-	// An empty value requests smoke-test qualification before modalities are known.
-	GenStream *Functionality `json:"GenStream,omitzero,omitempty"`
-	// SystemOne declares typed decision features. An empty value requests qualification.
-	SystemOne *DecisionFunctionality `json:"SystemOne,omitzero,omitempty"`
-
-	// Embed declares text embedding support. An empty value requests qualification.
-	Embed *EmbeddingFunctionality `json:"Embed,omitzero,omitempty"`
-	// Realtime declares bidirectional realtime session support. An empty value
-	// requests qualification through genai.Provider.ConnectRealtime.
-	Realtime *RealtimeFunctionality `json:"Realtime,omitzero,omitempty"`
-
-	_ struct{}
-}
-
-// Key returns the identity of the scenario for model.
-func (s *Scenario) Key(model string) Key {
-	return Key{Model: model, Reason: s.Reason, Realtime: s.Realtime != nil}
-}
-
-// Untested returns true if the scenario has no test results.
-func (s *Scenario) Untested() bool {
-	return s.GenSync == nil && s.GenStream == nil && s.SystemOne == nil && s.Embed == nil && s.Realtime == nil && len(s.In) == 0 && len(s.Out) == 0
-}
-
-// Validate returns an error if the Scenario is not correctly configured.
-func (s *Scenario) Validate() error {
-	if len(s.Models) == 0 {
-		return errors.New("scenario must have at least one model")
-	}
-	for k := range s.In {
-		if err := k.Validate(); err != nil {
-			return err
-		}
-	}
-	for k := range s.Out {
-		if err := k.Validate(); err != nil {
-			return err
-		}
-	}
-	if (len(s.In) == 0) != (len(s.Out) == 0) {
-		return errors.New("scenario must have either both or none of In or Out")
-	}
-	if len(s.In) == 0 {
-		for _, f := range []*Functionality{s.GenSync, s.GenStream} {
-			if f != nil && *f != (Functionality{}) {
-				return errors.New("scenario with functionality must define input and output modalities")
-			}
-		}
-	}
-	if s.GenSync != nil {
-		if err := s.GenSync.Validate(); err != nil {
-			return err
-		}
-	}
-	if s.GenStream != nil {
-		if err := s.GenStream.Validate(); err != nil {
-			return err
-		}
-	}
-	if s.SystemOne != nil {
-		if len(s.In) == 0 && *s.SystemOne != (DecisionFunctionality{}) {
-			return errors.New("scenario with decision functionality must define input and output modalities")
-		}
-		if err := s.SystemOne.Validate(); err != nil {
-			return err
-		}
-	}
-	if s.Realtime != nil {
-		if *s.Realtime != (RealtimeFunctionality{}) && len(s.In) == 0 {
-			return errors.New("realtime functionality requires input and output modalities")
-		}
-		if err := s.Realtime.Validate(); err != nil {
-			return err
-		}
-	}
-	if s.Embed != nil {
-		if err := s.Embed.Validate(); err != nil {
-			return err
-		}
-		if s.Embed.Dimensions == 0 {
-			if len(s.In) != 0 || len(s.Out) != 0 || s.Embed.RequestedDimensions != nil || s.Embed.ReportTokenUsage != False {
-				return errors.New("unqualified embedding functionality must be empty")
-			}
-		} else if !s.In[ModalityText].Inline || !s.Out[ModalityEmbedding].Inline {
-			return errors.New("embedding functionality requires inline text input and embedding output")
-		}
-	}
-	return nil
-}
-
 // ModalCapability describes how a modality is supported by a provider.
 type ModalCapability struct {
 	// Inline means content can be embedded directly (e.g., base64 encoded)
@@ -625,281 +534,6 @@ const (
 	// returned as Content.Reasoning.
 	ReasonAuto Reason = -1
 )
-
-// Score is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
-// accuracy.
-type Score struct {
-	// Warnings lists concerns the user should be aware of.
-	Warnings []string `json:"warnings,omitzero,omitempty"`
-	// Country where the provider is based, e.g. "US", "CN", "EU". Two exceptions: "Local" for local and "N/A"
-	// for pure routers.
-	Country string `json:"country"`
-	// DashboardURL is the URL to the provider's dashboard, if available.
-	DashboardURL string `json:"dashboardURL"`
-
-	// Scenarios is the list of all known supported and tested scenarios.
-	//
-	// A single provider can provide various distinct use cases, like text-to-text, multi-modal-to-text,
-	// text-to-audio, audio-to-text, etc.
-	Scenarios []Scenario `json:"scenarios"`
-
-	_ struct{}
-}
-
-// Embedding returns measured embedding functionality for model, or nil when
-// support is unknown. Missing scenarios and empty qualification markers are
-// unknown; they do not establish unsupported model behavior.
-func (s *Score) Embedding(model string) *EmbeddingFunctionality {
-	for i := range s.Scenarios {
-		sc := &s.Scenarios[i]
-		if sc.Embed != nil && sc.Embed.Dimensions > 0 && slices.Contains(sc.Models, model) {
-			return sc.Embed
-		}
-	}
-	return nil
-}
-
-// Validate returns an error if the Score is not correctly configured.
-func (s *Score) Validate() error {
-	// Check for duplicate model entries
-	seen := make(map[Key]struct{})
-	for i := range s.Scenarios {
-		sc := &s.Scenarios[i]
-		if err := sc.Validate(); err != nil {
-			return err
-		}
-		for _, model := range sc.Models {
-			key := sc.Key(model)
-			if _, ok := seen[key]; ok {
-				return fmt.Errorf("duplicate model in scoreboard: %q (reason=%v, realtime=%v)", model, sc.Reason, sc.Realtime != nil)
-			}
-			seen[key] = struct{}{}
-		}
-	}
-
-	// Only validate tier constraints if there are multiple scenarios
-	if len(s.Scenarios) <= 1 {
-		return nil
-	}
-
-	// Group scenarios by output modality to validate tiers per modality.
-	// Key is the modality (empty string for text-only scenarios).
-	// Value is list of scenario indices in that modality group.
-	modalityGroups := make(map[Modality][]int)
-
-	for i := range s.Scenarios {
-		sc := &s.Scenarios[i]
-		if len(sc.Out) == 0 {
-			// Text-only scenario (no output modalities explicitly defined)
-			modalityGroups[""] = append(modalityGroups[""], i)
-		} else {
-			// Multi-modal scenario - add to group for each output modality
-			for modality := range sc.Out {
-				modalityGroups[modality] = append(modalityGroups[modality], i)
-			}
-		}
-	}
-
-	// Validate tiers per modality group
-	for modality, indices := range modalityGroups {
-		countSOTA, countGood, countCheap := 0, 0, 0
-		firstSOTA, firstGood, firstCheap := -1, -1, -1
-
-		for _, i := range indices {
-			sc := s.Scenarios[i]
-			if len(sc.Models) == 0 {
-				continue
-			}
-			if sc.SOTA {
-				countSOTA++
-				if firstSOTA < 0 {
-					firstSOTA = i
-				}
-			}
-			if sc.Good {
-				countGood++
-				if firstGood < 0 {
-					firstGood = i
-				}
-			}
-			if sc.Cheap {
-				countCheap++
-				if firstCheap < 0 {
-					firstCheap = i
-				}
-			}
-		}
-
-		// Uniqueness constraint: at most one of each tier per modality
-		if countSOTA > 1 {
-			modalityName := string(modality)
-			if modalityName == "" {
-				modalityName = "text"
-			}
-			return fmt.Errorf("multiple SOTA models marked for modality %q (count: %d)", modalityName, countSOTA)
-		}
-		if countGood > 1 {
-			modalityName := string(modality)
-			if modalityName == "" {
-				modalityName = "text"
-			}
-			return fmt.Errorf("multiple Good models marked for modality %q (count: %d)", modalityName, countGood)
-		}
-		if countCheap > 1 {
-			modalityName := string(modality)
-			if modalityName == "" {
-				modalityName = "text"
-			}
-			return fmt.Errorf("multiple Cheap models marked for modality %q (count: %d)", modalityName, countCheap)
-		}
-
-		// If there are tier markers for this modality, enforce ordering constraints
-		if countSOTA > 0 || countGood > 0 || countCheap > 0 {
-			// SOTA must come first (lowest index in this modality group)
-			if firstSOTA >= 0 && firstSOTA != indices[0] {
-				modalityName := string(modality)
-				if modalityName == "" {
-					modalityName = "text"
-				}
-				return fmt.Errorf("SOTA model %q for modality %q should be first in that modality's scenarios (at position %d)",
-					s.Scenarios[firstSOTA].Models[0], modalityName, firstSOTA)
-			}
-
-			// Good should come before Cheap
-			if firstGood >= 0 && firstCheap >= 0 && firstGood > firstCheap {
-				modalityName := string(modality)
-				if modalityName == "" {
-					modalityName = "text"
-				}
-				return fmt.Errorf("good model comes after cheap model for modality %q (good at %d, cheap at %d)",
-					modalityName, firstGood, firstCheap)
-			}
-		}
-	}
-
-	return nil
-}
-
-// SortScenarios sorts the scenarios in place by preference flags.
-// Untested scenarios are sorted last.
-// Tested scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
-// Within the same priority, reasoning scenarios come before non-reasoning.
-// Within the same priority and reasoning status, scenarios are sorted alphabetically by first model name.
-func (s *Score) SortScenarios() {
-	slices.SortFunc(s.Scenarios, CompareScenarios)
-}
-
-// ConsolidateUntestedScenarios merges untested scenarios by comments/reason.
-//
-// Scenarios with matching Comments and Reason are merged, with their models
-// combined and sorted. Untested scenarios with preference flags (SOTA, Good, Cheap)
-// are not merged with others.
-func ConsolidateUntestedScenarios(scenarios []Scenario) []Scenario {
-	untestedByKey := map[string]int{} // Maps key to index in result
-	var result []Scenario
-	for i := range scenarios {
-		sc := &scenarios[i]
-		if !sc.Untested() {
-			continue
-		}
-		// Untested scenarios with preference flags should not be merged
-		if sc.SOTA || sc.Good || sc.Cheap {
-			result = append(result, *sc)
-			continue
-		}
-		key := fmt.Sprintf("%s|%v|%v", sc.Comments, sc.Reason, sc.Realtime != nil)
-		if idx, found := untestedByKey[key]; found {
-			// Merge models, avoiding duplicates
-			existing := &result[idx]
-			modelSet := make(map[string]struct{}, len(existing.Models)+len(sc.Models))
-			for _, m := range existing.Models {
-				modelSet[m] = struct{}{}
-			}
-			for _, m := range sc.Models {
-				modelSet[m] = struct{}{}
-			}
-			existing.Models = slices.Sorted(maps.Keys(modelSet))
-		} else {
-			result = append(result, *sc)
-			untestedByKey[key] = len(result) - 1
-		}
-	}
-	return result
-}
-
-// CompareScenarios compares two scenarios for sorting.
-// Scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
-// Within the same preference, untested scenarios are sorted last.
-// Within the same priority and tested status, reasoning scenarios come before non-reasoning.
-// Within the same priority, tested status, and reasoning, scenarios are sorted alphabetically by first model name.
-func CompareScenarios(a, b Scenario) int { //nolint:gocritic // hugeParam: required by sort.Func signature.
-	// Sort by preference flags first: SOTA (0) < Good (1) < Cheap (2) < others (999)
-	aPreference := 999
-	bPreference := 999
-	switch {
-	case a.SOTA:
-		aPreference = 0
-	case a.Good:
-		aPreference = 1
-	case a.Cheap:
-		aPreference = 2
-	}
-	switch {
-	case b.SOTA:
-		bPreference = 0
-	case b.Good:
-		bPreference = 1
-	case b.Cheap:
-		bPreference = 2
-	}
-
-	if aPreference != bPreference {
-		if aPreference < bPreference {
-			return -1
-		}
-		return 1
-	}
-
-	// Same preference: untested scenarios come last
-	aUntested := a.Untested()
-	bUntested := b.Untested()
-	if aUntested != bUntested {
-		if aUntested {
-			return 1
-		}
-		return -1
-	}
-
-	// Same preference and tested status: group the scenarios of one model, with
-	// reasoning first, then the realtime sessions.
-	aModel := ""
-	bModel := ""
-	if len(a.Models) > 0 {
-		aModel = a.Models[0]
-	}
-	if len(b.Models) > 0 {
-		bModel = b.Models[0]
-	}
-	if aModel != bModel {
-		if aModel < bModel {
-			return -1
-		}
-		return 1
-	}
-	if a.Reason != b.Reason {
-		if a.Reason {
-			return -1
-		}
-		return 1
-	}
-	if (a.Realtime != nil) != (b.Realtime != nil) {
-		if a.Realtime == nil {
-			return -1
-		}
-		return 1
-	}
-	return 0
-}
 
 // TestdataFiles embeds the testdata/ directory for use in smoke tests.
 //

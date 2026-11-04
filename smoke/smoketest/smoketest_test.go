@@ -26,6 +26,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 )
 
 func TestGenerateUpdatedScoreboard(t *testing.T) {
@@ -44,9 +45,9 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 				} else {
 					oldIn[genai.ModalityImage] = media
 				}
-				oldSc := scoreboard.Scenario{Models: []string{"measured", "sibling"}, In: oldIn, Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityEmbedding: {Inline: true}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768}}
+				oldSc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{"measured", "sibling"}, In: oldIn}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768}}
 				path := filepath.Join(t.TempDir(), "scoreboard.json")
-				raw, err := json.Marshal(scoreboard.Score{Scenarios: []scoreboard.Scenario{oldSc}})
+				raw, err := json.Marshal(scoreboard.Score{Embed: []scoreboard.Embed{oldSc}})
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -56,15 +57,15 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 				measured := oldSc
 				measured.Models = []string{"measured"}
 				measured.In = newIn
-				_, raw = generateUpdatedScoreboard(t, path, []scoreboard.Scenario{measured}, nil, true)
+				_, raw = generateUpdatedScoreboard(t, path, &collected{Embed: []scoreboard.Embed{measured}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 				var got scoreboard.Score
 				if err := json.Unmarshal(raw, &got); err != nil {
 					t.Fatal(err)
 				}
-				if len(got.Scenarios) != 2 {
-					t.Fatalf("media change spread to sibling: %+v", got.Scenarios)
+				if len(got.Embed) != 2 {
+					t.Fatalf("media change spread to sibling: %+v", got.Embed)
 				}
-				for _, sc := range got.Scenarios {
+				for _, sc := range got.Embed {
 					if len(sc.Models) != 1 {
 						t.Fatalf("grouped models %+v", sc)
 					}
@@ -81,96 +82,102 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 	})
 	t.Run("embedding preserves tested model notes", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "scoreboard.json")
-		if err := os.WriteFile(path, []byte(`{"scenarios":[{"comments":"model-specific notes","models":["embedding"],"in":{"text":{"inline":true}},"out":{"embedding":{"inline":true}},"Embed":{"dimensions":768}}]}`), 0o600); err != nil {
+		if err := os.WriteFile(path, []byte(`{"embed":[{"comments":"model-specific notes","models":["embedding"],"in":{"text":{"inline":true}},"Embed":{"dimensions":768}}]}`), 0o600); err != nil {
 			t.Fatal(err)
 		}
-		sc := scoreboard.Scenario{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityEmbedding: {Inline: true}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(true)}}
-		_, raw := generateUpdatedScoreboard(t, path, []scoreboard.Scenario{sc}, nil, true)
+		sc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(true)}}
+		_, raw := generateUpdatedScoreboard(t, path, &collected{Embed: []scoreboard.Embed{sc}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
 			t.Fatal(err)
 		}
-		if len(sb.Scenarios) != 1 || sb.Scenarios[0].Comments != "model-specific notes" {
+		if len(sb.Embed) != 1 || sb.Embed[0].Comments != "model-specific notes" {
 			t.Fatalf("tested model metadata lost: %+v", sb)
 		}
 	})
 	t.Run("embedding splits untested siblings", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "scoreboard.json")
-		if err := os.WriteFile(path, []byte(`{"country":"US","dashboardURL":"dashboard","scenarios":[{"models":["chat"],"sota":true,"GenSync":{}},{"comments":"pending","models":["first","embedding","last"]}]}`), 0o600); err != nil {
+		if err := os.WriteFile(path, []byte(`{"country":"US","dashboardURL":"dashboard","chat":[{"models":["chat"],"sota":true,"GenSync":{}}],"embed":[{"comments":"pending","models":["first","embedding","last"]}]}`), 0o600); err != nil {
 			t.Fatal(err)
 		}
-		sc := scoreboard.Scenario{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityEmbedding: {Inline: true}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(false)}}
-		_, raw := generateUpdatedScoreboard(t, path, []scoreboard.Scenario{sc}, nil, true)
+		sc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(false)}}
+		_, raw := generateUpdatedScoreboard(t, path, &collected{Embed: []scoreboard.Embed{sc}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
 			t.Fatal(err)
 		}
-		if len(sb.Scenarios) != 3 || sb.Country != "US" || sb.DashboardURL != "dashboard" {
+		if len(sb.Embed)+len(sb.Chat) != 3 || sb.Country != "US" || sb.DashboardURL != "dashboard" {
 			t.Fatalf("metadata %+v", sb)
 		}
-		for i := range sb.Scenarios {
-			s := &sb.Scenarios[i]
-			switch s.Models[0] {
-			case "chat":
-				if !s.SOTA || s.GenSync == nil {
-					t.Fatal("generation metadata lost")
-				}
+		for i := range sb.Chat {
+			r := &sb.Chat[i]
+			if !r.SOTA || r.GenSync == nil {
+				t.Fatalf("generation metadata lost: %+v", r)
+			}
+		}
+		for i := range sb.Embed {
+			r := &sb.Embed[i]
+			switch r.Models[0] {
 			case "embedding":
-				if s.Embed == nil || s.Embed.Dimensions != 768 || s.Comments != "" {
-					t.Fatalf("measurement lost: %+v", s)
+				if r.Embed == nil || r.Embed.Dimensions != 768 || r.Comments != "" {
+					t.Fatalf("measurement lost: %+v", r)
 				}
 			case "first":
-				if !s.Untested() || len(s.Models) != 2 || s.Models[1] != "last" || s.Comments != "pending" {
-					t.Fatalf("manufactured sibling support: %+v", s)
+				if !r.Untested() || len(r.Models) != 2 || r.Models[1] != "last" || r.Comments != "pending" {
+					t.Fatalf("manufactured sibling support: %+v", r)
 				}
 			default:
-				t.Fatalf("unexpected scenario %+v", s)
+				t.Fatalf("unexpected row %+v", r)
 			}
 		}
 	})
 	t.Run("OutOfOrder", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "scoreboard.json")
-		old := []byte(`{"country":"Local","dashboardURL":"","scenarios":[{"models":["first","sibling"],"good":true,"in":{"text":{"inline":true}},"out":{"text":{"inline":true}},"GenSync":{"tools":"true"}}]}`)
+		old := []byte(`{"country":"Local","dashboardURL":"","chat":[{"models":["first","sibling"],"good":true,"in":{"text":{"inline":true}},"out":{"text":{"inline":true}},"GenSync":{"tools":"true"}}]}`)
 		if err := os.WriteFile(path, old, 0o600); err != nil {
 			t.Fatal(err)
 		}
-		sc := scoreboard.Scenario{
-			Models:  []string{"first"},
-			In:      map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
+		sc := scoreboard.Chat{
+			Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{
+				Models: []string{"first"},
+				In:     map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
+			}},
 			Out:     map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.Functionality{Tools: scoreboard.True, OutOfOrder: new(scoreboard.True)},
 		}
-		_, raw := generateUpdatedScoreboard(t, path, []scoreboard.Scenario{sc}, nil, false)
+		_, raw := generateUpdatedScoreboard(t, path, &collected{Chat: []scoreboard.Chat{sc}}, nil, false, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
 			t.Fatal(err)
 		}
-		if len(sb.Scenarios) != 2 {
+		if len(sb.Chat) != 2 {
 			t.Fatalf("measured model consolidated with unknown: %s", raw)
 		}
-		if !sb.Scenarios[0].Good || sb.Scenarios[0].Models[0] != "first" || sb.Scenarios[0].GenSync.OutOfOrder == nil {
+		if !sb.Chat[0].Good || sb.Chat[0].Models[0] != "first" || sb.Chat[0].GenSync.OutOfOrder == nil {
 			t.Fatal("lost measured model metadata")
 		}
-		if sb.Scenarios[1].Models[0] != "sibling" || sb.Scenarios[1].GenSync.OutOfOrder != nil || sb.Scenarios[1].GenSync.Tools != scoreboard.True {
+		if sb.Chat[1].Models[0] != "sibling" || sb.Chat[1].GenSync.OutOfOrder != nil || sb.Chat[1].GenSync.Tools != scoreboard.True {
 			t.Fatal("manufactured measurement for sibling or lost existing Tools score")
 		}
 	})
 	t.Run("filtered preserves tiers", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "scoreboard.json")
-		old := []byte(`{"country":"US","dashboardURL":"","scenarios":[{"models":["chat"],"sota":true,"GenSync":{}},{"models":["decision"],"SystemOne":{}}]}`)
+		old := []byte(`{"country":"US","dashboardURL":"","chat":[{"models":["chat"],"sota":true,"GenSync":{}}],"systemone":[{"models":["decision"],"SystemOne":{}}]}`)
 		if err := os.WriteFile(path, old, 0o600); err != nil {
 			t.Fatal(err)
 		}
-		_, raw := generateUpdatedScoreboard(t, path, []scoreboard.Scenario{{Models: []string{"decision"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, SystemOne: &scoreboard.DecisionFunctionality{Noul: true}}}, nil, true)
+		_, raw := generateUpdatedScoreboard(t, path, &collected{SystemOne: []scoreboard.SystemOne{
+			{Row: scoreboard.Row{Models: []string{"decision"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, SystemOne: &scoreboard.DecisionFunctionality{Noul: true}},
+		}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
 			t.Fatal(err)
 		}
-		if len(sb.Scenarios) != 2 || sb.Scenarios[0].Models[0] != "chat" || !sb.Scenarios[0].SOTA || sb.Scenarios[0].GenSync == nil {
-			t.Fatalf("unfiltered model changed: %+v", sb.Scenarios)
+		if len(sb.Chat) != 1 || sb.Chat[0].Models[0] != "chat" || !sb.Chat[0].SOTA || sb.Chat[0].GenSync == nil {
+			t.Fatalf("unfiltered model changed: %+v", sb.Chat)
 		}
-		if sb.Scenarios[1].SystemOne == nil || !sb.Scenarios[1].SystemOne.Noul {
-			t.Fatalf("decision result lost: %+v", sb.Scenarios[1])
+		if len(sb.SystemOne) != 1 || sb.SystemOne[0].SystemOne == nil || !sb.SystemOne[0].SystemOne.Noul {
+			t.Fatalf("decision result lost: %+v", sb.SystemOne[0])
 		}
 	})
 }
@@ -203,12 +210,19 @@ func TestRun(t *testing.T) {
 		for _, tc := range []qualificationRunCase{{name: "update", update: true}, {name: "normal"}} {
 			t.Run(tc.name, func(t *testing.T) {
 				*updateScoreboard = tc.update
-				sb := scoreboard.Score{Scenarios: []scoreboard.Scenario{
-					{Models: []string{"aaa-first", "embedding", "embedding2", "zzz-last"}, Comments: "pending embedding models"},
-					{Models: []string{"generation-first", "generation-qualified", "generation-last"}, Comments: "pending generation models"},
-				}}
-				for i := range sb.Scenarios {
-					slices.Sort(sb.Scenarios[i].Models)
+				sb := scoreboard.Score{
+					Chat: []scoreboard.Chat{
+						{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"generation-first", "generation-qualified", "generation-last"}, Comments: "pending generation models"}}},
+					},
+					Embed: []scoreboard.Embed{
+						{Row: scoreboard.Row{Models: []string{"aaa-first", "embedding", "embedding2", "zzz-last"}, Comments: "pending embedding models"}},
+					},
+				}
+				for i := range sb.Chat {
+					slices.Sort(sb.Chat[i].Models)
+				}
+				for i := range sb.Embed {
+					slices.Sort(sb.Embed[i].Models)
 				}
 				t.Chdir(t.TempDir())
 				path := "scoreboard.json"
@@ -219,7 +233,7 @@ func TestRun(t *testing.T) {
 				if err := os.WriteFile(path, b, 0o600); err != nil {
 					t.Fatal(err)
 				}
-				_, original := generateUpdatedScoreboard(t, path, nil, nil, true)
+				_, original := generateUpdatedScoreboard(t, path, &collected{}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 				if err := os.WriteFile(path, original, 0o600); err != nil {
 					t.Fatal(err)
 				}
@@ -234,8 +248,8 @@ func TestRun(t *testing.T) {
 				})
 				clients := map[string]*qualificationProvider{}
 				var models []scoreboard.Model
-				for i := range sb.Scenarios {
-					for _, id := range sb.Scenarios[i].Models {
+				for _, id := range append(slices.Clone(sb.Embed[0].Models), sb.Chat[0].Models...) {
+					{
 						models = append(models, scoreboard.Model{Model: id})
 						p := &qualificationProvider{model: id, score: sb, output: genai.Modalities{genai.ModalityText}, realtime: true}
 						if id == "embedding" || id == "embedding2" {
@@ -248,12 +262,12 @@ func TestRun(t *testing.T) {
 					models = append(models, scoreboard.Model{Model: "new-embedding"})
 					clients["new-embedding"] = &qualificationProvider{model: "new-embedding", score: sb, output: genai.Modalities{genai.ModalityEmbedding}, realtime: true}
 				}
-				Run(t, func(_ testing.TB, m scoreboard.Model, _ func(http.RoundTripper) http.RoundTripper) genai.Provider {
+				Run(t, smoke.HTTPSession(rec, func(_ testing.TB, m scoreboard.Model, _ func(http.RoundTripper) http.RoundTripper) genai.Provider {
 					if m.Model == "" {
 						return &qualificationProvider{score: sb}
 					}
 					return clients[m.Model]
-				}, models, rec, &RunOptions{ScoreboardFile: path, Qualify: []scoreboard.Model{{Model: "embedding"}, {Model: "embedding2"}, {Model: "new-embedding"}, {Model: "generation-qualified"}}})
+				}), models, &RunOptions{ScoreboardFile: path, Qualify: []scoreboard.Model{{Model: "embedding"}, {Model: "embedding2"}, {Model: "new-embedding"}, {Model: "generation-qualified"}}})
 				raw, err := os.ReadFile(path)
 				if err != nil {
 					t.Fatal(err)
@@ -289,33 +303,47 @@ func TestRun(t *testing.T) {
 				if err := json.Unmarshal(raw, &got); err != nil {
 					t.Fatal(err)
 				}
-				measured := map[string]scoreboard.Scenario{}
+				measured := map[string]scoreboard.ScoreRow{}
 				var untested []string
-				for i := range got.Scenarios {
-					sc := &got.Scenarios[i]
-					if sc.Untested() {
-						untested = append(untested, sc.Models...)
-						if sc.Comments == "" {
+				note := func(r scoreboard.ScoreRow) {
+					if r.Untested() {
+						untested = append(untested, r.Base().Models...)
+						if r.Base().Comments == "" {
 							t.Fatal("untouched sibling notes were lost")
 						}
-						continue
+						return
 					}
-					if len(sc.Models) != 1 {
-						t.Fatalf("measured scenario claims unqualified siblings: %+v", sc)
+					if len(r.Base().Models) != 1 {
+						t.Fatalf("measured row claims unqualified siblings: %+v", r)
 					}
-					measured[sc.Models[0]] = *sc
+					measured[r.Base().Models[0]] = r
 				}
-				for _, id := range []string{"embedding", "embedding2", "new-embedding"} {
-					sc := measured[id]
-					if !sc.In[genai.ModalityImage].Inline || !sc.In[genai.ModalityAudio].Inline {
-						t.Fatalf("media measurements lost in scoreboard: %+v", sc)
+				for i := range got.Embed {
+					note(&got.Embed[i])
+				}
+				for i := range got.Chat {
+					note(&got.Chat[i])
+				}
+				for _, tc := range []struct{ id, comments string }{
+					{"embedding", "pending embedding models"},
+					{"embedding2", "pending embedding models"},
+					// A model with no placeholder inherits no notes.
+					{"new-embedding", ""},
+				} {
+					row := measured[tc.id]
+					e, ok := row.(*scoreboard.Embed)
+					if !ok {
+						t.Fatalf("%q is not an embedding row: %#v", tc.id, row)
 					}
-					if sc.Embed == nil || sc.Embed.Dimensions != 2 || sc.Embed.RequestedDimensions == nil || !*sc.Embed.RequestedDimensions || sc.Comments != "" || sc.GenSync != nil || sc.GenStream != nil {
-						t.Fatalf("embedding measurement %q: %+v", id, sc)
+					if !e.In[genai.ModalityImage].Inline || !e.In[genai.ModalityAudio].Inline {
+						t.Fatalf("media measurements lost in scoreboard: %+v", e)
+					}
+					if e.Embed == nil || e.Embed.Dimensions != 2 || e.Embed.RequestedDimensions == nil || !*e.Embed.RequestedDimensions || e.Comments != tc.comments {
+						t.Fatalf("embedding measurement %q: %+v", tc.id, e)
 					}
 				}
-				if sc := measured["generation-qualified"]; sc.GenSync == nil || sc.GenStream == nil || !sc.GenSync.Seed || sc.Comments != "pending generation models" {
-					t.Fatalf("generation measurement: %+v", sc)
+				if c, ok := measured["generation-qualified"].(*scoreboard.Chat); !ok || c.GenSync == nil || c.GenStream == nil || !c.GenSync.Seed || c.Comments != "pending generation models" {
+					t.Fatalf("generation measurement: %#v", measured["generation-qualified"])
 				}
 				slices.Sort(untested)
 				if !slices.Equal(untested, []string{"aaa-first", "generation-first", "generation-last", "zzz-last"}) {
@@ -348,14 +376,14 @@ func TestRun(t *testing.T) {
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				t.Chdir(t.TempDir())
-				sc := scoreboard.Scenario{Models: []string{"a"}, Comments: "pending"}
+				sc := scoreboard.Chat{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"a"}, Comments: "pending", Wire: scoreboard.WireHTTP}}}
 				if tc.qualify {
 					sc.Models = append(sc.Models, "new")
 				}
 				if tc.tested {
 					sc.GenSync = &scoreboard.Functionality{}
 				}
-				sb := scoreboard.Score{Scenarios: []scoreboard.Scenario{sc}}
+				sb := scoreboard.Score{Chat: []scoreboard.Chat{sc}}
 				raw, err := json.Marshal(sb)
 				if err != nil {
 					t.Fatal(err)
@@ -384,9 +412,9 @@ func TestRun(t *testing.T) {
 				for _, m := range append(slices.Clone(models), scoreboard.Model{}) {
 					clients[m.Model] = &qualificationProvider{model: m.Model, score: sb, output: genai.Modalities{genai.ModalityText}, generationError: errors.New("generation unavailable")}
 				}
-				Run(t, func(_ testing.TB, m scoreboard.Model, _ func(http.RoundTripper) http.RoundTripper) genai.Provider {
+				Run(t, smoke.HTTP(rec, func(_ testing.TB, m scoreboard.Model, _ func(http.RoundTripper) http.RoundTripper) genai.Provider {
 					return clients[m.Model]
-				}, models, rec, opts)
+				}), models, opts)
 				measured := "new"
 				if tc.tested {
 					measured = "a"
@@ -415,7 +443,7 @@ func TestRun(t *testing.T) {
 				if tc.tested {
 					wantModels = []string{"a"}
 				}
-				if len(got.Scenarios) != 1 || !got.Scenarios[0].Untested() || got.Scenarios[0].Comments != "pending" || !slices.Equal(got.Scenarios[0].Models, wantModels) {
+				if len(got.Chat) != 1 || !got.Chat[0].Untested() || got.Chat[0].Comments != "pending" || !slices.Equal(got.Chat[0].Models, wantModels) {
 					t.Fatalf("group and notes lost: %s", raw)
 				}
 			})

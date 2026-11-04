@@ -29,6 +29,7 @@ import (
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -246,7 +247,7 @@ func TestClient(t *testing.T) {
 			}
 		}
 
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	// This is a tricky test since batch operations can take up to 24h to complete.

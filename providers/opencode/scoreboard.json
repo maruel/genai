@@ -1,17 +1,18 @@
 {
   "country": "US",
   "dashboardURL": "https://opencode.ai",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "opencode/big-pickle"
       ],
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -30,7 +31,6 @@
       "models": [
         "opencode/mimo-v2.6-flash-free"
       ],
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -45,6 +45,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -2057,7 +2059,8 @@
         "xiaomi/mimo-v2.6-flash",
         "xiaomi/mimo-v2.6-pro",
         "xiaomi/mimo-v2.6-pro-ultraspeed"
-      ]
+      ],
+      "wire": "subprocess"
     }
   ]
 }

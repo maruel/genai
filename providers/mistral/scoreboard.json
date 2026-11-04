@@ -7,13 +7,12 @@
   ],
   "country": "FR",
   "dashboardURL": "https://console.mistral.ai/usage",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "mistral-large-4-0"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "audio": {
           "inline": true,
@@ -45,6 +44,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -112,6 +113,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -177,6 +179,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -241,6 +244,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -305,6 +309,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -363,6 +368,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -421,6 +427,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -485,6 +492,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -549,6 +557,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -614,6 +623,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -668,6 +678,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -725,6 +736,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -851,7 +863,8 @@
         "zai-glm-5-3",
         "zai-glm-5-3-flash",
         "zai-glm-latest"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "comments": "Unsupported",
@@ -861,14 +874,16 @@
         "mistral-embed",
         "mistral-moderation-2411",
         "mistral-moderation-latest"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "models": [
         "devstral-latest",
         "mistral-embed-2312",
         "mistral-ocr-2512"
-      ]
+      ],
+      "wire": "http"
     }
   ]
 }

@@ -35,39 +35,19 @@ func printList(ctx context.Context, w io.Writer) error {
 			async = "✅batch "
 		}
 		sb := c.Scoreboard()
-		for i := range sb.Scenarios {
-			scenario := &sb.Scenarios[i]
-			m := scenario.Models
-			if len(m) > 3 {
-				m = append(slices.Clone(m[:3]), "...")
-			}
-			_, _ = fmt.Fprintf(w, "  - %s\n", strings.Join(m, ", "))
-			if f := scenario.Embed; f != nil {
-				_, _ = fmt.Fprintf(w, "    Embed: usage=%s\n", f.ReportTokenUsage)
-			}
-			if f := scenario.SystemOne; f != nil {
-				_, _ = fmt.Fprintf(w, "    SystemOne: noul=%t choice=%t score=%t object=%t array=%t usage=%s\n", f.Noul, f.Choice, f.Score, f.Object, f.Array, f.ReportTokenUsage)
-			}
-			if scenario.Reason {
+		for i := range sb.Chat {
+			r := &sb.Chat[i]
+			_, _ = fmt.Fprintf(w, "  - %s\n", modelList(r.Base().Models))
+			if r.Reason {
 				_, _ = fmt.Fprintf(w, "    thinking: enabled\n")
 			}
-			if f := scenario.Realtime; f != nil {
-				_, _ = fmt.Fprintf(w, "    Realtime: input=%dHz output=%dHz%s\n", f.InputSampleRate, f.OutputSampleRate, realtimeCapabilities(f))
+			printModalities(w, r.In, r.Out)
+			chat, stream := "", ""
+			if r.GenSync != nil {
+				chat = functionality(r.GenSync)
 			}
-			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
-				_, _ = fmt.Fprintf(w, "    in/out:   text only\n")
-			} else {
-				in := getDeliveryConstraints(scenario.In)
-				out := getDeliveryConstraints(scenario.Out)
-				_, _ = fmt.Fprintf(w, "    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
-			}
-			chat := ""
-			stream := ""
-			if scenario.GenSync != nil {
-				chat = functionality(scenario.GenSync)
-			}
-			if scenario.GenStream != nil {
-				stream = functionality(scenario.GenStream)
+			if r.GenStream != nil {
+				stream = functionality(r.GenStream)
 			}
 			if chat == stream {
 				if chat != "" {
@@ -82,8 +62,52 @@ func printList(ctx context.Context, w io.Writer) error {
 				}
 			}
 		}
+		for i := range sb.Embed {
+			r := &sb.Embed[i]
+			_, _ = fmt.Fprintf(w, "  - %s\n", modelList(r.Models))
+			if f := r.Embed; f != nil {
+				_, _ = fmt.Fprintf(w, "    Embed: usage=%s\n", f.ReportTokenUsage)
+			}
+			printModalities(w, r.In, r.Outputs())
+		}
+		for i := range sb.SystemOne {
+			r := &sb.SystemOne[i]
+			_, _ = fmt.Fprintf(w, "  - %s\n", modelList(r.Models))
+			if f := r.SystemOne; f != nil {
+				_, _ = fmt.Fprintf(w, "    SystemOne: noul=%t choice=%t score=%t object=%t array=%t usage=%s\n", f.Noul, f.Choice, f.Score, f.Object, f.Array, f.ReportTokenUsage)
+			}
+			printModalities(w, r.In, r.Out)
+		}
+		for i := range sb.Realtime {
+			r := &sb.Realtime[i]
+			_, _ = fmt.Fprintf(w, "  - %s\n", modelList(r.Models))
+			if r.Reason {
+				_, _ = fmt.Fprintf(w, "    thinking: enabled\n")
+			}
+			if f := r.Realtime; f != nil {
+				_, _ = fmt.Fprintf(w, "    Realtime: input=%dHz output=%dHz%s\n", f.InputSampleRate, f.OutputSampleRate, realtimeCapabilities(f))
+			}
+			printModalities(w, r.In, r.Out)
+		}
 	}
 	return nil
+}
+
+// modelList renders up to three model names.
+func modelList(m []string) string {
+	if len(m) > 3 {
+		m = append(slices.Clone(m[:3]), "...")
+	}
+	return strings.Join(m, ", ")
+}
+
+// printModalities writes the in and out modalities of a row.
+func printModalities(w io.Writer, in, out map[genai.Modality]scoreboard.ModalCapability) {
+	if isTextOnly(in) && isTextOnly(out) {
+		_, _ = fmt.Fprintf(w, "    in/out:   text only\n")
+		return
+	}
+	_, _ = fmt.Fprintf(w, "    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(in), getDeliveryConstraints(in), modalityMapToString(out), getDeliveryConstraints(out))
 }
 
 // modalityMapToString converts a modality capability map to a readable string.

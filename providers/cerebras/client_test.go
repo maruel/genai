@@ -18,6 +18,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -107,13 +108,13 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		scenarios := c.Scoreboard().Models()
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
 			thinking := false
 			for _, sc := range scenarios {
-				if slices.Contains(sc.Models, id) {
+				if sc.Model == id {
 					thinking = sc.Reason
 					break
 				}
@@ -153,7 +154,9 @@ func TestClient(t *testing.T) {
 			var p genai.Provider = c
 			if model.Reason {
 				// Check if it has predefined thinking tokens.
-				for _, sc := range c.Scoreboard().Scenarios {
+				sb := c.Scoreboard()
+				for i := range sb.Chat {
+					sc := &sb.Chat[i]
 					if sc.Reason && slices.Contains(sc.Models, model.Model) {
 						if sc.ReasoningTokenEnd != "" {
 							// This is bad. We should have a better way to determine if a model needs to be prompted to think
@@ -173,7 +176,7 @@ func TestClient(t *testing.T) {
 			}
 			return p
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{})
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

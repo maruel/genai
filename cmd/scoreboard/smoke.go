@@ -15,6 +15,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
 )
 
@@ -28,7 +29,7 @@ func smokeModel(ctx context.Context, w io.Writer, provider, model string) error 
 		p, _ := providers.All[provider].Factory(ctx, genai.ProviderOptionModel(model))
 		return p
 	}
-	sc, usage, err := smoke.Run(ctx, pf)
+	sc, usage, err := smoke.Chat{}.Run(ctx, smoke.Direct(pf), scoreboard.Model{Model: model}, scoreboard.WireHTTP, nil)
 	if err != nil {
 		return err
 	}

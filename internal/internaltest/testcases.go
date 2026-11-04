@@ -19,6 +19,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
 )
 
@@ -280,40 +281,38 @@ func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing
 	}
 	score := provider.Scoreboard()
 	var tests []preferredModelTest
-	for i := range score.Scenarios {
-		sc := &score.Scenarios[i]
-		if sc.SOTA {
-			for modality := range sc.Out {
-				tests = append(tests, preferredModelTest{
-					Modality: modality,
-					Tier:     genai.ModelSOTA,
-					Want:     sc.Models[0],
-				})
-			}
-		}
-		if sc.Good {
-			for modality := range sc.Out {
-				tests = append(tests, preferredModelTest{
-					Modality: modality,
-					Tier:     genai.ModelGood,
-					Want:     sc.Models[0],
-				})
-			}
-		}
-		if sc.Cheap {
-			for modality := range sc.Out {
-				tests = append(tests, preferredModelTest{
-					Modality: modality,
-					Tier:     genai.ModelCheap,
-					Want:     sc.Models[0],
-				})
-			}
-		}
+	// Every section can mark a preferred model, so the scan covers each one.
+	for i := range score.Chat {
+		addPreferredTests(&tests, &score.Chat[i].Row, score.Chat[i].Outputs())
+	}
+	for i := range score.Embed {
+		addPreferredTests(&tests, &score.Embed[i].Row, score.Embed[i].Outputs())
+	}
+	for i := range score.SystemOne {
+		addPreferredTests(&tests, &score.SystemOne[i].Row, score.SystemOne[i].Outputs())
+	}
+	for i := range score.Realtime {
+		addPreferredTests(&tests, &score.Realtime[i].Row, score.Realtime[i].Outputs())
 	}
 	if len(tests) == 0 {
 		t.Fatal("no preferred models found in scoreboard")
 	}
 	return tests
+}
+
+// addPreferredTests appends one test per output modality for each tier the row marks.
+func addPreferredTests(tests *[]preferredModelTest, r *scoreboard.Row, out map[scoreboard.Modality]scoreboard.ModalCapability) {
+	for modality := range out {
+		if r.SOTA {
+			*tests = append(*tests, preferredModelTest{Modality: modality, Tier: genai.ModelSOTA, Want: r.Models[0]})
+		}
+		if r.Good {
+			*tests = append(*tests, preferredModelTest{Modality: modality, Tier: genai.ModelGood, Want: r.Models[0]})
+		}
+		if r.Cheap {
+			*tests = append(*tests, preferredModelTest{Modality: modality, Tier: genai.ModelCheap, Want: r.Models[0]})
+		}
+	}
 }
 
 // TestTextOutputDocInput tests that text output models correctly support Doc as input.

@@ -6,14 +6,13 @@
   ],
   "country": "US",
   "dashboardURL": "https://console.anthropic.com/settings/billing",
-  "scenarios": [
+  "chat": [
     {
       "comments": "Claude Fable 5 is more capable, but it is much more expensive. Keep Opus 5.5 as SOTA default for now.",
       "models": [
         "claude-opus-5-5"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -36,6 +35,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -80,7 +81,6 @@
         "claude-sonnet-5-5"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -103,6 +103,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -145,7 +147,6 @@
         "claude-haiku-5-5"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -168,6 +169,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -214,6 +217,25 @@
         "claude-fable-5",
         "claude-fable-5-1",
         "claude-haiku-4-5-20251001",
+        "claude-opus-4-5-20251101",
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-opus-5",
+        "claude-sonnet-4-5-20250929",
+        "claude-sonnet-4-6",
+        "claude-sonnet-5"
+      ],
+      "wire": "http",
+      "reason": true
+    },
+    {
+      "comments": "Other models",
+      "models": [
+        "claude-fable-5",
+        "claude-fable-5-1",
+        "claude-haiku-4-5-20251001",
+        "claude-haiku-5-5",
         "claude-opus-4-1-20250805",
         "claude-opus-4-20250514",
         "claude-opus-4-5-20251101",
@@ -221,11 +243,14 @@
         "claude-opus-4-7",
         "claude-opus-4-8",
         "claude-opus-5",
+        "claude-opus-5-5",
         "claude-sonnet-4-20250514",
         "claude-sonnet-4-5-20250929",
         "claude-sonnet-4-6",
-        "claude-sonnet-5"
-      ]
+        "claude-sonnet-5",
+        "claude-sonnet-5-5"
+      ],
+      "wire": "http"
     }
   ]
 }

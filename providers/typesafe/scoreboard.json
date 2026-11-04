@@ -5,7 +5,24 @@
   ],
   "country": "US",
   "dashboardURL": "https://console.typesafe.ai/",
-  "scenarios": [
+  "chat": [
+    {
+      "comments": "Versioned model ID that jev-latest resolves to. Versioned IDs are accepted by the model field even though GET /v1/models only lists aliases.",
+      "models": [
+        "jev-1.13.0",
+        "jev-latest"
+      ],
+      "wire": "http"
+    },
+    {
+      "comments": "Alias tracking the most recent release, whether or not it is official. It currently points to the same model as jev-latest.",
+      "models": [
+        "jev-preview"
+      ],
+      "wire": "http"
+    }
+  ],
+  "systemone": [
     {
       "models": [
         "jev-latest"
@@ -16,6 +33,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "decision": {
           "inline": true
@@ -29,18 +47,6 @@
         "array": true,
         "reportTokenUsage": "true"
       }
-    },
-    {
-      "comments": "Versioned model ID that jev-latest resolves to. Versioned IDs are accepted by the model field even though GET /v1/models only lists aliases.",
-      "models": [
-        "jev-1.13.0"
-      ]
-    },
-    {
-      "comments": "Alias tracking the most recent release, whether or not it is official. It currently points to the same model as jev-latest.",
-      "models": [
-        "jev-preview"
-      ]
     }
   ]
 }

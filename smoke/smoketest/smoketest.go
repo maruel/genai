@@ -4,28 +4,27 @@
 
 // Package smoketest runs a scoreboard in test mode.
 //
-// # Automatic Scoreboard Updates
+// It measures every model of a provider through one [smoke.Recorder], fills the
+// scoreboard sections, and writes the file back when -update-scoreboard is set.
 //
-// The package supports automatic updates to scoreboard.json files when tests are run with the
-// -update-scoreboard flag. This is useful when you want to update the provider's capabilities
-// based on the latest test results.
+// # Recording
 //
-// Run your tests with:
+// -update-scoreboard replays the cassettes and merges them. Recording needs
+// RECORD=failure_only, scoped with -run: it fills the missing fixtures and replays the
+// rest. RECORD=all replaces the existing ones and stays off-limits unscoped.
 //
 //	go test ./providers/yourprovider -update-scoreboard
 //
-// The scoreboard.json file will be automatically updated with the new scenario results while
-// preserving existing metadata like Comments, SOTA, Good, and Cheap flags.
+// A -run pattern matches from the first subtest, so -run 'Scoreboard' selects nothing.
+// Rewriting a file takes a full package run with -update-scoreboard.
 //
-// Realtime WebSocket sessions record one fixture per session under
-// testdata/TestClient/Scoreboard/<model>/Realtime-N.ndjson. Normal tests replay
-// them; -update-scoreboard replaces them.
+// A model that is no longer tested is dropped from the scoreboard, and its HTTP
+// recordings under testdata/<test>/Scoreboard/<model>/ are deleted with it. A run
+// reports the recordings no probe consumed; remove them or restore the probe.
 //
-// When a model is no longer being tested (e.g., the provider stopped supporting it), the
-// corresponding HTTP recordings in testdata/TestClient/Scoreboard/<model>/ are automatically
-// deleted to keep the repository clean and remove stale test data. Recordings (.ndjson) that no
-// probe consumed are reported at the end of a full run; remove them or restore the probe.
-// deleted to keep the repository clean and remove stale test data.
+// A nested run owns the recordings below it: the sweep and the unexpected-recording
+// check both stop at their own depth, so a second wire can record under the first
+// one's directory.
 package smoketest
 
 import (
@@ -36,7 +35,6 @@ import (
 	"flag"
 	"io/fs"
 	"maps"
-	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -44,19 +42,12 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
 )
-
-// ProviderFactory creates a client to assert the scoreboard with recorded HTTP requests.
-//
-// The factory must register client cleanup with t.
-type ProviderFactory func(t testing.TB, m scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
 var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")
 
@@ -83,24 +74,12 @@ func UpdatingScoreboard() bool {
 	return *updateScoreboard
 }
 
-// modelSource identifies a model and whether it comes from a realtime session.
-// The reasoning mode stays out of it: untested models consolidate across
-// reasoning modes.
-type modelSource struct {
-	model    string
-	realtime bool
-}
-
-func sourceOf(m string, sc *scoreboard.Scenario) modelSource {
-	return modelSource{model: m, realtime: sc.Realtime != nil}
-}
-
 // Run regenerates the scoreboard and asserts it is up to date.
 //
 // If the -update-scoreboard flag is set, it will update the scoreboard files
 // and automatically delete stale recordings for models that are no longer available.
 // After a full run, it reports recordings that no probe consumed.
-func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records, opts *RunOptions) {
+func Run(t *testing.T, rf smoke.RecorderFactory, models []scoreboard.Model, opts *RunOptions) {
 	if opts == nil {
 		opts = &RunOptions{}
 	}
@@ -108,18 +87,15 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	if scoreboardFile == "" {
 		scoreboardFile = "scoreboard.json"
 	}
-
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
-
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == "test.run" {
 			filtered = true
 		}
 	})
-	// A model that holds several scenarios is listed once per scenario.
 	seen := map[scoreboard.Model]struct{}{}
 	unique := make([]scoreboard.Model, 0, len(models))
 	for _, m := range models {
@@ -131,104 +107,47 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 	models = unique
 	runName := t.Name()
-	recordingsDir := filepath.Join("testdata", filepath.FromSlash(t.Name()))
+	recordingsDir := filepath.Join("testdata", filepath.FromSlash(runName))
 	t.Run("Stale Recordings", func(t *testing.T) {
-		// Delete orphaned recordings that don't correspond to any model in the list of models to test.
 		deleteOrphanedRecordings(t, recordingsDir, seen)
 	})
 
-	cc := pf(t, scoreboard.Model{}, nil)
-	sb := cc.Scoreboard()
+	// Read the scoreboard through the first wire the recorder serves: a command line
+	// provider has no HTTP surface to ask.
+	first := rf(t, scoreboard.Model{})
+	sb := first.Provider(first.Wires()[0], "").Scoreboard()
 	if err := sb.Validate(); err != nil {
 		t.Fatal(err)
 	}
-	allScoreboardModels := map[scoreboard.Key]struct{}{}
-	for i := range sb.Scenarios {
-		sc := &sb.Scenarios[i]
-		if len(sc.Models) == 0 {
-			t.Fatalf("scenario #%d has no models", i)
-		}
-		for _, m := range sc.Models {
-			allScoreboardModels[sc.Key(m)] = struct{}{}
-		}
-	}
+	allKeys := map[scoreboard.Key]struct{}{}
+	addKeys(allKeys, sb.Chat)
+	addKeys(allKeys, sb.Embed)
+	addKeys(allKeys, sb.SystemOne)
+	addKeys(allKeys, sb.Realtime)
+
 	usage := genai.Usage{}
-	updatedScenarios := []scoreboard.Scenario{}
+	measured := collected{}
 	failed := false
 	for _, m := range models {
 		if !t.Run(m.String(), func(t *testing.T) {
-			// A model holds one scenario per probe family, so collect every scenario
-			// that names it: a realtime session and its GenSync/GenStream counterpart
-			// coexist.
-			runs := make([]scoreboard.Scenario, 0, 2)
-			kept := make([]scoreboard.Scenario, 0, 1)
-			for i := range sb.Scenarios {
-				sc := &sb.Scenarios[i]
-				if sc.Reason != m.Reason || !slices.Contains(sc.Models, m.Model) {
-					continue
-				}
-				if sc.Models[0] != m.Model && (!sc.Untested() || !opts.qualifies(m)) {
-					// Only the first model of a scenario runs, for cost savings. Create
-					// one scenario per model to smoke test the others.
-					t.Logf("Skipping scenario: only %s runs", sc.Models[0])
-					continue
-				}
-				want := *sc
-				want.Models = []string{m.Model}
-				if want.Untested() && !opts.qualifies(m) {
-					// Keep the placeholder so the scoreboard still lists the model.
-					kept = append(kept, want)
-					continue
-				}
-				runs = append(runs, want)
-			}
-			if len(runs) == 0 && len(kept) == 0 {
-				// The model has no scenario yet.
-				want := scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason}
-				if !opts.qualifies(m) {
-					for i := range sb.Scenarios {
-						sc := &sb.Scenarios[i]
-						if sc.Reason == m.Reason && sc.Untested() {
-							want.Comments = sc.Comments
-							break
-						}
-					}
-					kept = append(kept, want)
-				} else {
-					runs = append(runs, want)
-				}
-			}
-			updatedScenarios = append(updatedScenarios, kept...)
-			newProvider := func(t testing.TB, sn string) genai.Provider {
-				fn := func(h http.RoundTripper) http.RoundTripper {
-					if sn == "" {
-						return h
-					}
-					r, err2 := rec.Record(sn, h)
-					if err2 != nil {
-						t.Fatal(err2)
-					}
-					t.Cleanup(func() {
-						if err3 := r.Stop(); err3 != nil {
-							t.Error(err3)
-						}
-					})
-					return r
-				}
-				return pf(t, m, fn)
-			}
+			r := rf(t, m)
+			ctx, _ := internaltest.Log(t)
 			tolerate := !m.Reason && slices.ContainsFunc(opts.TolerateReasoning, func(s string) bool {
 				return strings.Contains(m.Model, s)
 			})
-			if len(runs) == 0 {
-				if len(kept) != 0 {
-					t.Skip("Explicitly unsupported model")
-				}
-				t.Skip("Only run first model in scenario for cost savings")
-			}
-			u, got := runOneModel(t, newProvider, m, runs, tolerate)
-			usage.Add(&u)
-			updatedScenarios = append(updatedScenarios, got...)
+			qualify := opts.qualifies(m)
+			// A model a section lists without a measurement is queued, not discovered:
+			// only an explicit qualification asks the families about it.
+			queued := !qualify && isQueuedFor(&sb, m)
+			// Each section measures its own rows: a model may hold a chat row and an
+			// embedding row at the same time.
+			measured.Chat = append(measured.Chat, runSection(ctx, t, r, m, smoke.Chat{}, sb.Chat, &sb, qualify, queued, true, tolerate, &usage, nil)...)
+			// A family sees what this run already measured for the model.
+			view := sb
+			view.Chat = append(slices.Clone(sb.Chat), measured.Chat...)
+			measured.Embed = append(measured.Embed, runSection(ctx, t, r, m, smoke.Embed{}, sb.Embed, &view, qualify, queued, false, tolerate, &usage, nil)...)
+			measured.SystemOne = append(measured.SystemOne, runSection(ctx, t, r, m, smoke.SystemOne{}, sb.SystemOne, &view, qualify, queued, false, tolerate, &usage, nil)...)
+			measured.Realtime = append(measured.Realtime, runSection(ctx, t, r, m, smoke.Realtime{}, sb.Realtime, &view, qualify, queued, false, tolerate, &usage, nil)...)
 		}) {
 			failed = true
 		}
@@ -240,37 +159,29 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		return
 	}
 
-	staleModels := map[scoreboard.Key]struct{}{}
+	stale := map[scoreboard.Key]struct{}{}
 	if !filtered {
-		// Only mark models as truly stale on complete test runs (no filtering)
-		// Check for models in scoreboard that are not in discovered models
-		// These are truly stale (removed from the API).
-		// Untested scenarios are skipped since they intentionally have no test results.
-		for key := range allScoreboardModels {
+		// Only mark models as truly stale on complete test runs (no filtering).
+		for key := range allKeys {
 			if _, ok := seen[scoreboard.Model{Model: key.Model, Reason: key.Reason}]; ok {
 				continue
 			}
-			// Untested scenarios intentionally have no test results.
-			isUntested := false
-			for i := range sb.Scenarios {
-				sc := &sb.Scenarios[i]
-				if sc.Key(key.Model) == key && sc.Untested() {
-					isUntested = true
-					break
-				}
+			if !slices.Contains(first.Wires(), key.Wire) {
+				// Another wire owns this row; this run says nothing about it.
+				continue
 			}
-			if !isUntested {
-				staleModels[key] = struct{}{}
+			if isQueued(&sb, key) {
+				continue
 			}
-			if !*updateScoreboard && !isUntested {
+			stale[key] = struct{}{}
+			if !*updateScoreboard {
 				t.Errorf("stale model in scoreboard: %v", key)
 			}
 		}
 	}
-	// Check scoreboard and update if requested
-	if len(updatedScenarios) > 0 || len(staleModels) > 0 {
+	if len(measured.total()) > 0 || len(stale) > 0 {
 		scoreboardPath := filepath.Join(".", scoreboardFile)
-		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, updatedScenarios, slices.Collect(maps.Keys(staleModels)), filtered)
+		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, &measured, slices.Collect(maps.Keys(stale)), filtered, first.Wires())
 		if !bytes.Equal(rawNew, rawOld) {
 			if !*updateScoreboard {
 				t.Fatalf("%s is out of date, run with -update-scoreboard to update it", scoreboardFile)
@@ -296,111 +207,488 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 }
 
-// getClientOneModel returns a provider client for a specific model.
-type getClientOneModel func(t testing.TB, scenarioName string) genai.Provider
-
-// runOneModel runs the scoreboard on one model.
-//
-// When tolerateReasoning is true, reasoning content discovered in
-// non-thinking scenarios is silently ignored instead of causing a mismatch.
-// This is useful for models like Gemma 4 that emit reasoning even with
-// enable_thinking=false.
-//
-// Returns the usage and the generated scenario (or nil if not updated).
-func runOneModel(t testing.TB, gc getClientOneModel, m scoreboard.Model, wants []scoreboard.Scenario, tolerateReasoning bool) (genai.Usage, []scoreboard.Scenario) {
-	providerFactory := func(name string) genai.Provider {
-		if name == "" {
-			return gc(t, name)
-		}
-		return gc(t, t.Name()+"/"+name)
-	}
-	ctx, _ := internaltest.Log(t)
-	usage := genai.Usage{}
-	got := make([]scoreboard.Scenario, 0, len(wants)+1)
-	hasRealtime := false
-	for i := range wants {
-		// Run one scenario at a time otherwise we can't collect the total usage.
-		u, sc := measureScenario(t, ctx, providerFactory, &wants[i], tolerateReasoning)
-		usage.Add(&u)
-		hasRealtime = hasRealtime || wants[i].Realtime != nil
-		if sc != nil {
-			got = append(got, *sc)
-		}
-	}
-	// A model may serve both families, and only a session tells whether it accepts
-	// one. The session is recorded either way, so replay confirms the answer.
-	// Realtime returns speech or text, so an image or embedding model is out of
-	// scope even though the provider serves sessions.
-	if !hasRealtime && servesSpeechOrText(got) {
-		c := providerFactory("")
-		if c.Capabilities().Realtime {
-			ok, reason, err := smoke.RealtimeSupported(ctx, c)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !ok {
-				t.Logf("realtime unsupported: %s", reason)
-			} else if sc, u, err2 := smoke.RunRealtimeScenario(ctx, c, m.Reason); err2 != nil {
-				// A model that accepts a session and then fails the probes stays untested,
-				// and it does not abort the run for the models after it.
-				t.Logf("realtime probes failed: %v", err2)
-			} else {
-				if tolerateReasoning {
-					sc.Reason = false
-				}
-				usage.Add(&u)
-				got = append(got, sc)
-			}
-		}
-	}
-	return usage, got
+// collected holds the rows a run measured, one list per section.
+type collected struct {
+	Chat      []scoreboard.Chat
+	Embed     []scoreboard.Embed
+	SystemOne []scoreboard.SystemOne
+	Realtime  []scoreboard.Realtime
 }
 
-// measureScenario runs the probes of one scenario and compares the measurement.
-func measureScenario(t testing.TB, ctx context.Context, providerFactory func(string) genai.Provider, want *scoreboard.Scenario, tolerateReasoning bool) (genai.Usage, *scoreboard.Scenario) {
-	var got scoreboard.Scenario
-	var usage genai.Usage
-	var err error
-	// A model may be scored for both families, so pick the one this scenario names.
-	if want.Realtime != nil {
-		got, usage, err = smoke.RunRealtimeScenario(ctx, providerFactory(""), want.Reason)
+func (c *collected) total() []int {
+	out := make([]int, 0, 4)
+	for _, n := range []int{len(c.Chat), len(c.Embed), len(c.SystemOne), len(c.Realtime)} {
+		if n > 0 {
+			out = append(out, n)
+		}
+	}
+	return out
+}
+
+// addKeys adds the identity of every row of a section to keys.
+func addKeys[T any, PT interface {
+	*T
+	scoreboard.ScoreRow
+}](keys map[scoreboard.Key]struct{}, rows []T) {
+	for i := range rows {
+		r := PT(&rows[i])
+		for _, m := range r.Base().Models {
+			keys[r.Key(m)] = struct{}{}
+		}
+	}
+}
+
+// sharedWire returns the first wire both lists carry.
+func sharedWire(a, b []scoreboard.Wire) (scoreboard.Wire, bool) {
+	for _, w := range a {
+		if slices.Contains(b, w) {
+			return w, true
+		}
+	}
+	return "", false
+}
+
+// queueNotes returns the notes the queue of a section carries.
+func queueNotes[T any, PT interface {
+	*T
+	scoreboard.ScoreRow
+}](section []T) string {
+	for i := range section {
+		row := PT(&section[i])
+		if row.Untested() && row.Base().Comments != "" {
+			return row.Base().Comments
+		}
+	}
+	return ""
+}
+
+// knownElsewhere reports whether a section other than chat names the model.
+func knownElsewhere(sb *scoreboard.Score, model string) bool {
+	for i := range sb.Embed {
+		if slices.Contains(sb.Embed[i].Models, model) {
+			return true
+		}
+	}
+	for i := range sb.SystemOne {
+		if slices.Contains(sb.SystemOne[i].Models, model) {
+			return true
+		}
+	}
+	for i := range sb.Realtime {
+		if slices.Contains(sb.Realtime[i].Models, model) {
+			return true
+		}
+	}
+	return false
+}
+
+// isQueuedFor reports whether any section lists the model without measuring it.
+func isQueuedFor(sb *scoreboard.Score, m scoreboard.Model) bool {
+	for i := range sb.Chat {
+		if sb.Chat[i].Reason == m.Reason && slices.Contains(sb.Chat[i].Models, m.Model) && sb.Chat[i].Untested() {
+			return true
+		}
+	}
+	for i := range sb.Embed {
+		if slices.Contains(sb.Embed[i].Models, m.Model) && sb.Embed[i].Untested() {
+			return true
+		}
+	}
+	for i := range sb.SystemOne {
+		if slices.Contains(sb.SystemOne[i].Models, m.Model) && sb.SystemOne[i].Untested() {
+			return true
+		}
+	}
+	for i := range sb.Realtime {
+		if sb.Realtime[i].Reason == m.Reason && slices.Contains(sb.Realtime[i].Models, m.Model) && sb.Realtime[i].Untested() {
+			return true
+		}
+	}
+	return false
+}
+
+// isQueued reports whether the row that holds key holds no measurement.
+func isQueued(sb *scoreboard.Score, key scoreboard.Key) bool {
+	for _, rows := range []func() []bool{
+		func() []bool {
+			out := make([]bool, len(sb.Chat))
+			for i := range sb.Chat {
+				out[i] = sb.Chat[i].Key(key.Model) == key && sb.Chat[i].Untested()
+			}
+			return out
+		},
+		func() []bool {
+			out := make([]bool, len(sb.Embed))
+			for i := range sb.Embed {
+				out[i] = sb.Embed[i].Key(key.Model) == key && sb.Embed[i].Untested()
+			}
+			return out
+		},
+		func() []bool {
+			out := make([]bool, len(sb.SystemOne))
+			for i := range sb.SystemOne {
+				out[i] = sb.SystemOne[i].Key(key.Model) == key && sb.SystemOne[i].Untested()
+			}
+			return out
+		},
+		func() []bool {
+			out := make([]bool, len(sb.Realtime))
+			for i := range sb.Realtime {
+				out[i] = sb.Realtime[i].Key(key.Model) == key && sb.Realtime[i].Untested()
+			}
+			return out
+		},
+	} {
+		if slices.Contains(rows(), true) {
+			return true
+		}
+	}
+	return false
+}
+
+// runSection measures what one section owes for one model.
+//
+// A row that names the model is measured. A row that measures nothing is a queue
+// entry: it is kept, and handed to the family only when the run qualifies the
+// model. A section without a row asks the family whether the model serves it.
+func runSection[T any, PT interface {
+	*T
+	scoreboard.ScoreRow
+}](ctx context.Context, t *testing.T, r smoke.Recorder, m scoreboard.Model, fam smoke.Family[T], section []T, sb *scoreboard.Score, qualify, queued, defaultQueue, tolerate bool, usage *genai.Usage, out []T) []T {
+	wire, ok := sharedWire(fam.Wires(), r.Wires())
+	if !ok {
+		// The recorder does not serve this wire, so the family cannot run here.
+		return out
+	}
+	var runs []T
+	for i := range section {
+		row := PT(&section[i])
+		if row.Reasoning() != m.Reason || !slices.Contains(row.Base().Models, m.Model) {
+			continue
+		}
+		if row.Key(m.Model).Wire != wire {
+			// Another wire measured this row; this run would overwrite it.
+			continue
+		}
+		if row.Base().Models[0] != m.Model && (!row.Untested() || !qualify) {
+			// Only the first model of a row runs, for cost savings.
+			t.Logf("Skipping scenario: only %s runs", row.Base().Models[0])
+			continue
+		}
+		if row.Untested() && !qualify {
+			// The scoreboard already holds this queue entry; the merge keeps it.
+			continue
+		}
+		runs = append(runs, section[i])
+	}
+	measure := func(want *T) error {
+		// Run one row at a time otherwise we can't collect the total usage.
+		sc, u, err := fam.Run(ctx, r, m, wire, want)
+		if err != nil {
+			return err
+		}
+		usage.Add(&u)
+		// The row records the wire it ran over: the same model can answer the same
+		// suite over another one.
+		PT(&sc).Base().Wire = wire
+		// A queue entry hands its notes to the row that replaces it.
+		if PT(&sc).Base().Comments == "" {
+			PT(&sc).Base().Comments = PT(want).Base().Comments
+		}
+		sc = compare[T, PT](t, want, &sc, tolerate)
+		out = append(out, sc)
+		return nil
+	}
+	if len(runs) > 0 {
+		for i := range runs {
+			err := measure(&runs[i])
+			if err == nil {
+				continue
+			}
+			// The row keeps its place whatever happened: a refusal refreshes its
+			// reason, and a failure stays queued so it never disappears.
+			kept := runs[i]
+			PT(&kept).Base().Wire = wire
+			PT(&kept).SetTokens("", "")
+			// The outcome is about the model under test, not the siblings the row
+			// groups.
+			PT(&kept).Base().Models = []string{m.Model}
+			if errors.Is(err, smoke.ErrUnsupported) {
+				PT(&kept).Base().Refused = unsupportedReason(err)
+				t.Logf("%T: refuses: %s", fam, PT(&kept).Base().Refused)
+			} else {
+				// The model is unknown again: a failed probe is not a refusal.
+				PT(&kept).Base().Refused = ""
+				t.Logf("%T: %v", fam, err)
+			}
+			out = append(out, kept)
+		}
+		return out
+	}
+	if len(out) > 0 || queued {
+		if queued {
+			t.Log("Explicitly unsupported model")
+		}
+		return out
+	}
+	if !qualify {
+		// An unqualified model joins the queue of the suite that claims unknown
+		// models; a model another section already knows is not unknown.
+		if defaultQueue && !knownElsewhere(sb, m.Model) {
+			out = append(out, queueRow[T, PT](m, wire, queueNotes[T, PT](section)))
+		}
+		return out
+	}
+	c := r.Provider(wire, "")
+	if !fam.Fits(c, sb, m.Model) {
+		return out
+	}
+	var empty T
+	err := measure(&empty)
+	if err == nil {
+		return out
+	}
+	if errors.Is(err, smoke.ErrUnsupported) {
+		// A refusal is a result: the row records why and keeps the model out of the
+		// queue. The fixture it read says what the model answered.
+		refused := queueRow[T, PT](m, wire, "")
+		PT(&refused).Base().Refused = unsupportedReason(err)
+		t.Logf("%T: refuses: %s", fam, PT(&refused).Base().Refused)
+		return append(out, refused)
+	}
+	// A probe that failed says nothing about the model, so the model stays queued.
+	t.Logf("%T: %v", fam, err)
+	return append(out, queueRow[T, PT](m, wire, queueNotes[T, PT](section)))
+}
+
+// queueRow returns a row that lists the model over one wire and holds no measurement.
+func queueRow[T any, PT interface {
+	*T
+	scoreboard.ScoreRow
+}](m scoreboard.Model, w scoreboard.Wire, notes string) T {
+	var row T
+	PT(&row).Base().Models = []string{m.Model}
+	PT(&row).Base().Wire = w
+	PT(&row).Base().Comments = notes
+	PT(&row).SetReasoning(m.Reason)
+	return row
+}
+
+// unsupportedReason returns the message a refusal carries.
+func unsupportedReason(err error) string {
+	msg := strings.TrimPrefix(err.Error(), smoke.ErrUnsupported.Error())
+	return strings.TrimSpace(strings.TrimPrefix(msg, ":"))
+}
+
+// compare checks a measured row against the row it was expected to match.
+//
+// When tolerate is true, reasoning content discovered in a non-thinking row is
+// ignored instead of causing a mismatch. This suits models like Gemma 4 that emit
+// reasoning even with enable_thinking=false.
+func compare[T any, PT interface {
+	*T
+	scoreboard.ScoreRow
+}](t testing.TB, want, got *T, tolerate bool) T {
+	if !PT(want).Reasoning() {
+		if tolerate {
+			PT(got).SetReasoning(false)
+		}
 	} else {
-		got, usage, err = smoke.RunGenai(ctx, providerFactory)
+		PT(got).SetTokens("", "")
 	}
-	t.Logf("Usage: %#v", usage)
-	if err != nil {
-		t.Fatalf("CreateScenario failed: %v", err)
-	}
-	if !want.Reason {
-		if want.ReasoningTokenStart != "" {
-			t.Fatal("unexpected ReasoningTokenStart")
-		}
-		if want.ReasoningTokenEnd != "" {
-			t.Fatal("unexpected ReasoningTokenEnd")
-		}
-		// Some models leak reasoning content even when thinking is disabled
-		// (e.g. Gemma 4). When opted in, tolerate this.
-		if tolerateReasoning {
-			got.Reason = false
-		}
-	} else {
-		want.ReasoningTokenStart = ""
-		want.ReasoningTokenEnd = ""
-	}
-	if diff := cmp.Diff(*want, got, optScenario); diff != "" && !*updateScoreboard {
+	w, g := *want, *got
+	clearNotes(PT(&w))
+	clearNotes(PT(&g))
+	if diff := cmp.Diff(w, g); diff != "" && !*updateScoreboard {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
-	// Preserve Reason from want when got is untested, so the scoreboard
-	// update can match the old scenario key correctly.
-	if got.Untested() && want.Reason {
-		got.Reason = true
-	}
-	return usage, &got
+	return *got
 }
 
-//
+// clearNotes drops the fields a measurement does not re-derive.
+func clearNotes[T scoreboard.ScoreRow](r T) {
+	r.Base().Comments = ""
+	r.Base().SOTA = false
+	r.Base().Good = false
+	r.Base().Cheap = false
+	r.SetTokens("", "")
+}
 
-var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap", "ReasoningTokenStart", "ReasoningTokenEnd")
+// generateUpdatedScoreboard regenerates the scoreboard from scratch in one pass.
+//
+// It merges each section with the rows this run measured, removes stale models,
+// and sorts every section so SOTA/Good/Cheap appear first.
+// Returns the old and new scoreboard JSON bytes.
+func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, measured *collected, staleModels []scoreboard.Key, filtered bool, served []scoreboard.Wire) (rawOld, rawNew []byte) {
+	rawOld, err := os.ReadFile(scoreboardPath)
+	if err != nil {
+		t.Fatalf("failed to read scoreboard.json: %v", err)
+	}
+	d := json.NewDecoder(bytes.NewReader(rawOld))
+	d.DisallowUnknownFields()
+	oldScore := scoreboard.Score{}
+	if err = d.Decode(&oldScore); err != nil {
+		t.Fatalf("failed to decode scoreboard.json: %v", err)
+	}
+	if err = oldScore.Validate(); err != nil {
+		t.Fatalf("failed to validate scoreboard.json: %v", err)
+	}
+	stale := make(map[scoreboard.Key]struct{}, len(staleModels))
+	for _, m := range staleModels {
+		stale[m] = struct{}{}
+	}
+	newScore := scoreboard.Score{Warnings: oldScore.Warnings, Country: oldScore.Country, DashboardURL: oldScore.DashboardURL}
+	newScore.Chat = mergeSection(t, oldScore.Chat, measured.Chat, stale, filtered, served)
+	newScore.Embed = mergeSection(t, oldScore.Embed, measured.Embed, stale, filtered, served)
+	newScore.SystemOne = mergeSection(t, oldScore.SystemOne, measured.SystemOne, stale, filtered, served)
+	newScore.Realtime = mergeSection(t, oldScore.Realtime, measured.Realtime, stale, filtered, served)
+	if err = newScore.Validate(); err != nil {
+		t.Fatalf("failed to validate scoreboard: %v", err)
+	}
+	var err2 error
+	rawNew, err2 = json.MarshalIndent(newScore, "", "  ")
+	if err2 != nil {
+		t.Fatalf("failed to encode scoreboard: %v", err2)
+	}
+	rawNew = append(rawNew, '\n')
+	return rawOld, rawNew
+}
+
+// mergeSection merges one section with the rows a run measured.
+//
+// A measured row takes the notes and the tier flags of the row it replaces. A row
+// of the old section that this run did not measure is kept, without its stale
+// models. A queue entry keeps the models that no row measures, then consolidates
+// with the other queue entries that share its notes.
+func mergeSection[T any, PT interface {
+	*T
+	scoreboard.ScoreRow
+}](t testing.TB, old, measured []T, stale map[scoreboard.Key]struct{}, filtered bool, served []scoreboard.Wire) []T {
+	byKey := make(map[scoreboard.Key]*T, len(old))
+	for i := range old {
+		row := PT(&old[i])
+		for _, m := range row.Base().Models {
+			byKey[row.Key(m)] = &old[i]
+		}
+	}
+	var out []T
+	var queue []T
+	// The keys a measured row now covers, so no old row repeats them.
+	measuredKeys := map[scoreboard.Key]struct{}{}
+	// The keys any row of this run covers, including a queue entry that replaces a
+	// failed measurement.
+	coveredKeys := map[scoreboard.Key]struct{}{}
+	for i := range measured {
+		row := &measured[i]
+		rowPtr := PT(row)
+		key := rowPtr.Key(rowPtr.Base().Models[0])
+		sc := *row
+		if prev, ok := byKey[key]; ok {
+			prevRow := PT(prev)
+			// A queue entry's notes describe the queue, so they stay with it. Notes on
+			// a measurement describe the model, so they follow it.
+			if !prevRow.Untested() {
+				PT(&sc).Base().Comments = prevRow.Base().Comments
+				// The delimiters of an inline reasoning reply are a property of the
+				// model, not something a probe measures.
+				start, end := prevRow.Tokens()
+				PT(&sc).SetTokens(start, end)
+			}
+			// The tier flags describe the model, so they follow the measurement.
+			PT(&sc).Base().SOTA = prevRow.Base().SOTA
+			PT(&sc).Base().Good = prevRow.Base().Good
+			PT(&sc).Base().Cheap = prevRow.Base().Cheap
+			// A measurement is evidence for one model: a sibling keeps its own row.
+		}
+		coveredKeys[key] = struct{}{}
+		if PT(&sc).Untested() {
+			queue = append(queue, sc)
+			continue
+		}
+		// A measurement covers the model it measured, nothing else.
+		measuredKeys[PT(&sc).Key(PT(&sc).Base().Models[0])] = struct{}{}
+		out = append(out, sc)
+	}
+	for i := range old {
+		row := &old[i]
+		rowPtr := PT(row)
+		kept := *row
+		models := make([]string, 0, len(rowPtr.Base().Models))
+		for _, m := range rowPtr.Base().Models {
+			key := rowPtr.Key(m)
+			if _, isStale := stale[key]; isStale {
+				t.Logf("Removing stale model %q with reason=%v", m, rowPtr.Reasoning())
+				continue
+			}
+			if _, isCovered := coveredKeys[key]; isCovered {
+				continue
+			}
+			models = append(models, m)
+		}
+		if rowPtr.Untested() {
+			// A queue entry that lost every model to a measurement is gone.
+			if len(models) == 0 {
+				continue
+			}
+			PT(&kept).Base().Models = models
+			queue = append(queue, kept)
+			continue
+		}
+		if len(models) == 0 {
+			continue
+		}
+		PT(&kept).Base().Models = models
+		if !filtered && slices.Contains(served, rowPtr.Key(models[0]).Wire) {
+			// This run did not re-test the row, so it keeps its notes but loses the
+			// tier flags that a complete run re-derives. A row of another wire is not
+			// this run's to re-derive.
+			PT(&kept).Base().SOTA = false
+			PT(&kept).Base().Good = false
+			PT(&kept).Base().Cheap = false
+		}
+		out = append(out, kept)
+	}
+	// Fold the queue entries together, then drop the models a measured or kept row
+	// already covers.
+	for _, r := range scoreboard.ConsolidateQueue[T, PT](queue) {
+		rowPtr := PT(&r)
+		models := make([]string, 0, len(rowPtr.Base().Models))
+		for _, m := range rowPtr.Base().Models {
+			if _, isMeasured := measuredKeys[rowPtr.Key(m)]; isMeasured {
+				continue
+			}
+			models = append(models, m)
+		}
+		if len(models) == 0 {
+			continue
+		}
+		rowPtr.Base().Models = models
+		out = append(out, r)
+	}
+	// One row per model and key: an earlier row claims the model, a later one loses
+	// it. Sections never carry the same model twice.
+	claimed := map[scoreboard.Key]struct{}{}
+	survivors := make([]T, 0, len(out))
+	for i := range out {
+		row := PT(&out[i])
+		models := make([]string, 0, len(row.Base().Models))
+		for _, m := range row.Base().Models {
+			key := row.Key(m)
+			if _, ok := claimed[key]; ok {
+				continue
+			}
+			claimed[key] = struct{}{}
+			models = append(models, m)
+		}
+		if len(models) == 0 {
+			continue
+		}
+		row.Base().Models = models
+		survivors = append(survivors, out[i])
+	}
+	scoreboard.SortRows[T, PT](survivors)
+	return survivors
+}
 
 // deleteOrphanedRecordings recursively checks and deletes recordings that don't correspond to any
 // scoreboard model.
@@ -420,6 +708,14 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 		t.Fatalf("failed to walk directory %s: %v", dir, err)
 	}
 
+	// A nested run sweeps its own recordings, so this one leaves it alone.
+	nested := map[string]struct{}{}
+	for _, d := range allDirs {
+		if i := strings.IndexByte(d, '/'); i != -1 {
+			nested[d[:i]] = struct{}{}
+		}
+	}
+
 	// Only keep leaf directories (directories with no subdirectories).
 	modelDirs := make([]string, 0, len(allDirs))
 	for _, d := range allDirs {
@@ -431,6 +727,13 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 				isLeaf = false
 				break
 			}
+		}
+		if strings.ContainsRune(d, '/') {
+			// A nested run owns everything below it.
+			continue
+		}
+		if _, ok := nested[d]; ok {
+			continue
 		}
 		if isLeaf {
 			modelDirs = append(modelDirs, d)
@@ -456,302 +759,6 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 	}
 }
 
-// generateUpdatedScoreboard regenerates the scoreboard from scratch in one pass.
-//
-// It merges tested scenarios with the existing scoreboard to preserve metadata,
-// removes stale models, and sorts scenarios so SOTA/Good/Cheap appear first.
-// Returns the old and new scoreboard JSON bytes.
-func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Key, filtered bool) (rawOld, rawNew []byte) {
-	rawOld, err := os.ReadFile(scoreboardPath)
-	if err != nil {
-		t.Fatalf("failed to read scoreboard.json: %v", err)
-	}
-	d := json.NewDecoder(bytes.NewReader(rawOld))
-	d.DisallowUnknownFields()
-	oldScore := scoreboard.Score{}
-	if err = d.Decode(&oldScore); err != nil {
-		t.Fatalf("failed to decode scoreboard.json: %v", err)
-	}
-	if err = oldScore.Validate(); err != nil {
-		t.Fatalf("failed to validate scoreboard.json: %v", err)
-	}
-
-	// Build a map of old scenarios for quick lookup and metadata preservation
-	oldScenarios := make(map[scoreboard.Key]*scoreboard.Scenario)
-	for i := range oldScore.Scenarios {
-		sc := &oldScore.Scenarios[i]
-		for _, m := range sc.Models {
-			oldScenarios[sc.Key(m)] = sc
-		}
-	}
-
-	// Mark stale models for removal
-	staleSet := make(map[scoreboard.Key]struct{})
-	for _, m := range staleModels {
-		staleSet[m] = struct{}{}
-	}
-
-	// Regenerate scenarios in a single pass
-	result := make([]scoreboard.Scenario, 0, len(scenarios)+len(oldScore.Scenarios))
-	seenPairs := make(map[scoreboard.Key]struct{})
-	usedOldScenarios := make(map[*scoreboard.Scenario]struct{})
-
-	// First pass: add tested scenarios, preserving metadata from old scenarios
-	for i := range scenarios {
-		newSc := &scenarios[i]
-		if len(newSc.Models) == 0 {
-			continue
-		}
-		// Skip untested scenarios - they'll be handled in the third pass.
-		// But mark them as seen so the second pass doesn't re-add the old
-		// tested scenario for the same model.
-		if newSc.Untested() {
-			if len(newSc.Models) > 0 {
-				seenPairs[newSc.Key(newSc.Models[0])] = struct{}{}
-			}
-			continue
-		}
-		model := newSc.Models[0]
-		key := newSc.Key(model)
-
-		// Skip if already seen
-		if _, seen := seenPairs[key]; seen {
-			continue
-		}
-		seenPairs[key] = struct{}{}
-
-		// Use old metadata if available, otherwise use new scenario
-		sc := *newSc
-		if oldSc, found := oldScenarios[key]; found {
-			// Preserve metadata from old scenario
-			if oldSc.Untested() && sc.Embed != nil {
-				sc.Comments = ""
-			} else {
-				sc.Comments = oldSc.Comments
-			}
-			sc.ReasoningTokenStart = oldSc.ReasoningTokenStart
-			sc.ReasoningTokenEnd = oldSc.ReasoningTokenEnd
-			// Qualification measures one model; the third pass retains untested siblings.
-			// Existing tested groups can still share their previous capability scores.
-			if oldSc.Untested() {
-				sc.Models = []string{model}
-			} else if _, used := usedOldScenarios[oldSc]; !used {
-				sc.Models = oldSc.Models
-				// New measurement is evidence only for this model, not grouped
-				// siblings that shared existing capability scores.
-				outOfOrderChanged := func(a, b *scoreboard.Functionality) bool {
-					if a == nil || b == nil {
-						return false
-					}
-					return !cmp.Equal(a.OutOfOrder, b.OutOfOrder)
-				}
-				if len(oldSc.Models) > 1 && (sc.Embed != nil && (!cmp.Equal(oldSc.Embed, sc.Embed) || !cmp.Equal(oldSc.In, sc.In)) || outOfOrderChanged(oldSc.GenSync, sc.GenSync) || outOfOrderChanged(oldSc.GenStream, sc.GenStream)) {
-					rest := *oldSc
-					rest.Models = slices.DeleteFunc(slices.Clone(oldSc.Models), func(id string) bool { return id == model })
-					rest.SOTA, rest.Good, rest.Cheap = false, false, false
-					result = append(result, rest)
-					sc.Models = []string{model}
-				}
-				usedOldScenarios[oldSc] = struct{}{}
-				// Mark all models in this old scenario as seen to avoid processing them again
-				for _, m := range oldSc.Models {
-					seenPairs[oldSc.Key(m)] = struct{}{}
-				}
-			} else {
-				sc.Models = []string{model}
-			}
-		} else {
-			sc.Models = []string{model}
-		}
-
-		// Remove stale models from the model list
-		remainingModels := make([]string, 0, len(sc.Models))
-		for _, m := range sc.Models {
-			if _, isStale := staleSet[sc.Key(m)]; !isStale {
-				remainingModels = append(remainingModels, m)
-			} else {
-				t.Logf("Removing stale model %q with reason=%v", m, sc.Reason)
-			}
-		}
-
-		if len(remainingModels) > 0 {
-			sc.Models = remainingModels
-			// Preserve SOTA/Good/Cheap flags from old scenario only
-			var wasSOTA, wasGood, wasCheap bool
-			if oldSc, found := oldScenarios[key]; found {
-				wasSOTA = oldSc.SOTA
-				wasGood = oldSc.Good
-				wasCheap = oldSc.Cheap
-			}
-			// Only preserve flags from old scenario, don't set new ones
-			sc.SOTA = wasSOTA
-			sc.Good = wasGood
-			sc.Cheap = wasCheap
-			result = append(result, sc)
-		}
-	}
-
-	// Second pass: add tested but non-preferred scenarios from old scoreboard
-	for i := range oldScore.Scenarios {
-		oldSc := oldScore.Scenarios[i]
-		// Skip if this scenario was already processed as tested
-		if _, seen := seenPairs[oldSc.Key(oldSc.Models[0])]; seen {
-			continue
-		}
-
-		// Skip untested scenarios for now
-		if oldSc.Untested() {
-			continue
-		}
-
-		// Remove stale models from the old scenario
-		remainingModels := make([]string, 0, len(oldSc.Models))
-		for _, m := range oldSc.Models {
-			if _, isStale := staleSet[oldSc.Key(m)]; !isStale {
-				remainingModels = append(remainingModels, m)
-			} else {
-				t.Logf("Removing stale model %q with reason=%v", m, oldSc.Reason)
-			}
-		}
-		if len(remainingModels) == 0 {
-			continue
-		}
-		oldSc.Models = remainingModels
-
-		// Include tested scenarios but clear preference flags since they weren't re-tested
-		if !filtered {
-			oldSc.SOTA = false
-			oldSc.Good = false
-			oldSc.Cheap = false
-		}
-		result = append(result, oldSc)
-	}
-
-	// Collect all model names from tested scenarios to avoid including them
-	// in untested scenarios (a model should only appear once in the doc).
-	testedModels := map[modelSource]struct{}{}
-	for i := range result {
-		for _, m := range result[i].Models {
-			testedModels[sourceOf(m, &result[i])] = struct{}{}
-		}
-	}
-
-	// Third pass: consolidate untested scenarios by comments/reason
-	// Include both newly added untested scenarios and old ones
-	allUntested := make([]scoreboard.Scenario, 0)
-
-	// Track which old scenarios have models represented in the new scenarios
-	// to avoid adding the same scenario twice
-	newScenarioModels := make(map[scoreboard.Key]struct{})
-
-	// First, collect all untested scenarios from new results, removing stale
-	// models and models already present in tested scenarios.
-	for i := range scenarios {
-		sc := scenarios[i]
-		if len(sc.Models) > 0 && sc.Untested() {
-			if oldSc := oldScenarios[sc.Key(sc.Models[0])]; oldSc != nil {
-				sc.Comments = oldSc.Comments
-			}
-			// Remove stale models
-			remainingModels := make([]string, 0, len(sc.Models))
-			for _, m := range sc.Models {
-				modelKey := sc.Key(m)
-				if _, isStale := staleSet[modelKey]; !isStale {
-					if _, isTested := testedModels[sourceOf(m, &sc)]; !isTested {
-						remainingModels = append(remainingModels, m)
-						newScenarioModels[modelKey] = struct{}{}
-					}
-				}
-			}
-			if len(remainingModels) > 0 {
-				sc.Models = remainingModels
-				allUntested = append(allUntested, sc)
-			}
-		}
-	}
-
-	// Then, collect untested scenarios from old scoreboard, but skip any models
-	// that were already added from new scenarios to avoid duplicates
-	for i := range oldScore.Scenarios {
-		oldSc := &oldScore.Scenarios[i]
-		// Only process untested scenarios
-		if !oldSc.Untested() {
-			continue
-		}
-
-		// Remove stale models, models already in new scenarios, and
-		// models already present in tested scenarios.
-		remainingModels := make([]string, 0, len(oldSc.Models))
-		for _, m := range oldSc.Models {
-			modelKey := oldSc.Key(m)
-			if _, isStale := staleSet[modelKey]; !isStale {
-				if _, inNew := newScenarioModels[modelKey]; !inNew {
-					if _, isTested := testedModels[sourceOf(m, oldSc)]; !isTested {
-						remainingModels = append(remainingModels, m)
-					}
-				}
-			}
-		}
-
-		if len(remainingModels) > 0 {
-			// Create a copy with non-stale models for consolidation
-			scCopy := *oldSc
-			scCopy.Models = remainingModels
-			allUntested = append(allUntested, scCopy)
-		}
-	}
-
-	// Deduplicate models across untested scenarios: a model should only
-	// appear in one untested scenario. Prefer the non-reasoning scenario
-	// first to avoid speculative 🧠 markers.
-	seenUntestedModels := map[modelSource]struct{}{}
-	for _, reason := range []bool{false, true} {
-		for i := range allUntested {
-			if allUntested[i].Reason != reason {
-				continue
-			}
-			deduped := make([]string, 0, len(allUntested[i].Models))
-			for _, m := range allUntested[i].Models {
-				key := sourceOf(m, &allUntested[i])
-				if _, seen := seenUntestedModels[key]; !seen {
-					seenUntestedModels[key] = struct{}{}
-					deduped = append(deduped, m)
-				}
-			}
-			allUntested[i].Models = deduped
-		}
-	}
-
-	// Consolidate untested by comments/reason. Filter out empty scenarios
-	// (all models were deduplicated into another scenario).
-	nonEmpty := make([]scoreboard.Scenario, 0, len(allUntested))
-	for i := range allUntested {
-		sc := &allUntested[i]
-		if len(sc.Models) > 0 {
-			nonEmpty = append(nonEmpty, *sc)
-		}
-	}
-	allUntested = nonEmpty
-	untestedConsolidated := scoreboard.ConsolidateUntestedScenarios(allUntested)
-	result = append(result, untestedConsolidated...)
-
-	// Validate and write
-	newScore := oldScore
-	newScore.Scenarios = result
-	newScore.SortScenarios()
-	if err = newScore.Validate(); err != nil {
-		t.Fatalf("failed to validate scoreboard: %v", err)
-	}
-
-	var err2 error
-	rawNew, err2 = json.MarshalIndent(newScore, "", "  ")
-	if err2 != nil {
-		t.Fatalf("failed to encode scoreboard: %v", err2)
-	}
-	rawNew = append(rawNew, '\n')
-	return rawOld, rawNew
-}
-
 // unexpectedRecordings returns recordings that the run did not consume.
 func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error) {
 	if _, err := os.Stat(dir); errors.Is(err, fs.ErrNotExist) {
@@ -774,23 +781,15 @@ func unexpectedRecordings(dir string, used map[string]struct{}) ([]string, error
 			if err != nil {
 				return err
 			}
-			extra = append(extra, filepath.ToSlash(rel))
+			relSlash := filepath.ToSlash(rel)
+			if strings.Count(relSlash, "/") > 1 {
+				// A nested run owns the recordings below it, and reports its own.
+				return nil
+			}
+			extra = append(extra, relSlash)
 		}
 		return nil
 	})
 	slices.Sort(extra)
 	return extra, err
-}
-
-// servesSpeechOrText reports whether a measured scenario of the model returns
-// speech or text, the two outputs a realtime session produces.
-func servesSpeechOrText(scenarios []scoreboard.Scenario) bool {
-	for i := range scenarios {
-		for mod := range scenarios[i].Out {
-			if mod == genai.ModalityText || mod == genai.ModalityAudio {
-				return true
-			}
-		}
-	}
-	return false
 }

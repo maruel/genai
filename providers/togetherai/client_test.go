@@ -20,6 +20,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/togetherai"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -127,7 +128,9 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if model.Reason {
-				for _, sc := range c.Scoreboard().Scenarios {
+				sb := c.Scoreboard()
+				for i := range sb.Chat {
+					sc := &sb.Chat[i]
 					if sc.ReasoningTokenEnd != "" && slices.Contains(sc.Models, model.Model) {
 						return &adapters.ProviderReasoning{
 							Provider:            c,
@@ -145,7 +148,7 @@ func TestClient(t *testing.T) {
 			return &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}, size: size}
 		}
 
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{
 			Qualify: []scoreboard.Model{
 				{Model: "black-forest-labs/FLUX.2-pro"},
 			},

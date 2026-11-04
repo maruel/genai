@@ -12,7 +12,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -26,8 +25,8 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -115,13 +114,13 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		scenarios := c.Scoreboard().Models()
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
 			reason := false
 			for _, sc := range scenarios {
-				if slices.Contains(sc.Models, id) {
+				if sc.Model == id {
 					reason = sc.Reason
 					break
 				}
@@ -131,18 +130,14 @@ func TestClient(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join("testdata", "TestClient", "Scoreboard"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClient := func(t testing.TB, model scoreboard.Model, name string) genai.Provider {
 			var opts []genai.ProviderOption
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if fn != nil {
-				wrapped := fn(http.DefaultTransport)
-				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
-					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					r := internaltest.NewSubprocessRecorder(t, name, "dsh", nil)
-					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
-				}
+			if name != "" {
+				r := internaltest.NewSubprocessRecorder(t, name, "dsh", nil)
+				opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 			}
 			c, err := New(t.Context(), opts...)
 			if c != nil {
@@ -153,7 +148,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.Subprocess(getClient), models, nil)
 	})
 
 	t.Run("GenSync", func(t *testing.T) {

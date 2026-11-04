@@ -18,6 +18,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/alibaba"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -165,7 +166,9 @@ func TestClient(t *testing.T) {
 				// Prefer Reason from tested (non-untested) scenarios.
 				// Build the Reason lookup from the existing scoreboard.
 				reasonModels := map[string]bool{}
-				for _, sc := range alibaba.ScoreboardForBackend(b.opt).Scenarios {
+				sb := alibaba.ScoreboardForBackend(b.opt)
+				for i := range sb.Chat {
+					sc := &sb.Chat[i]
 					for _, m := range sc.Models {
 						if _, ok := reasonModels[m]; ok && sc.Untested() {
 							continue
@@ -212,7 +215,7 @@ func TestClient(t *testing.T) {
 						Opts:     []genai.GenOption{&alibaba.GenOption{Thinking: model.Reason}},
 					}
 				}
-				smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{ScoreboardFile: b.sbFile})
+				smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{ScoreboardFile: b.sbFile})
 			})
 
 			t.Run("Preferred", func(t *testing.T) {

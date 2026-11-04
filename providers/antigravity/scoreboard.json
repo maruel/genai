@@ -1,18 +1,19 @@
 {
   "country": "US",
   "dashboardURL": "https://antigravity.google",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "gemini-3.1-pro-high"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -38,12 +39,13 @@
         "gemini-3.8-flash-medium"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -69,12 +71,13 @@
         "gemini-3.8-flash-low"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -108,7 +111,8 @@
         "gemini-3.7-flash-medium",
         "gemini-3.8-flash-high",
         "gpt-oss-120b-medium"
-      ]
+      ],
+      "wire": "subprocess"
     }
   ]
 }

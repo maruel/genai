@@ -1,13 +1,12 @@
 {
   "country": "CN",
   "dashboardURL": "https://platform.xiaomimimo.com",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "mimo-v2.6-pro"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "audio": {
           "inline": true,
@@ -39,6 +38,8 @@
           ]
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -73,7 +74,6 @@
       ],
       "good": true,
       "cheap": true,
-      "reason": true,
       "in": {
         "audio": {
           "inline": true,
@@ -105,6 +105,8 @@
           ]
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -143,6 +145,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "audio": {
           "inline": true,
@@ -161,18 +164,21 @@
       "models": [
         "mimo-v2.5-asr",
         "mimo-v2.5-tts-voiceclone"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "comments": "TTS with voice design. Requires assistant message for text to synthesize. See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5",
       "models": [
         "mimo-v2.5-tts-voicedesign"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "models": [
         "mimo-v2.6-pro-ultraspeed"
       ],
+      "wire": "http",
       "reason": true
     }
   ]

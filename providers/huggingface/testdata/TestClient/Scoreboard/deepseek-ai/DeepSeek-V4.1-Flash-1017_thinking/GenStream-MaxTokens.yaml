@@ -21,71 +21,79 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"usage":null}
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"We"}}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":1,"total_tokens":41,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
 
-            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":"We"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need answer. Need"}}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":5,"total_tokens":45,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":5,"rejected_prediction_tokens":0}}}
 
-            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" need answer:"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{"content":"","reasoning_content":" explain theory of relativity"}}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":9,"total_tokens":49,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}
 
-            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" Explain theory of relativity in great"},"logprobs":null,"finish_reason":null,"token_ids":null}],"usage":null}
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{"content":"","reasoning_content":" in great details"}}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":12,"total_tokens":52,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
 
-            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[{"index":0,"delta":{"reasoning":" details. Need likely provide comprehensive"},"logprobs":null,"finish_reason":"length","stop_reason":null,"token_ids":null}],"usage":null}
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{"content":"Rel"}}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":14,"total_tokens":54,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
 
-            data: {"id":"chatcmpl-7640f708-ebf5-4c42-abfb-c8c629d3bbb4","object":"chat.completion.chunk","created":1793401701,"model":"deepseek-v4.1-flash-1017","choices":[],"usage":{"prompt_tokens":39,"total_tokens":55,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0},"completion_tokens_details":{"reasoning_tokens":16}},"system_fingerprint":null}
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{"content":"ativity is"}}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":16,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":10,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":8}}}
+
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[{"index":0,"delta":{},"finish_reason":"length"}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":16,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":10,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":8}}}
+
+            data: {"id":"chatcmpl-3c78435d5fed4e628cfa98f0fe3a4824","choices":[],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":40,"completion_tokens":16,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":10,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":8}}}
 
             data: [DONE]
 
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Access-Control-Allow-Headers:
-                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
-            Access-Control-Allow-Methods:
-                - GET, POST, OPTIONS
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Cache-Control:
+                - no-cache
             Content-Type:
-                - text/event-stream; charset=utf-8
+                - text/event-stream
             Cross-Origin-Opener-Policy:
                 - same-origin
             Referrer-Policy:
                 - strict-origin-when-cross-origin
-            Server:
-                - envoy
             Strict-Transport-Security:
                 - max-age=31536000
             Vary:
-                - Origin
+                - Origin, Origin
             Via:
-                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+                - 1.1 google, 1.1 6a87816d6ed87d078077233e1a539f4c.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - ZMMPzDidwB5G9CvKuPJ1cLdGPslyf-aHYKhdosZqx284E_ATypdZYA==
+                - YpyRjQH_8XCSynSjym7UuxqEqgdnf2aPYLE-0ApxqK4tFurC9Obe6w==
             X-Amz-Cf-Pop:
                 - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1793797994208"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "1"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "9209194094637639506"
+            X-Baseten-Dyn-Worker-Id:
+                - "9209194094634286017"
+            X-Baseten-Received-At:
+                - "1793797994208"
+            X-Baseten-Request-Id:
+                - 54ca701a1a6b136e07313b434ea146cb103a9
+            X-Baseten-Sent-At:
+                - "1793797994365"
             X-Cache:
                 - Miss from cloudfront
-            X-Envoy-Upstream-Service-Time:
-                - "206"
             X-Inference-Provider:
-                - scaleway
+                - baseten
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Limit-Requests:
-                - "600"
+                - "200"
             X-Ratelimit-Limit-Tokens:
-                - "5000000"
+                - "3000000"
             X-Ratelimit-Remaining-Requests:
-                - "599"
+                - "96"
             X-Ratelimit-Remaining-Tokens:
-                - "4915266"
-            X-Ratelimit-Reset-Requests:
-                - 100ms
-            X-Ratelimit-Reset-Tokens:
-                - 1s16ms
+                - "3000000"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 382ms
+        duration: 238ms

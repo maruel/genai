@@ -11,6 +11,7 @@
 | claude-fable-5             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-fable-5-1           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-haiku-4-5-20251001  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| claude-haiku-5-5           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-opus-4-1-20250805   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-opus-4-20250514     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-opus-4-5-20251101   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -18,10 +19,12 @@
 | claude-opus-4-7            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-opus-4-8            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-opus-5              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| claude-opus-5-5            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-sonnet-4-20250514   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-sonnet-4-5-20250929 | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-sonnet-4-6          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | claude-sonnet-5            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| claude-sonnet-5-5          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -39,6 +42,7 @@
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - Realtime: Bidirectional audio and text session through ConnectRealtime
+- WS: Measured over the WebSocket wire instead of HTTP.
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

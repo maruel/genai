@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/xiaomi"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -184,8 +185,8 @@ func TestClient(t *testing.T) {
 			id := m.GetID()
 			reason := !strings.Contains(id, "tts") && !strings.Contains(id, "asr")
 			models = append(models, scoreboard.Model{Model: id, Reason: reason})
-			if reason && slices.ContainsFunc(sb.Scenarios, func(sc scoreboard.Scenario) bool {
-				return !sc.Reason && !sc.Untested() && slices.Contains(sc.Models, id)
+			if reason && slices.ContainsFunc(sb.Models(), func(m scoreboard.Model) bool {
+				return !m.Reason && m.Model == id
 			}) {
 				models = append(models, scoreboard.Model{Model: id})
 			}
@@ -219,7 +220,7 @@ func TestClient(t *testing.T) {
 				Opts:     []genai.GenOption{&xiaomi.GenOption{Thinking: model.Reason}},
 			}
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

@@ -7,13 +7,12 @@
   ],
   "country": "US",
   "dashboardURL": "https://platform.openai.com/usage",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "gpt-6-astra"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -35,6 +34,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -73,6 +74,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "inline": true,
@@ -88,7 +90,6 @@
         "gpt-6.1-terra"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -110,6 +111,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -141,7 +144,6 @@
         "gpt-6-luna"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -163,6 +165,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -199,6 +203,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "inline": true,
@@ -234,6 +239,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -276,7 +282,6 @@
       "models": [
         "gpt-6.1-sol"
       ],
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -298,6 +303,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -347,6 +354,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "audio": {
           "inline": true,
@@ -379,126 +387,6 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "maxTokens": true
-      }
-    },
-    {
-      "comments": "Realtime thinking mode: ReasoningEffortHigh.",
-      "models": [
-        "gpt-realtime-2.1"
-      ],
-      "reason": true,
-      "in": {
-        "audio": {
-          "inline": true
-        },
-        "image": {
-          "inline": true
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "audio": {
-          "inline": true
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "Realtime": {
-        "inputSampleRate": 24000,
-        "outputSampleRate": 24000,
-        "cancelResponse": true,
-        "tools": "true",
-        "reportRateLimits": true,
-        "reportTokenUsage": "true"
-      }
-    },
-    {
-      "comments": "Realtime non-thinking mode: ReasoningEffortMinimal.",
-      "models": [
-        "gpt-realtime-2.1"
-      ],
-      "in": {
-        "audio": {
-          "inline": true
-        },
-        "image": {
-          "inline": true
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "audio": {
-          "inline": true
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "Realtime": {
-        "inputSampleRate": 24000,
-        "outputSampleRate": 24000,
-        "cancelResponse": true,
-        "tools": "true",
-        "reportRateLimits": true,
-        "reportTokenUsage": "true"
-      }
-    },
-    {
-      "comments": "Realtime non-thinking mode: ReasoningEffortMinimal.",
-      "models": [
-        "gpt-realtime-2.1-mini"
-      ],
-      "in": {
-        "audio": {
-          "inline": true
-        },
-        "image": {
-          "inline": true
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "audio": {
-          "inline": true
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "Realtime": {
-        "inputSampleRate": 24000,
-        "outputSampleRate": 24000,
-        "cancelResponse": true,
-        "tools": "true",
-        "reportRateLimits": true,
-        "reportTokenUsage": "true"
-      }
-    },
-    {
-      "models": [
-        "text-embedding-3-small"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "embedding": {
-          "inline": true
-        }
-      },
-      "Embed": {
-        "dimensions": 1536,
-        "requestedDimensions": true,
-        "reportTokenUsage": "true"
       }
     },
     {
@@ -632,17 +520,29 @@
         "tts-1-hd",
         "tts-1-hd-1106",
         "whisper-1"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "models": [
         "gpt-6-sol"
       ],
+      "wire": "http",
       "reason": true
     },
     {
       "comments": "Most of these models are not accessible by this API",
       "models": [
+        "gpt-realtime-2.1"
+      ],
+      "wire": "http",
+      "reason": true
+    },
+    {
+      "comments": "Most of these models are not accessible by this API",
+      "models": [
+        "gpt-realtime-2.1",
+        "gpt-realtime-2.1-mini",
         "o1",
         "o1-2024-12-17",
         "o1-pro",
@@ -659,7 +559,177 @@
         "o4-mini-2025-04-16",
         "o4-mini-deep-research",
         "o4-mini-deep-research-2025-06-26"
-      ]
+      ],
+      "wire": "http"
+    }
+  ],
+  "embed": [
+    {
+      "models": [
+        "text-embedding-3-small"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "http",
+      "Embed": {
+        "dimensions": 1536,
+        "requestedDimensions": true,
+        "reportTokenUsage": "true"
+      }
+    }
+  ],
+  "realtime": [
+    {
+      "models": [
+        "gpt-6-astra"
+      ],
+      "refused": "realtime provider rejected setup",
+      "wire": "session",
+      "reason": true
+    },
+    {
+      "models": [
+        "gpt-6-luna"
+      ],
+      "refused": "realtime provider rejected setup",
+      "wire": "session",
+      "reason": true
+    },
+    {
+      "models": [
+        "gpt-6-luna"
+      ],
+      "refused": "realtime provider rejected setup",
+      "wire": "session"
+    },
+    {
+      "models": [
+        "gpt-6.1-sol"
+      ],
+      "refused": "realtime provider rejected setup",
+      "wire": "session",
+      "reason": true
+    },
+    {
+      "models": [
+        "gpt-6.1-terra"
+      ],
+      "refused": "realtime provider rejected setup",
+      "wire": "session",
+      "reason": true
+    },
+    {
+      "models": [
+        "gpt-audio"
+      ],
+      "refused": "realtime provider rejected setup",
+      "wire": "session"
+    },
+    {
+      "comments": "Realtime thinking mode: ReasoningEffortHigh.",
+      "models": [
+        "gpt-realtime-2.1"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "image": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "session",
+      "reason": true,
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "true",
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "comments": "Realtime non-thinking mode: ReasoningEffortMinimal.",
+      "models": [
+        "gpt-realtime-2.1"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "image": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "session",
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "true",
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
+      }
+    },
+    {
+      "comments": "Realtime non-thinking mode: ReasoningEffortMinimal.",
+      "models": [
+        "gpt-realtime-2.1-mini"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        },
+        "image": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "wire": "session",
+      "out": {
+        "audio": {
+          "inline": true
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "outputSampleRate": 24000,
+        "cancelResponse": true,
+        "tools": "true",
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
+      }
     }
   ]
 }

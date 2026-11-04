@@ -1,13 +1,12 @@
 {
   "country": "US",
   "dashboardURL": "https://app.baseten.co",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "zai-org/GLM-5.3-Flash"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -23,6 +22,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -58,7 +59,6 @@
         "deepseek-ai/DeepSeek-V4.1-Flash"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -74,6 +74,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -109,12 +111,13 @@
         "openai/gpt-oss-120b"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -172,7 +175,8 @@
         "zai-org/GLM-5.2-Fast",
         "zai-org/GLM-5.3",
         "zai-org/GLM-5.3-Fast"
-      ]
+      ],
+      "wire": "http"
     }
   ]
 }

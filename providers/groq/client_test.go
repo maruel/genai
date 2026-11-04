@@ -20,6 +20,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -143,13 +144,13 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		scenarios := c.Scoreboard().Models()
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
 			found := false
 			for _, sc := range scenarios {
-				if slices.Contains(sc.Models, id) {
+				if sc.Model == id {
 					models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
 					found = true
 				}
@@ -188,7 +189,7 @@ func TestClient(t *testing.T) {
 			}
 			return cl
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

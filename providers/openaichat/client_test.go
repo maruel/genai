@@ -35,6 +35,7 @@ import (
 	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -1161,7 +1162,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		scenarios := c.Scoreboard().Models()
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
@@ -1170,7 +1171,7 @@ func TestClient(t *testing.T) {
 			}
 			found := false
 			for _, sc := range scenarios {
-				if slices.Contains(sc.Models, id) {
+				if sc.Model == id {
 					models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
 					found = true
 				}
@@ -1279,7 +1280,17 @@ func TestClient(t *testing.T) {
 			}
 			return p
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{
+			{Model: "text-embedding-3-small"},
+			// A model that declines a session records why, so the harness does not ask
+			// again on every run.
+			{Model: "gpt-6-astra", Reason: true},
+			{Model: "gpt-6-luna"},
+			{Model: "gpt-6-luna", Reason: true},
+			{Model: "gpt-6.1-sol", Reason: true},
+			{Model: "gpt-6.1-terra", Reason: true},
+			{Model: "gpt-audio"},
+		}})
 	})
 
 	t.Run("Batch", func(t *testing.T) {

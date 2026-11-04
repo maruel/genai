@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"net"
 	"net/http"
 	"sync"
 
@@ -39,7 +40,10 @@ import (
 // since it already has the prior conversation via previous_response_id.
 //
 // Key constraints:
-//   - One response in-flight at a time (no multiplexing)
+//   - One response in-flight at a time: a call reads every frame on the socket, so a
+//     frame another exchange sent would be read here. The API can carry several
+//     conversations on one socket with stream_id, and running them needs a lane
+//     router between the reader and the callers.
 //   - 60-minute connection limit
 //   - Compatible with store=false and ZDR
 //
@@ -109,6 +113,10 @@ func (w *WebSocketConn) Close() error {
 	}
 	err := w.ws.CloseNow()
 	w.ws = nil
+	if errors.Is(err, net.ErrClosed) {
+		// The peer closed the connection first; the socket is gone either way.
+		return nil
+	}
 	return err
 }
 
@@ -177,6 +185,14 @@ func (w *WebSocketConn) recvEvents(ctx context.Context) (iter.Seq[ResponseStream
 				errCh <- ctx.Err()
 				return
 			}
+			switch chunk.Type {
+			case ResponseCompleted, ResponseFailed, ResponseIncomplete, ResponseError:
+				// The response is over. The socket stays open for the next turn, so
+				// stop reading here instead of waiting for a message that never comes.
+				errCh <- nil
+				return
+			default:
+			}
 		}
 	}()
 
@@ -207,6 +223,7 @@ func (w *WebSocketConn) buildRequest(msgs genai.Messages, opts ...genai.GenOptio
 	model := w.client.ModelID()
 	sentMsgs, prevRespID := findPrevMeta(msgs)
 	cleaned := deltaMessages(msgs, sentMsgs)
+
 	req := Response{}
 	if err := req.Init(cleaned, model, opts...); err != nil {
 		return WSRequest{}, err

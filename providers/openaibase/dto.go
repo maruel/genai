@@ -385,6 +385,15 @@ type BatchUsage struct {
 // ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	ErrorVal ErrorResponseError `json:"error"`
+	// Status is the HTTP status a WebSocket error frame reports; it carries no
+	// response status of its own.
+	Status int `json:"status,omitzero"`
+}
+
+// HTTPStatus returns the status of a WebSocket error frame, which carries no
+// response status of its own.
+func (er *ErrorResponse) HTTPStatus() int {
+	return er.Status
 }
 
 func (er *ErrorResponse) Error() string {

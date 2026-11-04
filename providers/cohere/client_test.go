@@ -17,6 +17,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cohere"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -123,7 +124,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

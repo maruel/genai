@@ -26,6 +26,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cloudflare"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -146,7 +147,9 @@ func TestClient(t *testing.T) {
 			}
 			if model.Reason {
 				// Check if it has predefined thinking tokens.
-				for _, sc := range c.Scoreboard().Scenarios {
+				sb := c.Scoreboard()
+				for i := range sb.Chat {
+					sc := &sb.Chat[i]
 					if sc.Reason && slices.Contains(sc.Models, model.Model) {
 						if sc.ReasoningTokenEnd != "" {
 							return &adapters.ProviderReasoning{
@@ -161,7 +164,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

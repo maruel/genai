@@ -30,6 +30,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -212,17 +213,11 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		scenarios := ollama.Scoreboard().Scenarios
-		models := make([]scoreboard.Model, 0, len(scenarios))
-		for _, sc := range scenarios {
-			for _, m := range sc.Models {
-				models = append(models, scoreboard.Model{Model: m, Reason: sc.Reason})
-			}
-		}
+		models := ollama.Scoreboard().Models()
 		if !slices.Contains(models, scoreboard.Model{Model: "all-minilm"}) {
 			models = append(models, scoreboard.Model{Model: "all-minilm"})
 		}
-		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			ctx, l := internaltest.Log(t)
 			fnWithLog := func(h http.RoundTripper) http.RoundTripper {
 				if fn != nil {
@@ -251,7 +246,7 @@ func TestClient(t *testing.T) {
 				return &ollamaThinkOff{Provider: c}
 			}
 			return c
-		}, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "all-minilm"}}})
+		}), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "all-minilm"}}})
 	})
 
 	// This test doesn't require the server to start.

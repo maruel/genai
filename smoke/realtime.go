@@ -254,6 +254,13 @@ func RealtimeSupported(ctx context.Context, c genai.Provider) (bool, string, err
 		if ctx.Err() != nil {
 			return false, "", fmt.Errorf("realtime setup: %w", err)
 		}
+		// The session opened, so its failure is the model's answer: a refusal, a
+		// policy violation, or a broken connection. Only our own timeout leaves the
+		// model unknown, because that is the harness giving up, not the model talking.
+		if errors.Is(err, io.EOF) {
+			// A recording with no frame has no words to quote.
+			return false, "the session closed without a message", nil
+		}
 		return false, err.Error(), nil
 	}
 	if err := s.Close(); err != nil {
@@ -279,10 +286,10 @@ func RealtimeSupported(ctx context.Context, c genai.Provider) (bool, string, err
 // A previously recorded tool result must keep passing. A model that never
 // recorded one records a failed audio probe instead of failing the run. A Flaky
 // result stays Flaky across later passes and failures.
-func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (scoreboard.Scenario, genai.Usage, error) {
+func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (scoreboard.Realtime, genai.Usage, error) {
 	var usage genai.Usage
 	model := c.ModelID()
-	sc := scoreboard.Scenario{Models: []string{model}, Reason: reason}
+	sc := scoreboard.Realtime{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{model}}, Reason: reason}}
 	sc.In = map[genai.Modality]scoreboard.ModalCapability{
 		genai.ModalityText: {Inline: true},
 	}
@@ -394,8 +401,8 @@ func realtimeProbePassed(report *RealtimeReport, probe RealtimeProbe) bool {
 // image input for the model in the reasoning mode reason selects.
 func realtimePreviousImage(c genai.Provider, model string, reason bool) bool {
 	score := c.Scoreboard()
-	for i := range score.Scenarios {
-		s := &score.Scenarios[i]
+	for i := range score.Realtime {
+		s := &score.Realtime[i]
 		if s.Realtime != nil && s.Reason == reason && slices.Contains(s.Models, model) {
 			return s.In[genai.ModalityImage].Inline
 		}
@@ -407,8 +414,8 @@ func realtimePreviousImage(c genai.Provider, model string, reason bool) bool {
 // model.
 func realtimePreviousTools(c genai.Provider, model string) scoreboard.TriState {
 	score := c.Scoreboard()
-	for i := range score.Scenarios {
-		s := &score.Scenarios[i]
+	for i := range score.Realtime {
+		s := &score.Realtime[i]
 		if s.Realtime != nil && slices.Contains(s.Models, model) {
 			return s.Realtime.Tools
 		}

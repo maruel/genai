@@ -1,13 +1,12 @@
 {
   "country": "US",
   "dashboardURL": "https://claude.ai/settings/usage",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "opus"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "document": {
           "url": true,
@@ -29,6 +28,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -52,7 +53,6 @@
         "sonnet"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "document": {
           "url": true,
@@ -74,6 +74,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -97,7 +99,6 @@
         "haiku"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "document": {
           "url": true,
@@ -119,6 +120,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true

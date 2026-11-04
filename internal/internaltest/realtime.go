@@ -62,7 +62,13 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 			return nil, fmt.Errorf("remove realtime recording: %w", err)
 		}
 	} else if _, err := os.Stat(path + ".ndjson"); errors.Is(err, fs.ErrNotExist) {
-		r.T.Skipf("missing realtime recording %s; run with -update-scoreboard to record it", path+".ndjson")
+		// A realtime fixture is numbered by position, so a missing number means the
+		// probe flow opens one more session than when it was recorded. Failing says
+		// so; skipping would make a gap look like a confirmation. Recording takes a
+		// deliberate RECORD so a flow change cannot turn into a live call.
+		if os.Getenv("RECORD") == "" {
+			r.T.Fatalf("missing realtime recording %s; record it with RECORD=failure_only scoped to this model", path+".ndjson")
+		}
 	} else if err != nil {
 		return nil, fmt.Errorf("stat realtime recording: %w", err)
 	}
@@ -74,7 +80,9 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 	rec.Normalize = MaskRealtimeAudio
 	r.T.Cleanup(func() {
 		var err error
-		if r.T.Failed() {
+		// A failed session keeps its fixture while recording: the call number is
+		// positional, so discarding it leaves a gap that replay cannot number.
+		if r.T.Failed() && !r.Updating {
 			err = rec.Discard()
 		} else {
 			err = rec.Close()
@@ -191,12 +199,9 @@ func maskRealtimeAudio(v any) bool {
 
 // UpdatingRecordings reports whether the run re-records cassettes.
 //
-// It follows the RECORD environment variable, so -update-scoreboard refreshes
-// the scoreboard from the cassettes instead of re-recording them.
+// Only RECORD=all replaces existing fixtures; RECORD=failure_only records the
+// missing ones and replays the rest. Both leave -update-scoreboard as a pure
+// scoreboard refresh.
 func UpdatingRecordings() bool {
-	switch os.Getenv("RECORD") {
-	case "all", "failure_only":
-		return true
-	}
-	return false
+	return os.Getenv("RECORD") == "all"
 }

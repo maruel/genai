@@ -1,13 +1,12 @@
 {
   "country": "US",
   "dashboardURL": "https://platform.openai.com/usage",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "gpt-6-astra"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -22,6 +21,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -41,7 +42,6 @@
         "gpt-6.1-terra"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -56,6 +56,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -75,7 +77,6 @@
         "gpt-6-luna"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -90,6 +91,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -108,7 +111,6 @@
       "models": [
         "gpt-6.1-sol"
       ],
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -123,6 +125,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -146,7 +150,8 @@
         "gpt-5.6-sol",
         "gpt-5.6-terra",
         "gpt-6-sol"
-      ]
+      ],
+      "wire": "subprocess"
     }
   ]
 }

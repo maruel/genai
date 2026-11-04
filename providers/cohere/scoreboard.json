@@ -6,19 +6,20 @@
   ],
   "country": "CA",
   "dashboardURL": "https://dashboard.cohere.com/billing",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "command-a-reasoning-08-2025"
       ],
       "sota": true,
       "good": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -61,12 +62,13 @@
         "command-r7b-12-2024"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -109,6 +111,25 @@
       "comments": "To enable later",
       "models": [
         "c4ai-aya-expanse-32b",
+        "c4ai-aya-vision-32b",
+        "command-a-03-2025",
+        "command-a-translate-08-2025",
+        "command-a-vision-07-2025",
+        "command-r-08-2024",
+        "command-r-plus-08-2024",
+        "command-r7b-arabic-02-2025",
+        "tiny-aya-earth",
+        "tiny-aya-fire",
+        "tiny-aya-global",
+        "tiny-aya-water"
+      ],
+      "wire": "http",
+      "reason": true
+    },
+    {
+      "comments": "To enable later",
+      "models": [
+        "c4ai-aya-expanse-32b",
         "c4ai-aya-expanse-8b",
         "c4ai-aya-vision-32b",
         "command-a-03-2025",
@@ -121,7 +142,8 @@
         "tiny-aya-fire",
         "tiny-aya-global",
         "tiny-aya-water"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "models": [
@@ -131,6 +153,7 @@
         "north-small-translate-09-2026",
         "north-small-translate-1.0"
       ],
+      "wire": "http",
       "reason": true
     }
   ]

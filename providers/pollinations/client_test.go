@@ -22,6 +22,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -148,8 +149,8 @@ func TestClient(t *testing.T) {
 				continue
 			}
 			reason := id == "deepseek-reasoning"
-			for _, sc := range cl.Scoreboard().Scenarios {
-				if sc.Reason && slices.Contains(sc.Models, id) {
+			for _, sc := range cl.Scoreboard().Models() {
+				if sc.Reason && sc.Model == id {
 					reason = true
 					break
 				}
@@ -175,7 +176,9 @@ func TestClient(t *testing.T) {
 			}
 			c2 := &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}}
 			if model.Reason {
-				for _, sc := range c.Scoreboard().Scenarios {
+				sb := c.Scoreboard()
+				for i := range sb.Chat {
+					sc := &sb.Chat[i]
 					if sc.Reason && slices.Contains(sc.Models, model.Model) {
 						if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
 							return &adapters.ProviderReasoning{
@@ -190,7 +193,7 @@ func TestClient(t *testing.T) {
 			}
 			return c2
 		}
-		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), sbModels, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

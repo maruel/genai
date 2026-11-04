@@ -11,8 +11,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"iter"
-	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -20,11 +18,10 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/msgutil"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -71,43 +68,6 @@ func hasArg(args []string, flag, val string) bool {
 	return false
 }
 
-// skipMediaClient keeps unsupported audio and video smoke cases from reaching Claude Code.
-type skipMediaClient struct {
-	genai.Provider
-}
-
-func (c skipMediaClient) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	if hasUnsupportedMediaClip(msgs) {
-		return genai.Result{}, &base.ErrNotSupported{Options: []string{"audio or video input"}}
-	}
-	return c.Provider.GenSync(ctx, msgs, opts...)
-}
-
-func (c skipMediaClient) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if hasUnsupportedMediaClip(msgs) {
-		return func(func(genai.Reply) bool) {}, func() (genai.Result, error) {
-			return genai.Result{}, &base.ErrNotSupported{Options: []string{"audio or video input"}}
-		}
-	}
-	return c.Provider.GenStream(ctx, msgs, opts...)
-}
-
-func hasUnsupportedMediaClip(msgs genai.Messages) bool {
-	for _, msg := range msgs {
-		for _, req := range msg.Requests {
-			name := req.Doc.Filename
-			if name == "" {
-				name = req.Doc.URL
-			}
-			switch strings.ToLower(filepath.Ext(name)) {
-			case ".aac", ".flac", ".mp3", ".ogg", ".wav", ".mp4", ".webm":
-				return true
-			}
-		}
-	}
-	return false
-}
-
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -133,13 +93,13 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		scenarios := c.Scoreboard().Models()
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
 			reason := false
 			for _, sc := range scenarios {
-				if slices.Contains(sc.Models, id) {
+				if sc.Model == id {
 					reason = sc.Reason
 					break
 				}
@@ -150,21 +110,14 @@ func TestClient(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join("testdata", "TestClient", "Scoreboard"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClient := func(t testing.TB, model scoreboard.Model, name string) genai.Provider {
 			var opts []genai.ProviderOption
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if fn != nil {
-				// Let the smoketest framework create HTTP cassettes for bookkeeping
-				// (stale recording detection). Claudecode is subprocess-based so
-				// the cassettes will be empty; the real data lives in .ndjson fixtures.
-				wrapped := fn(http.DefaultTransport)
-				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
-					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					r := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
-					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
-				}
+			if name != "" {
+				r := internaltest.NewSubprocessRecorder(t, name, "claude", nil)
+				opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 			}
 			if model.Reason {
 				opts = append(opts, &ProviderOption{Effort: EffortMedium})
@@ -176,13 +129,9 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			// Claude Code does not accept audio or video clips. When asked to process one,
-			// it hallucinates Bash commands as text instead of rejecting the input.
-			// Keep the unsupported smoke cases out of the CLI while retaining text
-			// and image coverage.
-			return skipMediaClient{Provider: c}
+			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.Subprocess(getClient), models, nil)
 	})
 
 	t.Run("model_markers", func(t *testing.T) {

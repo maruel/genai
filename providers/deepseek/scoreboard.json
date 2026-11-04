@@ -6,19 +6,20 @@
   ],
   "country": "CN",
   "dashboardURL": "https://platform.deepseek.com",
-  "scenarios": [
+  "chat": [
     {
       "comments": "Thinking mode (default). See https://api-docs.deepseek.com/guides/thinking_mode.",
       "models": [
         "deepseek-v4-pro"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -54,12 +55,13 @@
       ],
       "good": true,
       "cheap": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -99,6 +101,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -139,6 +142,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true

@@ -5,7 +5,7 @@
   ],
   "country": "DE",
   "dashboardURL": "https://dashboard.bfl.ai/",
-  "scenarios": [
+  "chat": [
     {
       "comments": "Untested",
       "models": [
@@ -17,6 +17,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "url": true,
@@ -41,6 +42,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "url": true,
@@ -65,6 +67,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "url": true,
@@ -89,7 +92,8 @@
         "flux-pro-1.0-expand",
         "flux-pro-1.0-fill",
         "flux-tools"
-      ]
+      ],
+      "wire": "http"
     }
   ]
 }

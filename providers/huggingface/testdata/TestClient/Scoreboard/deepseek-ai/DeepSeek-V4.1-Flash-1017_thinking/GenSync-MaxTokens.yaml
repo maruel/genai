@@ -19,59 +19,63 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":null,"refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"We need answer explain theory relativity in great details. Need likely comprehensive but not too"},"logprobs":null,"finish_reason":"length","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793401701,"ec_transfer_params":null,"id":"chatcmpl-6acfe2cb-40a0-4de5-a982-a358ec1d1bfb","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":39,"total_tokens":55,"completion_tokens":16,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":16}}}'
+        content_length: 603
+        body: '{"id":"chatcmpl-cfe8683fbc694acbafe1af1ee5962cbd","choices":[{"index":0,"message":{"content":"The theory of","role":"assistant","reasoning_content":"We need answer. Need explain theory of relativity in great details"},"finish_reason":"length"}],"created":1793797994,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion","usage":{"prompt_tokens":40,"completion_tokens":16,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":12,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":6}}}'
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Access-Control-Allow-Headers:
-                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
-            Access-Control-Allow-Methods:
-                - GET, POST, OPTIONS
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Length:
+                - "603"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
             Referrer-Policy:
                 - strict-origin-when-cross-origin
-            Server:
-                - envoy
             Strict-Transport-Security:
                 - max-age=31536000
             Vary:
-                - Origin
+                - Origin, Origin
             Via:
-                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+                - 1.1 google, 1.1 6a87816d6ed87d078077233e1a539f4c.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - brZBPxGayYgbjwReK2fEbPq7S7efJZgqPA-0uOUm162xQI8Xs-Awyw==
+                - omLT8Vi1KKeuYQ1ra6JCKsmWHp_70hxDZKWfzDkdiBjDXSqXIDM1pw==
             X-Amz-Cf-Pop:
                 - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1793797994880"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "0"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755214655429105041"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755214655417473449"
+            X-Baseten-Received-At:
+                - "1793797994880"
+            X-Baseten-Request-Id:
+                - 54ca701a1a6b139807a3996be57e4d27e0c84
+            X-Baseten-Sent-At:
+                - "1793797995159"
             X-Cache:
                 - Miss from cloudfront
-            X-Envoy-Upstream-Service-Time:
-                - "235"
             X-Inference-Provider:
-                - scaleway
+                - baseten
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Limit-Requests:
-                - "600"
+                - "200"
             X-Ratelimit-Limit-Tokens:
-                - "5000000"
+                - "3000000"
             X-Ratelimit-Remaining-Requests:
-                - "599"
+                - "97"
             X-Ratelimit-Remaining-Tokens:
-                - "4950701"
-            X-Ratelimit-Reset-Requests:
-                - 100ms
-            X-Ratelimit-Reset-Tokens:
-                - 591ms
+                - "3000000"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 578ms
+        duration: 376ms

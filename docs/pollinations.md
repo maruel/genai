@@ -481,6 +481,7 @@
 | novastardev/olmo-3.1-32b                                                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-3-ultra                                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | nvidia/nemotron-3.5-lightning                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| openai-audio                                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai-audio-large                                                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai-fast                                                               | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | openai-large                                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -621,7 +622,6 @@
 | z-ai/glm-5.3-flash                                                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zero2launch/gemini-3.7-flash                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zimage                                                                    | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| openai-audio                                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -639,6 +639,7 @@
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - Realtime: Bidirectional audio and text session through ConnectRealtime
+- WS: Measured over the WebSocket wire instead of HTTP.
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

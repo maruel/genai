@@ -29,15 +29,15 @@ const EmbeddingProbeDimensions = 32
 // zero leaves size selection unmeasured. Only explicit unsupported-option errors
 // are negative evidence; authentication, transport and malformed output abort.
 // ProviderFactory must never fail. Failed qualification returns no Embed result.
-func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (scoreboard.Scenario, genai.Usage, error) {
+func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (scoreboard.Embed, genai.Usage, error) {
 	u := genai.Usage{}
 	if dimensions < 0 {
-		return scoreboard.Scenario{}, u, errors.New("embedding qualification dimensions must not be negative")
+		return scoreboard.Embed{}, u, errors.New("embedding qualification dimensions must not be negative")
 	}
 	c := pf("")
 	model := c.ModelID()
 	if model == "" {
-		return scoreboard.Scenario{}, u, errors.New("provider must have a model")
+		return scoreboard.Embed{}, u, errors.New("provider must have a model")
 	}
 	texts := []genai.Request{
 		{Text: "task: search result | query: What causes the northern lights?"},
@@ -81,10 +81,10 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 	}
 	out, err := call("Batch", &genai.EmbeddingRequest{Inputs: texts})
 	if err != nil {
-		return scoreboard.Scenario{}, u, fmt.Errorf("embedding batch: %w", err)
+		return scoreboard.Embed{}, u, fmt.Errorf("embedding batch: %w", err)
 	}
 	if embeddingCosine(out.Embeddings[0], out.Embeddings[1]) <= embeddingCosine(out.Embeddings[0], out.Embeddings[2]) {
-		return scoreboard.Scenario{}, u, errors.New("embedding semantic retrieval ranked unrelated text first")
+		return scoreboard.Embed{}, u, errors.New("embedding semantic retrieval ranked unrelated text first")
 	}
 	f.Dimensions = len(out.Embeddings[0])
 	for _, probe := range []embeddingOrderProbe{{"Order", []int{2, 1, 0}}, {"Rotate", []int{1, 2, 0}}} {
@@ -94,12 +94,12 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 		}
 		permuted, err := call(probe.name, &genai.EmbeddingRequest{Inputs: batch})
 		if err != nil {
-			return scoreboard.Scenario{}, u, fmt.Errorf("embedding order: %w", err)
+			return scoreboard.Embed{}, u, fmt.Errorf("embedding order: %w", err)
 		}
 		for i, j := range probe.order {
 			v, w := out.Embeddings[j], permuted.Embeddings[i]
 			if len(v) != len(w) || embeddingCosine(v, w) < 0.99 {
-				return scoreboard.Scenario{}, u, errors.New("embedding results did not preserve input order")
+				return scoreboard.Embed{}, u, errors.New("embedding results did not preserve input order")
 			}
 		}
 	}
@@ -108,29 +108,29 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 		supported := true
 		if err != nil {
 			if !unsupportedEmbeddingOption(err, "EmbeddingRequest.Dimensions") {
-				return scoreboard.Scenario{}, u, fmt.Errorf("embedding dimensions: %w", err)
+				return scoreboard.Embed{}, u, fmt.Errorf("embedding dimensions: %w", err)
 			}
 			supported = false
 		} else if embeddingCosine(resized.Embeddings[0], resized.Embeddings[1]) <= embeddingCosine(resized.Embeddings[0], resized.Embeddings[2]) {
-			return scoreboard.Scenario{}, u, errors.New("resized embedding semantic retrieval ranked unrelated text first")
+			return scoreboard.Embed{}, u, errors.New("resized embedding semantic retrieval ranked unrelated text first")
 		}
 		f.RequestedDimensions = &supported
 	}
-	sc := scoreboard.Scenario{Models: []string{model}, In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}}, Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityEmbedding: {Inline: true}}, Embed: &f}
+	sc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{model}, In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}}}, Embed: &f}
 	for _, probe := range []embeddingMediaProbe{{"Image", "image.jpg", "image/jpeg", genai.ModalityImage}, {"Audio", "audio.wav", "audio/wav", genai.ModalityAudio}} {
 		data, err := scoreboard.TestdataFiles.ReadFile("testdata/" + probe.filename)
 		if err != nil {
-			return scoreboard.Scenario{}, u, err
+			return scoreboard.Embed{}, u, err
 		}
 		media, err := call(probe.name, &genai.EmbeddingRequest{Inputs: []genai.Request{{Doc: genai.Doc{Filename: probe.filename, Src: bytes.NewReader(data)}}}})
 		if err != nil {
 			if unsupportedEmbeddingOption(err, "Request.Doc") {
 				continue
 			}
-			return scoreboard.Scenario{}, u, fmt.Errorf("embedding %s: %w", probe.modality, err)
+			return scoreboard.Embed{}, u, fmt.Errorf("embedding %s: %w", probe.modality, err)
 		}
 		if len(media.Embeddings[0]) != f.Dimensions {
-			return scoreboard.Scenario{}, u, fmt.Errorf("embedding %s has %d dimensions, want default %d", probe.modality, len(media.Embeddings[0]), f.Dimensions)
+			return scoreboard.Embed{}, u, fmt.Errorf("embedding %s has %d dimensions, want default %d", probe.modality, len(media.Embeddings[0]), f.Dimensions)
 		}
 		sc.In[probe.modality] = scoreboard.ModalCapability{Inline: true, SupportedFormats: []string{probe.mime}}
 	}

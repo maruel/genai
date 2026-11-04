@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/deepseek"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -85,7 +86,8 @@ func TestClient(t *testing.T) {
 		// Each scenario may declare Reason: true (thinking) or
 		// Reason: false (non-thinking via GenOption).
 		var models []scoreboard.Model
-		for _, sc := range sb.Scenarios {
+		for i := range sb.Chat {
+			sc := &sb.Chat[i]
 			if sc.Untested() {
 				continue
 			}
@@ -118,7 +120,7 @@ func TestClient(t *testing.T) {
 				Opts:     []genai.GenOption{&deepseek.GenOption{Thinking: model.Reason}},
 			}
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

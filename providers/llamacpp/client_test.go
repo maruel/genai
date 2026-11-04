@@ -42,6 +42,7 @@ import (
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -758,18 +759,12 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		sb := llamacpp.Scoreboard().Scenarios
-		models := make([]scoreboard.Model, 0, len(sb))
-		for _, sc := range sb {
-			for _, id := range sc.Models {
-				models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
-			}
-		}
+		models := llamacpp.Scoreboard().Models()
 		if !slices.Contains(models, scoreboard.Model{Model: embeddingModel}) {
 			models = append(models, scoreboard.Model{Model: embeddingModel})
 		}
 		ctx := t.Context()
-		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			embedding := model.Model == embeddingModel
 			remote := s.lazyStartModel(t, model) //nolint:contextcheck // uses l.t.Context() for server lifecycle
 			opts := []genai.ProviderOption{genai.ProviderOptionRemote(remote)}
@@ -832,7 +827,7 @@ func TestClient(t *testing.T) {
 				}
 			}
 			return rec
-		}, models, testRecorder.Records, &smoketest.RunOptions{
+		}), models, &smoketest.RunOptions{
 			Qualify: []scoreboard.Model{{Model: embeddingModel}},
 			// Gemma 4 emits reasoning content even with enable_thinking=false.
 			TolerateReasoning: []string{"gemma-4"},
@@ -920,13 +915,13 @@ type lazyServer struct {
 // after -update-scoreboard sorts by reasoning first.
 func (l *lazyServer) lazyStart(t testing.TB) string {
 	sb := llamacpp.Scoreboard()
-	for i := range sb.Scenarios {
-		sc := &sb.Scenarios[i]
+	for i := range sb.Chat {
+		sc := &sb.Chat[i]
 		if _, ok := sc.In[scoreboard.ModalityImage]; ok {
 			return l.lazyStartModel(t, scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason})
 		}
 	}
-	sc := llamacpp.Scoreboard().Scenarios[0]
+	sc := sb.Chat[0]
 	return l.lazyStartModel(t, scoreboard.Model{Model: sc.Models[0], Reason: sc.Reason})
 }
 

@@ -33,12 +33,26 @@
 | gemini-3.1-pro-preview                 | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.1-pro-preview-customtools     | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.5-flash-lite                  | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-3.5-live-translate-preview      | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.5-transcribe                  | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.5-transcribe-live             | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.6-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.7-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-flash-lite-tts              | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-3.8-flash-tts                   | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-4-argon                         | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-embedding-exp                   | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-embedding-exp-03-07             | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-exp-1206                        | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-nano-banana-2.1                 | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-omni-1.1-flash                  | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-omni-flash-preview              | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-1.5-preview         | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemini-robotics-er-1.6-preview         | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-robotics-er-2-preview           | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gemini-robotics-er-2-streaming-preview | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemma-3-12b-it                         | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemma-3-1b-it                          | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gemma-3-27b-it                         | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -57,20 +71,6 @@
 | veo-3.1-fast-generate-preview          | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | veo-3.1-generate-preview               | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | veo-3.1-lite-generate-preview          | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.5-flash-lite                  | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.5-transcribe                  | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.5-transcribe-live             | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.6-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.7-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.8-flash                       | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.8-flash-lite-tts              | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-3.8-flash-tts                   | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-4-argon                         | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-nano-banana-2.1                 | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-omni-1.1-flash                  | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-omni-flash-preview              | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-robotics-er-2-preview           | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gemini-robotics-er-2-streaming-preview | ?         | ?          | ?      | ?        | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -88,6 +88,7 @@
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - Realtime: Bidirectional audio and text session through ConnectRealtime
+- WS: Measured over the WebSocket wire instead of HTTP.
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

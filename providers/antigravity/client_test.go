@@ -11,7 +11,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -21,8 +20,8 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/msgutil"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -90,10 +89,10 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := Scoreboard().Scenarios
+		scenarios := Scoreboard().Models()
 		model := func(id string) scoreboard.Model {
 			for i := range scenarios {
-				if slices.Contains(scenarios[i].Models, id) {
+				if scenarios[i].Model == id {
 					return scoreboard.Model{Model: id, Reason: scenarios[i].Reason}
 				}
 			}
@@ -106,18 +105,14 @@ func TestClient(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join("testdata", "TestClient", "Scoreboard"), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClient := func(t testing.TB, model scoreboard.Model, name string) genai.Provider {
 			var opts []genai.ProviderOption
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if fn != nil {
-				// The smoketest framework creates HTTP cassettes for stale recording
-				// bookkeeping; the data lives in the .ndjson fixtures.
-				if rec, ok := fn(http.DefaultTransport).(*myrecorder.Recorder); ok {
-					r := internaltest.NewSubprocessRecorder(t, strings.TrimSuffix(rec.Name(), ".yaml"), "agy", nil)
-					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
-				}
+			if name != "" {
+				r := internaltest.NewSubprocessRecorder(t, name, "agy", nil)
+				opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 			}
 			c, err := New(t.Context(), opts...)
 			if c != nil {
@@ -128,7 +123,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.Subprocess(getClient), models, nil)
 	})
 
 	t.Run("ListModels", func(t *testing.T) {

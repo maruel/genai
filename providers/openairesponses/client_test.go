@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openairesponses"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -141,7 +142,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		scenarios := c.Scoreboard().Models()
 		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
@@ -150,7 +151,7 @@ func TestClient(t *testing.T) {
 			}
 			found := false
 			for _, sc := range scenarios {
-				if slices.Contains(sc.Models, id) {
+				if sc.Model == id {
 					models = append(models, scoreboard.Model{Model: id, Reason: sc.Reason})
 					found = true
 				}
@@ -255,7 +256,51 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
+
+		// The Responses API travels over WebSocket too. One model proves the wire; the
+		// rows of the other models stay with the HTTP run because a row records its
+		// wire. The socket always carries reasoning summaries, so its row is a
+		// thinking row.
+		t.Run("WebSocket", func(t *testing.T) {
+			getClientWS := func(t testing.TB, model scoreboard.Model, name string) genai.Provider {
+				opts := []genai.ProviderOption{
+					genai.ProviderOptionAPIKey(internaltest.GetEnv("OPENAI_API_KEY")),
+					genai.ProviderOptionPreloadedModels(cachedModels),
+				}
+				if model.Model != "" {
+					opts = append(opts, genai.ProviderOptionModel(model.Model))
+				}
+				if name == "" {
+					// The harness asks a model what it can do before it records; the
+					// answer does not need a socket.
+					c, err := openairesponses.New(t.Context(), opts...)
+					if err != nil {
+						t.Fatal(err)
+					}
+					internaltest.CleanupCloser(t, c)
+					return c
+				}
+				proxy := internaltest.NewWebSocketProxy(t, name, "wss://api.openai.com/v1/responses")
+				c, err := openairesponses.New(t.Context(), append(opts, genai.ProviderOptionRemote(proxy.URL()))...)
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				ws, err := c.WebSocket(t.Context())
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() {
+					if err := ws.Close(); err != nil {
+						t.Error(err)
+					}
+				})
+				return ws
+			}
+			m := scoreboard.Model{Model: "gpt-6-luna", Reason: true}
+			smoketest.Run(t, smoke.WebSocket(getClientWS), []scoreboard.Model{m}, &smoketest.RunOptions{Qualify: []scoreboard.Model{m}})
+		})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

@@ -8,7 +8,7 @@
   ],
   "country": "US",
   "dashboardURL": "https://huggingface.co/settings/billing",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "deepseek-ai/DeepSeek-V4.1-Flash-1017"
@@ -16,7 +16,6 @@
       "sota": true,
       "good": true,
       "cheap": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -32,6 +31,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true

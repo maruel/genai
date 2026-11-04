@@ -37,6 +37,7 @@ import (
 	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -1012,7 +1013,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		scenarios := c.Scoreboard().Scenarios
+		sb := c.Scoreboard()
 		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
@@ -1020,12 +1021,12 @@ func TestClient(t *testing.T) {
 				// The scoreboard covers Gemini 3 and later.
 				continue
 			}
-			if i := slices.IndexFunc(scenarios, func(sc scoreboard.Scenario) bool {
+			if i := slices.IndexFunc(sb.Realtime, func(sc scoreboard.Realtime) bool {
 				return sc.Realtime != nil && slices.Contains(sc.Models, id)
 			}); i != -1 {
 				// Realtime sessions have no reasoning mode; the scoreboard owns their
 				// Reason value so qualification selects the realtime scenario.
-				models = append(models, scoreboard.Model{Model: id, Reason: scenarios[i].Reason})
+				models = append(models, scoreboard.Model{Model: id, Reason: sb.Realtime[i].Reason})
 				continue
 			}
 			if strings.Contains(id, "embedding") {
@@ -1108,7 +1109,14 @@ func TestClient(t *testing.T) {
 			}
 			return rec
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "gemini-embedding-2"}}})
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{
+			{Model: "gemini-embedding-2"},
+			// A model that declines a session records why, so the harness does not ask
+			// again on every run.
+			{Model: "gemini-flash-latest", Reason: true},
+			{Model: "gemini-flash-lite-latest", Reason: true},
+			{Model: "gemini-pro-latest", Reason: true},
+		}})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

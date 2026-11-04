@@ -1,13 +1,12 @@
 {
   "country": "CN",
   "dashboardURL": "https://platform.deepseek.com/usage",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "deepseek-official/deepseek-v4-pro"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "document": {
           "url": true,
@@ -19,6 +18,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -36,7 +37,6 @@
         "deepseek-official/deepseek-flash"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "document": {
           "url": true,
@@ -48,6 +48,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -65,7 +67,8 @@
       "models": [
         "deepseek-official/deepseek-v4-flash"
       ],
-      "cheap": true
+      "cheap": true,
+      "wire": "subprocess"
     }
   ]
 }

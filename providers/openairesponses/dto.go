@@ -140,9 +140,13 @@ type Response struct {
 	// Required for previous_response_id to work. Enabled by default.
 	Store            bool    `json:"store"`
 	FrequencyPenalty float64 `json:"frequency_penalty,omitzero"`
-	PresencePenalty  float64 `json:"presence_penalty,omitzero"`
-	Temperature      float64 `json:"temperature,omitzero"`
-	Text             struct {
+	// Image holds image generation settings the server echoes on every response.
+	Image struct {
+		ContextCompression string `json:"context_compression,omitzero"` // "enabled"
+	} `json:"image,omitzero"`
+	PresencePenalty float64 `json:"presence_penalty,omitzero"`
+	Temperature     float64 `json:"temperature,omitzero"`
+	Text            struct {
 		Format struct {
 			Type        string           `json:"type"` // "text", "json_schema", "json_object"
 			Name        string           `json:"name,omitzero"`

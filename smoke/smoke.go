@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package smoke runs a smoke test to generate a scoreboard.Scenario.
+// Package smoke runs a smoke test to generate a scoreboard.Chat.
 package smoke
 
 import (
@@ -34,74 +34,34 @@ import (
 // This may be used for HTTP recording and replays.
 type ProviderFactory func(name string) genai.Provider
 
-// Run runs a smoke test on the provider and model and returns the scenario as
-// found in practice.
-//
-// The probes follow the provider scoreboard and the model capabilities, so an
-// unqualified model needs nothing else.
+// runSync runs the GenSync, GenStream and GenAsync probes and returns the
+// scenario as found in practice.
 //
 // ProviderFactory must be concurrent safe and never fail.
-func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
-	c := pf("")
-	m := c.ModelID()
-	if m == "" {
-		return scoreboard.Scenario{}, genai.Usage{}, errors.New("provider must have a model")
-	}
-	// A model may be scored for both families, so only the scoreboard tells which
-	// one applies. Call [RunGenai] or [RunRealtimeScenario] to pick one.
-	sb := c.Scoreboard()
-	for i := range sb.Scenarios {
-		if sc := &sb.Scenarios[i]; sc.Realtime != nil && slices.Contains(sc.Models, m) {
-			return RunRealtimeScenario(ctx, c, sc.Reason)
-		}
-	}
-	return RunGenai(ctx, pf)
-}
-
-// RunGenai runs the GenSync, GenStream, GenAsync, Embed and SystemOne probes and
-// returns the scenario as found in practice.
-//
-// ProviderFactory must be concurrent safe and never fail.
-func RunGenai(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
+func runSync(ctx context.Context, pf ProviderFactory) (scoreboard.Chat, genai.Usage, error) {
 	usage := genai.Usage{}
 	c := pf("")
 	m := c.ModelID()
 	if m == "" {
-		return scoreboard.Scenario{}, usage, errors.New("provider must have a model")
+		return scoreboard.Chat{}, usage, errors.New("provider must have a model")
 	}
-	sb := c.Scoreboard()
 	mods := c.OutputModalities()
-	if slices.Equal(mods, genai.Modalities{genai.ModalityEmbedding}) {
-		return RunEmbeddings(ctx, pf, EmbeddingProbeDimensions)
-	}
-	doSystemOne := c.Capabilities().SystemOne && (len(mods) == 0 || slices.Contains(mods, genai.ModalityDecision))
-	for i := range sb.Scenarios {
-		sc := &sb.Scenarios[i]
-		if sc.Embed != nil && slices.Contains(sc.Models, m) && sc.GenSync == nil && sc.GenStream == nil && sc.SystemOne == nil {
-			return RunEmbeddings(ctx, pf, EmbeddingProbeDimensions)
-		}
-		if sc.SystemOne != nil && slices.Contains(sc.Models, m) {
-			doSystemOne = true
-			if sc.GenSync == nil && sc.GenStream == nil {
-				return RunSystemOne(ctx, pf)
-			}
-		}
-	}
-	if doSystemOne && !slices.Contains(mods, genai.ModalityText) {
-		return RunSystemOne(ctx, pf)
-	}
 
 	mu := sync.Mutex{}
-	result := scoreboard.Scenario{
-		Models: []string{m},
-		In:     map[genai.Modality]scoreboard.ModalCapability{},
-		Out:    map[genai.Modality]scoreboard.ModalCapability{},
+	result := scoreboard.Chat{
+		Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{m}, In: map[genai.Modality]scoreboard.ModalCapability{}}},
+		Out:      map[genai.Modality]scoreboard.ModalCapability{},
 	}
 
 	// Make it easy to skip parts of the tests.
 	doSyncText := slices.Contains(mods, genai.ModalityText)
 	doStream := slices.Contains(mods, genai.ModalityText)
 	doSyncNonText := !slices.Equal(mods, genai.Modalities{genai.ModalityText})
+	if len(mods) == 0 {
+		// A provider that reports no output modality cannot be qualified: the row
+		// would be empty and the measurement would look like a confirmation.
+		return result, usage, errors.New("provider reports no output modality")
+	}
 
 	eg := errgroup.Group{}
 	if doSyncText || doSyncNonText {
@@ -240,16 +200,7 @@ func RunGenai(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, gen
 		})
 	}
 
-	err := eg.Wait()
-	if err == nil && doSystemOne {
-		d, u, e := RunSystemOne(ctx, pf)
-		usage.Add(&u)
-		result.SystemOne = d.SystemOne
-		result.In = mergeModalities(result.In, d.In)
-		result.Out = mergeModalities(result.Out, d.Out)
-		err = e
-	}
-	return result, usage, err
+	return result, usage, eg.Wait()
 }
 
 // genai.Provider
@@ -922,12 +873,12 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 //
 // It only tests GenSync, not GenStream. Most non-text modalities are fairly expensive to run (some cost a few
 // bucks). If you have a business case and would like to pay me to test more, please let me know.
-func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
+func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (scoreboard.Chat, genai.Usage, error) {
 	prefix := "GenDoc-"
-	out := scoreboard.Scenario{
-		In:      map[genai.Modality]scoreboard.ModalCapability{},
-		Out:     map[genai.Modality]scoreboard.ModalCapability{},
-		GenSync: &scoreboard.Functionality{},
+	out := scoreboard.Chat{
+		Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{In: map[genai.Modality]scoreboard.ModalCapability{}}},
+		Out:      map[genai.Modality]scoreboard.ModalCapability{},
+		GenSync:  &scoreboard.Functionality{},
 	}
 	usage := genai.Usage{}
 	if err := exerciseGenImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
@@ -957,7 +908,7 @@ const ContentsImage = `Generate one square, white-background doodle with smooth,
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 
-func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
+func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Chat, usage *genai.Usage) error {
 	c := pf(name)
 	if !slices.Contains(c.OutputModalities(), genai.ModalityImage) {
 		return nil
@@ -1045,7 +996,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 	return nil
 }
 
-func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
+func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Chat, usage *genai.Usage) error {
 	c := pf(name)
 	if !slices.Contains(c.OutputModalities(), genai.ModalityAudio) {
 		return nil
@@ -1134,7 +1085,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 	return nil
 }
 
-func exerciseGenVideo(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
+func exerciseGenVideo(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Chat, usage *genai.Usage) error {
 	// Will be implemented soon.
 	return nil
 }

@@ -16,6 +16,7 @@ import (
 	"testing/synctest"
 	"time"
 
+	"github.com/coder/websocket"
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/maruel/genai"
@@ -963,7 +964,9 @@ func (p *rejectedRealtimeProvider) Capabilities() genai.ProviderCapabilities { r
 
 func (p *rejectedRealtimeProvider) ConnectRealtime(context.Context, ...genai.RealtimeOption) (genai.RealtimeSession, error) {
 	p.opens++
-	return nil, errors.New("model does not support realtime")
+	// A provider that declines a model closes the session with a policy violation,
+	// which is how a refusal differs from a broken connection.
+	return nil, &websocket.CloseError{Code: websocket.StatusPolicyViolation, Reason: "model does not support realtime"}
 }
 
 func TestRealtimeSupported(t *testing.T) {
@@ -992,9 +995,11 @@ func TestRealtimeSupported(t *testing.T) {
 
 func TestRunRealtimeScenario(t *testing.T) {
 	realtimeScoreboard := func() scoreboard.Score {
-		return scoreboard.Score{Scenarios: []scoreboard.Scenario{{
-			Models:   []string{"model"},
-			In:       map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityAudio: {Inline: true}, scoreboard.ModalityText: {Inline: true}},
+		return scoreboard.Score{Realtime: []scoreboard.Realtime{{
+			Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{
+				Models: []string{"model"},
+				In:     map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityAudio: {Inline: true}, scoreboard.ModalityText: {Inline: true}},
+			}},
 			Out:      map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityAudio: {Inline: true}, scoreboard.ModalityText: {Inline: true}},
 			Realtime: &scoreboard.RealtimeFunctionality{},
 		}}}
@@ -1050,8 +1055,8 @@ func TestRunRealtimeScenario(t *testing.T) {
 				t.Fatalf("audio modalities=%v", p.opens[3][1])
 			}
 
-			// Run routes a scoreboard realtime scenario before GenSync.
-			sc, usage, err := smoke.Run(t.Context(), func(string) genai.Provider { return p })
+			// The realtime family measures a scoreboard row it owns.
+			sc, usage, err := smoke.Realtime{}.Run(t.Context(), smoke.Direct(func(string) genai.Provider { return p }), scoreboard.Model{Model: "model"}, scoreboard.WireSession, &scoreboard.Realtime{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"model"}}}, Realtime: &scoreboard.RealtimeFunctionality{}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1076,7 +1081,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			if sc.Realtime == nil || usage.TotalTokens != 6 {
 				t.Fatalf("scenario=%+v usage=%+v", sc, usage)
 			}
-			_, usage, err = smoke.Run(t.Context(), func(string) genai.Provider { return p })
+			_, usage, err = smoke.Realtime{}.Run(t.Context(), smoke.Direct(func(string) genai.Provider { return p }), scoreboard.Model{Model: "model"}, scoreboard.WireSession, &scoreboard.Realtime{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"model"}}}, Realtime: &scoreboard.RealtimeFunctionality{}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1104,8 +1109,8 @@ func TestRunRealtimeScenario(t *testing.T) {
 			f.info.Capabilities.AudioCommit = true
 			f.audioTool = fakeToolCalls
 			score := realtimeScoreboard()
-			delete(score.Scenarios[0].Out, genai.ModalityText)
-			delete(score.Scenarios[0].Out, genai.ModalityAudio)
+			delete(score.Realtime[0].Out, genai.ModalityText)
+			delete(score.Realtime[0].Out, genai.ModalityAudio)
 			p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
 			sc, _, err := smoke.RunRealtimeScenario(t.Context(), p, false)
 			if err != nil {
@@ -1118,7 +1123,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 
 		t.Run("reason", func(t *testing.T) {
 			score := realtimeScoreboard()
-			score.Scenarios[0].Reason = true
+			score.Realtime[0].Reason = true
 			p := &realtimeProvider{f: newFakeRealtimeFactory(t), model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
 			sc, _, err := smoke.RunRealtimeScenario(t.Context(), p, true)
 			if err != nil {
@@ -1128,8 +1133,8 @@ func TestRunRealtimeScenario(t *testing.T) {
 				t.Fatal("scenario does not declare thinking")
 			}
 
-			// Run declares the reasoning mode from the matching scoreboard scenario.
-			sc, _, err = smoke.Run(t.Context(), func(string) genai.Provider { return p })
+			// The family declares the reasoning mode the row carries.
+			sc, _, err = smoke.Realtime{}.Run(t.Context(), smoke.Direct(func(string) genai.Provider { return p }), scoreboard.Model{Model: "model"}, scoreboard.WireSession, &scoreboard.Realtime{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"model"}}, Reason: true}, Realtime: &scoreboard.RealtimeFunctionality{}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1168,7 +1173,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 					f.audioTool = fakeToolCalls
 					f.audioToolResults = events
 					score := realtimeScoreboard()
-					score.Scenarios[0].Realtime.Tools = scoreboard.Flaky
+					score.Realtime[0].Realtime.Tools = scoreboard.Flaky
 					p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
 					sc, _, err := smoke.RunRealtimeScenario(t.Context(), p, false)
 					if err != nil {
@@ -1185,7 +1190,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
 			f.info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityText}
 			score := realtimeScoreboard()
-			score.Scenarios[0].In[genai.ModalityImage] = scoreboard.ModalCapability{Inline: true}
+			score.Realtime[0].In[genai.ModalityImage] = scoreboard.ModalCapability{Inline: true}
 			p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
 			if _, _, err := smoke.RunRealtimeScenario(t.Context(), p, false); err == nil || !strings.Contains(err.Error(), "image input regressed") {
 				t.Fatalf("err=%v", err)
@@ -1197,9 +1202,9 @@ func TestRunRealtimeScenario(t *testing.T) {
 			// one mode applies to that mode only.
 			f := newFakeRealtimeFactory(t)
 			f.info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityText}
-			score := scoreboard.Score{Scenarios: []scoreboard.Scenario{
-				{Models: []string{"model"}, Reason: true, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityImage: {Inline: true}}, Realtime: &scoreboard.RealtimeFunctionality{}},
-				{Models: []string{"model"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{}, Realtime: &scoreboard.RealtimeFunctionality{}},
+			score := scoreboard.Score{Realtime: []scoreboard.Realtime{
+				{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"model"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityImage: {Inline: true}}}, Reason: true}, Realtime: &scoreboard.RealtimeFunctionality{}},
+				{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"model"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{}}}, Realtime: &scoreboard.RealtimeFunctionality{}},
 			}}
 			p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
 			if _, _, err := smoke.RunRealtimeScenario(t.Context(), p, false); err != nil {
@@ -1214,7 +1219,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
 			f.info.Capabilities.ToolResults = false
 			score := realtimeScoreboard()
-			score.Scenarios[0].Realtime.Tools = scoreboard.True
+			score.Realtime[0].Realtime.Tools = scoreboard.True
 			p := &realtimeProvider{f: f, model: "model", caps: genai.ProviderCapabilities{Realtime: true}, score: score}
 			if _, _, err := smoke.RunRealtimeScenario(t.Context(), p, false); err == nil || !strings.Contains(err.Error(), "regressed") {
 				t.Fatalf("err=%v", err)

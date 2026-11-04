@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -74,16 +75,7 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// bfl does not have a public API to list models.
 		sb := getClient(t, "").Scoreboard()
-		n := 0
-		for _, sc := range sb.Scenarios {
-			n += len(sc.Models)
-		}
-		models := make([]scoreboard.Model, 0, n)
-		for _, sc := range sb.Scenarios {
-			for _, model := range sc.Models {
-				models = append(models, scoreboard.Model{Model: model})
-			}
-		}
+		models := sb.Models()
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			var opts []genai.ProviderOption
 			if model.Model != "" {
@@ -109,7 +101,7 @@ func TestClient(t *testing.T) {
 			}
 			return &imageModelClient{c}
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
+		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

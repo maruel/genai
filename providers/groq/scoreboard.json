@@ -4,7 +4,7 @@
   ],
   "country": "US",
   "dashboardURL": "https://console.groq.com/dashboard/usage",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "qwen/qwen3.8-27b"
@@ -25,6 +25,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "text": {
           "inline": true
@@ -62,12 +63,13 @@
         "openai/gpt-oss-120b"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -107,12 +109,13 @@
         "openai/gpt-oss-20b"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -151,12 +154,13 @@
       "models": [
         "openai/gpt-oss-safeguard-20b"
       ],
-      "reason": true,
       "in": {
         "text": {
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -195,7 +199,6 @@
       "models": [
         "qwen/qwen3.8-27b"
       ],
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -211,6 +214,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -258,7 +263,8 @@
         "qwen/qwen3.6-27b",
         "whisper-large-v3",
         "whisper-large-v3-turbo"
-      ]
+      ],
+      "wire": "http"
     }
   ]
 }

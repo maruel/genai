@@ -4,9 +4,9 @@
 | --------------------------------------- | --------- | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | gpt-6-astra🥇                            | Sync🧠     | 💬📄📸 | 💬     | ❌   | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
 | gpt-6-astra🥇                            | Stream🧠   | 💬📄📸 | 💬     | ❌   | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
-| gpt-image-2.5-sunburst🥇🥈                | Sync      | 💬     | 📸     | ❌   | ❌   | ✅    | ✅   | ❌   | ❌   | ❌    | ❌     | ❌    | ❌     |
 | gpt-6.1-terra🥈                          | Sync🧠     | 💬📄📸 | 💬     | ❌   | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
 | gpt-6.1-terra🥈                          | Stream🧠   | 💬📄📸 | 💬     | ❌   | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
+| gpt-image-2.5-sunburst🥇🥈                | Sync      | 💬     | 📸     | ❌   | ❌   | ✅    | ✅   | ❌   | ❌   | ❌    | ❌     | ❌    | ❌     |
 | gpt-6-luna🥉                             | Sync🧠     | 💬📄📸 | 💬     | ❌   | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
 | gpt-6-luna🥉                             | Stream🧠   | 💬📄📸 | 💬     | ❌   | ✅   | ✅    | ✅   | ❌   | 🌱   | ❌    | ✅     | ✅    | ✅     |
 | gpt-image-1-mini🥉                       | Sync      | 💬     | 📸     | ❌   | ❌   | ✅    | ✅   | ❌   | ❌   | ❌    | ❌     | ❌    | ❌     |
@@ -114,6 +114,7 @@
 | gpt-5.6-luna                            | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-5.6-sol                             | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-5.6-terra                           | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| gpt-6-sol                               | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-audio-1.5                           | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-audio-2025-08-28                    | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-audio-mini                          | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -138,18 +139,6 @@
 | gpt-realtime-translate                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-realtime-whisper                    | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | gpt-transcribe                          | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| omni-moderation-2024-09-26              | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| omni-moderation-latest                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| sora-2                                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| sora-2-pro                              | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| text-embedding-3-large                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| text-embedding-ada-002                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| tts-1                                   | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| tts-1-1106                              | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| tts-1-hd                                | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| tts-1-hd-1106                           | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| whisper-1                               | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| gpt-6-sol                               | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | o1                                      | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | o1-2024-12-17                           | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | o1-pro                                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -166,6 +155,17 @@
 | o4-mini-2025-04-16                      | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | o4-mini-deep-research                   | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | o4-mini-deep-research-2025-06-26        | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| omni-moderation-2024-09-26              | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| omni-moderation-latest                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| sora-2                                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| sora-2-pro                              | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| text-embedding-3-large                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| text-embedding-ada-002                  | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| tts-1                                   | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| tts-1-1106                              | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| tts-1-hd                                | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| tts-1-hd-1106                           | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| whisper-1                               | ?         | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -183,6 +183,7 @@
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - Realtime: Bidirectional audio and text session through ConnectRealtime
+- WS: Measured over the WebSocket wire instead of HTTP.
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio

@@ -6,7 +6,7 @@
   ],
   "country": "US",
   "dashboardURL": "https://api.together.ai/settings/billing",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "black-forest-labs/FLUX.2-max"
@@ -17,6 +17,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "url": true,
@@ -37,7 +38,6 @@
       "sota": true,
       "good": true,
       "cheap": true,
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -53,6 +53,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -92,6 +94,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "url": true,
@@ -114,6 +117,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "url": true,
@@ -407,7 +411,8 @@
         "zai-org/GLM-5",
         "zai-org/GLM-5-FP4",
         "zai-org/GLM-OCR"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "models": [
@@ -482,7 +487,48 @@
         "stabilityai/stable-diffusion-xl-base-1.0",
         "thinkingmachines/Inkling",
         "together/Tev1-4B-experimental"
-      ]
+      ],
+      "wire": "http"
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "Qwen/Qwen3-0.6B",
+        "Qwen/Qwen3-0.6B-Base",
+        "Qwen/Qwen3-1.7B",
+        "Qwen/Qwen3-1.7B-Base",
+        "Qwen/Qwen3-14B",
+        "Qwen/Qwen3-14B-Base",
+        "Qwen/Qwen3-30B-A3B",
+        "Qwen/Qwen3-30B-A3B-Base",
+        "Qwen/Qwen3-32B",
+        "Qwen/Qwen3-4B-Base",
+        "Qwen/Qwen3-8B",
+        "Qwen/Qwen3-8B-Base",
+        "Qwen/Qwen3-8B-Lora",
+        "Qwen/Qwen3-Coder-Next-FP8",
+        "Qwen/Qwen3-Next-80B-A3B-Thinking",
+        "Qwen/Qwen3.5-35B-A3B",
+        "Qwen/Qwen3.5-9B",
+        "Qwen/Qwen3.5-9B-FP8",
+        "deepseek-ai/DeepSeek-OCR-2",
+        "deepseek-ai/DeepSeek-R1-0528",
+        "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+        "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+        "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+        "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+        "deepseek-ai/DeepSeek-V3.1",
+        "openai/gpt-image-1.5",
+        "zai-org/GLM-4.5-Air-FP8",
+        "zai-org/GLM-4.5V",
+        "zai-org/GLM-4.6",
+        "zai-org/GLM-4.7",
+        "zai-org/GLM-5",
+        "zai-org/GLM-5-FP4",
+        "zai-org/GLM-OCR"
+      ],
+      "wire": "http",
+      "reason": true
     },
     {
       "models": [
@@ -522,6 +568,7 @@
         "zai-org/GLM-5.3-FP8-Lora",
         "zai-org/GLM-5.3-Flash"
       ],
+      "wire": "http",
       "reason": true
     }
   ]

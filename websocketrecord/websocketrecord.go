@@ -51,11 +51,17 @@ import (
 type NormalizeFunc func(typ websocket.MessageType, data []byte) []byte
 
 // message is a single recorded WebSocket message.
+//
+// A line with direction "=" records the handshake response headers, so a replay
+// carries what the server said before the first frame: rate limits, request IDs
+// and the like.
 type message struct {
-	Dir  string `json:"dir"`
-	Type string `json:"type,omitempty"`
-	Msg  string `json:"msg,omitempty"`
-	Data []byte `json:"data,omitempty"`
+	Dir     string      `json:"dir"`
+	Type    string      `json:"type,omitempty"`
+	Msg     string      `json:"msg,omitempty"`
+	Data    []byte      `json:"data,omitempty"`
+	Status  int         `json:"status,omitempty"`
+	Headers http.Header `json:"headers,omitempty"`
 }
 
 func (m *message) payload() []byte {
@@ -73,6 +79,12 @@ func (m *message) messageType() websocket.MessageType {
 }
 
 func (m *message) validate() error {
+	if m.Dir == "=" {
+		if m.Type != "" || m.Msg != "" || m.Data != nil {
+			return errors.New("websocketrecord: handshake line carries a message")
+		}
+		return nil
+	}
 	if m.Dir != ">" && m.Dir != "<" {
 		return fmt.Errorf("websocketrecord: invalid fixture direction %q", m.Dir)
 	}
@@ -105,32 +117,28 @@ type Recorder struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	mu     sync.Mutex
-	target string
-	srv    *httptest.Server
-	lines  []message
-	f      io.WriteCloser
-	enc    *json.Encoder
+	mu        sync.Mutex
+	handshake http.Header
+	target    string
+	srv       *httptest.Server
+	lines     []message
+	f         io.WriteCloser
+	enc       *json.Encoder
 }
 
 // New creates a Recorder for the given path.
 //
 // The path should not include the ".ndjson" extension; it is appended
-// automatically. If a non-empty fixture file exists, the recorder replays it.
-// An empty fixture is removed as an incomplete recording. Otherwise the
-// recorder records.
+// automatically. If a fixture file exists, the recorder replays it. An empty
+// fixture replays no frame: a probe the client refused before it dialed leaves
+// one, and its position in the sequence must stay. Otherwise the recorder
+// records.
 func New(path string) (*Recorder, error) {
 	fixture := path + ".ndjson"
 	ctx, cancel := context.WithCancel(context.Background())
 	r := &Recorder{fixture: fixture, ctx: ctx, cancel: cancel}
-	st, err := os.Stat(fixture)
+	_, err := os.Stat(fixture)
 	switch {
-	case err == nil && st.Size() == 0:
-		// An empty fixture is an incomplete recording. Remove it and record again.
-		if err := os.Remove(fixture); err != nil {
-			cancel()
-			return nil, fmt.Errorf("websocketrecord: failed to remove empty fixture: %w", err)
-		}
 	case err == nil:
 		r.replay = true
 		if err := r.load(); err != nil {
@@ -230,16 +238,8 @@ func (r *Recorder) close(discard bool) error {
 	if f != nil {
 		errs = append(errs, f.Close())
 	}
-	if !replay {
-		if discard {
-			if err := os.Remove(r.fixture); err != nil && !errors.Is(err, os.ErrNotExist) {
-				errs = append(errs, err)
-			}
-		} else if st, err := os.Stat(r.fixture); err == nil && st.Size() == 0 {
-			if err := os.Remove(r.fixture); err != nil {
-				errs = append(errs, err)
-			}
-		} else if err != nil && !errors.Is(err, os.ErrNotExist) {
+	if !replay && discard {
+		if err := os.Remove(r.fixture); err != nil && !errors.Is(err, os.ErrNotExist) {
 			errs = append(errs, err)
 		}
 	}
@@ -264,6 +264,10 @@ func (r *Recorder) load() error {
 		if err := m.validate(); err != nil {
 			return err
 		}
+		if m.Dir == "=" {
+			r.handshake = m.Headers
+			continue
+		}
 		r.lines = append(r.lines, m)
 	}
 	if err := sc.Err(); err != nil {
@@ -274,37 +278,89 @@ func (r *Recorder) load() error {
 
 func (r *Recorder) handle(w http.ResponseWriter, req *http.Request) {
 	subprotocols := parseSubprotocols(req.Header)
-	c, err := websocket.Accept(w, req, &websocket.AcceptOptions{InsecureSkipVerify: true, Subprotocols: subprotocols})
-	if err != nil {
-		return
+	accept := func(header http.Header) *websocket.Conn {
+		for k, v := range header {
+			if handshakeHeader(k) {
+				continue
+			}
+			w.Header()[k] = v
+		}
+		c, err := websocket.Accept(w, req, &websocket.AcceptOptions{InsecureSkipVerify: true, Subprotocols: subprotocols})
+		if err != nil {
+			return nil
+		}
+		return c
 	}
-	defer func() { _ = c.CloseNow() }()
 	ctx, cancel := context.WithCancel(req.Context())
 	defer cancel()
 	stop := context.AfterFunc(r.ctx, cancel) //nolint:contextcheck // recorder Close must cancel active handlers.
 	defer stop()
 	if r.replay {
+		r.mu.Lock()
+		handshake := r.handshake
+		r.mu.Unlock()
+		c := accept(handshake)
+		if c == nil {
+			return
+		}
+		defer func() { _ = c.CloseNow() }()
 		r.replayConn(ctx, c)
 		return
 	}
-	r.recordConn(ctx, c, req)
-}
-
-func (r *Recorder) recordConn(ctx context.Context, c *websocket.Conn, req *http.Request) {
+	// Dial first: the client's handshake then carries what the server said, the
+	// same way a replay does.
 	target, err := r.upstreamURL(req)
 	if err != nil {
-		_ = c.Close(websocket.StatusInternalError, "invalid target")
+		http.Error(w, "invalid target", http.StatusBadGateway)
 		return
 	}
-	u, _, err := websocket.Dial(ctx, target, &websocket.DialOptions{ //nolint:bodyclose // coder/websocket owns the response body.
+	u, resp, err := websocket.Dial(ctx, target, &websocket.DialOptions{ //nolint:bodyclose // coder/websocket owns the response body.
 		HTTPHeader:   forwardHeader(req.Header),
-		Subprotocols: parseSubprotocols(req.Header),
+		Subprotocols: subprotocols,
 	})
 	if err != nil {
-		_ = c.Close(websocket.StatusInternalError, "upstream dial failed")
+		http.Error(w, "upstream dial failed", http.StatusBadGateway)
 		return
 	}
 	defer func() { _ = u.CloseNow() }()
+	r.recordHandshake(resp)
+	c := accept(resp.Header)
+	if c == nil {
+		return
+	}
+	defer func() { _ = c.CloseNow() }()
+	r.relayBoth(ctx, c, u)
+}
+
+// recordHandshake stores the upstream response headers as the first fixture line.
+func (r *Recorder) recordHandshake(resp *http.Response) {
+	h := http.Header{}
+	for k, v := range resp.Header {
+		if handshakeHeader(k) {
+			continue
+		}
+		h[k] = v
+	}
+	m := message{Dir: "=", Status: resp.StatusCode, Headers: h}
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.enc != nil {
+		_ = r.enc.Encode(&m)
+	}
+}
+
+// handshakeHeader reports whether a header belongs to the WebSocket handshake and
+// must not be copied: the proxy and the client negotiate those themselves.
+func handshakeHeader(k string) bool {
+	switch http.CanonicalHeaderKey(k) {
+	case "Connection", "Upgrade", "Sec-Websocket-Accept", "Sec-Websocket-Extensions",
+		"Sec-Websocket-Key", "Sec-Websocket-Protocol", "Sec-Websocket-Version", "Content-Length":
+		return true
+	}
+	return false
+}
+
+func (r *Recorder) relayBoth(ctx context.Context, c, u *websocket.Conn) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	errs := make(chan error, 2)

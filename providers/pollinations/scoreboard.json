@@ -5,13 +5,12 @@
   ],
   "country": "DE",
   "dashboardURL": "https://auth.pollinations.ai/",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "openai/gpt-6-astra"
       ],
       "sota": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -33,6 +32,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -64,7 +65,6 @@
         "openai/gpt-6.1-terra"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -86,6 +86,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -117,7 +119,6 @@
         "openai/gpt-6-luna"
       ],
       "cheap": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -139,6 +140,8 @@
           "inline": true
         }
       },
+      "wire": "http",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -174,6 +177,7 @@
           "inline": true
         }
       },
+      "wire": "http",
       "out": {
         "image": {
           "inline": true,
@@ -801,13 +805,15 @@
         "z-ai/glm-5.3-flash",
         "zero2launch/gemini-3.7-flash",
         "zimage"
-      ]
+      ],
+      "wire": "http"
     },
     {
       "comments": "The scoreboard is currently broken for this use case as the model requires audio input.",
       "models": [
         "openai-audio"
-      ]
+      ],
+      "wire": "http"
     }
   ]
 }

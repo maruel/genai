@@ -1,12 +1,11 @@
 {
   "country": "AT",
   "dashboardURL": "https://github.com/badlogic/pi-mono",
-  "scenarios": [
+  "chat": [
     {
       "models": [
         "google/gemini-3.1-flash-lite-preview"
       ],
-      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -21,6 +20,8 @@
           "inline": true
         }
       },
+      "wire": "subprocess",
+      "reason": true,
       "out": {
         "text": {
           "inline": true
@@ -936,7 +937,8 @@
         "zai/glm-5.3",
         "zai/glm-5.3-flash",
         "zai/glm-5.3-highspeed"
-      ]
+      ],
+      "wire": "subprocess"
     }
   ]
 }

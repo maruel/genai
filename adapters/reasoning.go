@@ -22,8 +22,8 @@ import (
 func WrapReasoning(c genai.Provider) genai.Provider {
 	id := c.ModelID()
 	sb := c.Scoreboard()
-	for i := range sb.Scenarios {
-		sc := &sb.Scenarios[i]
+	for i := range sb.Chat {
+		sc := &sb.Chat[i]
 		// Some models like qwen-3-235b-a22b-thinking-2507 do not use ReasoningTokenStart.
 		if slices.Contains(sc.Models, id) && sc.ReasoningTokenEnd != "" {
 			return &ProviderReasoning{

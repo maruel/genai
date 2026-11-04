@@ -43,13 +43,13 @@ func TestRunEmbeddings(t *testing.T) {
 			case "routing modalities":
 				p.mods = genai.Modalities{genai.ModalityEmbedding}
 			case "routing scoreboard":
-				p.score = scoreboard.Score{Scenarios: []scoreboard.Scenario{{Models: []string{"model"}, Embed: &scoreboard.EmbeddingFunctionality{}}}}
+				p.score = scoreboard.Score{Embed: []scoreboard.Embed{{Row: scoreboard.Row{Models: []string{"model"}}, Embed: &scoreboard.EmbeddingFunctionality{}}}}
 			}
-			var sc scoreboard.Scenario
+			var sc scoreboard.Embed
 			var u genai.Usage
 			var err error
 			if strings.HasPrefix(tc.name, "routing") {
-				sc, u, err = smoke.Run(t.Context(), func(string) genai.Provider { return p })
+				sc, u, err = smoke.Embed{}.Run(t.Context(), smoke.Direct(func(string) genai.Provider { return p }), scoreboard.Model{Model: "model"}, scoreboard.WireHTTP, nil)
 			} else {
 				sc, u, err = smoke.RunEmbeddings(t.Context(), func(string) genai.Provider { return p }, tc.probe)
 			}

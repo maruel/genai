@@ -38,6 +38,7 @@ const legend = `<details>
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - Realtime: Bidirectional audio and text session through ConnectRealtime
+- WS: Measured over the WebSocket wire instead of HTTP.
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -104,28 +105,35 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	if pv, ok := p.(genai.ProviderScoreboardVariants); ok {
 		variants := pv.ScoreboardVariants()
 		scoreboards = make([]scoreboard.Score, len(variants))
-		for i, v := range variants {
-			scoreboards[i] = v.Score
+		for i := range variants {
+			scoreboards[i] = variants[i].Score
 		}
 	}
-	for _, s := range scoreboards {
-		for i := range s.Scenarios {
-			if s.Scenarios[i].Embed != nil {
-				t.initFromEmbed(&s.Scenarios[i])
+	for i := range scoreboards {
+		s := &scoreboards[i]
+		for j := range s.Embed {
+			if r := &s.Embed[j]; r.Embed != nil {
+				t.initFromEmbed(r)
 			}
-			if s.Scenarios[i].SystemOne != nil {
-				t.initFromSystemOne(&s.Scenarios[i])
+		}
+		for j := range s.SystemOne {
+			if r := &s.SystemOne[j]; r.SystemOne != nil {
+				t.initFromSystemOne(r)
 			}
-			if s.Scenarios[i].Realtime != nil {
-				t.initFromRealtime(&s.Scenarios[i])
+		}
+		for j := range s.Realtime {
+			if r := &s.Realtime[j]; r.Realtime != nil {
+				t.initFromRealtime(r)
 			}
+		}
+		for j := range s.Chat {
+			r := &s.Chat[j]
 			// Assume GenSync has the best values.
-			f := s.Scenarios[i].GenSync
-			if f == nil {
+			if r.GenSync == nil {
 				continue
 			}
-			t.initFromScenario(&s.Scenarios[i], f)
-			if s.Scenarios[i].GenStream != nil && !strings.Contains(t.Mode, "Stream") {
+			t.initFromChat(r, r.GenSync)
+			if r.GenStream != nil && !strings.Contains(t.Mode, "Stream") {
 				if t.Mode != "" {
 					t.Mode += ", "
 				}
@@ -183,9 +191,24 @@ func (t *tableDataRow) finishMode() {
 	t.Mode = strings.Join(modes, ", ")
 }
 
-func (t *tableDataRow) initFromEmbed(s *scoreboard.Scenario) {
+// sectionRow is what a table row needs from a row of any section.
+type sectionRow struct {
+	scoreboard.Row
+	Out       map[scoreboard.Modality]scoreboard.ModalCapability
+	Reason    bool
+	GenSync   *scoreboard.Functionality
+	GenStream *scoreboard.Functionality
+}
+
+func (t *tableDataRow) initFromChat(s *scoreboard.Chat, f *scoreboard.Functionality) {
+	t.initFromScenario(&sectionRow{
+		Row: s.Row, Out: s.Out, Reason: s.Reason, GenSync: s.GenSync, GenStream: s.GenStream,
+	}, f)
+}
+
+func (t *tableDataRow) initFromEmbed(s *scoreboard.Embed) {
 	f := s.Embed
-	t.initFromScenario(s, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
+	t.initFromScenario(&sectionRow{Row: s.Row, Out: s.Outputs()}, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
 	if !strings.Contains(t.Mode, "Embed") {
 		if t.Mode != "" {
 			t.Mode += ", "
@@ -194,9 +217,9 @@ func (t *tableDataRow) initFromEmbed(s *scoreboard.Scenario) {
 	}
 }
 
-func (t *tableDataRow) initFromSystemOne(s *scoreboard.Scenario) {
+func (t *tableDataRow) initFromSystemOne(s *scoreboard.SystemOne) {
 	f := s.SystemOne
-	t.initFromScenario(s, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
+	t.initFromScenario(&sectionRow{Row: s.Row, Out: s.Out}, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
 	if !strings.Contains(t.Mode, "SystemOne") {
 		if t.Mode != "" {
 			t.Mode += ", "
@@ -205,21 +228,21 @@ func (t *tableDataRow) initFromSystemOne(s *scoreboard.Scenario) {
 	}
 }
 
-func (t *tableDataRow) initFromRealtime(s *scoreboard.Scenario) {
+func (t *tableDataRow) initFromRealtime(s *scoreboard.Realtime) {
 	if !strings.Contains(t.Mode, "Realtime") {
 		if t.Mode != "" {
 			t.Mode += ", "
 		}
 		t.Mode += "Realtime"
 	}
-	t.initFromScenario(s, &scoreboard.Functionality{
+	t.initFromScenario(&sectionRow{Row: s.Row, Out: s.Out, Reason: s.Reason}, &scoreboard.Functionality{
 		Tools:            s.Realtime.Tools,
 		ReportRateLimits: s.Realtime.ReportRateLimits,
 		ReportTokenUsage: s.Realtime.ReportTokenUsage,
 	})
 }
 
-func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Functionality) {
+func (t *tableDataRow) initFromScenario(s *sectionRow, f *scoreboard.Functionality) {
 	if s.GenSync == f && !strings.Contains(t.Mode, "Sync") {
 		if t.Mode != "" {
 			t.Mode += ", "
@@ -397,7 +420,8 @@ func printProviderTable(p genai.Provider, w io.Writer) error {
 
 // printProviderVariantTables prints a separate table per scoreboard variant.
 func printProviderVariantTables(p genai.Provider, w io.Writer, variants []genai.ScoreboardVariant) error {
-	for i, v := range variants {
+	for i := range variants {
+		v := &variants[i]
 		if i > 0 {
 			_, _ = io.WriteString(w, "\n")
 		}
@@ -407,68 +431,126 @@ func printProviderVariantTables(p genai.Provider, w io.Writer, variants []genai.
 	return nil
 }
 
-// printScoreboardTable prints a single scoreboard table.
-func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
-	rows := make([]tableModelRow, 0, len(sb.Scenarios))
-	for i := range sb.Scenarios {
-		sc := &sb.Scenarios[i]
+// tableRows builds the rows of one scoreboard: one per measured suite, then one queue
+// entry per model no suite measured.
+func tableRows(sb *scoreboard.Score, caps genai.ProviderCapabilities) []tableModelRow {
+	rows := make([]tableModelRow, 0, len(sb.Chat)+len(sb.Embed)+len(sb.SystemOne)+len(sb.Realtime))
+	for i := range sb.Chat {
+		r := &sb.Chat[i]
 		var tmpRows []tableModelRow
-		if sc.Embed != nil {
-			row := tableModelRow{}
-			row.initFromEmbed(sc)
-			fillEmptyFields(&row, "❌")
-			tmpRows = append(tmpRows, row)
-		}
-		if sc.SystemOne != nil {
-			row := tableModelRow{}
-			row.initFromSystemOne(sc)
-			fillEmptyFields(&row, "❌")
-			tmpRows = append(tmpRows, row)
-		}
-		if sc.Realtime != nil {
-			row := tableModelRow{}
-			row.initFromRealtime(sc)
-			fillEmptyFields(&row, "❌")
-			tmpRows = append(tmpRows, row)
-		}
-		for _, f := range []*scoreboard.Functionality{sc.GenSync, sc.GenStream} {
+		for _, f := range []*scoreboard.Functionality{r.GenSync, r.GenStream} {
 			if f == nil {
 				continue
 			}
 			row := tableModelRow{}
-			row.initFromScenario(sc, f)
-			if p.Capabilities().GenAsync {
+			row.initFromChat(r, f)
+			if caps.GenAsync {
 				row.Batch = "✅"
 			}
-			if p.Capabilities().Caching {
+			if caps.Caching {
 				row.Files = "✅"
 			}
 			fillEmptyFields(&row, "❌")
 			tmpRows = append(tmpRows, row)
 		}
-		if len(tmpRows) == 0 {
+		if len(tmpRows) == 0 && r.Refused != "" {
+			// The table lists what a model does. A refusal is a result the scoreboard
+			// keeps, in the provider's own words.
+			continue
+		}
+		markWire(tmpRows, r.Base())
+		rows = appendModels(rows, r.Base(), tmpRows)
+	}
+	for i := range sb.Embed {
+		r := &sb.Embed[i]
+		var tmpRows []tableModelRow
+		if r.Embed != nil {
 			row := tableModelRow{}
-			fillEmptyFields(&row, "?")
+			row.initFromEmbed(r)
+			fillEmptyFields(&row, "❌")
 			tmpRows = append(tmpRows, row)
 		}
-		for i, m := range sc.Models {
-			for j := range tmpRows {
-				tmpRows[j].Model = m
-				if i == 0 {
-					if sc.SOTA {
-						tmpRows[j].Model += "🥇"
-					}
-					if sc.Good {
-						tmpRows[j].Model += "🥈"
-					}
-					if sc.Cheap {
-						tmpRows[j].Model += "🥉"
-					}
-				}
-				rows = append(rows, tmpRows[j])
-			}
+		if len(tmpRows) == 0 && r.Refused != "" {
+			// The table lists what a model does. A refusal is a result the scoreboard
+			// keeps, in the provider's own words.
+			continue
+		}
+		markWire(tmpRows, r.Base())
+		rows = appendModels(rows, r.Base(), tmpRows)
+	}
+	for i := range sb.SystemOne {
+		r := &sb.SystemOne[i]
+		var tmpRows []tableModelRow
+		if r.SystemOne != nil {
+			row := tableModelRow{}
+			row.initFromSystemOne(r)
+			fillEmptyFields(&row, "❌")
+			tmpRows = append(tmpRows, row)
+		}
+		if len(tmpRows) == 0 && r.Refused != "" {
+			// The table lists what a model does. A refusal is a result the scoreboard
+			// keeps, in the provider's own words.
+			continue
+		}
+		markWire(tmpRows, r.Base())
+		rows = appendModels(rows, r.Base(), tmpRows)
+	}
+	for i := range sb.Realtime {
+		r := &sb.Realtime[i]
+		var tmpRows []tableModelRow
+		if r.Realtime != nil {
+			row := tableModelRow{}
+			row.initFromRealtime(r)
+			fillEmptyFields(&row, "❌")
+			tmpRows = append(tmpRows, row)
+		}
+		if len(tmpRows) == 0 && r.Refused != "" {
+			// The table lists what a model does. A refusal is a result the scoreboard
+			// keeps, in the provider's own words.
+			continue
+		}
+		markWire(tmpRows, r.Base())
+		rows = appendModels(rows, r.Base(), tmpRows)
+	}
+	// A model no section measured is one queue entry, not one per section, and a
+	// model measured somewhere is not a queue entry at all.
+	measured := map[string]struct{}{}
+	for i := range rows {
+		if rows[i].Mode != "?" {
+			measured[rows[i].Model] = struct{}{}
 		}
 	}
+	queued := map[string]struct{}{}
+	rows = slices.DeleteFunc(rows, func(r tableModelRow) bool {
+		if r.Mode != "?" {
+			return false
+		}
+		if _, ok := measured[r.Model]; ok {
+			return true
+		}
+		if _, ok := queued[r.Model]; ok {
+			return true
+		}
+		queued[r.Model] = struct{}{}
+		return false
+	})
+	// A measured model comes before an unmeasured one, then the preferred models,
+	// then by name, so a section change does not reshuffle the table.
+	slices.SortStableFunc(rows, func(a, b tableModelRow) int {
+		if c := unmeasuredRank(&a) - unmeasuredRank(&b); c != 0 {
+			return c
+		}
+		if c := medalRank(a.Model) - medalRank(b.Model); c != 0 {
+			return c
+		}
+		return strings.Compare(strings.TrimRight(a.Model, "🥇🥈🥉"), strings.TrimRight(b.Model, "🥇🥈🥉"))
+	})
+	return rows
+}
+
+// printScoreboardTable prints a single scoreboard table.
+func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
+	rows := tableRows(sb, p.Capabilities())
 	printMarkdownTable(w, rows)
 	_, _ = io.WriteString(w, legend)
 	if len(sb.Warnings) > 0 {
@@ -477,6 +559,63 @@ func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
 			_, _ = fmt.Fprintf(w, "- %s\n", wrn)
 		}
 	}
+}
+
+// markWire names the wire of a row when it is not HTTP, the norm.
+func markWire(rows []tableModelRow, r *scoreboard.Row) {
+	for i := range rows {
+		if r.Wire == scoreboard.WireWebSocket {
+			rows[i].Mode += "WS"
+		}
+	}
+}
+
+// unmeasuredRank separates the models a section measured from those it only queues.
+func unmeasuredRank(r *tableModelRow) int {
+	if r.Mode == "?" {
+		return 1
+	}
+	return 0
+}
+
+// medalRank orders the tiers of the table: SOTA, Good, Cheap, then the rest.
+func medalRank(model string) int {
+	switch {
+	case strings.HasSuffix(model, "🥇"):
+		return 0
+	case strings.HasSuffix(model, "🥈"):
+		return 1
+	case strings.HasSuffix(model, "🥉"):
+		return 2
+	}
+	return 3
+}
+
+// appendModels adds one row per model of r, with the preference medal on the first.
+func appendModels(rows []tableModelRow, r *scoreboard.Row, tmpRows []tableModelRow) []tableModelRow {
+	if len(tmpRows) == 0 {
+		row := tableModelRow{}
+		fillEmptyFields(&row, "?")
+		tmpRows = append(tmpRows, row)
+	}
+	for i, m := range r.Models {
+		for j := range tmpRows {
+			tmpRows[j].Model = m
+			if i == 0 {
+				if r.SOTA {
+					tmpRows[j].Model += "🥇"
+				}
+				if r.Good {
+					tmpRows[j].Model += "🥈"
+				}
+				if r.Cheap {
+					tmpRows[j].Model += "🥉"
+				}
+			}
+			rows = append(rows, tmpRows[j])
+		}
+	}
+	return rows
 }
 
 // Magical markdown table generator.

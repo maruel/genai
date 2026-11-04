@@ -19,59 +19,63 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        body: '{"choices":[{"index":0,"message":{"role":"assistant","content":"Hello","refusal":null,"annotations":null,"audio":null,"function_call":null,"reasoning":"We need answer only one word. \"Hello\" one word. Need comply."},"logprobs":null,"finish_reason":"stop","stop_reason":null,"token_ids":null,"routed_experts":null}],"created":1793401700,"ec_transfer_params":null,"id":"chatcmpl-e4646a43-fdb9-43f5-88b6-e58c16b82332","metrics":null,"model":"deepseek-v4.1-flash-1017","object":"chat.completion","service_tier":null,"system_fingerprint":null,"usage":{"prompt_tokens":38,"total_tokens":57,"completion_tokens":19,"prompt_tokens_details":{"cached_tokens":0,"created_cache_tokens":0,"multimodal_tokens":null},"completion_tokens_details":{"reasoning_tokens":16}}}'
+        content_length: 588
+        body: '{"id":"chatcmpl-85435ed8d5a54c43b196cd3f83ec5d8a","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"We need answer only one word. \"Hello\" likely. Need comply."},"finish_reason":"stop"}],"created":1793797993,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":18,"total_tokens":57,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":10,"audio_tokens":0,"reasoning_tokens":15,"rejected_prediction_tokens":11}}}'
         headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Access-Control-Allow-Headers:
-                - User-Agent,X-Requested-With,X-Forwarded-For,If-Modified-Since,Cache-Control,Content-Type, Range,Authorization,Access-Control-Allow-Origin,Referer,X-Stainless-Os,X-Stainless-Runtime, X-Stainless-Runtime-Version,X-Stainless-Arch,X-Stainless-Lang,X-Stainless-Package-Version, X-Stainless-Retry-Count,X-Stainless-Timeout
-            Access-Control-Allow-Methods:
-                - GET, POST, OPTIONS
             Access-Control-Allow-Origin:
                 - '*'
             Access-Control-Expose-Headers:
-                - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Length:
+                - "588"
             Content-Type:
                 - application/json
             Cross-Origin-Opener-Policy:
                 - same-origin
             Referrer-Policy:
                 - strict-origin-when-cross-origin
-            Server:
-                - envoy
             Strict-Transport-Security:
                 - max-age=31536000
             Vary:
-                - Origin
+                - Origin, Origin
             Via:
-                - 1.1 db14a8f62aca843280fe2406098330c0.cloudfront.net (CloudFront)
+                - 1.1 google, 1.1 6a87816d6ed87d078077233e1a539f4c.cloudfront.net (CloudFront)
             X-Amz-Cf-Id:
-                - xvWIDh6nQAP7YB2GSV2EUPMprg-T2a-hEgRP1JSRudxN3mD8KQ3W0A==
+                - T2_wkubFaiOVY0iRakJl1VGWBsbBgnpi84tuIjX0EACMo4KW6vBWUw==
             X-Amz-Cf-Pop:
                 - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1793797993722"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "1"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "1"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755214655420440657"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755214655417554173"
+            X-Baseten-Received-At:
+                - "1793797993722"
+            X-Baseten-Request-Id:
+                - 54ca701a1a6b134fa711aad14ac664527ea39
+            X-Baseten-Sent-At:
+                - "1793797994443"
             X-Cache:
                 - Miss from cloudfront
-            X-Envoy-Upstream-Service-Time:
-                - "229"
             X-Inference-Provider:
-                - scaleway
+                - baseten
             X-Powered-By:
                 - huggingface-moon
             X-Ratelimit-Limit-Requests:
-                - "600"
+                - "200"
             X-Ratelimit-Limit-Tokens:
-                - "5000000"
+                - "3000000"
             X-Ratelimit-Remaining-Requests:
-                - "599"
+                - "99"
             X-Ratelimit-Remaining-Tokens:
-                - "4999943"
-            X-Ratelimit-Reset-Requests:
-                - 100ms
-            X-Ratelimit-Reset-Tokens:
-                - 0ms
+                - "3000000"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 420ms
+        duration: 798ms

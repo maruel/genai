@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/coder/websocket"
 )
@@ -44,7 +45,60 @@ func TestNew(t *testing.T) {
 			t.Fatal("discarded fixture replayed")
 		}
 	})
-	t.Run("empty", func(t *testing.T) {
+	t.Run("handshake headers are replayed", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "test")
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("X-RateLimit-Remaining", "7")
+			c, err := websocket.Accept(w, r, nil)
+			if err != nil {
+				return
+			}
+			defer func() { _ = c.CloseNow() }()
+		}))
+		t.Cleanup(srv.Close)
+		rec, err := New(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		upstream := "ws" + strings.TrimPrefix(srv.URL, "http")
+		if err := rec.Start(upstream); err != nil {
+			t.Fatal(err)
+		}
+		assertHeader := func(t *testing.T, url string, want string) {
+			t.Helper()
+			ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+			defer cancel()
+			c, resp, err := websocket.Dial(ctx, "ws"+strings.TrimPrefix(url, "http"), nil) //nolint:bodyclose // coder/websocket owns the response body.
+			if err != nil {
+				t.Fatal(err)
+			}
+			_ = c.CloseNow()
+			if got := resp.Header.Get("X-RateLimit-Remaining"); got != want {
+				t.Fatalf("header %q, want %q", got, want)
+			}
+		}
+		assertHeader(t, rec.URL(), "7")
+		if err := rec.Close(); err != nil {
+			t.Fatal(err)
+		}
+		replay, err := New(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := replay.Start(upstream); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if err := replay.Close(); err != nil {
+				t.Error(err)
+			}
+		})
+		assertHeader(t, replay.URL(), "7")
+	})
+	t.Run("empty fixture is kept", func(t *testing.T) {
+		// A fixture is numbered by the call that created it, so a session that
+		// exchanged no frame must leave an empty file: removing it shifts every
+		// later number.
 		path := filepath.Join(t.TempDir(), "test")
 		rec, err := New(path)
 		if err != nil {
@@ -56,8 +110,8 @@ func TestNew(t *testing.T) {
 		if err := rec.Close(); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := os.Stat(path + ".ndjson"); !errors.Is(err, os.ErrNotExist) {
-			t.Fatalf("empty fixture remains: %v", err)
+		if _, err := os.Stat(path + ".ndjson"); err != nil {
+			t.Fatalf("empty fixture was removed: %v", err)
 		}
 	})
 	t.Run("error", func(t *testing.T) {

@@ -23,9 +23,9 @@ import (
 // RunSystemOne qualifies typed decisions and text, JSON and image states.
 // ProviderFactory must never fail. Unsupported inputs are omitted from the result;
 // transport failures and malformed responses abort qualification.
-func RunSystemOne(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
+func RunSystemOne(ctx context.Context, pf ProviderFactory) (scoreboard.SystemOne, genai.Usage, error) {
 	c := pf("")
-	sc := scoreboard.Scenario{Models: []string{c.ModelID()}}
+	sc := scoreboard.SystemOne{Row: scoreboard.Row{Models: []string{c.ModelID()}}}
 	u := genai.Usage{}
 	if c.ModelID() == "" {
 		return sc, u, errors.New("provider must have a model")

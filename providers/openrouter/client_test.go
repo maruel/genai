@@ -40,6 +40,30 @@ func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.Roun
 }
 
 func TestChatRequest(t *testing.T) {
+	t.Run("provider sorting", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			var req openrouter.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("Hello.")}, "test/model",
+				&openrouter.GenOption{Provider: &openrouter.ProviderPreferences{Sort: openrouter.ProviderSortLatency}}); err != nil {
+				t.Fatal(err)
+			}
+			data, err := json.Marshal(req.Provider)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(data) != `{"sort":"latency"}` {
+				t.Fatalf("provider JSON = %s", data)
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			var req openrouter.ChatRequest
+			err := req.Init(genai.Messages{genai.NewTextMessage("Hello.")}, "test/model",
+				&openrouter.GenOption{Provider: &openrouter.ProviderPreferences{Sort: "fastest"}})
+			if err == nil || err.Error() != `invalid provider sort "fastest": must be latency, price, or throughput` {
+				t.Fatalf("Init() = %v", err)
+			}
+		})
+	})
 	t.Run("structured output", func(t *testing.T) {
 		var req openrouter.ChatRequest
 		err := req.Init(

@@ -57,6 +57,9 @@ type GenOption struct {
 
 // Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
+	if o.Provider != nil {
+		return o.Provider.Validate()
+	}
 	return nil
 }
 

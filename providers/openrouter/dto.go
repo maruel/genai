@@ -8,6 +8,8 @@
 // https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
 // Source: https://github.com/OpenRouterTeam/typescript-sdk, commit
 // e9bcbede15c7ba35a44746f175a00c0ab25230c0, src/models (reasoning controls).
+// Provider sorting: https://github.com/OpenRouterTeam/go-sdk, commit
+// 3c03c5e9a4757b0836bcc6e7f95c0f68f60bca36, models/components/providersort.go.
 
 package openrouter
 
@@ -27,8 +29,9 @@ import (
 
 // ProviderPreferences configures how OpenRouter selects providers.
 type ProviderPreferences struct {
-	// Sort prioritizes providers by "price", "throughput", or "latency".
-	Sort string `json:"sort,omitzero"`
+	// Sort prioritizes providers by price, throughput, or latency.
+	// Empty preserves OpenRouter's default routing.
+	Sort ProviderSort `json:"sort,omitzero"`
 	// AllowFallbacks enables automatic failover to other providers.
 	AllowFallbacks *bool `json:"allow_fallbacks,omitzero"`
 	// RequireParameters routes only to providers supporting all requested parameters.
@@ -48,6 +51,33 @@ type ProviderPreferences struct {
 	// EnforceDistillableText requires text output compatible with distillation.
 	EnforceDistillableText bool `json:"enforce_distillable_text,omitzero"`
 }
+
+// Validate implements genai.Validatable.
+func (p *ProviderPreferences) Validate() error {
+	return p.Sort.Validate()
+}
+
+// ProviderSort selects how OpenRouter prioritizes providers.
+type ProviderSort string
+
+// Validate returns an error for an unsupported provider sorting strategy.
+func (s ProviderSort) Validate() error {
+	switch s {
+	case "", ProviderSortLatency, ProviderSortPrice, ProviderSortThroughput:
+		return nil
+	default:
+		return fmt.Errorf("invalid provider sort %q: must be latency, price, or throughput", s)
+	}
+}
+
+const (
+	// ProviderSortLatency prioritizes the lowest latency.
+	ProviderSortLatency ProviderSort = "latency"
+	// ProviderSortPrice prioritizes the lowest price.
+	ProviderSortPrice ProviderSort = "price"
+	// ProviderSortThroughput prioritizes the highest throughput.
+	ProviderSortThroughput ProviderSort = "throughput"
+)
 
 // ReasoningEffort is OpenRouter's native reasoning effort.
 type ReasoningEffort string

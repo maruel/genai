@@ -826,6 +826,114 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("ListVoices", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			t.Run("pagination", func(t *testing.T) {
+				c := getClient(t, "gemini-3.8-live").(*gemini.Client)
+				in := gemini.ListVoicesRequest{PageSize: 2, Type: []gemini.VoiceType{gemini.VoiceTypePrebuilt}}
+				var voices []gemini.Voice
+				for v, err := range c.ListVoices(t.Context(), &in) {
+					if err != nil {
+						t.Fatal(err)
+					}
+					if v.ID == "" || v.DisplayName == "" || v.Type != gemini.VoiceTypePrebuilt {
+						t.Errorf("missing voice identity: %+v", v)
+					}
+					voices = append(voices, v)
+					if len(voices) == 4 {
+						break
+					}
+				}
+				if len(voices) != 4 || voices[0].ID == voices[2].ID {
+					t.Fatalf("pagination did not advance: %+v", voices)
+				}
+			})
+			t.Run("filters", func(t *testing.T) {
+				c := getClient(t, "gemini-3.8-live").(*gemini.Client)
+				for _, err := range c.ListVoices(t.Context(), &gemini.ListVoicesRequest{
+					Accent: []string{"American", "British"}, Context: []string{"Conversational"},
+					Gender: []gemini.VoiceGender{gemini.VoiceGenderMale}, LanguageCode: []string{"en-US"}, Persona: []string{"Friendly"},
+					Pitch:      []gemini.VoicePitch{gemini.VoicePitchLow, gemini.VoicePitchMedium},
+					RegionCode: []string{"US"}, Search: "warm & friendly", Type: []gemini.VoiceType{gemini.VoiceTypePrebuilt},
+				}) {
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+			})
+		})
+		t.Run("error", func(t *testing.T) {
+			t.Run("later page", func(t *testing.T) {
+				transport := &voiceListTransport{failLater: true}
+				c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-3.8-live"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return transport }))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				var got int
+				for v, err := range c.ListVoices(t.Context(), &gemini.ListVoicesRequest{}) {
+					if got == 0 && err == nil && v.ID == "first" {
+						got++
+						continue
+					}
+					if err == nil || !strings.Contains(err.Error(), "later page failed") {
+						t.Fatalf("later page: %+v %v", v, err)
+					}
+					got++
+				}
+				if got != 2 || transport.calls != 2 {
+					t.Fatalf("values=%d requests=%d", got, transport.calls)
+				}
+			})
+			c := getClient(t, "gemini-3.8-live").(*gemini.Client)
+			for _, err := range c.ListVoices(t.Context(), &gemini.ListVoicesRequest{Type: []gemini.VoiceType{"invalid-type"}}) {
+				if err == nil {
+					t.Fatal("invalid voice type was accepted")
+				}
+				return
+			}
+			t.Fatal("missing invalid voice type error")
+		})
+		t.Run("metadata replacement", func(t *testing.T) {
+			transport := &voiceListTransport{}
+			c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-3.8-live"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return transport }))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			var got []gemini.Voice
+			for v, err := range c.ListVoices(t.Context(), &gemini.ListVoicesRequest{}) {
+				if err != nil {
+					t.Fatal(err)
+				}
+				got = append(got, v)
+			}
+			if len(got) != 2 || got[0].Description != "first metadata" || got[1].Description != "" || got[1].ID != "second" || transport.calls != 2 {
+				t.Fatalf("voices=%+v requests=%d", got, transport.calls)
+			}
+		})
+		t.Run("cancelled", func(t *testing.T) {
+			transport := &voiceListTransport{}
+			c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("test"), genai.ProviderOptionModel("gemini-3.8-live"), genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return transport }))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			ctx, cancel := context.WithCancel(t.Context())
+			cancel()
+			var count int
+			for _, err := range c.ListVoices(ctx, &gemini.ListVoicesRequest{}) {
+				if !errors.Is(err, context.Canceled) {
+					t.Fatalf("error=%v", err)
+				}
+				count++
+			}
+			if count != 1 || transport.calls != 0 {
+				t.Fatalf("yielded=%d requests=%d", count, transport.calls)
+			}
+		})
+	})
+
 	t.Run("Embed", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			t.Run("document ownership", func(t *testing.T) {
@@ -1028,6 +1136,29 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		c := getClient(t, "")
+		// The voice library also contains TTS-only voices. Select the documented
+		// Live voices from the catalog for the realtime scoreboard.
+		// https://ai.google.dev/gemini-api/docs/live-api/capabilities#change-voice-and-language
+		// https://ai.google.dev/gemini-api/docs/speech-generation#voices
+		liveVoices := []string{
+			"Achernar", "Achird", "Algenib", "Algieba", "Alnilam", "Aoede", "Autonoe",
+			"Callirrhoe", "Charon", "Despina", "Enceladus", "Erinome", "Fenrir", "Gacrux",
+			"Iapetus", "Kore", "Laomedeia", "Leda", "Orus", "Puck", "Pulcherrima",
+			"Rasalgethi", "Sadachbia", "Sadaltager", "Schedar", "Sulafat", "Umbriel",
+			"Vindemiatrix", "Zephyr", "Zubenelgenubi",
+		}
+		var voices []string
+		for v, err := range c.(*gemini.Client).ListVoices(t.Context(), &gemini.ListVoicesRequest{PageSize: 1000, Type: []gemini.VoiceType{gemini.VoiceTypePrebuilt}}) {
+			if err != nil {
+				t.Fatal(err)
+			}
+			if slices.Contains(liveVoices, v.DisplayName) {
+				voices = append(voices, v.ID)
+			}
+		}
+		if len(voices) != len(liveVoices) {
+			t.Fatalf("catalog has %d of %d documented Live voices", len(voices), len(liveVoices))
+		}
 		mdls, err := c.ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
@@ -1128,7 +1259,7 @@ func TestClient(t *testing.T) {
 			}
 			return rec
 		}
-		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{RealtimeVoices: voices, Qualify: []scoreboard.Model{
 			{Model: "gemini-embedding-2"},
 			// A model that declines a session records why, so the harness does not ask
 			// again on every run.
@@ -1784,4 +1915,28 @@ func (*embeddingDocumentReader) Seek(int64, int) (int64, error) { return 0, erro
 type embeddingRawFailureCase struct {
 	name, body string
 	status     int
+}
+
+// voiceListTransport serves two pages to exercise reuse and terminal failures.
+type voiceListTransport struct {
+	calls     int
+	failLater bool
+}
+
+func (v *voiceListTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	v.calls++
+	if v.calls > 2 {
+		return nil, errors.New("unexpected page after terminal response")
+	}
+	body := `{"voices":[{"id":"first","type":"prebuilt","description":"first metadata"}],"next_page_token":"next"}`
+	if v.calls == 2 {
+		if r.URL.Query().Get("page_token") != "next" {
+			return nil, errors.New("missing continuation token")
+		}
+		if v.failLater {
+			return nil, errors.New("later page failed")
+		}
+		body = `{"voices":[{"id":"second","type":"prebuilt"}]}`
+	}
+	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": {"application/json"}}, Body: io.NopCloser(strings.NewReader(body)), Request: r}, nil
 }

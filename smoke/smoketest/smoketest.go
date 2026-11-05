@@ -53,6 +53,8 @@ var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.
 
 // RunOptions configures optional behavior of Run.
 type RunOptions struct {
+	// RealtimeVoices supplies provider-advertised voice IDs for the scoreboard.
+	RealtimeVoices []string
 	// ScoreboardFile overrides the default scoreboard filename ("scoreboard.json").
 	ScoreboardFile string
 	// Qualify lists untested models that update mode should smoke test. Model output
@@ -150,7 +152,7 @@ func Run(t *testing.T, rf smoke.RecorderFactory, models []scoreboard.Model, opts
 			view.Chat = append(slices.Clone(sb.Chat), measured.Chat...)
 			measured.Embed = append(measured.Embed, runSection(ctx, t, r, m, smoke.Embed{}, sb.Embed, &view, qualify, queued, false, tolerate, &usage, nil)...)
 			measured.SystemOne = append(measured.SystemOne, runSection(ctx, t, r, m, smoke.SystemOne{}, sb.SystemOne, &view, qualify, queued, false, tolerate, &usage, nil)...)
-			measured.Realtime = append(measured.Realtime, runSection(ctx, t, r, m, smoke.Realtime{}, sb.Realtime, &view, qualify, queued, false, tolerate, &usage, nil)...)
+			measured.Realtime = append(measured.Realtime, runSection(ctx, t, r, m, smoke.Realtime{Voices: opts.RealtimeVoices}, sb.Realtime, &view, qualify, queued, false, tolerate, &usage, nil)...)
 		}) {
 			failed = true
 		}

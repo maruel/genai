@@ -138,7 +138,10 @@ func (SystemOne) Run(ctx context.Context, rec Recorder, m scoreboard.Model, wire
 }
 
 // Realtime measures a realtime session.
-type Realtime struct{}
+type Realtime struct {
+	// Voices lists provider-advertised voice IDs to include in the scoreboard.
+	Voices []string
+}
 
 // Wires implements [Family].
 func (Realtime) Wires() []scoreboard.Wire {
@@ -189,17 +192,26 @@ func (Realtime) Fits(spec Spec, sb *scoreboard.Score, model string) bool {
 //
 // A row the scoreboard already holds is measured. A model without one is asked
 // first: only a session tells whether it accepts one.
-func (Realtime) Run(ctx context.Context, rec Recorder, _ scoreboard.Model, wire scoreboard.Wire, want *scoreboard.Realtime) (scoreboard.Realtime, genai.Usage, error) {
+func (r Realtime) Run(ctx context.Context, rec Recorder, _ scoreboard.Model, wire scoreboard.Wire, want *scoreboard.Realtime) (scoreboard.Realtime, genai.Usage, error) {
 	c := rec.Provider(wire, "")
+	reasoning := false
 	if want != nil && want.Realtime != nil {
-		return RunRealtimeScenario(ctx, c, want.Reason)
+		reasoning = want.Reason
+	} else {
+		ok, reason, err := RealtimeSupported(ctx, c)
+		if err != nil {
+			return scoreboard.Realtime{}, genai.Usage{}, err
+		}
+		if !ok {
+			return scoreboard.Realtime{}, genai.Usage{}, fmt.Errorf("%w: %s", ErrUnsupported, reason)
+		}
 	}
-	ok, reason, err := RealtimeSupported(ctx, c)
+	sc, usage, err := RunRealtimeScenario(ctx, c, reasoning)
 	if err != nil {
-		return scoreboard.Realtime{}, genai.Usage{}, err
+		return sc, usage, err
 	}
-	if !ok {
-		return scoreboard.Realtime{}, genai.Usage{}, fmt.Errorf("%w: %s", ErrUnsupported, reason)
-	}
-	return RunRealtimeScenario(ctx, c, false)
+	sc.Realtime.Voices = slices.Clone(r.Voices)
+	slices.Sort(sc.Realtime.Voices)
+	sc.Realtime.Voices = slices.Compact(sc.Realtime.Voices)
+	return sc, usage, nil
 }

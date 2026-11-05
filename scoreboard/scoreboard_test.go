@@ -32,6 +32,25 @@ func TestKeyString(t *testing.T) {
 	}
 }
 
+func TestRealtimeFunctionality(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			f := RealtimeFunctionality{Voices: []string{"alpha", "zulu"}}
+			if err := f.Validate(); err != nil {
+				t.Fatal(err)
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, voices := range [][]string{{" "}, {"alpha", "alpha"}, {"zulu", "alpha"}} {
+				f := RealtimeFunctionality{Voices: voices}
+				if err := f.Validate(); err == nil {
+					t.Errorf("invalid voices accepted: %v", voices)
+				}
+			}
+		})
+	})
+}
+
 func TestScoreValidate(t *testing.T) {
 	text := map[Modality]ModalCapability{ModalityText: {Inline: true}}
 	cases := []struct {

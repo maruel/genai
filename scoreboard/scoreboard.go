@@ -426,13 +426,16 @@ func (f *EmbeddingFunctionality) Validate() error {
 	return f.ReportTokenUsage.Validate()
 }
 
-// RealtimeFunctionality records measured bidirectional realtime session behavior.
+// RealtimeFunctionality records realtime voice catalogs and measured session behavior.
 //
 // The sample rates are measured from the qualified session. Boolean fields
 // report capabilities whose probe passed; false means the probe was skipped,
 // failed, or did not run. Tools is tri-state because models can call tools only
 // intermittently with audio output.
 type RealtimeFunctionality struct {
+	// Voices lists sorted, unique provider-advertised voice IDs.
+	// Empty means the catalog is unknown.
+	Voices []string `json:"voices,omitzero"`
 	// InputSampleRate is the native mono PCM16LE input rate in Hz.
 	InputSampleRate int `json:"inputSampleRate,omitzero"`
 	// OutputSampleRate is the native mono PCM16LE output rate in Hz.
@@ -450,6 +453,11 @@ type RealtimeFunctionality struct {
 
 // Validate returns an error if the sample rates are negative.
 func (f *RealtimeFunctionality) Validate() error {
+	for i, v := range f.Voices {
+		if strings.TrimSpace(v) == "" || (i > 0 && v <= f.Voices[i-1]) {
+			return errors.New("voices must be nonempty, sorted and unique")
+		}
+	}
 	if f.InputSampleRate < 0 {
 		return errors.New("input sample rate must not be negative")
 	}
@@ -463,6 +471,12 @@ func (f *RealtimeFunctionality) Validate() error {
 		return fmt.Errorf("token usage: %w", err)
 	}
 	return nil
+}
+
+// empty reports whether f is a qualification marker without measurements.
+func (f *RealtimeFunctionality) empty() bool {
+	return len(f.Voices) == 0 && f.InputSampleRate == 0 && f.OutputSampleRate == 0 &&
+		!f.CancelResponse && f.Tools == False && !f.ReportRateLimits && f.ReportTokenUsage == False
 }
 
 // ModalCapability describes how a modality is supported by a provider.

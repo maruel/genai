@@ -17,6 +17,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/providers/openairesponses"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
@@ -255,7 +256,7 @@ func TestClient(t *testing.T) {
 			}
 			return c
 		}
-		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{RealtimeVoices: openaibase.RealtimeVoices(), Qualify: []scoreboard.Model{{Model: "text-embedding-3-small"}}})
 
 		// The Responses API travels over WebSocket too. One model proves the wire; the
 		// rows of the other models stay with the HTTP run because a row records its

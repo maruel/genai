@@ -34,6 +34,13 @@ import (
 	"github.com/maruel/genai/internal/realtime"
 )
 
+// RealtimeVoices returns OpenAI's documented built-in realtime voice names.
+//
+// https://developers.openai.com/api/docs/guides/realtime-conversations#voice-options
+func RealtimeVoices() []string {
+	return []string{"alloy", "ash", "ballad", "cedar", "coral", "echo", "marin", "sage", "shimmer", "verse"}
+}
+
 const maxTools = 1024
 const maxToolHistory = 4096
 

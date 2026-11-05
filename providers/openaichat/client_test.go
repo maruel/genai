@@ -1280,7 +1280,7 @@ func TestClient(t *testing.T) {
 			}
 			return p
 		}
-		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{Qualify: []scoreboard.Model{
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, &smoketest.RunOptions{RealtimeVoices: openaibase.RealtimeVoices(), Qualify: []scoreboard.Model{
 			{Model: "text-embedding-3-small"},
 			// A model that declines a session records why, so the harness does not ask
 			// again on every run.

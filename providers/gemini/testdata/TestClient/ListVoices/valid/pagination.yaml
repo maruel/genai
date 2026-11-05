@@ -1,0 +1,97 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            page_size:
+                - "2"
+            type:
+                - prebuilt
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/voices?page_size=2&type=prebuilt
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"voices":[{"id":"achernar","type":"prebuilt","display_name":"Achernar","language_code":"en-US","region_code":"US","accent":"General American","persona":"Storyteller & Narrator","context":"Content & Media","gender":"female","pitch":"high","description":"Soft, calm, and soothing voice with a higher pitch. Recommended for quiet or personal storytelling."},{"id":"achird","type":"prebuilt","display_name":"Achird","language_code":"en-US","region_code":"US","accent":"General American","persona":"Companion & Peer","context":"Conversational / Edu","gender":"male","pitch":"low","description":"Friendly, approachable, and warm voice with a lower-middle pitch. Recommended for casual walkthroughs or vlogs."}],"next_page_token":"EY5OT0iaHPJTGAEiDGFjaGlyZHxlbi1VUw"}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=69
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 119ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            page_size:
+                - "2"
+            page_token:
+                - EY5OT0iaHPJTGAEiDGFjaGlyZHxlbi1VUw
+            type:
+                - prebuilt
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/voices?page_size=2&page_token=EY5OT0iaHPJTGAEiDGFjaGlyZHxlbi1VUw&type=prebuilt
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"voices":[{"id":"algenib","type":"prebuilt","display_name":"Algenib","language_code":"en-US","region_code":"US","accent":"General American","persona":"Storyteller & Narrator","context":"Content & Media","gender":"male","pitch":"low","description":"Gravelly, grounded, and hard-hitting voice with a low pitch. Recommended for dramatic narration or intense stories."},{"id":"algieba","type":"prebuilt","display_name":"Algieba","language_code":"en-US","region_code":"US","accent":"General American","persona":"High-Trust Advisor","context":"Enterprise Agent","gender":"male","pitch":"low","description":"Smooth, relaxed, and polished voice with a low pitch. Recommended for corporate videos or polished explainers."}],"next_page_token":"EY5OT0iaHPJTGAEiDWFsZ2llYmF8ZW4tVVM"}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=64
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1m32.683s

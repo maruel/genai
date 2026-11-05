@@ -61,7 +61,8 @@ type Provider interface {
 	//
 	// The client code may be the limiting factor for some models, and not the provider itself.
 	//
-	// The values returned here should have gone through a smoke test to make sure they are valid.
+	// Capability results come from smoke tests; voice catalogs describe
+	// provider-advertised choices.
 	Scoreboard() scoreboard.Score
 	// HTTPClient returns the underlying http client. It may be necessary to use it to fetch the results from
 	// the provider. An example is retrieving Veo 3 generated videos from Gemini requires the authentication

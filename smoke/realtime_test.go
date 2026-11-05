@@ -1030,7 +1030,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 				}
 			}
 			want := scoreboard.RealtimeFunctionality{InputSampleRate: 16000, OutputSampleRate: 24000, CancelResponse: true, Tools: scoreboard.True}
-			if sc.Realtime == nil || *sc.Realtime != want {
+			if sc.Realtime == nil || !cmp.Equal(*sc.Realtime, want) {
 				t.Fatalf("realtime=%+v, want %+v", sc.Realtime, want)
 			}
 			// The core session opens without tools. The image probe opens a text session
@@ -1060,7 +1060,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if usage.TotalTokens != 0 || len(usage.Limits) != 0 || sc.Realtime == nil || *sc.Realtime != want {
+			if usage.TotalTokens != 0 || len(usage.Limits) != 0 || sc.Realtime == nil || !cmp.Equal(*sc.Realtime, want) {
 				t.Fatalf("usage=%+v scenario=%+v", usage, sc.Realtime)
 			}
 		})

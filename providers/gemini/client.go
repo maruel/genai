@@ -1176,6 +1176,86 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
+// ListVoicesRequest filters the Gemini voice catalog. Multiple
+// values within a filter combine with OR; different filters combine with AND.
+// Filters use case-insensitive exact matches, except Search, which matches
+// substrings of display names and descriptions.
+type ListVoicesRequest struct {
+	Accent       []string
+	Context      []string
+	Gender       []VoiceGender
+	LanguageCode []string
+	Persona      []string
+	Pitch        []VoicePitch
+	RegionCode   []string
+	Search       string
+	Type         []VoiceType
+	// PageSize defaults to 50. The server caps values above 1000.
+	PageSize int
+}
+
+// ListVoices lazily iterates Google's voice catalog with all metadata, fetching
+// subsequent pages as needed. Breaking iteration stops without fetching another
+// page. A zero request uses the service's default filters and page size.
+//
+// https://ai.google.dev/gemini-api/docs/speech-generation#voices
+func (c *Client) ListVoices(ctx context.Context, req *ListVoicesRequest) iter.Seq2[Voice, error] {
+	return func(yield func(Voice, error) bool) {
+		q := url.Values{}
+		q["accent"] = req.Accent
+		q["context"] = req.Context
+		q["language_code"] = req.LanguageCode
+		q["persona"] = req.Persona
+		q["region_code"] = req.RegionCode
+		for _, g := range req.Gender {
+			q.Add("gender", string(g))
+		}
+		for _, p := range req.Pitch {
+			q.Add("pitch", string(p))
+		}
+		for _, typ := range req.Type {
+			q.Add("type", string(typ))
+		}
+		if req.Search != "" {
+			q.Set("search", req.Search)
+		}
+		if req.PageSize != 0 {
+			q.Set("page_size", strconv.Itoa(req.PageSize))
+		}
+		var resp ListVoicesResponse
+		for {
+			if err := ctx.Err(); err != nil {
+				yield(Voice{}, err)
+				return
+			}
+			u := "https://generativelanguage.googleapis.com/v1beta/voices"
+			if query := q.Encode(); query != "" {
+				u += "?" + query
+			}
+			clear(resp.Voices)
+			resp.Voices = resp.Voices[:0]
+			resp.NextPageToken = ""
+			if err := c.impl.DoRequest(ctx, http.MethodGet, u, nil, &resp); err != nil {
+				yield(Voice{}, err)
+				return
+			}
+			for i := range resp.Voices {
+				if err := ctx.Err(); err != nil {
+					yield(Voice{}, err)
+					return
+				}
+				if !yield(resp.Voices[i], nil) {
+					return
+				}
+			}
+			if resp.NextPageToken == "" {
+				return
+			}
+			q.Set("page_token", resp.NextPageToken)
+		}
+	}
+}
+
 // GetModel returns the details for a single model.
 //
 // https://ai.google.dev/api/models?hl=en#method:-models.get

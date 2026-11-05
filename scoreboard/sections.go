@@ -344,7 +344,7 @@ func (r *Realtime) Validate() error {
 	if r.Realtime == nil {
 		return nil
 	}
-	if *r.Realtime != (RealtimeFunctionality{}) && len(r.In) == 0 {
+	if !r.Realtime.empty() && len(r.In) == 0 {
 		return errors.New("realtime functionality requires input and output modalities")
 	}
 	return r.Realtime.Validate()

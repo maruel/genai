@@ -88,6 +88,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
+	t.Run("CodexAuth", func(t *testing.T) { testCodexAuth(t, testRecorder) })
 	cl, err2 := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})

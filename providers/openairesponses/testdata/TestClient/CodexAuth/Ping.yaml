@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: chatgpt.com
+        form:
+            client_version:
+                - 0.164.0
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            Originator:
+                - gomode-test
+            User-Agent:
+                - gomode-test
+        url: https://chatgpt.com/backend-api/codex/models?client_version=0.164.0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"models":[{"slug":"gpt-6.1-sol","display_name":"GPT-6.1-Sol","context_window":500000},{"slug":"gpt-6-astra","display_name":"GPT-6-Astra","context_window":272000},{"slug":"gpt-6.1-terra","display_name":"GPT-6.1 Terra","context_window":500000},{"slug":"gpt-6-sol","display_name":"GPT-6-Sol","context_window":272000},{"slug":"gpt-reserve","display_name":"GPT-Reserve","context_window":272000},{"slug":"gpt-6-luna","display_name":"GPT-6-Luna","context_window":272000},{"slug":"gpt-5.6-sol","display_name":"GPT-5.6-Sol","context_window":272000},{"slug":"gpt-5.6-terra","display_name":"GPT-5.6-Terra","context_window":272000},{"slug":"gpt-5.6-luna","display_name":"GPT-5.6-Luna","context_window":272000},{"slug":"codex-auto-review","display_name":"Codex Auto Review","context_window":272000}]}'
+        headers:
+            Cache-Control:
+                - private, no-store
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a55d2fab6f160fd5-YUL
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin-allow-popups
+            Etag:
+                - W/"58bf95bd70af50254466186efe169441"
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=trCWuWSt1MvVienWkYXNCo3UEYLSZZSKcIpppfMnTb3uw%2FQOZXQD7AJ0AQzSKp3cumcmNK3axIMvYmqcus7ZYRqEL0yZLXhRSDI5K3G0M%2BR2ebcm635mWD2qJTmh"}]}'
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Oai-Request-Id:
+                - req_09ca3ac62f7d493bbc34b975222cd793
+            X-Openai-Proxy-Wasm:
+                - v0.1
+        status: 200 OK
+        code: 200
+        duration: 360ms

@@ -125,6 +125,8 @@ const (
 //
 // https://platform.openai.com/docs/api-reference/responses/object
 type Response struct {
+	codex bool
+
 	Model                string            `json:"model"`
 	Background           bool              `json:"background,omitzero"`
 	Instructions         string            `json:"instructions,omitzero"`
@@ -345,6 +347,20 @@ func (r *Response) ToResult() (genai.Result, error) {
 		res.Usage.FinishReason = genai.FinishedStop
 	}
 	return res, err
+}
+
+// MarshalJSON includes the subscription's mandatory instructions field even if empty.
+func (r *Response) MarshalJSON() ([]byte, error) {
+	if !r.codex {
+		return json.Marshal((*responseEncoding)(r))
+	}
+	return json.Marshal(codexRequestEncoding{(*responseEncoding)(r), r.Instructions})
+}
+
+type responseEncoding Response
+type codexRequestEncoding struct {
+	*responseEncoding
+	Instructions string `json:"instructions"`
 }
 
 func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
@@ -899,7 +915,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Text != "" {
-		c.Type = ContentInputText
+		c.Type = ContentOutputText
 		c.Text = in.Text
 		return nil
 	}
@@ -1102,6 +1118,11 @@ const (
 type ResponseStreamChunkResponse struct {
 	Type           ResponseType `json:"type,omitzero"`
 	SequenceNumber int64        `json:"sequence_number,omitzero"`
+	// ChatGPT subscription streams attach advisory moderation metadata.
+	// Source: openai/codex 49f0c6022596c361fe676a5c4738fb2be34e3a93,
+	// codex-rs/codex-api/src/sse/responses.rs.
+	ResponseID string          `json:"response_id,omitzero"`
+	Metadata   json.RawMessage `json:"metadata,omitzero"`
 
 	// Type == ResponseCreated, ResponseInProgress, ResponseCompleted, ResponseFailed, ResponseIncomplete,
 	// ResponseQueued

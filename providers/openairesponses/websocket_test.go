@@ -306,7 +306,12 @@ func TestWebSocketConn(t *testing.T) {
 	})
 
 	t.Run("capabilities", func(t *testing.T) {
-		w := &WebSocketConn{}
+		c, err := New(t.Context(), genai.ProviderOptionAPIKey("test"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		w := &WebSocketConn{client: c}
 		caps := w.Capabilities()
 		if caps.GenAsync {
 			t.Error("should not report GenAsync")

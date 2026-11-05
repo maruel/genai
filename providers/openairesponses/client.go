@@ -24,6 +24,7 @@ import (
 	"maps"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/coder/websocket"
@@ -81,9 +82,15 @@ type Client struct {
 	shared openaibase.Client
 
 	baseURL string
+	auth    Auth
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
+//
+// ProviderOption selects API-key authentication (default) or AuthCodex, which reads
+// the existing file-backed Codex login and uses the subscription HTTP endpoint.
+// AuthCodex always streams with store=false and full conversation history. It
+// supports text output and function tools, without realtime, embedding, or jobs.
 //
 // If ProviderOptionAPIKey is not provided, it tries to load it from the OPENAI_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
@@ -98,6 +105,7 @@ type Client struct {
 // https://platform.openai.com/docs/assistants/tools/file-search#supported-files
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var apiKey, model, remote string
+	providerOpts := ProviderOption{}
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
@@ -109,6 +117,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			return nil, err
 		}
 		switch v := opt.(type) {
+		case *ProviderOption:
+			providerOpts = *v
 		case genai.ProviderOptionAPIKey:
 			apiKey = string(v)
 		case genai.ProviderOptionModel:
@@ -124,6 +134,40 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		default:
 			return nil, fmt.Errorf("unsupported option type %T", opt)
 		}
+	}
+	if providerOpts.Auth == AuthCodex {
+		if apiKey != "" || remote != "" {
+			return nil, errors.New("codex authentication cannot be combined with an API key or remote endpoint")
+		}
+		if len(modalities) > 0 && (len(modalities) != 1 || modalities[0] != genai.ModalityText) {
+			return nil, errors.New("codex authentication supports only text output")
+		}
+		switch model {
+		case string(genai.ModelCheap):
+			model = "gpt-6-luna"
+		case string(genai.ModelGood), string(genai.ModelSOTA):
+			return nil, errors.New("codex authentication requires an explicit model for GOOD or SOTA")
+		}
+		store, err := newCredentialStore()
+		if err != nil {
+			return nil, err
+		}
+		doc, credentialErr := store.load()
+		if credentialErr == nil {
+			store.accountID = doc.tokens.AccountID
+			store.userID = doc.userID
+		}
+		appName := providerOpts.AppName
+		if appName == "" {
+			appName = "genai"
+		}
+		t := base.DefaultTransport
+		if wrapper != nil {
+			t = wrapper(t)
+		}
+		c := &Client{auth: AuthCodex, baseURL: apiURL, impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{GenSyncURL: apiURL + "/responses", GenStreamURL: apiURL + "/responses", ProcessHeaders: openaibase.ProcessHeaders, PreloadedModels: preloadedModels, ProviderBase: base.ProviderBase[*ErrorResponse]{Model: model, OutputModalities: genai.Modalities{genai.ModalityText}, Lenient: true, Client: http.Client{Transport: &authTransport{store: store, transport: t, appName: appName}}}}}
+		c.shared = openaibase.Client{Impl: &c.impl.ProviderBase, BaseURL: apiURL, PreloadedModels: preloadedModels}
+		return c, credentialErr
 	}
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	var err error
@@ -252,6 +296,9 @@ func (c *Client) Name() string {
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in, out *Response) error {
+	if c.auth == AuthCodex {
+		return c.codexSyncRaw(ctx, in, out)
+	}
 	// Check if audio output was requested
 	if len(c.impl.OutputModalities) > 0 && c.impl.OutputModalities[0] == genai.ModalityAudio {
 		return errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
@@ -261,17 +308,60 @@ func (c *Client) GenSyncRaw(ctx context.Context, in, out *Response) error {
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[ResponseStreamChunkResponse], func() error) {
+	if c.auth == AuthCodex {
+		if err := prepareCodexRequest(in); err != nil {
+			return func(func(ResponseStreamChunkResponse) bool) {}, func() error { return err }
+		}
+	}
 	// Check if audio output was requested
 	if len(c.impl.OutputModalities) > 0 && c.impl.OutputModalities[0] == genai.ModalityAudio {
 		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error {
 			return errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
 		}
 	}
-	return c.impl.GenStreamRaw(ctx, in)
+	chunks, finish := c.impl.GenStreamRaw(ctx, in)
+	if c.auth != AuthCodex {
+		return chunks, finish
+	}
+	completed := false
+	var terminalErr error
+	observed := iter.Seq[ResponseStreamChunkResponse](func(yield func(ResponseStreamChunkResponse) bool) {
+		for p := range chunks {
+			switch p.Type {
+			case ResponseCompleted:
+				completed = true
+			case ResponseFailed:
+				terminalErr = &p.Response.Error
+			case ResponseError:
+				terminalErr = &p.ErrorResponse
+			case ResponseIncomplete:
+				terminalErr = fmt.Errorf("codex response incomplete: %s", p.Response.IncompleteDetails.Reason)
+			default:
+			}
+			if !yield(p) {
+				return
+			}
+		}
+	})
+	return observed, func() error {
+		if err := finish(); err != nil {
+			return err
+		}
+		if terminalErr != nil {
+			return terminalErr
+		}
+		if !completed {
+			return errors.New("codex subscription stream ended without response.completed")
+		}
+		return nil
+	}
 }
 
 // Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
+	if c.auth == AuthCodex {
+		return genai.ProviderCapabilities{}
+	}
 	return genai.ProviderCapabilities{Realtime: true, Embed: true, GenAsync: true}
 }
 
@@ -282,6 +372,9 @@ func (c *Client) Capabilities() genai.ProviderCapabilities {
 //
 // https://platform.openai.com/docs/api-reference/responses/create
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
+	if c.auth == AuthCodex {
+		return "", &base.ErrNotSupported{}
+	}
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
 		return "", err
 	}
@@ -309,6 +402,9 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 //
 // https://platform.openai.com/docs/api-reference/responses/get
 func (c *Client) PokeResult(ctx context.Context, job genai.Job) (genai.Result, error) {
+	if c.auth == AuthCodex {
+		return genai.Result{}, &base.ErrNotSupported{}
+	}
 	resp := Response{}
 	url := c.impl.GenSyncURL + "/" + string(job)
 	if err := c.impl.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
@@ -334,6 +430,9 @@ func (c *Client) PokeResult(ctx context.Context, job genai.Job) (genai.Result, e
 
 // PokeResultRaw provides raw access to poll a background response.
 func (c *Client) PokeResultRaw(ctx context.Context, job genai.Job) (*Response, error) {
+	if c.auth == AuthCodex {
+		return nil, &base.ErrNotSupported{}
+	}
 	resp := &Response{}
 	url := c.impl.GenSyncURL + "/" + string(job)
 	if err := c.impl.DoRequest(ctx, "GET", url, nil, resp); err != nil {
@@ -369,6 +468,12 @@ func (c *Client) HTTPClient() *http.Client {
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.auth == AuthCodex {
+		if c.impl.PreloadedModels != nil {
+			return slices.Clone(c.impl.PreloadedModels), nil
+		}
+		return c.codexModels(ctx)
+	}
 	return c.shared.ListModels(ctx)
 }
 
@@ -377,6 +482,12 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // It handles delta detection: if msgs contains metadata from a prior call (via Reply.Opaque),
 // only new messages are sent. The response ID is captured and emitted as metadata for the next call.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (res genai.Result, err error) {
+	if c.auth == AuthCodex {
+		chunks, finish := c.GenStream(ctx, msgs, opts...)
+		for range chunks {
+		}
+		return finish()
+	}
 	if err := msgs.Validate(); err != nil {
 		return genai.Result{}, err
 	}
@@ -438,14 +549,19 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if c.shared.IsImage() || c.shared.IsVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
-	cleaned, prevRespID := c.prepareDelta(msgs, opts)
+	cleaned, prevRespID := msgs, ""
+	if c.auth != AuthCodex {
+		cleaned, prevRespID = c.prepareDelta(msgs, opts)
+	}
 	in := &Response{}
 	if err := in.Init(cleaned, c.impl.Model, opts...); err != nil {
 		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
 			return genai.Result{}, err
 		}
 	}
-	in.PreviousResponseID = prevRespID
+	if c.auth != AuthCodex {
+		in.PreviousResponseID = prevRespID
+	}
 	chunks, finish := c.GenStreamRaw(ctx, in)
 	// Capture headers immediately after the HTTP call, before iterating.
 	lastResp := c.impl.LastResponseHeaders()
@@ -480,6 +596,14 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		}
 		usage, _, err := finish2()
 		res.Usage = usage
+		if c.auth == AuthCodex && res.Usage.FinishReason == genai.FinishedStop {
+			for i := range res.Replies {
+				if !res.Replies[i].ToolCall.IsZero() {
+					res.Usage.FinishReason = genai.FinishedToolCalls
+					break
+				}
+			}
+		}
 		if finalErr == nil {
 			finalErr = err
 		}
@@ -497,7 +621,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		if c.impl.ProcessHeaders != nil && lastResp != nil {
 			res.Usage.Limits = c.impl.ProcessHeaders(lastResp)
 		}
-		if respID != "" {
+		if c.auth != AuthCodex && respID != "" {
 			res.Replies = append(res.Replies, emitMeta(respID, msgCount))
 		}
 		return res, nil
@@ -509,6 +633,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // explicit model and HTTP authentication transport. It uses the shared OpenAI
 // realtime implementation; see [openaibase.ConnectRealtimeSession].
 func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	if c.auth == AuthCodex {
+		return nil, &base.ErrNotSupported{}
+	}
 	s, err := openaibase.ConnectRealtimeSession(ctx, c.HTTPClient(), c.ModelID(), opts...)
 	if err != nil {
 		return nil, err
@@ -521,6 +648,9 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 // The returned connection inherits the client's model, API key, and base URL.
 // Call Close() when done.
 func (c *Client) WebSocket(ctx context.Context) (*WebSocketConn, error) {
+	if c.auth == AuthCodex {
+		return nil, &base.ErrNotSupported{}
+	}
 	if c.impl.Model == "" {
 		return nil, errors.New("a model is required")
 	}
@@ -572,7 +702,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					l = append(l, lp.To())
 				}
 				switch pkt.Type {
-				case ResponseCreated, ResponseInProgress:
+				case ResponseCreated, ResponseInProgress, "response.metadata":
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/created
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/in_progress
 					// Both are useless.
@@ -962,11 +1092,79 @@ var _ genai.Provider = &Client{}
 
 // Embed implements genai.Provider with the configured model.
 func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.EmbeddingResponse, error) {
+	if c.auth == AuthCodex {
+		return nil, &base.ErrNotSupported{}
+	}
 	return c.shared.Embed(ctx, in)
 }
 
 // EmbedRaw exposes the native OpenAI /v1/embeddings endpoint.
 // The request specifies its own model independently of generation configuration.
 func (c *Client) EmbedRaw(ctx context.Context, in *openaibase.EmbeddingRequest, out *openaibase.EmbeddingResponse) error {
+	if c.auth == AuthCodex {
+		return &base.ErrNotSupported{}
+	}
 	return c.shared.EmbedRaw(ctx, in, out)
+}
+
+// Ping verifies this client's authentication against its model catalog without inference.
+func (c *Client) Ping(ctx context.Context) error {
+	if c.auth == AuthCodex {
+		_, err := c.codexModels(ctx)
+		return err
+	}
+	shared := c.shared
+	shared.PreloadedModels = nil
+	_, err := shared.ListModels(ctx)
+	return err
+}
+
+func (c *Client) codexModels(ctx context.Context) ([]genai.Model, error) {
+	var out codexModelsResponse
+	if err := c.impl.DoRequest(ctx, "GET", apiURL+"/models?client_version=0.164.0", nil, &out); err != nil {
+		return nil, err
+	}
+	models := make([]genai.Model, 0, len(out.Models))
+	for i := range out.Models {
+		if out.Models[i].Slug != "" {
+			models = append(models, &out.Models[i])
+		}
+	}
+	if len(models) == 0 {
+		return nil, errors.New("codex subscription returned an empty model catalog")
+	}
+	return models, nil
+}
+
+// codexSyncRaw collects native output items even when response.completed omits output.
+func (c *Client) codexSyncRaw(ctx context.Context, in, out *Response) error {
+	chunks, end := c.GenStreamRaw(ctx, in)
+	var items []Message
+	observed := iter.Seq[ResponseStreamChunkResponse](func(yield func(ResponseStreamChunkResponse) bool) {
+		for p := range chunks {
+			if p.Type == ResponseOutputItemDone {
+				items = append(items, p.Item)
+			}
+			if p.Type == ResponseCompleted {
+				*out = p.Response
+			}
+			if !yield(p) {
+				return
+			}
+		}
+	})
+	fragments, finish := ProcessStream(observed)
+	for range fragments {
+	}
+	_, _, err := finish()
+	if rawErr := end(); rawErr != nil {
+		return rawErr
+	}
+	if err != nil {
+		return err
+	}
+	if len(out.Output) == 0 {
+		out.Output = items
+	}
+	return nil
 }

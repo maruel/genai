@@ -110,6 +110,7 @@ func (c *skipEmptyFS) IsFileExists(name string) bool {
 func trimResponseHeaders(i *cassette.Interaction) error {
 	// Authentication via API keys.
 	i.Request.Headers.Del("Authorization")
+	i.Request.Headers.Del("ChatGPT-Account-ID")
 	i.Request.Headers.Del("X-Api-Key")
 	i.Request.Headers.Del("X-Goog-Api-Key")
 	i.Request.Headers.Del("X-Key")
@@ -172,7 +173,7 @@ func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool { //nolin
 	return defaultMatcher(r, i)
 }
 
-var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Goog-Api-Key", "X-Key", "X-Request-Id"))
+var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", http.CanonicalHeaderKey("ChatGPT-Account-ID"), "X-Api-Key", "X-Goog-Api-Key", "X-Key", "X-Request-Id"))
 
 // matchWithBody wraps the default matcher chain and adds request body comparison.
 func matchWithBody(r *http.Request, i cassette.Request) bool { //nolint:gocritic // hugeParam: signature imposed by cassette matcher.

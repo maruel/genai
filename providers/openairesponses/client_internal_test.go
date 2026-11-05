@@ -9,6 +9,7 @@ package openairesponses
 import (
 	"bytes"
 	"encoding/json"
+	"iter"
 	"strings"
 	"testing"
 
@@ -19,6 +20,33 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 )
+
+func TestProcessStream(t *testing.T) {
+	t.Run("metadata", func(t *testing.T) {
+		chunks := iter.Seq[ResponseStreamChunkResponse](func(yield func(ResponseStreamChunkResponse) bool) {
+			for _, p := range []ResponseStreamChunkResponse{
+				{Type: "response.metadata"},
+				{Type: ResponseOutputTextDelta, Delta: "hello"},
+				{Type: ResponseCompleted},
+			} {
+				if !yield(p) {
+					return
+				}
+			}
+		})
+		fragments, finish := ProcessStream(chunks)
+		var text strings.Builder
+		for f := range fragments {
+			text.WriteString(f.Text)
+		}
+		if _, _, err := finish(); err != nil {
+			t.Fatal(err)
+		}
+		if text.String() != "hello" {
+			t.Fatalf("text = %q", text.String())
+		}
+	})
+}
 
 func TestResponse(t *testing.T) {
 	t.Run("accessPrograms", func(t *testing.T) {
@@ -82,6 +110,13 @@ func TestResponseChronology(t *testing.T) {
 			{4, "between", "assistant"}, {6, "after", "assistant"}, {7, "intervening", "user"},
 		} {
 			m := &req.Input[tc.idx]
+			wantType := ContentInputText
+			if tc.role == "assistant" {
+				wantType = ContentOutputText
+			}
+			if len(m.Content) != 1 || m.Content[0].Type != wantType {
+				t.Fatalf("input[%d] content = %+v", tc.idx, m.Content)
+			}
 			if m.Role != tc.role || len(m.Content) != 1 || m.Content[0].Text != tc.text {
 				t.Fatalf("input[%d]=%+v", tc.idx, m)
 			}

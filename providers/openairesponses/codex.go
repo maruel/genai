@@ -32,6 +32,7 @@ func (a Auth) Validate() error {
 const (
 	AuthAPIKey Auth = ""
 	// AuthCodex reads $CODEX_HOME/auth.json (default ~/.codex/auth.json).
+	// CODEX_HOME expands a leading ~ or ~/ to the current user's home directory.
 	// Sign in with codex login and cli_auth_credentials_store = "file" first.
 	// The transport never starts Codex. Keyring credential storage is unsupported.
 	AuthCodex Auth = "codex"

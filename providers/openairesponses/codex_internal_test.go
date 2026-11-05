@@ -44,6 +44,30 @@ type transportFunc func(*http.Request) (*http.Response, error)
 func (f transportFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
 
 func TestCredentialStore(t *testing.T) {
+	t.Run("path", func(t *testing.T) {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			t.Fatal(err)
+		}
+		absolute := t.TempDir()
+		for _, tc := range []struct{ name, dir, want string }{
+			{"default", "", filepath.Join(home, ".codex")},
+			{"home", "~", home},
+			{"home directory", "~/.codex", filepath.Join(home, ".codex")},
+			{"absolute", absolute, absolute},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				t.Setenv("CODEX_HOME", tc.dir)
+				s, err := newCredentialStore()
+				if err != nil {
+					t.Fatal(err)
+				}
+				if want := filepath.Join(tc.want, "auth.json"); s.path != want {
+					t.Fatalf("credential path = %q, want %q", s.path, want)
+				}
+			})
+		}
+	})
 	t.Run("load", func(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			for _, raw := range []string{`null`, `{`, `{"auth_mode":"apikey"}`, `{"tokens":{}}`, `{"tokens":{"access_token":"bad","account_id":"account"}}`, `{"tokens":{"access_token":"header.e30.signature","account_id":"account"}}`} {

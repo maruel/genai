@@ -65,11 +65,18 @@ type credentialStore struct {
 func newCredentialStore() (*credentialStore, error) {
 	dir := os.Getenv("CODEX_HOME")
 	if dir == "" {
+		dir = "~/.codex"
+	}
+	if dir == "~" || strings.HasPrefix(dir, "~/") {
 		h, err := os.UserHomeDir()
 		if err != nil {
 			return nil, fmt.Errorf("find Codex credentials: %w", err)
 		}
-		dir = filepath.Join(h, ".codex")
+		if dir == "~" {
+			dir = h
+		} else {
+			dir = filepath.Join(h, dir[2:])
+		}
 	}
 	return &credentialStore{path: filepath.Join(dir, "auth.json"), client: http.Client{Transport: base.DefaultTransport, Timeout: 45 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("refusing OAuth token redirect") }}}, nil
 }

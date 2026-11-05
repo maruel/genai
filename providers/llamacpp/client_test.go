@@ -47,7 +47,7 @@ import (
 )
 
 // embeddingModel is qualified outside the scoreboard scenarios.
-const embeddingModel = "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
+const embeddingModel = "ggml-org/embeddinggemma-2-GGUF:Q8_0"
 
 func TestClient(t *testing.T) {
 	t.Run("SpeechRaw errors", func(t *testing.T) {
@@ -781,7 +781,7 @@ func TestClient(t *testing.T) {
 	t.Run("SpeechRaw", func(t *testing.T) {
 		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: h})
-		}), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf"})), genai.ProviderOptionModel("tts"))
+		}), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M"})), genai.ProviderOptionModel("tts"))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -917,7 +917,7 @@ func TestClient(t *testing.T) {
 					return append(out, &llamacpp.RealtimeOption{Endpoint: endpoint})
 				},
 			}
-			if model.Model == "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf" {
+			if model.Model == "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M" {
 				// LFM3-Audio answers the spoken tool probe instead of calling the tool
 				// unless the first response requires a tool call.
 				return &internaltest.InjectRealtimeOptions{
@@ -1060,10 +1060,9 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	if err != nil {
 		t.Fatal(err)
 	}
-	parts := strings.Split(model.Model, "/")
 	// Use the parent context for server lifecycle management, but report
 	// startup failures to the subtest that requested the server.
-	srv := startServerTest(t, l.t.Context(), exe, parts[0], parts[1], parts[2], l.apiKey, model.Model == embeddingModel)
+	srv := startServerTest(t, l.t.Context(), exe, model.Model, l.apiKey, model.Model == embeddingModel)
 	u := srv.URL()
 	l.servers[model.Model] = u
 	l.t.Cleanup(func() {
@@ -1078,15 +1077,14 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	return u
 }
 
-func startServerTest(t testing.TB, ctx context.Context, exe, author, repo, modelfile, apiKey string, embedding bool) *llamacppsrv.Server {
+func startServerTest(t testing.TB, ctx context.Context, exe, model, apiKey string, embedding bool) *llamacppsrv.Server {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		t.Fatal(err)
 	}
 	// Use llama-server's built-in HuggingFace download; mmproj is auto-detected.
 	extraArgs := []string{
-		"-hf", author + "/" + repo,
-		"-hff", modelfile,
+		"-hf", model,
 		"--api-key", apiKey,
 		"--cors-origins", "",
 		"--no-cors-credentials",

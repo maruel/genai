@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 510
+        content_length: 499
         host: 127.0.0.1
         body: |
-            {"state":["I was charged twice for my order. Please refund the duplicate charge today."],"model":"LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+            {"state":["I was charged twice for my order. Please refund the duplicate charge today."],"model":"LiquidAI/d1-2B-GGUF:Q4_K_M","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8

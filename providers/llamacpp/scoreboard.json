@@ -5,7 +5,7 @@
     {
       "comments": "The model reasons, so this scenario runs with thinking enabled; with it disabled the audio probe answers in speech instead of text.",
       "models": [
-        "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "audio": {
@@ -62,7 +62,7 @@
     },
     {
       "models": [
-        "LiquidAI/LFM3-Omni-2B-GGUF/LFM3-Omni-2B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "audio": {
@@ -137,7 +137,7 @@
     },
     {
       "models": [
-        "LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "image": {
@@ -206,7 +206,7 @@
     },
     {
       "models": [
-        "LiquidAI/LFM3-VL-2B-GGUF/LFM3-VL-2B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "image": {
@@ -272,7 +272,7 @@
     },
     {
       "models": [
-        "ggml-org/Qwen3-ASR-0.6B-GGUF/Qwen3-ASR-0.6B-Q8_0.gguf"
+        "ggml-org/Qwen3-ASR-0.6B-GGUF:Q8_0"
       ],
       "in": {
         "audio": {
@@ -319,7 +319,7 @@
     },
     {
       "models": [
-        "unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf"
+        "unsloth/gemma-4-E2B-it-GGUF:UD-Q4_K_XL"
       ],
       "in": {
         "audio": {
@@ -394,9 +394,9 @@
     },
     {
       "models": [
-        "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf",
-        "LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf",
-        "ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M",
+        "LiquidAI/d1-2B-GGUF:Q4_K_M",
+        "ggml-org/Kev-4B-GGUF:Q4_K_M"
       ],
       "wire": "http"
     }
@@ -404,7 +404,7 @@
   "embed": [
     {
       "models": [
-        "ggml-org/embeddinggemma-2-GGUF/embeddinggemma-2-Q8_0.gguf"
+        "ggml-org/embeddinggemma-2-GGUF:Q8_0"
       ],
       "in": {
         "audio": {
@@ -434,7 +434,7 @@
   "systemone": [
     {
       "models": [
-        "LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf"
+        "LiquidAI/d1-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "image": {
@@ -466,7 +466,7 @@
     },
     {
       "models": [
-        "ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf"
+        "ggml-org/Kev-4B-GGUF:Q4_K_M"
       ],
       "in": {
         "text": {
@@ -493,7 +493,7 @@
     {
       "comments": "The audio tool probe forces the first tool call with tool_choice=required. Without it, LFM3-Audio answers the spoken probe with speech instead of calling the tool. The forced audio tool roundtrip is flaky: 2 of 3 live runs passed.",
       "models": [
-        "LiquidAI/LFM3-Audio-2B-GGUF/LFM3-Audio-2B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "audio": {
@@ -522,7 +522,7 @@
     },
     {
       "models": [
-        "LiquidAI/LFM3-Omni-2B-GGUF/LFM3-Omni-2B-Q4_K_M.gguf"
+        "LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M"
       ],
       "in": {
         "audio": {

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 231
+        content_length: 221
         host: 127.0.0.1
         body: |
-            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"}}}
+            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"ggml-org/Kev-4B-GGUF:Q4_K_M","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 141
-        body: '{"model":"LiquidAI/d1-2B-GGUF","answers":{"billing":{"type":"noul","noul":0.9271616532751735}},"usage":{"input_tokens":43,"output_tokens":0}}'
+        content_length: 142
+        body: '{"model":"ggml-org/Kev-4B-GGUF","answers":{"billing":{"type":"noul","noul":0.8183523903317084}},"usage":{"input_tokens":31,"output_tokens":0}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "141"
+                - "142"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 100ms
+        duration: 218ms

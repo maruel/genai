@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 521
+        content_length: 509
         host: 127.0.0.1
         body: |
-            {"state":{"ticket":"I was charged twice for my order. Please refund the duplicate charge today."},"model":"ggml-org/Kev-4B-GGUF/Kev-4B-Q4_K_M.gguf","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
+            {"state":{"ticket":"I was charged twice for my order. Please refund the duplicate charge today."},"model":"ggml-org/Kev-4B-GGUF:Q4_K_M","questions":{"billing":{"type":"noul","instructions":"Is the customer asking about billing?"},"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}},"urgency":{"type":"score","instructions":"How urgent is this request?","criteria":["Can wait","Needs attention today"]}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8

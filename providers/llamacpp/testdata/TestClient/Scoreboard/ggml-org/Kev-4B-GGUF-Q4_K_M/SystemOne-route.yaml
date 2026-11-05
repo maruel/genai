@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 297
         host: 127.0.0.1
         body: |
-            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"LiquidAI/d1-2B-GGUF/d1-2B-Q4_K_M.gguf","questions":{"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}}}}
+            {"state":"I was charged twice for my order. Please refund the duplicate charge today.","model":"ggml-org/Kev-4B-GGUF:Q4_K_M","questions":{"route":{"type":"choice","instructions":"Which team should handle the request?","criteria":{"billing":"Charges and refunds","support":"Technical problems"}}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 244
-        body: '{"model":"LiquidAI/d1-2B-GGUF","answers":{"route":{"type":"choice","choice":"billing","probabilities":{"billing":0.9956153897280902,"support":0.004384610271909763},"confidence":0.9956153897280902}},"usage":{"input_tokens":54,"output_tokens":0}}'
+        body: '{"model":"ggml-org/Kev-4B-GGUF","answers":{"route":{"type":"choice","choice":"billing","probabilities":{"billing":0.9272380062110216,"support":0.07276199378897841},"confidence":0.8544760124220432}},"usage":{"input_tokens":38,"output_tokens":0}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 106ms
+        duration: 266ms

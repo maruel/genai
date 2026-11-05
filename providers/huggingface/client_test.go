@@ -180,6 +180,7 @@ func TestEffortLevel(t *testing.T) {
 		{genai.EffortMedium, "Qwen/Qwen3.8", "medium"},
 		{genai.EffortHigh, "Qwen/Qwen3.8", "high"},
 		{genai.EffortXHigh, "Qwen/Qwen3.8", "xhigh"},
+		{genai.EffortMinimal, "custom", "minimal"},
 		{genai.EffortOff, "openai/gpt-oss-120b", "low"},
 		{genai.EffortMax, "openai/gpt-oss-120b", "high"},
 	}

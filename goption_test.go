@@ -90,7 +90,7 @@ func TestGenOptionPollInterval(t *testing.T) {
 func TestEffortLevel(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			for _, l := range []EffortLevel{"", EffortOff, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax} {
+			for _, l := range []EffortLevel{"", EffortOff, EffortMinimal, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax} {
 				if err := l.Validate(); err != nil {
 					t.Errorf("Validate(%q): %v", l, err)
 				}

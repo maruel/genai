@@ -120,7 +120,7 @@ type EffortLevel string
 // Validate ensures the effort level is valid.
 func (l EffortLevel) Validate() error {
 	switch l {
-	case "", EffortOff, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
+	case "", EffortOff, EffortMinimal, EffortLow, EffortMedium, EffortHigh, EffortXHigh, EffortMax:
 		return nil
 	default:
 		return fmt.Errorf("invalid effort level %q", l)
@@ -130,6 +130,9 @@ func (l EffortLevel) Validate() error {
 const (
 	// EffortOff disables thinking where possible, or selects the lowest supported effort.
 	EffortOff EffortLevel = "off"
+	// EffortMinimal requests the smallest supported reasoning effort without disabling thinking.
+	// Providers use native minimal effort where supported, or their lowest enabled level.
+	EffortMinimal EffortLevel = "minimal"
 	// EffortLow favors lower cost and latency.
 	EffortLow EffortLevel = "low"
 	// EffortMedium balances reasoning quality, cost, and latency.

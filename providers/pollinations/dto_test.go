@@ -15,6 +15,15 @@ import (
 
 func TestChatRequest(t *testing.T) {
 	t.Run("Init", func(t *testing.T) {
+		t.Run("minimal", func(t *testing.T) {
+			var req pollinations.ChatRequest
+			if err := req.Init(genai.Messages{genai.NewTextMessage("user")}, "test", genai.EffortMinimal); err != nil {
+				t.Fatal(err)
+			}
+			if req.ReasoningEffort != "minimal" {
+				t.Fatalf("reasoning_effort=%q, want minimal", req.ReasoningEffort)
+			}
+		})
 		t.Run("error", func(t *testing.T) {
 			t.Run("options", func(t *testing.T) {
 				var req pollinations.ChatRequest

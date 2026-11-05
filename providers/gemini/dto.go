@@ -2012,6 +2012,11 @@ func thinkingConfig(model string, l genai.EffortLevel) (ThinkingConfig, error) {
 			if strings.Contains(model, "pro") {
 				n = 128
 			}
+		case genai.EffortMinimal:
+			n = 128
+			if strings.Contains(model, "flash-lite") {
+				n = 512
+			}
 		case genai.EffortLow:
 			n = 1024
 		case genai.EffortMedium:
@@ -2030,9 +2035,10 @@ func thinkingConfig(model string, l genai.EffortLevel) (ThinkingConfig, error) {
 	} else {
 		switch l {
 		case "":
-		case genai.EffortOff:
+		case genai.EffortOff, genai.EffortMinimal:
 			c.ThinkingLevel = ThinkingLevelMinimal
-			if strings.Contains(model, "pro") || strings.Contains(model, "live") {
+			if strings.Contains(model, "pro") || strings.Contains(model, "live") ||
+				l == genai.EffortMinimal && (strings.HasPrefix(model, "gemini-4") || strings.HasPrefix(model, "gemini-3.7-") || strings.HasPrefix(model, "gemini-3.8-")) {
 				c.ThinkingLevel = ThinkingLevelLow
 			}
 		case genai.EffortLow:

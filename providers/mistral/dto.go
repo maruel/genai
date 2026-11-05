@@ -106,6 +106,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.ReasoningEffort = ReasoningEffortNone
+			case genai.EffortMinimal:
+				c.ReasoningEffort = ReasoningEffortMinimal
 			case genai.EffortLow:
 				c.ReasoningEffort = ReasoningEffortLow
 			case genai.EffortMedium:
@@ -127,7 +129,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					}
 				case strings.HasPrefix(model, "mistral-large"):
 					switch v {
-					case genai.EffortOff, genai.EffortLow:
+					case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
 						c.ReasoningEffort = ReasoningEffortLow
 					case genai.EffortMedium:
 						c.ReasoningEffort = ReasoningEffortMedium
@@ -136,7 +138,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					}
 				case strings.Contains(model, "glm-5-3"), strings.Contains(model, "glm-5.3"):
 					switch v {
-					case genai.EffortOff, genai.EffortLow:
+					case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
 						c.ReasoningEffort = ReasoningEffortLow
 					case genai.EffortMedium, genai.EffortHigh:
 						c.ReasoningEffort = ReasoningEffortHigh

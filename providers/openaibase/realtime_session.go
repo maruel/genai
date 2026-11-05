@@ -124,7 +124,7 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 				if err != nil {
 					return nil, err
 				}
-				if o == genai.EffortOff {
+				if o == genai.EffortOff || o == genai.EffortMinimal {
 					e = ReasoningEffortMinimal
 				}
 				if e == ReasoningEffortMax {

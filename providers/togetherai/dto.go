@@ -68,7 +68,7 @@ func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
 	case strings.Contains(id, "gpt-oss"):
 		switch level {
 		case "":
-		case genai.EffortOff, genai.EffortLow:
+		case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
 			c.ReasoningEffort = ReasoningEffortLow
 		case genai.EffortMedium:
 			c.ReasoningEffort = ReasoningEffortMedium
@@ -82,7 +82,7 @@ func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
 		case "":
 		case genai.EffortOff:
 			c.Reasoning = &Reasoning{Enabled: false}
-		case genai.EffortLow, genai.EffortMedium:
+		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium:
 			c.Reasoning = &Reasoning{Enabled: true}
 			c.ReasoningEffort = ReasoningEffortHigh
 		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
@@ -96,7 +96,7 @@ func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
 		case "":
 		case genai.EffortOff:
 			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(false)}
-		case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
 			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(true)}
 		default:
 			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
@@ -106,7 +106,7 @@ func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
 		case "":
 		case genai.EffortOff:
 			c.Reasoning = &Reasoning{Enabled: false}
-		case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
 			c.Reasoning = &Reasoning{Enabled: true}
 		default:
 			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}

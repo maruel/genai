@@ -111,6 +111,8 @@ func TestThinkingEffort(t *testing.T) {
 			level genai.EffortLevel
 			want  openaibase.ReasoningEffort
 		}{
+			{"gpt-5", genai.EffortMinimal, openaibase.ReasoningEffortMinimal},
+			{"gpt-6.1-sol", genai.EffortMinimal, openaibase.ReasoningEffortLow},
 			{"gpt-5", genai.EffortOff, openaibase.ReasoningEffortMinimal},
 			{"gpt-6.1-sol", genai.EffortOff, openaibase.ReasoningEffortLow},
 			{"o4-mini", genai.EffortMax, openaibase.ReasoningEffortHigh},

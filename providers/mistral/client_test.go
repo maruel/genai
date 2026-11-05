@@ -186,6 +186,7 @@ func TestEffortLevel(t *testing.T) {
 		level       genai.EffortLevel
 		model, want string
 	}{
+		{genai.EffortMinimal, "custom", "minimal"},
 		{genai.EffortHigh, "custom", "high"},
 		{genai.EffortXHigh, "custom", "xhigh"},
 		{genai.EffortLow, "mistral-small-latest", "high"},

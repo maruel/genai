@@ -110,6 +110,8 @@ func parseOpts(p *ProviderOption, opts []genai.GenOption) (callOpts, error) {
 			case "":
 			case genai.EffortOff:
 				co.effort = ReasoningEffortNone
+			case genai.EffortMinimal:
+				co.effort = ReasoningEffortMinimal
 			case genai.EffortLow:
 				co.effort = ReasoningEffortLow
 			case genai.EffortMedium:

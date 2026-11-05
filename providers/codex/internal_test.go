@@ -51,6 +51,7 @@ func TestParseOpts(t *testing.T) {
 			level genai.EffortLevel
 			want  string
 		}{
+			{genai.EffortMinimal, "minimal"},
 			{genai.EffortOff, "none"},
 			{genai.EffortLow, "low"},
 			{genai.EffortMedium, "medium"},

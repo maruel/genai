@@ -54,17 +54,18 @@ type ReasoningEffort string
 
 // Native reasoning effort levels.
 const (
-	ReasoningEffortNone   ReasoningEffort = "none"
-	ReasoningEffortLow    ReasoningEffort = "low"
-	ReasoningEffortMedium ReasoningEffort = "medium"
-	ReasoningEffortHigh   ReasoningEffort = "high"
-	ReasoningEffortXHigh  ReasoningEffort = "xhigh"
-	ReasoningEffortMax    ReasoningEffort = "max"
+	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortMinimal ReasoningEffort = "minimal"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortHigh    ReasoningEffort = "high"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+	ReasoningEffortMax     ReasoningEffort = "max"
 )
 
 // Reasoning configures reasoning/thinking behavior for supported models.
 type Reasoning struct {
-	// Effort controls how much effort the model spends on reasoning ("low", "medium", "high").
+	// Effort controls how much effort the model spends on reasoning.
 	Effort ReasoningEffort `json:"effort,omitzero"`
 	// Summary controls whether to include a summary of reasoning ("auto", "concise", "detailed").
 	Summary string `json:"summary,omitzero"`
@@ -126,6 +127,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.Reasoning.Effort = ReasoningEffortNone
+			case genai.EffortMinimal:
+				c.Reasoning.Effort = ReasoningEffortMinimal
 			case genai.EffortLow:
 				c.Reasoning.Effort = ReasoningEffortLow
 			case genai.EffortMedium:

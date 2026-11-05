@@ -310,7 +310,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				if strings.Contains(model, "qwen") || strings.Contains(model, "gemma") {
 					c.ReasoningEffort = ReasoningEffortNone
 				}
-			case genai.EffortLow:
+			case genai.EffortMinimal, genai.EffortLow:
 				c.ReasoningEffort = ReasoningEffortLow
 			case genai.EffortMedium:
 				c.ReasoningEffort = ReasoningEffortMedium

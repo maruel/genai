@@ -238,7 +238,7 @@ func (c *ChatRequest) initThinking(l genai.EffortLevel, md *modelData, known boo
 			c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
 			var e Effort
 			switch l {
-			case genai.EffortOff, genai.EffortLow:
+			case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
 				e = EffortLow
 			case genai.EffortMedium:
 				e = EffortMedium
@@ -273,7 +273,7 @@ func (c *ChatRequest) initThinking(l genai.EffortLevel, md *modelData, known boo
 		case md.Thinking.Enabled:
 			var n int64
 			switch l {
-			case genai.EffortOff, genai.EffortLow:
+			case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
 				n = 1024
 			case genai.EffortMedium:
 				n = 8192

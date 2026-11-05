@@ -200,6 +200,7 @@ func TestEffortLevel(t *testing.T) {
 		level       genai.EffortLevel
 		model, want string
 	}{
+		{genai.EffortMinimal, "openai/gpt-5", "minimal"},
 		{genai.EffortOff, "openai/gpt-6", "none"},
 		{genai.EffortLow, "openai/gpt-6", "low"},
 		{genai.EffortMedium, "openai/gpt-6", "medium"},

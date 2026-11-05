@@ -95,6 +95,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.ReasoningEffort = ReasoningEffortNone
+			case genai.EffortMinimal:
+				c.ReasoningEffort = ReasoningEffortMinimal
 			case genai.EffortLow:
 				c.ReasoningEffort = ReasoningEffortLow
 			case genai.EffortMedium:
@@ -110,7 +112,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			if strings.Contains(strings.ToLower(model), "gpt-oss") {
 				switch v {
-				case genai.EffortOff:
+				case genai.EffortOff, genai.EffortMinimal:
 					c.ReasoningEffort = ReasoningEffortLow
 				case genai.EffortXHigh, genai.EffortMax:
 					c.ReasoningEffort = ReasoningEffortHigh

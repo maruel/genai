@@ -171,7 +171,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				if strings.HasPrefix(model, "qwen/") {
 					c.ReasoningEffort = ReasoningEffortNone
 				}
-			case genai.EffortLow:
+			case genai.EffortMinimal, genai.EffortLow:
 				c.ReasoningEffort = ReasoningEffortLow
 			case genai.EffortMedium:
 				c.ReasoningEffort = ReasoningEffortMedium
@@ -191,7 +191,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				case "":
 				case genai.EffortOff:
 					c.ReasoningEffort = ReasoningEffortNone
-				case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+				case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
 					c.ReasoningEffort = ReasoningEffortDefault
 				default:
 					return &base.ErrNotSupported{Options: []string{"EffortLevel"}}

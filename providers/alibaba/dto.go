@@ -69,7 +69,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.EnableThinking = new(false)
-			case genai.EffortLow:
+			case genai.EffortMinimal, genai.EffortLow:
 				c.EnableThinking = new(true)
 				c.ThinkingBudget = 1024
 			case genai.EffortMedium:

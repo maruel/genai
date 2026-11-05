@@ -200,7 +200,7 @@ func thinkingForLevel(level genai.EffortLevel, model string, maxTokens int64) (T
 	case "":
 	case genai.EffortOff:
 		t.Type = ThinkingDisabled
-	case genai.EffortLow:
+	case genai.EffortMinimal, genai.EffortLow:
 		t = Thinking{Type: ThinkingEnabled, TokenBudget: 1024}
 	case genai.EffortMedium:
 		t = Thinking{Type: ThinkingEnabled, TokenBudget: 8192}

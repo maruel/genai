@@ -113,6 +113,8 @@ func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
 			case "":
 			case genai.EffortOff:
 				effort = ThinkingOff
+			case genai.EffortMinimal:
+				effort = ThinkingMinimal
 			case genai.EffortLow:
 				effort = ThinkingLow
 			case genai.EffortMedium:

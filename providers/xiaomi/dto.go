@@ -106,7 +106,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.Thinking.Type = "disabled"
-			case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
 				c.Thinking.Type = "enabled"
 			default:
 				unsupported = append(unsupported, "EffortLevel")

@@ -94,6 +94,11 @@ func ThinkingEffort(l genai.EffortLevel, model string) (ReasoningEffort, error) 
 			return ReasoningEffortMinimal, nil
 		}
 		return ReasoningEffortNone, nil
+	case genai.EffortMinimal:
+		if gpt5 {
+			return ReasoningEffortMinimal, nil
+		}
+		return ReasoningEffortLow, nil
 	case genai.EffortLow:
 		return ReasoningEffortLow, nil
 	case genai.EffortMedium:

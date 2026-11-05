@@ -126,6 +126,8 @@ func TestChatRequest(t *testing.T) {
 				opts        []genai.GenOption
 				want        ThinkingConfig
 			}{
+				{"minimal_flash_budget", "gemini-2.5-flash", []genai.GenOption{genai.EffortMinimal}, ThinkingConfig{ThinkingBudget: new(int64(128))}},
+				{"minimal_lite_budget", "gemini-2.5-flash-lite", []genai.GenOption{genai.EffortMinimal}, ThinkingConfig{ThinkingBudget: new(int64(512))}},
 				{"flash_budget", "gemini-2.5-flash", []genai.GenOption{genai.EffortOff}, ThinkingConfig{ThinkingBudget: new(int64(0))}},
 				{"pro_budget", "gemini-2.5-pro", []genai.GenOption{genai.EffortMax}, ThinkingConfig{ThinkingBudget: new(int64(32768))}},
 				{"pro_minimum", "gemini-3.8-pro", []genai.GenOption{genai.EffortOff}, ThinkingConfig{ThinkingLevel: ThinkingLevelLow}},

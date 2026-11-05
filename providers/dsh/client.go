@@ -408,7 +408,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			case "":
 			case genai.EffortOff:
 				co.effort = EffortOff
-			case genai.EffortLow:
+			case genai.EffortMinimal, genai.EffortLow:
 				co.effort = EffortLow
 			case genai.EffortMedium, genai.EffortHigh:
 				co.effort = EffortHigh

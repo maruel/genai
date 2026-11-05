@@ -279,7 +279,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("false")
-			case genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
 				c.ChatTemplateKWArgs["enable_thinking"] = json.RawMessage("true")
 			default:
 				unsupported = append(unsupported, "EffortLevel")

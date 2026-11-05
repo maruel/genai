@@ -81,7 +81,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			case "":
 			case genai.EffortOff:
 				c.Thinking.Type = "disabled"
-			case genai.EffortLow:
+			case genai.EffortMinimal, genai.EffortLow:
 				c.Thinking.Type = "enabled"
 				c.ReasoningEffort = ReasoningEffortLow
 			case genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh:

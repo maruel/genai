@@ -8,6 +8,15 @@
 //
 // It is described at https://ai.google.dev/api/?lang=rest but the doc is weirdly organized.
 //
+// # Speech
+//
+// [Client.InteractionRaw] and [Client.InteractionStreamRaw] expose native
+// speech configuration, annotations and lifecycle events. These APIs are
+// independent of Live conversations; agent/tool and non-speech unions are omitted.
+//
+// [Client.ConnectLiveRaw] sends native Live setup and exposes complete server
+// messages without transcript or turn-commit policy.
+//
 // # Embeddings
 //
 // [Client.Embed] embeds text batches with an explicitly configured embedding model.
@@ -23,6 +32,7 @@ package gemini
 // See official client at https://github.com/google/generative-ai-go
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	_ "embed"
@@ -42,13 +52,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/genai/internal/realtime"
+
 	"github.com/maruel/roundtrippers"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
-	"github.com/maruel/genai/internal/realtime"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -1878,4 +1889,173 @@ func (c *Client) EmbedRaw(ctx context.Context, in *BatchEmbeddingRequest, out *B
 		return err
 	}
 	return nil
+}
+
+// InteractionRaw creates a batch Interactions speech request. It preserves native
+// statuses, annotations and usage; a failed interaction resource is not an HTTP
+// error. Callers decide whether the returned status satisfies their operation.
+// Responses are limited to 1 MiB unless in.MaxResponseBytes sets an explicit bound.
+// Requests are limited to 20 MB JSON; Source inputs are consumed synchronously
+// into a private temporary file. Its lifetime extends until all transport-owned
+// request bodies close, including uploads continuing after an early response.
+func (c *Client) InteractionRaw(ctx context.Context, in *InteractionRequest, out *InteractionResponse) (err error) {
+	if out == nil {
+		return errors.New("interaction response is required")
+	}
+	*out = InteractionResponse{}
+	resp, err := c.interactionRequest(ctx, in, false)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return c.impl.DecodeError(speechEndpoint, resp)
+	}
+	defer func() {
+		err = errors.Join(err, resp.Body.Close())
+		if err != nil {
+			*out = InteractionResponse{}
+		}
+	}()
+	limit := in.MaxResponseBytes
+	if limit == 0 {
+		limit = 1024 * 1024
+	}
+	decoder := json.NewDecoder(http.MaxBytesReader(nil, resp.Body, limit))
+	if err := decoder.Decode(out); err != nil {
+		return err
+	}
+	var extra any
+	if err = decoder.Decode(&extra); !errors.Is(err, io.EOF) {
+		if err == nil {
+			err = errors.New("multiple speech response values")
+		}
+		return err
+	}
+	return nil
+}
+
+// InteractionStreamRaw creates a streaming Interactions speech request. It
+// returns a single-use, pull-driven event sequence and an idempotent finalizer.
+// Call finish after iteration to obtain protocol/provider/close errors. Breaking
+// iteration closes the response without draining it; call finish also if never
+// iterating. Finish must not race iteration. Error and terminal events are yielded
+// before their errors are returned by finish. SSE events are limited to 1 MiB.
+// The request's Stream field is overridden without mutating it. Source ownership
+// and request size limits match InteractionRaw.
+func (c *Client) InteractionStreamRaw(ctx context.Context, in *InteractionRequest) (iter.Seq[InteractionEvent], func() error) {
+	resp, err := c.interactionRequest(ctx, in, true)
+	if err != nil {
+		return yieldNothing[InteractionEvent], func() error { return err }
+	}
+	if resp.StatusCode != http.StatusOK {
+		err = c.impl.DecodeError(speechEndpoint, resp)
+		return yieldNothing[InteractionEvent], func() error { return err }
+	}
+	if typ, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type")); err != nil || typ != "text/event-stream" {
+		err = errors.Join(errors.New("speech response must be an event stream"), resp.Body.Close())
+		return yieldNothing[InteractionEvent], func() error { return err }
+	}
+	scan := bufio.NewScanner(resp.Body)
+	scan.Buffer(make([]byte, 4096), 1024*1024)
+	stream := &interactionStream{body: resp.Body, scan: scan}
+	return stream.iterate, stream.finish
+}
+
+func (c *Client) interactionRequest(ctx context.Context, in *InteractionRequest, stream bool) (resp *http.Response, err error) {
+	if err := c.impl.Validate(); err != nil {
+		return nil, err
+	}
+	if in == nil {
+		return nil, errors.New("interaction request is required")
+	}
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+	reqBody := *in
+	reqBody.Stream = stream
+	hasSource := false
+	for i := range in.Input {
+		hasSource = hasSource || in.Input[i].Source != nil
+	}
+	var req *http.Request
+	if !hasSource {
+		data, e := json.Marshal(&reqBody)
+		err = e
+		if err != nil {
+			return nil, err
+		}
+		if len(data) > 20_000_000 {
+			return nil, errors.New("inline speech request exceeds 20 MB")
+		}
+		data = append(data, '\n')
+		req, err = http.NewRequestWithContext(ctx, http.MethodPost, speechEndpoint, bytes.NewReader(data))
+		if err == nil {
+			req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		}
+	} else {
+		var upload *interactionUpload
+		upload, err = spoolInteractionRequest(ctx, &reqBody)
+		if err != nil {
+			return nil, err
+		}
+		defer func() {
+			err = errors.Join(err, upload.release())
+			if err != nil && resp != nil {
+				err = errors.Join(err, resp.Body.Close())
+				resp = nil
+			}
+		}()
+		var body io.ReadCloser
+		body, err = upload.open()
+		if err != nil {
+			return nil, err
+		}
+		req, err = http.NewRequestWithContext(ctx, http.MethodPost, speechEndpoint, body)
+		if err != nil {
+			return nil, errors.Join(err, body.Close())
+		}
+		req.Header.Set("Content-Type", "application/json")
+		req.ContentLength = upload.size
+		req.GetBody = upload.open
+	}
+	if err != nil {
+		return nil, err
+	}
+	resp, err = c.impl.Client.Do(req)
+	if err != nil && resp != nil {
+		err = errors.Join(err, resp.Body.Close())
+		resp = nil
+	}
+	return resp, err
+}
+
+// ConnectLiveRaw opens the native Gemini Live protocol with the supplied setup.
+// Setup is sent unchanged; model and feature configuration belong to the caller.
+// Initial preserves the native setupComplete resource. Subsequent server frames,
+// including transcription segments, errors and goAway, are returned uncollapsed.
+// Authentication, bounded reads, cancellation and teardown use the same transport
+// as other Gemini realtime operations. This method does not list models.
+func (c *Client) ConnectLiveRaw(ctx context.Context, setup *LiveSetup) (*LiveConn, error) {
+	if setup == nil || setup.Model == "" {
+		return nil, errors.New("gemini live setup and model are required")
+	}
+	data, err := json.Marshal(LiveClientMessage{Setup: setup})
+	if err != nil {
+		return nil, err
+	}
+	ws, err := realtime.Dial(ctx, "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent", &c.impl.Client, maxMessageBytes, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	conn := &LiveConn{ws: ws}
+	if err = ws.Write(ctx, data); err == nil {
+		conn.Initial, err = conn.Receive(ctx)
+	}
+	if err == nil && (conn.Initial.SetupComplete == nil || conn.Initial.Error != nil) {
+		err = errors.New("gemini live setup rejected")
+	}
+	if err != nil {
+		return nil, errors.Join(err, conn.Close())
+	}
+	return conn, nil
 }

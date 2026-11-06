@@ -14,13 +14,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"iter"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"regexp"
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/maruel/roundtrippers"
@@ -269,6 +272,116 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
+// TranscriptionRaw performs a native file/URL transcription request and preserves
+// JSON or verbose_json metadata. Uploads are limited to 25 MiB. File ownership and
+// return waits for in-flight reads, including after cancellation. Retries rewind
+// only after the preceding upload stops. The caller retains ownership of File.
+func (c *Client) TranscriptionRaw(ctx context.Context, in *TranscriptionRequest, out *TranscriptionResponse) (err error) {
+	if in == nil || out == nil {
+		return errors.New("transcription request and response are required")
+	}
+	*out = TranscriptionResponse{}
+	defer func() {
+		if err != nil {
+			*out = TranscriptionResponse{}
+		}
+	}()
+	if err := in.Validate(); err != nil {
+		return err
+	}
+	format := in.ResponseFormat
+	if format == "" {
+		format = TranscriptionJSON
+	}
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	if err := w.WriteField("model", in.Model); err != nil {
+		return err
+	}
+	if err := w.WriteField("response_format", string(format)); err != nil {
+		return err
+	}
+	var size int64
+	if in.Language != "" {
+		if err := w.WriteField("language", in.Language); err != nil {
+			return err
+		}
+	}
+	if in.Prompt != "" {
+		if err := w.WriteField("prompt", in.Prompt); err != nil {
+			return err
+		}
+	}
+	if in.Temperature != nil {
+		if err := w.WriteField("temperature", strconv.FormatFloat(*in.Temperature, 'g', -1, 64)); err != nil {
+			return err
+		}
+	}
+	for _, v := range in.TimestampGranularities {
+		if err := w.WriteField("timestamp_granularities[]", string(v)); err != nil {
+			return err
+		}
+	}
+	if in.URL != "" {
+		if err := w.WriteField("url", in.URL); err != nil {
+			return err
+		}
+	} else {
+		var err error
+		size, err = in.File.Seek(0, io.SeekEnd)
+		if err != nil {
+			return fmt.Errorf("audio size: %w", err)
+		}
+		if size <= 0 || size > 25*1024*1024 {
+			return errors.New("audio upload must contain 1..26214400 bytes")
+		}
+		if _, err := w.CreateFormFile("file", in.Filename); err != nil {
+			return err
+		}
+	}
+	head := b.Len()
+	if err := w.Close(); err != nil {
+		return err
+	}
+	body := func() (io.ReadCloser, error) {
+		return io.NopCloser(bytes.NewReader(b.Bytes())), nil
+	}
+	if in.File != nil {
+		upload := &transcriptionUpload{source: in.File, header: b.Bytes()[:head], footer: b.Bytes()[head:], size: size}
+		body = upload.open
+		defer upload.finish()
+	}
+	initial, err := body()
+	if err != nil {
+		return err
+	}
+	const endpoint = "https://api.groq.com/openai/v1/audio/transcriptions"
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, initial)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", w.FormDataContentType())
+	req.ContentLength = int64(b.Len()) + size
+	// The retry transport can replay the upload by seeking its caller-owned
+	// source instead of buffering a second copy of the complete audio file.
+	req.GetBody = body
+	resp, err := c.impl.Client.Do(req) //nolint:bodyclose // DecodeResponse closes the bounded response on every decode path.
+	if err != nil {
+		return err
+	}
+	// A transcription is bounded independently of the uploaded file. Preserve
+	// the provider's typed errors and response headers through its usual decoder.
+	limit := in.MaxResponseBytes
+	if limit == 0 {
+		limit = 1024 * 1024
+	}
+	resp.Body = http.MaxBytesReader(nil, resp.Body, limit)
+	if err := c.impl.DecodeResponse(resp, endpoint, out); err != nil {
+		return err
+	}
+	return nil
+}
+
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if c.impl.PreloadedModels != nil {
@@ -409,3 +522,70 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var _ genai.Provider = &Client{}
+
+// transcriptionUpload owns exclusive access to the caller's seekable source
+// until TranscriptionRaw returns. A transport may finish a response before its upload
+// reader stops; retries and teardown must invalidate that reader and wait for
+// any active Read before seeking or returning source ownership.
+type transcriptionUpload struct {
+	source         io.ReadSeeker
+	header, footer []byte
+	size           int64
+
+	mu       sync.Mutex
+	body     *transcriptionUploadBody
+	finished bool
+}
+
+func (u *transcriptionUpload) open() (io.ReadCloser, error) {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	if u.finished {
+		return nil, io.ErrClosedPipe
+	}
+	if u.body != nil {
+		_ = u.body.Close()
+	}
+	if _, err := u.source.Seek(0, io.SeekStart); err != nil {
+		return nil, fmt.Errorf("seek audio: %w", err)
+	}
+	u.body = &transcriptionUploadBody{reader: io.MultiReader(bytes.NewReader(u.header), io.LimitReader(u.source, u.size), bytes.NewReader(u.footer))}
+	return u.body, nil
+}
+
+func (u *transcriptionUpload) finish() {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	u.finished = true
+	if u.body != nil {
+		_ = u.body.Close()
+	}
+}
+
+type transcriptionUploadBody struct {
+	reader io.Reader
+	reads  sync.WaitGroup
+
+	mu     sync.Mutex
+	closed bool
+}
+
+func (b *transcriptionUploadBody) Read(p []byte) (int, error) {
+	b.mu.Lock()
+	if b.closed {
+		b.mu.Unlock()
+		return 0, io.ErrClosedPipe
+	}
+	b.reads.Add(1)
+	b.mu.Unlock()
+	defer b.reads.Done()
+	return b.reader.Read(p)
+}
+
+func (b *transcriptionUploadBody) Close() error {
+	b.mu.Lock()
+	b.closed = true
+	b.mu.Unlock()
+	b.reads.Wait()
+	return nil
+}

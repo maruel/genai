@@ -156,8 +156,10 @@ const (
 
 // ClientMessage is one outbound wire event.
 type ClientMessage struct {
-	EventID      string          `json:"event_id,omitzero"`
-	Type         EventType       `json:"type"`
+	EventID string    `json:"event_id,omitzero"`
+	Type    EventType `json:"type"`
+	// Final ends transcription input and drains delayed encoder output on commit.
+	Final        bool            `json:"final,omitzero"`
 	Session      *SessionConfig  `json:"session,omitzero"`
 	Audio        []byte          `json:"audio,omitzero"`
 	Item         *Item           `json:"item,omitzero"`
@@ -282,6 +284,9 @@ type AudioInput struct {
 	Format        AudioFormat    `json:"format"`
 	TurnDetection *TurnDetection `json:"turn_detection"`
 	Transcription *Transcription `json:"transcription"`
+	// NoiseReduction retains the null metadata emitted by native transcription
+	// sessions. The pinned server does not support configuring noise reduction.
+	NoiseReduction json.RawMessage `json:"noise_reduction,omitzero"`
 }
 
 // AudioOutput configures generated audio.

@@ -50,6 +50,7 @@ import (
 const embeddingModel = "ggml-org/embeddinggemma-2-GGUF:Q8_0"
 
 func TestClient(t *testing.T) {
+	t.Run("ConnectTranscriptionRaw", testClientConnectTranscriptionRaw)
 	t.Run("SpeechRaw errors", func(t *testing.T) {
 		c := realtimeClient(t, "http://127.0.0.1:1")
 		var out bytes.Buffer
@@ -797,7 +798,24 @@ func TestClient(t *testing.T) {
 		for _, format := range []llamacpp.SpeechFormat{llamacpp.SpeechWAV, llamacpp.SpeechPCM} {
 			t.Run(string(format), func(t *testing.T) {
 				var out bytes.Buffer
-				headers, err := c.SpeechRaw(t.Context(), &llamacpp.SpeechRequest{Input: "Hello.", Lang: "en", Voice: props.Voices[0], ResponseFormat: format, Stream: format == llamacpp.SpeechPCM, NPredict: 32, Seed: new(int64(1))}, &out)
+				req := &llamacpp.SpeechRequest{Input: "Hello.", Lang: "en", Voice: props.Voices[0], ResponseFormat: format, Stream: format == llamacpp.SpeechPCM, NPredict: 32, Seed: new(int64(1))}
+				var headers http.Header
+				var err error
+				if format == llamacpp.SpeechPCM {
+					resp, e := c.SpeechStreamRaw(t.Context(), req)
+					if e != nil {
+						t.Fatal(e)
+					}
+					// Native metadata is available before the first audio read.
+					headers = resp.Header
+					if headers.Get("Content-Type") != "audio/pcm;rate=24000;encoding=float;bits=32" && headers.Get("Content-Type") != "audio/pcm;rate=24000" {
+						t.Fatalf("native PCM metadata %q", headers.Get("Content-Type"))
+					}
+					_, err = io.Copy(&out, resp.Body)
+					err = errors.Join(err, resp.Body.Close())
+				} else {
+					headers, err = c.SpeechRaw(t.Context(), req, &out)
+				}
 				if err != nil {
 					t.Fatal(err)
 				}

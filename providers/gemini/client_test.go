@@ -7,8 +7,10 @@
 package gemini_test
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"io"
@@ -22,6 +24,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -40,6 +43,45 @@ import (
 	"github.com/maruel/genai/smoke"
 	"github.com/maruel/genai/smoke/smoketest"
 )
+
+type speechTransport func(*http.Request) (*http.Response, error)
+
+func (f speechTransport) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func speechClient(t *testing.T, model string, fn speechTransport) *gemini.Client {
+	c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("speech-test-key"), genai.ProviderOptionModel(model), genai.ProviderOptionModalities{genai.ModalityText}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+		return &roundtrippers.Retry{Transport: speechTransport(func(r *http.Request) (*http.Response, error) {
+			defer func() { _ = r.Body.Close() }()
+			if r.URL.String() != "https://generativelanguage.googleapis.com/v1beta/interactions" || r.Header.Get("x-goog-api-key") != "speech-test-key" {
+				t.Fatalf("speech endpoint/authentication: %s", r.URL)
+			}
+			return fn(r)
+		}), TimeAfter: func(time.Duration) <-chan time.Time {
+			ch := make(chan time.Time)
+			close(ch)
+			return ch
+		}}
+	}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	internaltest.CleanupCloser(t, c)
+	return c
+}
+
+func speechResponse(r *http.Request, status int, contentType, body string) *http.Response {
+	return &http.Response{StatusCode: status, Header: http.Header{"Content-Type": {contentType}}, Body: io.NopCloser(strings.NewReader(body)), Request: r}
+}
+
+type speechCloseBody struct {
+	io.ReadCloser
+	close func()
+}
+
+func (b *speechCloseBody) Close() error {
+	b.close()
+	return b.ReadCloser.Close()
+}
 
 const liveEndpoint = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
 
@@ -76,6 +118,7 @@ func getClientInner(t *testing.T, model string, modalities genai.Modalities, pre
 }
 
 func TestClient(t *testing.T) {
+	t.Run("ConnectLiveRaw", testClientConnectLiveRaw)
 	t.Run("ConnectRealtime", func(t *testing.T) {
 		t.Run("unsupported option type", func(t *testing.T) {
 			s, err := liveClient(t).ConnectRealtime(t.Context(), genai.GenOptionSeed(1))
@@ -825,6 +868,294 @@ func TestClient(t *testing.T) {
 		}
 		return ci
 	}
+
+	t.Run("GenSync", func(t *testing.T) {
+		t.Run("recorded audio understanding", func(t *testing.T) {
+			p, err := getClientInner(t, "gemini-flash-lite-latest", nil, cachedModels, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.RecordWithName(t, "TestClient/Transcribe/audio_understanding", h)
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, p)
+			f, err := os.Open("../../scoreboard/testdata/audio.wav")
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, f)
+			out, err := p.GenSync(t.Context(), genai.Messages{{Requests: []genai.Request{{Text: "Transcribe the attached audio. Return only the transcript text, with no commentary."}, {Doc: genai.Doc{Filename: "audio.wav", Src: f}}}}}, &genai.GenOptionText{SystemPrompt: "You are a speech recognition engine. Return only the spoken words."})
+			if err != nil || strings.Trim(strings.ToLower(out.String()), " .\n") != "orange" {
+				t.Fatalf("audio understanding %q: %v", out.String(), err)
+			}
+		})
+	})
+
+	t.Run("InteractionRaw", func(t *testing.T) {
+		t.Run("recorded", func(t *testing.T) {
+			p, err := getClientInner(t, "gemini-3.5-transcribe", nil, cachedModels, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.RecordWithName(t, "TestClient/Transcribe/recorded", h)
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, p)
+			f, err := os.Open("../../scoreboard/testdata/audio.wav")
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, f)
+			var out gemini.InteractionResponse
+			if err := p.(*gemini.Client).InteractionRaw(t.Context(), &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Store: new(false), Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: f}}}, &out); err != nil {
+				t.Fatal(err)
+			}
+			if out.Status != gemini.InteractionCompleted || len(out.Steps) != 1 || len(out.Steps[0].Content) != 1 || strings.Trim(strings.ToLower(out.Steps[0].Content[0].Text), " .\n") != "orange" {
+				t.Fatalf("native transcription resource: %+v", out)
+			}
+		})
+
+		t.Run("canceled retry upload", func(t *testing.T) {
+			ctx, cancel := context.WithCancel(t.Context())
+			t.Cleanup(cancel)
+			var abandoned io.ReadCloser
+			var reopen func() (io.ReadCloser, error)
+			calls := 0
+			c, err := gemini.New(ctx, genai.ProviderOptionAPIKey("speech-test-key"), genai.ProviderOptionModel("gemini-3.5-transcribe"), genai.ProviderOptionModalities{genai.ModalityText}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+				return &roundtrippers.Retry{Transport: speechTransport(func(r *http.Request) (*http.Response, error) {
+					defer func() { _ = r.Body.Close() }()
+					calls++
+					reopen = r.GetBody
+					r.GetBody = func() (io.ReadCloser, error) {
+						body, err := reopen()
+						abandoned = body
+						return body, err
+					}
+					return speechResponse(r, http.StatusServiceUnavailable, "application/json", `{"error":{"code":503,"status":"UNAVAILABLE","message":"retry"}}`), nil
+				}), TimeAfter: func(time.Duration) <-chan time.Time {
+					// Retry has opened a new body, but has not handed it to the transport.
+					cancel()
+					return make(chan time.Time)
+				}}
+			}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			var out gemini.InteractionResponse
+			err = c.InteractionRaw(ctx, &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: strings.NewReader("audio")}}}, &out)
+			if err == nil || calls != 1 || abandoned == nil {
+				t.Fatalf("retry cancellation: %v, calls %d, body %v", err, calls, abandoned != nil)
+			}
+			if _, err := abandoned.Read(make([]byte, 1)); !errors.Is(err, context.Canceled) {
+				t.Fatalf("canceled upload stayed readable: %v", err)
+			}
+			if err := abandoned.Close(); err != nil {
+				t.Fatal(err)
+			}
+			if body, err := reopen(); !errors.Is(err, context.Canceled) {
+				if body != nil {
+					_ = body.Close()
+				}
+				t.Fatalf("canceled upload admitted retry: %v", err)
+			}
+		})
+		t.Run("early response upload", func(t *testing.T) {
+			var wg sync.WaitGroup
+			ctx, cancel := context.WithCancel(t.Context())
+			t.Cleanup(wg.Wait)
+			t.Cleanup(cancel)
+			resume := make(chan struct{}, 1)
+			result := make(chan struct {
+				data []byte
+				err  error
+			}, 1)
+			var reopen func() (io.ReadCloser, error)
+			source := strings.NewReader("encoded audio")
+			c, err := gemini.New(ctx, genai.ProviderOptionAPIKey("speech-test-key"), genai.ProviderOptionModel("gemini-3.5-transcribe"), genai.ProviderOptionModalities{genai.ModalityText}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
+				return speechTransport(func(r *http.Request) (*http.Response, error) {
+					reopen = r.GetBody
+					prefix := make([]byte, 16)
+					if _, err := io.ReadFull(r.Body, prefix); err != nil {
+						return nil, err
+					}
+					wg.Go(func() {
+						select {
+						case <-resume:
+						case <-ctx.Done():
+						}
+						data, err := io.ReadAll(r.Body)
+						err = errors.Join(err, r.Body.Close())
+						result <- struct {
+							data []byte
+							err  error
+						}{append(prefix, data...), err}
+					})
+					return speechResponse(r, 200, "application/json", `{"status":"completed"}`), nil
+				})
+			}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			internaltest.CleanupCloser(t, c)
+			var out gemini.InteractionResponse
+			if err := c.InteractionRaw(ctx, &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: source}}}, &out); err != nil {
+				t.Fatal(err)
+			}
+			// The source is caller-owned again while the transport still uploads.
+			source.Reset("caller replaced the source")
+			replay, err := reopen()
+			if err != nil {
+				t.Fatal(err)
+			}
+			full, replayErr := io.ReadAll(replay)
+			if err := errors.Join(replayErr, replay.Close()); err != nil {
+				t.Fatal(err)
+			}
+			resume <- struct{}{}
+			uploaded := <-result
+			if uploaded.err != nil || !bytes.Equal(full, uploaded.data) {
+				t.Fatalf("post-response upload: %v", uploaded.err)
+			}
+			var request struct{ Input []struct{ Data string } }
+			if err := json.Unmarshal(uploaded.data, &request); err != nil {
+				t.Fatal(err)
+			}
+			if len(request.Input) != 1 || request.Input[0].Data != "ZW5jb2RlZCBhdWRpbw==" {
+				t.Fatalf("upload changed after source ownership returned: %+v", request)
+			}
+			if body, err := reopen(); err == nil {
+				_ = body.Close()
+				t.Fatal("completed upload admitted a late retry")
+			}
+		})
+
+		t.Run("valid", func(t *testing.T) {
+			source := strings.NewReader("audio")
+			in := &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Store: new(false), Stream: true, MaxResponseBytes: 4096,
+				Input:            []gemini.InteractionContent{{Type: gemini.InteractionText, Text: "Words"}, {Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: source}},
+				GenerationConfig: &gemini.InteractionGenerationConfig{TranscriptionConfig: &gemini.InteractionTranscriptionConfig{LanguageCodes: []string{"en-US"}, Mode: &gemini.InteractionTranscriptionMode{Type: gemini.InteractionTranscriptionVerbatim, DiarizationMode: "speaker", TimestampGranularities: []string{"word"}}}},
+			}
+			closed := false
+			c := speechClient(t, in.Model, func(r *http.Request) (*http.Response, error) {
+				var got map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&got); err != nil {
+					return nil, err
+				}
+				var want map[string]any
+				if err := json.Unmarshal([]byte(`{"model":"gemini-3.5-transcribe","store":false,"input":[{"type":"text","text":"Words"},{"type":"audio","mime_type":"audio/wav","data":"YXVkaW8="}],"generation_config":{"transcription_config":{"language_codes":["en-US"],"mode":{"type":"verbatim","diarization_mode":"speaker","timestamp_granularities":["word"]}}}}`), &want); err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff(want, got); diff != "" {
+					t.Fatalf("request (-want +got): %s", diff)
+				}
+				resp := speechResponse(r, 200, "application/json", `{"id":"interactions/1","model":"gemini-3.5-transcribe","status":"completed","created":"2026-11-05T00:00:00Z","steps":[{"type":"model_output","content":[{"type":"text","text":"Hello","annotations":[{"type":"word_info","text":"Hello","speaker":"spk_1","start_index":0,"end_index":5,"start_offset":"0.100s","end_offset":"0.400s"}]}]}],"usage":{"total_tokens":12,"input_tokens_by_modality":[{"modality":"audio","tokens":10}]}}`)
+				resp.Body = &speechCloseBody{ReadCloser: resp.Body, close: func() { closed = true }}
+				return resp, nil
+			})
+			var out gemini.InteractionResponse
+			if err := c.InteractionRaw(t.Context(), in, &out); err != nil {
+				t.Fatal(err)
+			}
+			word := out.Steps[0].Content[0].Annotations[0]
+			if !closed || !in.Stream || source.Len() != 0 || out.ID != "interactions/1" || out.Usage.TotalTokens != 12 || out.Usage.InputTokensByModality[0].Modality != gemini.InteractionModalityAudio || word.Type != gemini.InteractionWordInfo || word.Speaker != "spk_1" || word.StartIndex == nil || *word.StartIndex != 0 || word.EndOffset != "0.400s" {
+				t.Fatalf("raw response/ownership: %+v, word %+v", out, word)
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, tc := range []struct {
+				name string
+				in   *gemini.InteractionRequest
+			}{
+				{"nil", nil},
+				{"missing", &gemini.InteractionRequest{}},
+				{"response limit", &gemini.InteractionRequest{Model: "speech", MaxResponseBytes: -1, Input: []gemini.InteractionContent{{Type: gemini.InteractionText, Text: "hello"}}}},
+				{"text audio", &gemini.InteractionRequest{Model: "speech", Input: []gemini.InteractionContent{{Type: gemini.InteractionText, Source: strings.NewReader("audio")}}}},
+				{"ambiguous audio", &gemini.InteractionRequest{Model: "speech", Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: strings.NewReader("audio"), Data: "YXVkaW8="}}}},
+				{"unsupported", &gemini.InteractionRequest{Model: "speech", Input: []gemini.InteractionContent{{Type: "image"}}}},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					c := speechClient(t, "gemini-3.5-transcribe", func(*http.Request) (*http.Response, error) {
+						t.Fatal("invalid raw request sent")
+						return nil, errors.New("unexpected request")
+					})
+					out := gemini.InteractionResponse{ID: "stale"}
+					if err := c.InteractionRaw(t.Context(), tc.in, &out); err == nil || out.ID != "" {
+						t.Fatalf("invalid raw request: %+v", out)
+					}
+				})
+			}
+		})
+	})
+
+	t.Run("InteractionStreamRaw", func(t *testing.T) {
+		t.Run("unstarted", func(t *testing.T) {
+			closed := false
+			c := speechClient(t, "gemini-3.5-transcribe", func(r *http.Request) (*http.Response, error) {
+				resp := speechResponse(r, 200, "text/event-stream", "must not read")
+				resp.Body = &speechCloseBody{ReadCloser: resp.Body, close: func() { closed = true }}
+				return resp, nil
+			})
+			events, finish := c.InteractionStreamRaw(t.Context(), &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, URI: "https://audio.example/a.wav", MIMEType: "audio/wav"}}})
+			if err := finish(); err != nil || !closed {
+				t.Fatalf("unstarted cleanup: %v, closed %v", err, closed)
+			}
+			for range events {
+				t.Fatal("closed stream yielded an event")
+			}
+			if err := finish(); err != nil {
+				t.Fatal(err)
+			}
+		})
+
+		t.Run("recorded", func(t *testing.T) {
+			t.Parallel()
+			closed := false
+			// Reuse the existing speech cassette through the native API.
+			provider, err := getClientInner(t, "gemini-3.8-flash-lite-tts", nil, cachedModels, func(h http.RoundTripper) http.RoundTripper {
+				recorded := testRecorder.RecordWithName(t, "TestClient/Synthesize/recorded", h)
+				return speechTransport(func(r *http.Request) (*http.Response, error) {
+					resp, err := recorded.RoundTrip(r)
+					if resp != nil {
+						resp.Body = &speechCloseBody{ReadCloser: resp.Body, close: func() { closed = true }}
+					}
+					return resp, err
+				})
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			c := provider.(*gemini.Client)
+			req := &gemini.InteractionRequest{Model: "gemini-3.8-flash-lite-tts", Store: new(false), Input: []gemini.InteractionContent{{Type: gemini.InteractionText, Text: "Orange."}}, ResponseFormat: &gemini.InteractionResponseFormat{Type: gemini.InteractionAudio, MIMEType: "audio/l16", SampleRate: 24000}, GenerationConfig: &gemini.InteractionGenerationConfig{SpeechConfig: []gemini.InteractionSpeechConfig{{Voice: "Kore"}}}}
+			events, finish := c.InteractionStreamRaw(t.Context(), req)
+			var pcm []byte
+			completed := false
+			for event := range events {
+				if event.EventType == gemini.InteractionEventDelta {
+					d := &event.Delta
+					if d.Type != gemini.InteractionAudio || d.MIMEType != "audio/l16" || d.SampleRate != 24000 || d.Channels != 1 || event.Index == nil || *event.Index != 0 {
+						t.Fatalf("native audio metadata %+v", event)
+					}
+					chunk, err := base64.StdEncoding.DecodeString(d.Data)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if len(pcm)+len(chunk) > 1024*1024 {
+						t.Fatal("short phrase exceeded 1 MiB")
+					}
+					pcm = append(pcm, chunk...)
+				}
+				if event.EventType == gemini.InteractionEventCompleted {
+					completed = true
+					break
+				}
+			}
+			if err := finish(); err != nil {
+				t.Fatal(err)
+			}
+			if !completed || !closed || req.Stream || len(pcm) < 24000 || len(pcm)%2 != 0 {
+				t.Fatalf("raw synthesis: completed %v, closed %v, audio bytes %d", completed, closed, len(pcm))
+			}
+		})
+	})
 
 	t.Run("ListVoices", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {

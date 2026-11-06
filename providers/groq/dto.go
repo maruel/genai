@@ -5,6 +5,8 @@
 // Wire types for the Groq chat completions REST API.
 //
 // Reference: https://console.groq.com/docs/api-reference
+// Transcription fields follow groq/groq-python commit
+// 55066d94acca028c3cb74e050f2711b80ade6298, types/audio/transcription.py.
 
 package groq
 
@@ -14,6 +16,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"math"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -885,4 +889,106 @@ func (er *ErrorResponse) Error() string {
 // IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
+}
+
+// TranscriptionRequest is the native /audio/transcriptions multipart request.
+// File is read from its beginning and remains caller-owned; do not read or seek
+// it concurrently with TranscriptionRaw. Returning waits for active source reads.
+// Use exactly one of File (with Filename) or URL. JSON response formats are
+// supported; the endpoint's plain-text response mode is not decoded here.
+type TranscriptionRequest struct {
+	Model                  string                     `json:"model"`
+	File                   io.ReadSeeker              `json:"-"`
+	Filename               string                     `json:"-"`
+	URL                    string                     `json:"url,omitzero"`
+	Language               string                     `json:"language,omitzero"`
+	Prompt                 string                     `json:"prompt,omitzero"`
+	ResponseFormat         TranscriptionFormat        `json:"response_format,omitzero"`
+	Temperature            *float64                   `json:"temperature,omitzero"`
+	TimestampGranularities []TranscriptionGranularity `json:"timestamp_granularities,omitzero"`
+	// MaxResponseBytes bounds JSON metadata independently of the upload. Zero
+	// uses 1 MiB; raise explicitly for long verbose_json responses.
+	MaxResponseBytes int64 `json:"-"`
+}
+
+// Validate implements genai.Validatable for the supported native request fields.
+func (r *TranscriptionRequest) Validate() error {
+	if r.Model == "" || (r.File == nil) == (r.URL == "") || r.File != nil && r.Filename == "" {
+		return errors.New("transcription model and either file with filename or URL are required")
+	}
+	if r.MaxResponseBytes < 0 {
+		return errors.New("transcription response bound must be positive")
+	}
+	if r.ResponseFormat != "" && r.ResponseFormat != TranscriptionJSON && r.ResponseFormat != TranscriptionVerboseJSON {
+		return errors.New("transcription requires a JSON response format")
+	}
+	if r.Temperature != nil && (*r.Temperature < 0 || *r.Temperature > 1 || math.IsNaN(*r.Temperature)) {
+		return errors.New("transcription temperature must be between 0 and 1")
+	}
+	if len(r.TimestampGranularities) != 0 && r.ResponseFormat != TranscriptionVerboseJSON {
+		return errors.New("transcription timestamps require verbose_json")
+	}
+	for _, v := range r.TimestampGranularities {
+		if v != TranscriptionWord && v != TranscriptionSegmentTime {
+			return fmt.Errorf("invalid transcription timestamp granularity %q", v)
+		}
+	}
+	return nil
+}
+
+// TranscriptionFormat selects a native JSON transcription payload.
+type TranscriptionFormat string
+
+// Native JSON response formats.
+const (
+	TranscriptionJSON        TranscriptionFormat = "json"
+	TranscriptionVerboseJSON TranscriptionFormat = "verbose_json"
+)
+
+// TranscriptionGranularity selects native word or segment timestamps.
+type TranscriptionGranularity string
+
+// Native timestamp granularities.
+const (
+	TranscriptionSegmentTime TranscriptionGranularity = "segment"
+	TranscriptionWord        TranscriptionGranularity = "word"
+)
+
+// TranscriptionResponse retains the native JSON or verbose_json result. Verbose
+// segment metadata follows https://console.groq.com/docs/speech-to-text; the SDK
+// at the source commit above only declares Text. A present empty Text is silence.
+type TranscriptionResponse struct {
+	Text     *string                 `json:"text"`
+	XGroq    TranscriptionMeta       `json:"x_groq,omitzero"`
+	Task     string                  `json:"task,omitzero"`
+	Language string                  `json:"language,omitzero"`
+	Duration float64                 `json:"duration,omitzero"`
+	Words    []TranscriptionWordInfo `json:"words,omitzero"`
+	Segments []TranscriptionSegment  `json:"segments,omitzero"`
+}
+
+// TranscriptionMeta carries the provider request identifier.
+type TranscriptionMeta struct {
+	ID string `json:"id"`
+}
+
+// TranscriptionWordInfo is one native word with offsets measured in seconds.
+type TranscriptionWordInfo struct {
+	Word  string  `json:"word"`
+	Start float64 `json:"start"`
+	End   float64 `json:"end"`
+}
+
+// TranscriptionSegment retains native alignment, tokens and quality diagnostics.
+type TranscriptionSegment struct {
+	ID               int     `json:"id"`
+	Seek             int     `json:"seek"`
+	Start            float64 `json:"start"`
+	End              float64 `json:"end"`
+	Text             string  `json:"text"`
+	Tokens           []int   `json:"tokens"`
+	Temperature      float64 `json:"temperature"`
+	AvgLogprob       float64 `json:"avg_logprob"`
+	CompressionRatio float64 `json:"compression_ratio"`
+	NoSpeechProb     float64 `json:"no_speech_prob"`
 }

@@ -75,3 +75,38 @@ func ExampleNew_hTTP_record() {
 	// Output:
 	// Found multiple models
 }
+
+func ExampleClient_InteractionStreamRaw() {
+	ctx := context.Background()
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-3.5-transcribe"))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Print(err)
+		}
+	}()
+	req := &gemini.InteractionRequest{
+		Model: "gemini-3.5-transcribe", Store: new(false),
+		Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, URI: "https://example.com/recording.wav", MIMEType: "audio/wav"}},
+		GenerationConfig: &gemini.InteractionGenerationConfig{TranscriptionConfig: &gemini.InteractionTranscriptionConfig{
+			LanguageCodes: []string{"en-US"},
+			Mode:          &gemini.InteractionTranscriptionMode{Type: gemini.InteractionTranscriptionVerbatim, DiarizationMode: "speaker", TimestampGranularities: []string{"word"}},
+		}},
+	}
+	events, finish := c.InteractionStreamRaw(ctx, req)
+	for event := range events {
+		if event.EventType == gemini.InteractionEventDelta {
+			fmt.Print(event.Delta.Text)
+			for _, word := range event.Delta.Annotations {
+				fmt.Printf("%s: %s (%s to %s)\n", word.Speaker, word.Text, word.StartOffset, word.EndOffset)
+			}
+		}
+	}
+	// Always finish, also after breaking early, to observe protocol/close errors.
+	if err := finish(); err != nil {
+		log.Print(err)
+	}
+}

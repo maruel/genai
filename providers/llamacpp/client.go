@@ -30,6 +30,7 @@
 // # Speech generation
 //
 // [Client.SpeechRaw] writes WAV or float32 PCM audio from /tts to an io.Writer.
+// [Client.SpeechStreamRaw] exposes native response headers and streamed audio.
 // Load an audio generation model and projector in llama-server. Discover predefined
 // voices with [Client.GetPropsRaw]; voice cloning requires a compatible voice encoder.
 //
@@ -71,12 +72,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/genai/internal/realtime"
+
 	"github.com/maruel/roundtrippers"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
-	"github.com/maruel/genai/internal/realtime"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -844,6 +846,24 @@ func (c *Client) SpeechRaw(ctx context.Context, in *SpeechRequest, out io.Writer
 	if in == nil || out == nil {
 		return nil, errors.New("request and output are required")
 	}
+	resp, err := c.SpeechStreamRaw(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(out, resp.Body)
+	if err = errors.Join(err, resp.Body.Close()); err != nil {
+		return resp.Header, fmt.Errorf("speech response: %w", err)
+	}
+	return resp.Header, nil
+}
+
+// SpeechStreamRaw returns the native /tts HTTP response before reading audio.
+// The caller owns Body and must close it, including after cancellation or early
+// playback termination. Headers retain the server's container and PCM metadata.
+func (c *Client) SpeechStreamRaw(ctx context.Context, in *SpeechRequest) (*http.Response, error) {
+	if in == nil {
+		return nil, errors.New("speech request is required")
+	}
 	if err := in.Validate(); err != nil {
 		return nil, err
 	}
@@ -856,13 +876,9 @@ func (c *Client) SpeechRaw(ctx context.Context, in *SpeechRequest, out io.Writer
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return resp.Header, c.impl.DecodeError(u, resp)
+		return nil, c.impl.DecodeError(u, resp)
 	}
-	_, err = io.Copy(out, resp.Body)
-	if err = errors.Join(err, resp.Body.Close()); err != nil {
-		return resp.Header, fmt.Errorf("speech response: %w", err)
-	}
-	return resp.Header, nil
+	return resp, nil
 }
 
 // GetPropsRaw returns server properties, including predefined TTS voices.
@@ -1118,3 +1134,35 @@ func yieldNothing[T any](yield func(T) bool) {
 }
 
 var _ genai.Provider = (*Client)(nil)
+
+// ConnectTranscriptionRaw opens /v1/realtime?intent=transcription and preserves
+// the complete native session.created resource in Initial, including model PCM
+// rates. It sends and returns native wire messages without accumulating text or
+// interpreting final:true commits. The server selects the loaded ASR model.
+func (c *Client) ConnectTranscriptionRaw(ctx context.Context) (*TranscriptionConn, error) {
+	u, err := url.Parse(c.baseURL)
+	if err != nil || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || u.Scheme != "http" && u.Scheme != "https" {
+		return nil, errors.New("llama.cpp transcription requires an HTTP(S) server origin")
+	}
+	if u.Scheme == "https" {
+		u.Scheme = "wss"
+	} else {
+		u.Scheme = "ws"
+	}
+	u.Path = strings.TrimRight(u.Path, "/") + "/v1/realtime"
+	u.RawQuery = "intent=transcription"
+	ws, err := realtime.Dial(ctx, u.String(), &c.impl.Client, maxMessageBytes, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	conn := &TranscriptionConn{ws: ws}
+	msg, err := conn.Receive(ctx)
+	if err == nil && (msg.Type != EventSessionCreated || msg.Session == nil || msg.Session.Type != SessionTranscription) {
+		err = errors.New("llama.cpp transcription expected a transcription session")
+	}
+	if err != nil {
+		return nil, errors.Join(err, conn.Close())
+	}
+	conn.Initial = msg
+	return conn, nil
+}

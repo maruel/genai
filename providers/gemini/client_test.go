@@ -157,9 +157,38 @@ func TestClient(t *testing.T) {
 				received <- messages
 				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"},{"text":"weighing","thought":true}]},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
 				realtimetest.Write(t, ctx, ws, `{"serverContent":{"inputTranscription":{"text":"world","finished":true},"outputTranscription":{"text":"day","finished":true},"turnComplete":true},"usageMetadata":{"promptTokenCount":3,"responseTokenCount":5,"totalTokenCount":8},"goAway":{"timeLeft":"30s"},"sessionResumptionUpdate":{"newHandle":"resume","resumable":true}}`)
+				for _, frame := range []string{
+					`{"usageMetadata":{"totalTokenCount":1}}`,
+					`{"serverContent":{"outputTranscription":{"text":"early","finished":true}}}`,
+					`{"serverContent":{"modelTurn":{"parts":[{"text":"first"}]}}}`,
+					`{"serverContent":{"modelTurn":{"parts":[{"text":" chunk"}]}},"usageMetadata":{"totalTokenCount":2}}`,
+					`{"serverContent":{"generationComplete":true}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":3}}`,
+					`{"serverContent":{"outputTranscription":{"text":"late","finished":true}}}`,
+					`{"usageMetadata":{"totalTokenCount":4}}`,
+					`{"serverContent":{"modelTurn":{"parts":[{"text":"second"}]}}}`,
+					`{"usageMetadata":{"totalTokenCount":5}}`,
+					`{"serverContent":{"interrupted":true}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":6}}`,
+					`{"toolCall":{"functionCalls":[{"id":"call","name":"lookup","args":{}}]}}`,
+				} {
+					realtimetest.Write(t, ctx, ws, frame)
+				}
+				result := realtimetest.Read(t, ctx, ws)
+				if result["toolResponse"] == nil {
+					t.Errorf("tool result: %v", result)
+				}
+				for _, frame := range []string{
+					`{"serverContent":{"modelTurn":{"parts":[{"text":"tool continuation"}]},"generationComplete":true}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":7}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":8}}`,
+					`{"serverContent":{"modelTurn":{"parts":[{"text":"third"}]},"turnComplete":true},"usageMetadata":{"totalTokenCount":9}}`,
+				} {
+					realtimetest.Write(t, ctx, ws, frame)
+				}
 				_, _, _ = ws.Read(ctx)
 			})
-			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -194,9 +223,20 @@ func TestClient(t *testing.T) {
 				t.Errorf("stream end: %v", messages[3])
 			}
 			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventContentReasoning, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
+			responseID := ""
 			for i, kind := range want {
 				e := realtimetest.Receive(t, s, kind)
-				if e.ResponseID != "" || e.ItemID != "" {
+				if i == 0 {
+					responseID = e.ResponseID
+					if responseID == "" {
+						t.Fatal("model output has no response identity")
+					}
+				}
+				id := responseID
+				if kind == genai.RealtimeEventTranscriptInput || kind == genai.RealtimeEventProvider {
+					id = ""
+				}
+				if e.ResponseID != id || e.ItemID != "" {
 					t.Fatalf("event %d: %+v", i, e)
 				}
 				switch i {
@@ -227,6 +267,63 @@ func TestClient(t *testing.T) {
 				case 11:
 					if p, ok := e.ProviderEvent.(*gemini.Resumption); !ok || p.Handle != "resume" {
 						t.Errorf("resumption: %+v", e)
+					}
+				}
+			}
+			ids := map[string]string{"": "", "initial": responseID}
+			for i, want := range []struct {
+				kind  genai.RealtimeEventKind
+				group string
+				total int64
+			}{
+				{genai.RealtimeEventUsage, "", 1},
+				{genai.RealtimeEventTranscriptOutput, "", 0},
+				{genai.RealtimeEventContentText, "first", 0},
+				{genai.RealtimeEventContentText, "first", 0},
+				{genai.RealtimeEventUsage, "", 2},
+				{genai.RealtimeEventGenerationDone, "first", 0},
+				{genai.RealtimeEventTurnDone, "first", 0},
+				{genai.RealtimeEventUsage, "first", 3},
+				{genai.RealtimeEventTranscriptOutput, "", 0},
+				{genai.RealtimeEventUsage, "", 4},
+				{genai.RealtimeEventContentText, "second", 0},
+				{genai.RealtimeEventUsage, "", 5},
+				{genai.RealtimeEventInterrupted, "second", 0},
+				{genai.RealtimeEventGenerationDone, "second", 0},
+				{genai.RealtimeEventTurnDone, "second", 0},
+				{genai.RealtimeEventUsage, "second", 6},
+				{genai.RealtimeEventContentToolCalls, "tool", 0},
+				{genai.RealtimeEventContentText, "tool", 0},
+				{genai.RealtimeEventGenerationDone, "tool", 0},
+				{genai.RealtimeEventTurnDone, "tool", 0},
+				{genai.RealtimeEventUsage, "", 7},
+				{genai.RealtimeEventTurnDone, "", 0},
+				{genai.RealtimeEventUsage, "", 8},
+				{genai.RealtimeEventContentText, "third", 0},
+				{genai.RealtimeEventTurnDone, "third", 0},
+				{genai.RealtimeEventUsage, "third", 9},
+			} {
+				e := realtimetest.Receive(t, s, want.kind)
+				if _, exists := ids[want.group]; !exists {
+					if e.ResponseID == "" {
+						t.Fatalf("event %d: missing response identity", i)
+					}
+					for group, id := range ids {
+						if id == e.ResponseID {
+							t.Fatalf("event %d: response %q reused identity of %q", i, want.group, group)
+						}
+					}
+					ids[want.group] = e.ResponseID
+				}
+				if e.ResponseID != ids[want.group] {
+					t.Fatalf("event %d: identity %q, want %q", i, e.ResponseID, ids[want.group])
+				}
+				if want.kind == genai.RealtimeEventUsage && e.Usage.TotalTokens != want.total {
+					t.Fatalf("event %d: usage %+v", i, e.Usage)
+				}
+				if e.Kind == genai.RealtimeEventContentToolCalls {
+					if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{{ID: "call", Name: "lookup", Result: "ok"}}}); err != nil {
+						t.Fatal(err)
 					}
 				}
 			}

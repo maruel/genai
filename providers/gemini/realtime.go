@@ -103,6 +103,12 @@ type RealtimeCompression struct {
 //     turns before the tool call.
 //   - Usage snapshots cover one response. Interaction status, resumption and
 //     go-away are provider events.
+//   - Response IDs are adapter-local and span model output through turnComplete.
+//     Output transcription before observed model output, or after turnComplete,
+//     has no response identity. Only usage on turnComplete without tool calls
+//     is correlated; standalone, intermediate and tool-turn usage stays unowned
+//     because the wire protocol does not identify its response or snapshot scope.
+//     Interrupted turns retain their identity through their final turnComplete.
 //   - Input is PCM16 at 16 kHz. Output is PCM16 at 24 kHz.
 //   - Document input is a user turn whose parts carry the inline document followed
 //     by the text, bounded to 16 MiB.
@@ -122,6 +128,12 @@ type RealtimeSession struct {
 	// Transcript builders are receiver-owned and bounded by the message limit.
 	inputTranscript  strings.Builder
 	outputTranscript strings.Builder
+	// Response correlation is receiver-owned. Gemini supplies no wire response
+	// IDs (go-genai types.go at 89c10e9d4b39f956d7d145a9086c70b94713d725).
+	// Model output establishes a turn; turnComplete closes its identity.
+	responseID     string
+	responseTools  bool
+	nextResponseID uint64
 
 	sendMu chan struct{}
 	// activity is owned by Send, under sendMu.
@@ -425,6 +437,14 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		// message that could contain caller content or authentication material.
 		return &genai.RealtimeError{Code: strconv.Itoa(msg.Error.Code), Message: "gemini live provider error"}
 	}
+	first := len(s.pending)
+	if (msg.ServerContent != nil && len(msg.ServerContent.ModelTurn.Parts) != 0 || msg.ToolCall != nil) && s.responseID == "" {
+		s.nextResponseID++
+		s.responseID = "genai-gemini-response-" + strconv.FormatUint(s.nextResponseID, 10)
+	}
+	if msg.ToolCall != nil {
+		s.responseTools = true
+	}
 	if c := msg.ServerContent; c != nil {
 		if c.Interrupted {
 			s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventInterrupted})
@@ -517,7 +537,11 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventProvider, ProviderEvent: &ToolCallCancellation{IDs: c.IDs}})
 	}
 	if u := msg.UsageMetadata; u != nil {
-		s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventUsage, Usage: &genai.Usage{
+		id := ""
+		if c := msg.ServerContent; c != nil && c.TurnComplete && !s.responseTools {
+			id = s.responseID
+		}
+		s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventUsage, ResponseID: id, Usage: &genai.Usage{
 			InputTokens: u.PromptTokenCount, InputCachedTokens: u.CachedContentTokenCount,
 			OutputTokens: u.ResponseTokenCount, ReasoningTokens: u.ThoughtsTokenCount, TotalTokens: u.TotalTokenCount,
 			ServiceTier: string(u.ServiceTier),
@@ -555,6 +579,23 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 			default:
 			}
 		}
+	}
+	// Output transcription belongs to the generation and its last chunk precedes
+	// generationComplete/interrupted, then turnComplete. Input transcription is
+	// independent. See https://ai.google.dev/api/live#BidiGenerateContentServerContent.
+	for i := first; i < len(s.pending); i++ {
+		e := &s.pending[i]
+		switch e.Kind {
+		case genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventContentReasoning,
+			genai.RealtimeEventContentToolCalls, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone,
+			genai.RealtimeEventTurnDone, genai.RealtimeEventInterrupted:
+			e.ResponseID = s.responseID
+		default:
+		}
+	}
+	if c := msg.ServerContent; c != nil && c.TurnComplete {
+		s.responseID = ""
+		s.responseTools = false
 	}
 	return nil
 }

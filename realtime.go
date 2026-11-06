@@ -515,14 +515,16 @@ func (c *RealtimeContent) Validate() error {
 
 // RealtimeEvent is one normalized event. Kind identifies the event; Content
 // carries its payload. Provider-specific events use RealtimeEventProvider.
-// Empty IDs mean unspecified, never a fabricated provider identity.
+// Empty IDs mean unspecified. Adapters may assign session-local response
+// identities when documented provider boundaries make correlation unambiguous.
 type RealtimeEvent struct {
 	// Kind identifies the event. GenerationDone means output generation ended,
 	// not playback ended. TurnDone means the provider completed its turn, which
 	// need not mean session idleness. Interrupted signals the caller to stop
 	// playback.
 	Kind RealtimeEventKind
-	// ResponseID identifies the response when the provider supplies it.
+	// ResponseID identifies the response within this session. It may be a provider
+	// identity or an adapter-assigned identity based on provider turn boundaries.
 	ResponseID string
 	// ItemID identifies the conversation item when the provider supplies it.
 	ItemID string
@@ -533,7 +535,7 @@ type RealtimeEvent struct {
 	Content RealtimeContent
 	// Usage is a non-cumulative snapshot for one response. Each Usage event
 	// describes its own response; sum them to compute session usage. ResponseID
-	// identifies the response when the provider supplies it. Limits, when present,
+	// identifies the response when its ownership is known. Limits, when present,
 	// replaces the previous rate-limit snapshot.
 	Usage *Usage
 	// Error carries a recoverable provider error for Error events. The session

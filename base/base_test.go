@@ -20,6 +20,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/maruel/httpjson"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 )
@@ -257,12 +259,55 @@ func TestNotImplemented(t *testing.T) {
 	})
 }
 
+func TestProviderBase(t *testing.T) {
+	t.Run("DecodeError", func(t *testing.T) {
+		t.Run("oversized response", func(t *testing.T) {
+			body := &errorResponseBody{Reader: strings.NewReader(strings.Repeat("x", 2<<20))}
+			c := ProviderBase[*decodeAPIError]{}
+			err := c.DecodeError("https://example.test", &http.Response{
+				StatusCode: http.StatusTooManyRequests,
+				Header:     http.Header{"Retry-After": {"30"}},
+				Body:       body,
+			})
+			herr, ok := errors.AsType[*httpjson.Error](err)
+			if !ok || herr.StatusCode != http.StatusTooManyRequests {
+				t.Fatalf("HTTP error type/status = %T", err)
+			}
+			if string(herr.ResponseBody) != strings.Repeat("x", 1<<20) {
+				t.Fatalf("diagnostic prefix length = %d", len(herr.ResponseBody))
+			}
+			if body.read != (1<<20)+1 || !body.closed {
+				t.Fatalf("body read = %d, closed = %t", body.read, body.closed)
+			}
+			if c.LastResponseHeaders().Get("Retry-After") != "30" {
+				t.Fatal("response headers were lost")
+			}
+		})
+	})
+}
+
+type errorResponseBody struct {
+	io.Reader
+	read   int
+	closed bool
+}
+
+func (b *errorResponseBody) Read(p []byte) (int, error) {
+	n, err := b.Reader.Read(p)
+	b.read += n
+	return n, err
+}
+
+func (b *errorResponseBody) Close() error {
+	b.closed = true
+	return nil
+}
+
 // TestDecodeResponse preserves successful HTTP error envelopes and custom decode failures.
 func TestDecodeResponse(t *testing.T) {
 	for _, lenient := range []bool{false, true} {
 		t.Run(strconv.FormatBool(lenient), func(t *testing.T) {
 			c := ProviderBase[*decodeAPIError]{Lenient: lenient}
-			c.lateInit()
 			for _, tc := range []decodeResponseCase{{"custom vector error", `{"vector":"invalid"}`, false}, {"HTTP 200 API error", `{"error":"API failed"}`, true}} {
 				t.Run(tc.name, func(t *testing.T) {
 					var out decodeResponseOutput

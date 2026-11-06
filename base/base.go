@@ -322,7 +322,6 @@ func (c *ProviderBase[PErrorResponse]) LastResponseHeaders() http.Header {
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
 func (c *ProviderBase[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
-	c.lateInit()
 	resp, err := c.JSONRequest(ctx, method, url, in)
 	if err != nil {
 		if resp != nil {
@@ -335,6 +334,7 @@ func (c *ProviderBase[PErrorResponse]) DoRequest(ctx context.Context, method, ur
 
 // DecodeResponse decodes an HTTP response into the output struct.
 func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url string, out any) error {
+	c.lateInit()
 	c.mu.Lock()
 	c.lastResp = resp.Header
 	c.mu.Unlock()
@@ -383,20 +383,23 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 // DecodeError handles HTTP error responses from API calls.
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
-// with context such as API key URLs for unauthorized errors.
+// with context such as API key URLs for unauthorized errors. Error bodies are limited
+// to 1 MiB; oversized bodies retain their HTTP status and bounded diagnostic prefix.
 func (c *ProviderBase[PErrorResponse]) DecodeError(url string, resp *http.Response) error {
 	c.mu.Lock()
 	c.lastResp = resp.Header
 	c.mu.Unlock()
 	c.lateInit()
-	// When we are in lenient mode, we do not want to buffer the result. When in strict mode, we want to buffer
-	// to give more details.
-	b, err := io.ReadAll(resp.Body)
+	const maxErrorBody = 1024 * 1024
+	b, err := io.ReadAll(io.LimitReader(resp.Body, maxErrorBody+1))
 	if err2 := resp.Body.Close(); err == nil {
 		err = err2
 	}
 	if err != nil {
 		return err
+	}
+	if len(b) > maxErrorBody {
+		return errors.Join(&httpjson.Error{StatusCode: resp.StatusCode, ResponseBody: b[:maxErrorBody]}, errors.New("HTTP error response exceeds 1 MiB"))
 	}
 	r := bytes.NewReader(b)
 	d := json.NewDecoder(r)

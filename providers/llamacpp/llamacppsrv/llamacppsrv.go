@@ -81,6 +81,7 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 	args := cfg.args(exe, port)
 	log.Printf("Args: %s", args)
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...) // #nosec G702 -- The caller explicitly selects an absolute executable; arguments use no shell.
+	hideConsole(cmd)
 	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
 	cmd.Env = serverEnv(cmd.Dir)
@@ -396,6 +397,7 @@ func downloadRelease(ctx context.Context, cache string, version int, tool tool) 
 		// Run it to confirm the version and that the file is not corrupted.
 		// If this fails, starts from scratch.
 		cmd := exec.CommandContext(ctx, executable, "--version") // #nosec G702 -- The caller-owned cache selects the runtime; this version probe uses no shell.
+		hideConsole(cmd)
 		cmd.Dir = filepath.Dir(executable)
 		cmd.Env = serverEnv(cmd.Dir)
 		if out, err := cmd.CombinedOutput(); err == nil {
@@ -412,7 +414,9 @@ func downloadRelease(ctx context.Context, cache string, version int, tool tool) 
 	}
 	cuda := false
 	if runtime.GOOS == "windows" && runtime.GOARCH == "amd64" {
-		cuda = exec.CommandContext(ctx, "nvcc", "--version").Run() == nil
+		cmd := exec.CommandContext(ctx, "nvcc", "--version")
+		hideConsole(cmd)
+		cuda = cmd.Run() == nil
 	}
 	assets, err := releaseAssets(rel, runtime.GOOS, runtime.GOARCH, cuda)
 	if err != nil {

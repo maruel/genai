@@ -64,6 +64,7 @@ func ScoreboardForBackend(b ProviderOptionBackend) scoreboard.Score {
 // Client implements genai.Provider for Alibaba Cloud DashScope.
 type Client struct {
 	base.NotImplemented
+
 	impl    base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	baseURL string
 	backend ProviderOptionBackend
@@ -203,6 +204,66 @@ func (c *Client) Name() string {
 	return "alibaba"
 }
 
+// ModelID implements genai.Provider.
+func (c *Client) ModelID() string {
+	return c.impl.Model
+}
+
+// OutputModalities implements genai.Provider.
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
+}
+
+// Scoreboard implements genai.Provider.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return ScoreboardForBackend(c.backend)
+}
+
+// ScoreboardVariants implements genai.ProviderScoreboardVariants.
+func (c *Client) ScoreboardVariants() []genai.ScoreboardVariant {
+	return []genai.ScoreboardVariant{
+		{Name: "Intl", Score: ScoreboardForBackend(BackendIntl)},
+		{Name: "US", Score: ScoreboardForBackend(BackendUS)},
+	}
+}
+
+// HTTPClient returns the HTTP client.
+func (c *Client) HTTPClient() *http.Client {
+	return &c.impl.Client
+}
+
+// GenSync implements genai.Provider.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
+}
+
+// GenSyncRaw provides access to the raw API.
+func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
+	return c.impl.GenSyncRaw(ctx, in, out)
+}
+
+// GenStream implements genai.Provider.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	return c.impl.GenStream(ctx, msgs, opts...)
+}
+
+// GenStreamRaw provides access to the raw API.
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
+	return c.impl.GenStreamRaw(ctx, in)
+}
+
+// ListModels implements genai.Provider.
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
+	var resp ModelsResponse
+	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
+}
+
 // selectBestTextModel selects the most appropriate text model based on the preference (cheap, good, or SOTA).
 //
 // It calls ListModels and analyzes model IDs by string to find the most recent version family,
@@ -281,66 +342,6 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	default: // ModelGood
 		return latest[len(latest)/2].id, nil
 	}
-}
-
-// ModelID implements genai.Provider.
-func (c *Client) ModelID() string {
-	return c.impl.Model
-}
-
-// OutputModalities implements genai.Provider.
-func (c *Client) OutputModalities() genai.Modalities {
-	return c.impl.OutputModalities
-}
-
-// Scoreboard implements genai.Provider.
-func (c *Client) Scoreboard() scoreboard.Score {
-	return ScoreboardForBackend(c.backend)
-}
-
-// ScoreboardVariants implements genai.ProviderScoreboardVariants.
-func (c *Client) ScoreboardVariants() []genai.ScoreboardVariant {
-	return []genai.ScoreboardVariant{
-		{Name: "Intl", Score: ScoreboardForBackend(BackendIntl)},
-		{Name: "US", Score: ScoreboardForBackend(BackendUS)},
-	}
-}
-
-// HTTPClient returns the HTTP client.
-func (c *Client) HTTPClient() *http.Client {
-	return &c.impl.Client
-}
-
-// GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts...)
-}
-
-// GenSyncRaw provides access to the raw API.
-func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.impl.GenSyncRaw(ctx, in, out)
-}
-
-// GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return c.impl.GenStream(ctx, msgs, opts...)
-}
-
-// GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
-	return c.impl.GenStreamRaw(ctx, in)
-}
-
-// ListModels implements genai.Provider.
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	if c.impl.PreloadedModels != nil {
-		return c.impl.PreloadedModels, nil
-	}
-	var resp ModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/models", nil, &resp); err != nil {
-		return nil, err
-	}
-	return resp.ToModels(), nil
 }
 
 // ProviderOptionBackend selects a DashScope regional endpoint.

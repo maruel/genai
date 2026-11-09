@@ -169,6 +169,7 @@ type ProviderUnwrap interface {
 // and the provider support it.
 type Result struct {
 	Message
+
 	Usage Usage
 	// Logprobs is a list of multiple log probabilities, each for a token.
 	//
@@ -218,7 +219,10 @@ func (l *Logprob) Validate() error {
 
 // GoString returns a JSON representation of the reply for debugging purposes.
 func (l *Logprob) GoString() string {
-	b, _ := json.Marshal(l)
+	b, err := json.Marshal(l)
+	if err != nil {
+		return fmt.Sprintf("<JSON marshal error: %v>", err)
+	}
 	return string(b)
 }
 
@@ -299,7 +303,7 @@ type RateLimit struct {
 }
 
 func (r *RateLimit) String() string {
-	out := ""
+	var out string
 	switch r.Type {
 	case Requests:
 		out = "requests"
@@ -447,20 +451,6 @@ func (m *Message) Validate() error {
 	return errors.Join(errs...)
 }
 
-// validateShallow ensures the message is valid but not the inner fields.
-func (m *Message) validateShallow() []error {
-	var errs []error
-	if m.IsZero() {
-		errs = append(errs, errors.New("at least one of fields Request, Reply or ToolCallsResults is required"))
-	} else if m.Role() == "invalid" {
-		errs = append(errs, errors.New("exactly one of Request, Reply or ToolCallResults must be set"))
-	}
-	if m.User != "" {
-		errs = append(errs, errors.New("field User: not supported yet"))
-	}
-	return errs
-}
-
 // Role returns one of "user", "assistant" or "computer".
 func (m *Message) Role() string {
 	hasRequest := len(m.Requests) != 0
@@ -568,7 +558,10 @@ func (m *Message) UnmarshalJSON(b []byte) error {
 
 // GoString returns a JSON representation of the reply for debugging purposes.
 func (m *Message) GoString() string {
-	b, _ := json.Marshal(m)
+	b, err := json.Marshal(m)
+	if err != nil {
+		return fmt.Sprintf("<JSON marshal error: %v>", err)
+	}
 	return string(b)
 }
 
@@ -667,6 +660,20 @@ func (m *Message) Accumulate(mf *Reply) error {
 	return nil
 }
 
+// validateShallow ensures the message is valid but not the inner fields.
+func (m *Message) validateShallow() []error {
+	var errs []error
+	if m.IsZero() {
+		errs = append(errs, errors.New("at least one of fields Request, Reply or ToolCallsResults is required"))
+	} else if m.Role() == "invalid" {
+		errs = append(errs, errors.New("exactly one of Request, Reply or ToolCallResults must be set"))
+	}
+	if m.User != "" {
+		errs = append(errs, errors.New("field User: not supported yet"))
+	}
+	return errs
+}
+
 // Request is an input content block for generation or embedding.
 //
 // It is effectively a union, only one of the 2 related field groups can be set.
@@ -754,7 +761,10 @@ func (r *Reply) IsZero() bool {
 
 // GoString returns a JSON representation of the reply for debugging purposes.
 func (r *Reply) GoString() string {
-	b, _ := json.Marshal(r)
+	b, err := json.Marshal(r)
+	if err != nil {
+		return fmt.Sprintf("<JSON marshal error: %v>", err)
+	}
 	return string(b)
 }
 
@@ -1061,7 +1071,7 @@ func (t *ToolCall) Call(ctx context.Context, tools []ToolDef) (string, error) {
 	res := reflect.ValueOf(tools[i].Callback).Call([]reflect.Value{reflect.ValueOf(ctx), input})
 	s := res[0].String()
 	if e := res[1].Interface(); e != nil {
-		return s, e.(error)
+		return s, e.(error) //nolint:forcetypeassert // Validate checks the callback result signature.
 	}
 	return s, nil
 }

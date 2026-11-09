@@ -28,11 +28,10 @@ import (
 func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.GenOption) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
-	workMsgs := make(genai.Messages, len(msgs))
-	copy(workMsgs, msgs)
+	workMsgs := append(genai.Messages{}, msgs...)
 	var toolsOpts *genai.GenOptionTools
 	for _, opt := range opts {
-		ok := false
+		var ok bool
 		if toolsOpts, ok = opt.(*genai.GenOptionTools); ok {
 			break
 		}
@@ -93,7 +92,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 		workMsgs := slices.Clone(msgs)
 		var toolsOpts *genai.GenOptionTools
 		for _, opt := range opts {
-			ok := false
+			var ok bool
 			if toolsOpts, ok = opt.(*genai.GenOptionTools); ok {
 				break
 			}

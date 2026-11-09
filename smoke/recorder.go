@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 // Package smoke defines probe families and the recorder they measure through.
+
 package smoke
 
 import (
@@ -187,11 +188,6 @@ func (r *httpRecorder) Spec(m scoreboard.Model) Spec {
 	return Spec{Modalities: c.OutputModalities(), Caps: c.Capabilities()}
 }
 
-// plain returns the client without a cassette.
-func (r *httpRecorder) plain() genai.Provider {
-	return r.pf(r.t, r.model, nil)
-}
-
 func (r *httpRecorder) Provider(w scoreboard.Wire, name string) genai.Provider {
 	switch w {
 	case scoreboard.WireHTTP:
@@ -218,6 +214,11 @@ func (r *httpRecorder) Provider(w scoreboard.Wire, name string) genai.Provider {
 	}
 	r.t.Fatalf("recorder does not serve wire %q", w)
 	return nil
+}
+
+// plain returns the client without a cassette.
+func (r *httpRecorder) plain() genai.Provider {
+	return r.pf(r.t, r.model, nil)
 }
 
 // Direct gives the probes the providers of pf without recording anything.

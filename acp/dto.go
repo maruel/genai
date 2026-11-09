@@ -36,7 +36,8 @@ type Method string
 
 // JSON-RPC method constants for the ACP protocol.
 const (
-	// Request methods (client → agent).
+
+	// MethodAuthenticate — Request methods (client → agent).
 	MethodAuthenticate           Method = "authenticate"
 	MethodInitialize             Method = "initialize"
 	MethodSessionClose           Method = "session/close"
@@ -51,7 +52,7 @@ const (
 	MethodSessionSetMode         Method = "session/set_mode"
 	MethodSessionSetConfigOption Method = "session/set_config_option"
 
-	// Request and notification methods (agent → client).
+	// MethodFSWriteTextFile — Request and notification methods (agent → client).
 	MethodFSWriteTextFile          Method = "fs/write_text_file"
 	MethodSessionUpdate            Method = "session/update"
 	MethodSessionRequestPermission Method = "session/request_permission"
@@ -782,8 +783,8 @@ type SessionResumeResult struct{ SessionStateResult }
 
 // SessionForkResult is returned by session/fork.
 type SessionForkResult struct {
-	SessionID string `json:"sessionId"`
-	SessionStateResult
+	SessionID          string `json:"sessionId"`
+	SessionStateResult        //nolint:embeddedstructfieldcheck // Preserve the JSON field order.
 }
 
 // EmptyResult is returned by successful ACP methods with no result fields.
@@ -919,6 +920,7 @@ type promptContentJSON PromptContent
 
 type imagePromptContentJSON struct {
 	promptContentJSON
+
 	Data     string `json:"data"`
 	MimeType string `json:"mimeType"`
 }

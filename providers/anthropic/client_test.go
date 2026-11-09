@@ -84,6 +84,7 @@ type modelEffortData struct {
 	Max    bool `json:"max"`
 }
 
+//nolint:tparallel // The parent owns a shared recording fixture and its cleanup.
 func TestClient(t *testing.T) {
 	testRecorder := internaltest.NewRecords()
 	t.Cleanup(func() {
@@ -192,7 +193,7 @@ func TestClient(t *testing.T) {
 		for _, m := range genaiModels {
 			id := m.GetID()
 			models = append(models, scoreboard.Model{Model: id})
-			am := m.(*anthropic.Model)
+			am := internaltest.AssertType[*anthropic.Model](t, m)
 			if am.Capabilities.Thinking.Types.Enabled.Supported || am.Capabilities.Thinking.Types.Adaptive.Supported {
 				models = append(models, scoreboard.Model{Model: id, Reason: true})
 			}
@@ -254,7 +255,7 @@ func TestClient(t *testing.T) {
 	t.Run("Batch", func(t *testing.T) {
 		ctx := t.Context()
 		// Using a cheap model.
-		c := getClient(t, "claude-haiku-4-5-20251001", myrecorder.TrimPolls()).(*anthropic.Client)
+		c := internaltest.AssertType[*anthropic.Client](t, getClient(t, "claude-haiku-4-5-20251001", myrecorder.TrimPolls()))
 		msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
@@ -283,7 +284,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("BatchCRUD", func(t *testing.T) {
 		ctx := t.Context()
-		c := getClient(t, "claude-haiku-4-5-20251001").(*anthropic.Client)
+		c := internaltest.AssertType[*anthropic.Client](t, getClient(t, "claude-haiku-4-5-20251001"))
 		msgs := genai.Messages{genai.NewTextMessage("Say hello")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
@@ -356,7 +357,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		c := ci.(*anthropic.Client)
+		c := internaltest.AssertType[*anthropic.Client](t, ci)
 		ctx := t.Context()
 		const content = "Hello from genai file upload test."
 
@@ -478,7 +479,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			c := cc.(*anthropic.Client)
+			c := internaltest.AssertType[*anthropic.Client](t, cc)
 			// Use raw calls to use the MCP client. It is not yet generalized in genai.
 			in := anthropic.ChatRequest{MCPServers: []anthropic.MCPServer{mcp}}
 			if err = in.Init(msgs, c.ModelID()); err != nil {
@@ -503,7 +504,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			c := cc.(*anthropic.Client)
+			c := internaltest.AssertType[*anthropic.Client](t, cc)
 			// Use raw calls to use the MCP client. It is not yet generalized in genai.
 			in := anthropic.ChatRequest{MCPServers: []anthropic.MCPServer{mcp}}
 			if err = in.Init(msgs, c.ModelID()); err != nil {
@@ -536,7 +537,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("CountTokens", func(t *testing.T) {
-		c := getClient(t, string(genai.ModelCheap)).(*anthropic.Client)
+		c := internaltest.AssertType[*anthropic.Client](t, getClient(t, string(genai.ModelCheap)))
 		msgs := genai.Messages{genai.NewTextMessage("Hello, world!")}
 		resp, err := c.CountTokens(t.Context(), msgs)
 		if err != nil {
@@ -548,7 +549,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("GetModel", func(t *testing.T) {
-		c := getClient(t, "").(*anthropic.Client)
+		c := internaltest.AssertType[*anthropic.Client](t, getClient(t, ""))
 		m, err := c.GetModel(t.Context(), "claude-sonnet-4-20250514")
 		if err != nil {
 			t.Fatal(err)
@@ -668,7 +669,7 @@ func getSmitheryServiceToken(apiKey, namespace string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	req, err := http.NewRequest(http.MethodPost, "https://registry.smithery.ai/tokens", bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, "https://registry.smithery.ai/tokens", bytes.NewReader(body)) //nolint:noctx // This live-test helper has no caller context.
 	if err != nil {
 		return "", err
 	}

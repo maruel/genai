@@ -143,7 +143,7 @@ func TestContent(t *testing.T) {
 		if err := src.ToReply(&reply); err != nil {
 			t.Fatal(err)
 		}
-		res := genai.Result{Message: genai.Message{Replies: []genai.Reply{reply}}}
+		res := genai.Result{Replies: []genai.Reply{reply}}
 		var dst mistral.Content
 		if err := dst.FromReply(&res.Replies[0]); err != nil {
 			t.Fatal(err)

@@ -77,7 +77,7 @@ type tableSummaryRow struct {
 	Provider string `title:"Provider"`
 	Country  string `title:"🌐"`
 
-	tableDataRow
+	tableDataRow //nolint:embeddedstructfieldcheck // Field order controls the output table columns.
 }
 
 func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
@@ -148,7 +148,7 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 type tableModelRow struct {
 	Model string `title:"Model"`
 
-	tableDataRow
+	tableDataRow //nolint:embeddedstructfieldcheck // Preserve serialized or displayed field order.
 }
 
 type tableDataRow struct {
@@ -194,6 +194,7 @@ func (t *tableDataRow) finishMode() {
 // sectionRow is what a table row needs from a row of any section.
 type sectionRow struct {
 	scoreboard.Row
+
 	Out       map[scoreboard.Modality]scoreboard.ModalCapability
 	Reason    bool
 	GenSync   *scoreboard.Functionality
@@ -624,8 +625,8 @@ func visitFieldsType(t reflect.Type, fn func(f reflect.StructField)) {
 	if t.Kind() == reflect.Pointer {
 		t = t.Elem()
 	}
-	for i := range t.NumField() {
-		if f := t.Field(i); f.Anonymous {
+	for f := range t.Fields() {
+		if f.Anonymous {
 			visitFieldsType(f.Type, fn)
 		} else {
 			fn(f)

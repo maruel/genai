@@ -89,7 +89,7 @@ func TestClient(t *testing.T) {
 		}
 		var models []scoreboard.Model
 		for _, m := range genaiModels {
-			mdl := m.(*cohere.Model)
+			mdl := internaltest.AssertType[*cohere.Model](t, m)
 			if !slices.Contains(mdl.Endpoints, "chat") || strings.Contains(mdl.Name, "nightly") {
 				continue
 			}

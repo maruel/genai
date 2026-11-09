@@ -113,6 +113,7 @@ var functionResponseSchema = genai.JSONSchema(`{"type":"object","properties":{"r
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -270,249 +271,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// detectModelModalities tries its best to figure out the modality of a model
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
-	id := strings.TrimPrefix(model, "models/")
-	if sb := c.Scoreboard(); sb.Embedding(id) != nil {
-		return genai.Modalities{genai.ModalityEmbedding}, nil
-	}
-	for _, mdl := range c.impl.PreloadedModels {
-		if m, ok := mdl.(*Model); ok && m.GetID() == id && m.embeddingOnly() {
-			return genai.Modalities{genai.ModalityEmbedding}, nil
-		}
-	}
-
-	// It's tricky because modalities are not directly returned by ListModels.
-	switch {
-	case strings.HasPrefix(model, "gemini-") && strings.HasSuffix(model, "-image"):
-		return genai.Modalities{genai.ModalityImage}, nil
-	case strings.HasPrefix(model, "gem"):
-		return genai.Modalities{genai.ModalityText}, nil
-	case strings.HasPrefix(model, "ima"):
-		return genai.Modalities{genai.ModalityImage}, nil
-	case strings.HasPrefix(model, "veo"):
-		return genai.Modalities{genai.ModalityVideo}, nil
-	}
-	// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
-	// API is used. We can keep a predefined table for known model, I'd be surprised the generation
-	// methods would change per model.
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to automatically detect the model modality: %w", err)
-	}
-	for _, mdl := range mdls {
-		if m := mdl.(*Model); m.GetID() == model {
-			switch {
-			case m.embeddingOnly():
-				return genai.Modalities{genai.ModalityEmbedding}, nil
-			case slices.Contains(m.SupportedGenerationMethods, "generateContent"):
-				return genai.Modalities{genai.ModalityText}, nil
-			case slices.Contains(m.SupportedGenerationMethods, "predict"):
-				return genai.Modalities{genai.ModalityImage}, nil
-			case slices.Contains(m.SupportedGenerationMethods, "predictLongRunning"):
-				return genai.Modalities{genai.ModalityVideo}, nil
-			}
-			return nil, fmt.Errorf("failed to automatically detect the model modality with methods: %s", m.SupportedGenerationMethods)
-		}
-	}
-	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-
-	// Build a map of available models for quick lookup.
-	availableModels := map[string]struct{}{}
-	for _, mdl := range mdls {
-		availableModels[strings.TrimPrefix(mdl.(*Model).Name, "models/")] = struct{}{}
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	switch {
-	case cheap:
-		if _, ok := availableModels["gemini-flash-lite-latest"]; ok {
-			return "gemini-flash-lite-latest", nil
-		}
-	case good:
-		if _, ok := availableModels["gemini-flash-latest"]; ok {
-			return "gemini-flash-latest", nil
-		}
-	default:
-		if _, ok := availableModels["gemini-pro-latest"]; ok {
-			return "gemini-pro-latest", nil
-		}
-	}
-
-	// If the preferred "-latest" model is not available, find the best from the list.
-	selectedModel := ""
-	var tokens int64
-	selectedPinned := false
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		// Skip experimental models
-		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") || (tokens != 0 && tokens > m.OutputTokenLimit) || strings.Contains(m.Name, "-exp") {
-			continue
-		}
-		name := strings.TrimPrefix(m.Name, "models/")
-		matches := false
-		switch {
-		case cheap:
-			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash-lite")
-		case good:
-			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash") && !strings.Contains(name, "-lite")
-		default:
-			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-pro")
-		}
-		if !matches {
-			continue
-		}
-		// Check if this model is better than the current selection.
-		isCandidatePinned := isPinnedModel(name)
-		shouldUpdate := false
-		switch {
-		case selectedModel == "":
-			shouldUpdate = true
-		case isCandidatePinned && !selectedPinned:
-			// Prefer pinned models (with -NNN suffix) over unpinned ones
-			shouldUpdate = true
-		case isCandidatePinned == selectedPinned:
-			// Both pinned or both unpinned; compare versions
-			if compareVersions(name, selectedModel) > 0 {
-				shouldUpdate = true
-			}
-		}
-		if shouldUpdate {
-			selectedModel = name
-			selectedPinned = isCandidatePinned
-			tokens = m.OutputTokenLimit
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
-}
-
-// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// Image generation models are the gemini-*-image models (a.k.a. Nano Banana).
-// The SOTA tier is the pro model, the good tier is the flash model, and the cheap tier is the flash-lite model.
-// Preview models are skipped. The newest version wins.
-func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") {
-			continue
-		}
-		name := strings.TrimPrefix(m.Name, "models/")
-		if !strings.HasSuffix(name, "-image") || strings.Contains(name, "-preview") {
-			continue
-		}
-		switch {
-		case cheap:
-			if !strings.Contains(name, "flash-lite") {
-				continue
-			}
-		case good:
-			if !strings.Contains(name, "flash") || strings.Contains(name, "flash-lite") {
-				continue
-			}
-		default:
-			if !strings.Contains(name, "pro") {
-				continue
-			}
-		}
-		if selectedModel == "" || compareVersions(name, selectedModel) > 0 {
-			selectedModel = name
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
-}
-
-// selectBestVideoModel selects the most appropriate video model based on the preference (cheap, good, or SOTA).
-//
-// Video models are identified by the "veo-" prefix.
-func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		name := strings.TrimPrefix(m.Name, "models/")
-		// Only consider models starting with "veo-"
-		if !strings.HasPrefix(name, "veo-") {
-			continue
-		}
-		isFast := strings.Contains(name, "fast")
-		matches := isFast
-		if !cheap && !good {
-			matches = !matches
-		}
-		if !matches {
-			continue
-		}
-		// Select the best available model, preferring newer versions lexicographically
-		if selectedModel == "" || name > selectedModel {
-			selectedModel = name
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a video model automatically")
-	}
-	return selectedModel, nil
-}
-
-// selectBestAudioModel selects the most appropriate audio model.
-//
-// Audio models are identified by the "native-audio" suffix in their names.
-func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	selectedModel := ""
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		name := strings.TrimPrefix(m.Name, "models/")
-		// Only consider models with "native-audio" in their name
-		if !strings.Contains(name, "native-audio") {
-			continue
-		}
-		// Select the best available model, preferring newer versions lexicographically
-		if selectedModel == "" || name > selectedModel {
-			selectedModel = name
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find an audio model automatically")
-	}
-	return selectedModel, nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -945,7 +703,7 @@ func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration
 	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
 	u := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	// Model is required.
-	in := CachedContent{Model: "models/" + c.impl.Model, Expiration: Expiration{TTL: Duration(ttl)}}
+	in := CachedContent{Model: "models/" + c.impl.Model, TTL: Duration(ttl)}
 	out := CachedContent{}
 	return c.impl.DoRequest(ctx, "PATCH", u, &in, &out)
 }
@@ -1011,74 +769,6 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	u := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	var out struct{}
 	return c.impl.DoRequest(ctx, "DELETE", u, nil, &out)
-}
-
-// genDoc is a simplified version of GenSync.
-//
-// Use it to generate images.
-//
-// genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
-func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
-	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
-	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
-		waitForPoll := time.Second
-		filtered := make([]genai.GenOption, 0, len(opts))
-		for _, opt := range opts {
-			if v, ok := opt.(genai.GenOptionPollInterval); ok {
-				waitForPoll = time.Duration(v)
-			} else {
-				filtered = append(filtered, opt)
-			}
-		}
-		id, err := c.GenAsync(ctx, genai.Messages{*msg}, filtered...)
-		if err != nil {
-			return genai.Result{}, err
-		}
-		// Loop until the result is available.
-		for {
-			select {
-			case <-ctx.Done():
-				return genai.Result{}, ctx.Err()
-			case <-time.After(waitForPoll):
-				if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
-					return res, err
-				}
-			}
-		}
-	}
-	res := genai.Result{}
-	req := ImageRequest{}
-	if err := req.Init(msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
-		return res, err
-	}
-	resp, err := c.PredictRaw(ctx, &req)
-	if err != nil {
-		return res, err
-	}
-	// As of now, the last item in the list contains ContentType = "Positive Prompt".
-	nbImages := 0
-	for i := range resp.Predictions {
-		if len(resp.Predictions[i].BytesBase64Encoded) > 0 {
-			nbImages++
-		}
-	}
-	for i := range resp.Predictions {
-		if len(resp.Predictions[i].BytesBase64Encoded) == 0 {
-			continue
-		}
-		if resp.Predictions[i].MimeType != "image/jpeg" {
-			return res, fmt.Errorf("unsupported mime type %q", resp.Predictions[i].MimeType)
-		}
-		n := "content.jpg"
-		if nbImages > 1 {
-			n = fmt.Sprintf("content%d.jpg", i+1)
-		}
-		res.Replies = append(res.Replies, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
-	}
-	if err := res.Validate(); err != nil {
-		return res, err
-	}
-	return res, nil
 }
 
 // GenAsync implements genai.ProviderGenAsync.
@@ -1668,11 +1358,11 @@ func compareVersions(a, b string) int {
 							minor = v
 						}
 					}
-					return
+					return major, minor
 				}
 			}
 		}
-		return
+		return major, minor
 	}
 
 	aMajor, aMinor := getVersionParts(a)
@@ -1961,6 +1651,348 @@ func (c *Client) InteractionStreamRaw(ctx context.Context, in *InteractionReques
 	return stream.iterate, stream.finish
 }
 
+// ConnectLiveRaw opens the native Gemini Live protocol with the supplied setup.
+// Setup is sent unchanged; model and feature configuration belong to the caller.
+// Initial preserves the native setupComplete resource. Subsequent server frames,
+// including transcription segments, errors and goAway, are returned uncollapsed.
+// Authentication, bounded reads, cancellation and teardown use the same transport
+// as other Gemini realtime operations. This method does not list models.
+func (c *Client) ConnectLiveRaw(ctx context.Context, setup *LiveSetup) (*LiveConn, error) {
+	if setup == nil || setup.Model == "" {
+		return nil, errors.New("gemini live setup and model are required")
+	}
+	data, err := json.Marshal(LiveClientMessage{Setup: setup})
+	if err != nil {
+		return nil, err
+	}
+	ws, err := realtime.Dial(ctx, "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent", &c.impl.Client, maxMessageBytes, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	conn := &LiveConn{ws: ws}
+	if err = ws.Write(ctx, data); err == nil {
+		conn.Initial, err = conn.Receive(ctx)
+	}
+	if err == nil && (conn.Initial.SetupComplete == nil || conn.Initial.Error != nil) {
+		err = errors.New("gemini live setup rejected")
+	}
+	if err != nil {
+		return nil, errors.Join(err, conn.Close())
+	}
+	return conn, nil
+}
+
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	id := strings.TrimPrefix(model, "models/")
+	if sb := c.Scoreboard(); sb.Embedding(id) != nil {
+		return genai.Modalities{genai.ModalityEmbedding}, nil
+	}
+	for _, mdl := range c.impl.PreloadedModels {
+		if m, ok := mdl.(*Model); ok && m.GetID() == id && m.embeddingOnly() {
+			return genai.Modalities{genai.ModalityEmbedding}, nil
+		}
+	}
+
+	// It's tricky because modalities are not directly returned by ListModels.
+	switch {
+	case strings.HasPrefix(model, "gemini-") && strings.HasSuffix(model, "-image"):
+		return genai.Modalities{genai.ModalityImage}, nil
+	case strings.HasPrefix(model, "gem"):
+		return genai.Modalities{genai.ModalityText}, nil
+	case strings.HasPrefix(model, "ima"):
+		return genai.Modalities{genai.ModalityImage}, nil
+	case strings.HasPrefix(model, "veo"):
+		return genai.Modalities{genai.ModalityVideo}, nil
+	}
+	// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
+	// API is used. We can keep a predefined table for known model, I'd be surprised the generation
+	// methods would change per model.
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to automatically detect the model modality: %w", err)
+	}
+	for _, mdl := range mdls {
+		if m := mdl.(*Model); m.GetID() == model { //nolint:forcetypeassert // ListModels constructs only provider Model values.
+			switch {
+			case m.embeddingOnly():
+				return genai.Modalities{genai.ModalityEmbedding}, nil
+			case slices.Contains(m.SupportedGenerationMethods, "generateContent"):
+				return genai.Modalities{genai.ModalityText}, nil
+			case slices.Contains(m.SupportedGenerationMethods, "predict"):
+				return genai.Modalities{genai.ModalityImage}, nil
+			case slices.Contains(m.SupportedGenerationMethods, "predictLongRunning"):
+				return genai.Modalities{genai.ModalityVideo}, nil
+			}
+			return nil, fmt.Errorf("failed to automatically detect the model modality with methods: %s", m.SupportedGenerationMethods)
+		}
+	}
+	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
+}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+
+	// Build a map of available models for quick lookup.
+	availableModels := map[string]struct{}{}
+	for _, mdl := range mdls {
+		availableModels[strings.TrimPrefix(mdl.(*Model).Name, "models/")] = struct{}{} //nolint:forcetypeassert // ListModels constructs only provider Model values.
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	switch {
+	case cheap:
+		if _, ok := availableModels["gemini-flash-lite-latest"]; ok {
+			return "gemini-flash-lite-latest", nil
+		}
+	case good:
+		if _, ok := availableModels["gemini-flash-latest"]; ok {
+			return "gemini-flash-latest", nil
+		}
+	default:
+		if _, ok := availableModels["gemini-pro-latest"]; ok {
+			return "gemini-pro-latest", nil
+		}
+	}
+
+	// If the preferred "-latest" model is not available, find the best from the list.
+	selectedModel := ""
+	var tokens int64
+	selectedPinned := false
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		// Skip experimental models
+		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") || (tokens != 0 && tokens > m.OutputTokenLimit) || strings.Contains(m.Name, "-exp") {
+			continue
+		}
+		name := strings.TrimPrefix(m.Name, "models/")
+		var matches bool
+		switch {
+		case cheap:
+			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash-lite")
+		case good:
+			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash") && !strings.Contains(name, "-lite")
+		default:
+			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-pro")
+		}
+		if !matches {
+			continue
+		}
+		// Check if this model is better than the current selection.
+		isCandidatePinned := isPinnedModel(name)
+		shouldUpdate := false
+		switch {
+		case selectedModel == "":
+			shouldUpdate = true
+		case isCandidatePinned && !selectedPinned:
+			// Prefer pinned models (with -NNN suffix) over unpinned ones
+			shouldUpdate = true
+		case isCandidatePinned == selectedPinned:
+			// Both pinned or both unpinned; compare versions
+			if compareVersions(name, selectedModel) > 0 {
+				shouldUpdate = true
+			}
+		}
+		if shouldUpdate {
+			selectedModel = name
+			selectedPinned = isCandidatePinned
+			tokens = m.OutputTokenLimit
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
+// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// Image generation models are the gemini-*-image models (a.k.a. Nano Banana).
+// The SOTA tier is the pro model, the good tier is the flash model, and the cheap tier is the flash-lite model.
+// Preview models are skipped. The newest version wins.
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") {
+			continue
+		}
+		name := strings.TrimPrefix(m.Name, "models/")
+		if !strings.HasSuffix(name, "-image") || strings.Contains(name, "-preview") {
+			continue
+		}
+		switch {
+		case cheap:
+			if !strings.Contains(name, "flash-lite") {
+				continue
+			}
+		case good:
+			if !strings.Contains(name, "flash") || strings.Contains(name, "flash-lite") {
+				continue
+			}
+		default:
+			if !strings.Contains(name, "pro") {
+				continue
+			}
+		}
+		if selectedModel == "" || compareVersions(name, selectedModel) > 0 {
+			selectedModel = name
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
+// selectBestVideoModel selects the most appropriate video model based on the preference (cheap, good, or SOTA).
+//
+// Video models are identified by the "veo-" prefix.
+func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		name := strings.TrimPrefix(m.Name, "models/")
+		// Only consider models starting with "veo-"
+		if !strings.HasPrefix(name, "veo-") {
+			continue
+		}
+		isFast := strings.Contains(name, "fast")
+		matches := isFast
+		if !cheap && !good {
+			matches = !matches
+		}
+		if !matches {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || name > selectedModel {
+			selectedModel = name
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a video model automatically")
+	}
+	return selectedModel, nil
+}
+
+// selectBestAudioModel selects the most appropriate audio model.
+//
+// Audio models are identified by the "native-audio" suffix in their names.
+func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		name := strings.TrimPrefix(m.Name, "models/")
+		// Only consider models with "native-audio" in their name
+		if !strings.Contains(name, "native-audio") {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || name > selectedModel {
+			selectedModel = name
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find an audio model automatically")
+	}
+	return selectedModel, nil
+}
+
+// genDoc is a simplified version of GenSync.
+//
+// Use it to generate images.
+//
+// genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
+func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
+	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
+	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
+		waitForPoll := time.Second
+		filtered := make([]genai.GenOption, 0, len(opts))
+		for _, opt := range opts {
+			if v, ok := opt.(genai.GenOptionPollInterval); ok {
+				waitForPoll = time.Duration(v)
+			} else {
+				filtered = append(filtered, opt)
+			}
+		}
+		id, err := c.GenAsync(ctx, genai.Messages{*msg}, filtered...)
+		if err != nil {
+			return genai.Result{}, err
+		}
+		// Loop until the result is available.
+		for {
+			select {
+			case <-ctx.Done():
+				return genai.Result{}, ctx.Err()
+			case <-time.After(waitForPoll):
+				if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
+					return res, err
+				}
+			}
+		}
+	}
+	res := genai.Result{}
+	req := ImageRequest{}
+	if err := req.Init(msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
+		return res, err
+	}
+	resp, err := c.PredictRaw(ctx, &req)
+	if err != nil {
+		return res, err
+	}
+	// As of now, the last item in the list contains ContentType = "Positive Prompt".
+	nbImages := 0
+	for i := range resp.Predictions {
+		if len(resp.Predictions[i].BytesBase64Encoded) > 0 {
+			nbImages++
+		}
+	}
+	for i := range resp.Predictions {
+		if len(resp.Predictions[i].BytesBase64Encoded) == 0 {
+			continue
+		}
+		if resp.Predictions[i].MimeType != "image/jpeg" {
+			return res, fmt.Errorf("unsupported mime type %q", resp.Predictions[i].MimeType)
+		}
+		n := "content.jpg"
+		if nbImages > 1 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		res.Replies = append(res.Replies, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
+	}
+	if err := res.Validate(); err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
 func (c *Client) interactionRequest(ctx context.Context, in *InteractionRequest, stream bool) (resp *http.Response, err error) {
 	if err := c.impl.Validate(); err != nil {
 		return nil, err
@@ -2027,35 +2059,4 @@ func (c *Client) interactionRequest(ctx context.Context, in *InteractionRequest,
 		resp = nil
 	}
 	return resp, err
-}
-
-// ConnectLiveRaw opens the native Gemini Live protocol with the supplied setup.
-// Setup is sent unchanged; model and feature configuration belong to the caller.
-// Initial preserves the native setupComplete resource. Subsequent server frames,
-// including transcription segments, errors and goAway, are returned uncollapsed.
-// Authentication, bounded reads, cancellation and teardown use the same transport
-// as other Gemini realtime operations. This method does not list models.
-func (c *Client) ConnectLiveRaw(ctx context.Context, setup *LiveSetup) (*LiveConn, error) {
-	if setup == nil || setup.Model == "" {
-		return nil, errors.New("gemini live setup and model are required")
-	}
-	data, err := json.Marshal(LiveClientMessage{Setup: setup})
-	if err != nil {
-		return nil, err
-	}
-	ws, err := realtime.Dial(ctx, "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent", &c.impl.Client, maxMessageBytes, 0, 0)
-	if err != nil {
-		return nil, err
-	}
-	conn := &LiveConn{ws: ws}
-	if err = ws.Write(ctx, data); err == nil {
-		conn.Initial, err = conn.Receive(ctx)
-	}
-	if err == nil && (conn.Initial.SetupComplete == nil || conn.Initial.Error != nil) {
-		err = errors.New("gemini live setup rejected")
-	}
-	if err != nil {
-		return nil, errors.Join(err, conn.Close())
-	}
-	return conn, nil
 }

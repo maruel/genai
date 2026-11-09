@@ -27,20 +27,16 @@ func TestGenSyncWithToolCallLoop(t *testing.T) {
 	provider := &mockProviderGenSync{
 		responses: []genai.Result{
 			{
-				Message: genai.Message{
-					Replies: []genai.Reply{
-						{Text: "I'll help you calculate that. "},
-						{Text: "Let me use the calculator tool."},
-						{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
-					},
+				Replies: []genai.Reply{
+					{Text: "I'll help you calculate that. "},
+					{Text: "Let me use the calculator tool."},
+					{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
 				},
 				Usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
 			},
 			{
-				Message: genai.Message{
-					Replies: []genai.Reply{
-						{Text: "The result of 5 + 3 is 8."},
-					},
+				Replies: []genai.Reply{
+					{Text: "The result of 5 + 3 is 8."},
 				},
 				Usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
 			},
@@ -304,6 +300,7 @@ func TestProviderAppend(t *testing.T) {
 
 type embeddingProviderSpy struct {
 	mockProviderGenSync
+
 	request  *genai.EmbeddingRequest
 	embedErr error
 }
@@ -322,6 +319,7 @@ func (*embeddingProviderSpy) Capabilities() genai.ProviderCapabilities {
 
 type realtimeProviderSpy struct {
 	mockProviderGenSync
+
 	ctx  context.Context
 	opts []genai.RealtimeOption
 	err  error

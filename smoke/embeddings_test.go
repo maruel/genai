@@ -43,7 +43,7 @@ func TestRunEmbeddings(t *testing.T) {
 			case "routing modalities":
 				p.mods = genai.Modalities{genai.ModalityEmbedding}
 			case "routing scoreboard":
-				p.score = scoreboard.Score{Embed: []scoreboard.Embed{{Row: scoreboard.Row{Models: []string{"model"}}, Embed: &scoreboard.EmbeddingFunctionality{}}}}
+				p.score = scoreboard.Score{Embed: []scoreboard.Embed{{Models: []string{"model"}, Embed: &scoreboard.EmbeddingFunctionality{}}}}
 			}
 			var sc scoreboard.Embed
 			var u genai.Usage
@@ -161,6 +161,7 @@ type embeddingMediaCase struct {
 // and 7 input tokens per call. defect selects one malformed response.
 type embeddingProvider struct {
 	base.NotImplemented
+
 	t                *testing.T
 	mods             genai.Modalities
 	score            scoreboard.Score

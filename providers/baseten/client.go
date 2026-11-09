@@ -54,6 +54,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -141,64 +142,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// It reads the scoreboard to find the reference model for the preference, extracts its family prefix,
-// then picks the model with the highest version number from the available models.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	// Find the reference model from the scoreboard.
-	s := Scoreboard()
-	var ref string
-	for i := range s.Chat {
-		sc := &s.Chat[i]
-		if len(sc.Models) == 0 {
-			continue
-		}
-		switch preference {
-		case string(genai.ModelCheap):
-			if sc.Cheap {
-				ref = sc.Models[0]
-			}
-		case string(genai.ModelGood):
-			if sc.Good {
-				ref = sc.Models[0]
-			}
-		default:
-			if sc.SOTA {
-				ref = sc.Models[0]
-			}
-		}
-		if ref != "" {
-			break
-		}
-	}
-	if ref == "" {
-		return "", errors.New("no reference model found in scoreboard")
-	}
-	// Extract the model family prefix and find the highest version.
-	prefix := modelFamilyPrefix(ref)
-	selected := ""
-	highestVer := -1.0
-	for _, mdl := range mdls {
-		id := mdl.GetID()
-		if !strings.HasPrefix(id, prefix) {
-			continue
-		}
-		if v := parseLeadingFloat(id[len(prefix):]); v > highestVer {
-			highestVer = v
-			selected = id
-		}
-	}
-	if selected == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selected, nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -420,7 +363,69 @@ func cacheModelFeatures(mdls []genai.Model) {
 
 func enableThinkingByDefault(model string) bool {
 	v, ok := modelsEnableThinking.Load(model)
-	return ok && v.(bool)
+	if !ok {
+		return false
+	}
+	enabled, ok := v.(bool)
+	return ok && enabled
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// It reads the scoreboard to find the reference model for the preference, extracts its family prefix,
+// then picks the model with the highest version number from the available models.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	// Find the reference model from the scoreboard.
+	s := Scoreboard()
+	var ref string
+	for i := range s.Chat {
+		sc := &s.Chat[i]
+		if len(sc.Models) == 0 {
+			continue
+		}
+		switch preference {
+		case string(genai.ModelCheap):
+			if sc.Cheap {
+				ref = sc.Models[0]
+			}
+		case string(genai.ModelGood):
+			if sc.Good {
+				ref = sc.Models[0]
+			}
+		default:
+			if sc.SOTA {
+				ref = sc.Models[0]
+			}
+		}
+		if ref != "" {
+			break
+		}
+	}
+	if ref == "" {
+		return "", errors.New("no reference model found in scoreboard")
+	}
+	// Extract the model family prefix and find the highest version.
+	prefix := modelFamilyPrefix(ref)
+	selected := ""
+	highestVer := -1.0
+	for _, mdl := range mdls {
+		id := mdl.GetID()
+		if !strings.HasPrefix(id, prefix) {
+			continue
+		}
+		if v := parseLeadingFloat(id[len(prefix):]); v > highestVer {
+			highestVer = v
+			selected = id
+		}
+	}
+	if selected == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selected, nil
+}

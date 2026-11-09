@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 // Tests Codex file credentials, renewal, confinement, and terminal events.
+
 package openairesponses
 
 import (
@@ -297,7 +298,10 @@ func TestCodexPingIgnoresModelCache(t *testing.T) {
 }
 
 func userToken(exp int64, account, user string) string {
-	b, _ := json.Marshal(map[string]any{"exp": exp, "https://api.openai.com/auth": map[string]string{"chatgpt_account_id": account, "chatgpt_user_id": user}})
+	b, err := json.Marshal(map[string]any{"exp": exp, "https://api.openai.com/auth": map[string]string{"chatgpt_account_id": account, "chatgpt_user_id": user}})
+	if err != nil {
+		panic(err)
+	}
 	return "header." + base64.RawURLEncoding.EncodeToString(b) + ".signature"
 }
 

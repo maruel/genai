@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"strings"
 	"time"
 
@@ -151,10 +152,8 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 				if m != genai.ModalityAudio && m != genai.ModalityText {
 					return nil, fmt.Errorf("realtime option %T: unsupported realtime output modality %q", opt, m)
 				}
-				for _, prev := range o[:i] {
-					if prev == m {
-						return nil, fmt.Errorf("realtime option %T: duplicate output modality %q", opt, m)
-					}
+				if slices.Contains(o[:i], m) {
+					return nil, fmt.Errorf("realtime option %T: duplicate output modality %q", opt, m)
 				}
 			}
 			setup.OutputModalities = Modalities(o)

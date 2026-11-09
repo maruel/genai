@@ -171,6 +171,7 @@ func (e *orphanedError) Error() string {
 // It is a http.RoundTripper.
 type Recorder struct {
 	*recorder.Recorder
+
 	name string
 	root string
 }

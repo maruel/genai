@@ -374,82 +374,6 @@ func docContent(d *genai.Doc, text string) ([]Content, error) {
 	return content, nil
 }
 
-func (s *Session) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateMessage, map[string]struct{}, error) {
-	var options []string
-	c := &s.info.Capabilities.Update
-	if u.Instructions != nil && !c.Instructions {
-		options = append(options, "instructions")
-	}
-	if u.Tools != nil && !c.Tools {
-		options = append(options, "tools")
-	}
-	if u.ToolChoice != nil {
-		if *u.ToolChoice == genai.ToolCallRequired {
-			if !c.ToolChoiceRequired {
-				options = append(options, "required tool choice")
-			}
-		} else if !c.ToolChoice {
-			options = append(options, "tool choice")
-		}
-	}
-	if u.MaxOutputTokens != nil && !c.MaxOutputTokens {
-		options = append(options, "max output tokens")
-	}
-	if u.OutputModalities != nil && !c.OutputModalities {
-		options = append(options, "output modalities")
-	}
-	if u.TurnDetection != nil && !c.TurnDetection {
-		options = append(options, "turn detection")
-	}
-	if u.Voice != nil && !c.VoiceBeforeOutput {
-		options = append(options, "voice")
-	}
-	if len(options) != 0 {
-		return nil, nil, &base.ErrNotSupported{Options: options}
-	}
-	upd := &SessionUpdate{}
-	var names map[string]struct{}
-	if u.Instructions != nil {
-		upd.Instructions = u.Instructions
-	}
-	if u.Tools != nil {
-		var tools ToolList
-		if err := tools.Init(*u.Tools); err != nil {
-			return nil, nil, err
-		}
-		upd.Tools = tools
-		names = make(map[string]struct{}, len(tools))
-		for _, n := range tools.Names() {
-			names[n] = struct{}{}
-		}
-	}
-	if u.ToolChoice != nil {
-		upd.ToolChoice = toolChoiceFromPortable(*u.ToolChoice)
-	}
-	if u.MaxOutputTokens != nil {
-		upd.MaxOutputTokens = MaxOutputTokens{Value: *u.MaxOutputTokens}
-	}
-	if u.OutputModalities != nil {
-		if len(*u.OutputModalities) != 1 {
-			return nil, nil, errors.New("OpenAI realtime accepts one output modality")
-		}
-		upd.OutputModalities = Modalities(*u.OutputModalities)
-	}
-	if u.TurnDetection != nil {
-		upd.Audio.Input.TurnDetection.Set = true
-		if *u.TurnDetection == genai.RealtimeTurnServer {
-			upd.Audio.Input.TurnDetection.Value = &TurnDetection{Type: TurnServerVAD, CreateResponse: true, InterruptResponse: true}
-		}
-	}
-	if u.Voice != nil {
-		if s.audioOutput {
-			return nil, nil, errors.New("OpenAI realtime voice cannot change after audio output")
-		}
-		upd.Audio.Output.Voice = &Voice{Name: *u.Voice}
-	}
-	return &SessionUpdateMessage{Type: EventSessionUpdate, Session: upd}, names, nil
-}
-
 func toolChoiceFromPortable(c genai.ToolCallRequest) ToolChoice {
 	switch c {
 	case genai.ToolCallAny:
@@ -903,4 +827,80 @@ func normalizeSchema(v any) (any, error) {
 	default:
 	}
 	return v, nil
+}
+
+func (s *Session) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateMessage, map[string]struct{}, error) {
+	var options []string
+	c := &s.info.Capabilities.Update
+	if u.Instructions != nil && !c.Instructions {
+		options = append(options, "instructions")
+	}
+	if u.Tools != nil && !c.Tools {
+		options = append(options, "tools")
+	}
+	if u.ToolChoice != nil {
+		if *u.ToolChoice == genai.ToolCallRequired {
+			if !c.ToolChoiceRequired {
+				options = append(options, "required tool choice")
+			}
+		} else if !c.ToolChoice {
+			options = append(options, "tool choice")
+		}
+	}
+	if u.MaxOutputTokens != nil && !c.MaxOutputTokens {
+		options = append(options, "max output tokens")
+	}
+	if u.OutputModalities != nil && !c.OutputModalities {
+		options = append(options, "output modalities")
+	}
+	if u.TurnDetection != nil && !c.TurnDetection {
+		options = append(options, "turn detection")
+	}
+	if u.Voice != nil && !c.VoiceBeforeOutput {
+		options = append(options, "voice")
+	}
+	if len(options) != 0 {
+		return nil, nil, &base.ErrNotSupported{Options: options}
+	}
+	upd := &SessionUpdate{}
+	var names map[string]struct{}
+	if u.Instructions != nil {
+		upd.Instructions = u.Instructions
+	}
+	if u.Tools != nil {
+		var tools ToolList
+		if err := tools.Init(*u.Tools); err != nil {
+			return nil, nil, err
+		}
+		upd.Tools = tools
+		names = make(map[string]struct{}, len(tools))
+		for _, n := range tools.Names() {
+			names[n] = struct{}{}
+		}
+	}
+	if u.ToolChoice != nil {
+		upd.ToolChoice = toolChoiceFromPortable(*u.ToolChoice)
+	}
+	if u.MaxOutputTokens != nil {
+		upd.MaxOutputTokens = MaxOutputTokens{Value: *u.MaxOutputTokens}
+	}
+	if u.OutputModalities != nil {
+		if len(*u.OutputModalities) != 1 {
+			return nil, nil, errors.New("OpenAI realtime accepts one output modality")
+		}
+		upd.OutputModalities = Modalities(*u.OutputModalities)
+	}
+	if u.TurnDetection != nil {
+		upd.Audio.Input.TurnDetection.Set = true
+		if *u.TurnDetection == genai.RealtimeTurnServer {
+			upd.Audio.Input.TurnDetection.Value = &TurnDetection{Type: TurnServerVAD, CreateResponse: true, InterruptResponse: true}
+		}
+	}
+	if u.Voice != nil {
+		if s.audioOutput {
+			return nil, nil, errors.New("OpenAI realtime voice cannot change after audio output")
+		}
+		upd.Audio.Output.Voice = &Voice{Name: *u.Voice}
+	}
+	return &SessionUpdateMessage{Type: EventSessionUpdate, Session: upd}, names, nil
 }

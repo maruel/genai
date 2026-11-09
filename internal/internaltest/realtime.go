@@ -41,6 +41,7 @@ import (
 // structure and transcripts are preserved.
 type RealtimeRecorder struct {
 	genai.Provider
+
 	T        testing.TB
 	Target   string
 	Dir      string

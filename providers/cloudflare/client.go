@@ -76,6 +76,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl      base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	accountID string
 }
@@ -185,57 +186,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	price := 100000.
-	if !cheap {
-		price = 0.
-	}
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if strings.Contains(m.Name, "guard") || strings.HasPrefix(m.Name, "@cf/meta/llama-2") {
-			// llama-guard is not a generation model.
-			// @cf/meta/llama-2-7b-chat-fp16 is super expensive.
-			continue
-		}
-		_, out := m.Price()
-		if out == 0 {
-			continue
-		}
-		switch {
-		case cheap:
-			if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
-				price = out
-				selectedModel = m.Name
-			}
-		case good:
-			if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
-				price = out
-				selectedModel = m.Name
-			}
-		default:
-			if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
-				price = out
-				selectedModel = m.Name
-			}
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -424,3 +374,57 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	price := 100000.
+	if !cheap {
+		price = 0.
+	}
+	for _, mdl := range mdls {
+		m, ok := mdl.(*Model)
+		if !ok {
+			return "", fmt.Errorf("unexpected model type %T", mdl)
+		}
+		if strings.Contains(m.Name, "guard") || strings.HasPrefix(m.Name, "@cf/meta/llama-2") {
+			// llama-guard is not a generation model.
+			// @cf/meta/llama-2-7b-chat-fp16 is super expensive.
+			continue
+		}
+		_, out := m.Price()
+		if out == 0 {
+			continue
+		}
+		switch {
+		case cheap:
+			if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
+				price = out
+				selectedModel = m.Name
+			}
+		case good:
+			if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
+				price = out
+				selectedModel = m.Name
+			}
+		default:
+			if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
+				price = out
+				selectedModel = m.Name
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}

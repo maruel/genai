@@ -331,7 +331,10 @@ func (r *Recorder) handle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	defer func() { _ = u.CloseNow() }()
-	r.recordHandshake(resp)
+	if err := r.recordHandshake(resp); err != nil {
+		http.Error(w, "record handshake failed", http.StatusInternalServerError)
+		return
+	}
 	c := accept(resp.Header)
 	if c == nil {
 		return
@@ -341,7 +344,7 @@ func (r *Recorder) handle(w http.ResponseWriter, req *http.Request) {
 }
 
 // recordHandshake stores the upstream response headers as the first fixture line.
-func (r *Recorder) recordHandshake(resp *http.Response) {
+func (r *Recorder) recordHandshake(resp *http.Response) error {
 	h := http.Header{}
 	for k, v := range resp.Header {
 		if handshakeHeader(k) {
@@ -353,8 +356,9 @@ func (r *Recorder) recordHandshake(resp *http.Response) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if r.enc != nil {
-		_ = r.enc.Encode(&m)
+		return r.enc.Encode(&m)
 	}
+	return errors.New("websocketrecord: not recording")
 }
 
 // handshakeHeader reports whether a header belongs to the WebSocket handshake and
@@ -374,9 +378,9 @@ func (r *Recorder) relayBoth(ctx context.Context, c, u *websocket.Conn) {
 	errs := make(chan error, 2)
 	go func() { errs <- r.relay(ctx, c, u, ">") }()
 	go func() { errs <- r.relay(ctx, u, c, "<") }()
-	<-errs
+	<-errs //nolint:errcheck // Either relay ending triggers shutdown of both sides.
 	cancel()
-	<-errs
+	<-errs //nolint:errcheck // Wait for the other relay to finish cleanup.
 }
 
 func (r *Recorder) relay(ctx context.Context, src, dst *websocket.Conn, dir string) error {

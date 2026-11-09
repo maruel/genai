@@ -48,6 +48,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl   base.ProviderBase[*ErrorResponse]
 	remote string
 }
@@ -131,26 +132,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestImageModel selects the model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestImageModel(preference string) string {
-	// If Black Forest Labs ever implement model listing, start using it!
-	switch preference {
-	case string(genai.ModelCheap):
-		// flex-2-dev consistently returns 403 / Forbidden; I don't believe they serve it yet.
-		// https://docs.bfl.ml/api-reference/models/generate-an-image-with-flux1-[dev]
-		return "flux-dev"
-	case string(genai.ModelGood), "":
-		return "flux-2-pro"
-	case string(genai.ModelSOTA):
-		return "flux-2-max"
-	default:
-		return ""
-	}
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -318,3 +299,23 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestImageModel selects the model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestImageModel(preference string) string {
+	// If Black Forest Labs ever implement model listing, start using it!
+	switch preference {
+	case string(genai.ModelCheap):
+		// flex-2-dev consistently returns 403 / Forbidden; I don't believe they serve it yet.
+		// https://docs.bfl.ml/api-reference/models/generate-an-image-with-flux1-[dev]
+		return "flux-dev"
+	case string(genai.ModelGood), "":
+		return "flux-2-pro"
+	case string(genai.ModelSOTA):
+		return "flux-2-max"
+	default:
+		return ""
+	}
+}

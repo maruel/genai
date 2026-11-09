@@ -136,6 +136,7 @@ func TestConversationAnswer(t *testing.T) {
 
 type conversationProvider struct {
 	base.NotImplemented
+
 	t              *testing.T
 	initial, later []int
 	err            error

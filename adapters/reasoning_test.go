@@ -95,7 +95,7 @@ func TestProviderReasoning(t *testing.T) {
 			for _, tc := range tests {
 				t.Run(tc.name, func(t *testing.T) {
 					mp := &mockProviderGenSync{
-						responses: []genai.Result{{Message: genai.Message{Replies: []genai.Reply{{Text: tc.in}}}}},
+						responses: []genai.Result{{Replies: []genai.Reply{{Text: tc.in}}}},
 					}
 					tp := &adapters.ProviderReasoning{
 						Provider:            mp,
@@ -147,7 +147,7 @@ func TestProviderReasoning(t *testing.T) {
 			for _, tc := range tests {
 				t.Run(tc.name, func(t *testing.T) {
 					mp := &mockProviderGenSync{
-						responses: []genai.Result{{Message: genai.Message{Replies: tc.in}}},
+						responses: []genai.Result{{Replies: tc.in}},
 						err:       tc.err,
 					}
 					tp := &adapters.ProviderReasoning{
@@ -325,6 +325,7 @@ func TestProviderReasoning(t *testing.T) {
 
 type mockProviderGenSync struct {
 	base.NotImplemented
+
 	responses []genai.Result
 	msgs      genai.Messages // Messages from the client
 	err       error
@@ -369,6 +370,7 @@ type streamResponse struct {
 
 type mockProviderGenStream struct {
 	base.NotImplemented
+
 	streamResponses []streamResponse
 	msgs            genai.Messages // Messages from the client
 	callIndex       int

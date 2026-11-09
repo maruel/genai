@@ -86,6 +86,7 @@ func TestAvailable(t *testing.T) {
 
 type probeClient struct {
 	*anthropic.Client
+
 	closed   bool
 	closeErr error
 }
@@ -97,6 +98,7 @@ func (p *probeClient) Close() error {
 
 type pingProbeClient struct {
 	*probeClient
+
 	ping func(context.Context) error
 }
 

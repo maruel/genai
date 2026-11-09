@@ -1205,6 +1205,7 @@ func (r *growingDocumentReader) Seek(offset int64, whence int) (int64, error) {
 // documentReadError reports a genuine source error after its content.
 type documentReadError struct {
 	*strings.Reader
+
 	err error
 }
 

@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 // Codex subscription authentication and request policy for Responses.
+
 package openairesponses
 
 import (

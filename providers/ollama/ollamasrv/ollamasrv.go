@@ -71,12 +71,13 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	if port == 0 {
 		// First try the default port.
 		var l net.Listener
-		if l, err = net.Listen("tcp", host+":11434"); err != nil {
-			if l, err = net.Listen("tcp", host+":0"); err != nil {
+		lc := net.ListenConfig{}
+		if l, err = lc.Listen(ctx, "tcp", host+":11434"); err != nil {
+			if l, err = lc.Listen(ctx, "tcp", host+":0"); err != nil {
 				return nil, err
 			}
 		}
-		port = l.Addr().(*net.TCPAddr).Port
+		port = l.Addr().(*net.TCPAddr).Port //nolint:forcetypeassert // A TCP listener returns a TCP address.
 		if err := l.Close(); err != nil {
 			return nil, err
 		}
@@ -139,7 +140,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	c, err := ollama.New(ctx, genai.ProviderOptionRemote(u))
 	if err != nil {
 		_ = cmd.Cancel()
-		<-done
+		<-done //nolint:errcheck // Wait for process cleanup while returning the client setup error.
 		return nil, fmt.Errorf("failed to create ollama client: %w", err)
 	}
 	// Loop until the server is healthy, process exits or the context is canceled.
@@ -152,7 +153,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 			return nil, fmt.Errorf("starting ollama server failed while querying for health: %w", err)
 		case <-ctx.Done():
 			_ = cmd.Cancel()
-			<-done
+			<-done //nolint:errcheck // Wait for process cleanup while returning the context error.
 			return nil, ctx.Err()
 		case <-time.After(20 * time.Millisecond):
 		}
@@ -232,7 +233,7 @@ func DownloadRelease(ctx context.Context, cache, version string) (string, error)
 	}
 
 	// Extract the entire archive with directory structure preserved.
-	archiveName := ""
+	var archiveName string
 	switch runtime.GOOS {
 	case "darwin":
 		archiveName = "ollama-darwin.tgz"

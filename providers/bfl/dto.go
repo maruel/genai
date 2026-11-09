@@ -184,6 +184,8 @@ type ImageWebhookResponse struct {
 }
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	Detail string `json:"detail"`
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/coder/websocket"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/realtime"
 	"github.com/maruel/genai/internal/realtimetest"
 )
@@ -311,7 +312,7 @@ func TestRealtimeSessionUpdate(t *testing.T) {
 			t.Errorf("instructions %#v", m)
 		}
 		tools, _ := upd["tools"].([]any)
-		if len(tools) != 1 || tools[0].(map[string]any)["name"] != "lookup" {
+		if len(tools) != 1 || internaltest.AssertType[map[string]any](t, tools[0])["name"] != "lookup" {
 			t.Errorf("tools %#v", m)
 		}
 		expectRealtimeFrame(t, ctx, ws, "conversation.item.create")

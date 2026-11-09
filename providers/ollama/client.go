@@ -76,6 +76,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl            base.ProviderBase[*ErrorResponse]
 	preloadedModels []genai.Model
 	baseURL         string
@@ -175,52 +176,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		c.impl.OutputModalities = modalities
 	}
 	return c, nil
-}
-
-// selectBestModel selects an installed model with the requested output modality or a popular default.
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestModel(ctx context.Context, preference string, modalities genai.Modalities) (string, genai.Modality) {
-	// There's no way to list what's the current best models and no way to list the models in the library:
-	// https://github.com/ollama/ollama/issues/8241
-
-	// Figure out the model loaded if any. Ignore the error.
-	m, _ := c.ListModels(ctx)
-	for _, model := range m {
-		mod := modelOutputModality(model)
-		if mod != genai.ModalityEmbedding && (len(modalities) == 0 || slices.Equal(modalities, genai.Modalities{mod})) {
-			return model.GetID(), mod
-		}
-	}
-	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
-	// it will be pulled upon first use.
-	if slices.Equal(modalities, genai.Modalities{genai.ModalityDecision}) {
-		return "clef-flash:latest", genai.ModalityDecision
-	}
-	switch preference {
-	case string(genai.ModelCheap):
-		return "gemma4:e2b", genai.ModalityText
-	case string(genai.ModelSOTA):
-		return "qwen3.5:2b", genai.ModalityText
-	case string(genai.ModelGood), "":
-		return "qwen3.5:2b", genai.ModalityText
-	default:
-		return "qwen3.5:2b", genai.ModalityText
-	}
-}
-
-func modelOutputModality(m genai.Model) genai.Modality {
-	if native, ok := m.(*Model); ok {
-		if slices.Contains(native.Capabilities, "embedding") && !slices.Contains(native.Capabilities, "completion") {
-			return genai.ModalityEmbedding
-		}
-	}
-	model := m.GetID()
-	if strings.HasPrefix(model[strings.LastIndexByte(model, '/')+1:], "clef") {
-		return genai.ModalityDecision
-	}
-	return genai.ModalityText
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -738,4 +693,50 @@ func (c *Client) audioRequest(ctx context.Context, path, contentType string, bod
 		return fmt.Errorf("audio response: %w", err)
 	}
 	return nil
+}
+
+// selectBestModel selects an installed model with the requested output modality or a popular default.
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestModel(ctx context.Context, preference string, modalities genai.Modalities) (string, genai.Modality) {
+	// There's no way to list what's the current best models and no way to list the models in the library:
+	// https://github.com/ollama/ollama/issues/8241
+
+	// Figure out the model loaded if any. Ignore the error.
+	m, _ := c.ListModels(ctx)
+	for _, model := range m {
+		mod := modelOutputModality(model)
+		if mod != genai.ModalityEmbedding && (len(modalities) == 0 || slices.Equal(modalities, genai.Modalities{mod})) {
+			return model.GetID(), mod
+		}
+	}
+	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
+	// it will be pulled upon first use.
+	if slices.Equal(modalities, genai.Modalities{genai.ModalityDecision}) {
+		return "clef-flash:latest", genai.ModalityDecision
+	}
+	switch preference {
+	case string(genai.ModelCheap):
+		return "gemma4:e2b", genai.ModalityText
+	case string(genai.ModelSOTA):
+		return "qwen3.5:2b", genai.ModalityText
+	case string(genai.ModelGood), "":
+		return "qwen3.5:2b", genai.ModalityText
+	default:
+		return "qwen3.5:2b", genai.ModalityText
+	}
+}
+
+func modelOutputModality(m genai.Model) genai.Modality {
+	if native, ok := m.(*Model); ok {
+		if slices.Contains(native.Capabilities, "embedding") && !slices.Contains(native.Capabilities, "completion") {
+			return genai.ModalityEmbedding
+		}
+	}
+	model := m.GetID()
+	if strings.HasPrefix(model[strings.LastIndexByte(model, '/')+1:], "clef") {
+		return genai.ModalityDecision
+	}
+	return genai.ModalityText
 }

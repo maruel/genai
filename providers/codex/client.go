@@ -266,6 +266,7 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // Client is a genai provider that delegates to the local `codex` CLI.
 type Client struct {
 	base.NotImplemented
+
 	exec           genai.Starter
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
@@ -273,27 +274,6 @@ type Client struct {
 	opts           ProviderOption
 	binOnce        sync.Once
 	binErr         error
-}
-
-// ensureBin locates the codex binary on first call. Safe for concurrent use.
-func (c *Client) ensureBin() error {
-	c.binOnce.Do(func() {
-		bin, err := exec.LookPath("codex")
-		if err != nil {
-			if c.starterWrapper == nil {
-				c.binErr = fmt.Errorf("codex CLI not found on PATH: %w", err)
-				return
-			}
-			bin = "codex"
-		}
-		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin}).start)
-		if c.starterWrapper != nil {
-			s = c.starterWrapper(s)
-		}
-		c.exec = s
-	})
-	return c.binErr
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -563,6 +543,27 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		}
 		return result, finalErr
 	}
+}
+
+// ensureBin locates the codex binary on first call. Safe for concurrent use.
+func (c *Client) ensureBin() error {
+	c.binOnce.Do(func() {
+		bin, err := exec.LookPath("codex")
+		if err != nil {
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("codex CLI not found on PATH: %w", err)
+				return
+			}
+			bin = "codex"
+		}
+		c.bin = bin
+		s := genai.Starter((&cmdExecutor{bin: bin}).start)
+		if c.starterWrapper != nil {
+			s = c.starterWrapper(s)
+		}
+		c.exec = s
+	})
+	return c.binErr
 }
 
 // initAndListModels performs the JSON-RPC initialize → initialized →

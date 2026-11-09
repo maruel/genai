@@ -1422,7 +1422,7 @@ type OutputContentBlock struct {
 	To        FallbackModelRef           `json:"to,omitzero"`
 	// tool_result fields (inline MCP tool results).
 	ToolUseID string            `json:"tool_use_id,omitempty"`
-	Content   ToolResultPayload `json:"content,omitempty"`
+	Content   ToolResultPayload `json:"content,omitempty"` //nolint:modernize // Preserve the existing JSON wire shape.
 	IsError   bool              `json:"is_error,omitempty"`
 }
 

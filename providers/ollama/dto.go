@@ -669,6 +669,8 @@ type Version struct {
 }
 
 // ErrorResponse is an error returned by the Ollama API.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorVal string `json:"error"`
 	// Details contains structured errors from compatible endpoints.
@@ -748,6 +750,7 @@ func (r *EmbeddingRequest) Validate() error {
 
 type embeddingRequest struct {
 	EmbeddingRequest
+
 	EncodingFormat string `json:"encoding_format"`
 }
 

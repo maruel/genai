@@ -23,9 +23,9 @@ import (
 // It is used by subprocess-based providers to retrieve session or thread IDs
 // stored in previous replies.
 func ExtractOpaqueID(msgs genai.Messages, key string) string {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		for j := range msgs[i].Replies {
-			if id, ok := msgs[i].Replies[j].Opaque[key].(string); ok && id != "" {
+	for _, msg := range slices.Backward(msgs) {
+		for j := range msg.Replies {
+			if id, ok := msg.Replies[j].Opaque[key].(string); ok && id != "" {
 				return id
 			}
 		}

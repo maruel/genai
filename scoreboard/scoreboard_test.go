@@ -59,32 +59,32 @@ func TestScoreValidate(t *testing.T) {
 		want  string
 	}{
 		{"empty", Score{}, ""},
-		{"chat", Score{Chat: []Chat{{Reasoned: Reasoned{Row: Row{Models: []string{"m"}, In: text}}, Out: text, GenSync: &Functionality{}}}}, ""},
-		{"chat without models", Score{Chat: []Chat{{Reasoned: Reasoned{Row: Row{In: text}}, Out: text}}}, "chat: scenario must have at least one model"},
-		{"chat with in only", Score{Chat: []Chat{{Reasoned: Reasoned{Row: Row{Models: []string{"m"}, In: text}}}}}, "chat: scenario must have either both or none of In or Out"},
+		{"chat", Score{Chat: []Chat{{Models: []string{"m"}, In: text, Out: text, GenSync: &Functionality{}}}}, ""},
+		{"chat without models", Score{Chat: []Chat{{In: text, Out: text}}}, "chat: scenario must have at least one model"},
+		{"chat with in only", Score{Chat: []Chat{{Models: []string{"m"}, In: text}}}, "chat: scenario must have either both or none of In or Out"},
 		{"duplicate", Score{Chat: []Chat{
-			{Reasoned: Reasoned{Row: Row{Models: []string{"m"}, In: text}}, Out: text},
-			{Reasoned: Reasoned{Row: Row{Models: []string{"m"}, In: text}}, Out: text},
+			{Models: []string{"m"}, In: text, Out: text},
+			{Models: []string{"m"}, In: text, Out: text},
 		}}, `chat: duplicate model in scoreboard: "m" (reason=false, wire=http)`},
 		{"the same model in two sections", Score{
-			Chat:  []Chat{{Reasoned: Reasoned{Row: Row{Models: []string{"m"}, In: text}}, Out: text}},
-			Embed: []Embed{{Row: Row{Models: []string{"m"}, In: text}, Embed: &EmbeddingFunctionality{Dimensions: 2}}},
+			Chat:  []Chat{{Models: []string{"m"}, In: text, Out: text}},
+			Embed: []Embed{{Models: []string{"m"}, In: text, Embed: &EmbeddingFunctionality{Dimensions: 2}}},
 		}, ""},
-		{"embed without in", Score{Embed: []Embed{{Row: Row{Models: []string{"m"}}, Embed: &EmbeddingFunctionality{Dimensions: 2}}}}, "embed: embedding functionality requires inline text input"},
-		{"embed with an output", Score{Embed: []Embed{{Row: Row{Models: []string{"m"}, In: text}, Embed: &EmbeddingFunctionality{Dimensions: 2}}}}, ""},
-		{"decision without modalities", Score{SystemOne: []SystemOne{{Row: Row{Models: []string{"m"}}, SystemOne: &DecisionFunctionality{Noul: true}}}}, "systemone: scenario with decision functionality must define input and output modalities"},
+		{"embed without in", Score{Embed: []Embed{{Models: []string{"m"}, Embed: &EmbeddingFunctionality{Dimensions: 2}}}}, "embed: embedding functionality requires inline text input"},
+		{"embed with an output", Score{Embed: []Embed{{Models: []string{"m"}, In: text, Embed: &EmbeddingFunctionality{Dimensions: 2}}}}, ""},
+		{"decision without modalities", Score{SystemOne: []SystemOne{{Models: []string{"m"}, SystemOne: &DecisionFunctionality{Noul: true}}}}, "systemone: scenario with decision functionality must define input and output modalities"},
 		{"realtime", Score{Realtime: []Realtime{{
-			Reasoned: Reasoned{Row: Row{Models: []string{"m"}, In: text}},
+			Models: []string{"m"}, In: text,
 			Out:      text,
 			Realtime: &RealtimeFunctionality{InputSampleRate: 16000, OutputSampleRate: 24000},
 		}}}, ""},
 		{"two sota in one modality", Score{Chat: []Chat{
-			{Reasoned: Reasoned{Row: Row{Models: []string{"a"}, SOTA: true, In: text}}, Out: text},
-			{Reasoned: Reasoned{Row: Row{Models: []string{"b"}, SOTA: true, In: text}}, Out: text},
+			{Models: []string{"a"}, SOTA: true, In: text, Out: text},
+			{Models: []string{"b"}, SOTA: true, In: text, Out: text},
 		}}, `chat: multiple sota models marked for modality "text" (count: 2)`},
 		{"good before sota", Score{Chat: []Chat{
-			{Reasoned: Reasoned{Row: Row{Models: []string{"a"}, Good: true, In: text}}, Out: text},
-			{Reasoned: Reasoned{Row: Row{Models: []string{"b"}, SOTA: true, In: text}}, Out: text},
+			{Models: []string{"a"}, Good: true, In: text, Out: text},
+			{Models: []string{"b"}, SOTA: true, In: text, Out: text},
 		}}, `chat: sota model "b" for modality "text" should be first in that modality's scenarios (at position 1)`},
 	}
 	for _, c := range cases {
@@ -106,10 +106,10 @@ func TestScoreValidate(t *testing.T) {
 func TestScoreRows(t *testing.T) {
 	text := map[Modality]ModalCapability{ModalityText: {Inline: true}}
 	s := Score{
-		Chat:      []Chat{{Reasoned: Reasoned{Row: Row{Models: []string{"chat"}, In: text}, Reason: true}, Out: text}},
-		Embed:     []Embed{{Row: Row{Models: []string{"embed"}, In: text}}},
-		SystemOne: []SystemOne{{Row: Row{Models: []string{"decision"}, In: text}}},
-		Realtime:  []Realtime{{Reasoned: Reasoned{Row: Row{Models: []string{"live"}, In: text}}, Out: text}},
+		Chat:      []Chat{{Models: []string{"chat"}, In: text, Reason: true, Out: text}},
+		Embed:     []Embed{{Models: []string{"embed"}, In: text}},
+		SystemOne: []SystemOne{{Models: []string{"decision"}, In: text}},
+		Realtime:  []Realtime{{Models: []string{"live"}, In: text, Out: text}},
 	}
 	rows := s.Rows()
 	if len(rows) != 4 {
@@ -132,8 +132,8 @@ func TestScoreRows(t *testing.T) {
 
 func TestScoreEmbedding(t *testing.T) {
 	s := Score{Embed: []Embed{
-		{Row: Row{Models: []string{"pending"}}, Embed: &EmbeddingFunctionality{}},
-		{Row: Row{Models: []string{"measured"}}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
+		{Models: []string{"pending"}, Embed: &EmbeddingFunctionality{}},
+		{Models: []string{"measured"}, Embed: &EmbeddingFunctionality{Dimensions: 768}},
 	}}
 	if got := s.Embedding("measured"); got == nil || got.Dimensions != 768 {
 		t.Fatalf("got %#v", got)
@@ -149,11 +149,11 @@ func TestScoreEmbedding(t *testing.T) {
 func TestSortRows(t *testing.T) {
 	text := map[Modality]ModalCapability{ModalityText: {Inline: true}}
 	rows := []Chat{
-		{Reasoned: Reasoned{Row: Row{Models: []string{"zzz"}, In: text}}, Out: text},
-		{Reasoned: Reasoned{Row: Row{Models: []string{"cheap"}, Cheap: true, In: text}}, Out: text},
-		{Reasoned: Reasoned{Row: Row{Models: []string{"sota"}, SOTA: true, In: text}}, Out: text},
-		{Reasoned: Reasoned{Row: Row{Models: []string{"queue"}}}},
-		{Reasoned: Reasoned{Row: Row{Models: []string{"good"}, Good: true, In: text}}, Out: text},
+		{Models: []string{"zzz"}, In: text, Out: text},
+		{Models: []string{"cheap"}, Cheap: true, In: text, Out: text},
+		{Models: []string{"sota"}, SOTA: true, In: text, Out: text},
+		{Models: []string{"queue"}},
+		{Models: []string{"good"}, Good: true, In: text, Out: text},
 	}
 	SortRows[Chat](rows)
 	want := []string{"sota", "good", "cheap", "zzz", "queue"}
@@ -166,10 +166,10 @@ func TestSortRows(t *testing.T) {
 
 func TestConsolidateQueue(t *testing.T) {
 	rows := []Embed{
-		{Row: Row{Models: []string{"b"}, Comments: "pending"}},
-		{Row: Row{Models: []string{"a"}, Comments: "pending"}},
-		{Row: Row{Models: []string{"c"}, Comments: "other"}},
-		{Row: Row{Models: []string{"measured"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}}, Embed: &EmbeddingFunctionality{Dimensions: 2}},
+		{Models: []string{"b"}, Comments: "pending"},
+		{Models: []string{"a"}, Comments: "pending"},
+		{Models: []string{"c"}, Comments: "other"},
+		{Models: []string{"measured"}, In: map[Modality]ModalCapability{ModalityText: {Inline: true}}, Embed: &EmbeddingFunctionality{Dimensions: 2}},
 	}
 	got := ConsolidateQueue[Embed](rows)
 	if len(got) != 2 {
@@ -189,13 +189,13 @@ func TestScoreJSON(t *testing.T) {
 		Country:      "US",
 		DashboardURL: "https://example.com",
 		Chat: []Chat{{
-			Reasoned:            Reasoned{Row: Row{Models: []string{"chat"}, In: text}, Reason: true},
+			Models: []string{"chat"}, In: text, Reason: true,
 			Out:                 text,
 			ReasoningTokenStart: "<think>",
 			ReasoningTokenEnd:   "</think>",
 			GenSync:             &Functionality{Seed: true},
 		}},
-		Embed: []Embed{{Row: Row{Models: []string{"embed"}, In: text}, Embed: &EmbeddingFunctionality{Dimensions: 2}}},
+		Embed: []Embed{{Models: []string{"embed"}, In: text, Embed: &EmbeddingFunctionality{Dimensions: 2}}},
 	}
 	raw, err := json.Marshal(in)
 	if err != nil {

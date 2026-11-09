@@ -54,6 +54,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -161,30 +162,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 }
 
 // TODO: Investigate https://huggingface.co/blog/inference-providers and https://huggingface.co/docs/inference-endpoints/
-
-// selectBestTextModel selects the most popular eligible DeepSeek model for every tier.
-func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	selectedModel := ""
-	trending := 0.
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if m.TrendingScore < 2 {
-			continue
-		}
-		if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && m.TrendingScore > trending {
-			trending = m.TrendingScore
-			selectedModel = m.ID
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
-}
 
 // Close implements io.Closer. It currently does nothing.
 func (c *Client) Close() error {
@@ -373,3 +350,27 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most popular eligible DeepSeek model for every tier.
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	selectedModel := ""
+	trending := 0.
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		if m.TrendingScore < 2 {
+			continue
+		}
+		if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && m.TrendingScore > trending {
+			trending = m.TrendingScore
+			selectedModel = m.ID
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}

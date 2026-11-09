@@ -59,91 +59,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return c.initImpl(msgs, model, true, opts...)
 }
 
-func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, opts ...genai.GenOption) error {
-	c.Model = model
-	if err := msgs.Validate(); err != nil {
-		return err
-	}
-	var errs []error
-	var unsupported []string
-	msgToCache := 0
-	var thinking genai.EffortLevel
-	md, hasModelData := getModelData(model)
-	if hasModelData {
-		c.Thinking = md.defaultThinking()
-		// Anthropic requires a non-zero max_tokens.
-		c.MaxTokens = md.MaxOutputTokens
-	} else {
-		c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
-	}
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return err
-		}
-		switch v := opt.(type) {
-		case *GenOptionText:
-			if cache {
-				msgToCache = v.MessagesToCache
-			} else if v.MessagesToCache != 0 {
-				unsupported = append(unsupported, "GenOptionText.MessagesToCache")
-			}
-			c.InferenceGeo = v.InferenceGeo
-		case genai.EffortLevel:
-			thinking = v
-		case genai.ReasoningOutput:
-		case *genai.GenOptionText:
-			u, err := c.initOptionsText(v)
-			unsupported = append(unsupported, u...)
-			if err != nil {
-				errs = append(errs, err)
-			}
-		case *genai.GenOptionTools:
-			if err := c.initOptionsTools(v); err != nil {
-				errs = append(errs, err)
-			}
-		case *genai.GenOptionWeb:
-			c.initOptionsWeb(v)
-		default:
-			unsupported = append(unsupported, internal.TypeName(opt))
-		}
-	}
-
-	if thinking != "" {
-		if err := c.initThinking(thinking, &md, hasModelData); err != nil {
-			errs = append(errs, err)
-		}
-	}
-
-	// Post process to take into account limitations by the provider.
-	// Forced tool use is incompatible with thinking.
-	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-	if c.Thinking.Type != "" && c.Thinking.Type != ThinkingDisabled && c.ToolChoice.Type == ToolChoiceAny {
-		unsupported = append(unsupported, "GenOptionTools.Force")
-		c.ToolChoice.Type = ToolChoiceAuto
-	}
-
-	c.Messages = make([]Message, 0, len(msgs))
-	for i := range msgs {
-		c.Messages = append(c.Messages, Message{})
-		if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
-			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-		}
-		if i == msgToCache-1 {
-			c.Messages[i].CacheControl.Type = "ephemeral"
-		}
-		if len(errs) == 0 {
-			if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
-				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-			}
-		}
-	}
-	// If we have unsupported features but no other errors, return a structured error.
-	if len(unsupported) > 0 && len(errs) == 0 {
-		return &base.ErrNotSupported{Options: unsupported}
-	}
-	return errors.Join(errs...)
-}
-
 // SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
@@ -301,6 +216,91 @@ func (c *ChatRequest) initThinking(l genai.EffortLevel, md *modelData, known boo
 	return nil
 }
 
+func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, opts ...genai.GenOption) error {
+	c.Model = model
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	var errs []error
+	var unsupported []string
+	msgToCache := 0
+	var thinking genai.EffortLevel
+	md, hasModelData := getModelData(model)
+	if hasModelData {
+		c.Thinking = md.defaultThinking()
+		// Anthropic requires a non-zero max_tokens.
+		c.MaxTokens = md.MaxOutputTokens
+	} else {
+		c.Thinking = Thinking{Type: ThinkingAdaptive, Display: ThinkingDisplaySummarized}
+	}
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		switch v := opt.(type) {
+		case *GenOptionText:
+			if cache {
+				msgToCache = v.MessagesToCache
+			} else if v.MessagesToCache != 0 {
+				unsupported = append(unsupported, "GenOptionText.MessagesToCache")
+			}
+			c.InferenceGeo = v.InferenceGeo
+		case genai.EffortLevel:
+			thinking = v
+		case genai.ReasoningOutput:
+		case *genai.GenOptionText:
+			u, err := c.initOptionsText(v)
+			unsupported = append(unsupported, u...)
+			if err != nil {
+				errs = append(errs, err)
+			}
+		case *genai.GenOptionTools:
+			if err := c.initOptionsTools(v); err != nil {
+				errs = append(errs, err)
+			}
+		case *genai.GenOptionWeb:
+			c.initOptionsWeb(v)
+		default:
+			unsupported = append(unsupported, internal.TypeName(opt))
+		}
+	}
+
+	if thinking != "" {
+		if err := c.initThinking(thinking, &md, hasModelData); err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	// Post process to take into account limitations by the provider.
+	// Forced tool use is incompatible with thinking.
+	// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+	if c.Thinking.Type != "" && c.Thinking.Type != ThinkingDisabled && c.ToolChoice.Type == ToolChoiceAny {
+		unsupported = append(unsupported, "GenOptionTools.Force")
+		c.ToolChoice.Type = ToolChoiceAuto
+	}
+
+	c.Messages = make([]Message, 0, len(msgs))
+	for i := range msgs {
+		c.Messages = append(c.Messages, Message{})
+		if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+		}
+		if i == msgToCache-1 {
+			c.Messages[i].CacheControl.Type = "ephemeral"
+		}
+		if len(errs) == 0 {
+			if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+			}
+		}
+	}
+	// If we have unsupported features but no other errors, return a structured error.
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &base.ErrNotSupported{Options: unsupported}
+	}
+	return errors.Join(errs...)
+}
+
 // OutputConfig is documented at https://docs.anthropic.com/en/api/messages#body-output-config
 type OutputConfig struct {
 	Effort Effort       `json:"effort,omitzero"`
@@ -359,30 +359,6 @@ func (m *Message) Validate() error {
 	return m.validate(true)
 }
 
-func (m *Message) validate(strict bool) error {
-	if m.Type != "" && m.Type != "message" {
-		// Allow empty type, it is not required.
-		return &internal.BadError{Err: fmt.Errorf("implement message type %q", m.Type)}
-	}
-	switch m.Role {
-	case "assistant", "user":
-		// Valid.
-	case "":
-		return &internal.BadError{Err: errors.New("message doesn't have role defined")}
-	default:
-		return &internal.BadError{Err: fmt.Errorf("unsupported role %q", m.Role)}
-	}
-	if len(m.Content) == 0 {
-		return &internal.BadError{Err: errors.New("message doesn't have content defined")}
-	}
-	for i := range m.Content {
-		if err := m.Content[i].validate(strict); err != nil {
-			return fmt.Errorf("content block %d: %w", i, err)
-		}
-	}
-	return nil
-}
-
 // From converts from the genai equivalent.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
@@ -429,6 +405,30 @@ func (m *Message) To(out *genai.Message) error {
 			return fmt.Errorf("reply #%d: %w", i, err)
 		}
 		out.Replies = append(out.Replies, replies...)
+	}
+	return nil
+}
+
+func (m *Message) validate(strict bool) error {
+	if m.Type != "" && m.Type != "message" {
+		// Allow empty type, it is not required.
+		return &internal.BadError{Err: fmt.Errorf("implement message type %q", m.Type)}
+	}
+	switch m.Role {
+	case "assistant", "user":
+		// Valid.
+	case "":
+		return &internal.BadError{Err: errors.New("message doesn't have role defined")}
+	default:
+		return &internal.BadError{Err: fmt.Errorf("unsupported role %q", m.Role)}
+	}
+	if len(m.Content) == 0 {
+		return &internal.BadError{Err: errors.New("message doesn't have content defined")}
+	}
+	for i := range m.Content {
+		if err := m.Content[i].validate(strict); err != nil {
+			return fmt.Errorf("content block %d: %w", i, err)
+		}
 	}
 	return nil
 }
@@ -528,148 +528,6 @@ func (c *Content) Validate() error {
 	return c.validate(true)
 }
 
-// validate checks that the expected fields are set.
-func (c *Content) validate(strict bool) error {
-	switch c.Type {
-	case ContentText:
-		// It happens with citations.
-		if c.Text == "" && len(c.Citations.Citations) == 0 {
-			// The server sometimes return invalid messages with no text or citations (!). This is present in
-			// testdata/TestClient/Scoreboard/claude-sonnet-4-20250514_thinking/GenSync-Citations-text-plain.yaml
-			if strict {
-				return &internal.BadError{Err: fmt.Errorf("%s: fields Text or Citations must be set", c.Type)}
-			}
-		}
-		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentThinking:
-		if c.Thinking == "" && len(c.Signature) == 0 {
-			// Omitted thinking still carries a signature for replay.
-			return &internal.BadError{Err: fmt.Errorf("%s: fields Thinking must be set", c.Type)}
-		}
-		if c.Text != "" || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentRedactedThinking:
-		if c.Data == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields Data must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentImage, ContentDocument:
-		if c.Source.Type == "" && c.Source.URL == "" && c.Source.Data == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields Source must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentToolUse:
-		if c.ID == "" || c.Name == "" || c.Input == nil {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentToolResult:
-		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content, must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.IsError || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentMCPToolUse:
-		if c.ID == "" || c.Name == "" || c.Input == nil || c.ServerName == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input, ServerName must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentMCPToolResult:
-		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentServerToolUse:
-		if c.ID == "" || c.Name == "" || c.Input == nil {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentWebSearchToolResult:
-		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentWebSearchResult:
-		if c.URL == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentWebFetchToolResult:
-		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentWebFetchResult:
-		if c.URL == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
-		}
-		// web_fetch_result has: url, content (nested document), retrieved_at, title (optional).
-		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" ||
-			c.ErrorCode != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	case ContentWebFetchToolError:
-		if c.ErrorCode == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: fields ErrorCode must be set", c.Type)}
-		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
-			c.RetrievedAt != "" || c.URL != "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
-		}
-	default:
-		return &internal.BadError{Err: fmt.Errorf("implement ContentType %q", c.Type)}
-	}
-	return nil
-}
-
 // FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
@@ -762,7 +620,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		}
 		if v, ok := in.Opaque["mcp_tool_use"].(map[string]any); ok {
 			c.Type = ContentMCPToolUse
-			ok := false
+			var ok bool
 			if c.ID, ok = v["id"].(string); !ok {
 				return false, errors.New("field Opaque.mcp_tool_use.id not found")
 			}
@@ -784,7 +642,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		}
 		if v, ok := in.Opaque["mcp_tool_result"].(map[string]any); ok {
 			c.Type = ContentMCPToolResult
-			ok := false
+			var ok bool
 			if c.ToolUseID, ok = v["tool_use_id"].(string); !ok {
 				return false, errors.New("field Opaque.mcp_tool_result.tool_use_id not found")
 			}
@@ -1009,6 +867,148 @@ func (c *Content) To() ([]genai.Reply, error) {
 		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	}
 	return out, nil
+}
+
+// validate checks that the expected fields are set.
+func (c *Content) validate(strict bool) error {
+	switch c.Type {
+	case ContentText:
+		// It happens with citations.
+		if c.Text == "" && len(c.Citations.Citations) == 0 {
+			// The server sometimes return invalid messages with no text or citations (!). This is present in
+			// testdata/TestClient/Scoreboard/claude-sonnet-4-20250514_thinking/GenSync-Citations-text-plain.yaml
+			if strict {
+				return &internal.BadError{Err: fmt.Errorf("%s: fields Text or Citations must be set", c.Type)}
+			}
+		}
+		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentThinking:
+		if c.Thinking == "" && len(c.Signature) == 0 {
+			// Omitted thinking still carries a signature for replay.
+			return &internal.BadError{Err: fmt.Errorf("%s: fields Thinking must be set", c.Type)}
+		}
+		if c.Text != "" || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentRedactedThinking:
+		if c.Data == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields Data must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentImage, ContentDocument:
+		if c.Source.Type == "" && c.Source.URL == "" && c.Source.Data == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields Source must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentToolUse:
+		if c.ID == "" || c.Name == "" || c.Input == nil {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content, must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.IsError || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentMCPToolUse:
+		if c.ID == "" || c.Name == "" || c.Input == nil || c.ServerName == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input, ServerName must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentMCPToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentServerToolUse:
+		if c.ID == "" || c.Name == "" || c.Input == nil {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebSearchToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebSearchResult:
+		if c.URL == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebFetchToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebFetchResult:
+		if c.URL == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
+		}
+		// web_fetch_result has: url, content (nested document), retrieved_at, title (optional).
+		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" ||
+			c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebFetchToolError:
+		if c.ErrorCode == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ErrorCode must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.URL != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	default:
+		return &internal.BadError{Err: fmt.Errorf("implement ContentType %q", c.Type)}
+	}
+	return nil
 }
 
 // Caller indicates what invoked a tool call.
@@ -1373,7 +1373,8 @@ type CacheMissReason struct {
 
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
-	Message                         // Role is always "assistant"
+	Message // Role is always "assistant"
+
 	Diagnostics  *Diagnostics       `json:"diagnostics,omitzero"`
 	ID           string             `json:"id"`
 	Model        string             `json:"model"`
@@ -1872,6 +1873,8 @@ type CountTokensResponse struct {
 //
 
 // ErrorResponse is documented at https://docs.anthropic.com/en/api/messages#response-error
+//
+//nolint:errname // Preserve the exported API and provider wire type name.
 type ErrorResponse struct {
 	Type     string `json:"type"` // "error"
 	ErrorVal struct {

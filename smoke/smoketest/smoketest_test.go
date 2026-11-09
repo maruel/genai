@@ -45,7 +45,7 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 				} else {
 					oldIn[genai.ModalityImage] = media
 				}
-				oldSc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{"measured", "sibling"}, In: oldIn}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768}}
+				oldSc := scoreboard.Embed{Models: []string{"measured", "sibling"}, In: oldIn, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768}}
 				path := filepath.Join(t.TempDir(), "scoreboard.json")
 				raw, err := json.Marshal(scoreboard.Score{Embed: []scoreboard.Embed{oldSc}})
 				if err != nil {
@@ -85,7 +85,7 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 		if err := os.WriteFile(path, []byte(`{"embed":[{"comments":"model-specific notes","models":["embedding"],"in":{"text":{"inline":true}},"Embed":{"dimensions":768}}]}`), 0o600); err != nil {
 			t.Fatal(err)
 		}
-		sc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(true)}}
+		sc := scoreboard.Embed{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(true)}}
 		_, raw := generateUpdatedScoreboard(t, path, &collected{Embed: []scoreboard.Embed{sc}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
@@ -100,7 +100,7 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 		if err := os.WriteFile(path, []byte(`{"country":"US","dashboardURL":"dashboard","chat":[{"models":["chat"],"sota":true,"GenSync":{}}],"embed":[{"comments":"pending","models":["first","embedding","last"]}]}`), 0o600); err != nil {
 			t.Fatal(err)
 		}
-		sc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(false)}}
+		sc := scoreboard.Embed{Models: []string{"embedding"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 768, RequestedDimensions: new(false)}}
 		_, raw := generateUpdatedScoreboard(t, path, &collected{Embed: []scoreboard.Embed{sc}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
@@ -138,10 +138,9 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 			t.Fatal(err)
 		}
 		sc := scoreboard.Chat{
-			Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{
-				Models: []string{"first"},
-				In:     map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
-			}},
+
+			Models:  []string{"first"},
+			In:      map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
 			Out:     map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.Functionality{Tools: scoreboard.True, OutOfOrder: new(scoreboard.True)},
 		}
@@ -167,7 +166,7 @@ func TestGenerateUpdatedScoreboard(t *testing.T) {
 			t.Fatal(err)
 		}
 		_, raw := generateUpdatedScoreboard(t, path, &collected{SystemOne: []scoreboard.SystemOne{
-			{Row: scoreboard.Row{Models: []string{"decision"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, SystemOne: &scoreboard.DecisionFunctionality{Noul: true}},
+			{Models: []string{"decision"}, In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, Out: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}, SystemOne: &scoreboard.DecisionFunctionality{Noul: true}},
 		}}, nil, true, []scoreboard.Wire{scoreboard.WireHTTP})
 		var sb scoreboard.Score
 		if err := json.Unmarshal(raw, &sb); err != nil {
@@ -200,7 +199,7 @@ func (*scoreboardProvider) GenStream(context.Context, genai.Messages, ...genai.G
 	return func(yield func(genai.Reply) bool) { yield(r.Replies[0]) }, func() (genai.Result, error) { return r, nil }
 }
 func scoreboardResult() genai.Result {
-	return genai.Result{Message: genai.Message{Replies: []genai.Reply{{Text: "hello"}}}, Usage: genai.Usage{InputTokens: 1, OutputTokens: 1, TotalTokens: 2, FinishReason: genai.FinishedStop}}
+	return genai.Result{Replies: []genai.Reply{{Text: "hello"}}, Usage: genai.Usage{InputTokens: 1, OutputTokens: 1, TotalTokens: 2, FinishReason: genai.FinishedStop}}
 }
 
 func TestRun(t *testing.T) {
@@ -212,10 +211,10 @@ func TestRun(t *testing.T) {
 				*updateScoreboard = tc.update
 				sb := scoreboard.Score{
 					Chat: []scoreboard.Chat{
-						{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"generation-first", "generation-qualified", "generation-last"}, Comments: "pending generation models"}}},
+						{Models: []string{"generation-first", "generation-qualified", "generation-last"}, Comments: "pending generation models"},
 					},
 					Embed: []scoreboard.Embed{
-						{Row: scoreboard.Row{Models: []string{"aaa-first", "embedding", "embedding2", "zzz-last"}, Comments: "pending embedding models"}},
+						{Models: []string{"aaa-first", "embedding", "embedding2", "zzz-last"}, Comments: "pending embedding models"},
 					},
 				}
 				for i := range sb.Chat {
@@ -376,7 +375,7 @@ func TestRun(t *testing.T) {
 		} {
 			t.Run(tc.name, func(t *testing.T) {
 				t.Chdir(t.TempDir())
-				sc := scoreboard.Chat{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"a"}, Comments: "pending", Wire: scoreboard.WireHTTP}}}
+				sc := scoreboard.Chat{Models: []string{"a"}, Comments: "pending", Wire: scoreboard.WireHTTP}
 				if tc.qualify {
 					sc.Models = append(sc.Models, "new")
 				}
@@ -458,6 +457,7 @@ type qualificationRunCase struct {
 
 type qualificationProvider struct {
 	scoreboardProvider
+
 	model           string
 	score           scoreboard.Score
 	output          genai.Modalities

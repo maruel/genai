@@ -114,6 +114,7 @@ type RealtimeOption = openaibase.RealtimeOption
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl   base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	shared openaibase.Client
 }
@@ -268,52 +269,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
-//
-// Audio models are identified by the "audio" in their name.
-func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.shared.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	sota := preference == string(genai.ModelSOTA)
-	selectedModel := ""
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		// Only consider models with "audio" in their name
-		if !strings.Contains(m.ID, "audio") {
-			continue
-		}
-		// Categorize based on model characteristics
-		isGPT4O := strings.HasPrefix(m.ID, "gpt-4o-") && strings.Contains(m.ID, "audio")
-		isGPT4OMini := isGPT4O && strings.Contains(m.ID, "mini")
-		isMini := strings.Contains(m.ID, "mini")
-		matches := false
-		switch {
-		case cheap:
-			matches = isMini
-		case good:
-			matches = !isMini && !isGPT4O
-		case sota:
-			// SOTA: prefer gpt-4o-audio models (but not mini)
-			matches = isGPT4O && !isGPT4OMini
-		}
-		if !matches {
-			continue
-		}
-		// Select the best available model, preferring newer versions lexicographically
-		if selectedModel == "" || m.ID > selectedModel {
-			selectedModel = m.ID
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find an audio model automatically")
-	}
-	return selectedModel, nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -845,4 +800,50 @@ func (c *Client) Embed(ctx context.Context, in *genai.EmbeddingRequest) (*genai.
 // The request specifies its own model independently of generation configuration.
 func (c *Client) EmbedRaw(ctx context.Context, in *openaibase.EmbeddingRequest, out *openaibase.EmbeddingResponse) error {
 	return c.shared.EmbedRaw(ctx, in, out)
+}
+
+// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
+//
+// Audio models are identified by the "audio" in their name.
+func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.shared.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	sota := preference == string(genai.ModelSOTA)
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		// Only consider models with "audio" in their name
+		if !strings.Contains(m.ID, "audio") {
+			continue
+		}
+		// Categorize based on model characteristics
+		isGPT4O := strings.HasPrefix(m.ID, "gpt-4o-") && strings.Contains(m.ID, "audio")
+		isGPT4OMini := isGPT4O && strings.Contains(m.ID, "mini")
+		isMini := strings.Contains(m.ID, "mini")
+		matches := false
+		switch {
+		case cheap:
+			matches = isMini
+		case good:
+			matches = !isMini && !isGPT4O
+		case sota:
+			// SOTA: prefer gpt-4o-audio models (but not mini)
+			matches = isGPT4O && !isGPT4OMini
+		}
+		if !matches {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || m.ID > selectedModel {
+			selectedModel = m.ID
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find an audio model automatically")
+	}
+	return selectedModel, nil
 }

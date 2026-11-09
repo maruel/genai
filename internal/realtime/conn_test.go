@@ -24,7 +24,11 @@ type failingCloseTransport struct{ base http.RoundTripper }
 func (t *failingCloseTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	resp, err := t.base.RoundTrip(req)
 	if err == nil && resp.StatusCode == http.StatusSwitchingProtocols {
-		resp.Body = &failingCloseStream{ReadWriteCloser: resp.Body.(io.ReadWriteCloser)}
+		stream, ok := resp.Body.(io.ReadWriteCloser)
+		if !ok {
+			return nil, errors.New("upgraded response body is not writable")
+		}
+		resp.Body = &failingCloseStream{ReadWriteCloser: stream}
 	}
 	return resp, err
 }

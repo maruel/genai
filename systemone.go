@@ -35,9 +35,6 @@ type DecisionContent interface {
 // Text is DecisionContent that is a JSON string.
 type Text string
 
-// content implements DecisionContent.
-func (Text) content() {}
-
 // Validate implements internal.Validatable.
 //
 // Any text is valid, including the empty string, the API is the one that decides whether a specific field
@@ -46,15 +43,15 @@ func (Text) Validate() error {
 	return nil
 }
 
+// content implements DecisionContent.
+func (Text) content() {}
+
 // Object is DecisionContent that is a JSON object.
 //
 // The values are any, like Reply.Opaque: they must be JSON encodable. Go has no recursive JSON
 // value type that does not require wrapping every scalar, so a nested map[string]any, []any or a struct
 // with JSON tags is passed as is. It is the equivalent of the SDKs' Mapping[str, JSONValue | None].
 type Object map[string]any
-
-// content implements DecisionContent.
-func (Object) content() {}
 
 // Validate implements internal.Validatable.
 //
@@ -73,13 +70,13 @@ func (o Object) Validate() error {
 	return errors.Join(errs...)
 }
 
+// content implements DecisionContent.
+func (Object) content() {}
+
 // Array is DecisionContent that is a JSON array.
 //
 // The values are any, like Object: they must be JSON encodable. They are not restricted to DecisionContent items.
 type Array []any
-
-// content implements DecisionContent.
-func (Array) content() {}
 
 // Validate implements internal.Validatable.
 //
@@ -97,6 +94,9 @@ func (a Array) Validate() error {
 	}
 	return errors.Join(errs...)
 }
+
+// content implements DecisionContent.
+func (Array) content() {}
 
 // QuestionType is the type of a Question.
 type QuestionType string
@@ -494,8 +494,6 @@ func (r *SystemOneRequest) ReadState(maxDocBytes int64) (DecisionContent, []Doc,
 // documentState retains JSON document content without rebuilding its values.
 type documentState json.RawMessage
 
-func (documentState) content() {}
-
 // Validate checks the state document's JSON shape.
 func (s documentState) Validate() error {
 	b := bytes.TrimSpace(s)
@@ -509,6 +507,8 @@ func (s documentState) Validate() error {
 func (s documentState) MarshalJSON() ([]byte, error) {
 	return s, nil
 }
+
+func (documentState) content() {}
 
 // SystemOneResponse is the response of a POST /v1/systemone request.
 type SystemOneResponse struct {

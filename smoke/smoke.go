@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 // Package smoke runs a smoke test to generate a scoreboard.Chat.
+
 package smoke
 
 import (
@@ -49,8 +50,8 @@ func runSync(ctx context.Context, pf ProviderFactory, skipURLMedia bool) (scoreb
 
 	mu := sync.Mutex{}
 	result := scoreboard.Chat{
-		Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{m}, In: map[genai.Modality]scoreboard.ModalCapability{}}},
-		Out:      map[genai.Modality]scoreboard.ModalCapability{},
+		Models: []string{m}, In: map[genai.Modality]scoreboard.ModalCapability{},
+		Out: map[genai.Modality]scoreboard.ModalCapability{},
 	}
 
 	// Make it easy to skip parts of the tests.
@@ -837,7 +838,7 @@ type callState struct {
 func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	c := cs.pf(name)
 	var err error
-	res := genai.Result{}
+	var res genai.Result
 	if cs.isStream {
 		fragments, finish := c.GenStream(ctx, msgs, opts...)
 		for range fragments {
@@ -882,9 +883,9 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (scoreboard.Chat, genai.Usage, error) {
 	prefix := "GenDoc-"
 	out := scoreboard.Chat{
-		Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{In: map[genai.Modality]scoreboard.ModalCapability{}}},
-		Out:      map[genai.Modality]scoreboard.ModalCapability{},
-		GenSync:  &scoreboard.Functionality{},
+		In:      map[genai.Modality]scoreboard.ModalCapability{},
+		Out:     map[genai.Modality]scoreboard.ModalCapability{},
+		GenSync: &scoreboard.Functionality{},
 	}
 	usage := genai.Usage{}
 	if err := exerciseGenImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
@@ -956,7 +957,11 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 		if r.Doc.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
-			resp2, err2 := c.HTTPClient().Get(r.Doc.URL)
+			req, err2 := http.NewRequestWithContext(ctx, http.MethodGet, r.Doc.URL, http.NoBody)
+			if err2 != nil {
+				return fmt.Errorf("failed to create generated result request: %w", err2)
+			}
+			resp2, err2 := c.HTTPClient().Do(req)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -1045,7 +1050,11 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 		if r.Doc.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
-			resp2, err2 := c.HTTPClient().Get(r.Doc.URL)
+			req, err2 := http.NewRequestWithContext(ctx, http.MethodGet, r.Doc.URL, http.NoBody)
+			if err2 != nil {
+				return fmt.Errorf("failed to create generated result request: %w", err2)
+			}
+			resp2, err2 := c.HTTPClient().Do(req)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}

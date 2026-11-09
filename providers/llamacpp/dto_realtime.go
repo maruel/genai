@@ -449,6 +449,8 @@ func (m *Modalities) UnmarshalJSON(b []byte) error {
 }
 
 // ToolList bounds tool declarations.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type ToolList []RealtimeTool
 
 // Init converts portable tool declarations to llama.cpp wire tools.

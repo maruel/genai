@@ -52,7 +52,7 @@ func speechClient(t *testing.T, model string, fn speechTransport) *gemini.Client
 	c, err := gemini.New(t.Context(), genai.ProviderOptionAPIKey("speech-test-key"), genai.ProviderOptionModel(model), genai.ProviderOptionModalities{genai.ModalityText}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
 		return &roundtrippers.Retry{Transport: speechTransport(func(r *http.Request) (*http.Response, error) {
 			defer func() { _ = r.Body.Close() }()
-			if r.URL.String() != "https://generativelanguage.googleapis.com/v1beta/interactions" || r.Header.Get("x-goog-api-key") != "speech-test-key" {
+			if r.URL.String() != "https://generativelanguage.googleapis.com/v1beta/interactions" || r.Header.Get("X-Goog-Api-Key") != "speech-test-key" {
 				t.Fatalf("speech endpoint/authentication: %s", r.URL)
 			}
 			return fn(r)
@@ -75,6 +75,7 @@ func speechResponse(r *http.Request, status int, contentType, body string) *http
 
 type speechCloseBody struct {
 	io.ReadCloser
+
 	close func()
 }
 
@@ -117,6 +118,7 @@ func getClientInner(t *testing.T, model string, modalities genai.Modalities, pre
 	return c, err
 }
 
+//nolint:tparallel // The parent owns a shared recording fixture and its cleanup.
 func TestClient(t *testing.T) {
 	t.Run("ConnectLiveRaw", testClientConnectLiveRaw)
 	t.Run("ConnectRealtime", func(t *testing.T) {
@@ -129,19 +131,19 @@ func TestClient(t *testing.T) {
 		t.Run("Conversation", func(t *testing.T) {
 			received := make(chan []map[string]any, 1)
 			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-				s := setup["setup"].(map[string]any)
+				s := internaltest.AssertType[map[string]any](t, setup["setup"])
 				if s["model"] != "models/gemini-3.8-live" {
 					t.Errorf("model: %v", s)
 				}
-				g := s["generationConfig"].(map[string]any)
+				g := internaltest.AssertType[map[string]any](t, s["generationConfig"])
 				if !reflect.DeepEqual(g["responseModalities"], []any{"AUDIO"}) || len(g) != 1 {
 					t.Errorf("unexpected generation config: %v", g)
 				}
-				ri := s["realtimeInputConfig"].(map[string]any)
+				ri := internaltest.AssertType[map[string]any](t, s["realtimeInputConfig"])
 				if ri["turnCoverage"] != "TURN_INCLUDES_ONLY_ACTIVITY" || ri["activityHandling"] != "START_OF_ACTIVITY_INTERRUPTS" {
 					t.Errorf("input config: %v", ri)
 				}
-				trans := s["inputAudioTranscription"].(map[string]any)
+				trans := internaltest.AssertType[map[string]any](t, s["inputAudioTranscription"])
 				if !reflect.DeepEqual(trans["languageCodes"], []any{"en-US"}) {
 					t.Errorf("transcription: %v", trans)
 				}
@@ -204,22 +206,22 @@ func TestClient(t *testing.T) {
 				}
 			}
 			messages := <-received
-			passive := messages[0]["clientContent"].(map[string]any)
-			if passive["turnComplete"] != false || passive["turns"].([]any)[0].(map[string]any)["role"] != "user" {
+			passive := internaltest.AssertType[map[string]any](t, messages[0]["clientContent"])
+			if passive["turnComplete"] != false || internaltest.AssertType[map[string]any](t, internaltest.AssertType[[]any](t, passive["turns"])[0])["role"] != "user" {
 				t.Fatalf("passive context: %v", messages[0])
 			}
-			cc := messages[1]["clientContent"].(map[string]any)
+			cc := internaltest.AssertType[map[string]any](t, messages[1]["clientContent"])
 			if cc["turnComplete"] != true {
 				t.Errorf("text did not complete turn: %v", cc)
 			}
-			turns := cc["turns"].([]any)
-			if turns[0].(map[string]any)["role"] != "user" {
+			turns := internaltest.AssertType[[]any](t, cc["turns"])
+			if internaltest.AssertType[map[string]any](t, turns[0])["role"] != "user" {
 				t.Errorf("text changed role: %v", cc)
 			}
-			if messages[2]["realtimeInput"].(map[string]any)["audio"].(map[string]any)["mimeType"] != "audio/pcm;rate=16000" {
+			if internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, messages[2]["realtimeInput"])["audio"])["mimeType"] != "audio/pcm;rate=16000" {
 				t.Errorf("audio: %v", messages[2])
 			}
-			if messages[3]["realtimeInput"].(map[string]any)["audioStreamEnd"] != true {
+			if internaltest.AssertType[map[string]any](t, messages[3]["realtimeInput"])["audioStreamEnd"] != true {
 				t.Errorf("stream end: %v", messages[3])
 			}
 			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventContentReasoning, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
@@ -331,7 +333,7 @@ func TestClient(t *testing.T) {
 
 		t.Run("IncludeReasoningDefaultLevel", func(t *testing.T) {
 			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-				g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
+				g := internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, setup["setup"])["generationConfig"])
 				c, ok := g["thinkingConfig"].(map[string]any)
 				if !ok || c["thinkingLevel"] != "low" || c["includeThoughts"] != true {
 					t.Errorf("thinking config: %v", g)
@@ -345,7 +347,7 @@ func TestClient(t *testing.T) {
 		})
 		t.Run("ThinkingLevel", func(t *testing.T) {
 			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-				g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
+				g := internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, setup["setup"])["generationConfig"])
 				if c, ok := g["thinkingConfig"].(map[string]any); !ok || c["thinkingLevel"] != "high" || len(g) != 2 {
 					t.Errorf("generation config: %v", g)
 				}
@@ -359,12 +361,12 @@ func TestClient(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			t.Run("InteractionStatus", func(t *testing.T) {
 				endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-					g := setup["setup"].(map[string]any)["generationConfig"].(map[string]any)
+					g := internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, setup["setup"])["generationConfig"])
 					if c, ok := g["thinkingConfig"].(map[string]any); !ok || c["thinkingLevel"] != "low" {
 						t.Errorf("default thinking config: %v", g)
 					}
-					declarations := setup["setup"].(map[string]any)["tools"].([]any)[0].(map[string]any)["functionDeclarations"].([]any)
-					if got := declarations[0].(map[string]any)["behavior"]; got != "NON_BLOCKING" {
+					declarations := internaltest.AssertType[[]any](t, internaltest.AssertType[map[string]any](t, internaltest.AssertType[[]any](t, internaltest.AssertType[map[string]any](t, setup["setup"])["tools"])[0])["functionDeclarations"])
+					if got := internaltest.AssertType[map[string]any](t, declarations[0])["behavior"]; got != "NON_BLOCKING" {
 						t.Errorf("behavior=%v", got)
 					}
 					realtimetest.Write(t, ctx, ws, `{"serverContent":{"generationComplete":true,"turnComplete":true,"interactionStatus":"IN_PROGRESS"}}`)
@@ -415,9 +417,9 @@ func TestClient(t *testing.T) {
 		t.Run("ToolCorrelation", func(t *testing.T) {
 			result := make(chan map[string]any, 1)
 			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-				s := setup["setup"].(map[string]any)
-				declarations := s["tools"].([]any)[0].(map[string]any)["functionDeclarations"].([]any)
-				if declarations[0].(map[string]any)["behavior"] != "BLOCKING" {
+				s := internaltest.AssertType[map[string]any](t, setup["setup"])
+				declarations := internaltest.AssertType[[]any](t, internaltest.AssertType[map[string]any](t, internaltest.AssertType[[]any](t, s["tools"])[0])["functionDeclarations"])
+				if internaltest.AssertType[map[string]any](t, declarations[0])["behavior"] != "BLOCKING" {
 					t.Error("tools must block")
 				}
 				realtimetest.Write(t, ctx, ws, `{"toolCall":{"functionCalls":[{"name":"lookup","args":{"q":"a"}},{"id":"provided","name":"lookup","args":{}}]}}`)
@@ -451,12 +453,12 @@ func TestClient(t *testing.T) {
 			if err := s.Send(t.Context(), good); err != nil {
 				t.Fatal(err)
 			}
-			responses := (<-result)["toolResponse"].(map[string]any)["functionResponses"].([]any)
-			first := responses[0].(map[string]any)
+			responses := internaltest.AssertType[[]any](t, internaltest.AssertType[map[string]any](t, (<-result)["toolResponse"])["functionResponses"])
+			first := internaltest.AssertType[map[string]any](t, responses[0])
 			if _, ok := first["id"]; ok {
 				t.Error("synthetic ID leaked to provider")
 			}
-			if first["response"].(map[string]any)["response"] != "ok" || responses[1].(map[string]any)["id"] != "provided" {
+			if internaltest.AssertType[map[string]any](t, first["response"])["response"] != "ok" || internaltest.AssertType[map[string]any](t, responses[1])["id"] != "provided" {
 				t.Errorf("results: %v", responses)
 			}
 			if err := s.Send(t.Context(), good); err == nil {
@@ -485,8 +487,8 @@ func TestClient(t *testing.T) {
 			if err := s.Send(t.Context(), genai.RealtimeInputContent{ToolResults: []genai.ToolCallResult{valid}}); err != nil {
 				t.Fatal(err)
 			}
-			remaining := (<-result)["toolResponse"].(map[string]any)["functionResponses"].([]any)
-			if len(remaining) != 1 || remaining[0].(map[string]any)["id"] != "still-pending" {
+			remaining := internaltest.AssertType[[]any](t, internaltest.AssertType[map[string]any](t, (<-result)["toolResponse"])["functionResponses"])
+			if len(remaining) != 1 || internaltest.AssertType[map[string]any](t, remaining[0])["id"] != "still-pending" {
 				t.Fatalf("rejected batch mutated wire or correlation: %+v", remaining)
 			}
 			cancelled := realtimetest.Receive(t, s, genai.RealtimeEventProvider)
@@ -617,8 +619,8 @@ func TestClient(t *testing.T) {
 		t.Run("ManualActivity", func(t *testing.T) {
 			got := make(chan []map[string]any, 1)
 			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-				ri := setup["setup"].(map[string]any)["realtimeInputConfig"].(map[string]any)
-				if ri["automaticActivityDetection"].(map[string]any)["disabled"] != true {
+				ri := internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, setup["setup"])["realtimeInputConfig"])
+				if internaltest.AssertType[map[string]any](t, ri["automaticActivityDetection"])["disabled"] != true {
 					t.Error("manual VAD not disabled")
 				}
 				msgs := make([]map[string]any, 3)
@@ -648,13 +650,13 @@ func TestClient(t *testing.T) {
 				t.Fatalf("empty text generation: %v", err)
 			}
 			msgs := <-got
-			if _, ok := msgs[0]["realtimeInput"].(map[string]any)["activityStart"]; !ok {
+			if _, ok := internaltest.AssertType[map[string]any](t, msgs[0]["realtimeInput"])["activityStart"]; !ok {
 				t.Errorf("activity start: %v", msgs)
 			}
-			if _, ok := msgs[1]["realtimeInput"].(map[string]any)["audio"]; !ok {
+			if _, ok := internaltest.AssertType[map[string]any](t, msgs[1]["realtimeInput"])["audio"]; !ok {
 				t.Errorf("audio: %v", msgs)
 			}
-			if _, ok := msgs[2]["realtimeInput"].(map[string]any)["activityEnd"]; !ok {
+			if _, ok := internaltest.AssertType[map[string]any](t, msgs[2]["realtimeInput"])["activityEnd"]; !ok {
 				t.Errorf("activity end: %v", msgs)
 			}
 			realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
@@ -876,7 +878,7 @@ func TestClient(t *testing.T) {
 				t.Run(map[bool]string{false: "cross-origin", true: "downgrade"}[secure], func(t *testing.T) {
 					visited := make(chan string, 1)
 					dest := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-						visited <- r.Header.Get("x-goog-api-key")
+						visited <- r.Header.Get("X-Goog-Api-Key")
 						w.WriteHeader(http.StatusForbidden)
 					}))
 					t.Cleanup(dest.Close)
@@ -1002,7 +1004,11 @@ func TestClient(t *testing.T) {
 			}
 			internaltest.CleanupCloser(t, f)
 			var out gemini.InteractionResponse
-			if err := p.(*gemini.Client).InteractionRaw(t.Context(), &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Store: new(false), Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: f}}}, &out); err != nil {
+			client, ok := p.(*gemini.Client)
+			if !ok {
+				t.Fatalf("unexpected provider type %T", p)
+			}
+			if err := client.InteractionRaw(t.Context(), &gemini.InteractionRequest{Model: "gemini-3.5-transcribe", Store: new(false), Input: []gemini.InteractionContent{{Type: gemini.InteractionAudio, MIMEType: "audio/wav", Source: f}}}, &out); err != nil {
 				t.Fatal(err)
 			}
 			if out.Status != gemini.InteractionCompleted || len(out.Steps) != 1 || len(out.Steps[0].Content) != 1 || strings.Trim(strings.ToLower(out.Steps[0].Content[0].Text), " .\n") != "orange" {
@@ -1084,7 +1090,7 @@ func TestClient(t *testing.T) {
 						result <- struct {
 							data []byte
 							err  error
-						}{append(prefix, data...), err}
+						}{append(prefix, data...), err} //nolint:makezero // prefix already contains the consumed request bytes.
 					})
 					return speechResponse(r, 200, "application/json", `{"status":"completed"}`), nil
 				})
@@ -1112,7 +1118,11 @@ func TestClient(t *testing.T) {
 			if uploaded.err != nil || !bytes.Equal(full, uploaded.data) {
 				t.Fatalf("post-response upload: %v", uploaded.err)
 			}
-			var request struct{ Input []struct{ Data string } }
+			var request struct {
+				Input []struct {
+					Data string `json:"data"`
+				} `json:"input"`
+			}
 			if err := json.Unmarshal(uploaded.data, &request); err != nil {
 				t.Fatal(err)
 			}
@@ -1220,7 +1230,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			c := provider.(*gemini.Client)
+			c := internaltest.AssertType[*gemini.Client](t, provider)
 			req := &gemini.InteractionRequest{Model: "gemini-3.8-flash-lite-tts", Store: new(false), Input: []gemini.InteractionContent{{Type: gemini.InteractionText, Text: "Orange."}}, ResponseFormat: &gemini.InteractionResponseFormat{Type: gemini.InteractionAudio, MIMEType: "audio/l16", SampleRate: 24000}, GenerationConfig: &gemini.InteractionGenerationConfig{SpeechConfig: []gemini.InteractionSpeechConfig{{Voice: "Kore"}}}}
 			events, finish := c.InteractionStreamRaw(t.Context(), req)
 			var pcm []byte
@@ -1257,7 +1267,7 @@ func TestClient(t *testing.T) {
 	t.Run("ListVoices", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			t.Run("pagination", func(t *testing.T) {
-				c := getClient(t, "gemini-3.8-live").(*gemini.Client)
+				c := internaltest.AssertType[*gemini.Client](t, getClient(t, "gemini-3.8-live"))
 				in := gemini.ListVoicesRequest{PageSize: 2, Type: []gemini.VoiceType{gemini.VoiceTypePrebuilt}}
 				var voices []gemini.Voice
 				for v, err := range c.ListVoices(t.Context(), &in) {
@@ -1277,7 +1287,7 @@ func TestClient(t *testing.T) {
 				}
 			})
 			t.Run("filters", func(t *testing.T) {
-				c := getClient(t, "gemini-3.8-live").(*gemini.Client)
+				c := internaltest.AssertType[*gemini.Client](t, getClient(t, "gemini-3.8-live"))
 				for _, err := range c.ListVoices(t.Context(), &gemini.ListVoicesRequest{
 					Accent: []string{"American", "British"}, Context: []string{"Conversational"},
 					Gender: []gemini.VoiceGender{gemini.VoiceGenderMale}, LanguageCode: []string{"en-US"}, Persona: []string{"Friendly"},
@@ -1313,7 +1323,7 @@ func TestClient(t *testing.T) {
 					t.Fatalf("values=%d requests=%d", got, transport.calls)
 				}
 			})
-			c := getClient(t, "gemini-3.8-live").(*gemini.Client)
+			c := internaltest.AssertType[*gemini.Client](t, getClient(t, "gemini-3.8-live"))
 			for _, err := range c.ListVoices(t.Context(), &gemini.ListVoicesRequest{Type: []gemini.VoiceType{"invalid-type"}}) {
 				if err == nil {
 					t.Fatal("invalid voice type was accepted")
@@ -1576,7 +1586,7 @@ func TestClient(t *testing.T) {
 			"Vindemiatrix", "Zephyr", "Zubenelgenubi",
 		}
 		var voices []string
-		for v, err := range c.(*gemini.Client).ListVoices(t.Context(), &gemini.ListVoicesRequest{PageSize: 1000, Type: []gemini.VoiceType{gemini.VoiceTypePrebuilt}}) {
+		for v, err := range internaltest.AssertType[*gemini.Client](t, c).ListVoices(t.Context(), &gemini.ListVoicesRequest{PageSize: 1000, Type: []gemini.VoiceType{gemini.VoiceTypePrebuilt}}) {
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1720,7 +1730,7 @@ func TestClient(t *testing.T) {
 		jobID := internaltest.TestCapabilitiesGenAsync(t, c, genai.Message{Requests: []genai.Request{{Text: prompt}}})
 		pollInterval := time.Millisecond
 		// Detect if recording. Should probably be moved to a utility.
-		if roundtrippers.Unwrap(c.HTTPClient().Transport).(*recorder.Recorder).IsRecording() {
+		if internaltest.AssertType[*recorder.Recorder](t, roundtrippers.Unwrap(c.HTTPClient().Transport)).IsRecording() {
 			pollInterval = 500 * time.Millisecond
 		}
 		// Poll for completion using the job ID from the Capability test.
@@ -1756,7 +1766,7 @@ func TestClient(t *testing.T) {
 	t.Run("Cache", func(t *testing.T) {
 		slow := os.Getenv("GEMINI_SLOW") != ""
 		ctx := t.Context()
-		c := getClient(t, "gemini-2.0-flash-lite").(*gemini.Client)
+		c := internaltest.AssertType[*gemini.Client](t, getClient(t, "gemini-2.0-flash-lite"))
 		f1, err := os.Open("../../scoreboard/testdata/video.mp4")
 		if err != nil {
 			t.Fatal(err)
@@ -1886,7 +1896,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		c := ci.(*gemini.Client)
+		c := internaltest.AssertType[*gemini.Client](t, ci)
 		ctx := t.Context()
 		const content = "Hello from genai file upload test."
 
@@ -1962,7 +1972,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		c := ci.(*gemini.Client)
+		c := internaltest.AssertType[*gemini.Client](t, ci)
 		ctx := t.Context()
 		isRecording := os.Getenv("RECORD") == "all"
 

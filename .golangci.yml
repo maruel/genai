@@ -9,29 +9,69 @@ run:
   tests: true
 linters:
   enable:
+    - asasalint
+    - asciicheck
+    - bidichk
     - bodyclose
+    - canonicalheader
     - commentcheck
     - contextcheck
     - copyloopvar
+    - dupl
     - dupword
     - durationcheck
+    - embeddedstructfieldcheck
+    - errchkjson
+    - errname
     - errorlint
     - exhaustive
+    - exptostd
+    - fatcontext
+    - forcetypeassert
+    - funcorder
+    - gocheckcompilerdirectives
+    - gochecksumtype
     - gocritic
+    - godoclint
     - godot
+    - gomoddirectives
+    - goprintffuncname
     - gosec
+    - gosmopolitan
+    - grouper
+    - iface
+    - importas
+    - inamedparam
+    - intrange
+    - iotamixing
+    - loggercheck
+    - makezero
     - methodfilecheck
-    - misspell
+    - mirror
+    - modernize
+    - musttag
+    - nakedret
     - nilerr
+    - nilnesserr
     - nilnil
+    - noctx
     - nolintlint
+    - nosprintfhostport
     - perfsprint
     - prealloc
+    - predeclared
+    - reassign
+    - recvcheck
     - revive
+    - sloglint
+    - sqlclosecheck
+    - tparallel
     - unconvert
     - unparam
     - unused
     - usestdlibvars
+    - usetesting
+    - wastedassign
     - whitespace
   settings:
     custom:
@@ -76,6 +116,16 @@ linters:
   exclusions:
     generated: lax
     rules:
+      # These protocol variants and modality probes deliberately remain independent.
+      - path: ^providers/anthropic/dto\.go$
+        linters: [dupl]
+      - path: ^providers/openairesponses/dto\.go$
+        linters: [dupl]
+      - path: ^smoke/(smoke\.go|speech_internal_test\.go)$
+        linters: [dupl]
+      # Each server update has its own version and source contract.
+      - path: ^internal/cmd/update-servers/main\.go$
+        linters: [dupl]
       - path: (.+)\.go$
         text: should have a package comment
     paths:

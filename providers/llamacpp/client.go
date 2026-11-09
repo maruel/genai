@@ -182,6 +182,7 @@ type Metrics struct {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl           base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	baseURL        string
 	completionsURL string
@@ -276,22 +277,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
-	// Figure out the model loaded if any.
-	m, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	if len(m) != 0 {
-		return m[0].GetID(), nil
-	}
-	return "", nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -475,10 +460,8 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 				if m != genai.ModalityAudio && m != genai.ModalityText {
 					return nil, fmt.Errorf("realtime option %T: unsupported realtime output modality %q: %w", opt, m, &base.ErrNotSupported{Options: []string{string(m)}})
 				}
-				for _, prev := range o[:i] {
-					if prev == m {
-						return nil, fmt.Errorf("realtime option %T: duplicate output modality %q", opt, m)
-					}
+				if slices.Contains(o[:i], m) {
+					return nil, fmt.Errorf("realtime option %T: duplicate output modality %q", opt, m)
 				}
 			}
 			if len(o) != 0 {
@@ -936,7 +919,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		}
 		// Search for these strings in
 		// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/server.cpp
-		f := 0.0
+		var f float64
 		if parts[1] == "nan" || parts[1] == "-nan" {
 			f = math.NaN()
 		} else {
@@ -981,47 +964,6 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 				panic(fmt.Sprintf("unknown metric %q", l))
 			}
 			return fmt.Errorf("unknown metric %q", l)
-		}
-	}
-	return nil
-}
-
-func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs genai.Messages, opts ...genai.GenOption) error {
-	if c.encoding == nil {
-		// Use the server to convert the OpenAI style format into a templated form.
-		in2 := applyTemplateRequest{}
-		if err := in2.Init(msgs, opts...); err != nil {
-			return err
-		}
-		out := applyTemplateResponse{}
-		if err := c.impl.DoRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
-			return err
-		}
-		in.Prompt = out.Prompt
-		return nil
-	}
-
-	in.Prompt = c.encoding.BeginOfText
-	for _, m := range msgs {
-		switch r := m.Role(); r {
-		/* TODO
-		case genai.AvailableTools:
-			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
-		*/
-		case "system":
-			for _, b := range m.Requests {
-				in.Prompt += c.encoding.SystemTokenStart + b.Text + c.encoding.SystemTokenEnd
-			}
-		case "user":
-			for _, b := range m.Requests {
-				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
-			}
-		case "assistant":
-			for _, b := range m.Requests {
-				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
-			}
-		default:
-			return fmt.Errorf("unexpected role %q", r)
 		}
 	}
 	return nil
@@ -1165,4 +1107,61 @@ func (c *Client) ConnectTranscriptionRaw(ctx context.Context) (*TranscriptionCon
 	}
 	conn.Initial = msg
 	return conn, nil
+}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
+	// Figure out the model loaded if any.
+	m, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	if len(m) != 0 {
+		return m[0].GetID(), nil
+	}
+	return "", nil
+}
+
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs genai.Messages, opts ...genai.GenOption) error {
+	if c.encoding == nil {
+		// Use the server to convert the OpenAI style format into a templated form.
+		in2 := applyTemplateRequest{}
+		if err := in2.Init(msgs, opts...); err != nil {
+			return err
+		}
+		out := applyTemplateResponse{}
+		if err := c.impl.DoRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
+			return err
+		}
+		in.Prompt = out.Prompt
+		return nil
+	}
+
+	in.Prompt = c.encoding.BeginOfText
+	for _, m := range msgs {
+		switch r := m.Role(); r {
+		/* TODO
+		case genai.AvailableTools:
+			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
+		*/
+		case "system":
+			for _, b := range m.Requests {
+				in.Prompt += c.encoding.SystemTokenStart + b.Text + c.encoding.SystemTokenEnd
+			}
+		case "user":
+			for _, b := range m.Requests {
+				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
+			}
+		case "assistant":
+			for _, b := range m.Requests {
+				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
+			}
+		default:
+			return fmt.Errorf("unexpected role %q", r)
+		}
+	}
+	return nil
 }

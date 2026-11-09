@@ -246,7 +246,7 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 	selectedRank := 0
 	var created base.TimeS
 	for _, mdl := range mdls {
-		m := mdl.(*Model)
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
 		// Do not select the specialized models automatically.
 		if strings.Contains(m.ID, "audio") || strings.Contains(m.ID, "codex") || strings.Contains(m.ID, "deep") || strings.Contains(m.ID, "image") || strings.Contains(m.ID, "live") || strings.Contains(m.ID, "realtime") || strings.Contains(m.ID, "search") || strings.Contains(m.ID, "transcribe") {
 			continue
@@ -291,7 +291,7 @@ func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (s
 	selectedModel := ""
 	var created base.TimeS
 	for _, mdl := range mdls {
-		m := mdl.(*Model)
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
 		// OpenAI doesn't report much for each model. :(
 		if !isImageModelMatch(m.ID, cheap) {
 			continue
@@ -324,14 +324,14 @@ func (c *Client) SelectBestVideoModel(ctx context.Context, preference string) (s
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
 	for _, mdl := range mdls {
-		m := mdl.(*Model)
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
 		// Only consider models starting with "sora-"
 		if !strings.HasPrefix(m.ID, "sora-") {
 			continue
 		}
 		// Determine if model is pro based on name
 		isPro := strings.Contains(m.ID, "pro")
-		matches := false
+		var matches bool
 		switch {
 		case cheap:
 			matches = !isPro

@@ -83,7 +83,7 @@ func TestNew(t *testing.T) {
 	t.Run("handshake headers are replayed", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "test")
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("X-RateLimit-Remaining", "7")
+			w.Header().Set("X-Ratelimit-Remaining", "7")
 			c, err := websocket.Accept(w, r, nil)
 			if err != nil {
 				return
@@ -108,7 +108,7 @@ func TestNew(t *testing.T) {
 				t.Fatal(err)
 			}
 			_ = c.CloseNow()
-			if got := resp.Header.Get("X-RateLimit-Remaining"); got != want {
+			if got := resp.Header.Get("X-Ratelimit-Remaining"); got != want {
 				t.Fatalf("header %q, want %q", got, want)
 			}
 		}

@@ -336,7 +336,7 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			serverURL := ""
+			var serverURL string
 			transport := testRecorder.Record(t, http.DefaultTransport)
 			wrapper := func(h http.RoundTripper) http.RoundTripper { return transport }
 			if !transport.IsNewCassette() {

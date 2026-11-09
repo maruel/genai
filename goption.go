@@ -25,6 +25,8 @@ import (
 type JSONSchema = json.RawMessage
 
 // GenOption is options that can be provided to Provider.GenSync and Provider.GenStream.
+//
+//nolint:iface // Separate option categories are distinct public contracts.
 type GenOption interface {
 	// Validate ensures the options object is valid.
 	Validate() error

@@ -126,7 +126,7 @@ func TestQueueThreshold(t *testing.T) {
 				cerebras.ProviderOptionQueueThreshold(100*time.Millisecond),
 				genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper {
 					return roundTripperFunc(func(r *http.Request) (*http.Response, error) {
-						got = r.Header.Get("queue_threshold")
+						got = r.Header.Get("Queue_threshold")
 						return &http.Response{
 							StatusCode: http.StatusOK,
 							Header:     http.Header{"Content-Type": {"application/json"}},

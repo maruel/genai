@@ -288,6 +288,7 @@ func TestProviderBase(t *testing.T) {
 
 type errorResponseBody struct {
 	io.Reader
+
 	read   int
 	closed bool
 }

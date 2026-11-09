@@ -33,7 +33,10 @@ func smokeModel(ctx context.Context, w io.Writer, provider, model string) error 
 	if err != nil {
 		return err
 	}
-	b, _ := json.MarshalIndent(sc, "", "  ")
+	b, err := json.MarshalIndent(sc, "", "  ")
+	if err != nil {
+		return err
+	}
 	_, _ = fmt.Fprintf(w, "%s\n", string(b))
 	_, _ = fmt.Fprintf(os.Stderr, "Usage: %s\n", usage.String())
 	return nil

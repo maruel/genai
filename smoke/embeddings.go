@@ -116,7 +116,7 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 		}
 		f.RequestedDimensions = &supported
 	}
-	sc := scoreboard.Embed{Row: scoreboard.Row{Models: []string{model}, In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}}}, Embed: &f}
+	sc := scoreboard.Embed{Models: []string{model}, In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}}, Embed: &f}
 	for _, probe := range []embeddingMediaProbe{{"Image", "image.jpg", "image/jpeg", genai.ModalityImage}, {"Audio", "audio.wav", "audio/wav", genai.ModalityAudio}} {
 		data, err := scoreboard.TestdataFiles.ReadFile("testdata/" + probe.filename)
 		if err != nil {

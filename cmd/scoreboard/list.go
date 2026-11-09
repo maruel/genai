@@ -201,18 +201,18 @@ func getDeliveryConstraints(capabilities map[genai.Modality]scoreboard.ModalCapa
 	allURLOnly := true
 	hasBoth := false
 
-	for modality, cap := range capabilities {
+	for modality, capability := range capabilities {
 		if modality == genai.ModalityText {
 			continue
 		}
 		switch {
-		case cap.Inline && cap.URL:
+		case capability.Inline && capability.URL:
 			hasBoth = true
 			allInlineOnly = false
 			allURLOnly = false
-		case cap.Inline:
+		case capability.Inline:
 			allURLOnly = false
-		case cap.URL:
+		case capability.URL:
 			allInlineOnly = false
 		}
 	}

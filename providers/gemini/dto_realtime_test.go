@@ -157,6 +157,7 @@ func TestLiveSpeechConfig(t *testing.T) {
 	}
 	for _, c := range data {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			b, err := json.Marshal(c.in)
 			if err != nil {
 				t.Fatal(err)
@@ -226,6 +227,7 @@ func TestLiveContextUpdate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			b, err := json.Marshal(&tc.msg)
 			if err != nil {
 				t.Fatal(err)

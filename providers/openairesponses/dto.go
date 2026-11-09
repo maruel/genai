@@ -102,6 +102,7 @@ type (
 	// BatchUsage is an alias to the shared OpenAI batch usage type.
 	BatchUsage = openaibase.BatchUsage
 	// ErrorResponse is an alias to the shared OpenAI error response type.
+	//nolint:errname // Preserve the exported provider wire type name.
 	ErrorResponse = openaibase.ErrorResponse
 	// ErrorResponseError is an alias to the shared OpenAI error detail type.
 	ErrorResponseError = openaibase.ErrorResponseError
@@ -360,6 +361,7 @@ func (r *Response) MarshalJSON() ([]byte, error) {
 type responseEncoding Response
 type codexRequestEncoding struct {
 	*responseEncoding
+
 	Instructions string `json:"instructions"`
 }
 
@@ -1115,6 +1117,8 @@ const (
 // ResponseStreamChunkResponse represents a streaming response chunk.
 //
 // https://platform.openai.com/docs/api-reference/responses-streaming
+//
+//nolint:errname // Preserve the exported API and provider wire type name.
 type ResponseStreamChunkResponse struct {
 	Type           ResponseType `json:"type,omitzero"`
 	SequenceNumber int64        `json:"sequence_number,omitzero"`
@@ -1175,7 +1179,7 @@ type ResponseStreamChunkResponse struct {
 	AnnotationIndex int64      `json:"annotation_index,omitzero"`
 
 	// Type == ResponseError
-	ErrorResponse
+	ErrorResponse //nolint:embeddedstructfieldcheck // Preserve serialized or displayed field order.
 
 	Logprobs []Logprobs `json:"logprobs,omitzero"`
 
@@ -1218,8 +1222,8 @@ type ResponseStreamChunkResponse struct {
 //
 // https://developers.openai.com/api/docs/guides/websocket-mode
 type WSRequest struct {
-	Type string `json:"type"` // Always "response.create"
-	Response
+	Type     string `json:"type"` // Always "response.create"
+	Response        //nolint:embeddedstructfieldcheck // Preserve serialized or displayed field order.
 }
 
 // MarshalJSON implements json.Marshaler to exclude Stream and Background.
@@ -1227,10 +1231,10 @@ func (r *WSRequest) MarshalJSON() ([]byte, error) {
 	// Use an alias to avoid infinite recursion.
 	type alias Response
 	return json.Marshal(struct {
-		Type string `json:"type"`
-		alias
-		Stream     bool `json:"-"`
-		Background bool `json:"-"`
+		Type       string `json:"type"`
+		alias             //nolint:embeddedstructfieldcheck // Preserve serialized or displayed field order.
+		Stream     bool   `json:"-"`
+		Background bool   `json:"-"`
 	}{
 		Type:  r.Type,
 		alias: alias(r.Response),

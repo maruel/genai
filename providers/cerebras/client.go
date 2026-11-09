@@ -121,7 +121,7 @@ func (q *queueThresholdHeader) RoundTrip(req *http.Request) (*http.Response, err
 		return q.transport.RoundTrip(req)
 	}
 	req = req.Clone(req.Context())
-	req.Header.Set("queue_threshold", strconv.FormatInt(threshold.Milliseconds(), 10))
+	req.Header.Set("Queue_threshold", strconv.FormatInt(threshold.Milliseconds(), 10))
 	return q.transport.RoundTrip(req)
 }
 
@@ -132,6 +132,7 @@ func (q *queueThresholdHeader) Unwrap() http.RoundTripper {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -182,7 +183,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	h := http.Header{"Authorization": {"Bearer " + apiKey}}
 	if queueThreshold != 0 {
-		h.Set("queue_threshold", strconv.FormatInt(queueThreshold.Milliseconds(), 10))
+		h.Set("Queue_threshold", strconv.FormatInt(queueThreshold.Milliseconds(), 10))
 	}
 	mod := genai.Modalities{genai.ModalityText}
 	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
@@ -227,24 +228,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects Qwen 3.8 27B for SOTA and GPT OSS 120B for good and cheap.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	model := "gpt-oss-120b"
-	if preference == string(genai.ModelSOTA) {
-		model = "qwen-3.8-27b"
-	}
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	for _, mdl := range mdls {
-		if mdl.GetID() == model {
-			return model, nil
-		}
-	}
-	return "", fmt.Errorf("failed to find preferred model %q", model)
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -428,3 +411,21 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects Qwen 3.8 27B for SOTA and GPT OSS 120B for good and cheap.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	model := "gpt-oss-120b"
+	if preference == string(genai.ModelSOTA) {
+		model = "qwen-3.8-27b"
+	}
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	for _, mdl := range mdls {
+		if mdl.GetID() == model {
+			return model, nil
+		}
+	}
+	return "", fmt.Errorf("failed to find preferred model %q", model)
+}

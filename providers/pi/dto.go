@@ -36,14 +36,15 @@ type EventType string
 
 // Command type constants.
 const (
-	// Prompting.
+
+	// CmdPrompt — Prompting.
 	CmdPrompt     EventType = "prompt"
 	CmdSteer      EventType = "steer"
 	CmdFollowUp   EventType = "follow_up"
 	CmdAbort      EventType = "abort"
 	CmdClearQueue EventType = "clear_queue"
 
-	// Session.
+	// CmdNewSession — Session.
 	CmdNewSession           EventType = "new_session"
 	CmdGetState             EventType = "get_state"
 	CmdGetSessionStats      EventType = "get_session_stats"
@@ -59,29 +60,29 @@ const (
 	CmdGetMessages          EventType = "get_messages"
 	CmdGetCommands          EventType = "get_commands"
 
-	// Model.
+	// CmdSetModel — Model.
 	CmdSetModel   EventType = "set_model"
 	CmdCycleModel EventType = "cycle_model"
 	CmdGetModels  EventType = "get_available_models"
 
-	// Thinking.
+	// CmdSetThinking — Thinking.
 	CmdSetThinking       EventType = "set_thinking_level"
 	CmdCycleThinking     EventType = "cycle_thinking_level"
 	CmdGetThinkingLevels EventType = "get_available_thinking_levels"
 
-	// Queue modes.
+	// CmdSetSteeringMode — Queue modes.
 	CmdSetSteeringMode EventType = "set_steering_mode"
 	CmdSetFollowUpMode EventType = "set_follow_up_mode"
 
-	// Compaction.
+	// CmdCompact — Compaction.
 	CmdCompact           EventType = "compact"
 	CmdSetAutoCompaction EventType = "set_auto_compaction"
 
-	// Retry.
+	// CmdSetAutoRetry — Retry.
 	CmdSetAutoRetry EventType = "set_auto_retry"
 	CmdAbortRetry   EventType = "abort_retry"
 
-	// Bash.
+	// CmdBash — Bash.
 	CmdBash      EventType = "bash"
 	CmdAbortBash EventType = "abort_bash"
 )

@@ -413,8 +413,8 @@ func runEchoTurns(t *testing.T, c *websocket.Conn) {
 }
 
 type embeddingWireRequest struct {
-	Model string
-	Input []string
+	Model string   `json:"model"`
+	Input []string `json:"input"`
 }
 
 func TestWebSocketSendRaw(t *testing.T) {

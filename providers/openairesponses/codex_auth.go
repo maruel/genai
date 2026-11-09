@@ -5,6 +5,7 @@
 // File-backed Codex credential loading and OAuth renewal.
 // Source: openai/codex 49f0c6022596c361fe676a5c4738fb2be34e3a93,
 // codex-rs/login/src/auth/{storage.rs,manager.rs} and token_data.rs.
+
 package openairesponses
 
 import (
@@ -306,8 +307,14 @@ func (s *credentialStore) current(ctx context.Context) (_ *tokens, err error) {
 }
 
 func equalDocuments(a, b *credentialDocument) bool {
-	x, _ := json.Marshal(a.fields)
-	y, _ := json.Marshal(b.fields)
+	x, err := json.Marshal(a.fields)
+	if err != nil {
+		return false
+	}
+	y, err := json.Marshal(b.fields)
+	if err != nil {
+		return false
+	}
 	return bytes.Equal(x, y)
 }
 
@@ -371,7 +378,7 @@ func (t *authTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 	r := req.Clone(req.Context())
 	r.Header.Set("Authorization", "Bearer "+tok.AccessToken)
-	r.Header.Set("ChatGPT-Account-ID", tok.AccountID)
+	r.Header.Set("Chatgpt-Account-Id", tok.AccountID)
 	r.Header.Set("Originator", t.appName)
 	r.Header.Set("User-Agent", t.appName)
 	return t.transport.RoundTrip(r)

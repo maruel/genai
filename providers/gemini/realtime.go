@@ -12,7 +12,9 @@ import (
 	"errors"
 	"fmt"
 	"iter"
+	"maps"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -61,10 +63,8 @@ func (o *RealtimeOption) Validate() error {
 			return errors.New("gemini live endpoint must be an absolute ws/wss URL without credentials, query or fragment")
 		}
 	}
-	for _, lang := range o.InputLanguages {
-		if lang == "" {
-			return errors.New("gemini live input language hints must not be empty")
-		}
+	if slices.Contains(o.InputLanguages, "") {
+		return errors.New("gemini live input language hints must not be empty")
 	}
 	if o.PingInterval < 0 || o.PingTimeout < 0 {
 		return errors.New("gemini live keepalive durations must not be negative")
@@ -325,68 +325,6 @@ func inlineDoc(d *genai.Doc, limit int64) (*LiveBlob, error) {
 	return &LiveBlob{MIMEType: mimeType, Data: data}, nil
 }
 
-func (s *RealtimeSession) updateMessage(u *genai.RealtimeUpdate) (LiveContextUpdate, LiveTools, genai.ToolCallRequest, error) {
-	var options []string
-	c := &s.info.Capabilities.Update
-	if u.Instructions != nil && !c.Instructions {
-		options = append(options, "instructions")
-	}
-	if u.Tools != nil && !c.Tools {
-		options = append(options, "tools")
-	}
-	if u.ToolChoice != nil {
-		if *u.ToolChoice == genai.ToolCallRequired {
-			if !c.ToolChoiceRequired {
-				options = append(options, "required tool choice")
-			}
-		} else if !c.ToolChoice {
-			options = append(options, "tool choice")
-		}
-	}
-	if u.MaxOutputTokens != nil && !c.MaxOutputTokens {
-		options = append(options, "max output tokens")
-	}
-	if u.OutputModalities != nil && !c.OutputModalities {
-		options = append(options, "output modalities")
-	}
-	if u.TurnDetection != nil && !c.TurnDetection {
-		options = append(options, "turn detection")
-	}
-	if u.Voice != nil && !c.VoiceBeforeOutput {
-		options = append(options, "voice")
-	}
-	if len(options) != 0 {
-		return LiveContextUpdate{}, nil, genai.ToolCallAny, &base.ErrNotSupported{Options: options}
-	}
-	tools, choice := s.liveTools, s.toolChoice
-	if u.Tools != nil {
-		if err := tools.Init(*u.Tools, s.model); err != nil {
-			return LiveContextUpdate{}, nil, genai.ToolCallAny, err
-		}
-	}
-	if u.ToolChoice != nil {
-		choice = *u.ToolChoice
-		if choice == genai.ToolCallRequired {
-			return LiveContextUpdate{}, nil, genai.ToolCallAny, &base.ErrNotSupported{Options: []string{"required tool choice"}}
-		}
-	}
-	if u.MaxOutputTokens != nil || u.OutputModalities != nil {
-		return LiveContextUpdate{}, nil, genai.ToolCallAny, &base.ErrNotSupported{Options: []string{"Gemini Live output configuration"}}
-	}
-	ctx := LiveContextUpdate{}
-	if u.Instructions != nil {
-		ctx.SystemInstruction = LiveContent{Parts: []LivePart{{Text: *u.Instructions}}}
-	}
-	if u.Tools != nil || u.ToolChoice != nil {
-		if choice == genai.ToolCallNone {
-			ctx.Tools = &LiveContextUpdateTools{}
-		} else {
-			ctx.Tools = &LiveContextUpdateTools{Tools: tools}
-		}
-	}
-	return ctx, tools, choice, nil
-}
-
 // Receive implements genai.RealtimeSession.
 func (s *RealtimeSession) Receive(ctx context.Context) iter.Seq2[genai.RealtimeEvent, error] {
 	return func(yield func(genai.RealtimeEvent, error) bool) {
@@ -526,9 +464,7 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		if s.cancelled == nil {
 			s.cancelled = make(map[string]string)
 		}
-		for id, name := range additional {
-			s.cancelled[id] = name
-		}
+		maps.Copy(s.cancelled, additional)
 		s.cancelledBytes += additionalBytes
 		for _, id := range c.IDs {
 			delete(s.tools, id)
@@ -665,3 +601,65 @@ type realtimePendingTool struct {
 
 var _ genai.RealtimeSession = (*RealtimeSession)(nil)
 var _ genai.RealtimeOption = (*RealtimeOption)(nil)
+
+func (s *RealtimeSession) updateMessage(u *genai.RealtimeUpdate) (LiveContextUpdate, LiveTools, genai.ToolCallRequest, error) {
+	var options []string
+	c := &s.info.Capabilities.Update
+	if u.Instructions != nil && !c.Instructions {
+		options = append(options, "instructions")
+	}
+	if u.Tools != nil && !c.Tools {
+		options = append(options, "tools")
+	}
+	if u.ToolChoice != nil {
+		if *u.ToolChoice == genai.ToolCallRequired {
+			if !c.ToolChoiceRequired {
+				options = append(options, "required tool choice")
+			}
+		} else if !c.ToolChoice {
+			options = append(options, "tool choice")
+		}
+	}
+	if u.MaxOutputTokens != nil && !c.MaxOutputTokens {
+		options = append(options, "max output tokens")
+	}
+	if u.OutputModalities != nil && !c.OutputModalities {
+		options = append(options, "output modalities")
+	}
+	if u.TurnDetection != nil && !c.TurnDetection {
+		options = append(options, "turn detection")
+	}
+	if u.Voice != nil && !c.VoiceBeforeOutput {
+		options = append(options, "voice")
+	}
+	if len(options) != 0 {
+		return LiveContextUpdate{}, nil, genai.ToolCallAny, &base.ErrNotSupported{Options: options}
+	}
+	tools, choice := s.liveTools, s.toolChoice
+	if u.Tools != nil {
+		if err := tools.Init(*u.Tools, s.model); err != nil {
+			return LiveContextUpdate{}, nil, genai.ToolCallAny, err
+		}
+	}
+	if u.ToolChoice != nil {
+		choice = *u.ToolChoice
+		if choice == genai.ToolCallRequired {
+			return LiveContextUpdate{}, nil, genai.ToolCallAny, &base.ErrNotSupported{Options: []string{"required tool choice"}}
+		}
+	}
+	if u.MaxOutputTokens != nil || u.OutputModalities != nil {
+		return LiveContextUpdate{}, nil, genai.ToolCallAny, &base.ErrNotSupported{Options: []string{"Gemini Live output configuration"}}
+	}
+	ctx := LiveContextUpdate{}
+	if u.Instructions != nil {
+		ctx.SystemInstruction = LiveContent{Parts: []LivePart{{Text: *u.Instructions}}}
+	}
+	if u.Tools != nil || u.ToolChoice != nil {
+		if choice == genai.ToolCallNone {
+			ctx.Tools = &LiveContextUpdateTools{}
+		} else {
+			ctx.Tools = &LiveContextUpdateTools{Tools: tools}
+		}
+	}
+	return ctx, tools, choice, nil
+}

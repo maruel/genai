@@ -15,6 +15,7 @@ import (
 
 	"github.com/coder/websocket"
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/gemini"
 )
@@ -24,7 +25,7 @@ func testClientConnectLiveRaw(t *testing.T) {
 	t.Run("native segments and generation completion", func(t *testing.T) {
 		t.Parallel()
 		endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-			if setup["setup"].(map[string]any)["model"] != "models/gemini-3.5-transcribe-live" {
+			if internaltest.AssertType[map[string]any](t, setup["setup"])["model"] != "models/gemini-3.5-transcribe-live" {
 				t.Error(setup)
 			}
 			realtimetest.Read(t, ctx, ws)

@@ -111,6 +111,20 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 	return fnFragments, fnFinish
 }
 
+func (c *ProviderReasoning) Unwrap() genai.Provider {
+	return c.Provider
+}
+
+type tagProcessingState int
+
+const (
+	start tagProcessingState = iota
+	startTagSeen
+	thinkingTextSeen
+	endTagSeen
+	textSeen
+)
+
 // processPacket is the streaming version of message fragment processing.
 func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f *genai.Reply) ([]genai.Reply, tagProcessingState, error) {
 	var replies []genai.Reply
@@ -239,17 +253,3 @@ func (c *ProviderReasoning) processReasoningMessage(m *genai.Message) error {
 	}
 	return nil
 }
-
-func (c *ProviderReasoning) Unwrap() genai.Provider {
-	return c.Provider
-}
-
-type tagProcessingState int
-
-const (
-	start tagProcessingState = iota
-	startTagSeen
-	thinkingTextSeen
-	endTagSeen
-	textSeen
-)

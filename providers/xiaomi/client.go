@@ -52,6 +52,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -155,61 +156,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	variant := "pro"
-	if preference == string(genai.ModelCheap) || preference == string(genai.ModelGood) {
-		variant = "flash"
-	}
-	re := regexp.MustCompile(`^mimo-v([0-9]+)\.([0-9]+)-` + variant + `$`)
-	selected := ""
-	major, minor := -1, -1
-	for _, mdl := range mdls {
-		id := mdl.(*Model).ID
-		m := re.FindStringSubmatch(id)
-		if m == nil {
-			continue
-		}
-		ma, err := strconv.Atoi(m[1])
-		if err != nil {
-			continue
-		}
-		mi, err := strconv.Atoi(m[2])
-		if err != nil {
-			continue
-		}
-		if ma > major || ma == major && mi > minor {
-			selected, major, minor = id, ma, mi
-		}
-	}
-	if selected == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selected, nil
-}
-
-// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
-//
-// Audio models are identified by "tts" in their name.
-func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	// All TTS models are equivalent; pick the base one.
-	want := "mimo-v2.5-tts"
-	for _, mdl := range mdls {
-		if mdl.(*Model).ID == want {
-			return want, nil
-		}
-	}
-	return "", errors.New("failed to find an audio model automatically")
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -453,3 +399,58 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
+//
+// Audio models are identified by "tts" in their name.
+func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	// All TTS models are equivalent; pick the base one.
+	want := "mimo-v2.5-tts"
+	for _, mdl := range mdls {
+		if mdl.(*Model).ID == want { //nolint:forcetypeassert // ListModels constructs only provider Model values.
+			return want, nil
+		}
+	}
+	return "", errors.New("failed to find an audio model automatically")
+}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	variant := "pro"
+	if preference == string(genai.ModelCheap) || preference == string(genai.ModelGood) {
+		variant = "flash"
+	}
+	re := regexp.MustCompile(`^mimo-v([0-9]+)\.([0-9]+)-` + variant + `$`)
+	selected := ""
+	major, minor := -1, -1
+	for _, mdl := range mdls {
+		id := mdl.(*Model).ID //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		m := re.FindStringSubmatch(id)
+		if m == nil {
+			continue
+		}
+		ma, err := strconv.Atoi(m[1])
+		if err != nil {
+			continue
+		}
+		mi, err := strconv.Atoi(m[2])
+		if err != nil {
+			continue
+		}
+		if ma > major || ma == major && mi > minor {
+			selected, major, minor = id, ma, mi
+		}
+	}
+	if selected == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selected, nil
+}

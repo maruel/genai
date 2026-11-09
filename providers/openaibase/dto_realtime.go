@@ -1146,6 +1146,8 @@ func (m *Modalities) UnmarshalJSON(b []byte) error {
 }
 
 // ToolList bounds peer-supplied tool declarations.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type ToolList []Tool
 
 // Init converts portable tool declarations to OpenAI-wire tools.

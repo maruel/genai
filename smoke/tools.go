@@ -565,9 +565,9 @@ func exerciseGenConversation(ctx context.Context, cs *callState, f *scoreboard.F
 				return scoreboard.False, nil
 			}
 		}
-		for i := len(pending) - 1; i >= 0; i-- {
-			msgs = append(msgs, genai.Message{ToolCallResults: []genai.ToolCallResult{pending[i].Result}})
-			received = append(received, pending[i].Task)
+		for _, p := range slices.Backward(pending) {
+			msgs = append(msgs, genai.Message{ToolCallResults: []genai.ToolCallResult{p.Result}})
+			received = append(received, p.Task)
 		}
 		pending = nil
 		msgs = append(msgs, genai.NewTextMessage(conversationQuery))

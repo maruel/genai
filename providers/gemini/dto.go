@@ -794,7 +794,7 @@ func (p *Part) FromRequest(in *genai.Request) error {
 		return nil
 	}
 	if !in.Doc.IsZero() {
-		mimeType := ""
+		var mimeType string
 		var data []byte
 		if in.Doc.URL == "" {
 			// If more than 20MB, we need to use
@@ -872,7 +872,7 @@ func (p *Part) FromReply(in *genai.Reply) error {
 		return nil
 	}
 	if !in.Doc.IsZero() {
-		mimeType := ""
+		var mimeType string
 		var data []byte
 		if in.Doc.URL == "" {
 			// If more than 20MB, we need to use
@@ -1653,6 +1653,7 @@ type FileSearchStoreDocumentListResponse struct {
 // https://ai.google.dev/api/caching?hl=en#request-body
 type CachedContent struct {
 	Expiration
+
 	Contents          []Content  `json:"contents,omitzero"`
 	Tools             []Tool     `json:"tools,omitzero"`
 	Name              string     `json:"name,omitzero"`
@@ -1824,6 +1825,8 @@ type CountTokensResponse struct {
 // ErrorResponse represents the response structure for Gemini errors.
 //
 // It is returned as an error.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorVal ErrorResponseError `json:"error"`
 }

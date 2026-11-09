@@ -48,6 +48,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -153,49 +154,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // TODO:
 // https://codestral.mistral.ai/v1/fim/completions
 // https://codestral.mistral.ai/v1/chat/completions
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		// The rolling Large alias can lag newly released generations.
-		if !cheap && !good && m.ID == "mistral-large-4-0" && m.Capabilities.CompletionChat && m.Deprecation == "" {
-			return m.ID, nil
-		}
-		// TODO: Support magistral.
-		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") || strings.HasPrefix(m.ID, "voxtral") {
-			continue
-		}
-		switch {
-		case cheap:
-			if strings.Contains(m.ID, "small") {
-				selectedModel = m.ID
-			}
-		case good:
-			if strings.Contains(m.ID, "medium") {
-				selectedModel = m.ID
-			}
-		default:
-			if strings.Contains(m.ID, "large") {
-				selectedModel = m.ID
-			}
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
-}
 
 // Close implements io.Closer. It currently does nothing.
 func (c *Client) Close() error {
@@ -393,3 +351,49 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m, ok := mdl.(*Model)
+		if !ok {
+			return "", fmt.Errorf("unexpected model type %T", mdl)
+		}
+		// The rolling Large alias can lag newly released generations.
+		if !cheap && !good && m.ID == "mistral-large-4-0" && m.Capabilities.CompletionChat && m.Deprecation == "" {
+			return m.ID, nil
+		}
+		// TODO: Support magistral.
+		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") || strings.HasPrefix(m.ID, "voxtral") {
+			continue
+		}
+		switch {
+		case cheap:
+			if strings.Contains(m.ID, "small") {
+				selectedModel = m.ID
+			}
+		case good:
+			if strings.Contains(m.ID, "medium") {
+				selectedModel = m.ID
+			}
+		default:
+			if strings.Contains(m.ID, "large") {
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}

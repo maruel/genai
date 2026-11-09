@@ -421,8 +421,8 @@ func matchAny(name string, patterns []string) bool {
 		return true
 	}
 	for _, p := range patterns {
-		if strings.HasSuffix(p, "/...") {
-			prefix := strings.TrimSuffix(p, "/...")
+		if before, ok := strings.CutSuffix(p, "/..."); ok {
+			prefix := before
 			if strings.HasPrefix(name, prefix) {
 				return true
 			}

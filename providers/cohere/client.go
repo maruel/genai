@@ -49,6 +49,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -138,54 +139,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	var ctxLen int64
-
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
-			continue
-		}
-		if !slices.Contains(m.Features, "strict_tools") {
-			continue
-		}
-		switch {
-		case cheap:
-			if strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "arabic") && (ctxLen == 0 || ctxLen < m.ContextLength) {
-				ctxLen = m.ContextLength
-				selectedModel = m.Name
-			}
-		case good:
-			// Prefer reasoning models as they're more capable.
-			if strings.Contains(m.Name, "reasoning") && (ctxLen == 0 || ctxLen < m.ContextLength) {
-				ctxLen = m.ContextLength
-				selectedModel = m.Name
-			}
-		default:
-			if strings.Contains(m.Name, "reasoning") && (ctxLen == 0 || ctxLen < m.ContextLength) {
-				// For the greatest, we want the largest context.
-				ctxLen = m.ContextLength
-				selectedModel = m.Name
-			}
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -410,3 +363,54 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	var ctxLen int64
+
+	for _, mdl := range mdls {
+		m, ok := mdl.(*Model)
+		if !ok {
+			return "", fmt.Errorf("unexpected model type %T", mdl)
+		}
+		if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
+			continue
+		}
+		if !slices.Contains(m.Features, "strict_tools") {
+			continue
+		}
+		switch {
+		case cheap:
+			if strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "arabic") && (ctxLen == 0 || ctxLen < m.ContextLength) {
+				ctxLen = m.ContextLength
+				selectedModel = m.Name
+			}
+		case good:
+			// Prefer reasoning models as they're more capable.
+			if strings.Contains(m.Name, "reasoning") && (ctxLen == 0 || ctxLen < m.ContextLength) {
+				ctxLen = m.ContextLength
+				selectedModel = m.Name
+			}
+		default:
+			if strings.Contains(m.Name, "reasoning") && (ctxLen == 0 || ctxLen < m.ContextLength) {
+				// For the greatest, we want the largest context.
+				ctxLen = m.ContextLength
+				selectedModel = m.Name
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}

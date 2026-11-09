@@ -50,6 +50,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -179,57 +180,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	return c, err
 }
 
-// detectModelModalities tries its best to figure out the modality of a model
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
-	mod, err := c.modelModality(ctx, model)
-	return genai.Modalities{mod}, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	// We only list text models here, not images generation ones.
-	mdls, err := c.ListTextModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	var preferred []string
-	switch preference {
-	case string(genai.ModelCheap):
-		preferred = []string{"openai/gpt-6-luna"}
-	case string(genai.ModelGood), "":
-		preferred = []string{"openai/gpt-6.1-terra", "openai/gpt-6.1-sol", "openai/gpt-6-sol"}
-	default:
-		preferred = []string{"openai/gpt-6-astra"}
-	}
-	for _, id := range preferred {
-		for _, m := range mdls {
-			if m.GetID() == id {
-				return id, nil
-			}
-		}
-	}
-	return "", errors.New("failed to find a model automatically")
-}
-
-// selectBestImageModel selects the most appropriate image model.
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestImageModel(ctx context.Context) (string, error) {
-	mdls, err := c.ListImageGenModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically detect the model modality: %w", err)
-	}
-	// TODO: Figure out how to select a best model. There's literally no information to make an informed choice.
-	return mdls[0].GetID(), nil
-}
-
 // Close implements io.Closer. It currently does nothing.
 func (c *Client) Close() error {
 	return nil
@@ -302,6 +252,130 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
 	return c.impl.GenStreamRaw(ctx, in)
+}
+
+// ListModels implements genai.Provider.
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
+	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
+	img, err1 := c.ListImageGenModels(ctx)
+	txt, err2 := c.ListTextModels(ctx)
+	out := make([]genai.Model, 0, len(img)+len(txt))
+	out = append(out, img...)
+	out = append(out, txt...)
+	if err1 == nil {
+		err1 = err2
+	}
+	return out, err1
+}
+
+// ListImageGenModels lists available image generation models.
+func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
+	var resp ImageModelsResponse
+	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/image/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
+}
+
+// ListTextModels lists available text models.
+func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
+	var resp TextModelsResponse
+	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/text/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
+}
+
+func (c *Client) isAudio() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityAudio)
+}
+
+func (c *Client) isImage() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityImage)
+}
+
+// modelModality returns the modality of model if found.
+func (c *Client) modelModality(ctx context.Context, model string) (genai.Modality, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+	for _, mdl := range mdls {
+		if mdl.GetID() == model {
+			if _, ok := mdl.(*TextModel); ok {
+				return genai.ModalityText, nil
+			}
+			if _, ok := mdl.(*ImageModel); ok {
+				return genai.ModalityImage, nil
+			}
+			break
+		}
+	}
+	return "", fmt.Errorf("model %q not supported by pollinations", model)
+}
+
+// validateModality returns nil if the modality is supported by the model.
+func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error {
+	if got, err := c.modelModality(ctx, c.ModelID()); err != nil {
+		return err
+	} else if got != mod {
+		return fmt.Errorf("modality %s not supported", mod)
+	}
+	return nil
+}
+
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	mod, err := c.modelModality(ctx, model)
+	return genai.Modalities{mod}, err
+}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	// We only list text models here, not images generation ones.
+	mdls, err := c.ListTextModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	var preferred []string
+	switch preference {
+	case string(genai.ModelCheap):
+		preferred = []string{"openai/gpt-6-luna"}
+	case string(genai.ModelGood), "":
+		preferred = []string{"openai/gpt-6.1-terra", "openai/gpt-6.1-sol", "openai/gpt-6-sol"}
+	default:
+		preferred = []string{"openai/gpt-6-astra"}
+	}
+	for _, id := range preferred {
+		for _, m := range mdls {
+			if m.GetID() == id {
+				return id, nil
+			}
+		}
+	}
+	return "", errors.New("failed to find a model automatically")
+}
+
+// selectBestImageModel selects the most appropriate image model.
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestImageModel(ctx context.Context) (string, error) {
+	mdls, err := c.ListImageGenModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically detect the model modality: %w", err)
+	}
+	// TODO: Figure out how to select a best model. There's literally no information to make an informed choice.
+	return mdls[0].GetID(), nil
 }
 
 // genImage is a simplified version of GenSync only for images.
@@ -396,79 +470,6 @@ func (c *Client) genImage(ctx context.Context, msg *genai.Message, opts ...genai
 		return res, err
 	}
 	return res, nil
-}
-
-// ListModels implements genai.Provider.
-func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	if c.impl.PreloadedModels != nil {
-		return c.impl.PreloadedModels, nil
-	}
-	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
-	img, err1 := c.ListImageGenModels(ctx)
-	txt, err2 := c.ListTextModels(ctx)
-	out := make([]genai.Model, 0, len(img)+len(txt))
-	out = append(out, img...)
-	out = append(out, txt...)
-	if err1 == nil {
-		err1 = err2
-	}
-	return out, err1
-}
-
-// ListImageGenModels lists available image generation models.
-func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
-	var resp ImageModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/image/models", nil, &resp); err != nil {
-		return nil, err
-	}
-	return resp.ToModels(), nil
-}
-
-// ListTextModels lists available text models.
-func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
-	var resp TextModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/text/models", nil, &resp); err != nil {
-		return nil, err
-	}
-	return resp.ToModels(), nil
-}
-
-func (c *Client) isAudio() bool {
-	return slices.Contains(c.impl.OutputModalities, genai.ModalityAudio)
-}
-
-func (c *Client) isImage() bool {
-	return slices.Contains(c.impl.OutputModalities, genai.ModalityImage)
-}
-
-// modelModality returns the modality of model if found.
-func (c *Client) modelModality(ctx context.Context, model string) (genai.Modality, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", err
-	}
-	for _, mdl := range mdls {
-		if mdl.GetID() == model {
-			if _, ok := mdl.(*TextModel); ok {
-				return genai.ModalityText, nil
-			}
-			if _, ok := mdl.(*ImageModel); ok {
-				return genai.ModalityImage, nil
-			}
-			break
-		}
-	}
-	return "", fmt.Errorf("model %q not supported by pollinations", model)
-}
-
-// validateModality returns nil if the modality is supported by the model.
-func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error {
-	if got, err := c.modelModality(ctx, c.ModelID()); err != nil {
-		return err
-	} else if got != mod {
-		return fmt.Errorf("modality %s not supported", mod)
-	}
-	return nil
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

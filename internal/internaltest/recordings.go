@@ -16,6 +16,7 @@ import (
 
 var recordings = struct {
 	sync.Mutex
+
 	used map[string]map[string]struct{}
 }{used: map[string]map[string]struct{}{}}
 

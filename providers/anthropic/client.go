@@ -87,6 +87,7 @@ func (o *GenOptionText) Validate() error {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	// multipartBoundary overrides the multipart boundary for deterministic HTTP
 	// recordings. Leave empty for production use.
@@ -179,50 +180,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most recent model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	var date time.Time
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		// Always select the most recent model.
-		if !date.IsZero() && m.CreatedAt.Before(date) {
-			continue
-		}
-		switch {
-		case cheap:
-			if strings.Contains(m.ID, "-haiku-") {
-				date = m.CreatedAt
-				selectedModel = m.ID
-			}
-		case good:
-			if strings.Contains(m.ID, "-sonnet-") {
-				date = m.CreatedAt
-				selectedModel = m.ID
-			}
-		default:
-			// Claude Fable 5 is more capable, but it is much more expensive. Keep SOTA on Opus for now.
-			if strings.Contains(m.ID, "-opus-") {
-				date = m.CreatedAt
-				selectedModel = m.ID
-			}
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
 }
 
 // GenAsync implements genai.ProviderGenAsync.
@@ -356,32 +313,6 @@ func (c *Client) DeleteBatch(ctx context.Context, id string) error {
 	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(id)
 	resp := BatchDeleteResponse{}
 	return c.impl.DoRequest(ctx, "DELETE", u, nil, &resp)
-}
-
-// fileDo executes an HTTP request with the files API beta header.
-func (c *Client) fileDo(ctx context.Context, method, u string, body io.Reader, contentType string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(ctx, method, u, body)
-	if err != nil {
-		return nil, err
-	}
-	if contentType != "" {
-		req.Header.Set("Content-Type", contentType)
-	}
-	req.Header.Set("anthropic-beta", "files-api-2025-04-14")
-	return c.impl.Client.Do(req)
-}
-
-// fileDoJSON executes a JSON GET/DELETE request with the files API beta header
-// and decodes the response.
-func (c *Client) fileDoJSON(ctx context.Context, method, u string, out any) error {
-	resp, err := c.fileDo(ctx, method, u, nil, "")
-	if err != nil {
-		if resp != nil {
-			_ = resp.Body.Close()
-		}
-		return err
-	}
-	return c.impl.DecodeResponse(resp, u, out)
 }
 
 // FileUpload uploads a file to the Anthropic files API.
@@ -532,27 +463,6 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-// ensureModelData ensures model capabilities are cached for request validation and defaults.
-// Falls back to ListModels for unknown models.
-func (c *Client) ensureModelData(ctx context.Context) {
-	if c.impl.Model == "" {
-		return
-	}
-	if _, ok := getModelData(c.impl.Model); ok {
-		return
-	}
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return
-	}
-	for _, m := range mdls {
-		if am, ok := m.(*Model); ok && am.ID == c.impl.Model {
-			cacheModelData(am)
-			return
-		}
-	}
-}
-
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if c.impl.PreloadedModels != nil {
@@ -622,6 +532,100 @@ func (c *Client) CountTokensRaw(ctx context.Context, in *CountTokensRequest) (*C
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{
 		GenAsync: true,
+	}
+}
+
+// selectBestTextModel selects the most recent model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	var date time.Time
+	for _, mdl := range mdls {
+		m, ok := mdl.(*Model)
+		if !ok {
+			return "", fmt.Errorf("unexpected model type %T", mdl)
+		}
+		// Always select the most recent model.
+		if !date.IsZero() && m.CreatedAt.Before(date) {
+			continue
+		}
+		switch {
+		case cheap:
+			if strings.Contains(m.ID, "-haiku-") {
+				date = m.CreatedAt
+				selectedModel = m.ID
+			}
+		case good:
+			if strings.Contains(m.ID, "-sonnet-") {
+				date = m.CreatedAt
+				selectedModel = m.ID
+			}
+		default:
+			// Claude Fable 5 is more capable, but it is much more expensive. Keep SOTA on Opus for now.
+			if strings.Contains(m.ID, "-opus-") {
+				date = m.CreatedAt
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
+// fileDo executes an HTTP request with the files API beta header.
+func (c *Client) fileDo(ctx context.Context, method, u string, body io.Reader, contentType string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, method, u, body)
+	if err != nil {
+		return nil, err
+	}
+	if contentType != "" {
+		req.Header.Set("Content-Type", contentType)
+	}
+	req.Header.Set("Anthropic-Beta", "files-api-2025-04-14")
+	return c.impl.Client.Do(req)
+}
+
+// fileDoJSON executes a JSON GET/DELETE request with the files API beta header
+// and decodes the response.
+func (c *Client) fileDoJSON(ctx context.Context, method, u string, out any) error {
+	resp, err := c.fileDo(ctx, method, u, nil, "")
+	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
+		return err
+	}
+	return c.impl.DecodeResponse(resp, u, out)
+}
+
+// ensureModelData ensures model capabilities are cached for request validation and defaults.
+// Falls back to ListModels for unknown models.
+func (c *Client) ensureModelData(ctx context.Context) {
+	if c.impl.Model == "" {
+		return
+	}
+	if _, ok := getModelData(c.impl.Model); ok {
+		return
+	}
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return
+	}
+	for _, m := range mdls {
+		if am, ok := m.(*Model); ok && am.ID == c.impl.Model {
+			cacheModelData(am)
+			return
+		}
 	}
 }
 
@@ -853,7 +857,7 @@ type betaHeader struct {
 func (b *betaHeader) RoundTrip(req *http.Request) (*http.Response, error) {
 	if v, _ := req.Context().Value(ctxBetaKey{}).(string); v != "" {
 		req = req.Clone(req.Context())
-		req.Header.Set("anthropic-beta", v)
+		req.Header.Set("Anthropic-Beta", v)
 	}
 	return b.transport.RoundTrip(req)
 }

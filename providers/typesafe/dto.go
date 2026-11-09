@@ -24,8 +24,8 @@ import (
 // SystemOneResponse is the native /v1/systemone response.
 type SystemOneResponse struct {
 	// Model identifies the decision model that answered.
-	Model string `json:"model"`
-	genai.SystemOneResponse
+	Model                   string `json:"model"`
+	genai.SystemOneResponse        //nolint:embeddedstructfieldcheck // Preserve the JSON field order.
 }
 
 // To converts native decision output to shared decision output.
@@ -117,6 +117,8 @@ func (m *Model) Context() int64 {
 }
 
 // ErrorResponse is the error returned by the API on a failed request.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	// Detail describes the failure.
 	Detail ErrorDetail `json:"detail"`
@@ -136,6 +138,8 @@ func (er *ErrorResponse) IsAPIError() bool {
 //
 // The API returns a string or an object describing the failure, or a list of validation errors on
 // HTTP 422.
+//
+//nolint:errname // Preserve the exported API and provider wire type name.
 type ErrorDetail struct {
 	// Message describes the failure. It is set when the API returns a string or an object.
 	Message string

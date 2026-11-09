@@ -273,8 +273,7 @@ func TestWriteUserMsg(t *testing.T) {
 			msg := genai.Message{Requests: []genai.Request{{Doc: genai.Doc{URL: "https://example.com/input.wav"}}}}
 			var buf strings.Builder
 			err := writeUserMsg(&buf, &msg)
-			var nse *base.ErrNotSupported
-			if !errors.As(err, &nse) {
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
 				t.Fatalf("writeUserMsg error = %v, want ErrNotSupported", err)
 			}
 			if buf.Len() != 0 {

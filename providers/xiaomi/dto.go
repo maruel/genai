@@ -345,6 +345,52 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
+func (m *Message) To(out *genai.Message) error {
+	if m.ReasoningContent != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
+	}
+	for _, c := range m.Content {
+		if c.Type == ContentText && c.Text != "" {
+			out.Replies = append(out.Replies, genai.Reply{Text: c.Text})
+		}
+	}
+	// Handle TTS audio output.
+	if m.Audio.Data != "" {
+		audioData, err := base64.StdEncoding.DecodeString(m.Audio.Data)
+		if err != nil {
+			return fmt.Errorf("failed to decode audio data: %w", err)
+		}
+		out.Replies = append(out.Replies, genai.Reply{
+			Doc: genai.Doc{
+				Filename: "audio.wav",
+				Src:      &bb.BytesBuffer{D: audioData},
+			},
+		})
+	}
+	for i := range m.ToolCalls {
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
+	}
+	for _, a := range m.Annotations {
+		if a.Type != "url_citation" {
+			if !internal.BeLenient {
+				return fmt.Errorf("unsupported annotation type %q", a.Type)
+			}
+			continue
+		}
+		c := genai.Citation{
+			Sources: []genai.CitationSource{{
+				Type:  genai.CitationWeb,
+				Title: a.Title,
+				URL:   a.URL,
+			}},
+		}
+		out.Replies = append(out.Replies, genai.Reply{Citation: c})
+	}
+	return nil
+}
+
 // fromDoc converts a genai.Doc to the appropriate MiMo content format.
 func (m *Message) fromDoc(doc *genai.Doc) error {
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
@@ -393,52 +439,6 @@ func (m *Message) fromDoc(doc *genai.Doc) error {
 		m.Content = Contents{{Type: ContentText, Text: string(data)}}
 	default:
 		return fmt.Errorf("unsupported mime type: %s", mimeType)
-	}
-	return nil
-}
-
-// To converts to the genai equivalent.
-func (m *Message) To(out *genai.Message) error {
-	if m.ReasoningContent != "" {
-		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
-	}
-	for _, c := range m.Content {
-		if c.Type == ContentText && c.Text != "" {
-			out.Replies = append(out.Replies, genai.Reply{Text: c.Text})
-		}
-	}
-	// Handle TTS audio output.
-	if m.Audio.Data != "" {
-		audioData, err := base64.StdEncoding.DecodeString(m.Audio.Data)
-		if err != nil {
-			return fmt.Errorf("failed to decode audio data: %w", err)
-		}
-		out.Replies = append(out.Replies, genai.Reply{
-			Doc: genai.Doc{
-				Filename: "audio.wav",
-				Src:      &bb.BytesBuffer{D: audioData},
-			},
-		})
-	}
-	for i := range m.ToolCalls {
-		out.Replies = append(out.Replies, genai.Reply{})
-		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
-	}
-	for _, a := range m.Annotations {
-		if a.Type != "url_citation" {
-			if !internal.BeLenient {
-				return fmt.Errorf("unsupported annotation type %q", a.Type)
-			}
-			continue
-		}
-		c := genai.Citation{
-			Sources: []genai.CitationSource{{
-				Type:  genai.CitationWeb,
-				Title: a.Title,
-				URL:   a.URL,
-			}},
-		}
-		out.Replies = append(out.Replies, genai.Reply{Citation: c})
 	}
 	return nil
 }
@@ -714,6 +714,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 }
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorVal struct {
 		Message string `json:"message"`

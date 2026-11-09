@@ -1059,6 +1059,8 @@ func (s *Strings) UnmarshalJSON(b []byte) error {
 //
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	Success  bool       `json:"success,omitzero"`
 	ErrorVal ErrorValue `json:"error"`

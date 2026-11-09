@@ -248,6 +248,7 @@ func TestClient(t *testing.T) {
 // smallImage speeds up image generation.
 type smallImage struct {
 	genai.Provider
+
 	size int
 }
 

@@ -29,7 +29,7 @@ func TestSessionUpdateMessage(t *testing.T) {
 	}{
 		{
 			name: "one field",
-			msg:  openaibase.SessionUpdateMessage{Type: openaibase.EventSessionUpdate, Session: &openaibase.SessionUpdate{Instructions: strPtr("hello")}},
+			msg:  openaibase.SessionUpdateMessage{Type: openaibase.EventSessionUpdate, Session: &openaibase.SessionUpdate{Instructions: new("hello")}},
 			want: `{"type":"session.update","session":{"instructions":"hello"}}`,
 		},
 		{
@@ -46,6 +46,7 @@ func TestSessionUpdateMessage(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			b, err := json.Marshal(&tc.msg)
 			if err != nil {
 				t.Fatal(err)
@@ -56,8 +57,6 @@ func TestSessionUpdateMessage(t *testing.T) {
 		})
 	}
 }
-
-func strPtr(v string) *string { return &v }
 
 func TestSessionUpdateFull(t *testing.T) {
 	t.Parallel()
@@ -123,6 +122,7 @@ func TestNullable(t *testing.T) {
 		{"value", wrapper{V: openaibase.Nullable[openaibase.Tracing]{Set: true, Value: &openaibase.Tracing{Auto: true}}}, `{"v":"auto"}`},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			b, err := json.Marshal(&tc.in)
 			if err != nil {
 				t.Fatal(err)

@@ -49,6 +49,7 @@ import (
 // embeddingModel is qualified outside the scoreboard scenarios.
 const embeddingModel = "ggml-org/embeddinggemma-2-GGUF:Q8_0"
 
+//nolint:tparallel // The parent owns a shared recording fixture and its cleanup.
 func TestClient(t *testing.T) {
 	t.Run("ConnectTranscriptionRaw", testClientConnectTranscriptionRaw)
 	t.Run("SpeechRaw errors", func(t *testing.T) {
@@ -79,7 +80,7 @@ func TestClient(t *testing.T) {
 				commands := make(chan []map[string]any, 1)
 				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 					realtimetest.Write(t, ctx, ws, nativeSession)
-					setup := realtimetest.Read(t, ctx, ws)["session"].(map[string]any)
+					setup := internaltest.AssertType[map[string]any](t, realtimetest.Read(t, ctx, ws)["session"])
 					if !reflect.DeepEqual(setup["output_modalities"], []any{"audio", "text"}) || setup["max_output_tokens"] != float64(128) {
 						t.Errorf("setup %#v", setup)
 					}
@@ -189,7 +190,7 @@ func TestClient(t *testing.T) {
 					frame := strings.ReplaceAll(strings.ReplaceAll(nativeSession, `"rate":16000`, `"rate":8000`), `"rate":24000`, `"rate":48000`)
 					realtimetest.Write(t, ctx, ws, frame)
 					m := realtimetest.Read(t, ctx, ws)
-					settings := m["session"].(map[string]any)
+					settings := internaltest.AssertType[map[string]any](t, m["session"])
 					if mode, ok := settings["output_modalities"]; !ok || mode != nil {
 						t.Errorf("default output mode must be automatic (null), got %#v", settings)
 					}
@@ -469,17 +470,17 @@ func TestClient(t *testing.T) {
 						remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 							realtimetest.Write(t, ctx, ws, nativeSession)
 							m := realtimetest.Read(t, ctx, ws)
-							v := m["session"].(map[string]any)
+							v := internaltest.AssertType[map[string]any](t, m["session"])
 							v["id"] = "local"
 							switch field {
 							case "rate":
-								v["audio"].(map[string]any)["output"].(map[string]any)["format"].(map[string]any)["rate"] = json.Number("16000")
+								internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, v["audio"])["output"])["format"])["rate"] = json.Number("16000")
 							case "modality":
 								v["output_modalities"] = []string{"audio", "text", "audio"}
 							case "tools":
 								v["tools"] = []any{map[string]any{"type": "function", "name": "extra", "parameters": map[string]any{"type": "object"}}}
 							case "transcription":
-								v["audio"].(map[string]any)["input"].(map[string]any)["transcription"] = map[string]any{"model": "ignored"}
+								internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, v["audio"])["input"])["transcription"] = map[string]any{"model": "ignored"}
 							}
 							b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
 							if err != nil {
@@ -1128,7 +1129,8 @@ func startServerTest(t testing.TB, ctx context.Context, exe, model, apiKey strin
 	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	lc := net.ListenConfig{}
+	ln, err := lc.Listen(ctx, "tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1319,10 +1321,10 @@ func (c compactNoTransport) RoundTrip(*http.Request) (*http.Response, error) {
 }
 
 type embeddingCompactWireRequest struct {
-	Model          string
-	Input          []json.RawMessage
-	EncodingFormat string `json:"encoding_format"`
-	Normalize      int    `json:"embd_normalize"`
+	Model          string            `json:"model"`
+	Input          []json.RawMessage `json:"input"`
+	EncodingFormat string            `json:"encoding_format"`
+	Normalize      int               `json:"embd_normalize"`
 }
 
 type embeddingVectorErrorCase struct {

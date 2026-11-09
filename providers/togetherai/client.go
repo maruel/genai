@@ -51,6 +51,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -165,107 +166,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	return c, err
 }
 
-// detectModelModalities tries its best to figure out the modality of a model
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
-	// Detect if it is an image model.
-	mdls, err2 := c.ListModels(ctx)
-	if err2 != nil {
-		return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", model, err2)
-	}
-	for _, mdl := range mdls {
-		if m := mdl.(*Model); m.ID == model {
-			switch m.Type {
-			case "chat", "":
-				// Some models don't have a type set; default to text.
-				return genai.Modalities{genai.ModalityText}, nil
-			case "image":
-				return genai.Modalities{genai.ModalityImage}, nil
-			default:
-				return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", model, m.Type)
-			}
-		}
-	}
-	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
-}
-
-// selectBestTextModel selects the qualified text model for every automatic tier.
-func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	const selected = "deepseek-ai/DeepSeek-V4.1-Flash-1017"
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if m.ID == selected && m.Type == "chat" {
-			return selected, nil
-		}
-	}
-	return "", fmt.Errorf("failed to automatically select the text model: %s is not available", selected)
-}
-
-// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	// As of May 2026, pricing is still not set for image models, so we rely on naming conventions.
-	// FLUX.2 models are preferred for SOTA over arbitrary -pro models.
-	flux2BestID, flux2BestRank := "", 0
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if m.Type != "image" {
-			continue
-		}
-		switch {
-		case cheap:
-			if strings.HasSuffix(m.ID, "-schnell") && (selectedModel == "" || m.ID > selectedModel) {
-				selectedModel = m.ID
-			}
-		case good:
-			if strings.HasSuffix(m.ID, "-dev") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
-				selectedModel = m.ID
-			}
-		default:
-			// Track the best FLUX.2 model by rank: max=3, pro=2, flex/dev=1.
-			if r := flux2Rank(m.ID); r > flux2BestRank {
-				flux2BestRank = r
-				flux2BestID = m.ID
-			}
-		}
-	}
-	if selectedModel == "" {
-		// SOTA: prefer FLUX.2 over any other -pro model.
-		if flux2BestID != "" {
-			return flux2BestID, nil
-		}
-		// Fallback to best -pro model (excluding kontext).
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if m.Type != "image" {
-				continue
-			}
-			if strings.HasSuffix(m.ID, "-pro") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
-				selectedModel = m.ID
-			}
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
-}
-
 // Close implements io.Closer. It currently does nothing.
 func (c *Client) Close() error {
 	return nil
@@ -333,45 +233,6 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
 	return c.impl.GenStreamRaw(ctx, in)
-}
-
-// genImage generates non-text content (images or audio).
-func (c *Client) genImage(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
-	if c.impl.OutputModalities[0] == genai.ModalityAudio {
-		// https://docs.together.ai/reference/audio-speech
-		return genai.Result{}, errors.New("audio not implemented yet")
-	}
-	// https://docs.together.ai/reference/post-images-generations
-	res := genai.Result{}
-	if err := c.impl.Validate(); err != nil {
-		return genai.Result{}, err
-	}
-	req := ImageRequest{}
-	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
-		return res, err
-	}
-	resp := ImageResponse{}
-	if err := c.impl.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
-		return res, err
-	}
-	res.Replies = make([]genai.Reply, len(resp.Data))
-	for i := range resp.Data {
-		n := "content.jpg"
-		if len(resp.Data) > 1 {
-			n = fmt.Sprintf("content%d.jpg", i+1)
-		}
-		if url := resp.Data[i].URL; url != "" {
-			res.Replies[i].Doc = genai.Doc{Filename: n, URL: url}
-		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-			res.Replies[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
-		} else {
-			return res, errors.New("internal error")
-		}
-	}
-	if err := res.Validate(); err != nil {
-		return res, err
-	}
-	return res, nil
 }
 
 // ListModels implements genai.Provider.
@@ -574,3 +435,143 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var _ genai.Provider = &Client{}
+
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	// Detect if it is an image model.
+	mdls, err2 := c.ListModels(ctx)
+	if err2 != nil {
+		return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", model, err2)
+	}
+	for _, mdl := range mdls {
+		if m := mdl.(*Model); m.ID == model { //nolint:forcetypeassert // ListModels constructs only provider Model values.
+			switch m.Type {
+			case "chat", "":
+				// Some models don't have a type set; default to text.
+				return genai.Modalities{genai.ModalityText}, nil
+			case "image":
+				return genai.Modalities{genai.ModalityImage}, nil
+			default:
+				return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", model, m.Type)
+			}
+		}
+	}
+	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
+}
+
+// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	// As of May 2026, pricing is still not set for image models, so we rely on naming conventions.
+	// FLUX.2 models are preferred for SOTA over arbitrary -pro models.
+	flux2BestID, flux2BestRank := "", 0
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		if m.Type != "image" {
+			continue
+		}
+		switch {
+		case cheap:
+			if strings.HasSuffix(m.ID, "-schnell") && (selectedModel == "" || m.ID > selectedModel) {
+				selectedModel = m.ID
+			}
+		case good:
+			if strings.HasSuffix(m.ID, "-dev") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
+				selectedModel = m.ID
+			}
+		default:
+			// Track the best FLUX.2 model by rank: max=3, pro=2, flex/dev=1.
+			if r := flux2Rank(m.ID); r > flux2BestRank {
+				flux2BestRank = r
+				flux2BestID = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		// SOTA: prefer FLUX.2 over any other -pro model.
+		if flux2BestID != "" {
+			return flux2BestID, nil
+		}
+		// Fallback to best -pro model (excluding kontext).
+		for _, mdl := range mdls {
+			m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+			if m.Type != "image" {
+				continue
+			}
+			if strings.HasSuffix(m.ID, "-pro") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
+// genImage generates non-text content (images or audio).
+func (c *Client) genImage(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
+	if c.impl.OutputModalities[0] == genai.ModalityAudio {
+		// https://docs.together.ai/reference/audio-speech
+		return genai.Result{}, errors.New("audio not implemented yet")
+	}
+	// https://docs.together.ai/reference/post-images-generations
+	res := genai.Result{}
+	if err := c.impl.Validate(); err != nil {
+		return genai.Result{}, err
+	}
+	req := ImageRequest{}
+	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
+		return res, err
+	}
+	resp := ImageResponse{}
+	if err := c.impl.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
+		return res, err
+	}
+	res.Replies = make([]genai.Reply, len(resp.Data))
+	for i := range resp.Data {
+		n := "content.jpg"
+		if len(resp.Data) > 1 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		if url := resp.Data[i].URL; url != "" {
+			res.Replies[i].Doc = genai.Doc{Filename: n, URL: url}
+		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
+			res.Replies[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
+		} else {
+			return res, errors.New("internal error")
+		}
+	}
+	if err := res.Validate(); err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
+// selectBestTextModel selects the qualified text model for every automatic tier.
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	const selected = "deepseek-ai/DeepSeek-V4.1-Flash-1017"
+	for _, mdl := range mdls {
+		m := mdl.(*Model) //nolint:forcetypeassert // ListModels constructs only provider Model values.
+		if m.ID == selected && m.Type == "chat" {
+			return selected, nil
+		}
+	}
+	return "", fmt.Errorf("failed to automatically select the text model: %s is not available", selected)
+}

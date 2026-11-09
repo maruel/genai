@@ -44,6 +44,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -128,27 +129,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	want := "deepseek-v4-pro"
-	if preference == string(genai.ModelCheap) || preference == string(genai.ModelGood) {
-		want = "deepseek-flash"
-	}
-	for _, mdl := range mdls {
-		if mdl.(*Model).ID == want {
-			return want, nil
-		}
-	}
-	return "", errors.New("failed to find a model automatically")
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -298,3 +278,28 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	want := "deepseek-v4-pro"
+	if preference == string(genai.ModelCheap) || preference == string(genai.ModelGood) {
+		want = "deepseek-flash"
+	}
+	for _, mdl := range mdls {
+		m, ok := mdl.(*Model)
+		if !ok {
+			return "", fmt.Errorf("unexpected model type %T", mdl)
+		}
+		if m.ID == want {
+			return want, nil
+		}
+	}
+	return "", errors.New("failed to find a model automatically")
+}

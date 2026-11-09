@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"slices"
 	"strings"
 )
 
@@ -62,6 +63,8 @@ type RealtimeSession interface {
 //
 // A provider may define its own option type for settings that have no portable
 // meaning. A provider rejects options it cannot honor rather than ignoring them.
+//
+//nolint:iface // Separate option categories are distinct public contracts.
 type RealtimeOption interface {
 	Validate() error
 }
@@ -257,8 +260,6 @@ type RealtimeInputContent struct {
 	Generate bool
 }
 
-func (RealtimeInputContent) realtimeInput() {}
-
 // Validate checks that one payload is set and that its flags are valid.
 func (i RealtimeInputContent) Validate() error { //nolint:gocritic // hugeParam: value receiver keeps the command a valid RealtimeInput, including non-addressable literals.
 	switch {
@@ -305,16 +306,18 @@ func (i RealtimeInputContent) Validate() error { //nolint:gocritic // hugeParam:
 	return nil
 }
 
+func (RealtimeInputContent) realtimeInput() {}
+
 // RealtimeCancel stops generation, optionally targeting ResponseID. It does not
 // remove conversation history or queued playback.
 type RealtimeCancel struct {
 	ResponseID string
 }
 
-func (RealtimeCancel) realtimeInput() {}
-
 // Validate implements RealtimeInput.
 func (RealtimeCancel) Validate() error { return nil }
+
+func (RealtimeCancel) realtimeInput() {}
 
 // RealtimeTruncate reconciles unheard output audio in ItemID at ContentIndex and
 // AudioEndMS. It requires Capabilities.Truncate and does not stop generation.
@@ -324,8 +327,6 @@ type RealtimeTruncate struct {
 	AudioEndMS   int64
 }
 
-func (RealtimeTruncate) realtimeInput() {}
-
 // Validate checks the truncation target.
 func (i RealtimeTruncate) Validate() error {
 	if i.ItemID == "" || i.ContentIndex < 0 || i.AudioEndMS < 0 {
@@ -333,6 +334,8 @@ func (i RealtimeTruncate) Validate() error {
 	}
 	return nil
 }
+
+func (RealtimeTruncate) realtimeInput() {}
 
 // RealtimeUpdate changes live session settings. A nil field is unchanged.
 // Tools may be an empty list to clear declarations. Instructions may be empty
@@ -348,8 +351,6 @@ type RealtimeUpdate struct {
 	TurnDetection    *RealtimeTurnDetection
 	Voice            *string
 }
-
-func (RealtimeUpdate) realtimeInput() {}
 
 // Validate rejects empty, malformed, or ambiguous updates.
 func (u RealtimeUpdate) Validate() error {
@@ -382,15 +383,15 @@ func (u RealtimeUpdate) Validate() error {
 			if m != ModalityAudio && m != ModalityText {
 				return fmt.Errorf("unsupported realtime output modality %q", m)
 			}
-			for _, p := range (*u.OutputModalities)[:i] {
-				if p == m {
-					return fmt.Errorf("duplicate output modality %q", m)
-				}
+			if slices.Contains((*u.OutputModalities)[:i], m) {
+				return fmt.Errorf("duplicate output modality %q", m)
 			}
 		}
 	}
 	return nil
 }
+
+func (RealtimeUpdate) realtimeInput() {}
 
 // RealtimeEventKind identifies an event emitted by a session.
 type RealtimeEventKind string

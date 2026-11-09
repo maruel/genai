@@ -435,6 +435,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // base.Unknown so strict decoding detects populated values.
 type Result struct {
 	MessageResponse
+
 	ID               string       `json:"id"`
 	Model            string       `json:"model"`
 	Object           string       `json:"object"`
@@ -662,7 +663,7 @@ func (m *Model) String() string {
 				s := make([]string, 0, len(mp))
 				for _, l := range mp {
 					// Try to simplify the unit.
-					unit := ""
+					var unit string
 					switch l.Unit {
 					case "per M input tokens":
 						unit = "/Mt in"
@@ -779,6 +780,8 @@ type ErrorDetail struct {
 }
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	Errors   []ErrorDetail  `json:"errors"`
 	Success  bool           `json:"success"`

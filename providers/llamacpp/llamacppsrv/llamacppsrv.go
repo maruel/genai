@@ -67,12 +67,13 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 	if port == 0 {
 		// First try the default port.
 		var l net.Listener
-		if l, err = net.Listen("tcp", net.JoinHostPort(host, "8080")); err != nil {
-			if l, err = net.Listen("tcp", net.JoinHostPort(host, "0")); err != nil {
+		lc := net.ListenConfig{}
+		if l, err = lc.Listen(ctx, "tcp", net.JoinHostPort(host, "8080")); err != nil {
+			if l, err = lc.Listen(ctx, "tcp", net.JoinHostPort(host, "0")); err != nil {
 				return nil, err
 			}
 		}
-		port = l.Addr().(*net.TCPAddr).Port
+		port = l.Addr().(*net.TCPAddr).Port //nolint:forcetypeassert // A TCP listener returns a TCP address.
 		if err := l.Close(); err != nil {
 			return nil, err
 		}
@@ -559,7 +560,7 @@ func serverEnv(dir string) []string {
 // releaseAssets selects the binary archive and, for Windows CUDA, its matching
 // runtime DLL archive. Runtime-only assets must never be selected as binaries.
 func releaseAssets(rel *ghrelease.Release, goos, arch string, cuda bool) ([]ghrelease.Asset, error) {
-	a := ""
+	var a string
 	switch arch {
 	case "amd64":
 		a = "x64"
@@ -568,7 +569,7 @@ func releaseAssets(rel *ghrelease.Release, goos, arch string, cuda bool) ([]ghre
 	default:
 		return nil, fmt.Errorf("unsupported llama.cpp platform %s/%s", goos, arch)
 	}
-	pattern := ""
+	var pattern string
 	switch goos {
 	case "darwin":
 		pattern = "macos-" + a + ".*"

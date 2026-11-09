@@ -64,6 +64,7 @@ func (o *GenOption) Validate() error {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -152,67 +153,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to automatically select the model: %w", err)
-	}
-	cheap := preference == string(genai.ModelCheap)
-	good := preference == string(genai.ModelGood) || preference == ""
-	selectedModel := ""
-	var date base.TimeS
-	nb := regexp.MustCompile(`(\d+)`)
-	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		// Skip non-general-purpose models.
-		if strings.Contains(m.ID, "safeguard") {
-			continue
-		}
-		// This is meh.
-		switch {
-		case cheap:
-			if strings.HasPrefix(m.ID, "openai/") {
-				if selectedModel != "" {
-					m1 := nb.FindStringSubmatch(m.ID)
-					m2 := nb.FindStringSubmatch(selectedModel)
-					i1, _ := strconv.Atoi(m1[1])
-					i2, _ := strconv.Atoi(m2[1])
-					if i1 > i2 {
-						continue
-					}
-				}
-				selectedModel = m.ID
-			}
-		case good:
-			if strings.Contains(m.ID, "openai/") {
-				if selectedModel != "" {
-					m1 := nb.FindStringSubmatch(m.ID)
-					m2 := nb.FindStringSubmatch(selectedModel)
-					i1, _ := strconv.Atoi(m1[1])
-					i2, _ := strconv.Atoi(m2[1])
-					if i1 < i2 {
-						continue
-					}
-				}
-				selectedModel = m.ID
-			}
-		default:
-			if strings.HasPrefix(m.ID, "qwen/") && (selectedModel == "" || m.Created > date) {
-				selectedModel = m.ID
-				date = m.Created
-			}
-		}
-	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -393,6 +333,70 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	selectedModel := ""
+	var date base.TimeS
+	nb := regexp.MustCompile(`(\d+)`)
+	for _, mdl := range mdls {
+		m, ok := mdl.(*Model)
+		if !ok {
+			return "", fmt.Errorf("unexpected model type %T", mdl)
+		}
+		// Skip non-general-purpose models.
+		if strings.Contains(m.ID, "safeguard") {
+			continue
+		}
+		// This is meh.
+		switch {
+		case cheap:
+			if strings.HasPrefix(m.ID, "openai/") {
+				if selectedModel != "" {
+					m1 := nb.FindStringSubmatch(m.ID)
+					m2 := nb.FindStringSubmatch(selectedModel)
+					i1, _ := strconv.Atoi(m1[1])
+					i2, _ := strconv.Atoi(m2[1])
+					if i1 > i2 {
+						continue
+					}
+				}
+				selectedModel = m.ID
+			}
+		case good:
+			if strings.Contains(m.ID, "openai/") {
+				if selectedModel != "" {
+					m1 := nb.FindStringSubmatch(m.ID)
+					m2 := nb.FindStringSubmatch(selectedModel)
+					i1, _ := strconv.Atoi(m1[1])
+					i2, _ := strconv.Atoi(m2[1])
+					if i1 < i2 {
+						continue
+					}
+				}
+				selectedModel = m.ID
+			}
+		default:
+			if strings.HasPrefix(m.ID, "qwen/") && (selectedModel == "" || m.Created > date) {
+				selectedModel = m.ID
+				date = m.Created
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

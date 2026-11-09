@@ -34,6 +34,23 @@ import (
 	"github.com/maruel/genai/internal/myrecorder"
 )
 
+// AssertType asserts the type of v and fails the test if it differs.
+func AssertType[T any](t testing.TB, v any) T {
+	value, ok := v.(T)
+	if !ok {
+		t.Fatalf("got type %T, want %T", v, *new(T))
+	}
+	return value
+}
+
+// Records manages HTTP recording/playback for tests.
+type Records struct {
+	Records *myrecorder.Records
+
+	mu       sync.Mutex
+	rerecord map[string]struct{} // test names to re-record
+}
+
 // NewRecords creates a new Records instance.
 func NewRecords() *Records {
 	rr, err := myrecorder.NewRecords("testdata")
@@ -44,14 +61,6 @@ func NewRecords() *Records {
 		panic(err.Error())
 	}
 	return &Records{Records: rr}
-}
-
-// Records manages HTTP recording/playback for tests.
-type Records struct {
-	Records *myrecorder.Records
-
-	mu       sync.Mutex
-	rerecord map[string]struct{} // test names to re-record
 }
 
 // Close finalizes all recordings.
@@ -142,7 +151,7 @@ func (r *Records) rerun(tests []string) error {
 		escaped[i] = "^" + regexp.QuoteMeta(t) + "$"
 	}
 	pattern := strings.Join(escaped, "|")
-	cmd := exec.Command(os.Args[0], "-test.run", pattern, "-test.count=1") //nolint:gosec // os.Args[0] is the test binary itself, not user input
+	cmd := exec.Command(os.Args[0], "-test.run", pattern, "-test.count=1") //nolint:gosec,noctx // Rerun the test binary to completion during cleanup.
 	for _, e := range os.Environ() {
 		if !strings.HasPrefix(e, "RECORD=") {
 			cmd.Env = append(cmd.Env, e)
@@ -192,7 +201,7 @@ func Log(tb testing.TB) (context.Context, *slog.Logger) {
 				a.Value = slog.StringValue(a.Value.String()[:3])
 			case "source":
 				a.Key = "s"
-				s := a.Value.Any().(*slog.Source)
+				s := a.Value.Any().(*slog.Source) //nolint:forcetypeassert // The value was constructed by this test helper.
 				s.File = filepath.Base(s.File)
 			case "time":
 				a = slog.Attr{}
@@ -261,6 +270,7 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 // when a provider toggles it off by default.
 type InjectOptions struct {
 	genai.Provider
+
 	Opts []genai.GenOption
 	Skip func(opts []genai.GenOption) bool
 }
@@ -293,6 +303,7 @@ func (i *InjectOptions) inject(opts []genai.GenOption) []genai.GenOption {
 // type, so a caller must not pass an option type that Opts also contains.
 type InjectRealtimeOptions struct {
 	genai.Provider
+
 	Opts []genai.RealtimeOption
 }
 
@@ -349,7 +360,7 @@ func fillUnset(dst, src genai.GenOption) genai.GenOption {
 			ov.Field(i).Set(svElem.Field(i))
 		}
 	}
-	return out.Interface().(genai.GenOption)
+	return out.Interface().(genai.GenOption) //nolint:forcetypeassert // The value was constructed by this test helper.
 }
 
 // RetryOnRateLimit wraps a provider to retry without FallbackOpts when a rate
@@ -357,6 +368,7 @@ func fillUnset(dst, src genai.GenOption) genai.GenOption {
 // rate limits can be worked around by falling back to default tier.
 type RetryOnRateLimit struct {
 	genai.Provider
+
 	FallbackOpts []genai.GenOption
 }
 
@@ -402,6 +414,7 @@ func isRateLimited(err error) bool {
 // HideHTTPCode hides specific HTTP error codes from the reply.
 type HideHTTPCode struct {
 	genai.Provider
+
 	StatusCode int
 }
 

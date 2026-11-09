@@ -119,12 +119,12 @@ func TestClient(t *testing.T) {
 				commands := make(chan []map[string]any, 1)
 				endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 					setup := realtimeSetup(t, ctx, ws)
-					audio := setup["audio"].(map[string]any)
-					input := audio["input"].(map[string]any)
+					audio := internaltest.AssertType[map[string]any](t, setup["audio"])
+					input := internaltest.AssertType[map[string]any](t, audio["input"])
 					if input["turn_detection"] != nil || !reflect.DeepEqual(setup["output_modalities"], []any{"audio"}) {
 						t.Error("incorrect manual audio setup")
 					}
-					if transcription := input["transcription"].(map[string]any); transcription["language"] != "fr" {
+					if transcription := internaltest.AssertType[map[string]any](t, input["transcription"]); transcription["language"] != "fr" {
 						t.Errorf("transcription language %#v", transcription)
 					}
 					got := make([]map[string]any, 0, 8)
@@ -336,7 +336,7 @@ func TestClient(t *testing.T) {
 						t.Errorf("instructions %#v", m)
 					}
 					tools, _ := upd["tools"].([]any)
-					if len(tools) != 1 || tools[0].(map[string]any)["name"] != "lookup" {
+					if len(tools) != 1 || internaltest.AssertType[map[string]any](t, tools[0])["name"] != "lookup" {
 						t.Errorf("tools %#v", m)
 					}
 					if upd["tool_choice"] != "none" {
@@ -716,7 +716,7 @@ func TestClient(t *testing.T) {
 		t.Run("rejected effective configuration", func(t *testing.T) {
 			for name, mutate := range map[string]func(map[string]any){
 				"PCM rate": func(v map[string]any) {
-					v["audio"].(map[string]any)["input"].(map[string]any)["format"].(map[string]any)["rate"] = 16000
+					internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, v["audio"])["input"])["format"])["rate"] = 16000
 				},
 				"output modality":      func(v map[string]any) { v["output_modalities"] = []string{"text"} },
 				"oversized modalities": func(v map[string]any) { v["output_modalities"] = []string{"audio", "audio"} },
@@ -728,19 +728,21 @@ func TestClient(t *testing.T) {
 					v["tools"] = tools
 				},
 				"unrequested transcription": func(v map[string]any) {
-					v["audio"].(map[string]any)["input"].(map[string]any)["transcription"] = map[string]any{"model": "unexpected"}
+					internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, v["audio"])["input"])["transcription"] = map[string]any{"model": "unexpected"}
 				},
-				"server VAD":   func(v map[string]any) { v["audio"].(map[string]any)["input"].(map[string]any)["turn_detection"] = nil },
+				"server VAD": func(v map[string]any) {
+					internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, v["audio"])["input"])["turn_detection"] = nil
+				},
 				"instructions": func(v map[string]any) { v["instructions"] = "changed" },
 				"tool schema": func(v map[string]any) {
-					v["tools"].([]any)[0].(map[string]any)["parameters"] = map[string]any{"type": "string"}
+					internaltest.AssertType[map[string]any](t, internaltest.AssertType[[]any](t, v["tools"])[0])["parameters"] = map[string]any{"type": "string"}
 				},
 			} {
 				t.Run(name, func(t *testing.T) {
 					endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 						realtimetest.Write(t, ctx, ws, `{"type":"session.created","session":{"id":"sess_test","type":"realtime"}}`)
 						m := realtimetest.Read(t, ctx, ws)
-						v := m["session"].(map[string]any)
+						v := internaltest.AssertType[map[string]any](t, m["session"])
 						v["id"] = "sess_test"
 						mutate(v)
 						b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
@@ -774,9 +776,9 @@ func TestClient(t *testing.T) {
 						t.Error(err)
 						return
 					}
-					v := m["session"].(map[string]any)
+					v := internaltest.AssertType[map[string]any](t, m["session"])
 					v["id"] = "sess_test"
-					v["tools"].([]any)[0].(map[string]any)["parameters"] = ack
+					internaltest.AssertType[map[string]any](t, internaltest.AssertType[[]any](t, v["tools"])[0])["parameters"] = ack
 					b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
 					if err != nil {
 						t.Error(err)
@@ -805,9 +807,9 @@ func TestClient(t *testing.T) {
 						t.Error(err)
 						return
 					}
-					v := m["session"].(map[string]any)
+					v := internaltest.AssertType[map[string]any](t, m["session"])
 					v["id"] = "sess_test"
-					v["tools"].([]any)[0].(map[string]any)["parameters"] = json.RawMessage(`{"type":"object","properties":{"n":{"minimum":9007199254740993}}}`)
+					internaltest.AssertType[map[string]any](t, internaltest.AssertType[[]any](t, v["tools"])[0])["parameters"] = json.RawMessage(`{"type":"object","properties":{"n":{"minimum":9007199254740993}}}`)
 					b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
 					if err != nil {
 						t.Error(err)
@@ -1009,14 +1011,14 @@ func TestClient(t *testing.T) {
 					endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 						realtimetest.Write(t, ctx, ws, `{"type":"session.created","session":{"id":"sess_test","type":"realtime"}}`)
 						m := realtimetest.Read(t, ctx, ws)
-						v := m["session"].(map[string]any)
+						v := internaltest.AssertType[map[string]any](t, m["session"])
 						v["id"] = "sess_test"
 						var transcription any
 						if err := json.Unmarshal([]byte(got), &transcription); err != nil {
 							t.Error(err)
 							return
 						}
-						v["audio"].(map[string]any)["input"].(map[string]any)["transcription"] = transcription
+						internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, v["audio"])["input"])["transcription"] = transcription
 						b, err := json.Marshal(map[string]any{"type": "session.updated", "session": v})
 						if err != nil {
 							t.Error(err)

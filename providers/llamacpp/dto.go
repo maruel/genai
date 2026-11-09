@@ -33,6 +33,8 @@ import (
 // EmbeddingInput is one text, token sequence, or multimodal input to embed.
 // Set exactly one field. Content uses the same parts as chat completions and
 // requires a compatible model and projector loaded by llama-server.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type EmbeddingInput struct {
 	Text    string
 	Tokens  []int
@@ -681,7 +683,7 @@ type CompletionResponse struct {
 // ToResult converts the completion response to a genai.Result.
 func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		Message: genai.Message{Replies: []genai.Reply{{Text: c.Content}}},
+		Replies: []genai.Reply{{Text: c.Content}},
 		Usage: genai.Usage{
 			InputTokens:       c.TokensPredicted,
 			InputCachedTokens: c.TokensCached,
@@ -1201,6 +1203,8 @@ type applyTemplateResponse struct {
 }
 
 // ErrorResponse is the error response from the llama-server API.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorVal struct {
 		Code    int64  `json:"code"`
@@ -1221,8 +1225,8 @@ func (er *ErrorResponse) IsAPIError() bool {
 // SystemOneResponse is the native /v1/systemone response.
 type SystemOneResponse struct {
 	// Model identifies the loaded decision model that answered.
-	Model string `json:"model"`
-	genai.SystemOneResponse
+	Model                   string `json:"model"`
+	genai.SystemOneResponse        //nolint:embeddedstructfieldcheck // Preserve the JSON field order.
 }
 
 // To converts native decision output to shared decision output.

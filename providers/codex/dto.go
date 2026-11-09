@@ -140,13 +140,13 @@ const (
 	// MethodErrorNotification reports an app-server error notification.
 	MethodErrorNotification Method = "error"
 
-	// Hook lifecycle notifications.
+	// MethodHookStarted — Hook lifecycle notifications.
 	// MethodHookStarted reports that a hook started.
 	MethodHookStarted Method = "hook/started"
 	// MethodHookCompleted reports that a hook completed.
 	MethodHookCompleted Method = "hook/completed"
 
-	// Server-to-client approval requests (requires permission mode).
+	// MethodCommandRequestApproval — Server-to-client approval requests (requires permission mode).
 	// MethodCommandRequestApproval requests approval for command execution.
 	MethodCommandRequestApproval Method = "item/commandExecution/requestApproval"
 	// MethodFileChangeRequestApproval requests approval for a file change.
@@ -172,7 +172,7 @@ const (
 	// MethodExecCommandApproval is the legacy command approval request.
 	MethodExecCommandApproval Method = "execCommandApproval"
 
-	// Account and configuration notifications.
+	// MethodAccountUpdated — Account and configuration notifications.
 	// MethodAccountUpdated reports updated account data.
 	MethodAccountUpdated Method = "account/updated"
 	// MethodGatewayOAuthChanged reports provider gateway authentication status.
@@ -204,7 +204,7 @@ const (
 	// MethodMcpServerEventStream reports an MCP server event-stream notification.
 	MethodMcpServerEventStream Method = "mcpServer/event/stream/notification"
 
-	// Search and realtime notifications.
+	// MethodFuzzyFileSearchSessionUpdated — Search and realtime notifications.
 	// MethodFuzzyFileSearchSessionUpdated reports updated fuzzy file search results.
 	MethodFuzzyFileSearchSessionUpdated Method = "fuzzyFileSearch/sessionUpdated"
 	// MethodFuzzyFileSearchSessionCompleted reports completion of a fuzzy file search session.
@@ -817,6 +817,7 @@ type ThreadStartResponse struct {
 // ThreadResumeResponse is the result object from a thread/resume JSON-RPC response.
 type ThreadResumeResponse struct {
 	ThreadStartResponse
+
 	TurnsBackwardsCursor string             `json:"turnsBackwardsCursor,omitzero"`
 	ItemsBackwardsCursor string             `json:"itemsBackwardsCursor,omitzero"`
 	CollaborationMode    *CollaborationMode `json:"collaborationMode,omitzero"`

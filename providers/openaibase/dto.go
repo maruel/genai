@@ -430,6 +430,8 @@ type BatchUsage struct {
 }
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorVal ErrorResponseError `json:"error"`
 	// Status is the HTTP status a WebSocket error frame reports; it carries no
@@ -483,6 +485,8 @@ type ErrorResponseError struct {
 
 // EmbeddingInput is the input union accepted by the OpenAI embedding endpoint.
 // Exactly one field must be set. Tokens are tokenizer IDs, not text bytes.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type EmbeddingInput struct {
 	Text           string
 	Texts          []string
@@ -582,6 +586,7 @@ func (r *EmbeddingRequest) Validate() error {
 
 type embeddingRequest struct {
 	EmbeddingRequest
+
 	EncodingFormat string `json:"encoding_format"`
 }
 

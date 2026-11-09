@@ -57,6 +57,7 @@ func Scoreboard() scoreboard.Score {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
+
 	impl            base.ProviderBase[*ErrorResponse]
 	remote          string
 	preloadedModels []genai.Model
@@ -140,16 +141,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestModel selects the model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break
-// one day or another.
-func (c *Client) selectBestModel(preference string) string {
-	// TypeSafe serves a single model behind aliases, so every preference resolves to the alias that
-	// tracks the latest release. There is nothing to choose between.
-	return "jev-latest"
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -250,4 +241,14 @@ func (c *Client) ListModelsRaw(ctx context.Context) ([]Model, error) {
 		return nil, err
 	}
 	return out.Models, nil
+}
+
+// selectBestModel selects the model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break
+// one day or another.
+func (c *Client) selectBestModel(preference string) string {
+	// TypeSafe serves a single model behind aliases, so every preference resolves to the alias that
+	// tracks the latest release. There is nothing to choose between.
+	return "jev-latest"
 }

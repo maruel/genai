@@ -246,6 +246,7 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // Client is a genai provider that delegates to the local `pi` CLI.
 type Client struct {
 	base.NotImplemented
+
 	exec           genai.Starter
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
@@ -254,27 +255,6 @@ type Client struct {
 
 	binOnce sync.Once
 	binErr  error
-}
-
-// ensureBin locates the pi binary on first call. Safe for concurrent use.
-func (c *Client) ensureBin() error {
-	c.binOnce.Do(func() {
-		bin, err := exec.LookPath("pi")
-		if err != nil {
-			if c.starterWrapper == nil {
-				c.binErr = fmt.Errorf("pi CLI not found on PATH: %w", err)
-				return
-			}
-			bin = "pi"
-		}
-		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin}).start)
-		if c.starterWrapper != nil {
-			s = c.starterWrapper(s)
-		}
-		c.exec = s
-	})
-	return c.binErr
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -853,3 +833,24 @@ var (
 	_ genai.ProviderPing = (*Client)(nil)
 	_ genai.Model        = (*Model)(nil)
 )
+
+// ensureBin locates the pi binary on first call. Safe for concurrent use.
+func (c *Client) ensureBin() error {
+	c.binOnce.Do(func() {
+		bin, err := exec.LookPath("pi")
+		if err != nil {
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("pi CLI not found on PATH: %w", err)
+				return
+			}
+			bin = "pi"
+		}
+		c.bin = bin
+		s := genai.Starter((&cmdExecutor{bin: bin}).start)
+		if c.starterWrapper != nil {
+			s = c.starterWrapper(s)
+		}
+		c.exec = s
+	})
+	return c.binErr
+}

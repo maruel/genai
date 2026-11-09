@@ -17,6 +17,7 @@ import (
 	"github.com/coder/websocket"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/gemini"
 )
@@ -36,7 +37,7 @@ func liveClientForModel(t *testing.T, model string) *gemini.Client {
 // livePeer performs the real upgrade and setup handshake before running a script.
 func livePeer(t *testing.T, script func(context.Context, *websocket.Conn, map[string]any)) string {
 	u := realtimetest.Peer(t, func(r *http.Request) {
-		if r.Header.Get("x-goog-api-key") != "test-live-key" || r.URL.RawQuery != "" {
+		if r.Header.Get("X-Goog-Api-Key") != "test-live-key" || r.URL.RawQuery != "" {
 			t.Error("missing header authentication or unexpected query")
 		}
 	}, func(ctx context.Context, ws *websocket.Conn) {
@@ -78,7 +79,7 @@ func TestRealtimeContextUpdate(t *testing.T) {
 		update, _ := m["contextUpdate"].(map[string]any)
 		instr, _ := update["systemInstruction"].(map[string]any)
 		parts, _ := instr["parts"].([]any)
-		if len(parts) != 1 || parts[0].(map[string]any)["text"] != "be terse" {
+		if len(parts) != 1 || internaltest.AssertType[map[string]any](t, parts[0])["text"] != "be terse" {
 			t.Errorf("instructions %#v", m)
 		}
 		if _, ok := update["tools"]; ok {
@@ -103,7 +104,7 @@ func TestRealtimeContextUpdate(t *testing.T) {
 		update, _ = m["contextUpdate"].(map[string]any)
 		tools, _ = update["tools"].(map[string]any)
 		decls, _ := tools["tools"].([]any)
-		if len(decls) != 1 || decls[0].(map[string]any)["functionDeclarations"] == nil {
+		if len(decls) != 1 || internaltest.AssertType[map[string]any](t, decls[0])["functionDeclarations"] == nil {
 			t.Errorf("auto did not restore tools: %#v", m)
 		}
 		close(sent)

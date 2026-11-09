@@ -101,6 +101,7 @@ type (
 	// BatchUsage is an alias to the shared OpenAI batch usage type.
 	BatchUsage = openaibase.BatchUsage
 	// ErrorResponse is an alias to the shared OpenAI error response type.
+	//nolint:errname // Preserve the exported provider wire type name.
 	ErrorResponse = openaibase.ErrorResponse
 	// ErrorResponseError is an alias to the shared OpenAI error detail type.
 	ErrorResponseError = openaibase.ErrorResponseError

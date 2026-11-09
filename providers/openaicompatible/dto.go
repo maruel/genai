@@ -349,6 +349,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 // ChatResponse captures all the different ways providers can reply.
 type ChatResponse struct {
 	Message
+
 	Message2     Message      `json:"message"`
 	FinishReason FinishReason `json:"finish_reason"`
 	Choices      []struct {
@@ -451,6 +452,8 @@ type Usage struct {
 //
 
 // ErrorResponse is as generic as possible since error responses are highly non-standard.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse map[string]json.RawMessage
 
 func (er *ErrorResponse) Error() string {

@@ -347,71 +347,6 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 	return nil
 }
 
-func (s *RealtimeSession) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateMessage, []string, error) {
-	var options []string
-	c := &s.info.Capabilities.Update
-	if u.Instructions != nil && !c.Instructions {
-		options = append(options, "instructions")
-	}
-	if u.Tools != nil && !c.Tools {
-		options = append(options, "tools")
-	}
-	if u.ToolChoice != nil {
-		if *u.ToolChoice == genai.ToolCallRequired {
-			if !c.ToolChoiceRequired {
-				options = append(options, "required tool choice")
-			}
-		} else if !c.ToolChoice {
-			options = append(options, "tool choice")
-		}
-	}
-	if u.MaxOutputTokens != nil && !c.MaxOutputTokens {
-		options = append(options, "max output tokens")
-	}
-	if u.OutputModalities != nil && !c.OutputModalities {
-		options = append(options, "output modalities")
-	}
-	if u.TurnDetection != nil && !c.TurnDetection {
-		options = append(options, "turn detection")
-	}
-	if u.Voice != nil && !c.VoiceBeforeOutput {
-		options = append(options, "voice")
-	}
-	if len(options) != 0 {
-		return nil, nil, &base.ErrNotSupported{Options: options}
-	}
-	upd := &SessionUpdate{}
-	var names []string
-	if u.Instructions != nil {
-		if s.started {
-			return nil, nil, errors.New("llama.cpp session instructions can only change before the first turn")
-		}
-		upd.Instructions = u.Instructions
-	}
-	if u.Tools != nil {
-		if s.started {
-			return nil, nil, errors.New("llama.cpp session tools can only change before the first turn")
-		}
-		if err := upd.Tools.Init(*u.Tools); err != nil {
-			return nil, nil, err
-		}
-		names = upd.Tools.Names()
-	}
-	if u.ToolChoice != nil {
-		upd.ToolChoice = toolChoiceFromPortable(*u.ToolChoice)
-	}
-	if u.MaxOutputTokens != nil {
-		if *u.MaxOutputTokens > math.MaxInt32 {
-			return nil, nil, errors.New("llama.cpp max output tokens exceeds 2147483647")
-		}
-		upd.MaxOutputTokens = MaxOutputTokens{Value: *u.MaxOutputTokens}
-	}
-	if u.OutputModalities != nil {
-		upd.OutputModalities = Modalities(*u.OutputModalities)
-	}
-	return &SessionUpdateMessage{Type: EventSessionUpdate, Session: upd}, names, nil
-}
-
 func toolChoiceFromPortable(c genai.ToolCallRequest) ToolChoice {
 	switch c {
 	case genai.ToolCallAny:
@@ -423,16 +358,6 @@ func toolChoiceFromPortable(c genai.ToolCallRequest) ToolChoice {
 	default:
 		return ""
 	}
-}
-
-// createMessageLocked returns response.create, optionally forcing the first tool
-// call when the session declares tools.
-func (s *RealtimeSession) createMessageLocked() ClientMessage {
-	msg := ClientMessage{Type: EventCreate}
-	if s.requireToolCall && len(s.names) != 0 && len(s.history) == 0 {
-		msg.Response = &ResponseConfig{ToolChoice: ToolChoiceRequired}
-	}
-	return msg
 }
 
 // Receive implements genai.RealtimeSession.
@@ -802,3 +727,78 @@ func (s *RealtimeSession) toolsLocked(r *Response) error {
 }
 
 var _ genai.RealtimeSession = (*RealtimeSession)(nil)
+
+func (s *RealtimeSession) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateMessage, []string, error) {
+	var options []string
+	c := &s.info.Capabilities.Update
+	if u.Instructions != nil && !c.Instructions {
+		options = append(options, "instructions")
+	}
+	if u.Tools != nil && !c.Tools {
+		options = append(options, "tools")
+	}
+	if u.ToolChoice != nil {
+		if *u.ToolChoice == genai.ToolCallRequired {
+			if !c.ToolChoiceRequired {
+				options = append(options, "required tool choice")
+			}
+		} else if !c.ToolChoice {
+			options = append(options, "tool choice")
+		}
+	}
+	if u.MaxOutputTokens != nil && !c.MaxOutputTokens {
+		options = append(options, "max output tokens")
+	}
+	if u.OutputModalities != nil && !c.OutputModalities {
+		options = append(options, "output modalities")
+	}
+	if u.TurnDetection != nil && !c.TurnDetection {
+		options = append(options, "turn detection")
+	}
+	if u.Voice != nil && !c.VoiceBeforeOutput {
+		options = append(options, "voice")
+	}
+	if len(options) != 0 {
+		return nil, nil, &base.ErrNotSupported{Options: options}
+	}
+	upd := &SessionUpdate{}
+	var names []string
+	if u.Instructions != nil {
+		if s.started {
+			return nil, nil, errors.New("llama.cpp session instructions can only change before the first turn")
+		}
+		upd.Instructions = u.Instructions
+	}
+	if u.Tools != nil {
+		if s.started {
+			return nil, nil, errors.New("llama.cpp session tools can only change before the first turn")
+		}
+		if err := upd.Tools.Init(*u.Tools); err != nil {
+			return nil, nil, err
+		}
+		names = upd.Tools.Names()
+	}
+	if u.ToolChoice != nil {
+		upd.ToolChoice = toolChoiceFromPortable(*u.ToolChoice)
+	}
+	if u.MaxOutputTokens != nil {
+		if *u.MaxOutputTokens > math.MaxInt32 {
+			return nil, nil, errors.New("llama.cpp max output tokens exceeds 2147483647")
+		}
+		upd.MaxOutputTokens = MaxOutputTokens{Value: *u.MaxOutputTokens}
+	}
+	if u.OutputModalities != nil {
+		upd.OutputModalities = Modalities(*u.OutputModalities)
+	}
+	return &SessionUpdateMessage{Type: EventSessionUpdate, Session: upd}, names, nil
+}
+
+// createMessageLocked returns response.create, optionally forcing the first tool
+// call when the session declares tools.
+func (s *RealtimeSession) createMessageLocked() ClientMessage {
+	msg := ClientMessage{Type: EventCreate}
+	if s.requireToolCall && len(s.names) != 0 && len(s.history) == 0 {
+		msg.Response = &ResponseConfig{ToolChoice: ToolChoiceRequired}
+	}
+	return msg
+}

@@ -525,7 +525,7 @@ type LiveVoiceConsentSignature struct {
 
 // LiveServerContent is documented at https://ai.google.dev/api/live#BidiGenerateContentServerContent
 type LiveServerContent struct {
-	ModelTurn          LiveContent            `json:"modelTurn,omitempty"`
+	ModelTurn          LiveContent            `json:"modelTurn,omitempty"` //nolint:modernize // Preserve the existing JSON wire shape.
 	TurnComplete       bool                   `json:"turnComplete,omitempty"`
 	Interrupted        bool                   `json:"interrupted,omitempty"`
 	GenerationComplete bool                   `json:"generationComplete,omitempty"`

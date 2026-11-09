@@ -34,8 +34,10 @@ func TestRunSystemOne(t *testing.T) {
 				}
 				// Questions carry interface values, so decode their wire discriminator separately.
 				var raw struct {
-					Questions map[string]struct{ Type string }
-					Images    []string
+					Questions map[string]struct {
+						Type string `json:"type"`
+					} `json:"questions"`
+					Images []string `json:"images"`
 				}
 				if err := json.NewDecoder(r.Body).Decode(&raw); err != nil {
 					t.Error(err)
@@ -65,7 +67,7 @@ func TestRunSystemOne(t *testing.T) {
 					}
 					answers[id] = a
 				}
-				out := ollama.SystemOneResponse{Model: "model", SystemOneResponse: genai.SystemOneResponse{Answers: answers, Usage: genai.DecisionUsage{InputTokens: 10}}}
+				out := ollama.SystemOneResponse{Model: "model", Answers: answers, Usage: genai.DecisionUsage{InputTokens: 10}}
 				if err := json.NewEncoder(w).Encode(&out); err != nil {
 					t.Error(err)
 				}

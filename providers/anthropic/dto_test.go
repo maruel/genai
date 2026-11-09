@@ -24,7 +24,7 @@ func TestContent(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			r := genai.Result{Message: genai.Message{Replies: replies}}
+			r := genai.Result{Replies: replies}
 			b, err := json.Marshal(r.Message)
 			if err != nil {
 				t.Fatal(err)

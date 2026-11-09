@@ -628,6 +628,8 @@ func (m *Model) Context() int64 {
 //   - {"error": "string message"}
 //   - {"error": {"message": ..., "type": ..., ...}}
 //   - {"message": ..., "type": ..., "code": ...} (e.g. image_url not supported)
+//
+//nolint:errname // Preserve the exported API and provider wire type name.
 type ErrorResponse struct {
 	// ErrorString is set when "error" is a plain string.
 	ErrorString string

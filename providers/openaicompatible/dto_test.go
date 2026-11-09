@@ -40,10 +40,13 @@ func TestChatRequest(t *testing.T) {
 					var wire struct {
 						ToolChoice string `json:"tool_choice"`
 						Tools      []struct {
-							Type     string
-							Function map[string]json.RawMessage
-						}
-						Messages []struct{ Role, Content string }
+							Type     string                     `json:"type"`
+							Function map[string]json.RawMessage `json:"function"`
+						} `json:"tools"`
+						Messages []struct {
+							Role    string `json:"role"`
+							Content string `json:"content"`
+						} `json:"messages"`
 					}
 					var raw map[string]json.RawMessage
 					if err := json.Unmarshal(b, &raw); err != nil {

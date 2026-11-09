@@ -528,7 +528,10 @@ func (c *Citation) To(out *genai.Citation) error {
 		case SourceTool:
 			// Triggered in SquareRoot-2.
 			cs.Type = genai.CitationTool
-			b, _ := json.Marshal(source.ToolOutput)
+			b, err := json.Marshal(source.ToolOutput)
+			if err != nil {
+				return fmt.Errorf("marshal tool output: %w", err)
+			}
 			cs.Snippet = string(b)
 		case SourceDocument:
 			// Triggered in Citations-text-plain.
@@ -966,6 +969,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 }
 
 // ErrorResponse represents an API error.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorType string `json:"error_type,omitzero"`
 	ID        string `json:"id"`

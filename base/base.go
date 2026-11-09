@@ -142,6 +142,8 @@ func CheckDuplicateProviderOptions(opts []genai.ProviderOption) error {
 }
 
 // ErrAPIKeyRequired is returned by the providers New() function when no key was found.
+//
+//nolint:errname // Preserve the exported API and provider wire type name.
 type ErrAPIKeyRequired struct {
 	EnvVar string
 	URL    string
@@ -167,6 +169,8 @@ type ErrAPI interface {
 //
 // For example:
 //   - Anthropic doesn't support Seed. In this case, Options will contain "GenOptionText.Seed".
+//
+//nolint:errname // Preserve the exported API and provider wire type name.
 type ErrNotSupported struct {
 	Options []string
 }
@@ -369,7 +373,7 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 		d.DisallowUnknownFields()
 		r2 = r
 	}
-	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
+	er := reflect.New(c.errorResponse).Interface().(PErrorResponse) //nolint:forcetypeassert // The reflected type comes from the corresponding generic parameter.
 	_, errAPI := internal.DecodeJSON(d, er, r2)
 	if errAPI == nil && !reflect.ValueOf(er).Elem().IsZero() {
 		return er
@@ -410,7 +414,7 @@ func (c *ProviderBase[PErrorResponse]) DecodeError(url string, resp *http.Respon
 	}
 	var errs []error
 	herr := &httpjson.Error{StatusCode: resp.StatusCode, ResponseBody: b}
-	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
+	er := reflect.New(c.errorResponse).Interface().(PErrorResponse) //nolint:forcetypeassert // The reflected type comes from the corresponding generic parameter.
 	if foundExtraKeys, err := internal.DecodeJSON(d, er, r2); err == nil {
 		errs = append(errs, herr)
 		// It may have succeeded but not decoded anything.
@@ -449,7 +453,7 @@ type InitializableRequest interface {
 	// Init initializes the request with messages, options, and model.
 	Init(msgs genai.Messages, model string, opts ...genai.GenOption) error
 	// SetStream set the stream mode.
-	SetStream(bool)
+	SetStream(enabled bool)
 }
 
 // ResultConverter converts a provider-specific result to a genai.Result.
@@ -466,6 +470,7 @@ type ResultConverter interface {
 // It only accepts text modality.
 type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
 	ProviderBase[PErrorResponse]
+
 	// GenSyncURL is the endpoint URL for chat API requests
 	GenSyncURL string
 	// GenStreamURL is the endpoint URL for chat stream API requests. It defaults to GenURL if unset.
@@ -493,11 +498,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	if err := CheckDuplicateGenOptions(opts); err != nil {
 		return res, err
 	}
-	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
+	in := reflect.New(c.chatRequest).Interface().(PGenRequest) //nolint:forcetypeassert // The reflected type comes from the corresponding generic parameter.
 	if err := in.Init(msgs, c.Model, opts...); err != nil {
 		return res, err
 	}
-	out := reflect.New(c.chatResponse).Interface().(PGenResponse)
+	out := reflect.New(c.chatResponse).Interface().(PGenResponse) //nolint:forcetypeassert // The reflected type comes from the corresponding generic parameter.
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
 		return res, err
 	}
@@ -529,7 +534,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			finalErr = err
 			return
 		}
-		in := reflect.New(c.chatRequest).Interface().(PGenRequest)
+		in := reflect.New(c.chatRequest).Interface().(PGenRequest) //nolint:forcetypeassert // The reflected type comes from the corresponding generic parameter.
 		if err := in.Init(msgs, c.Model, opts...); err != nil {
 			finalErr = err
 			return
@@ -651,7 +656,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	ch := make(chan error)
 	go func() {
 		defer func() { _ = resp.Body.Close() }()
-		er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
+		er := reflect.New(c.errorResponse).Interface().(PErrorResponse) //nolint:forcetypeassert // The reflected type comes from the corresponding generic parameter.
 		it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
 		for pkt := range it {
 			out <- pkt
@@ -691,6 +696,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 //
 
 // TimeS is a JSON encoded unix timestamp in seconds.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type TimeS float64
 
 // IsZero reports whether the timestamp is absent.
@@ -704,6 +711,8 @@ func (t *TimeS) AsTime() time.Time {
 }
 
 // TimeMS is a JSON encoded unix timestamp in milliseconds.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type TimeMS float64
 
 // IsZero reports whether the timestamp is absent.

@@ -160,6 +160,7 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // Client is a genai provider that delegates to the local `agy` CLI.
 type Client struct {
 	base.NotImplemented
+
 	starterWrapper genai.ProviderOptionStarterWrapper
 	model          string
 	opts           ProviderOption

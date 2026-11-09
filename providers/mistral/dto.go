@@ -635,6 +635,8 @@ type messageResponseWire struct {
 }
 
 // MessageResponse represents a message in the API response.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type MessageResponse struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
@@ -920,6 +922,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 // ErrorResponse is the most goddam unstructured way to process errors. Basically what happens is that any
 // point in the Mistral stack can return an error and each python library generates a different structure.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	// When simple issue like auth failure.
 	// Message   string `json:"message"`

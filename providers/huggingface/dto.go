@@ -753,6 +753,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 }
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ErrorVal  ErrorError   `json:"error"`
 	ErrorType string       `json:"error_type"`

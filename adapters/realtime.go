@@ -18,6 +18,7 @@ import (
 
 type realtimeToolSession struct {
 	genai.RealtimeSession
+
 	mu    sync.RWMutex
 	tools []genai.ToolDef
 }

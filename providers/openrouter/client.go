@@ -74,6 +74,7 @@ const (
 // Client implements genai.Provider for OpenRouter.
 type Client struct {
 	base.NotImplemented
+
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -156,19 +157,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, err
-}
-
-// selectBestTextModel selects the most appropriate model based on the preference.
-func (c *Client) selectBestTextModel(preference string) string {
-	switch preference {
-	case string(genai.ModelCheap):
-		return "qwen/qwen3.5-35b-a3b"
-	case string(genai.ModelGood):
-		return "qwen/qwen3.5-122b-a10b"
-	default:
-		// SOTA
-		return "qwen/qwen3.5-397b-a17b"
-	}
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -361,3 +349,16 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 }
 
 var _ genai.Provider = &Client{}
+
+// selectBestTextModel selects the most appropriate model based on the preference.
+func (c *Client) selectBestTextModel(preference string) string {
+	switch preference {
+	case string(genai.ModelCheap):
+		return "qwen/qwen3.5-35b-a3b"
+	case string(genai.ModelGood):
+		return "qwen/qwen3.5-122b-a10b"
+	default:
+		// SOTA
+		return "qwen/qwen3.5-397b-a17b"
+	}
+}

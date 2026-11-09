@@ -78,6 +78,7 @@ type RealtimeOption = openaibase.RealtimeOption
 // Client is a client for the OpenAI Responses API.
 type Client struct {
 	base.NotImplemented
+
 	impl   base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
 	shared openaibase.Client
 
@@ -669,24 +670,6 @@ func (c *Client) WebSocket(ctx context.Context) (*WebSocketConn, error) {
 	return &WebSocketConn{client: c, ws: raw}, nil
 }
 
-// prepareDelta resolves the delta messages and previous_response_id for GenSync/GenStream.
-//
-// It inspects msgs for session metadata (via Reply.Opaque) and GenOptionText for an explicit
-// PreviousResponseID (which takes precedence). When metadata is found, only unsent messages are
-// returned and Opaque-only bookkeeping replies are stripped.
-func (c *Client) prepareDelta(msgs genai.Messages, opts []genai.GenOption) (cleaned genai.Messages, prevRespID string) {
-	sentMsgs, respID := findPrevMeta(msgs)
-	// An explicit PreviousResponseID in opts takes precedence over Opaque metadata.
-	if explicitID := getExplicitPrevID(opts); explicitID != "" {
-		respID = explicitID
-	}
-	if respID != "" {
-		cleaned = deltaMessages(msgs, sentMsgs)
-		return cleaned, respID
-	}
-	return msgs, ""
-}
-
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
 func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
@@ -998,13 +981,13 @@ func getExplicitPrevID(opts []genai.GenOption) string {
 
 // findPrevMeta searches msgs for session metadata stored directly in Reply.Opaque.
 func findPrevMeta(msgs genai.Messages) (sentMsgs int, respID string) {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		for j := range msgs[i].Replies {
-			if msgs[i].Replies[j].Opaque != nil {
-				if id, ok := msgs[i].Replies[j].Opaque[opaqueResponseID].(string); ok && id != "" {
+	for _, msg := range slices.Backward(msgs) {
+		for j := range msg.Replies {
+			if msg.Replies[j].Opaque != nil {
+				if id, ok := msg.Replies[j].Opaque[opaqueResponseID].(string); ok && id != "" {
 					respID = id
 				}
-				if n, ok := msgs[i].Replies[j].Opaque[opaqueSentMsgs].(float64); ok {
+				if n, ok := msg.Replies[j].Opaque[opaqueSentMsgs].(float64); ok {
 					sentMsgs = int(n)
 				}
 				if respID != "" {
@@ -1167,4 +1150,22 @@ func (c *Client) codexSyncRaw(ctx context.Context, in, out *Response) error {
 		out.Output = items
 	}
 	return nil
+}
+
+// prepareDelta resolves the delta messages and previous_response_id for GenSync/GenStream.
+//
+// It inspects msgs for session metadata (via Reply.Opaque) and GenOptionText for an explicit
+// PreviousResponseID (which takes precedence). When metadata is found, only unsent messages are
+// returned and Opaque-only bookkeeping replies are stripped.
+func (c *Client) prepareDelta(msgs genai.Messages, opts []genai.GenOption) (cleaned genai.Messages, prevRespID string) {
+	sentMsgs, respID := findPrevMeta(msgs)
+	// An explicit PreviousResponseID in opts takes precedence over Opaque metadata.
+	if explicitID := getExplicitPrevID(opts); explicitID != "" {
+		respID = explicitID
+	}
+	if respID != "" {
+		cleaned = deltaMessages(msgs, sentMsgs)
+		return cleaned, respID
+	}
+	return msgs, ""
 }

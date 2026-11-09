@@ -25,7 +25,7 @@ import (
 // transport failures and malformed responses abort qualification.
 func RunSystemOne(ctx context.Context, pf ProviderFactory) (scoreboard.SystemOne, genai.Usage, error) {
 	c := pf("")
-	sc := scoreboard.SystemOne{Row: scoreboard.Row{Models: []string{c.ModelID()}}}
+	sc := scoreboard.SystemOne{Models: []string{c.ModelID()}}
 	u := genai.Usage{}
 	if c.ModelID() == "" {
 		return sc, u, errors.New("provider must have a model")

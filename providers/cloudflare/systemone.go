@@ -386,8 +386,8 @@ func (r *SystemOneResponse) validateQuestions(qs *genai.Questions) error {
 // DecisionResult is the native result inside a hosted decision response.
 type DecisionResult struct {
 	// Model identifies the loaded decision model that answered.
-	Model string `json:"model"`
-	genai.SystemOneResponse
+	Model                   string `json:"model"`
+	genai.SystemOneResponse        //nolint:embeddedstructfieldcheck // Preserve the JSON field order.
 }
 
 func validProbability(p float64) bool {

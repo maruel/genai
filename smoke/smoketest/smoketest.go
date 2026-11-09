@@ -721,8 +721,8 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 	// A nested run sweeps its own recordings, so this one leaves it alone.
 	nested := map[string]struct{}{}
 	for _, d := range allDirs {
-		if i := strings.IndexByte(d, '/'); i != -1 {
-			nested[d[:i]] = struct{}{}
+		if before, _, ok := strings.Cut(d, "/"); ok {
+			nested[before] = struct{}{}
 		}
 	}
 

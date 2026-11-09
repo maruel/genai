@@ -289,10 +289,10 @@ func RealtimeSupported(ctx context.Context, c genai.Provider) (bool, string, err
 func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (scoreboard.Realtime, genai.Usage, error) {
 	var usage genai.Usage
 	model := c.ModelID()
-	sc := scoreboard.Realtime{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{model}}, Reason: reason}}
-	sc.In = map[genai.Modality]scoreboard.ModalCapability{
-		genai.ModalityText: {Inline: true},
-	}
+	sc := scoreboard.Realtime{Models: []string{model}, Reason: reason,
+		In: map[genai.Modality]scoreboard.ModalCapability{
+			genai.ModalityText: {Inline: true},
+		}}
 	if model == "" {
 		return sc, usage, errors.New("provider must have a model")
 	}
@@ -466,10 +466,8 @@ func realtimeValidateInfo(info *genai.RealtimeSessionInfo) error {
 		default:
 			return fmt.Errorf("input modalities: unsupported %q", m)
 		}
-		for _, p := range info.InputModalities[:i] {
-			if p == m {
-				return fmt.Errorf("input modalities: duplicate %q", m)
-			}
+		if slices.Contains(info.InputModalities[:i], m) {
+			return fmt.Errorf("input modalities: duplicate %q", m)
 		}
 	}
 	switch info.TurnDetection {

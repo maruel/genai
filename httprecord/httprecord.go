@@ -50,7 +50,7 @@ func New(path string, h http.RoundTripper, opts ...recorder.Option) (*recorder.R
 
 // TB is a subset of testing.TB.
 type TB interface {
-	Cleanup(func())
+	Cleanup(f func())
 	Error(args ...any)
 	Fatal(args ...any)
 	Name() string
@@ -110,7 +110,7 @@ func (c *skipEmptyFS) IsFileExists(name string) bool {
 func trimResponseHeaders(i *cassette.Interaction) error {
 	// Authentication via API keys.
 	i.Request.Headers.Del("Authorization")
-	i.Request.Headers.Del("ChatGPT-Account-ID")
+	i.Request.Headers.Del("Chatgpt-Account-Id")
 	i.Request.Headers.Del("X-Api-Key")
 	i.Request.Headers.Del("X-Goog-Api-Key")
 	i.Request.Headers.Del("X-Key")
@@ -124,13 +124,13 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	i.Response.Headers.Del("Set-Cookie")
 
 	// Noise.
-	i.Request.Headers.Del("X-Request-Id")
+	i.Request.Headers.Del("X-Request-ID")
 	i.Response.Headers.Del("Date")
 	i.Response.Headers.Del("Inference-Id")
 	i.Response.Headers.Del("Request-Id")
 	i.Response.Headers.Del("X-Ds-Trace-Id")
 	i.Response.Headers.Del("X-Ms-Request-Id")
-	i.Response.Headers.Del("X-Request-Id")
+	i.Response.Headers.Del("X-Request-ID")
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
 }

@@ -354,6 +354,7 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // Client is a genai provider that delegates to the local `claude` CLI.
 type Client struct {
 	base.NotImplemented
+
 	exec           genai.Starter
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
@@ -362,30 +363,6 @@ type Client struct {
 
 	binOnce sync.Once
 	binErr  error
-}
-
-// ensureBin locates the claude binary on first call. It is safe for
-// concurrent use.
-func (c *Client) ensureBin() error {
-	c.binOnce.Do(func() {
-		bin, err := exec.LookPath("claude")
-		if err != nil {
-			if c.starterWrapper == nil {
-				c.binErr = fmt.Errorf("claude CLI not found on PATH: %w", err)
-				return
-			}
-			// Binary not found but a wrapper is set (e.g. test replay).
-			// Use a placeholder; the wrapper may never call the inner starter.
-			bin = "claude"
-		}
-		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin, apiKeyAuth: c.opts.APIKeyAuth}).start)
-		if c.starterWrapper != nil {
-			s = c.starterWrapper(s)
-		}
-		c.exec = s
-	})
-	return c.binErr
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -804,6 +781,30 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 	}
 
 	return append(args, co.extraArgs...)
+}
+
+// ensureBin locates the claude binary on first call. It is safe for
+// concurrent use.
+func (c *Client) ensureBin() error {
+	c.binOnce.Do(func() {
+		bin, err := exec.LookPath("claude")
+		if err != nil {
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("claude CLI not found on PATH: %w", err)
+				return
+			}
+			// Binary not found but a wrapper is set (e.g. test replay).
+			// Use a placeholder; the wrapper may never call the inner starter.
+			bin = "claude"
+		}
+		c.bin = bin
+		s := genai.Starter((&cmdExecutor{bin: bin, apiKeyAuth: c.opts.APIKeyAuth}).start)
+		if c.starterWrapper != nil {
+			s = c.starterWrapper(s)
+		}
+		c.exec = s
+	})
+	return c.binErr
 }
 
 func handleControlRequest(ctx context.Context, w io.Writer, h ControlHandler, line []byte) error {

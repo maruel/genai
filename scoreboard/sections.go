@@ -67,6 +67,14 @@ type Row struct {
 	_ struct{}
 }
 
+// WireOf returns the wire the row ran over.
+func (r *Row) WireOf(fallback Wire) Wire {
+	if r.Wire != "" {
+		return r.Wire
+	}
+	return fallback
+}
+
 func (r *Row) validate() error {
 	if len(r.Models) == 0 {
 		return errors.New("scenario must have at least one model")
@@ -79,17 +87,10 @@ func (r *Row) validate() error {
 	return nil
 }
 
-// WireOf returns the wire the row ran over.
-func (r *Row) WireOf(fallback Wire) Wire {
-	if r.Wire != "" {
-		return r.Wire
-	}
-	return fallback
-}
-
 // Reasoned adds the reasoning mode of a suite that can think.
 type Reasoned struct {
 	Row
+
 	// Reason means that the model does either explicit chain-of-thought or hidden
 	// reasoning. For some providers, this is controlled via OptionsText. For some
 	// models (like Qwen3), a token "/no_think" or "/think" is used to control.
@@ -101,6 +102,7 @@ type Reasoned struct {
 // Chat declares a conversational suite, measured through GenSync and GenStream.
 type Chat struct {
 	Reasoned
+
 	// Out describes what the model returns.
 	Out map[Modality]ModalCapability `json:"out,omitzero,omitempty"`
 
@@ -179,6 +181,7 @@ func (r *Chat) Validate() error {
 // dimensions.
 type Embed struct {
 	Row
+
 	// Embed declares embedding support. An empty value requests qualification.
 	Embed *EmbeddingFunctionality `json:"Embed,omitzero,omitempty"`
 
@@ -239,6 +242,7 @@ func (r *Embed) Validate() error {
 // SystemOne declares a typed decision suite.
 type SystemOne struct {
 	Row
+
 	// Out describes the decision the model returns.
 	Out map[Modality]ModalCapability `json:"out,omitzero,omitempty"`
 	// SystemOne declares typed decision features. An empty value requests
@@ -296,6 +300,7 @@ func (r *SystemOne) Validate() error {
 // Realtime declares a bidirectional session suite.
 type Realtime struct {
 	Reasoned
+
 	// Out describes what the session can return.
 	Out map[Modality]ModalCapability `json:"out,omitzero,omitempty"`
 	// Realtime declares bidirectional realtime session support. An empty value
@@ -358,6 +363,8 @@ func (r *Realtime) Validate() error {
 // decisions, and Realtime holds sessions. The section is the suite, so a row carries
 // the payloads of its section alone; a row without a payload is a queue entry for
 // models that suite has not measured, unless it records a refusal.
+//
+//nolint:recvcheck // JSON marshaling needs value and pointer method sets.
 type Score struct {
 	// Warnings lists concerns the user should be aware of.
 	Warnings []string `json:"warnings,omitzero,omitempty"`

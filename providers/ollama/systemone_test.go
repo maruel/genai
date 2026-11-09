@@ -60,9 +60,9 @@ func TestClientSystemOne(t *testing.T) {
 					t.Errorf("unexpected path %s", r.URL.Path)
 				}
 				var req struct {
-					Model     string
-					State     map[string]int
-					Questions json.RawMessage
+					Model     string          `json:"model"`
+					State     map[string]int  `json:"state"`
+					Questions json.RawMessage `json:"questions"`
 				}
 				if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 					t.Error(err)

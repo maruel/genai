@@ -16,7 +16,7 @@ import (
 
 func realtimeRow(in, out map[scoreboard.Modality]scoreboard.ModalCapability, f *scoreboard.RealtimeFunctionality) scoreboard.Realtime {
 	return scoreboard.Realtime{
-		Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{In: in}},
+		In:       in,
 		Out:      out,
 		Realtime: f,
 	}
@@ -27,12 +27,12 @@ func TestTableRows(t *testing.T) {
 	// measured row.
 	sb := scoreboard.Score{
 		Chat: []scoreboard.Chat{
-			{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"measured"}}}, GenSync: &scoreboard.Functionality{}},
-			{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"sota"}, SOTA: true}}, GenSync: &scoreboard.Functionality{}},
-			{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"queued"}}}},
+			{Models: []string{"measured"}, GenSync: &scoreboard.Functionality{}},
+			{Models: []string{"sota"}, SOTA: true, GenSync: &scoreboard.Functionality{}},
+			{Models: []string{"queued"}},
 		},
-		Embed:    []scoreboard.Embed{{Row: scoreboard.Row{Models: []string{"queued"}}}},
-		Realtime: []scoreboard.Realtime{{Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{Models: []string{"audio"}}}}},
+		Embed:    []scoreboard.Embed{{Models: []string{"queued"}}},
+		Realtime: []scoreboard.Realtime{{Models: []string{"audio"}}},
 	}
 	rows := tableRows(&sb, genai.ProviderCapabilities{})
 	got := make([]string, 0, len(rows))
@@ -101,9 +101,9 @@ func TestTableDataRow(t *testing.T) {
 	})
 	t.Run("initFromChat", func(t *testing.T) {
 		s := scoreboard.Chat{
-			Reasoned: scoreboard.Reasoned{Row: scoreboard.Row{In: audioText}, Reason: true},
-			Out:      audioText,
-			GenSync:  &scoreboard.Functionality{Seed: true},
+			In: audioText, Reason: true,
+			Out:     audioText,
+			GenSync: &scoreboard.Functionality{Seed: true},
 		}
 		row := tableDataRow{}
 		row.initFromChat(&s, s.GenSync)
@@ -113,7 +113,7 @@ func TestTableDataRow(t *testing.T) {
 	})
 	t.Run("initFromEmbed", func(t *testing.T) {
 		s := scoreboard.Embed{
-			Row:   scoreboard.Row{In: map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}}},
+			In:    map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
 			Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 2},
 		}
 		row := tableDataRow{}

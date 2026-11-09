@@ -121,6 +121,7 @@ func TestSessionUpdateMessage(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			b, err := json.Marshal(&tc.msg)
 			if err != nil {
 				t.Fatal(err)

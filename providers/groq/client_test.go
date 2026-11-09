@@ -100,6 +100,7 @@ func TestGenOption(t *testing.T) {
 	})
 }
 
+//nolint:tparallel // The parent owns a shared recording fixture and its cleanup.
 func TestClient(t *testing.T) {
 	t.Run("TranscriptionRaw", testClientTranscriptionRaw)
 	testRecorder := internaltest.NewRecords()
@@ -522,6 +523,7 @@ func (t transcriptionTransport) RoundTrip(r *http.Request) (*http.Response, erro
 
 type handleGroqReasoning struct {
 	genai.Provider
+
 	opt genai.EffortLevel
 }
 

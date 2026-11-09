@@ -14,6 +14,8 @@ import (
 )
 
 // ProviderOption is an option for provider constructors.
+//
+//nolint:iface // Separate option categories are distinct public contracts.
 type ProviderOption interface {
 	Validate() error
 }

@@ -242,7 +242,7 @@ func applyUpdate(root string, u *update, latest string) error {
 }
 
 func runTests(root, pkg string) error {
-	cmd := exec.Command("go", "test", pkg, "-update-scoreboard")
+	cmd := exec.Command("go", "test", pkg, "-update-scoreboard") //nolint:noctx // This CLI waits for its child to finish.
 	cmd.Dir = root
 	cmd.Env = append(os.Environ(), "RECORD=failure_only")
 	cmd.Stdout = os.Stdout

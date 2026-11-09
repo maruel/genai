@@ -88,8 +88,8 @@ func (r *SystemOneRequest) Validate() error {
 
 // SystemOneResponse is Ollama's native decision response.
 type SystemOneResponse struct {
-	Model string `json:"model"`
-	genai.SystemOneResponse
+	Model                   string `json:"model"`
+	genai.SystemOneResponse        //nolint:embeddedstructfieldcheck // Preserve the JSON field order.
 }
 
 // UnmarshalJSON checks the required native response fields.

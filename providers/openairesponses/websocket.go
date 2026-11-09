@@ -136,6 +136,124 @@ func (w *WebSocketConn) SendRaw(ctx context.Context, message []byte) error {
 	return ws.Write(ctx, websocket.MessageText, message)
 }
 
+// GenSync implements genai.Provider.
+//
+// WebSocket mode is always streaming; GenSync collects all fragments and returns
+// the accumulated result.
+func (w *WebSocketConn) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	fragments, finish := w.GenStream(ctx, msgs, opts...)
+	for range fragments {
+	}
+	return finish()
+}
+
+// GenStream implements genai.Provider.
+func (w *WebSocketConn) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	res := genai.Result{}
+	var finalErr error
+	var respID string
+	msgCount := len(msgs)
+
+	fnFragments := func(yield func(genai.Reply) bool) {
+		if err := w.sendRequest(ctx, msgs, opts...); err != nil {
+			finalErr = err
+			return
+		}
+		chunks, finish := w.recvEvents(ctx)
+		filtered := streamWithRespID(chunks, &respID)
+		fragments, finish2 := ProcessStream(filtered)
+		sent := false
+		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
+			if err := f.Validate(); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			if err := res.Accumulate(&f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			sent = true
+			if !yield(f) {
+				break
+			}
+		}
+		if err := finish(); finalErr == nil {
+			finalErr = err
+		}
+		usage, _, err := finish2()
+		res.Usage = usage
+		if finalErr == nil {
+			finalErr = err
+		}
+		if !sent && finalErr == nil {
+			finalErr = errors.New("model sent no reply")
+		}
+	}
+	fnFinish := func() (genai.Result, error) {
+		if finalErr != nil {
+			return res, finalErr
+		}
+		if err := res.Validate(); err != nil {
+			return res, &internal.BadError{Err: err}
+		}
+		// Emit Opaque metadata so the next call can send only the delta.
+		if respID != "" {
+			res.Replies = append(res.Replies, emitMeta(respID, msgCount))
+		}
+		return res, nil
+	}
+	return fnFragments, fnFinish
+}
+
+// GenStreamRaw sends a raw request over the WebSocket and returns the streaming events.
+//
+// This gives direct access to the WebSocket protocol for power users.
+func (w *WebSocketConn) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[ResponseStreamChunkResponse], func() error) {
+	req := WSRequest{
+		Type:     "response.create",
+		Response: *in,
+	}
+	data, err := json.Marshal(req)
+	if err != nil {
+		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error {
+			return fmt.Errorf("failed to marshal request: %w", err)
+		}
+	}
+	if err := w.SendRaw(ctx, data); err != nil {
+		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error { return err }
+	}
+	return w.recvEvents(ctx)
+}
+
+// GenSyncRaw sends a raw request over the WebSocket and returns the raw response.
+//
+// It wraps GenStreamRaw, collecting all streaming events into a single response.
+func (w *WebSocketConn) GenSyncRaw(ctx context.Context, in *Response) (*Response, error) {
+	chunks, finish := w.GenStreamRaw(ctx, in)
+	var lastResp *Response
+	for pkt := range chunks {
+		if pkt.Type == ResponseCompleted || pkt.Type == ResponseFailed || pkt.Type == ResponseIncomplete {
+			r := pkt.Response
+			lastResp = &r
+		}
+	}
+	if err := finish(); err != nil {
+		return nil, err
+	}
+	if lastResp == nil {
+		return nil, errors.New("no terminal response event received")
+	}
+	return lastResp, nil
+}
+
+var (
+	_ genai.Provider = &WebSocketConn{}
+	_ io.Closer      = &WebSocketConn{}
+)
+
 // recvEvents returns an iterator of streaming events from the WebSocket.
 //
 // The iterator runs a goroutine that reads messages from the WebSocket.
@@ -256,121 +374,3 @@ func (w *WebSocketConn) sendRequest(ctx context.Context, msgs genai.Messages, op
 	}
 	return w.SendRaw(ctx, data)
 }
-
-// GenSync implements genai.Provider.
-//
-// WebSocket mode is always streaming; GenSync collects all fragments and returns
-// the accumulated result.
-func (w *WebSocketConn) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	fragments, finish := w.GenStream(ctx, msgs, opts...)
-	for range fragments {
-	}
-	return finish()
-}
-
-// GenStream implements genai.Provider.
-func (w *WebSocketConn) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	res := genai.Result{}
-	var finalErr error
-	var respID string
-	msgCount := len(msgs)
-
-	fnFragments := func(yield func(genai.Reply) bool) {
-		if err := w.sendRequest(ctx, msgs, opts...); err != nil {
-			finalErr = err
-			return
-		}
-		chunks, finish := w.recvEvents(ctx)
-		filtered := streamWithRespID(chunks, &respID)
-		fragments, finish2 := ProcessStream(filtered)
-		sent := false
-		for f := range fragments {
-			if f.IsZero() {
-				continue
-			}
-			if err := f.Validate(); err != nil {
-				finalErr = &internal.BadError{Err: err}
-				break
-			}
-			if err := res.Accumulate(&f); err != nil {
-				finalErr = &internal.BadError{Err: err}
-				break
-			}
-			sent = true
-			if !yield(f) {
-				break
-			}
-		}
-		if err := finish(); finalErr == nil {
-			finalErr = err
-		}
-		usage, _, err := finish2()
-		res.Usage = usage
-		if finalErr == nil {
-			finalErr = err
-		}
-		if !sent && finalErr == nil {
-			finalErr = errors.New("model sent no reply")
-		}
-	}
-	fnFinish := func() (genai.Result, error) {
-		if finalErr != nil {
-			return res, finalErr
-		}
-		if err := res.Validate(); err != nil {
-			return res, &internal.BadError{Err: err}
-		}
-		// Emit Opaque metadata so the next call can send only the delta.
-		if respID != "" {
-			res.Replies = append(res.Replies, emitMeta(respID, msgCount))
-		}
-		return res, nil
-	}
-	return fnFragments, fnFinish
-}
-
-// GenStreamRaw sends a raw request over the WebSocket and returns the streaming events.
-//
-// This gives direct access to the WebSocket protocol for power users.
-func (w *WebSocketConn) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[ResponseStreamChunkResponse], func() error) {
-	req := WSRequest{
-		Type:     "response.create",
-		Response: *in,
-	}
-	data, err := json.Marshal(req)
-	if err != nil {
-		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error {
-			return fmt.Errorf("failed to marshal request: %w", err)
-		}
-	}
-	if err := w.SendRaw(ctx, data); err != nil {
-		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error { return err }
-	}
-	return w.recvEvents(ctx)
-}
-
-// GenSyncRaw sends a raw request over the WebSocket and returns the raw response.
-//
-// It wraps GenStreamRaw, collecting all streaming events into a single response.
-func (w *WebSocketConn) GenSyncRaw(ctx context.Context, in *Response) (*Response, error) {
-	chunks, finish := w.GenStreamRaw(ctx, in)
-	var lastResp *Response
-	for pkt := range chunks {
-		if pkt.Type == ResponseCompleted || pkt.Type == ResponseFailed || pkt.Type == ResponseIncomplete {
-			r := pkt.Response
-			lastResp = &r
-		}
-	}
-	if err := finish(); err != nil {
-		return nil, err
-	}
-	if lastResp == nil {
-		return nil, errors.New("no terminal response event received")
-	}
-	return lastResp, nil
-}
-
-var (
-	_ genai.Provider = &WebSocketConn{}
-	_ io.Closer      = &WebSocketConn{}
-)

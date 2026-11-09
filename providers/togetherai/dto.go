@@ -59,64 +59,6 @@ type ChatRequest struct {
 	SafetyModel        string              `json:"safety_model,omitzero"` // https://docs.together.ai/docs/inference-models#moderation-models
 }
 
-func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
-	if level == "" {
-		return nil
-	}
-	id := strings.ToLower(c.Model)
-	switch {
-	case strings.Contains(id, "gpt-oss"):
-		switch level {
-		case "":
-		case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
-			c.ReasoningEffort = ReasoningEffortLow
-		case genai.EffortMedium:
-			c.ReasoningEffort = ReasoningEffortMedium
-		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
-			c.ReasoningEffort = ReasoningEffortHigh
-		default:
-			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
-		}
-	case strings.Contains(id, "deepseek-v4"):
-		switch level {
-		case "":
-		case genai.EffortOff:
-			c.Reasoning = &Reasoning{Enabled: false}
-		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium:
-			c.Reasoning = &Reasoning{Enabled: true}
-			c.ReasoningEffort = ReasoningEffortHigh
-		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
-			c.Reasoning = &Reasoning{Enabled: true}
-			c.ReasoningEffort = ReasoningEffortMax
-		default:
-			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
-		}
-	case strings.Contains(id, "qwen3") && !strings.Contains(id, "thinking") && !strings.Contains(id, "instruct") && !strings.Contains(id, "coder"):
-		switch level {
-		case "":
-		case genai.EffortOff:
-			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(false)}
-		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
-			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(true)}
-		default:
-			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
-		}
-	case strings.Contains(id, "deepseek-v3.1"), strings.Contains(id, "deepseek-v3.2"), strings.Contains(id, "glm-4.5"), strings.Contains(id, "glm-4.6"), strings.Contains(id, "glm-4.7"), strings.Contains(id, "glm-5"), strings.Contains(id, "kimi-k2.5"), strings.Contains(id, "kimi-k2.6"), strings.Contains(id, "kimi-k3"), strings.Contains(id, "minimax-m3"):
-		switch level {
-		case "":
-		case genai.EffortOff:
-			c.Reasoning = &Reasoning{Enabled: false}
-		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
-			c.Reasoning = &Reasoning{Enabled: true}
-		default:
-			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
-		}
-	default:
-		return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
-	}
-	return nil
-}
-
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
@@ -230,6 +172,64 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 // SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
+}
+
+func (c *ChatRequest) initThinking(level genai.EffortLevel) error {
+	if level == "" {
+		return nil
+	}
+	id := strings.ToLower(c.Model)
+	switch {
+	case strings.Contains(id, "gpt-oss"):
+		switch level {
+		case "":
+		case genai.EffortOff, genai.EffortMinimal, genai.EffortLow:
+			c.ReasoningEffort = ReasoningEffortLow
+		case genai.EffortMedium:
+			c.ReasoningEffort = ReasoningEffortMedium
+		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.ReasoningEffort = ReasoningEffortHigh
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	case strings.Contains(id, "deepseek-v4"):
+		switch level {
+		case "":
+		case genai.EffortOff:
+			c.Reasoning = &Reasoning{Enabled: false}
+		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium:
+			c.Reasoning = &Reasoning{Enabled: true}
+			c.ReasoningEffort = ReasoningEffortHigh
+		case genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.Reasoning = &Reasoning{Enabled: true}
+			c.ReasoningEffort = ReasoningEffortMax
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	case strings.Contains(id, "qwen3") && !strings.Contains(id, "thinking") && !strings.Contains(id, "instruct") && !strings.Contains(id, "coder"):
+		switch level {
+		case "":
+		case genai.EffortOff:
+			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(false)}
+		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.ChatTemplateKwargs = &ChatTemplateKwargs{EnableThinking: new(true)}
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	case strings.Contains(id, "deepseek-v3.1"), strings.Contains(id, "deepseek-v3.2"), strings.Contains(id, "glm-4.5"), strings.Contains(id, "glm-4.6"), strings.Contains(id, "glm-4.7"), strings.Contains(id, "glm-5"), strings.Contains(id, "kimi-k2.5"), strings.Contains(id, "kimi-k2.6"), strings.Contains(id, "kimi-k3"), strings.Contains(id, "minimax-m3"):
+		switch level {
+		case "":
+		case genai.EffortOff:
+			c.Reasoning = &Reasoning{Enabled: false}
+		case genai.EffortMinimal, genai.EffortLow, genai.EffortMedium, genai.EffortHigh, genai.EffortXHigh, genai.EffortMax:
+			c.Reasoning = &Reasoning{Enabled: true}
+		default:
+			return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+		}
+	default:
+		return &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+	}
+	return nil
 }
 
 // Reasoning controls reasoning on Together hybrid models.
@@ -721,6 +721,7 @@ type LogprobToken struct {
 // LogprobContent includes the most likely alternatives for a token.
 type LogprobContent struct {
 	LogprobToken
+
 	TopLogprobs []LogprobToken `json:"top_logprobs"`
 }
 
@@ -904,7 +905,7 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
-	c := ""
+	var c string
 	if m.Config.MaxOutputLength != 0 {
 		c = fmt.Sprintf("%d/%d", m.ContextLength, m.Config.MaxOutputLength)
 	} else {
@@ -1061,6 +1062,8 @@ type ImageChoiceData struct {
 //
 
 // ErrorResponse is the provider-specific error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ID       string `json:"id"`
 	ErrorVal struct {

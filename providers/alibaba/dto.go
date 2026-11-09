@@ -580,6 +580,8 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 }
 
 // ErrorResponse is the DashScope error response.
+//
+//nolint:errname // Preserve the exported provider wire type name.
 type ErrorResponse struct {
 	ID        string `json:"id"`         // DashScope includes id in error responses
 	RequestID string `json:"request_id"` // DashScope-specific

@@ -326,6 +326,48 @@ func TestClient(t *testing.T) {
 				}
 				realtimetest.Close(t, s)
 			})
+			t.Run("truncation", func(t *testing.T) {
+				for _, tc := range []struct {
+					name string
+					opt  openaibase.Truncation
+					want any
+				}{
+					{"disabled", openaibase.Truncation{Strategy: openaibase.TruncationDisabled}, "disabled"},
+					{"retention ratio", openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio, Ratio: 0.8, PostInstructionsTokens: 2000}, map[string]any{"type": "retention_ratio", "retention_ratio": 0.8, "token_limits": map[string]any{"post_instructions": float64(2000)}}},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+							if setup := realtimeSetup(t, ctx, ws); !reflect.DeepEqual(setup["truncation"], tc.want) {
+								t.Errorf("truncation: %#v", setup["truncation"])
+							}
+						})
+						s, err := realtimeClient(t).ConnectRealtime(t.Context(), &openaichat.RealtimeOption{Endpoint: endpoint, Truncation: &tc.opt})
+						if err != nil {
+							t.Fatal(err)
+						}
+						realtimetest.Close(t, s)
+					})
+				}
+			})
+			t.Run("truncation not accepted", func(t *testing.T) {
+				endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimetest.Write(t, ctx, ws, `{"type":"session.created","session":{"id":"sess_test","type":"realtime"}}`)
+					setup := internaltest.AssertType[map[string]any](t, realtimetest.Read(t, ctx, ws)["session"])
+					setup["id"] = "sess_test"
+					setup["truncation"] = "auto"
+					b, err := json.Marshal(map[string]any{"type": "session.updated", "session": setup})
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					realtimetest.Write(t, ctx, ws, string(b))
+					_, _, _ = ws.Read(ctx)
+				})
+				s, err := realtimeClient(t).ConnectRealtime(t.Context(), &openaichat.RealtimeOption{Endpoint: endpoint, Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationDisabled}})
+				if s != nil || err == nil || !strings.Contains(err.Error(), "did not accept truncation") {
+					t.Fatalf("session %v, error %v", s, err)
+				}
+			})
 			t.Run("session update", func(t *testing.T) {
 				sent := make(chan struct{})
 				endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
@@ -487,7 +529,7 @@ func TestClient(t *testing.T) {
 						t.Fatal("accepted invalid setup")
 					}
 				}
-				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr_CA"}, {InputLanguage: "fr--CA"}} {
+				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr_CA"}, {InputLanguage: "fr--CA"}, {Truncation: &openaibase.Truncation{}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationAuto, Ratio: 0.5}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio, Ratio: 0.8, PostInstructionsTokens: -1}}} {
 					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
 						t.Fatal("accepted invalid option")
 					}

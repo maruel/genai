@@ -36,6 +36,15 @@ type RealtimeOption struct {
 	InputLanguage           string
 	// MaxOutputTokens bounds each model response; zero leaves the provider default.
 	MaxOutputTokens int64
+	// Truncation selects how the server drops the oldest conversation items once
+	// the input exceeds the model's context window; dropped items are not
+	// summarized. Nil leaves the server default, auto. TruncationDisabled fails
+	// the response instead. TruncationRetentionRatio retains Ratio of the
+	// post-instruction tokens, trimming more at once so the cached prompt prefix
+	// survives longer; OpenAI suggests 0.8 for long sessions.
+	//
+	// See https://developers.openai.com/blog/realtime-api
+	Truncation *Truncation
 	// PingInterval and PingTimeout default to 30 and 10 seconds respectively.
 	PingInterval time.Duration
 	PingTimeout  time.Duration
@@ -54,6 +63,23 @@ func (o *RealtimeOption) Validate() error {
 	}
 	if o.PingInterval < 0 || o.PingTimeout < 0 {
 		return errors.New("OpenAI realtime keepalive durations must not be negative")
+	}
+	if t := o.Truncation; t != nil {
+		switch t.Strategy {
+		case TruncationAuto, TruncationDisabled:
+			if t.Ratio != 0 || t.PostInstructionsTokens != 0 {
+				return errors.New("OpenAI realtime truncation ratio and token limit require the retention_ratio strategy")
+			}
+		case TruncationRetentionRatio:
+			if t.Ratio <= 0 || t.Ratio > 1 {
+				return errors.New("OpenAI realtime truncation retention ratio must be in (0, 1]")
+			}
+			if t.PostInstructionsTokens < 0 {
+				return errors.New("OpenAI realtime truncation token limit must not be negative")
+			}
+		default:
+			return fmt.Errorf("unknown OpenAI realtime truncation strategy %q", t.Strategy)
+		}
 	}
 	if o.InputLanguage != "" {
 		if _, err := normalizeInputLanguage(o.InputLanguage); err != nil {
@@ -211,6 +237,10 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 	}
 	if o.MaxOutputTokens != 0 {
 		setup.MaxOutputTokens = MaxOutputTokens{Value: o.MaxOutputTokens}
+	}
+	if o.Truncation != nil {
+		t := *o.Truncation
+		setup.Truncation = &t
 	}
 	if turnDetection != genai.RealtimeTurnManual {
 		setup.Audio.Input.TurnDetection = &TurnDetection{Type: TurnServerVAD, CreateResponse: true, InterruptResponse: true}

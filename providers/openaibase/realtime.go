@@ -712,6 +712,12 @@ func acceptSetup(want, got *SessionConfig, info *genai.RealtimeSessionInfo) erro
 	if want.MaxOutputTokens != (MaxOutputTokens{}) && want.MaxOutputTokens != got.MaxOutputTokens {
 		return errors.New("realtime provider did not accept output token limit")
 	}
+	if w := want.Truncation; w != nil {
+		g := got.Truncation
+		if g == nil || g.Strategy != w.Strategy || g.Ratio != w.Ratio || (w.PostInstructionsTokens != 0 && g.PostInstructionsTokens != w.PostInstructionsTokens) {
+			return errors.New("realtime provider did not accept truncation")
+		}
+	}
 	if want.Reasoning != nil && (got.Reasoning == nil || got.Reasoning.Effort != want.Reasoning.Effort) {
 		return errors.New("realtime provider did not accept reasoning effort")
 	}

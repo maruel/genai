@@ -726,7 +726,7 @@ func realtimeToolAnswer(probe RealtimeProbe, ev *realtimeEvents, calls *genai.Re
 				}
 				text.WriteString(e.Content.Text)
 			}
-		case genai.RealtimeEventContentReasoning, genai.RealtimeEventError, genai.RealtimeEventGenerationDone, genai.RealtimeEventInputSpeechEnd, genai.RealtimeEventInputSpeechStart, genai.RealtimeEventTranscriptInput, genai.RealtimeEventInterrupted, genai.RealtimeEventProvider, genai.RealtimeEventContentToolCalls, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage:
+		case genai.RealtimeEventContentReasoning, genai.RealtimeEventError, genai.RealtimeEventGenerationDone, genai.RealtimeEventInputSpeechEnd, genai.RealtimeEventInputSpeechStart, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptInputInterim, genai.RealtimeEventInterrupted, genai.RealtimeEventProvider, genai.RealtimeEventContentToolCalls, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage:
 		}
 	}
 	// The first await skips a queued tool-call TurnDone and stale output from the

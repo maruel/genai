@@ -445,6 +445,12 @@ const (
 	// accumulated deltas. Transcription is independent of model output and may
 	// arrive out of order with respect to response events.
 	RealtimeEventTranscriptInput RealtimeEventKind = "input_transcript"
+	// RealtimeEventTranscriptInputInterim carries the provider's revisable
+	// hypothesis for user speech that RealtimeEventTranscriptInput has not yet
+	// delivered. Content.Text replaces the previous interim text and may be
+	// empty; Final is never set. The next RealtimeEventTranscriptInput supersedes
+	// it. Providers that only stream append-only input deltas never emit it.
+	RealtimeEventTranscriptInputInterim RealtimeEventKind = "input_transcript_interim"
 	// RealtimeEventTranscriptOutput carries a transcription of generated audio.
 	// Content.Text is a delta unless Final is true, in which case it replaces the
 	// accumulated deltas. It is not generated text output; RealtimeEventContentText

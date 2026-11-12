@@ -405,6 +405,9 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 				s.pending = append(s.pending, genai.RealtimeEvent{Kind: kind, Content: c})
 			}
 		}
+		if c.InterimInputTranscription != nil {
+			s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTranscriptInputInterim, Content: genai.RealtimeContent{Text: c.InterimInputTranscription.Text}})
+		}
 		if c.InputTranscription != nil {
 			e, err := liveTranscriptEvent(genai.RealtimeEventTranscriptInput, c.InputTranscription, &s.inputTranscript)
 			if err != nil {

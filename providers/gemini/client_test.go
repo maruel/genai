@@ -157,7 +157,7 @@ func TestClient(t *testing.T) {
 					messages[i] = realtimetest.Read(t, ctx, ws)
 				}
 				received <- messages
-				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"},{"text":"weighing","thought":true}]},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
+				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"},{"text":"weighing","thought":true}]},"interimInputTranscription":{"text":"hel"},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
 				realtimetest.Write(t, ctx, ws, `{"serverContent":{"inputTranscription":{"text":"world","finished":true},"outputTranscription":{"text":"day","finished":true},"turnComplete":true},"usageMetadata":{"promptTokenCount":3,"responseTokenCount":5,"totalTokenCount":8},"goAway":{"timeLeft":"30s"},"sessionResumptionUpdate":{"newHandle":"resume","resumable":true}}`)
 				for _, frame := range []string{
 					`{"usageMetadata":{"totalTokenCount":1}}`,
@@ -224,7 +224,7 @@ func TestClient(t *testing.T) {
 			if internaltest.AssertType[map[string]any](t, messages[3]["realtimeInput"])["audioStreamEnd"] != true {
 				t.Errorf("stream end: %v", messages[3])
 			}
-			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventContentReasoning, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
+			want := []genai.RealtimeEventKind{genai.RealtimeEventContentAudio, genai.RealtimeEventContentText, genai.RealtimeEventContentReasoning, genai.RealtimeEventTranscriptInputInterim, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventGenerationDone, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptOutput, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage, genai.RealtimeEventProvider, genai.RealtimeEventProvider}
 			responseID := ""
 			for i, kind := range want {
 				e := realtimetest.Receive(t, s, kind)
@@ -235,7 +235,7 @@ func TestClient(t *testing.T) {
 					}
 				}
 				id := responseID
-				if kind == genai.RealtimeEventTranscriptInput || kind == genai.RealtimeEventProvider {
+				if kind == genai.RealtimeEventTranscriptInput || kind == genai.RealtimeEventTranscriptInputInterim || kind == genai.RealtimeEventProvider {
 					id = ""
 				}
 				if e.ResponseID != id || e.ItemID != "" {
@@ -250,23 +250,27 @@ func TestClient(t *testing.T) {
 					if e.Content.Reasoning != "weighing" || e.Content.Text != "" {
 						t.Errorf("reasoning: %+v", e.Content)
 					}
-				case 6:
+				case 3:
+					if e.Content.Final || e.Content.Text != "hel" {
+						t.Errorf("interim transcript: %+v", e)
+					}
+				case 7:
 					if !e.Content.Final || e.Content.Text != "hello world" {
 						t.Errorf("final transcript: %+v", e)
 					}
-				case 7:
+				case 8:
 					if !e.Content.Final || e.Content.Text != "good day" {
 						t.Errorf("final transcript: %+v", e)
 					}
-				case 9:
+				case 10:
 					if e.Usage.TotalTokens != 8 {
 						t.Errorf("usage: %+v", e)
 					}
-				case 10:
+				case 11:
 					if p, ok := e.ProviderEvent.(*gemini.GoAway); !ok || p.TimeLeft != 30*time.Second {
 						t.Errorf("goaway: %+v", e)
 					}
-				case 11:
+				case 12:
 					if p, ok := e.ProviderEvent.(*gemini.Resumption); !ok || p.Handle != "resume" {
 						t.Errorf("resumption: %+v", e)
 					}

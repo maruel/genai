@@ -60,6 +60,28 @@ func TestConn(t *testing.T) {
 			t.Fatalf("cleanup error was dropped or exposed: %v", err)
 		}
 	})
+	t.Run("Read", func(t *testing.T) {
+		const reason = "Operation is not implemented, or supported, or enabled."
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ws, err := websocket.Accept(w, r, nil)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			_ = ws.Close(websocket.StatusPolicyViolation, reason)
+		}))
+		t.Cleanup(srv.Close)
+		c, err := realtime.Dial(t.Context(), "ws"+strings.TrimPrefix(srv.URL, "http"), http.DefaultClient, 1<<10, 0, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { _ = c.Close() })
+		_, err = c.Read(t.Context())
+		const want = `realtime WebSocket closed (status 1008): "` + reason + `"`
+		if err == nil || err.Error() != want {
+			t.Fatalf("Read() error = %v; want %s", err, want)
+		}
+	})
 	t.Run("write limit", func(t *testing.T) {
 		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ws, err := websocket.Accept(w, r, nil)

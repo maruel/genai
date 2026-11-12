@@ -69,13 +69,25 @@ func (o *RealtimeOption) Validate() error {
 	if o.PingInterval < 0 || o.PingTimeout < 0 {
 		return errors.New("gemini live keepalive durations must not be negative")
 	}
-	if o.Compression != nil && (o.Compression.TriggerTokens <= 0 || o.Compression.TargetTokens <= 0 || o.Compression.TargetTokens >= o.Compression.TriggerTokens) {
-		return errors.New("gemini live compression requires positive target tokens below trigger tokens")
+	if c := o.Compression; c != nil {
+		if c.TriggerTokens < 0 || c.TargetTokens < 0 {
+			return errors.New("gemini live compression token counts must not be negative")
+		}
+		if c.TriggerTokens != 0 && c.TargetTokens >= c.TriggerTokens {
+			return errors.New("gemini live compression target tokens must be below trigger tokens")
+		}
 	}
 	return nil
 }
 
 // RealtimeCompression configures Gemini's sliding-window context reduction.
+//
+// Compression lifts the 15-minute limit on audio-only sessions. A zero
+// TriggerTokens selects 80% of the model's context window; a zero TargetTokens
+// selects half the trigger. An explicit TargetTokens must be below an explicit
+// TriggerTokens.
+//
+// Documented at https://ai.google.dev/api/live#ContextWindowCompressionConfig
 type RealtimeCompression struct {
 	TriggerTokens int64
 	TargetTokens  int64

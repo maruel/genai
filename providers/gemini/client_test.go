@@ -147,6 +147,9 @@ func TestClient(t *testing.T) {
 				if !reflect.DeepEqual(trans["languageCodes"], []any{"en-US"}) {
 					t.Errorf("transcription: %v", trans)
 				}
+				if c := s["contextWindowCompression"]; !reflect.DeepEqual(c, map[string]any{"slidingWindow": map[string]any{}}) {
+					t.Errorf("server-default compression: %v", c)
+				}
 				for _, key := range []string{"proactivity", "enableAffectiveDialog", "thinkingConfig"} {
 					if _, ok := s[key]; ok {
 						t.Errorf("unexpected %s", key)
@@ -190,7 +193,7 @@ func TestClient(t *testing.T) {
 				}
 				_, _, _ = ws.Read(ctx)
 			})
-			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true, Compression: &gemini.RealtimeCompression{}}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -754,7 +757,7 @@ func TestClient(t *testing.T) {
 					t.Errorf("accepted config: %+v", cfg)
 				}
 			}
-			for _, opt := range []*gemini.RealtimeOption{nil, {Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingTimeout: -time.Second}, {InputLanguages: []string{"en"}}, {Compression: &gemini.RealtimeCompression{TriggerTokens: 1, TargetTokens: 2}}} {
+			for _, opt := range []*gemini.RealtimeOption{nil, {Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingTimeout: -time.Second}, {InputLanguages: []string{"en"}}, {Compression: &gemini.RealtimeCompression{TriggerTokens: 1, TargetTokens: 2}}, {Compression: &gemini.RealtimeCompression{TargetTokens: -1}}} {
 				if s, err := c.ConnectRealtime(t.Context(), opt); err == nil || s != nil {
 					t.Errorf("accepted option: %+v", opt)
 				}

@@ -182,8 +182,15 @@ func (c *Conn) fail(ctx context.Context, err error) error {
 	case websocket.CloseStatus(err) == websocket.StatusNormalClosure || websocket.CloseStatus(err) == websocket.StatusGoingAway:
 		err = io.EOF
 	default:
-		// Peer close reasons can echo credentials; preserve the category only.
-		err = fmt.Errorf("realtime WebSocket I/O failed (close status %d)", websocket.CloseStatus(err))
+		// The close reason is provider-authored and distinguishes failures
+		// sharing a status, such as Gemini Live's 1008 causes. RFC 6455 caps
+		// it at 123 bytes.
+		if ce, ok := errors.AsType[websocket.CloseError](err); ok {
+			err = fmt.Errorf("realtime WebSocket closed (status %d): %q", ce.Code, ce.Reason)
+		} else {
+			// Transport errors can embed local addresses; preserve the category only.
+			err = errors.New("realtime WebSocket I/O failed")
+		}
 	}
 	c.cancel(err)
 	return c.Err()

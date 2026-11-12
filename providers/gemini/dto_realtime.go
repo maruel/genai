@@ -318,13 +318,13 @@ type LiveSessionResumption struct {
 
 // LiveCompression is documented at https://ai.google.dev/api/live#ContextWindowCompressionConfig
 type LiveCompression struct {
-	TriggerTokens int64             `json:"triggerTokens,string"`
+	TriggerTokens int64             `json:"triggerTokens,omitzero,string"`
 	SlidingWindow LiveSlidingWindow `json:"slidingWindow"`
 }
 
 // LiveSlidingWindow is documented at https://ai.google.dev/api/live#ContextWindowCompressionConfig.SlidingWindow
 type LiveSlidingWindow struct {
-	TargetTokens int64 `json:"targetTokens,string"`
+	TargetTokens int64 `json:"targetTokens,omitzero,string"`
 }
 
 // LiveTranscriptionConfig is documented at https://ai.google.dev/api/live#AudioTranscriptionConfig

@@ -114,15 +114,6 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, smoke.Subprocess(getClient), models, nil)
 	})
 
-	t.Run("model_markers", func(t *testing.T) {
-		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-			if cl, err := New(t.Context(), m); err == nil {
-				internaltest.CleanupCloser(t, cl)
-				t.Errorf("%s: expected error", m)
-			}
-		}
-	})
-
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
 			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("opencode/big-pickle"))
@@ -331,6 +322,12 @@ func TestClient(t *testing.T) {
 				t.Errorf("unexpected error: %v", err)
 			}
 		})
+	})
+
+	t.Run("ModelCheap", func(t *testing.T) {
+		if got := newTestClient(t, "ListModels", genai.ModelCheap).ModelID(); got != "openai/gpt-6-luna" {
+			t.Errorf("ModelID() = %q, want %q", got, "openai/gpt-6-luna")
+		}
 	})
 
 	t.Run("ListModels", func(t *testing.T) {

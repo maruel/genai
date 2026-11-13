@@ -321,8 +321,9 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model alias ("opus", "sonnet", "haiku") or
-//     full ID. genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are
-//     rejected.
+//     full ID. genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA select
+//     "haiku", "sonnet", and "opus", which the CLI resolves to its latest
+//     models.
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
@@ -336,10 +337,16 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			if err := msgutil.RejectModelMarker(v); err != nil {
-				return nil, err
+			switch v {
+			case genai.ModelCheap:
+				c.model = "haiku"
+			case genai.ModelGood:
+				c.model = "sonnet"
+			case genai.ModelSOTA:
+				c.model = "opus"
+			default:
+				c.model = string(v)
 			}
-			c.model = string(v)
 		case *ProviderOption:
 			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:

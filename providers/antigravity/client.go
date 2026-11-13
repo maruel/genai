@@ -38,6 +38,7 @@ package antigravity
 import (
 	"bufio"
 	"bytes"
+	"cmp"
 	"context"
 	_ "embed"
 	"encoding/json"
@@ -48,6 +49,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -123,35 +125,49 @@ func (p *ProviderOption) Validate() error {
 // New creates a Client for the `agy` CLI.
 //
 // The binary is located lazily, so New succeeds even when the CLI is not
-// installed.
+// installed, unless a model marker requires listing models.
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID as listed by `agy models`, e.g.
 //     "gemini-3.8-flash-low". Without one, agy uses its default model.
-//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA select the newest
+//     gemini flash-low, flash-medium, or pro-high model that `agy models`
+//     lists.
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
-func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
 	c := &Client{}
+	var marker genai.ProviderOptionModel
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return nil, err
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			if err := msgutil.RejectModelMarker(v); err != nil {
-				return nil, err
+			switch v {
+			case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+				marker = v
+			default:
+				c.model = string(v)
 			}
-			c.model = string(v)
 		case *ProviderOption:
 			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
+		}
+	}
+	if marker != "" {
+		models, err := c.listModels(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if c.model, err = selectModel(models, marker); err != nil {
+			return nil, err
 		}
 	}
 	return c, nil
@@ -387,6 +403,57 @@ func (c *Client) listModels(ctx context.Context) ([]Model, error) {
 	}
 	models, err := readModels(newScanner(stdout))
 	return models, errors.Join(err, wait())
+}
+
+// selectModel picks the newest model of the family and effort matching the
+// marker. Model IDs follow "gemini-<major>.<minor>-<family>-<effort>".
+//
+//   - Cheap: newest flash, low effort.
+//   - Good: newest flash, medium effort.
+//   - SOTA: newest pro, high effort.
+func selectModel(models []Model, marker genai.ProviderOptionModel) (string, error) {
+	family, effort := "flash", "low"
+	switch marker {
+	case genai.ModelGood:
+		effort = "medium"
+	case genai.ModelSOTA:
+		family, effort = "pro", "high"
+	default:
+	}
+	var best string
+	var bestVer [2]int
+	for i := range models {
+		ver, ok := parseGeminiID(models[i].ID, family, effort)
+		if ok && (best == "" || cmp.Or(cmp.Compare(ver[0], bestVer[0]), cmp.Compare(ver[1], bestVer[1])) > 0) {
+			best, bestVer = models[i].ID, ver
+		}
+	}
+	if best == "" {
+		return "", fmt.Errorf("no gemini %s model with %s effort for %s", family, effort, marker)
+	}
+	return best, nil
+}
+
+// parseGeminiID returns the version of a "gemini-<major>.<minor>-<family>-<effort>" ID.
+func parseGeminiID(id, family, effort string) ([2]int, bool) {
+	rest, ok := strings.CutPrefix(id, "gemini-")
+	if !ok {
+		return [2]int{}, false
+	}
+	rest, ok = strings.CutSuffix(rest, "-"+family+"-"+effort)
+	if !ok {
+		return [2]int{}, false
+	}
+	major, minor, ok := strings.Cut(rest, ".")
+	if !ok {
+		return [2]int{}, false
+	}
+	a, err1 := strconv.Atoi(major)
+	b, err2 := strconv.Atoi(minor)
+	if err1 != nil || err2 != nil {
+		return [2]int{}, false
+	}
+	return [2]int{a, b}, true
 }
 
 // readModels reads the `models` command_result until the terminating result.

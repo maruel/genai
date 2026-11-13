@@ -115,8 +115,9 @@ type Client struct {
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID (e.g.
-//     "deepseek-official/deepseek-v4-flash"). genai.ModelCheap,
-//     genai.ModelGood, and genai.ModelSOTA are rejected.
+//     "deepseek-official/deepseek-v4-flash"). genai.ModelCheap and
+//     genai.ModelGood select "deepseek-official/deepseek-flash";
+//     genai.ModelSOTA selects "deepseek-official/deepseek-v4-pro".
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
@@ -130,10 +131,14 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			if err := msgutil.RejectModelMarker(v); err != nil {
-				return nil, err
+			switch v {
+			case genai.ModelCheap, genai.ModelGood:
+				c.model = "deepseek-official/deepseek-flash"
+			case genai.ModelSOTA:
+				c.model = "deepseek-official/deepseek-v4-pro"
+			default:
+				c.model = string(v)
 			}
-			c.model = string(v)
 			route, err := encodeModel(c.model)
 			if err != nil {
 				return nil, err

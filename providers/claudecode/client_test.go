@@ -136,10 +136,17 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("model_markers", func(t *testing.T) {
-		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-			if cl, err := New(t.Context(), m); err == nil {
-				internaltest.CleanupCloser(t, cl)
-				t.Errorf("%s: expected error", m)
+		for m, want := range map[genai.ProviderOptionModel]string{
+			genai.ModelCheap: "haiku",
+			genai.ModelGood:  "sonnet",
+			genai.ModelSOTA:  "opus",
+		} {
+			c, err := New(t.Context(), m)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := c.ModelID(); got != want {
+				t.Errorf("%s: ModelID() = %q, want %q", m, got, want)
 			}
 		}
 	})

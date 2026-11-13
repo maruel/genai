@@ -211,6 +211,12 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("ModelCheap", func(t *testing.T) {
+		if got := newTestClient(t, "ListModels", genai.ModelCheap).ModelID(); got != "openai-codex/gpt-6-luna" {
+			t.Errorf("ModelID() = %q, want %q", got, "openai-codex/gpt-6-luna")
+		}
+	})
+
 	t.Run("ListModels", func(t *testing.T) {
 		c := newTestClient(t, "ListModels")
 		models, err := c.ListModels(t.Context())
@@ -360,15 +366,6 @@ func TestSetThinking(t *testing.T) {
 			}
 		}
 	})
-}
-
-func TestNew(t *testing.T) {
-	for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-		if cl, err := New(t.Context(), m); err == nil {
-			internaltest.CleanupCloser(t, cl)
-			t.Errorf("%s: expected error", m)
-		}
-	}
 }
 
 func TestParseOpts(t *testing.T) {

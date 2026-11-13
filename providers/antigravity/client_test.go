@@ -126,6 +126,26 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, smoke.Subprocess(getClient), models, nil)
 	})
 
+	t.Run("model_markers", func(t *testing.T) {
+		for m, want := range map[genai.ProviderOptionModel]string{
+			genai.ModelCheap: "gemini-3.8-flash-low",
+			genai.ModelGood:  "gemini-3.8-flash-medium",
+			genai.ModelSOTA:  "gemini-3.1-pro-high",
+		} {
+			if got := newTestClient(t, "ListModels", m).ModelID(); got != want {
+				t.Errorf("%s: ModelID() = %q, want %q", m, got, want)
+			}
+		}
+		all, err := newTestClient(t, "ListModels").listModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		others := slices.DeleteFunc(all, func(m Model) bool { return strings.HasPrefix(m.ID, "gemini-") })
+		if _, err := selectModel(others, genai.ModelSOTA); err == nil {
+			t.Error("selectModel() without gemini models: expected error")
+		}
+	})
+
 	t.Run("ListModels", func(t *testing.T) {
 		models, err := newTestClient(t, "ListModels").ListModels(t.Context())
 		if err != nil {
@@ -215,9 +235,6 @@ func TestNew(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		for _, opt := range []genai.ProviderOption{
 			genai.ProviderOptionRemote("http://localhost"),
-			genai.ModelCheap,
-			genai.ModelGood,
-			genai.ModelSOTA,
 		} {
 			if cl, err := New(t.Context(), opt); err == nil {
 				internaltest.CleanupCloser(t, cl)

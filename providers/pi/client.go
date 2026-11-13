@@ -209,16 +209,20 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // New creates a Client for the `pi` CLI.
 //
 // The binary is located lazily on the first call to GenSync, GenStream, or
-// Ping, so New succeeds even when the CLI is not installed.
+// Ping, so New succeeds even when the CLI is not installed, unless a model
+// marker requires listing models.
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID, optionally prefixed by the
 //     provider (e.g. "google/gemini-3.1-flash-lite-preview").
-//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA select the newest
+//     "openai-codex/" luna, terra, or astra model, which bills the ChatGPT
+//     subscription.
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
-func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
+	var marker genai.ProviderOptionModel
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
@@ -228,16 +232,27 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			if err := msgutil.RejectModelMarker(v); err != nil {
-				return nil, err
+			switch v {
+			case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+				marker = v
+			default:
+				c.model = string(v)
 			}
-			c.model = string(v)
 		case *ProviderOption:
 			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
+		}
+	}
+	if marker != "" {
+		models, err := c.ListModels(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if c.model, err = msgutil.SelectGPTTier(models, "openai-codex/", marker); err != nil {
+			return nil, err
 		}
 	}
 	return c, nil

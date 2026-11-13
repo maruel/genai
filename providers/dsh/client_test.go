@@ -66,15 +66,22 @@ func newCaptureClient(t *testing.T, output string, opts ...genai.ProviderOption)
 }
 
 func TestNew(t *testing.T) {
-	t.Run("error", func(t *testing.T) {
-		t.Run("model_markers", func(t *testing.T) {
-			for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-				if cl, err := New(t.Context(), m); err == nil {
-					internaltest.CleanupCloser(t, cl)
-					t.Errorf("%s: expected error", m)
-				}
+	t.Run("model_markers", func(t *testing.T) {
+		for m, want := range map[genai.ProviderOptionModel]string{
+			genai.ModelCheap: "deepseek-official/deepseek-flash",
+			genai.ModelGood:  "deepseek-official/deepseek-flash",
+			genai.ModelSOTA:  "deepseek-official/deepseek-v4-pro",
+		} {
+			c, err := New(t.Context(), m)
+			if err != nil {
+				t.Fatal(err)
 			}
-		})
+			if got := c.ModelID(); got != want {
+				t.Errorf("%s: ModelID() = %q, want %q", m, got, want)
+			}
+		}
+	})
+	t.Run("error", func(t *testing.T) {
 		t.Run("invalid_model", func(t *testing.T) {
 			for _, id := range []string{"deepseek-v4-flash", "/model", "provider/"} {
 				if cl, err := New(t.Context(), genai.ProviderOptionModel(id)); err == nil {

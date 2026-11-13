@@ -108,19 +108,49 @@ func TestCheckExtraArgs(t *testing.T) {
 	})
 }
 
-func TestRejectModelMarker(t *testing.T) {
+type modelID string
+
+func (m modelID) GetID() string  { return string(m) }
+func (m modelID) String() string { return string(m) }
+func (m modelID) Context() int64 { return 0 }
+
+func TestSelectGPTTier(t *testing.T) {
+	models := []genai.Model{
+		modelID("openai/gpt-5.6-luna"),
+		modelID("openai/gpt-6-luna-fast"),
+		modelID("openai/gpt-6.1-terra"),
+		modelID("openai/gpt-6.10-terra"),
+		modelID("openai/gpt-6-astra"),
+		modelID("openai/gpt-x-astra"),
+		modelID("openrouter/openai/gpt-7-luna"),
+		modelID("openai-codex/gpt-6-luna"),
+	}
 	t.Run("valid", func(t *testing.T) {
-		for _, m := range []genai.ProviderOptionModel{"", "sonnet"} {
-			if err := RejectModelMarker(m); err != nil {
-				t.Errorf("%q: %v", m, err)
+		for _, tc := range []struct {
+			prefix string
+			marker genai.ProviderOptionModel
+			want   string
+		}{
+			{"openai/", genai.ModelCheap, "openai/gpt-5.6-luna"},
+			{"openai/", genai.ModelGood, "openai/gpt-6.10-terra"},
+			{"openai/", genai.ModelSOTA, "openai/gpt-6-astra"},
+			{"openai-codex/", genai.ModelCheap, "openai-codex/gpt-6-luna"},
+		} {
+			got, err := SelectGPTTier(models, tc.prefix, tc.marker)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.want {
+				t.Errorf("%s %s: got %q, want %q", tc.prefix, tc.marker, got, tc.want)
 			}
 		}
 	})
 	t.Run("error", func(t *testing.T) {
-		for _, m := range []genai.ProviderOptionModel{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-			if err := RejectModelMarker(m); err == nil {
-				t.Errorf("%q: expected error", m)
-			}
+		if _, err := SelectGPTTier(models, "openai-codex/", genai.ModelSOTA); err == nil {
+			t.Error("missing tier: expected error")
+		}
+		if _, err := SelectGPTTier(models, "openai/", "gpt-6-luna"); err == nil {
+			t.Error("model ID: expected error")
 		}
 	})
 }

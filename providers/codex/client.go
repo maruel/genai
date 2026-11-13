@@ -230,15 +230,18 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // New creates a Client for the `codex` CLI.
 //
 // The binary is located lazily on the first call to GenSync, GenStream, or
-// Ping, so New succeeds even when the CLI is not installed.
+// Ping, so New succeeds even when the CLI is not installed, unless a model
+// marker requires listing models.
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model ID (e.g. "gpt-6-astra", "gpt-6.1-terra").
-//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA are rejected.
+//     genai.ModelCheap, genai.ModelGood, and genai.ModelSOTA select the newest
+//     luna, terra, or astra model that `model/list` returns.
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
-func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
+	var marker genai.ProviderOptionModel
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
 		return nil, err
 	}
@@ -248,16 +251,27 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 		switch v := opt.(type) {
 		case genai.ProviderOptionModel:
-			if err := msgutil.RejectModelMarker(v); err != nil {
-				return nil, err
+			switch v {
+			case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+				marker = v
+			default:
+				c.model = string(v)
 			}
-			c.model = string(v)
 		case *ProviderOption:
 			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
+		}
+	}
+	if marker != "" {
+		models, err := c.ListModels(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if c.model, err = msgutil.SelectGPTTier(models, "", marker); err != nil {
+			return nil, err
 		}
 	}
 	return c, nil

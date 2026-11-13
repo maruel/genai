@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -85,16 +86,56 @@ func CheckExtraArgs(args []string, reserved ...string) error {
 	return nil
 }
 
-// RejectModelMarker returns an error when m is genai.ModelCheap,
-// genai.ModelGood, or genai.ModelSOTA.
+// SelectGPTTier returns the newest model ID of the form
+// prefix+"gpt-<version>-<tier>" for marker.
 //
-// Subprocess-based providers do not resolve these markers: listing the models
-// requires launching the CLI, which makes construction slow.
-func RejectModelMarker(m genai.ProviderOptionModel) error {
-	switch m {
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
-		return fmt.Errorf("automatic model selection %q is not supported; pass a model ID, or none for the CLI default", m)
+// The tiers follow the Codex model list descriptions: luna is "fast and
+// affordable" (genai.ModelCheap), terra is balanced (genai.ModelGood), and
+// astra is "frontier intelligence" (genai.ModelSOTA). IDs with a further
+// suffix, such as "-fast" service tiers, do not match.
+func SelectGPTTier(models []genai.Model, prefix string, marker genai.ProviderOptionModel) (string, error) {
+	var tier string
+	switch marker {
+	case genai.ModelCheap:
+		tier = "luna"
+	case genai.ModelGood:
+		tier = "terra"
+	case genai.ModelSOTA:
+		tier = "astra"
 	default:
-		return nil
+		return "", fmt.Errorf("%q is not a model marker", marker)
 	}
+	best := ""
+	var bestVer []int
+	for _, m := range models {
+		id := m.GetID()
+		rest, ok := strings.CutPrefix(id, prefix+"gpt-")
+		if !ok {
+			continue
+		}
+		if rest, ok = strings.CutSuffix(rest, "-"+tier); !ok {
+			continue
+		}
+		ver, ok := parseVersion(rest)
+		if ok && (best == "" || slices.Compare(ver, bestVer) > 0) {
+			best, bestVer = id, ver
+		}
+	}
+	if best == "" {
+		return "", fmt.Errorf("no %sgpt-*-%s model available for %s", prefix, tier, marker)
+	}
+	return best, nil
+}
+
+// parseVersion parses a dotted version such as "6" or "6.1".
+func parseVersion(s string) ([]int, bool) {
+	var ver []int
+	for p := range strings.SplitSeq(s, ".") {
+		n, err := strconv.Atoi(p)
+		if err != nil || n < 0 {
+			return nil, false
+		}
+		ver = append(ver, n)
+	}
+	return ver, true
 }

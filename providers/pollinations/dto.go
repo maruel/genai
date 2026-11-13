@@ -5,6 +5,8 @@
 // Wire types for the Pollinations chat completion API.
 //
 // See https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
+// Model metadata: shared/registry/model-info.ts at pollinations/pollinations
+// commit d237ffc66a5dc17fa3dc3662a0b4d1f0702a6663.
 
 package pollinations
 
@@ -973,6 +975,7 @@ type TextModel struct {
 	Publisher              string   `json:"publisher"`
 	Reasoning              bool     `json:"reasoning"`
 	Search                 bool     `json:"search"`
+	SupportsStreaming      *bool    `json:"supports_streaming,omitzero"` // Omitted when the model streams.
 	SupportsSystemMessages bool     `json:"supportsSystemMessages"`
 	Tier                   string   `json:"tier"` // "anonymous", "seed", "flower"
 	Title                  string   `json:"title"`

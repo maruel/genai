@@ -22,7 +22,7 @@ func decodeRealtimeStrict(data string, out any) error {
 
 func TestServerMessage(t *testing.T) {
 	t.Parallel()
-	// Shapes emitted by server-realtime.cpp in llama.cpp v0.9.0.
+	// Shapes emitted by server-realtime.cpp in llama.cpp v1.0.0.
 	for _, data := range []string{
 		`{"type":"input_audio_buffer.committed","previous_item_id":null,"item_id":"item_1","event_id":"event_1"}`,
 		`{"type":"conversation.item.added","previous_item_id":null,"item":{"id":"item_1","object":"realtime.item","type":"message","role":"user","status":"completed","content":[{"type":"input_audio"}]},"event_id":"event_1"}`,
@@ -30,6 +30,7 @@ func TestServerMessage(t *testing.T) {
 		`{"type":"response.output_audio.done","response_id":"resp_1","item_id":"item_1","output_index":0,"content_index":0,"event_id":"event_1"}`,
 		`{"type":"response.output_item.done","response_id":"resp_1","output_index":0,"item":{"id":"item_1","object":"realtime.item","type":"function_call","status":"cancelled","name":"lookup","call_id":"call_1","arguments":"{}"},"event_id":"event_1"}`,
 		`{"type":"response.done","response":{"id":"resp_1","object":"realtime.response","status":"completed","output":[{"id":"item_1","object":"realtime.item","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"answer"}]}],"usage":{"output_tokens":3}},"event_id":"event_1"}`,
+		`{"type":"session.created","session":{"id":"sess_1","object":"realtime.session","type":"realtime","model":"omni","instructions":"","output_modalities":["audio"],"max_output_tokens":"inf","tools":[],"tool_choice":"auto","audio":{"input":{"format":{"type":"audio/pcm","rate":16000},"turn_detection":null},"output":{"format":{"type":"audio/pcm","rate":24000},"voice":null,"language":null}}},"event_id":"event_1"}`,
 		`{"type":"session.created","session":{"id":"sess_1","object":"realtime.transcription_session","type":"transcription","audio":{"input":{"format":{"type":"audio/pcm","rate":16000},"turn_detection":null,"transcription":{"model":"asr","language":null}}}},"event_id":"event_1"}`,
 	} {
 		var msg ServerMessage
@@ -112,12 +113,15 @@ func TestSessionUpdateMessage(t *testing.T) {
 			name: "session and audio",
 			msg: SessionUpdateMessage{Type: EventSessionUpdate, Session: &SessionUpdate{
 				Type: SessionRealtime,
-				Audio: SessionUpdateAudio{Input: SessionUpdateAudioInput{
-					Format:        SessionUpdateAudioFormat{Type: AudioPCM, Rate: 16000},
-					Transcription: SessionUpdateTranscription{Language: "en"},
-				}},
+				Audio: SessionUpdateAudio{
+					Input: SessionUpdateAudioInput{
+						Format:        SessionUpdateAudioFormat{Type: AudioPCM, Rate: 16000},
+						Transcription: SessionUpdateTranscription{Language: "en"},
+					},
+					Output: SessionUpdateAudioOutput{Voice: "alice", Language: "fr"},
+				},
 			}},
-			want: `{"type":"session.update","session":{"type":"realtime","audio":{"input":{"format":{"type":"audio/pcm","rate":16000},"transcription":{"language":"en"}}}}}`,
+			want: `{"type":"session.update","session":{"type":"realtime","audio":{"input":{"format":{"type":"audio/pcm","rate":16000},"transcription":{"language":"en"}},"output":{"voice":"alice","language":"fr"}}}}`,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

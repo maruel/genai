@@ -4,8 +4,8 @@
 
 // llama.cpp realtime wire types for the OpenAI-compatible conversation protocol.
 //
-// Modeled from llama.cpp v0.9.0 tools/server/server-realtime.cpp at commit
-// cd959bae99ff4bed22bef2604f45241c09bbb8c8. The types cover server events and the client commands the session
+// Modeled from llama.cpp v1.0.0 tools/server/server-realtime.cpp at commit
+// b1b770d90d94cad9e9ea5b993bdbc383a522fb28. The types cover server events and the client commands the session
 // runtime uses.
 
 package llamacpp
@@ -194,7 +194,8 @@ type SessionUpdate struct {
 
 // SessionUpdateAudio is the partial audio configuration of session.update.
 type SessionUpdateAudio struct {
-	Input SessionUpdateAudioInput `json:"input,omitzero"`
+	Input  SessionUpdateAudioInput  `json:"input,omitzero"`
+	Output SessionUpdateAudioOutput `json:"output,omitzero"`
 }
 
 // SessionUpdateAudioInput is the partial input-audio configuration.
@@ -204,7 +205,8 @@ type SessionUpdateAudioInput struct {
 }
 
 // SessionUpdateAudioFormat is the partial PCM format accepted by
-// session.update. Only the rate is validated by the server.
+// session.update. The server reads only the rate, from 8000 to 192000 Hz, and
+// resamples input audio to the model rate.
 type SessionUpdateAudioFormat struct {
 	Type AudioEncoding `json:"type,omitzero"`
 	Rate int           `json:"rate,omitzero"`
@@ -212,6 +214,15 @@ type SessionUpdateAudioFormat struct {
 
 // SessionUpdateTranscription is the partial input-transcription configuration.
 type SessionUpdateTranscription struct {
+	Language string `json:"language,omitzero"`
+}
+
+// SessionUpdateAudioOutput is the partial output-audio configuration of a
+// conversation session. Voice must be one of the voices listed by GET /props
+// when the model has predefined voices. Neither field can change after the
+// first audio or message.
+type SessionUpdateAudioOutput struct {
+	Voice    string `json:"voice,omitzero"`
 	Language string `json:"language,omitzero"`
 }
 
@@ -289,10 +300,12 @@ type AudioInput struct {
 	NoiseReduction json.RawMessage `json:"noise_reduction,omitzero"`
 }
 
-// AudioOutput configures generated audio.
+// AudioOutput configures generated audio. The server reports Voice and
+// Language as null when it uses the model defaults.
 type AudioOutput struct {
-	Format AudioFormat `json:"format"`
-	Voice  string      `json:"voice,omitzero"`
+	Format   AudioFormat `json:"format"`
+	Voice    string      `json:"voice,omitzero"`
+	Language string      `json:"language,omitzero"`
 }
 
 // AudioFormat describes PCM on the wire.

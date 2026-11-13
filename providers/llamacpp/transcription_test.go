@@ -19,7 +19,7 @@ import (
 )
 
 // The transcription acknowledgement is distinct from a conversational session.
-// Source: ggml-org/llama.cpp cd959bae99ff4bed22bef2604f45241c09bbb8c8,
+// Source: ggml-org/llama.cpp v1.0.0, b1b770d90d94cad9e9ea5b993bdbc383a522fb28,
 // tools/server/server-context.cpp session_config in handle_realtime.
 // ID/model are representative dynamic values; all native keys are retained.
 const nativeTranscriptionSession = `{"type":"session.created","session":{"id":"sess_native","object":"realtime.transcription_session","type":"transcription","audio":{"input":{"format":{"type":"audio/pcm","rate":16000},"transcription":{"model":"native-asr"},"turn_detection":null,"noise_reduction":null}}}}`

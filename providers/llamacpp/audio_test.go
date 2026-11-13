@@ -21,6 +21,7 @@ func TestSpeechRequest(t *testing.T) {
 				{Input: "hello", ResponseFormat: "mp3"},
 				{Input: "hello", Voice: "female", SpeakerRef: []byte{1}},
 				{Input: "hello", TopP: 2},
+				{Input: "hello", Temperature: new(-1.0)},
 				{Input: "hello", NPredict: -2},
 				{Input: "hello", RepeatPenalty: new(math.Inf(1))},
 			} {

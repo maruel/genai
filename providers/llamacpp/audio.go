@@ -3,8 +3,8 @@
 // that can be found in the LICENSE file.
 
 // Speech generation and server property wire types.
-// Sourced from ggml-org/llama.cpp v0.9.0, commit
-// cd959bae99ff4bed22bef2604f45241c09bbb8c8, tools/server/server-context.cpp
+// Sourced from ggml-org/llama.cpp v1.0.0, commit
+// b1b770d90d94cad9e9ea5b993bdbc383a522fb28, tools/server/server-context.cpp
 // and tools/server/server-schema.cpp.
 
 package llamacpp
@@ -20,13 +20,16 @@ type SpeechFormat string
 
 // Supported speech output formats.
 const (
+	// SpeechPCM is headerless little-endian float32 mono PCM.
 	SpeechPCM SpeechFormat = "pcm"
-	SpeechWAV SpeechFormat = "wav"
+	// SpeechPCM16 is headerless little-endian signed 16-bit mono PCM.
+	SpeechPCM16 SpeechFormat = "pcm16"
+	SpeechWAV   SpeechFormat = "wav"
 )
 
 // SpeechRequest generates speech with the server's loaded audio generation model.
-// PCM output is little-endian float32 at the model's native sample rate.
-// WAV is the default. Stream requests deliver audio as it becomes available.
+// Output is at the model's native sample rate. WAV is the default. Stream
+// requests deliver audio as it becomes available.
 type SpeechRequest struct {
 	Input          string       `json:"input"`
 	Voice          string       `json:"voice,omitzero"`
@@ -35,9 +38,14 @@ type SpeechRequest struct {
 	Stream         bool         `json:"stream,omitzero"`
 	// SpeakerRef contains encoded reference audio (for example WAV), serialized as base64.
 	// It requires a model with a voice encoder and cannot be combined with Voice.
-	SpeakerRef []byte  `json:"speaker_ref_b64,omitzero"`
-	TopK       int32   `json:"top_k,omitzero"`
-	TopP       float64 `json:"top_p,omitzero"`
+	SpeakerRef []byte `json:"speaker_ref_b64,omitzero"`
+	// TopK and TopP apply to the backbone sampler and the acoustic code
+	// predictor. Zero keeps the server and model defaults.
+	TopK int32   `json:"top_k,omitzero"`
+	TopP float64 `json:"top_p,omitzero"`
+	// Temperature applies to the backbone sampler and the audio frames, for
+	// models that support it. Nil keeps the server and model defaults; 0 is greedy.
+	Temperature *float64 `json:"temperature,omitzero"`
 	// Seed selects the random seed; nil uses the server default and -1 requests randomness.
 	Seed *int64 `json:"seed,omitzero"`
 	// NPredict limits audio frames. Zero or -1 inherits the server limit;
@@ -53,14 +61,19 @@ func (s *SpeechRequest) Validate() error {
 	if s.Input == "" {
 		return errors.New("input is required")
 	}
-	if s.ResponseFormat != "" && s.ResponseFormat != SpeechPCM && s.ResponseFormat != SpeechWAV {
-		return errors.New("response_format must be wav or pcm")
+	switch s.ResponseFormat {
+	case "", SpeechPCM, SpeechPCM16, SpeechWAV:
+	default:
+		return errors.New("response_format must be wav, pcm or pcm16")
 	}
 	if s.Voice != "" && len(s.SpeakerRef) != 0 {
 		return errors.New("voice and speaker reference cannot be combined")
 	}
 	if s.TopK < 0 || s.TopP < 0 || s.TopP > 1 || math.IsNaN(s.TopP) {
 		return errors.New("top_k must be non-negative and top_p must be between 0 and 1")
+	}
+	if s.Temperature != nil && (*s.Temperature < 0 || math.IsNaN(*s.Temperature)) {
+		return errors.New("temperature must be non-negative")
 	}
 	if s.NPredict < -1 {
 		return errors.New("n_predict must be at least -1")

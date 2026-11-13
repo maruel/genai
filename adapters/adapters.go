@@ -44,6 +44,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 		res, err := p.GenSync(ctx, workMsgs, opts...)
 		usage.InputTokens += res.Usage.InputTokens
 		usage.InputCachedTokens += res.Usage.InputCachedTokens
+		usage.InputCacheMissTokens += res.Usage.InputCacheMissTokens
 		usage.OutputTokens += res.Usage.OutputTokens
 		usage.FinishReason = res.Usage.FinishReason
 		usage.Limits = res.Usage.Limits
@@ -117,6 +118,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 			res, err := finish()
 			usage.InputTokens += res.Usage.InputTokens
 			usage.InputCachedTokens += res.Usage.InputCachedTokens
+			usage.InputCacheMissTokens += res.Usage.InputCacheMissTokens
 			usage.OutputTokens += res.Usage.OutputTokens
 			usage.FinishReason = res.Usage.FinishReason
 			usage.Limits = res.Usage.Limits
@@ -192,6 +194,7 @@ func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts .
 	c.mu.Lock()
 	c.accumUsage.InputTokens += res.Usage.InputTokens
 	c.accumUsage.InputCachedTokens += res.Usage.InputCachedTokens
+	c.accumUsage.InputCacheMissTokens += res.Usage.InputCacheMissTokens
 	c.accumUsage.OutputTokens += res.Usage.OutputTokens
 	c.accumUsage.Limits = res.Usage.Limits
 	c.mu.Unlock()
@@ -207,6 +210,7 @@ func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts
 		c.mu.Lock()
 		c.accumUsage.InputTokens += res.Usage.InputTokens
 		c.accumUsage.InputCachedTokens += res.Usage.InputCachedTokens
+		c.accumUsage.InputCacheMissTokens += res.Usage.InputCacheMissTokens
 		c.accumUsage.OutputTokens += res.Usage.OutputTokens
 		c.accumUsage.Limits = res.Usage.Limits
 		c.mu.Unlock()

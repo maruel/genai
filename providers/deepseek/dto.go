@@ -363,10 +363,11 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptCacheHitTokens,
-			ReasoningTokens:   c.Usage.ChatTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
+			InputTokens:          c.Usage.PromptTokens,
+			InputCachedTokens:    c.Usage.PromptCacheHitTokens,
+			InputCacheMissTokens: c.Usage.PromptCacheMissTokens,
+			ReasoningTokens:      c.Usage.ChatTokensDetails.ReasoningTokens,
+			OutputTokens:         c.Usage.CompletionTokens,
 		},
 	}
 	if len(c.Choices) != 1 {

@@ -231,9 +231,13 @@ type Usage struct {
 	// Token usage for the current request.
 	InputTokens       int64
 	InputCachedTokens int64
-	ReasoningTokens   int64
-	OutputTokens      int64
-	TotalTokens       int64
+	// InputCacheMissTokens is the number of input tokens that were not served
+	// from a provider cache. Zero when the provider does not report cache
+	// misses, or when it reports that every input token was cached.
+	InputCacheMissTokens int64
+	ReasoningTokens      int64
+	OutputTokens         int64
+	TotalTokens          int64
 	// ContextTokens is the number of tokens in the context window after the
 	// request. Zero when the provider does not report it.
 	ContextTokens int64
@@ -252,8 +256,12 @@ type Usage struct {
 
 func (u *Usage) String() string {
 	var s strings.Builder
-	fmt.Fprintf(&s, "in: %d (cached %d), reasoning: %d, out: %d, total: %d",
-		u.InputTokens, u.InputCachedTokens, u.ReasoningTokens, u.OutputTokens, u.TotalTokens)
+	fmt.Fprintf(&s, "in: %d (cached %d", u.InputTokens, u.InputCachedTokens)
+	if u.InputCacheMissTokens != 0 {
+		fmt.Fprintf(&s, ", miss %d", u.InputCacheMissTokens)
+	}
+	fmt.Fprintf(&s, "), reasoning: %d, out: %d, total: %d",
+		u.ReasoningTokens, u.OutputTokens, u.TotalTokens)
 	if u.ContextTokens != 0 || u.ContextWindow != 0 {
 		fmt.Fprintf(&s, ", context: %d/%d", u.ContextTokens, u.ContextWindow)
 	}
@@ -268,6 +276,7 @@ func (u *Usage) String() string {
 func (u *Usage) Add(r *Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
+	u.InputCacheMissTokens += r.InputCacheMissTokens
 	u.ReasoningTokens += r.ReasoningTokens
 	u.OutputTokens += r.OutputTokens
 	u.TotalTokens += r.TotalTokens

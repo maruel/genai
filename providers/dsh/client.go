@@ -393,7 +393,7 @@ func (c *Client) start(ctx context.Context, systemPrompt string) (io.WriteCloser
 			return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
 		}
 	}
-	s := cli.NewStarter(c.bin, dir)
+	s := cli.NewStarter(c.bin, dir, nil)
 	if c.starterWrapper != nil {
 		s = c.starterWrapper(s)
 	}

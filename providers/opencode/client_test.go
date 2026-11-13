@@ -426,20 +426,36 @@ func TestParseOpts(t *testing.T) {
 	}
 }
 
-func TestWriteAgent(t *testing.T) {
+func TestConfigContent(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		for _, tc := range []struct {
+			name     string
+			existing string
+			want     string
+		}{
+			{"empty", "", `{"agent":{"plan":{"mode":"primary","prompt":"sys"}}}`},
+			{
+				"merge",
+				`{"model":"m","agent":{"plan":{"temperature":0.5},"build":{}}}`,
+				`{"agent":{"build":{},"plan":{"mode":"primary","prompt":"sys","temperature":0.5}},"model":"m"}`,
+			},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				got, err := configContent(tc.existing, "plan", "sys")
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got != tc.want {
+					t.Errorf("configContent() = %s, want %s", got, tc.want)
+				}
+			})
+		}
+	})
 	t.Run("error", func(t *testing.T) {
-		dir := t.TempDir()
-		if err := writeAgent(filepath.Join(dir, "work"), "x", "sys"); err == nil {
-			t.Error("missing dir: expected error")
-		}
-		if err := os.Mkdir(filepath.Join(dir, "work"), 0o700); err != nil {
-			t.Fatal(err)
-		}
-		if err := writeAgent(filepath.Join(dir, "work"), "../../../escape", "sys"); err == nil {
-			t.Error("escaping mode: expected error")
-		}
-		if _, err := os.Stat(filepath.Join(dir, "escape.md")); !errors.Is(err, os.ErrNotExist) {
-			t.Errorf("escaping mode wrote outside the working directory: %v", err)
+		for _, existing := range []string{`{"model":"m",}`, `[]`, `{"agent":[]}`, `{"agent":{"plan":"x"}}`} {
+			if _, err := configContent(existing, "plan", "sys"); err == nil {
+				t.Errorf("%s: expected error", existing)
+			}
 		}
 	})
 }

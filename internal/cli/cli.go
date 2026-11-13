@@ -9,17 +9,22 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 
 	"github.com/maruel/genai"
 )
 
 // NewStarter returns a genai.Starter that runs bin in dir. The caller owns dir
-// and its cleanup.
-func NewStarter(bin, dir string) genai.Starter {
+// and its cleanup. env holds "KEY=value" entries added to the inherited
+// environment; a later entry overrides an inherited one.
+func NewStarter(bin, dir string, env []string) genai.Starter {
 	return func(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
 		cmd := exec.CommandContext(ctx, bin, args...)
 		cmd.Dir = dir
+		if len(env) != 0 {
+			cmd.Env = append(os.Environ(), env...)
+		}
 		stdin, err := cmd.StdinPipe()
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("stdin pipe: %w", err)

@@ -27,24 +27,23 @@
 // # System prompt
 //
 // ACP has no system prompt field. For GenOptionText.SystemPrompt, the provider
-// writes an OpenCode agent file to .opencode/agent/<mode>.md in the temporary
-// working directory and selects that mode. Consequences:
+// defines an agent in OPENCODE_CONFIG_CONTENT and selects it as the session
+// mode. It writes no configuration directory: OpenCode installs npm packages
+// into every .opencode directory it loads. Consequences:
 //
 //   - Without GenOption.Mode, the call runs the agent "genai" instead of
 //     OpenCode's default agent. It has OpenCode's default permissions and
 //     tools, and any "genai" agent from the user's configuration is merged
 //     into it.
-//   - With GenOption.Mode, the file overrides only that agent's prompt and
-//     sets it to a primary agent; its permissions and tools stay. A "/" in the
-//     mode names a nested agent file. A mode that leaves the working
-//     directory, such as one with "..", fails the call.
+//   - With GenOption.Mode, the configuration overrides only that agent's
+//     prompt and sets it to a primary agent; its permissions and tools stay.
 //   - The prompt replaces OpenCode's provider prompt. OpenCode still appends
 //     its skills, environment, and instruction files.
-//   - OpenCode trims leading and trailing white space from the prompt.
+//   - When the environment already sets OPENCODE_CONFIG_CONTENT, the
+//     provider adds the agent to it. The value must then be a JSON object;
+//     JSONC comments fail the call.
 //   - OpenCode applies the agent prompt on every request, so a resumed
 //     session uses the system prompt of the latest call.
-//   - The agent file is visible to the agent's tools in its working
-//     directory.
 package opencode
 
 import (
@@ -59,7 +58,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -110,8 +108,7 @@ func (p *ProviderOption) Validate() error {
 type GenOption struct {
 	// Mode selects an OpenCode session mode returned by ACP. An empty value
 	// leaves OpenCode's current mode intact, unless GenOptionText.SystemPrompt
-	// is set: then the call selects the agent "genai". With a system prompt,
-	// Mode is also a file name; see the package documentation.
+	// is set: then the call selects the agent "genai".
 	Mode Mode
 
 	_ struct{}
@@ -398,19 +395,22 @@ func (c *Client) ensureBin() error {
 }
 
 // start launches the ACP subprocess in a fresh temporary directory and returns
-// the ACP session working directory. It writes the agent carrying
-// co.systemPrompt there.
+// the ACP session working directory. A system prompt in co defines its agent
+// through configContentEnv.
 func (c *Client) start(ctx context.Context, args []string, co *callOpts) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
+	var env []string
+	if co.systemPrompt != "" {
+		content, err := configContent(os.Getenv(configContentEnv), co.sessionMode(), co.systemPrompt)
+		if err != nil {
+			return nil, nil, nil, "", err
+		}
+		env = []string{configContentEnv + "=" + content}
+	}
 	dir, err := os.MkdirTemp("", "genai-opencode-*")
 	if err != nil {
 		return nil, nil, nil, "", fmt.Errorf("create temp dir: %w", err)
 	}
-	if co.systemPrompt != "" {
-		if err := writeAgent(dir, co.sessionMode(), co.systemPrompt); err != nil {
-			return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
-		}
-	}
-	s := cli.NewStarter(c.bin, dir)
+	s := cli.NewStarter(c.bin, dir, env)
 	if c.starterWrapper != nil {
 		s = c.starterWrapper(s)
 	}
@@ -427,28 +427,39 @@ func (c *Client) start(ctx context.Context, args []string, co *callOpts) (io.Wri
 // GenOption.Mode is set.
 const agentName Mode = "genai"
 
-// writeAgent writes the primary agent mode with systemPrompt as its prompt
-// into the working directory dir. The file overrides only the prompt and mode
-// of an existing agent with that name.
-func writeAgent(dir string, mode Mode, systemPrompt string) (err error) {
-	// mode comes from the caller and may contain path separators; the root
-	// confines the write to dir.
-	root, err := os.OpenRoot(dir)
-	if err != nil {
-		return err
+// configContentEnv is the environment variable holding inline OpenCode
+// configuration, merged after the global and project configuration.
+const configContentEnv = "OPENCODE_CONFIG_CONTENT"
+
+// configContent returns inline OpenCode configuration that makes mode a primary
+// agent with systemPrompt as its prompt. It adds the agent to existing, the
+// caller's inline configuration, which must be empty or a JSON object.
+func configContent(existing string, mode Mode, systemPrompt string) (string, error) {
+	// The caller's configuration is opaque; only the agent entry is edited.
+	cfg := map[string]any{}
+	if existing != "" {
+		if err := json.Unmarshal([]byte(existing), &cfg); err != nil {
+			return "", fmt.Errorf("%s must be a JSON object to add the system prompt agent: %w", configContentEnv, err)
+		}
 	}
-	defer func() { err = errors.Join(err, root.Close()) }()
-	name := filepath.Join(".opencode", "agent", filepath.FromSlash(string(mode))+".md")
-	if err := root.MkdirAll(filepath.Dir(name), 0o700); err != nil {
-		return fmt.Errorf("create agent dir: %w", err)
+	agents := map[string]any{}
+	if v, ok := cfg["agent"]; ok {
+		if agents, ok = v.(map[string]any); !ok {
+			return "", fmt.Errorf("%s: agent must be an object", configContentEnv)
+		}
 	}
-	// The front matter keeps a prompt that starts with "---" from being parsed
-	// as front matter.
-	b := []byte("---\nmode: primary\n---\n\n" + systemPrompt + "\n")
-	if err := root.WriteFile(name, b, 0o600); err != nil {
-		return fmt.Errorf("write agent: %w", err)
+	agent := map[string]any{}
+	if v, ok := agents[string(mode)]; ok {
+		if agent, ok = v.(map[string]any); !ok {
+			return "", fmt.Errorf("%s: agent %q must be an object", configContentEnv, mode)
+		}
 	}
-	return nil
+	agent["mode"] = "primary"
+	agent["prompt"] = systemPrompt
+	agents[string(mode)] = agent
+	cfg["agent"] = agents
+	b, err := json.Marshal(cfg)
+	return string(b), err
 }
 
 // callOpts holds the settings of one call.
